@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Zap, Play, Star, Users, Calendar } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import filmBg from "@/assets/film-equipment-bg.jpg";
+import movieCollage from "@/assets/movie-poster-collage-bg.jpg";
 import detectiveImg from "@/assets/detective-sarah.jpg";
 import entrepreneurImg from "@/assets/entrepreneur.jpg";
 import mysteriousImg from "@/assets/mysterious-stranger.jpg";
@@ -96,7 +96,7 @@ export const ActorDashboard = () => {
         {/* Hero Section with Film Background */}
         <div 
           className="relative min-h-screen bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: `url(${filmBg})` }}
+          style={{ backgroundImage: `url(${movieCollage})` }}
         >
           {/* Dark overlay */}
           <div className="absolute inset-0 bg-background/85 backdrop-blur-[1px]" />
