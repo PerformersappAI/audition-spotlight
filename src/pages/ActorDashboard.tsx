@@ -8,6 +8,9 @@ import { Search, Zap, Play, Star, Users, Calendar } from "lucide-react";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import filmBg from "@/assets/film-equipment-bg.jpg";
+import detectiveImg from "@/assets/detective-sarah.jpg";
+import entrepreneurImg from "@/assets/entrepreneur.jpg";
+import mysteriousImg from "@/assets/mysterious-stranger.jpg";
 
 const mockRoles = [
   {
@@ -17,7 +20,8 @@ const mockRoles = [
     auditionDate: "2024-09-25T14:00:00Z",
     states: ["CA", "NV"],
     contactMethod: "Email",
-    project: "Dark Waters - Pilot Episode"
+    project: "Dark Waters - Pilot Episode",
+    image: detectiveImg
   },
   {
     id: "2", 
@@ -26,7 +30,8 @@ const mockRoles = [
     auditionDate: "2024-09-28T10:30:00Z",
     states: ["CA"],
     contactMethod: "Phone",
-    project: "Silicon Dreams"
+    project: "Silicon Dreams",
+    image: entrepreneurImg
   },
   {
     id: "3",
@@ -35,7 +40,8 @@ const mockRoles = [
     auditionDate: "2024-09-30T16:00:00Z",
     states: ["NY", "NJ"],
     contactMethod: "Email",
-    project: "The Midnight Series"
+    project: "The Midnight Series",
+    image: mysteriousImg
   }
 ];
 

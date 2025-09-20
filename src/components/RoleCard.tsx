@@ -14,6 +14,7 @@ interface RoleCardProps {
     contactMethod: string;
     project?: string;
     submissionCount?: number;
+    image?: string;
   };
   showActions?: boolean;
   variant?: 'actor' | 'filmmaker';
@@ -40,7 +41,25 @@ export const RoleCard = ({ role, showActions = true, variant = 'actor' }: RoleCa
   };
 
   return (
-    <Card className="bg-surface border-border shadow-surface hover:shadow-glow transition-all duration-300 group">
+    <Card className="bg-surface border-border shadow-surface hover:shadow-glow transition-all duration-300 group overflow-hidden">
+      {/* Character Image */}
+      {role.image && (
+        <div className="relative h-48 overflow-hidden">
+          <img 
+            src={role.image} 
+            alt={`Character reference for ${role.name}`}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-surface/80 to-transparent" />
+          {variant === 'filmmaker' && role.submissionCount !== undefined && (
+            <Badge variant="secondary" className="absolute top-3 right-3 bg-background/90 text-foreground">
+              <Users className="h-3 w-3 mr-1" />
+              {role.submissionCount}
+            </Badge>
+          )}
+        </div>
+      )}
+
       <CardHeader className="pb-3">
         <div className="flex items-start justify-between">
           <div className="space-y-1">
@@ -53,7 +72,7 @@ export const RoleCard = ({ role, showActions = true, variant = 'actor' }: RoleCa
               </CardDescription>
             )}
           </div>
-          {variant === 'filmmaker' && role.submissionCount !== undefined && (
+          {!role.image && variant === 'filmmaker' && role.submissionCount !== undefined && (
             <Badge variant="secondary" className="bg-muted text-muted-foreground">
               <Users className="h-3 w-3 mr-1" />
               {role.submissionCount}
