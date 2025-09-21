@@ -83,6 +83,37 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Mission Statement */}
+      <div className="py-16 bg-primary/5 border-y">
+        <div className="container mx-auto px-6">
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary">Our Mission</h2>
+            <div className="prose prose-lg mx-auto text-muted-foreground">
+              <p className="text-lg md:text-xl leading-relaxed mb-6">
+                Cast is a <strong className="text-foreground">grassroots resource toolbox</strong> designed specifically for independent filmmakers, 
+                content creators, and film festivals who are building their projects on passion, not massive budgets.
+              </p>
+              <p className="text-base md:text-lg leading-relaxed mb-6">
+                We believe in empowering the <strong className="text-foreground">independent creative community</strong> — the storytellers who craft 
+                compelling narratives in their spare time, the festival organizers who champion emerging voices, and the actors 
+                who audition in coffee shops and community centers.
+              </p>
+              <div className="bg-background/50 p-6 rounded-lg border-l-4 border-primary">
+                <p className="text-base leading-relaxed font-medium text-foreground">
+                  <strong>This platform is NOT for:</strong> Large production companies, corporate commercials, or big-budget studios. 
+                  This is for creators who need <em>real tools</em> to manage their day-to-day creating, building, and promoting 
+                  of authentic, independent projects.
+                </p>
+              </div>
+              <p className="text-base md:text-lg leading-relaxed mt-6">
+                Whether you&apos;re organizing a local film festival, casting for your passion project, or building a portfolio 
+                one audition at a time — Cast provides the tools and community to help you succeed without the corporate overhead.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Stats Section */}
       <div className="py-16 bg-background">
         <div className="container mx-auto px-6">
