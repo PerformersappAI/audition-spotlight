@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import UploadAuditions from "./pages/UploadAuditions";
+import SceneAnalysis from "./pages/SceneAnalysis";
 import { FilmmakerDashboard } from "./pages/FilmmakerDashboard";
 
 const queryClient = new QueryClient();
@@ -23,6 +25,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/upload-auditions" element={<UploadAuditions />} />
+            <Route path="/scene-analysis" element={<SceneAnalysis />} />
             <Route path="/filmmaker" element={<FilmmakerDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
