@@ -14,7 +14,231 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          applicant_user_id: string
+          applied_at: string
+          film_festival_id: string | null
+          id: string
+          notes: string | null
+          project_id: string | null
+          status: string
+        }
+        Insert: {
+          applicant_user_id: string
+          applied_at?: string
+          film_festival_id?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          status?: string
+        }
+        Update: {
+          applicant_user_id?: string
+          applied_at?: string
+          film_festival_id?: string | null
+          id?: string
+          notes?: string | null
+          project_id?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_film_festival_id_fkey"
+            columns: ["film_festival_id"]
+            isOneToOne: false
+            referencedRelation: "film_festivals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      film_festivals: {
+        Row: {
+          categories: string[] | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          description: string
+          end_date: string | null
+          featured: boolean
+          id: string
+          location: string
+          name: string
+          requirements: string | null
+          start_date: string
+          status: string
+          submission_deadline: string | null
+          submission_fee: string | null
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          categories?: string[] | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description: string
+          end_date?: string | null
+          featured?: boolean
+          id?: string
+          location: string
+          name: string
+          requirements?: string | null
+          start_date: string
+          status?: string
+          submission_deadline?: string | null
+          submission_fee?: string | null
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          categories?: string[] | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          description?: string
+          end_date?: string | null
+          featured?: boolean
+          id?: string
+          location?: string
+          name?: string
+          requirements?: string | null
+          start_date?: string
+          status?: string
+          submission_deadline?: string | null
+          submission_fee?: string | null
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          bio: string | null
+          company_name: string | null
+          created_at: string
+          email: string
+          first_name: string | null
+          id: string
+          last_name: string | null
+          location: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          bio?: string | null
+          company_name?: string | null
+          created_at?: string
+          email: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          bio?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string
+          first_name?: string | null
+          id?: string
+          last_name?: string | null
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["user_role"]
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          age_range: string | null
+          audition_date: string | null
+          casting_director: string | null
+          compensation: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          deadline_date: string | null
+          description: string
+          featured: boolean
+          gender_preference: string | null
+          id: string
+          location: string | null
+          production_company: string | null
+          project_type: string
+          requirements: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          age_range?: string | null
+          audition_date?: string | null
+          casting_director?: string | null
+          compensation?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          deadline_date?: string | null
+          description: string
+          featured?: boolean
+          gender_preference?: string | null
+          id?: string
+          location?: string | null
+          production_company?: string | null
+          project_type?: string
+          requirements?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          age_range?: string | null
+          audition_date?: string | null
+          casting_director?: string | null
+          compensation?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          deadline_date?: string | null
+          description?: string
+          featured?: boolean
+          gender_preference?: string | null
+          id?: string
+          location?: string | null
+          production_company?: string | null
+          project_type?: string
+          requirements?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +247,7 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      user_role: "filmmaker" | "film_festival" | "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +374,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      user_role: ["filmmaker", "film_festival", "admin"],
+    },
   },
 } as const
