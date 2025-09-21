@@ -10,6 +10,11 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import UploadAuditions from "./pages/UploadAuditions";
 import SceneAnalysis from "./pages/SceneAnalysis";
+import CreateProject from "./pages/CreateProject";
+import CreateFestival from "./pages/CreateFestival";
+import Applications from "./pages/Applications";
+import Festivals from "./pages/Festivals";
+import CalendarPage from "./pages/CalendarPage";
 import { FilmmakerDashboard } from "./pages/FilmmakerDashboard";
 
 const queryClient = new QueryClient();
@@ -27,6 +32,11 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/upload-auditions" element={<UploadAuditions />} />
             <Route path="/scene-analysis" element={<SceneAnalysis />} />
+            <Route path="/create-project" element={<CreateProject />} />
+            <Route path="/create-festival" element={<CreateFestival />} />
+            <Route path="/applications" element={<Applications />} />
+            <Route path="/festivals" element={<Festivals />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/filmmaker" element={<FilmmakerDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
