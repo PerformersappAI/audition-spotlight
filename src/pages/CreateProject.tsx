@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,12 +9,15 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CalendarIcon, Film, MapPin, DollarSign, Users, Clock, Upload, FileText } from "lucide-react";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { CalendarIcon, Film, MapPin, DollarSign, Users, Clock, Upload, FileText, Check, ChevronsUpDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/Layout";
 import { format } from "date-fns";
+import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 
 const CreateProject = () => {
   const { userProfile } = useAuth();
@@ -29,8 +32,16 @@ const CreateProject = () => {
 
   const [shootStartDate, setShootStartDate] = useState<Date>();
   const [shootEndDate, setShootEndDate] = useState<Date>();
+  
+  // Project Name Combobox State
+  const [projectNameInput, setProjectNameInput] = useState("");
+  const [projectNameOpen, setProjectNameOpen] = useState(false);
+  const [existingProjectNames, setExistingProjectNames] = useState<string[]>([]);
+  const [selectedProjectName, setSelectedProjectName] = useState("");
 
   const [projectData, setProjectData] = useState({
+    // Project Name (new field)
+    projectName: "",
     // Eco Cast Details
     ecoCastTitle: "",
     breakdownTitle: "",
@@ -82,6 +93,33 @@ const CreateProject = () => {
     equipmentRequired: "",
     postingType: "casting"
   });
+
+  // Fetch existing project names
+  useEffect(() => {
+    const fetchProjectNames = async () => {
+      if (!userProfile?.user_id) return;
+      
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('project_name')
+          .eq('user_id', userProfile.user_id)
+          .not('project_name', 'eq', '');
+          
+        if (error) {
+          console.error('Error fetching project names:', error);
+          return;
+        }
+        
+        const uniqueNames = [...new Set(data?.map(p => p.project_name) || [])];
+        setExistingProjectNames(uniqueNames);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchProjectNames();
+  }, [userProfile?.user_id]);
 
   const projectTypes = [
     "Feature Film", "Television Series", "Television Pilot", "Commercial", 
@@ -164,11 +202,11 @@ const CreateProject = () => {
   };
 
   const handleSubmit = async () => {
-    if (!projectData.ecoCastTitle || !projectData.breakdownTitle || !projectData.projectType) {
+    if (!selectedProjectName || !projectData.ecoCastTitle || !projectData.breakdownTitle || !projectData.projectType) {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Please fill in all required fields: Eco Cast Title, Breakdown Title, and Project Type"
+        description: "Please fill in all required fields: Project Name, Eco Cast Title, Breakdown Title, and Project Type"
       });
       return;
     }
@@ -191,12 +229,47 @@ const CreateProject = () => {
       return;
     }
 
+    if (!userProfile?.user_id) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "You must be logged in to create a project"
+      });
+      return;
+    }
+
     setLoading(true);
     
-    // Simulate API call with new posting type
-    const postingType = includeCrewCall ? 'both' : 'casting';
-    
-    setTimeout(() => {
+    try {
+      // Create the project with all the enhanced data
+      const { data, error } = await supabase
+        .from('projects')
+        .insert({
+          user_id: userProfile.user_id,
+          project_name: selectedProjectName,
+          title: projectData.ecoCastTitle,
+          description: projectData.breakdownTitle,
+          project_type: projectData.projectType,
+          location: projectData.filmingLocation,
+          gender_preference: projectData.genderPreference,
+          age_range: projectData.ageRange,
+          compensation: projectData.compensation,
+          requirements: projectData.requirements,
+          contact_email: projectData.contactEmail,
+          contact_phone: projectData.contactPhone,
+          audition_date: auditionDate?.toISOString(),
+          deadline_date: deadlineDate?.toISOString(),
+          casting_director: projectData.castingDirector,
+          production_company: projectData.producers,
+          status: 'active'
+        } as any)
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
       toast({
         title: "Audition Notice Created!",
         description: includeCrewCall 
@@ -204,7 +277,17 @@ const CreateProject = () => {
           : "Your professional audition notice has been published successfully"
       });
       navigate('/dashboard');
-    }, 2000);
+      
+    } catch (error) {
+      console.error('Error creating project:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to create project. Please try again."
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -234,6 +317,104 @@ const CreateProject = () => {
               </TabsList>
               
               <TabsContent value="project" className="space-y-6">
+                {/* Eco Cast Invitation Details */}
+                {/* Project Name Selection */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-xl text-primary flex items-center gap-2">
+                      <Film className="h-5 w-5" />
+                      Project Name
+                    </CardTitle>
+                    <p className="text-sm text-muted-foreground">
+                      Select an existing project or create a new one. This connects all your casting calls and crew needs for the same project.
+                    </p>
+                  </CardHeader>
+                  <CardContent>
+                    <div>
+                      <Label htmlFor="project-name">Project Name *</Label>
+                      <Popover open={projectNameOpen} onOpenChange={setProjectNameOpen}>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={projectNameOpen}
+                            className="w-full justify-between"
+                          >
+                            {selectedProjectName || "Select or create project..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type new project name..." 
+                              value={projectNameInput}
+                              onValueChange={setProjectNameInput}
+                            />
+                            <CommandList>
+                              <CommandEmpty>
+                                {projectNameInput ? (
+                                  <div className="p-2">
+                                    <Button
+                                      variant="ghost"
+                                      className="w-full justify-start"
+                                      onClick={() => {
+                                        setSelectedProjectName(projectNameInput);
+                                        setProjectNameOpen(false);
+                                        setProjectNameInput("");
+                                      }}
+                                    >
+                                      <Film className="mr-2 h-4 w-4" />
+                                      Create "{projectNameInput}"
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  "Type to create a new project..."
+                                )}
+                              </CommandEmpty>
+                              {existingProjectNames.length > 0 && (
+                                <CommandGroup heading="Existing Projects">
+                                  {existingProjectNames.map((name) => (
+                                    <CommandItem
+                                      key={name}
+                                      value={name}
+                                      onSelect={() => {
+                                        setSelectedProjectName(name);
+                                        setProjectNameOpen(false);
+                                        setProjectNameInput("");
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 h-4 w-4",
+                                          selectedProjectName === name ? "opacity-100" : "opacity-0"
+                                        )}
+                                      />
+                                      {name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              )}
+                            </CommandList>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
+                      {selectedProjectName && !existingProjectNames.includes(selectedProjectName) && (
+                        <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+                          <span className="inline-block w-2 h-2 bg-green-500 rounded-full"></span>
+                          Creating new project: {selectedProjectName}
+                        </p>
+                      )}
+                      {selectedProjectName && existingProjectNames.includes(selectedProjectName) && (
+                        <p className="text-sm text-muted-foreground mt-1 flex items-center gap-1">
+                          <span className="inline-block w-2 h-2 bg-blue-500 rounded-full"></span>
+                          Adding to existing project: {selectedProjectName}
+                        </p>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+
                 {/* Eco Cast Invitation Details */}
                 <Card>
                   <CardHeader>

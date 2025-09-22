@@ -186,6 +186,7 @@ export type Database = {
           id: string
           location: string | null
           production_company: string | null
+          project_name: string
           project_type: string
           requirements: string | null
           status: string
@@ -208,6 +209,7 @@ export type Database = {
           id?: string
           location?: string | null
           production_company?: string | null
+          project_name?: string
           project_type?: string
           requirements?: string | null
           status?: string
@@ -230,6 +232,7 @@ export type Database = {
           id?: string
           location?: string | null
           production_company?: string | null
+          project_name?: string
           project_type?: string
           requirements?: string | null
           status?: string
