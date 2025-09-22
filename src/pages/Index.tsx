@@ -91,7 +91,18 @@ const Index = () => {
                 </Button>
               </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-5xl">
+              <div className="flex flex-col items-center gap-2">
+                <Button 
+                  variant="teal" 
+                  size="lg" 
+                  onClick={() => navigate('/auth')} 
+                  className="text-lg px-8 py-4 w-full"
+                >
+                  FILMMAKERS
+                </Button>
+                <p className="text-white text-sm font-medium">CREATE YOUR PROJECT</p>
+              </div>
               <div className="flex flex-col items-center gap-2">
                 <Button 
                   variant="burgundy" 
