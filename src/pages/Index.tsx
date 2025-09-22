@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import moviePosterBg from "@/assets/movie-poster-collage-bg.jpg";
+import filmStudioBg from "@/assets/film-studio-bg.jpg";
 import astoriaLogo from "@/assets/astoria-film-festival-logo.jpeg";
 import opprimeLogo from "@/assets/opprime-tv-logo.png";
 
@@ -69,8 +69,8 @@ const Index = () => {
     <div className="min-h-screen">
       {/* Hero Section */}
       <div 
-        className="relative min-h-screen bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: `url(${moviePosterBg})` }}
+        className="relative h-[85vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
+        style={{ backgroundImage: `url(${filmStudioBg})` }}
       >
         <div className="absolute inset-0 bg-black/70"></div>
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
@@ -135,7 +135,7 @@ const Index = () => {
       </div>
 
       {/* Mission Statement */}
-      <div className="py-16 bg-primary/5 border-y">
+      <div className="relative -mt-32 pt-20 pb-16 bg-surface border-y border-border z-10">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary">Our Mission</h2>
