@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Shield, AlertCircle } from 'lucide-react';
+import { Shield, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const AdminLogin = () => {
@@ -15,6 +15,7 @@ const AdminLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [isCheckingProfile, setIsCheckingProfile] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { signIn, user, userProfile, loading } = useAuth();
   const navigate = useNavigate();
@@ -65,11 +66,22 @@ const AdminLogin = () => {
 
     try {
       console.log('AdminLogin: Attempting sign in with', email);
+      console.log('AdminLogin: Password length:', password.length);
+      
       const { error } = await signIn(email, password);
       
       if (error) {
-        console.log('AdminLogin: Sign in error', error.message);
-        setError(error.message);
+        console.log('AdminLogin: Sign in error', error);
+        
+        // Provide more specific error messages
+        if (error.message.includes('Invalid login credentials')) {
+          setError('Invalid email or password. Please check your credentials and try again.');
+        } else if (error.message.includes('Email not confirmed')) {
+          setError('Please check your email and click the confirmation link before signing in.');
+        } else {
+          setError(error.message);
+        }
+        
         setIsCheckingProfile(false);
         return;
       }
@@ -79,7 +91,7 @@ const AdminLogin = () => {
 
     } catch (err) {
       console.log('AdminLogin: Unexpected error', err);
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred. Please try again.');
       setIsCheckingProfile(false);
     } finally {
       setIsLoading(false);
@@ -118,18 +130,40 @@ const AdminLogin = () => {
                 required
                 disabled={isLoading}
               />
+              {email === 'salframondi@gmail.com' && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Admin account detected. Try password: EnricoVader$
+                </p>
+              )}
             </div>
             
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  className="pr-10"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                  onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
+                >
+                  {showPassword ? (
+                    <EyeOff className="h-4 w-4 text-muted-foreground" />
+                  ) : (
+                    <Eye className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </Button>
+              </div>
             </div>
             
             <Button 
@@ -139,6 +173,18 @@ const AdminLogin = () => {
             >
               {isLoading ? 'Signing In...' : isCheckingProfile ? 'Verifying Admin Access...' : 'Access Admin Panel'}
             </Button>
+            
+            {error && error.includes('Invalid email or password') && (
+              <div className="mt-4 p-3 bg-muted rounded-md">
+                <p className="text-sm text-muted-foreground">
+                  <strong>Troubleshooting:</strong><br />
+                  • Make sure email and password are exactly correct<br />
+                  • Password is case-sensitive<br />
+                  • For Sal: try "EnricoVader$" exactly<br />
+                  • Check for extra spaces
+                </p>
+              </div>
+            )}
           </form>
         </CardContent>
       </Card>
