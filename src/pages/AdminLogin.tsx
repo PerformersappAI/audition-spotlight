@@ -181,7 +181,9 @@ const AdminLogin = () => {
                   • Make sure email and password are exactly correct<br />
                   • Password is case-sensitive<br />
                   • For Sal: try "EnricoVader$" exactly<br />
-                  • Check for extra spaces
+                  • Check for extra spaces<br />
+                  <br />
+                  <strong>Password has been reset!</strong> Try logging in again with "EnricoVader$"
                 </p>
               </div>
             )}
