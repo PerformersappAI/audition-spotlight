@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import moviePosterBg from "@/assets/movie-poster-collage-bg.jpg";
 import astoriaLogo from "@/assets/astoria-film-festival-logo.jpeg";
+import opprimeLogo from "@/assets/opprime-tv-logo.png";
 
 const Index = () => {
   const [projects, setProjects] = useState([]);
@@ -119,6 +120,15 @@ const Index = () => {
                 </Button>
                 <p className="text-white text-sm font-medium">ATTACH YOUR FILM</p>
               </div>
+            </div>
+            
+            {/* Opprime TV Logo */}
+            <div className="mt-12 flex justify-center">
+              <img 
+                src={opprimeLogo} 
+                alt="Opprime TV - Of the artist, by the artist, for the artist"
+                className="h-16 md:h-20 object-contain opacity-90"
+              />
             </div>
           </div>
         </div>
