@@ -29,15 +29,22 @@ const AdminLogin = () => {
       return;
     }
 
-    console.log('AdminLogin: Auth state changed', { user: !!user, userProfile, loading, isCheckingProfile });
+    console.log('AdminLogin: Auth state changed', { 
+      user: !!user, 
+      userProfile: userProfile?.role, 
+      loading, 
+      isCheckingProfile 
+    });
     
     // If we have a user and profile, check admin status
-    if (user && userProfile && !isCheckingProfile) {
-      console.log('AdminLogin: Checking admin role', userProfile.role);
+    if (user && userProfile && !loading) {
+      console.log('AdminLogin: User and profile loaded, checking admin role:', userProfile.role);
       
       if (userProfile.role === 'admin') {
         console.log('AdminLogin: Admin confirmed, redirecting to /admin');
-        navigate('/admin');
+        setIsCheckingProfile(false);
+        navigate('/admin', { replace: true });
+        return;
       } else {
         console.log('AdminLogin: Not admin, showing access denied');
         setError('Access denied. Admin privileges required.');
@@ -47,14 +54,19 @@ const AdminLogin = () => {
           description: "This account does not have administrative privileges."
         });
         setIsCheckingProfile(false);
+        return;
       }
     }
 
-    // If we have a user but no profile after auth check, they might not have admin role
-    if (user && !userProfile && !loading && !isCheckingProfile) {
-      console.log('AdminLogin: User exists but no profile loaded');
-      setError('Unable to load user profile. Please try again.');
-      setIsCheckingProfile(false);
+    // If we have a user but no profile after reasonable time, show error
+    if (user && !userProfile && !loading && isCheckingProfile) {
+      console.log('AdminLogin: User exists but no profile loaded, showing error');
+      setTimeout(() => {
+        if (!userProfile) {
+          setError('Unable to load user profile. Please try again.');
+          setIsCheckingProfile(false);
+        }
+      }, 2000); // Give 2 seconds for profile to load
     }
   }, [user, userProfile, loading, navigate, toast, isCheckingProfile]);
 
@@ -87,7 +99,15 @@ const AdminLogin = () => {
       }
 
       console.log('AdminLogin: Sign in successful, waiting for profile to load');
-      // Profile checking will be handled by useEffect when userProfile updates
+      
+      // Add a timeout to prevent infinite checking
+      setTimeout(() => {
+        if (isCheckingProfile) {
+          console.log('AdminLogin: Profile check timeout, forcing completion');
+          setIsCheckingProfile(false);
+          setError('Login timeout. Please try again.');
+        }
+      }, 5000); // 5 second timeout
 
     } catch (err) {
       console.log('AdminLogin: Unexpected error', err);
