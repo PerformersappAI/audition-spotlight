@@ -119,6 +119,33 @@ const Dashboard = () => {
           </div>
         </div>
 
+        {/* Quick Access Tools - Filmmaker Only */}
+        {userProfile?.role === 'filmmaker' && (
+          <div className="flex flex-wrap gap-2 p-4 bg-surface rounded-lg border">
+            <Button variant="outline" size="sm" onClick={() => navigate('/toolbox')}>
+              🎬 Toolbox
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/submit')}>
+              📝 Multi-Step Form
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/scene-analysis')}>
+              🎭 Scene Analysis
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/upload-auditions')}>
+              🎥 Upload Auditions
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/library')}>
+              📚 Docs Library
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/consulting')}>
+              💼 Consulting
+            </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/calendar')}>
+              📅 Calendar
+            </Button>
+          </div>
+        )}
+
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <Card>
@@ -162,15 +189,21 @@ const Dashboard = () => {
         </div>
 
         {/* Content Tabs */}
-        <Tabs defaultValue="listings" className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="listings">
-              {userProfile?.role === 'filmmaker' ? 'My Projects' : 'My Festivals'}
+        <Tabs defaultValue="projects" className="w-full">
+          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-4' : 'grid-cols-2'}`}>
+            <TabsTrigger value="projects">
+              {userProfile?.role === 'filmmaker' ? 'Projects' : 'My Festivals'}
             </TabsTrigger>
-            <TabsTrigger value="applications">My Applications</TabsTrigger>
+            {userProfile?.role === 'filmmaker' && (
+              <>
+                <TabsTrigger value="auditions">Auditions</TabsTrigger>
+                <TabsTrigger value="crew">Crew</TabsTrigger>
+              </>
+            )}
+            <TabsTrigger value="applications">Applications</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="listings" className="space-y-4">
+          <TabsContent value="projects" className="space-y-4">
             {userProfile?.role === 'filmmaker' ? (
               // Filmmaker Projects
               <div className="space-y-4">
@@ -277,6 +310,55 @@ const Dashboard = () => {
               </div>
             )}
           </TabsContent>
+
+          {/* Auditions Tab - Filmmaker Only */}
+          {userProfile?.role === 'filmmaker' && (
+            <TabsContent value="auditions" className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Manage Auditions</h3>
+                <Button onClick={() => navigate('/upload-auditions')}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Audition
+                </Button>
+              </div>
+              <Card>
+                <CardContent className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">Set up auditions for your roles</p>
+                  <Button onClick={() => navigate('/upload-auditions')}>
+                    Upload Audition Materials
+                  </Button>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+
+          {/* Crew Tab - Filmmaker Only */}
+          {userProfile?.role === 'filmmaker' && (
+            <TabsContent value="crew" className="space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold">Crew Listings</h3>
+                <Button onClick={() => navigate('/create-project')}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Post Crew Job
+                </Button>
+              </div>
+              <Card>
+                <CardContent className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">Create crew job listings for your projects</p>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-md mx-auto">
+                    <Button variant="outline" size="sm">Director</Button>
+                    <Button variant="outline" size="sm">Cinematographer</Button>
+                    <Button variant="outline" size="sm">Sound Engineer</Button>
+                    <Button variant="outline" size="sm">Editor</Button>
+                    <Button variant="outline" size="sm">Producer</Button>
+                    <Button variant="outline" size="sm">Gaffer</Button>
+                    <Button variant="outline" size="sm">Script Supervisor</Button>
+                    <Button variant="outline" size="sm">Other</Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
           
           <TabsContent value="applications" className="space-y-4">
             {applications.length === 0 ? (
