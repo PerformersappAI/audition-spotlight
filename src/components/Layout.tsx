@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3 } from 'lucide-react';
+import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3, Briefcase } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -20,6 +20,7 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
 
   const navigation = userRole === 'FILMMAKER' ? [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
+    { name: 'Toolbox', href: '/toolbox', icon: Briefcase },
     { name: 'Projects', href: '/filmmaker', icon: Film },
     { name: 'Applications', href: '/applications', icon: Users },
   ] : userRole === 'FILM_FESTIVAL' ? [

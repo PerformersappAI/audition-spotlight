@@ -17,12 +17,67 @@ import {
 export default function ToolboxHome() {
   const [modules] = useState([
     {
+      id: "upload_auditions",
+      name: "Upload Auditions",
+      description: "Upload and manage audition videos and materials",
+      icon: Video,
+      status: "active",
+      badge: "Core Tool",
+      route: "/upload-auditions"
+    },
+    {
       id: "scene_analyzer",
       name: "Scene Analyzer",
       description: "AI-powered scene analysis for beats, stakes, and tone philosophy",
+      icon: Sparkles,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/scene-analysis"
+    },
+    {
+      id: "create_project",
+      name: "Create Project",
+      description: "Set up new film projects and manage casting calls",
       icon: Video,
       status: "active",
-      badge: "AI Enhanced"
+      badge: "Core Tool",
+      route: "/create-project"
+    },
+    {
+      id: "applications",
+      name: "View Applications",
+      description: "Review and manage applications for your projects",
+      icon: Users,
+      status: "active",
+      badge: "Core Tool",
+      route: "/applications"
+    },
+    {
+      id: "create_festival",
+      name: "Create Festival",
+      description: "Set up film festival listings and submissions",
+      icon: Trophy,
+      status: "active",
+      badge: "Core Tool",
+      route: "/create-festival"
+    },
+    {
+      id: "festivals",
+      name: "Browse Festivals",
+      description: "Discover and apply to film festivals worldwide",
+      icon: Trophy,
+      status: "active",
+      badge: "Oprime.Vetted",
+      route: "/festivals"
+    },
+    {
+      id: "calendar",
+      name: "Production Calendar",
+      description: "Schedule shoots, deadlines, and festival dates",
+      icon: ChevronRight,
+      status: "active",
+      badge: "Productivity",
+      route: "/calendar"
     },
     {
       id: "character_breakdown",
@@ -30,7 +85,8 @@ export default function ToolboxHome() {
       description: "Generate casting types, archetypes, and audition materials",
       icon: Users,
       status: "active",
-      badge: "AI Enhanced"
+      badge: "AI Enhanced",
+      route: "/submit"
     },
     {
       id: "distribution_navigator",
@@ -38,7 +94,8 @@ export default function ToolboxHome() {
       description: "Find the best distribution path for your project",
       icon: MapPin,
       status: "active", 
-      badge: "AI Enhanced"
+      badge: "AI Enhanced",
+      route: "/submit"
     },
     {
       id: "festival_submitter",
@@ -46,7 +103,8 @@ export default function ToolboxHome() {
       description: "Curated festival shortlists and submission strategy",
       icon: Trophy,
       status: "active",
-      badge: "Oprime.Vetted"
+      badge: "AI Enhanced",
+      route: "/submit"
     },
     {
       id: "docs_library",
@@ -54,7 +112,8 @@ export default function ToolboxHome() {
       description: "Essential forms, templates, and deliverables checklists",
       icon: FileText,
       status: "protected",
-      badge: "Premium"
+      badge: "Premium",
+      route: "/library"
     },
     {
       id: "crew_cast_board",
@@ -62,7 +121,8 @@ export default function ToolboxHome() {
       description: "Post opportunities and connect with talent",
       icon: Users,
       status: "active",
-      badge: "Community"
+      badge: "Community",
+      route: "/submit"
     },
     {
       id: "concierge",
@@ -70,7 +130,8 @@ export default function ToolboxHome() {
       description: "Direct access to our producer desk for guidance",
       icon: MessageCircle,
       status: "active",
-      badge: "Human Support"
+      badge: "Human Support",
+      route: "/consulting"
     }
   ]);
 
@@ -81,6 +142,8 @@ export default function ToolboxHome() {
       case "Premium": return "outline";
       case "Community": return "secondary";
       case "Human Support": return "outline";
+      case "Core Tool": return "default";
+      case "Productivity": return "secondary";
       default: return "default";
     }
   };
@@ -142,8 +205,8 @@ export default function ToolboxHome() {
                     className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
                     asChild
                   >
-                    <Link to={module.status === "protected" ? "/library" : "/submit"}>
-                      {module.status === "protected" ? "Access Library" : "Get Started"}
+                    <Link to={module.route}>
+                      {module.status === "protected" ? "Access Library" : "Open Tool"}
                       <ChevronRight className="h-4 w-4" />
                     </Link>
                   </Button>
