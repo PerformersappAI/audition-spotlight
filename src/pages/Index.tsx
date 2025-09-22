@@ -73,29 +73,53 @@ const Index = () => {
       >
         <div className="absolute inset-0 bg-black/70"></div>
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            Cast
+          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            FILMMAKERS
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-2xl mx-auto">
-            Connect filmmakers, actors, and festival organizers in one powerful platform
+          <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
+            Connect Filmmakers, Crew, Festivals, and Actors In One Powerful Platform
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            {user ? (
-              <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8 py-3">
+          <div className="flex flex-col gap-6 justify-center items-center">
+            {user && (
+              <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8 py-3 mb-4">
                 Go to Dashboard
               </Button>
-            ) : (
-              <>
-                <Link to="/auth">
-                  <Button size="lg" className="text-lg px-8 py-3">
-                    Sign Up / Sign In
-                  </Button>
-                </Link>
-                <Button variant="outline" size="lg" onClick={() => navigate('/auth')} className="text-lg px-8 py-3 text-white border-white hover:bg-white hover:text-black">
-                  Join the Community
-                </Button>
-              </>
             )}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+              <div className="flex flex-col items-center gap-2">
+                <Button 
+                  variant="burgundy" 
+                  size="lg" 
+                  onClick={() => navigate('/auth')} 
+                  className="text-lg px-8 py-4 w-full"
+                >
+                  ACTORS
+                </Button>
+                <p className="text-white text-sm font-medium">GET YOUR AUDITIONS</p>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Button 
+                  variant="burgundy" 
+                  size="lg" 
+                  onClick={() => navigate('/auth')} 
+                  className="text-lg px-8 py-4 w-full"
+                >
+                  CREW
+                </Button>
+                <p className="text-white text-sm font-medium">CREW JOBS</p>
+              </div>
+              <div className="flex flex-col items-center gap-2">
+                <Button 
+                  variant="burgundy" 
+                  size="lg" 
+                  onClick={() => navigate('/auth')} 
+                  className="text-lg px-8 py-4 w-full"
+                >
+                  FILM FESTIVALS
+                </Button>
+                <p className="text-white text-sm font-medium">ATTACH YOUR FILM</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
