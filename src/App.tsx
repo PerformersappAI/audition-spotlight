@@ -22,6 +22,10 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminProjects from "./pages/AdminProjects";
 import AdminFestivals from "./pages/AdminFestivals";
 import AdminApplications from "./pages/AdminApplications";
+import ToolboxHome from "./pages/ToolboxHome";
+import MultiStepForm from "./pages/MultiStepForm";
+import DocsLibrary from "./pages/DocsLibrary";
+import ConsultingIntake from "./pages/ConsultingIntake";
 
 const queryClient = new QueryClient();
 
@@ -50,6 +54,10 @@ const App = () => (
             <Route path="/admin/projects" element={<AdminProjects />} />
             <Route path="/admin/festivals" element={<AdminFestivals />} />
             <Route path="/admin/applications" element={<AdminApplications />} />
+            <Route path="/toolbox" element={<ToolboxHome />} />
+            <Route path="/submit" element={<MultiStepForm />} />
+            <Route path="/library" element={<DocsLibrary />} />
+            <Route path="/consulting" element={<ConsultingIntake />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
