@@ -22,9 +22,16 @@ const AdminLogin = () => {
 
   // Handle user profile changes after authentication
   useEffect(() => {
+    // Skip if still loading auth state
+    if (loading) {
+      console.log('AdminLogin: Auth still loading, waiting...');
+      return;
+    }
+
     console.log('AdminLogin: Auth state changed', { user: !!user, userProfile, loading, isCheckingProfile });
     
-    if (user && userProfile && !loading && !isCheckingProfile) {
+    // If we have a user and profile, check admin status
+    if (user && userProfile && !isCheckingProfile) {
       console.log('AdminLogin: Checking admin role', userProfile.role);
       
       if (userProfile.role === 'admin') {
@@ -40,6 +47,13 @@ const AdminLogin = () => {
         });
         setIsCheckingProfile(false);
       }
+    }
+
+    // If we have a user but no profile after auth check, they might not have admin role
+    if (user && !userProfile && !loading && !isCheckingProfile) {
+      console.log('AdminLogin: User exists but no profile loaded');
+      setError('Unable to load user profile. Please try again.');
+      setIsCheckingProfile(false);
     }
   }, [user, userProfile, loading, navigate, toast, isCheckingProfile]);
 

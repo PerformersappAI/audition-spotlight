@@ -55,8 +55,16 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   }
 
   const handleSignOut = async () => {
-    await signOut();
-    navigate('/');
+    try {
+      console.log('AdminLayout: Starting sign out');
+      await signOut();
+      console.log('AdminLayout: Sign out completed, navigating to home');
+      navigate('/', { replace: true });
+    } catch (error) {
+      console.log('AdminLayout: Sign out error (non-critical):', error);
+      // Navigate anyway since local state is cleared
+      navigate('/', { replace: true });
+    }
   };
 
   const isActive = (path: string) => location.pathname === path;
