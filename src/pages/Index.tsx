@@ -82,7 +82,7 @@ const Index = () => {
           <div className="flex flex-col gap-6 justify-center items-center">
             {user && (
               <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8 py-3 mb-4">
-                Go to Dashboard
+                Filmmakers
               </Button>
             )}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
