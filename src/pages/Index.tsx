@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import moviePosterBg from "@/assets/movie-poster-collage-bg.jpg";
+import astoriaLogo from "@/assets/astoria-film-festival-logo.jpeg";
 
 const Index = () => {
   const [projects, setProjects] = useState([]);
@@ -19,28 +20,44 @@ const Index = () => {
   }, []);
 
   const fetchPublicContent = async () => {
-    try {
-      // Fetch active projects
-      const { data: projectsData } = await supabase
-        .from('projects')
-        .select('*, profiles!inner(first_name, last_name, company_name)')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(6);
+    // Create mock casting calls
+    const mockProjects = [
+      {
+        id: 'mock-1',
+        title: 'Indie Drama "Crossroads"',
+        description: 'Seeking passionate actors for an emotional drama about family and redemption. Lead and supporting roles available.',
+        project_type: 'Feature Film',
+        location: 'Portland, OR',
+        audition_date: '2024-10-15T10:00:00Z',
+        profiles: { company_name: 'Northwest Productions' }
+      },
+      {
+        id: 'mock-2',
+        title: 'Comedy Short "Coffee Shop Chronicles"',
+        description: 'Looking for comedic actors for a lighthearted short film about quirky coffee shop encounters.',
+        project_type: 'Short Film',
+        location: 'Seattle, WA',
+        audition_date: '2024-10-20T14:00:00Z',
+        profiles: { first_name: 'Sarah', last_name: 'Johnson' }
+      }
+    ];
 
-      // Fetch active festivals
-      const { data: festivalsData } = await supabase
-        .from('film_festivals')
-        .select('*, profiles!inner(first_name, last_name, company_name)')
-        .eq('status', 'active')
-        .order('created_at', { ascending: false })
-        .limit(6);
+    // Create mock festival with Astoria Film Festival
+    const mockFestivals = [
+      {
+        id: 'astoria-festival',
+        name: 'Astoria Film Festival',
+        description: 'A celebration of independent cinema showcasing emerging filmmakers and groundbreaking stories.',
+        location: 'Astoria, OR',
+        start_date: '2024-11-15',
+        end_date: '2024-11-17',
+        submission_deadline: '2024-10-30',
+        logo: astoriaLogo
+      }
+    ];
 
-      setProjects(projectsData || []);
-      setFestivals(festivalsData || []);
-    } catch (error) {
-      console.error('Error fetching content:', error);
-    }
+    setProjects(mockProjects);
+    setFestivals(mockFestivals);
   };
 
   const formatDate = (dateString: string) => {
@@ -144,8 +161,8 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.slice(0, 6).map((project: any) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            {projects.slice(0, 2).map((project: any) => (
               <Card key={project.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
@@ -202,12 +219,19 @@ const Index = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {festivals.slice(0, 6).map((festival: any) => (
+          <div className="grid grid-cols-1 gap-6 max-w-2xl mx-auto">
+            {festivals.slice(0, 1).map((festival: any) => (
               <Card key={festival.id} className="hover:shadow-lg transition-shadow">
                 <CardHeader>
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">{festival.name}</CardTitle>
+                    <div className="flex items-center gap-3">
+                      <img 
+                        src={festival.logo} 
+                        alt={`${festival.name} logo`}
+                        className="w-12 h-12 object-contain rounded-full"
+                      />
+                      <CardTitle className="text-lg">{festival.name}</CardTitle>
+                    </div>
                     <Badge variant="secondary">
                       <Trophy className="h-3 w-3 mr-1" />
                       Festival
