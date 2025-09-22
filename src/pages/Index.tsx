@@ -294,15 +294,15 @@ const Index = () => {
       <footer className="py-8 bg-muted">
         <div className="container mx-auto px-6 text-center">
           <p className="text-muted-foreground">
-            © 2024 Cast. Connecting the entertainment industry.
+            © 2024 Cast. Connecting the entertainment industry.{' '}
+            <Link 
+              to="/admin-login" 
+              className="text-muted-foreground/70 hover:text-muted-foreground transition-colors text-sm"
+              title="Admin Access"
+            >
+              Admin
+            </Link>
           </p>
-          {/* Discreet Admin Entry Point */}
-          <Link 
-            to="/admin-login" 
-            className="inline-block mt-2 text-muted-foreground/50 hover:text-muted-foreground text-xs transition-colors"
-          >
-            •
-          </Link>
         </div>
       </footer>
     </div>
