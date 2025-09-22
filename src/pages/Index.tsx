@@ -296,6 +296,13 @@ const Index = () => {
           <p className="text-muted-foreground">
             © 2024 Cast. Connecting the entertainment industry.
           </p>
+          {/* Discreet Admin Entry Point */}
+          <Link 
+            to="/admin-login" 
+            className="inline-block mt-2 text-muted-foreground/50 hover:text-muted-foreground text-xs transition-colors"
+          >
+            •
+          </Link>
         </div>
       </footer>
     </div>

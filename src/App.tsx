@@ -16,6 +16,12 @@ import Applications from "./pages/Applications";
 import Festivals from "./pages/Festivals";
 import CalendarPage from "./pages/CalendarPage";
 import { FilmmakerDashboard } from "./pages/FilmmakerDashboard";
+import AdminLogin from "./pages/AdminLogin";
+import AdminDashboard from "./pages/AdminDashboard";
+import AdminUsers from "./pages/AdminUsers";
+import AdminProjects from "./pages/AdminProjects";
+import AdminFestivals from "./pages/AdminFestivals";
+import AdminApplications from "./pages/AdminApplications";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +44,12 @@ const App = () => (
             <Route path="/festivals" element={<Festivals />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/filmmaker" element={<FilmmakerDashboard />} />
+            <Route path="/admin-login" element={<AdminLogin />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path="/admin/projects" element={<AdminProjects />} />
+            <Route path="/admin/festivals" element={<AdminFestivals />} />
+            <Route path="/admin/applications" element={<AdminApplications />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
