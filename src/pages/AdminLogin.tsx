@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -14,45 +14,59 @@ const AdminLogin = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isCheckingProfile, setIsCheckingProfile] = useState(false);
   
-  const { signIn, user, userProfile } = useAuth();
+  const { signIn, user, userProfile, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Redirect if already admin
-  if (user && userProfile?.role === 'admin') {
-    navigate('/admin');
-  }
+  // Handle user profile changes after authentication
+  useEffect(() => {
+    console.log('AdminLogin: Auth state changed', { user: !!user, userProfile, loading, isCheckingProfile });
+    
+    if (user && userProfile && !loading && !isCheckingProfile) {
+      console.log('AdminLogin: Checking admin role', userProfile.role);
+      
+      if (userProfile.role === 'admin') {
+        console.log('AdminLogin: Admin confirmed, redirecting to /admin');
+        navigate('/admin');
+      } else {
+        console.log('AdminLogin: Not admin, showing access denied');
+        setError('Access denied. Admin privileges required.');
+        toast({
+          variant: "destructive",
+          title: "Access Denied",
+          description: "This account does not have administrative privileges."
+        });
+        setIsCheckingProfile(false);
+      }
+    }
+  }, [user, userProfile, loading, navigate, toast, isCheckingProfile]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
+    setIsCheckingProfile(true);
 
     try {
+      console.log('AdminLogin: Attempting sign in with', email);
       const { error } = await signIn(email, password);
       
       if (error) {
+        console.log('AdminLogin: Sign in error', error.message);
         setError(error.message);
+        setIsCheckingProfile(false);
         return;
       }
 
-      // Give a moment for profile to load, then check admin status
-      setTimeout(() => {
-        if (userProfile?.role !== 'admin') {
-          setError('Access denied. Admin privileges required.');
-          toast({
-            variant: "destructive",
-            title: "Access Denied",
-            description: "This account does not have administrative privileges."
-          });
-        } else {
-          navigate('/admin');
-        }
-      }, 1000);
+      console.log('AdminLogin: Sign in successful, waiting for profile to load');
+      // Profile checking will be handled by useEffect when userProfile updates
 
     } catch (err) {
+      console.log('AdminLogin: Unexpected error', err);
       setError('An unexpected error occurred');
+      setIsCheckingProfile(false);
     } finally {
       setIsLoading(false);
     }
@@ -107,9 +121,9 @@ const AdminLogin = () => {
             <Button 
               type="submit" 
               className="w-full" 
-              disabled={isLoading}
+              disabled={isLoading || isCheckingProfile}
             >
-              {isLoading ? 'Verifying...' : 'Access Admin Panel'}
+              {isLoading ? 'Signing In...' : isCheckingProfile ? 'Verifying Admin Access...' : 'Access Admin Panel'}
             </Button>
           </form>
         </CardContent>

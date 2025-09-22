@@ -28,15 +28,30 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile
-          setTimeout(async () => {
-            const { data: profile } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('user_id', session.user.id)
-              .single();
-            setUserProfile(profile);
-          }, 0);
+          // Fetch user profile immediately
+          const fetchProfile = async () => {
+            try {
+              console.log('useAuth: Fetching profile for user', session.user.id);
+              const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('user_id', session.user.id)
+                .single();
+              
+              if (error) {
+                console.log('useAuth: Profile fetch error', error);
+              } else {
+                console.log('useAuth: Profile loaded', profile);
+              }
+              
+              setUserProfile(profile);
+            } catch (err) {
+              console.log('useAuth: Profile fetch exception', err);
+              setUserProfile(null);
+            }
+          };
+          
+          fetchProfile();
         } else {
           setUserProfile(null);
         }

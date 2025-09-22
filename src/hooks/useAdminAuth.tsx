@@ -9,12 +9,17 @@ export const useAdminAuth = (redirectOnFail = true) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('useAdminAuth: State change', { loading, user: !!user, userProfile, redirectOnFail });
+    
     if (!loading) {
       const adminStatus = userProfile?.role === 'admin';
+      console.log('useAdminAuth: Admin status check', { adminStatus, role: userProfile?.role });
+      
       setIsAdmin(adminStatus);
       setIsChecking(false);
 
       if (redirectOnFail && !adminStatus && user) {
+        console.log('useAdminAuth: Redirecting non-admin user to home');
         navigate('/', { replace: true });
       }
     }
