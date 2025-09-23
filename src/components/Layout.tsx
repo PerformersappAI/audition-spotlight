@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3, Briefcase } from 'lucide-react';
+import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3, Briefcase, Trophy, FileText, MessageCircle, MapPin, Video } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
@@ -23,6 +23,8 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
     { name: 'Toolbox', href: '/toolbox', icon: Briefcase },
     { name: 'Projects', href: '/filmmaker', icon: Film },
     { name: 'Applications', href: '/applications', icon: Users },
+    { name: 'Calendar', href: '/calendar', icon: Calendar },
+    { name: 'Festivals', href: '/festivals', icon: Trophy },
   ] : userRole === 'FILM_FESTIVAL' ? [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
     { name: 'Festivals', href: '/festivals', icon: Calendar },
@@ -95,22 +97,65 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                           AI Scene Analysis
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link to="/dashboard" className="flex items-center gap-2 w-full cursor-pointer">
-                          <BarChart3 className="h-4 w-4" />
-                          Analytics
-                        </Link>
-                      </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link to="/create-project" className="flex items-center gap-2 w-full cursor-pointer">
                           <Plus className="h-4 w-4" />
                           Create Project
                         </Link>
                       </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/create-festival" className="flex items-center gap-2 w-full cursor-pointer">
+                          <Trophy className="h-4 w-4" />
+                          Create Festival
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link to="/library" className="flex items-center gap-2 w-full cursor-pointer">
+                          <FileText className="h-4 w-4" />
+                          Docs Library
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/consulting" className="flex items-center gap-2 w-full cursor-pointer">
+                          <MessageCircle className="h-4 w-4" />
+                          Consulting
+                        </Link>
+                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
+
+                {/* Resources Dropdown for All Users */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      Resources
+                      <ChevronDown className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-background border shadow-lg">
+                    <DropdownMenuItem asChild>
+                      <Link to="/festivals" className="flex items-center gap-2 w-full cursor-pointer">
+                        <Trophy className="h-4 w-4" />
+                        Film Festivals
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/library" className="flex items-center gap-2 w-full cursor-pointer">
+                        <FileText className="h-4 w-4" />
+                        Document Library
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/consulting" className="flex items-center gap-2 w-full cursor-pointer">
+                        <MessageCircle className="h-4 w-4" />
+                        Consulting Services
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </nav>
 
               <Badge variant="outline" className="border-primary text-primary">
