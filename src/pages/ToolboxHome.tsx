@@ -27,8 +27,8 @@ export default function ToolboxHome() {
     },
     {
       id: "scene_analyzer",
-      name: "Scene Analyzer",
-      description: "AI-powered scene analysis for beats, stakes, and tone philosophy",
+      name: "Scene Analyzer & Storyboard",
+      description: "AI-powered scene analysis with shot breakdown and storyboard generation",
       icon: Sparkles,
       status: "active",
       badge: "AI Enhanced",
