@@ -12,7 +12,17 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-// Document parsing functionality implemented below
+// Document parsing functionality
+const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
+  try {
+    // Simple text extraction - this would need a proper PDF library like PDF.js
+    // For now, we'll throw an error to force using the edge function
+    throw new Error("PDF parsing requires server-side processing");
+  } catch (error) {
+    console.error('PDF extraction error:', error);
+    return "";
+  }
+};
 
 interface Shot {
   shotNumber: number;
@@ -90,83 +100,68 @@ const Storyboarding = () => {
         });
       } else if (file.type === "application/pdf") {
         try {
-          // Handle PDF files with OCR
+          toast({
+            title: "Processing PDF",
+            description: "Extracting text from PDF file..."
+          });
+          
+          // Convert file to base64 for document parsing
           const reader = new FileReader();
           reader.onload = async (e) => {
             try {
-              toast({
-                title: "Processing PDF",
-                description: "Extracting text from PDF file..."
+              const base64Data = e.target?.result as string;
+              const base64Content = base64Data.split(',')[1];
+              
+              // Use document parsing API
+              const { data, error } = await supabase.functions.invoke('parse-document', {
+                body: { 
+                  fileData: base64Content,
+                  fileName: file.name,
+                  mimeType: file.type
+                }
               });
               
-              // Simulate processing time for PDF OCR
-              setTimeout(() => {
-                // For demo purposes, show sample extracted script
-                const sampleScript = `FADE IN:
-
-EXT. ABANDONED WAREHOUSE - NIGHT
-
-Rain pounds the cracked asphalt. Lightning illuminates the skeletal remains of industrial buildings. Detective MARIA SANTOS (35) steps out of her patrol car, hand on her weapon.
-
-MARIA
-(into radio)
-I'm going in. Send backup in five minutes if you don't hear from me.
-
-She approaches the warehouse. The door hangs askew on rusted hinges.
-
-INT. WAREHOUSE - CONTINUOUS
-
-Maria's flashlight cuts through the darkness. Shadows dance on the walls. Her footsteps echo in the cavernous space.
-
-A NOISE from the far corner. Maria freezes.
-
-MARIA
-Police! Show yourself!
-
-Silence. Then, a figure emerges from the shadows - JAMES TORRES (40), disheveled and panicked.
-
-JAMES
-You have to help me. They're coming for me.
-
-MARIA
-Who's coming? Who are you?
-
-JAMES
-My name is James Torres. I witnessed something I shouldn't have.
-
-Lightning flashes through broken windows, illuminating James's terrified face.
-
-MARIA
-We need to get you out of here.
-
-Suddenly, the sound of multiple vehicles approaching. Headlights sweep across the warehouse walls.
-
-JAMES
-It's too late. They found us.
-
-FADE TO BLACK.`;
-                
-                setCurrentProject(prev => ({ ...prev, scriptText: sampleScript }));
-                toast({
-                  title: "Success",
-                  description: "PDF text extracted successfully! (Demo content shown)"
-                });
-              }, 2000);
+              if (error) {
+                console.error('Document parsing error:', error);
+                throw new Error("Failed to parse PDF. Please ensure the file contains readable text.");
+              }
               
-            } catch (error) {
-              console.error('Error processing PDF:', error);
+              if (data?.text && data.text.trim()) {
+                setCurrentProject(prev => ({ ...prev, scriptText: data.text }));
+                toast({
+                  title: "Success", 
+                  description: "PDF text extracted successfully!"
+                });
+              } else {
+                throw new Error("No readable text found in PDF. Please check if the file contains text or try a different format.");
+              }
+            } catch (parseError) {
+              console.error('Error in PDF processing:', parseError);
               toast({
                 variant: "destructive",
-                title: "Error",
-                description: "Failed to extract text from PDF"
+                title: "PDF Processing Failed", 
+                description: parseError instanceof Error ? parseError.message : "Failed to extract text from PDF"
               });
             }
+          };
+          
+          reader.onerror = () => {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Failed to read PDF file"
+            });
           };
           
           reader.readAsDataURL(file);
           
         } catch (error) {
-          throw new Error("Failed to process PDF file");
+          console.error('Error processing PDF:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: error instanceof Error ? error.message : "Failed to process PDF file"
+          });
         }
       } else {
         throw new Error("Unsupported file type. Please upload PDF or text files.");

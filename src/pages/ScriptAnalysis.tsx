@@ -9,8 +9,19 @@ import { Input } from "@/components/ui/input";
 import { Brain, FileText, Upload, Loader2, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import jsPDF from 'jspdf';
-// Document parsing functionality implemented below
+// Document parsing functionality
+const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
+  try {
+    // Simple text extraction - this would need a proper PDF library like PDF.js
+    // For now, we'll throw an error to force using the edge function
+    throw new Error("PDF parsing requires server-side processing");
+  } catch (error) {
+    console.error('PDF extraction error:', error);
+    return "";
+  }
+};
 
 interface ScriptAnalysis {
   id: string;
@@ -70,76 +81,75 @@ const ScriptAnalysis = () => {
           description: "Text file loaded successfully"
         });
       } else if (file.type === "application/pdf") {
-        // Handle PDF files with OCR
+        // Handle PDF files with actual OCR
         try {
+          toast({
+            title: "Processing PDF",
+            description: "Extracting text from PDF file..."
+          });
+          
+          // Create a temporary file path for the uploaded PDF
+          const tempFileName = `temp-pdf-${Date.now()}.pdf`;
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          // Convert file to base64 for document parsing
           const reader = new FileReader();
           reader.onload = async (e) => {
             try {
-              toast({
-                title: "Processing PDF",
-                description: "Extracting text from PDF file..."
+              const base64Data = e.target?.result as string;
+              const base64Content = base64Data.split(',')[1];
+              
+              // Use document parsing API
+              const { data, error } = await supabase.functions.invoke('parse-document', {
+                body: { 
+                  fileData: base64Content,
+                  fileName: file.name,
+                  mimeType: file.type
+                }
               });
               
-              // Simulate processing time for PDF OCR
-              setTimeout(() => {
-                // For demo purposes, show sample extracted text
-                const sampleText = `FADE IN:
-
-INT. COFFEE SHOP - DAY
-
-A bustling coffee shop filled with the aroma of freshly brewed coffee. SARAH (25), an aspiring writer, sits at a corner table with her laptop, struggling with writer's block.
-
-SARAH
-(muttering to herself)
-Come on, Sarah. Just one good sentence.
-
-The door chimes as MICHAEL (28), a charming stranger, enters. He looks around, spots Sarah, and approaches.
-
-MICHAEL
-Excuse me, is this seat taken?
-
-Sarah looks up, surprised by the interruption.
-
-SARAH
-Oh, um, no. Go ahead.
-
-Michael sits down, pulls out a worn notebook.
-
-MICHAEL
-Writer?
-
-SARAH
-(defensively)
-How did you know?
-
-MICHAEL
-The look of pure frustration mixed with determination. I know it well.
-
-Sarah can't help but smile.
-
-FADE OUT.`;
-                
-                setCurrentScript(prev => ({ ...prev, scriptText: sampleText }));
+              if (error) {
+                console.error('Document parsing error:', error);
+                throw new Error("Failed to parse PDF. Please ensure the file contains readable text.");
+              }
+              
+              if (data?.text && data.text.trim()) {
+                setCurrentScript(prev => ({ ...prev, scriptText: data.text }));
                 toast({
                   title: "Success",
-                  description: "PDF text extracted successfully! (Demo content shown)"
+                  description: "PDF text extracted successfully!"
                 });
-              }, 2000);
-              
-            } catch (error) {
-              console.error('Error processing PDF:', error);
+              } else {
+                throw new Error("No readable text found in PDF. Please check if the file contains text or try a different format.");
+              }
+            } catch (parseError) {
+              console.error('Error in PDF processing:', parseError);
               toast({
-                variant: "destructive",
-                title: "Error",
-                description: "Failed to extract text from PDF"
+                variant: "destructive", 
+                title: "PDF Processing Failed",
+                description: parseError instanceof Error ? parseError.message : "Failed to extract text from PDF"
               });
             }
+          };
+          
+          reader.onerror = () => {
+            toast({
+              variant: "destructive",
+              title: "Error",
+              description: "Failed to read PDF file"
+            });
           };
           
           reader.readAsDataURL(file);
           
         } catch (error) {
-          throw new Error("Failed to process PDF file");
+          console.error('Error processing PDF:', error);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: error instanceof Error ? error.message : "Failed to process PDF file"
+          });
         }
       } else {
         throw new Error("Unsupported file type. Please upload PDF or text files.");
