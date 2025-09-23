@@ -14,10 +14,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  console.log('Parse-document function called');
+
   try {
     const { fileData, fileName, mimeType } = await req.json();
 
+    console.log(`Processing file: ${fileName} (${mimeType})`);
+
     if (!fileData) {
+      console.error('No file data provided');
       return new Response(
         JSON.stringify({ error: 'No file data provided' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
@@ -32,10 +37,10 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Parsing document with Gemini: ${fileName} (${mimeType})`);
-
     if (mimeType === 'application/pdf') {
       try {
+        console.log('Sending PDF to Gemini for processing...');
+        
         // Send PDF to Gemini for text extraction
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: 'POST',
@@ -73,26 +78,48 @@ Return only the cleaned script text with proper formatting. Do not add commentar
           })
         });
 
+        console.log(`Gemini response status: ${response.status}`);
+
         if (!response.ok) {
           const errorText = await response.text();
           console.error('Gemini API error:', response.status, errorText);
-          throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
+          return new Response(JSON.stringify({ 
+            error: `Gemini API error: ${response.status} - ${errorText}`,
+            success: false 
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
 
         const result = await response.json();
+        console.log('Gemini response received');
         
         if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
           console.error('Unexpected Gemini response format:', result);
-          throw new Error('No content returned from Gemini API');
+          return new Response(JSON.stringify({ 
+            error: 'No content returned from Gemini API',
+            success: false 
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
 
         const extractedText = result.candidates[0].content.parts[0].text;
         
         if (!extractedText || extractedText.trim().length === 0) {
-          throw new Error('No text content could be extracted from the PDF');
+          console.error('No text content extracted');
+          return new Response(JSON.stringify({ 
+            error: 'No text content could be extracted from the PDF',
+            success: false 
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
         }
 
-        console.log(`Successfully extracted ${extractedText.length} characters of text using Gemini`);
+        console.log(`Successfully extracted ${extractedText.length} characters of text`);
         
         return new Response(JSON.stringify({ 
           success: true, 
@@ -104,17 +131,30 @@ Return only the cleaned script text with proper formatting. Do not add commentar
         });
         
       } catch (geminiError) {
-        console.error('Gemini parsing error:', geminiError);
-        throw new Error("Failed to parse PDF with Gemini: " + geminiError.message);
+        console.error('Gemini processing error:', geminiError);
+        return new Response(JSON.stringify({ 
+          error: "Failed to parse PDF with Gemini: " + (geminiError instanceof Error ? geminiError.message : geminiError),
+          success: false 
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
       }
     } else {
-      throw new Error("Unsupported file type. Only PDF files are currently supported.");
+      console.error('Unsupported file type:', mimeType);
+      return new Response(JSON.stringify({ 
+        error: "Unsupported file type. Only PDF files are currently supported.",
+        success: false 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
   } catch (error) {
     console.error('Error in parse-document function:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
       success: false 
     }), {
       status: 500,
