@@ -6,6 +6,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -22,49 +24,78 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Parsing document: ${fileName} (${mimeType})`);
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY not found in environment variables');
+      return new Response(
+        JSON.stringify({ error: 'Gemini API key not configured' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
+    }
 
-    // For now, we'll use a simple approach that works with most text-based PDFs
-    // In a production environment, you'd want to use a proper PDF parsing library
-    
+    console.log(`Parsing document with Gemini: ${fileName} (${mimeType})`);
+
     if (mimeType === 'application/pdf') {
       try {
-        // Convert base64 to ArrayBuffer
-        const binaryString = atob(fileData);
-        const bytes = new Uint8Array(binaryString.length);
-        for (let i = 0; i < binaryString.length; i++) {
-          bytes[i] = binaryString.charCodeAt(i);
+        // Send PDF to Gemini for text extraction
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                {
+                  text: "Please extract all the text content from this PDF document. Return only the text content, preserving line breaks and formatting where possible. Do not add any commentary or explanations."
+                },
+                {
+                  inline_data: {
+                    mime_type: "application/pdf",
+                    data: fileData
+                  }
+                }
+              ]
+            }],
+            generationConfig: {
+              temperature: 0,
+              maxOutputTokens: 8192,
+            }
+          })
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('Gemini API error:', response.status, errorText);
+          throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
         }
+
+        const result = await response.json();
         
-        // Simple text extraction - look for text patterns in PDF
-        const pdfText = new TextDecoder('utf-8').decode(bytes);
-        
-        // Extract readable text using regex patterns common in PDFs
-        const textMatches = pdfText.match(/\(([^)]+)\)/g) || [];
-        const extractedLines = textMatches
-          .map(match => match.replace(/[()]/g, ''))
-          .filter(line => line.trim().length > 0 && !line.includes('\\') && line.length > 2)
-          .join('\n');
-          
-        if (extractedLines.length > 50) {
-          console.log(`Successfully extracted ${extractedLines.length} characters of text`);
-          
-          return new Response(JSON.stringify({ 
-            success: true, 
-            text: extractedLines,
-            type: "document",
-            confidence: 0.7
-          }), {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          });
+        if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
+          console.error('Unexpected Gemini response format:', result);
+          throw new Error('No content returned from Gemini API');
         }
+
+        const extractedText = result.candidates[0].content.parts[0].text;
         
-        // If simple extraction fails, return error with helpful message
-        throw new Error("Could not extract readable text from PDF. The file may be image-based or protected.");
+        if (!extractedText || extractedText.trim().length === 0) {
+          throw new Error('No text content could be extracted from the PDF');
+        }
+
+        console.log(`Successfully extracted ${extractedText.length} characters of text using Gemini`);
         
-      } catch (pdfError) {
-        console.error('PDF parsing error:', pdfError);
-        throw new Error("Failed to parse PDF: " + pdfError.message);
+        return new Response(JSON.stringify({ 
+          success: true, 
+          text: extractedText.trim(),
+          type: "document",
+          confidence: 0.95
+        }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+        
+      } catch (geminiError) {
+        console.error('Gemini parsing error:', geminiError);
+        throw new Error("Failed to parse PDF with Gemini: " + geminiError.message);
       }
     } else {
       throw new Error("Unsupported file type. Only PDF files are currently supported.");
