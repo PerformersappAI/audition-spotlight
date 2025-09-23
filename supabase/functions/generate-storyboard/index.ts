@@ -25,104 +25,120 @@ serve(async (req) => {
       );
     }
 
-    const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-    if (!GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY not found in environment variables');
+    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+    if (!OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY not found in environment variables');
       return new Response(
-        JSON.stringify({ error: 'Gemini API key not configured' }),
+        JSON.stringify({ error: 'OpenAI API key not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
 
-    console.log(`Generating storyboard for ${shots.length} shots using Gemini`);
+    console.log(`Generating storyboard for ${shots.length} shots using OpenAI GPT-5 and image generation`);
 
     const storyboardFrames = [];
 
     for (const shot of shots) {
-      const prompt = `Create a detailed prompt for generating a cinematic storyboard frame image for a ${genre} film with ${tone} tone.
+      const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone. 
 
-SCRIPT CONTEXT: ${shot.scriptSegment || 'Scene from the script'}
-
-DIALOGUE: ${shot.dialogueLines?.length ? shot.dialogueLines.join(' ') : 'Character interaction'}
-
-SCENE ACTION: ${shot.sceneAction || 'Action taking place'}
-
-Shot description: ${shot.description}
-Camera angle: ${shot.cameraAngle}
-Characters present: ${shot.characters.join(', ')}
+Scene: ${shot.scriptSegment || 'Script scene'}
+Action: ${shot.sceneAction || shot.description}
+Characters: ${shot.characters.join(', ')}
+Camera: ${shot.cameraAngle}
 Visual elements: ${shot.visualElements}
 
-Generate a text description for an image that specifically depicts the dialogue and action from the script context above. Show the characters ${shot.characters.join(' and ')} in a scene that matches the script content. Focus on the specific moment and emotion described in the script segment.
+Style: Black and white pencil sketch storyboard, cinematic composition, clear framing, professional film industry standard. Show the characters and action clearly with dramatic lighting and composition.`;
 
-Style: Professional storyboard illustration, black and white pencil sketch style, clear composition, cinematic framing, detailed but not photorealistic.
+      console.log(`Generating storyboard image for shot: ${shot.shotNumber}`);
 
-Return ONLY the image generation prompt text, no additional commentary.`;
-
-      console.log(`Generating image description for shot: ${shot.shotNumber}`);
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      // Generate the actual storyboard image using OpenAI's image generation
+      const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: prompt
-            }]
-          }],
-          generationConfig: {
-            temperature: 0.7,
-            maxOutputTokens: 1024,
-          }
+          model: 'gpt-image-1',
+          prompt: imagePrompt,
+          n: 1,
+          size: '1024x1024',
+          quality: 'high',
+          output_format: 'png'
         })
       });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error(`Gemini API error for shot ${shot.shotNumber}:`, response.status, errorText);
-        return new Response(JSON.stringify({ 
-          error: `Gemini API error: ${response.status} - ${errorText}`,
-          success: false 
-        }), {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      if (!imageResponse.ok) {
+        const errorText = await imageResponse.text();
+        console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, imageResponse.status, errorText);
+        
+        // Create fallback SVG if image generation fails
+        const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
+          <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+            <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+            <text x="50%" y="30%" text-anchor="middle" font-size="18" font-family="Arial" fill="#495057" font-weight="bold">
+              Storyboard Frame ${shot.shotNumber}
+            </text>
+            <text x="50%" y="45%" text-anchor="middle" font-size="14" font-family="Arial" fill="#6c757d">
+              ${shot.cameraAngle}
+            </text>
+            <text x="50%" y="55%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+              ${shot.characters.join(', ')}
+            </text>
+            <text x="50%" y="75%" text-anchor="middle" font-size="10" font-family="Arial" fill="#adb5bd">
+              Image generation temporarily unavailable
+            </text>
+          </svg>
+        `)}`;
+
+        storyboardFrames.push({
+          shotNumber: shot.shotNumber,
+          description: shot.description,
+          cameraAngle: shot.cameraAngle,
+          characters: shot.characters,
+          visualElements: shot.visualElements,
+          scriptSegment: shot.scriptSegment,
+          dialogueLines: shot.dialogueLines,
+          sceneAction: shot.sceneAction,
+          imageData: fallbackImageData,
+          imagePrompt: imagePrompt,
+          generatedAt: new Date().toISOString()
         });
+        continue;
       }
 
-      const data = await response.json();
+      const imageData = await imageResponse.json();
       
-      if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-        console.error('Unexpected Gemini response format:', data);
-        return new Response(JSON.stringify({ 
-          error: 'No content returned from Gemini API',
-          success: false 
-        }), {
-          status: 500,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      if (!imageData.data || !imageData.data[0]) {
+        console.error('Unexpected OpenAI image response format:', imageData);
+        // Use fallback for this frame
+        const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
+          <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+            <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+            <text x="50%" y="50%" text-anchor="middle" font-size="16" font-family="Arial" fill="#6c757d">
+              Frame ${shot.shotNumber} - Processing Error
+            </text>
+          </svg>
+        `)}`;
+
+        storyboardFrames.push({
+          shotNumber: shot.shotNumber,
+          description: shot.description,
+          cameraAngle: shot.cameraAngle,
+          characters: shot.characters,
+          visualElements: shot.visualElements,
+          scriptSegment: shot.scriptSegment,
+          dialogueLines: shot.dialogueLines,
+          sceneAction: shot.sceneAction,
+          imageData: fallbackImageData,
+          imagePrompt: imagePrompt,
+          generatedAt: new Date().toISOString()
         });
+        continue;
       }
 
-      const imagePrompt = data.candidates[0].content.parts[0].text;
-
-      // Create a placeholder image data (in a real implementation, you'd use an image generation API)
-      const placeholderImageData = `data:image/svg+xml;base64,${btoa(`
-        <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-          <rect width="512" height="512" fill="#f0f0f0"/>
-          <text x="50%" y="40%" text-anchor="middle" font-size="24" font-family="Arial" fill="#666">
-            Storyboard Frame ${shot.shotNumber}
-          </text>
-          <text x="50%" y="50%" text-anchor="middle" font-size="16" font-family="Arial" fill="#999">
-            ${shot.cameraAngle}
-          </text>
-          <text x="50%" y="60%" text-anchor="middle" font-size="14" font-family="Arial" fill="#999">
-            ${shot.characters.join(', ')}
-          </text>
-          <text x="50%" y="70%" text-anchor="middle" font-size="12" font-family="Arial" fill="#999">
-            Generated with Gemini
-          </text>
-        </svg>
-      `)}`;
+      // OpenAI returns base64 data directly for gpt-image-1
+      const generatedImageData = `data:image/png;base64,${imageData.data[0].b64_json}`;
 
       storyboardFrames.push({
         shotNumber: shot.shotNumber,
@@ -133,15 +149,15 @@ Return ONLY the image generation prompt text, no additional commentary.`;
         scriptSegment: shot.scriptSegment,
         dialogueLines: shot.dialogueLines,
         sceneAction: shot.sceneAction,
-        imageData: placeholderImageData,
+        imageData: generatedImageData,
         imagePrompt: imagePrompt,
         generatedAt: new Date().toISOString()
       });
 
-      console.log(`Successfully generated description for shot ${shot.shotNumber}`);
+      console.log(`Successfully generated storyboard image for shot ${shot.shotNumber}`);
     }
 
-    console.log(`Successfully generated ${storyboardFrames.length} storyboard frames using Gemini`);
+    console.log(`Successfully generated ${storyboardFrames.length} storyboard frames using OpenAI GPT-5 and image generation`);
 
     return new Response(JSON.stringify({ 
       success: true, 
