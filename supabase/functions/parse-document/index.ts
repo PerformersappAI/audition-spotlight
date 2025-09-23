@@ -83,11 +83,25 @@ Return only the cleaned script text with proper formatting. Do not add commentar
         if (!response.ok) {
           const errorText = await response.text();
           console.error('Gemini API error:', response.status, errorText);
+          
+          // Handle specific Gemini API errors more gracefully
+          if (response.status === 503) {
+            return new Response(JSON.stringify({ 
+              error: 'Gemini AI service is temporarily overloaded. Please try again in a few moments.',
+              success: false,
+              retryable: true
+            }), {
+              status: 503,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+          
           return new Response(JSON.stringify({ 
-            error: `Gemini API error: ${response.status} - ${errorText}`,
-            success: false 
+            error: `PDF processing failed: ${response.status === 429 ? 'Rate limit exceeded. Please try again later.' : 'AI service error'}`,
+            success: false,
+            retryable: response.status === 429 || response.status >= 500
           }), {
-            status: 500,
+            status: response.status >= 500 ? 503 : 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }

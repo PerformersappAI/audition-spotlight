@@ -138,7 +138,36 @@ const Storyboarding = () => {
               
               if (error) {
                 console.error('Document parsing error:', error);
-                throw new Error(`Failed to parse PDF: ${error.message || error.toString()}`);
+                const errorMessage = error.message || error.toString();
+                
+                // Check if this is a retryable error (503 from Gemini)
+                if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
+                  toast({
+                    variant: "destructive",
+                    title: "Service Temporarily Unavailable", 
+                    description: "AI service is busy. Please try uploading again in a few moments.",
+                    action: (
+                      <Button
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => {
+                          // Reset the file input to allow re-upload
+                          const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+                          if (fileInput) fileInput.value = '';
+                        }}
+                      >
+                        Try Again
+                      </Button>
+                    )
+                  });
+                } else {
+                  toast({
+                    variant: "destructive",
+                    title: "PDF Processing Failed", 
+                    description: `Failed to parse PDF: ${errorMessage}`
+                  });
+                }
+                return;
               }
               
               if (data?.text && data.text.trim()) {
