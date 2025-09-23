@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 
 // Director philosophies and techniques database
 const DIRECTOR_KNOWLEDGE = {
@@ -99,10 +99,10 @@ serve(async (req) => {
       );
     }
 
-    if (!OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY not found in environment variables');
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY not found in environment variables');
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'Gemini API key not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
@@ -146,39 +146,40 @@ ${scriptText.substring(0, 8000)}
 
 Provide detailed analysis considering the genre, tone, and ${selectedDirectors.length > 0 ? `the directorial styles of ${selectedDirectors.join(' and ')}` : 'general filmmaking principles'}.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 2000,
-      }),
+        contents: [{
+          parts: [{
+            text: `${systemPrompt}\n\n${userPrompt}`
+          }]
+        }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2000,
+        }
+      })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+      console.error('Gemini API error:', response.status, errorText);
+      throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Unexpected OpenAI response format:', data);
-      throw new Error('No content returned from OpenAI API');
+    if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
+      console.error('Unexpected Gemini response format:', data);
+      throw new Error('No content returned from Gemini API');
     }
 
     let analysisResult;
     try {
-      analysisResult = JSON.parse(data.choices[0].message.content);
+      analysisResult = JSON.parse(data.candidates[0].content.parts[0].text);
     } catch (parseError) {
       console.error('Failed to parse AI response as JSON:', parseError);
       // Fallback to mock analysis if JSON parsing fails

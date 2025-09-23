@@ -1,15 +1,17 @@
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
-import { Brain, FileText, Upload, Loader2, Download } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from 'sonner';
 import jsPDF from 'jspdf';
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
@@ -45,8 +47,7 @@ interface ScriptAnalysis {
 }
 
 const ScriptAnalysis = () => {
-  const { userProfile } = useAuth();
-  const { toast } = useToast();
+  const navigate = useNavigate();
   const [analyses, setAnalyses] = useState<ScriptAnalysis[]>([]);
   const [currentScript, setCurrentScript] = useState({
     scriptText: "",
@@ -84,17 +85,11 @@ const ScriptAnalysis = () => {
         // Handle text files directly
         const text = await file.text();
         setCurrentScript(prev => ({ ...prev, scriptText: text }));
-        toast({
-          title: "Success",
-          description: "Text file loaded successfully"
-        });
+        toast.success("Text file loaded successfully");
       } else if (file.type === "application/pdf") {
         // Handle PDF files with actual OCR
         try {
-          toast({
-            title: "Processing PDF",
-            description: "Extracting text from PDF file..."
-          });
+          toast.info("Extracting text from PDF file...");
           
           // Create a temporary file path for the uploaded PDF
           const tempFileName = `temp-pdf-${Date.now()}.pdf`;
@@ -124,51 +119,32 @@ const ScriptAnalysis = () => {
               
               if (data?.text && data.text.trim()) {
                 setCurrentScript(prev => ({ ...prev, scriptText: data.text }));
-                toast({
-                  title: "Success",
-                  description: "PDF text extracted successfully!"
-                });
+                toast.success("PDF text extracted successfully!");
               } else {
                 throw new Error("No readable text found in PDF. Please check if the file contains text or try a different format.");
               }
             } catch (parseError) {
               console.error('Error in PDF processing:', parseError);
-              toast({
-                variant: "destructive", 
-                title: "PDF Processing Failed",
-                description: parseError instanceof Error ? parseError.message : "Failed to extract text from PDF"
-              });
+              toast.error(parseError instanceof Error ? parseError.message : "Failed to extract text from PDF");
             }
           };
           
           reader.onerror = () => {
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "Failed to read PDF file"
-            });
+            toast.error("Failed to read PDF file");
           };
           
           reader.readAsDataURL(file);
           
         } catch (error) {
           console.error('Error processing PDF:', error);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: error instanceof Error ? error.message : "Failed to process PDF file"
-          });
+          toast.error(error instanceof Error ? error.message : "Failed to process PDF file");
         }
       } else {
         throw new Error("Unsupported file type. Please upload PDF or text files.");
       }
     } catch (error) {
       console.error('Error processing file:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to process file"
-      });
+      toast.error(error instanceof Error ? error.message : "Failed to process file");
     } finally {
       setIsProcessingFile(false);
     }
@@ -225,11 +201,7 @@ const ScriptAnalysis = () => {
 
   const analyzeScript = async () => {
     if (!currentScript.scriptText.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please enter script text or upload a file to analyze"
-      });
+      toast.error("Please enter script text or upload a file to analyze");
       return;
     }
 
@@ -262,18 +234,11 @@ const ScriptAnalysis = () => {
         setAnalyses(prev => [newAnalysis, ...prev]);
         setSelectedAnalysis(newAnalysis);
 
-        toast({
-          title: "Analysis Complete",
-          description: "Your script has been analyzed with AI insights"
-        });
+        toast.success("Your script has been analyzed with AI insights");
       }
     } catch (error) {
       console.error('Error analyzing script:', error);
-      toast({
-        variant: "destructive",
-        title: "Analysis Failed",
-        description: "Failed to analyze script. Please try again."
-      });
+      toast.error("Failed to analyze script. Please try again.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -405,10 +370,7 @@ const ScriptAnalysis = () => {
     // Save the PDF
     pdf.save(`script-analysis-${selectedAnalysis.genre || 'untitled'}-${new Date().toISOString().split('T')[0]}.pdf`);
     
-    toast({
-      title: "PDF Exported",
-      description: "Script analysis has been exported successfully"
-    });
+    toast.success("Script analysis has been exported successfully");
   };
 
   return (
@@ -417,13 +379,29 @@ const ScriptAnalysis = () => {
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <Brain className="h-8 w-8 text-primary" />
-              <h1 className="text-4xl font-bold text-foreground">Script Analysis</h1>
+            <div className="flex items-center justify-between mb-4">
+              <Button
+                variant="outline"
+                onClick={() => navigate('/toolbox')}
+                className="flex items-center gap-2"
+              >
+                <ArrowLeft className="h-4 w-4" />
+                Back to Toolbox
+              </Button>
+              
+              <div className="flex items-center gap-3">
+                <Brain className="h-8 w-8 text-primary" />
+                <h1 className="text-4xl font-bold text-foreground">Script Analysis</h1>
+              </div>
+              
+              <div></div> {/* Spacer for flexbox alignment */}
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Upload your script or paste text to get AI-powered analysis for character development, 
               emotional beats, and director's insights.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              We only allow scene by scene analyzing and not full scripts.
             </p>
           </div>
 
