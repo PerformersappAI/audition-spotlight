@@ -17,15 +17,6 @@ import {
 export default function ToolboxHome() {
   const [modules] = useState([
     {
-      id: "upload_auditions",
-      name: "Upload Auditions",
-      description: "Upload and manage audition videos and materials",
-      icon: Video,
-      status: "active",
-      badge: "Core Tool",
-      route: "/upload-auditions"
-    },
-    {
       id: "script_analysis",
       name: "Script Analysis",
       description: "AI-powered script analysis for character development and emotional beats",
@@ -44,76 +35,13 @@ export default function ToolboxHome() {
       route: "/storyboarding"
     },
     {
-      id: "create_project",
-      name: "Create Project",
-      description: "Set up new film projects and manage casting calls",
-      icon: Video,
-      status: "active",
-      badge: "Core Tool",
-      route: "/create-project"
-    },
-    {
-      id: "applications",
-      name: "View Applications",
-      description: "Review and manage applications for your projects",
-      icon: Users,
-      status: "active",
-      badge: "Core Tool",
-      route: "/applications"
-    },
-    {
-      id: "create_festival",
-      name: "Create Festival",
-      description: "Set up film festival listings and submissions",
-      icon: Trophy,
-      status: "active",
-      badge: "Core Tool",
-      route: "/create-festival"
-    },
-    {
       id: "festivals",
-      name: "Browse Festivals",
-      description: "Discover and apply to film festivals worldwide",
+      name: "Festival Browser & Submitter",
+      description: "Browse 2,000+ festivals worldwide with AI-powered matching and direct submission links",
       icon: Trophy,
       status: "active",
-      badge: "Oprime.Vetted",
+      badge: "AI Enhanced",
       route: "/festivals"
-    },
-    {
-      id: "calendar",
-      name: "Production Calendar",
-      description: "Schedule shoots, deadlines, and festival dates",
-      icon: ChevronRight,
-      status: "active",
-      badge: "Productivity",
-      route: "/calendar"
-    },
-    {
-      id: "character_breakdown",
-      name: "Character & Cast Breakdown", 
-      description: "Generate casting types, archetypes, and audition materials",
-      icon: Users,
-      status: "active",
-      badge: "AI Enhanced",
-      route: "/submit"
-    },
-    {
-      id: "distribution_navigator",
-      name: "Distribution Navigator",
-      description: "Find the best distribution path for your project",
-      icon: MapPin,
-      status: "active", 
-      badge: "AI Enhanced",
-      route: "/submit"
-    },
-    {
-      id: "festival_submitter",
-      name: "Festival Submitter",
-      description: "Curated festival shortlists and submission strategy",
-      icon: Trophy,
-      status: "active",
-      badge: "AI Enhanced",
-      route: "/submit"
     },
     {
       id: "docs_library",
@@ -123,15 +51,6 @@ export default function ToolboxHome() {
       status: "protected",
       badge: "Premium",
       route: "/library"
-    },
-    {
-      id: "crew_cast_board",
-      name: "Crew & Casting Board",
-      description: "Post opportunities and connect with talent",
-      icon: Users,
-      status: "active",
-      badge: "Community",
-      route: "/submit"
     },
     {
       id: "concierge",
