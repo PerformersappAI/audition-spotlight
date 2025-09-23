@@ -94,7 +94,7 @@ const Index = () => {
           <div className="flex flex-col gap-6 justify-center items-center">
             {user && (
               <div className="flex gap-4 mb-4">
-                <Button size="lg" onClick={() => navigate('/dashboard')} className="text-lg px-8 py-3">
+                <Button size="lg" onClick={() => navigate('/dashboard')} variant="gold" className="text-lg px-8 py-3">
                   Dashboard
                 </Button>
                 <Button size="lg" onClick={() => navigate('/toolbox')} variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-black">
