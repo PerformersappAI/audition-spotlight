@@ -11,6 +11,8 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import UploadAuditions from "./pages/UploadAuditions";
 import SceneAnalysis from "./pages/SceneAnalysis";
+import ScriptAnalysis from "./pages/ScriptAnalysis";
+import Storyboarding from "./pages/Storyboarding";
 import CreateProject from "./pages/CreateProject";
 import CreateFestival from "./pages/CreateFestival";
 import Applications from "./pages/Applications";
@@ -44,6 +46,8 @@ const App = () => (
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/upload-auditions" element={<UploadAuditions />} />
               <Route path="/scene-analysis" element={<SceneAnalysis />} />
+              <Route path="/script-analysis" element={<ScriptAnalysis />} />
+              <Route path="/storyboarding" element={<Storyboarding />} />
               <Route path="/create-project" element={<CreateProject />} />
               <Route path="/create-festival" element={<CreateFestival />} />
               <Route path="/applications" element={<Applications />} />

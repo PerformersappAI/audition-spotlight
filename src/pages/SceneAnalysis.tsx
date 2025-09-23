@@ -9,7 +9,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Layout } from "@/components/Layout";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Shot {
@@ -101,165 +100,118 @@ const SceneAnalysis = () => {
 
       setAnalyses(prev => [newAnalysis, ...prev]);
       setSelectedAnalysis(newAnalysis);
-      setCurrentScene({ sceneText: "", genre: "", tone: "" });
       setIsAnalyzing(false);
 
       toast({
         title: "Analysis Complete",
-        description: "Scene has been analyzed successfully"
+        description: "Your scene has been analyzed successfully"
       });
     }, 3000);
   };
 
   const countCharacters = (text: string): number => {
-    const lines = text.split('\n');
-    const characters = new Set<string>();
-    
-    lines.forEach(line => {
-      const match = line.match(/^([A-Z][A-Z\s]+):/);
-      if (match) {
-        characters.add(match[1].trim());
-      }
-    });
-    
-    return characters.size;
+    const characterNames = text.match(/^[A-Z][A-Z\s]+$/gm) || [];
+    return new Set(characterNames.map(name => name.trim())).size;
   };
 
-  const generateMockAnalysis = (scene: any) => {
-    const difficultyMap: { [key: string]: "Beginner" | "Intermediate" | "Advanced" } = {
-      "Dark": "Advanced",
-      "Suspenseful": "Advanced", 
-      "Light-hearted": "Beginner",
-      "Uplifting": "Beginner"
-    };
+  const generateMockAnalysis = (scene: typeof currentScene) => {
+    const shotCount = Math.max(3, Math.min(8, Math.floor(scene.sceneText.length / 200)));
+    const shots: Shot[] = [];
 
-    // Generate shot breakdown
-    const shots: Shot[] = [
-      {
-        shotNumber: 1,
-        description: "Establishing shot of the location",
-        cameraAngle: "Wide shot",
-        characters: [],
-        visualElements: "Setting, environment, mood establishment",
-        duration: "5-8 seconds"
-      },
-      {
-        shotNumber: 2,
-        description: "Character introduction or entrance",
-        cameraAngle: "Medium shot",
-        characters: ["Main character"],
-        visualElements: "Character costume, posture, facial expression",
-        duration: "3-5 seconds"
-      },
-      {
-        shotNumber: 3,
-        description: "Dialogue or action sequence",
-        cameraAngle: "Close-up",
-        characters: ["Main character", "Secondary character"],
-        visualElements: "Facial expressions, emotions, props",
-        duration: "10-15 seconds"
-      },
-      {
-        shotNumber: 4,
-        description: "Reaction shot",
-        cameraAngle: "Medium close-up",
-        characters: ["Secondary character"],
-        visualElements: "Emotional response, body language",
-        duration: "3-5 seconds"
-      },
-      {
-        shotNumber: 5,
-        description: "Resolution or transition shot",
-        cameraAngle: "Wide shot or Medium shot",
-        characters: ["All present characters"],
-        visualElements: "Final positioning, scene conclusion",
-        duration: "5-8 seconds"
-      }
-    ];
-    
+    for (let i = 1; i <= shotCount; i++) {
+      const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view"];
+      const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle"];
+      
+      shots.push({
+        shotNumber: i,
+        description: `Shot ${i}: ${scene.genre === "Action" ? "Dynamic movement sequence" : 
+                     scene.tone === "Intimate" ? "Character emotional moment" : 
+                     "Key narrative beat"}`,
+        cameraAngle: `${shotTypes[Math.floor(Math.random() * shotTypes.length)]} - ${cameraAngles[Math.floor(Math.random() * cameraAngles.length)]}`,
+        characters: [`Character ${Math.floor(Math.random() * 3) + 1}`],
+        visualElements: scene.genre === "Horror" ? "Dark lighting, shadows" :
+                       scene.genre === "Comedy" ? "Bright, colorful setting" :
+                       scene.tone === "Epic" ? "Dramatic wide landscape" :
+                       "Natural lighting, realistic setting",
+        duration: `${Math.floor(Math.random() * 10) + 5} seconds`
+      });
+    }
+
     return {
       emotionalBeats: [
-        "Opening tension builds as characters enter",
-        "Conflict escalates through dialogue",
-        "Emotional peak during confrontation",
-        "Resolution and character growth moment"
+        "Opening tension builds as protagonist faces internal conflict",
+        "Mid-point revelation changes character perspective",
+        "Climactic confrontation tests character growth",
+        "Resolution brings emotional catharsis"
       ],
       characterMotivations: [
-        "Protagonist seeks validation from authority figure",
-        "Antagonist driven by fear of abandonment",
-        "Supporting character provides comic relief and wisdom"
+        "Protagonist seeks redemption for past mistakes",
+        "Antagonist driven by fear of losing control",
+        "Supporting character provides moral compass"
       ],
       directorNotes: [
-        "Use close-ups during emotional reveals",
-        "Consider lighting changes to reflect mood shifts",
-        "Allow for natural pauses in dialogue",
-        "Block characters to show power dynamics"
+        "Focus on close-ups during emotional beats",
+        "Use lighting to reflect character's internal state",
+        "Consider handheld camera for intimate moments",
+        "Establish clear geography in opening shots"
       ],
       castingTips: [
-        "Look for actors with strong emotional range",
-        "Chemistry reading essential for all characters",
-        "Consider age dynamics for authenticity",
-        "Improvisational skills beneficial for this scene"
+        "Protagonist needs strong emotional range",
+        "Look for natural chemistry between leads",
+        "Supporting cast should complement lead energy",
+        "Consider age-appropriate casting for believability"
       ],
       technicalRequirements: [
-        "Intimate lighting setup required",
-        "Multiple camera angles for coverage",
-        "Sound design for emotional emphasis",
-        "Minimal props but effective use of space"
+        "Intimate lighting setup for dramatic scenes",
+        "Multiple camera angles for dialogue scenes",
+        "Sound design crucial for atmosphere",
+        "Practical locations preferred over studio"
       ],
-      estimatedDuration: "3-5 minutes",
-      difficultyLevel: difficultyMap[scene.tone] || "Intermediate",
+      estimatedDuration: scene.genre === "Comedy" ? "3-5 minutes" : "5-8 minutes",
+      difficultyLevel: (scene.tone === "Epic" || scene.genre === "Action") ? "Advanced" as const : 
+                     (scene.genre === "Drama" || scene.tone === "Suspenseful") ? "Intermediate" as const : 
+                     "Beginner" as const,
       keyMoments: [
-        "Character revelation at line 15",
-        "Physical action sequence",
-        "Emotional climax dialogue",
-        "Silent moment of realization"
+        "Character introduction and setup",
+        "Inciting incident",
+        "Point of no return",
+        "Climax and resolution"
       ],
       shots
     };
   };
 
-  const getDifficultyColor = (level: string) => {
-    switch (level) {
-      case "Beginner": return "bg-green-500";
-      case "Intermediate": return "bg-yellow-500";
-      case "Advanced": return "bg-red-500";
-      default: return "bg-gray-500";
-    }
-  };
-
   const generateStoryboard = async () => {
-    if (!selectedAnalysis) return;
+    if (!selectedAnalysis?.analysisResult?.shots) return;
 
     setGeneratingStoryboard(true);
+
     try {
       const { data, error } = await supabase.functions.invoke('generate-storyboard', {
         body: {
-          shots: selectedAnalysis.analysisResult?.shots,
-          genre: selectedAnalysis.genre,
-          tone: selectedAnalysis.tone
+          shots: selectedAnalysis.analysisResult.shots,
+          sceneDetails: {
+            genre: selectedAnalysis.genre,
+            tone: selectedAnalysis.tone,
+            sceneText: selectedAnalysis.sceneText.substring(0, 500)
+          }
         }
       });
 
       if (error) throw error;
 
-      if (data?.success && data?.storyboard) {
-        // Update the selected analysis with storyboard data
+      if (data?.storyboard) {
         const updatedAnalysis = {
           ...selectedAnalysis,
           storyboard: data.storyboard
         };
         
+        setAnalyses(prev => prev.map(a => a.id === selectedAnalysis.id ? updatedAnalysis : a));
         setSelectedAnalysis(updatedAnalysis);
-        
-        // Update the analyses array
-        setAnalyses(prev => prev.map(analysis => 
-          analysis.id === selectedAnalysis.id ? updatedAnalysis : analysis
-        ));
 
         toast({
-          title: "Storyboard Generated",
-          description: `Successfully generated ${data.storyboard.length} storyboard frames`
+          title: "Storyboard Generated!",
+          description: "Visual storyboard frames have been created successfully"
         });
       }
     } catch (error) {
@@ -274,186 +226,169 @@ const SceneAnalysis = () => {
     }
   };
 
+  const getDifficultyColor = (level: string) => {
+    switch (level) {
+      case "Beginner": return "bg-green-100 text-green-800 border-green-300";
+      case "Intermediate": return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "Advanced": return "bg-red-100 text-red-800 border-red-300";
+      default: return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
+
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Brain className="h-8 w-8" />
-              AI Scene Analysis
-            </h1>
-            <p className="text-muted-foreground">Analyze scripts for casting, direction, and production insights</p>
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold flex items-center gap-2">
+                <Brain className="h-8 w-8" />
+                AI Scene Analysis
+              </h1>
+              <p className="text-muted-foreground">Analyze scripts for casting, direction, and production insights</p>
+            </div>
           </div>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Input Section */}
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5" />
-                  Scene Input
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <Label htmlFor="scene-text">Scene Script</Label>
-                  <Textarea
-                    id="scene-text"
-                    placeholder={`Enter your scene here...
-
-Example:
-JOHN: (nervously) I never meant for this to happen.
-SARAH: (angry) But it did happen, John! And now we have to deal with it.
-JOHN: (pleading) Please, just give me another chance.
-SARAH: (softening) I... I don't know if I can.`}
-                    value={currentScene.sceneText}
-                    onChange={(e) => setCurrentScene(prev => ({ ...prev, sceneText: e.target.value }))}
-                    className="min-h-[200px] font-mono"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+          {/* Input and Analysis Section */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Scene Input</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
                   <div>
-                    <Label htmlFor="genre">Genre</Label>
-                    <Select value={currentScene.genre} onValueChange={(value) => 
-                      setCurrentScene(prev => ({ ...prev, genre: value }))
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select genre" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {genres.map(genre => (
-                          <SelectItem key={genre} value={genre}>{genre}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="scene-text">Scene Text</Label>
+                    <Textarea
+                      id="scene-text"
+                      placeholder="Paste your scene text here..."
+                      value={currentScene.sceneText}
+                      onChange={(e) => setCurrentScene(prev => ({ ...prev, sceneText: e.target.value }))}
+                      className="min-h-[200px]"
+                    />
                   </div>
-
-                  <div>
-                    <Label htmlFor="tone">Tone</Label>
-                    <Select value={currentScene.tone} onValueChange={(value) => 
-                      setCurrentScene(prev => ({ ...prev, tone: value }))
-                    }>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select tone" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {tones.map(tone => (
-                          <SelectItem key={tone} value={tone}>{tone}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label>Genre</Label>
+                      <Select value={currentScene.genre} onValueChange={(value) => setCurrentScene(prev => ({ ...prev, genre: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select genre" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {genres.map((genre) => (
+                            <SelectItem key={genre} value={genre}>{genre}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    
+                    <div>
+                      <Label>Tone</Label>
+                      <Select value={currentScene.tone} onValueChange={(value) => setCurrentScene(prev => ({ ...prev, tone: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select tone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {tones.map((tone) => (
+                            <SelectItem key={tone} value={tone}>{tone}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
-                </div>
+                  
+                  <Button 
+                    onClick={analyzeScene} 
+                    disabled={isAnalyzing}
+                    className="w-full"
+                    size="lg"
+                  >
+                    {isAnalyzing ? "Analyzing..." : "Analyze Scene"}
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
 
-                <Button 
-                  onClick={analyzeScene} 
-                  disabled={isAnalyzing || !currentScene.sceneText.trim()}
-                  className="w-full"
-                >
-                  {isAnalyzing ? (
-                    <>
-                      <Brain className="h-4 w-4 mr-2 animate-spin" />
-                      Analyzing Scene...
-                    </>
+            {/* Recent Analyses Sidebar */}
+            <div>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Analyses</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {analyses.length === 0 ? (
+                    <p className="text-muted-foreground text-center py-8">
+                      No analyses yet. Start by analyzing a scene!
+                    </p>
                   ) : (
-                    <>
-                      <Brain className="h-4 w-4 mr-2" />
-                      Analyze Scene
-                    </>
-                  )}
-                </Button>
-              </CardContent>
-            </Card>
-
-            {/* Previous Analyses */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  Recent Analyses
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {analyses.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-4">
-                    No analyses yet. Analyze your first scene above.
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {analyses.slice(0, 5).map((analysis) => (
-                      <div
-                        key={analysis.id}
-                        className={`p-3 rounded-lg cursor-pointer transition-colors ${
-                          selectedAnalysis?.id === analysis.id 
-                            ? "bg-primary/10 border border-primary" 
-                            : "bg-muted hover:bg-muted/80"
-                        }`}
-                        onClick={() => setSelectedAnalysis(analysis)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium">{analysis.genre} Scene</p>
-                            <p className="text-sm text-muted-foreground">
-                              {analysis.characterCount} characters • {analysis.createdAt.toLocaleDateString()}
+                    <div className="space-y-3">
+                      {analyses.slice(0, 5).map((analysis) => (
+                        <div
+                          key={analysis.id}
+                          className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                            selectedAnalysis?.id === analysis.id 
+                              ? 'border-primary bg-primary/5' 
+                              : 'border-border hover:border-primary/50'
+                          }`}
+                          onClick={() => setSelectedAnalysis(analysis)}
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="font-medium text-sm">
+                                {analysis.genre || "No Genre"}
+                              </span>
+                              <Badge className={getDifficultyColor(analysis.analysisResult?.difficultyLevel || "Beginner")}>
+                                {analysis.analysisResult?.difficultyLevel || "Beginner"}
+                              </Badge>
+                            </div>
+                            <p className="text-xs text-muted-foreground line-clamp-2">
+                              {analysis.sceneText.substring(0, 80)}...
                             </p>
+                            <div className="flex items-center justify-between text-xs text-muted-foreground">
+                              <span>{analysis.characterCount} characters</span>
+                              <span>{analysis.createdAt.toLocaleDateString()}</span>
+                            </div>
                           </div>
-                          <Badge className={getDifficultyColor(analysis.analysisResult?.difficultyLevel || "")}>
-                            {analysis.analysisResult?.difficultyLevel}
-                          </Badge>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
 
           {/* Results Section */}
-          <div>
-            {selectedAnalysis ? (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Target className="h-5 w-5" />
-                    Analysis Results
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <Tabs defaultValue="overview" className="w-full">
-                    <TabsList className="grid w-full grid-cols-5">
-                      <TabsTrigger value="overview">Overview</TabsTrigger>
-                      <TabsTrigger value="directing">Directing</TabsTrigger>
-                      <TabsTrigger value="casting">Casting</TabsTrigger>
-                      <TabsTrigger value="technical">Technical</TabsTrigger>
-                      <TabsTrigger value="storyboard">Storyboard</TabsTrigger>
-                    </TabsList>
+          {selectedAnalysis?.analysisResult ? (
+            <Card>
+              <CardHeader>
+                <CardTitle>Analysis Results</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Tabs defaultValue="overview" className="w-full">
+                  <TabsList className="grid w-full grid-cols-5">
+                    <TabsTrigger value="overview">Overview</TabsTrigger>
+                    <TabsTrigger value="directing">Directing</TabsTrigger>
+                    <TabsTrigger value="casting">Casting</TabsTrigger>
+                    <TabsTrigger value="technical">Technical</TabsTrigger>
+                    <TabsTrigger value="storyboard">Storyboard</TabsTrigger>
+                  </TabsList>
 
-                    <TabsContent value="overview" className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <Label>Duration Estimate</Label>
-                          <p className="text-lg font-semibold">{selectedAnalysis.analysisResult?.estimatedDuration}</p>
-                        </div>
-                        <div className="space-y-2">
-                          <Label>Difficulty Level</Label>
-                          <Badge className={getDifficultyColor(selectedAnalysis.analysisResult?.difficultyLevel || "")}>
-                            {selectedAnalysis.analysisResult?.difficultyLevel}
-                          </Badge>
-                        </div>
-                      </div>
-
+                  <TabsContent value="overview" className="mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <Label>Emotional Beats</Label>
-                        <ul className="mt-2 space-y-1">
-                          {selectedAnalysis.analysisResult?.emotionalBeats.map((beat, index) => (
+                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                          <Target className="h-5 w-5" />
+                          Emotional Beats
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.emotionalBeats.map((beat, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <span className="text-sm text-muted-foreground">{index + 1}.</span>
+                              <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mt-0.5">
+                                {index + 1}
+                              </span>
                               <span className="text-sm">{beat}</span>
                             </li>
                           ))}
@@ -461,25 +396,56 @@ SARAH: (softening) I... I don't know if I can.`}
                       </div>
 
                       <div>
-                        <Label>Key Moments</Label>
-                        <ul className="mt-2 space-y-1">
-                          {selectedAnalysis.analysisResult?.keyMoments.map((moment, index) => (
+                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                          <Users className="h-5 w-5" />
+                          Character Motivations
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.characterMotivations.map((motivation, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <Star className="h-4 w-4 mt-0.5 text-yellow-500" />
-                              <span className="text-sm">{moment}</span>
+                              <span className="text-primary">•</span>
+                              <span className="text-sm">{motivation}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                    </TabsContent>
+                    </div>
 
-                    <TabsContent value="directing" className="space-y-4">
+                    <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <Card>
+                        <CardContent className="p-4 text-center">
+                          <div className="text-2xl font-bold text-primary">{selectedAnalysis.characterCount}</div>
+                          <div className="text-sm text-muted-foreground">Characters</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4 text-center">
+                          <div className="text-2xl font-bold text-primary">{selectedAnalysis.analysisResult.estimatedDuration}</div>
+                          <div className="text-sm text-muted-foreground">Duration</div>
+                        </CardContent>
+                      </Card>
+                      <Card>
+                        <CardContent className="p-4 text-center">
+                          <Badge className={getDifficultyColor(selectedAnalysis.analysisResult.difficultyLevel)}>
+                            {selectedAnalysis.analysisResult.difficultyLevel}
+                          </Badge>
+                          <div className="text-sm text-muted-foreground mt-1">Difficulty</div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="directing" className="mt-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
-                        <Label>Director Notes</Label>
-                        <ul className="mt-2 space-y-2">
-                          {selectedAnalysis.analysisResult?.directorNotes.map((note, index) => (
+                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                          <Video className="h-5 w-5" />
+                          Director's Notes
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.directorNotes.map((note, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <Lightbulb className="h-4 w-4 mt-0.5 text-yellow-500" />
+                              <span className="text-primary">•</span>
                               <span className="text-sm">{note}</span>
                             </li>
                           ))}
@@ -487,155 +453,167 @@ SARAH: (softening) I... I don't know if I can.`}
                       </div>
 
                       <div>
-                        <Label>Character Motivations</Label>
-                        <ul className="mt-2 space-y-2">
-                          {selectedAnalysis.analysisResult?.characterMotivations.map((motivation, index) => (
+                        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                          <Star className="h-5 w-5" />
+                          Key Moments
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.keyMoments.map((moment, index) => (
                             <li key={index} className="flex items-start gap-2">
-                              <Users className="h-4 w-4 mt-0.5 text-blue-500" />
-                              <span className="text-sm">{motivation}</span>
+                              <span className="text-primary">•</span>
+                              <span className="text-sm">{moment}</span>
                             </li>
                           ))}
                         </ul>
                       </div>
-                    </TabsContent>
+                    </div>
+                  </TabsContent>
 
-                    <TabsContent value="casting" className="space-y-4">
-                      <div>
-                        <Label>Casting Tips</Label>
-                        <ul className="mt-2 space-y-2">
-                          {selectedAnalysis.analysisResult?.castingTips.map((tip, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <Target className="h-4 w-4 mt-0.5 text-green-500" />
-                              <span className="text-sm">{tip}</span>
-                            </li>
-                          ))}
-                        </ul>
+                  <TabsContent value="casting" className="mt-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <Users className="h-5 w-5" />
+                        Casting Tips
+                      </h3>
+                      <ul className="space-y-2">
+                        {selectedAnalysis.analysisResult.castingTips.map((tip, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-primary">•</span>
+                            <span className="text-sm">{tip}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="technical" className="mt-6">
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                        <Lightbulb className="h-5 w-5" />
+                        Technical Requirements
+                      </h3>
+                      <ul className="space-y-2">
+                        {selectedAnalysis.analysisResult.technicalRequirements.map((req, index) => (
+                          <li key={index} className="flex items-start gap-2">
+                            <span className="text-primary">•</span>
+                            <span className="text-sm">{req}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="storyboard" className="mt-6">
+                    <div className="space-y-6">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          <Video className="h-5 w-5" />
+                          Shot Breakdown
+                        </h3>
+                        <Button 
+                          onClick={generateStoryboard}
+                          disabled={generatingStoryboard}
+                          variant="outline"
+                        >
+                          {generatingStoryboard ? "Generating..." : "Generate Visual Storyboard"}
+                        </Button>
                       </div>
-                    </TabsContent>
 
-                    <TabsContent value="technical" className="space-y-4">
-                      <div>
-                        <Label>Technical Requirements</Label>
-                        <ul className="mt-2 space-y-2">
-                          {selectedAnalysis.analysisResult?.technicalRequirements.map((requirement, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <Video className="h-4 w-4 mt-0.5 text-purple-500" />
-                              <span className="text-sm">{requirement}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    </TabsContent>
-
-                    <TabsContent value="storyboard" className="space-y-4">
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <h4 className="font-semibold">Shot Breakdown</h4>
-                          {!selectedAnalysis.storyboard && (
-                            <Button 
-                              onClick={generateStoryboard}
-                              disabled={generatingStoryboard}
-                              className="bg-primary hover:bg-primary/90"
-                            >
-                              {generatingStoryboard ? 'Generating...' : 'Generate Storyboard'}
-                            </Button>
-                          )}
-                        </div>
-
-                        {/* Shot Breakdown Table */}
-                        <div className="border rounded-lg overflow-hidden">
-                          <div className="bg-muted/50 px-4 py-2 font-medium text-sm border-b">
-                            Scene Shots ({selectedAnalysis.analysisResult?.shots?.length || 0} total)
-                          </div>
-                          <div className="divide-y">
-                            {selectedAnalysis.analysisResult?.shots?.map((shot, index) => (
-                              <div key={index} className="p-4 space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Badge variant="outline">Shot {shot.shotNumber}</Badge>
-                                  <span className="text-sm font-medium">{shot.cameraAngle}</span>
-                                  <span className="text-xs text-muted-foreground">({shot.duration})</span>
-                                </div>
-                                <p className="text-sm">{shot.description}</p>
-                                {shot.characters.length > 0 && (
-                                  <div className="text-xs text-muted-foreground">
-                                    Characters: {shot.characters.join(', ')}
-                                  </div>
-                                )}
-                                <div className="text-xs text-muted-foreground">
-                                  Visual: {shot.visualElements}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {selectedAnalysis.analysisResult.shots.map((shot) => (
+                          <Card key={shot.shotNumber} className="border border-border">
+                            <CardHeader className="pb-3">
+                              <div className="flex items-center justify-between">
+                                <Badge variant="secondary">Shot {shot.shotNumber}</Badge>
+                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                  <Clock className="h-3 w-3" />
+                                  {shot.duration}
                                 </div>
                               </div>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Description</h4>
+                                <p className="text-sm text-muted-foreground">{shot.description}</p>
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                                <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Visual Elements</h4>
+                                <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+
+                      {selectedAnalysis.storyboard && (
+                        <div className="mt-8">
+                          <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <FileText className="h-5 w-5" />
+                            Visual Storyboard
+                          </h3>
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {selectedAnalysis.storyboard.map((frame) => (
+                              <Card key={frame.shotNumber} className="border border-border">
+                                <CardContent className="p-4 space-y-4">
+                                  <div className="flex items-center justify-between">
+                                    <Badge variant="secondary">Frame {frame.shotNumber}</Badge>
+                                    {frame.generatedAt && (
+                                      <span className="text-xs text-muted-foreground">
+                                        {new Date(frame.generatedAt).toLocaleTimeString()}
+                                      </span>
+                                    )}
+                                  </div>
+                                  
+                                  {frame.imageData ? (
+                                    <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                      <img 
+                                        src={frame.imageData} 
+                                        alt={`Storyboard frame ${frame.shotNumber}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    </div>
+                                  ) : (
+                                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                      <div className="text-center">
+                                        <Video className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground">Frame generating...</p>
+                                      </div>
+                                    </div>
+                                  )}
+                                  
+                                  <div className="space-y-2">
+                                    <p className="text-sm font-medium">{frame.description}</p>
+                                    <p className="text-xs text-muted-foreground">{frame.cameraAngle}</p>
+                                  </div>
+                                </CardContent>
+                              </Card>
                             ))}
                           </div>
                         </div>
-
-                        {/* Storyboard Frames */}
-                        {selectedAnalysis.storyboard && (
-                          <div className="space-y-4">
-                            <h4 className="font-semibold">Visual Storyboard</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                              {selectedAnalysis.storyboard.map((frame, index) => (
-                                <div key={index} className="border rounded-lg overflow-hidden">
-                                  <div className="aspect-square bg-muted/50 relative">
-                                    {frame.imageData ? (
-                                      <img 
-                                        src={frame.imageData} 
-                                        alt={`Shot ${frame.shotNumber}`}
-                                        className="w-full h-full object-cover"
-                                      />
-                                    ) : (
-                                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-                                        Generating...
-                                      </div>
-                                    )}
-                                    <div className="absolute top-2 left-2">
-                                      <Badge variant="secondary">Shot {frame.shotNumber}</Badge>
-                                    </div>
-                                  </div>
-                                  <div className="p-3 space-y-2">
-                                    <div className="text-sm font-medium">{frame.cameraAngle}</div>
-                                    <div className="text-xs text-muted-foreground line-clamp-2">
-                                      {frame.description}
-                                    </div>
-                                    {frame.characters.length > 0 && (
-                                      <div className="text-xs text-muted-foreground">
-                                        {frame.characters.join(', ')}
-                                      </div>
-                                    )}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {generatingStoryboard && (
-                          <div className="text-center py-8">
-                            <div className="text-sm text-muted-foreground">
-                              Generating storyboard frames... This may take a few moments.
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </TabsContent>
-                  </Tabs>
-                </CardContent>
-              </Card>
-            ) : (
-              <Card>
-                <CardContent className="text-center py-12">
-                  <Brain className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
-                  <h3 className="text-lg font-semibold mb-2">No Analysis Selected</h3>
-                  <p className="text-muted-foreground">
-                    Analyze a scene or select from your recent analyses to see detailed results
-                  </p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+                      )}
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="text-center py-12">
+                <Brain className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
+                <h3 className="text-lg font-semibold mb-2">No Analysis Selected</h3>
+                <p className="text-muted-foreground">
+                  Analyze a scene or select from your recent analyses to see detailed results
+                </p>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

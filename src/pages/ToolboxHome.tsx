@@ -26,13 +26,22 @@ export default function ToolboxHome() {
       route: "/upload-auditions"
     },
     {
-      id: "scene_analyzer",
-      name: "Scene Analyzer & Storyboard",
-      description: "AI-powered scene analysis with shot breakdown and storyboard generation",
+      id: "script_analysis",
+      name: "Script Analysis",
+      description: "AI-powered script analysis for character development and emotional beats",
       icon: Sparkles,
       status: "active",
       badge: "AI Enhanced",
-      route: "/scene-analysis"
+      route: "/script-analysis"
+    },
+    {
+      id: "storyboarding",
+      name: "Storyboarding",
+      description: "Create visual storyboards with AI-generated shot breakdowns and frames",
+      icon: Video,
+      status: "active",
+      badge: "Visual AI",
+      route: "/storyboarding"
     },
     {
       id: "create_project",
