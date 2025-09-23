@@ -45,7 +45,7 @@ All colors MUST be HSL.
     /* Gold color scheme */
     --gold: 45 100% 60%;       /* #FFD700 - Primary gold */
     --gold-light: 50 100% 70%; /* #FFEB3B - Light gold */
-    --gold-dark: 40 100% 50%;  /* #DAA520 - Dark gold */
+    --gold-dark: 35 90% 45%;   /* #B8860B - Rich deeper gold */
     --gold-foreground: 225 30% 7%;
 
     --border: 225 20% 20%;
