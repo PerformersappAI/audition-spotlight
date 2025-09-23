@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -59,6 +59,10 @@ const Storyboarding = () => {
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
   const [editingShot, setEditingShot] = useState<number | null>(null);
   const [editValues, setEditValues] = useState<Partial<Shot>>({});
+  const [editingFrame, setEditingFrame] = useState<number | null>(null);
+  const [frameEditValues, setFrameEditValues] = useState<Partial<StoryboardFrame>>({});
+  const [regeneratingFrame, setRegeneratingFrame] = useState<number | null>(null);
+  const [showGlossary, setShowGlossary] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -326,6 +330,119 @@ FADE TO BLACK.`;
     });
   };
 
+  const startEditingFrame = (frame: StoryboardFrame) => {
+    setEditingFrame(frame.shotNumber);
+    setFrameEditValues(frame);
+  };
+
+  const cancelEditingFrame = () => {
+    setEditingFrame(null);
+    setFrameEditValues({});
+  };
+
+  const saveEditedFrame = () => {
+    if (!selectedProject || !editingFrame || !selectedProject.storyboard) return;
+
+    const updatedStoryboard = selectedProject.storyboard.map(frame => 
+      frame.shotNumber === editingFrame 
+        ? { ...frame, ...frameEditValues }
+        : frame
+    );
+
+    const updatedProject = {
+      ...selectedProject,
+      storyboard: updatedStoryboard
+    };
+
+    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+    setSelectedProject(updatedProject);
+    setEditingFrame(null);
+    setFrameEditValues({});
+
+    toast({
+      title: "Frame Updated",
+      description: "Storyboard frame has been updated successfully"
+    });
+  };
+
+  const regenerateFrame = async (shotNumber: number) => {
+    if (!selectedProject?.storyboard) return;
+
+    setRegeneratingFrame(shotNumber);
+
+    try {
+      const frameToRegenerate = selectedProject.storyboard.find(f => f.shotNumber === shotNumber);
+      if (!frameToRegenerate) return;
+
+      const { data, error } = await supabase.functions.invoke('generate-storyboard', {
+        body: {
+          shots: [frameToRegenerate],
+          genre: selectedProject.genre,
+          tone: selectedProject.tone
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.storyboard && data.storyboard[0]) {
+        const updatedStoryboard = selectedProject.storyboard.map(frame => 
+          frame.shotNumber === shotNumber 
+            ? { ...frame, imageData: data.storyboard[0].imageData, generatedAt: new Date().toISOString() }
+            : frame
+        );
+
+        const updatedProject = {
+          ...selectedProject,
+          storyboard: updatedStoryboard
+        };
+        
+        setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+        setSelectedProject(updatedProject);
+
+        toast({
+          title: "Frame Regenerated!",
+          description: "Storyboard frame has been regenerated successfully"
+        });
+      }
+    } catch (error) {
+      console.error('Error regenerating frame:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to regenerate frame. Please try again."
+      });
+    } finally {
+      setRegeneratingFrame(null);
+    }
+  };
+
+  const glossaryTerms = {
+    "Shot Types": [
+      { term: "Wide Shot (WS)", description: "Shows the full subject and surroundings, establishing location and context" },
+      { term: "Medium Shot (MS)", description: "Shows subject from waist up, balancing character and environment" },
+      { term: "Close-up (CU)", description: "Tight shot focusing on subject's face or important details" },
+      { term: "Extreme Close-up (ECU)", description: "Very tight shot on specific detail like eyes or hands" },
+      { term: "Long Shot (LS)", description: "Subject appears small in frame, emphasizes environment" },
+      { term: "Medium Close-up (MCU)", description: "Shows subject from chest up, more intimate than medium shot" }
+    ],
+    "Camera Angles": [
+      { term: "Eye Level", description: "Camera at subject's eye level, neutral and natural perspective" },
+      { term: "High Angle", description: "Camera above subject, makes subject appear vulnerable or small" },
+      { term: "Low Angle", description: "Camera below subject, makes subject appear powerful or imposing" },
+      { term: "Dutch Angle", description: "Tilted camera creating unease or disorientation" },
+      { term: "Bird's Eye", description: "Directly overhead view, shows full spatial relationships" },
+      { term: "Worm's Eye", description: "Extreme low angle from ground level looking up" }
+    ],
+    "Camera Movement": [
+      { term: "Pan", description: "Horizontal camera movement, following action or revealing space" },
+      { term: "Tilt", description: "Vertical camera movement up or down" },
+      { term: "Zoom", description: "Lens adjustment to move closer or further from subject" },
+      { term: "Dolly/Track", description: "Physical camera movement toward or away from subject" },
+      { term: "Steadicam", description: "Smooth handheld movement following subject" },
+      { term: "Crane/Jib", description: "Elevated camera movement, often sweeping motions" }
+    ]
+  };
+
   const exportStoryboardToPDF = async () => {
     if (!selectedProject?.storyboard) return;
 
@@ -502,8 +619,47 @@ FADE TO BLACK.`;
               </Card>
             </div>
 
-            {/* Recent Projects Sidebar */}
+            {/* Sidebar */}
             <div className="space-y-6">
+              {/* Filmmaker's Glossary */}
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <BookOpen className="h-4 w-4" />
+                      Filmmaker's Glossary
+                    </CardTitle>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setShowGlossary(!showGlossary)}
+                    >
+                      {showGlossary ? 'Hide' : 'Show'}
+                    </Button>
+                  </div>
+                </CardHeader>
+                {showGlossary && (
+                  <CardContent className="max-h-80 overflow-y-auto">
+                    <div className="space-y-4">
+                      {Object.entries(glossaryTerms).map(([category, terms]) => (
+                        <div key={category}>
+                          <h4 className="font-semibold text-sm mb-2 text-primary">{category}</h4>
+                          <div className="space-y-2">
+                            {terms.map((item, index) => (
+                              <div key={index} className="text-xs">
+                                <div className="font-medium text-foreground">{item.term}</div>
+                                <div className="text-muted-foreground">{item.description}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+
+              {/* Recent Projects */}
               <Card>
                 <CardHeader>
                   <CardTitle>Recent Projects</CardTitle>
@@ -718,44 +874,144 @@ FADE TO BLACK.`;
                     </div>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {selectedProject.storyboard.map((frame) => (
-                        <Card key={frame.shotNumber} className="border border-border">
-                          <CardContent className="p-4 space-y-4">
-                            <div className="flex items-center justify-between">
-                              <Badge variant="secondary">Frame {frame.shotNumber}</Badge>
-                              {frame.generatedAt && (
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(frame.generatedAt).toLocaleTimeString()}
-                                </span>
-                              )}
-                            </div>
-                            
-                            {frame.imageData ? (
-                              <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                                <img 
-                                  src={frame.imageData} 
-                                  alt={`Storyboard frame ${frame.shotNumber}`}
-                                  className="w-full h-full object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <div className="text-center">
-                                  <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                  <p className="text-sm text-muted-foreground">Frame generating...</p>
-                                </div>
-                              </div>
-                            )}
-                            
-                            <div className="space-y-2">
-                              <p className="text-sm font-medium">{frame.description}</p>
-                              <p className="text-xs text-muted-foreground">{frame.cameraAngle}</p>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      ))}
-                    </div>
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                       {selectedProject.storyboard.map((frame) => (
+                         <Card key={frame.shotNumber} className="border border-border">
+                           <CardContent className="p-4 space-y-4">
+                             <div className="flex items-center justify-between">
+                               <Badge variant="secondary">Frame {frame.shotNumber}</Badge>
+                               <div className="flex items-center gap-2">
+                                 {editingFrame === frame.shotNumber ? (
+                                   <div className="flex items-center gap-1">
+                                     <Button
+                                       size="sm"
+                                       variant="ghost"
+                                       onClick={saveEditedFrame}
+                                       className="h-6 w-6 p-0"
+                                     >
+                                       <Save className="h-3 w-3" />
+                                     </Button>
+                                     <Button
+                                       size="sm"
+                                       variant="ghost"
+                                       onClick={cancelEditingFrame}
+                                       className="h-6 w-6 p-0"
+                                     >
+                                       <X className="h-3 w-3" />
+                                     </Button>
+                                   </div>
+                                 ) : (
+                                   <div className="flex items-center gap-1">
+                                     <Button
+                                       size="sm"
+                                       variant="ghost"
+                                       onClick={() => startEditingFrame(frame)}
+                                       className="h-6 w-6 p-0"
+                                     >
+                                       <Edit2 className="h-3 w-3" />
+                                     </Button>
+                                     <Button
+                                       size="sm"
+                                       variant="ghost"
+                                       onClick={() => regenerateFrame(frame.shotNumber)}
+                                       disabled={regeneratingFrame === frame.shotNumber}
+                                       className="h-6 w-6 p-0"
+                                     >
+                                       {regeneratingFrame === frame.shotNumber ? (
+                                         <Loader2 className="h-3 w-3 animate-spin" />
+                                       ) : (
+                                         <RefreshCw className="h-3 w-3" />
+                                       )}
+                                     </Button>
+                                   </div>
+                                 )}
+                                 {frame.generatedAt && (
+                                   <span className="text-xs text-muted-foreground">
+                                     {new Date(frame.generatedAt).toLocaleTimeString()}
+                                   </span>
+                                 )}
+                               </div>
+                             </div>
+                             
+                             {frame.imageData ? (
+                               <div className="aspect-video bg-muted rounded-lg overflow-hidden">
+                                 <img 
+                                   src={frame.imageData} 
+                                   alt={`Storyboard frame ${frame.shotNumber}`}
+                                   className="w-full h-full object-cover"
+                                 />
+                               </div>
+                             ) : (
+                               <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                 <div className="text-center">
+                                   <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                   <p className="text-sm text-muted-foreground">Frame generating...</p>
+                                 </div>
+                               </div>
+                             )}
+                             
+                             <div className="space-y-2">
+                               <div>
+                                 <h4 className="font-medium text-xs mb-1">Description</h4>
+                                 {editingFrame === frame.shotNumber ? (
+                                   <Textarea
+                                     value={frameEditValues.description || frame.description}
+                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, description: e.target.value }))}
+                                     className="text-xs min-h-[50px]"
+                                   />
+                                 ) : (
+                                   <p className="text-xs text-muted-foreground">{frame.description}</p>
+                                 )}
+                               </div>
+                               <div>
+                                 <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
+                                 {editingFrame === frame.shotNumber ? (
+                                   <Input
+                                     value={frameEditValues.cameraAngle || frame.cameraAngle}
+                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                     className="text-xs"
+                                   />
+                                 ) : (
+                                   <p className="text-xs text-muted-foreground">{frame.cameraAngle}</p>
+                                 )}
+                               </div>
+                               <div>
+                                 <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
+                                 {editingFrame === frame.shotNumber ? (
+                                   <Textarea
+                                     value={frameEditValues.visualElements || frame.visualElements}
+                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
+                                     className="text-xs min-h-[40px]"
+                                   />
+                                 ) : (
+                                   <p className="text-xs text-muted-foreground">{frame.visualElements}</p>
+                                 )}
+                               </div>
+                               {editingFrame === frame.shotNumber && (
+                                 <Button
+                                   size="sm"
+                                   onClick={() => regenerateFrame(frame.shotNumber)}
+                                   disabled={regeneratingFrame === frame.shotNumber}
+                                   className="w-full mt-2"
+                                 >
+                                   {regeneratingFrame === frame.shotNumber ? (
+                                     <>
+                                       <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                                       Regenerating...
+                                     </>
+                                   ) : (
+                                     <>
+                                       <RefreshCw className="mr-2 h-3 w-3" />
+                                       Regenerate Frame
+                                     </>
+                                   )}
+                                 </Button>
+                               )}
+                             </div>
+                           </CardContent>
+                         </Card>
+                       ))}
+                     </div>
                   </CardContent>
                 </Card>
               )}
