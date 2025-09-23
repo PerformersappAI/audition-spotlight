@@ -125,27 +125,6 @@ export default function ToolboxHome() {
           </p>
         </div>
 
-        {/* Quick Start */}
-        <div className="mb-12">
-          <Card className="border-primary/20 bg-primary/5">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Sparkles className="h-5 w-5 text-primary" />
-                Quick Start
-              </CardTitle>
-              <CardDescription>
-                Get personalized recommendations for your project in minutes
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button asChild size="lg" className="w-full sm:w-auto">
-                <Link to="/submit">
-                  Complete Project Intake <ChevronRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
 
         {/* Modules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
