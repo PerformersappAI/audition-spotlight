@@ -61,61 +61,91 @@ export type Database = {
       }
       film_festivals: {
         Row: {
+          acceptance_rate: number | null
+          awards: string[] | null
           categories: string[] | null
           contact_email: string | null
           contact_phone: string | null
           created_at: string
           description: string
+          early_deadline: string | null
           end_date: string | null
+          entry_fees_range: string | null
           featured: boolean
+          festival_tier: string | null
+          filmfreeway_url: string | null
+          genres: string[] | null
           id: string
+          late_deadline: string | null
           location: string
           name: string
+          notification_date: string | null
           requirements: string | null
           start_date: string
           status: string
           submission_deadline: string | null
           submission_fee: string | null
+          submission_url: string | null
           updated_at: string
           user_id: string
           website: string | null
         }
         Insert: {
+          acceptance_rate?: number | null
+          awards?: string[] | null
           categories?: string[] | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
           description: string
+          early_deadline?: string | null
           end_date?: string | null
+          entry_fees_range?: string | null
           featured?: boolean
+          festival_tier?: string | null
+          filmfreeway_url?: string | null
+          genres?: string[] | null
           id?: string
+          late_deadline?: string | null
           location: string
           name: string
+          notification_date?: string | null
           requirements?: string | null
           start_date: string
           status?: string
           submission_deadline?: string | null
           submission_fee?: string | null
+          submission_url?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
         }
         Update: {
+          acceptance_rate?: number | null
+          awards?: string[] | null
           categories?: string[] | null
           contact_email?: string | null
           contact_phone?: string | null
           created_at?: string
           description?: string
+          early_deadline?: string | null
           end_date?: string | null
+          entry_fees_range?: string | null
           featured?: boolean
+          festival_tier?: string | null
+          filmfreeway_url?: string | null
+          genres?: string[] | null
           id?: string
+          late_deadline?: string | null
           location?: string
           name?: string
+          notification_date?: string | null
           requirements?: string | null
           start_date?: string
           status?: string
           submission_deadline?: string | null
           submission_fee?: string | null
+          submission_url?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
