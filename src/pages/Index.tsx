@@ -95,15 +95,15 @@ const Index = () => {
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-gold/50 to-gold-light/50 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <Button 
-                    variant="gold" 
-                    size="lg" 
-                    onClick={() => navigate('/auth')} 
-                    className="text-lg px-8 py-4 w-full relative z-10 border border-gold/20"
-                  >
-                    <Film className="h-5 w-5 mr-2" />
-                    FILMMAKERS
-                  </Button>
+                <Button 
+                  variant="gold" 
+                  size="lg" 
+                  onClick={() => user ? navigate('/filmmaker') : navigate('/auth')} 
+                  className="text-lg px-8 py-4 w-full relative z-10 border border-gold/20"
+                >
+                  <Film className="h-5 w-5 mr-2" />
+                  FILMMAKERS
+                </Button>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
@@ -117,7 +117,7 @@ const Index = () => {
                   <Button 
                     variant="burgundy" 
                     size="lg" 
-                    onClick={() => navigate('/auth')} 
+                    onClick={() => user ? navigate('/dashboard') : navigate('/auth')} 
                     className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
                   >
                     <Users className="h-5 w-5 mr-2" />
@@ -136,7 +136,7 @@ const Index = () => {
                   <Button 
                     variant="burgundy" 
                     size="lg" 
-                    onClick={() => navigate('/auth')} 
+                    onClick={() => user ? navigate('/dashboard') : navigate('/auth')} 
                     className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
                   >
                     <Clock className="h-5 w-5 mr-2" />
@@ -155,7 +155,7 @@ const Index = () => {
                   <Button 
                     variant="burgundy" 
                     size="lg" 
-                    onClick={() => navigate('/auth')} 
+                    onClick={() => user ? navigate('/festivals') : navigate('/auth')} 
                     className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
                   >
                     <Trophy className="h-5 w-5 mr-2" />
