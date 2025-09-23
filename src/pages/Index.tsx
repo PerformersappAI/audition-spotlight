@@ -186,7 +186,26 @@ const Index = () => {
       <div className="relative -mt-32 pt-20 pb-16 bg-surface border-y border-border z-10">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold mb-6 text-primary">Our Mission</h2>
+            <div className="relative mb-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-teal-400/20 via-teal-500/40 to-teal-400/20 blur-3xl rounded-full h-32 w-full max-w-xl mx-auto opacity-60"></div>
+              <div className="relative">
+                <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-gradient-to-r from-teal-400 via-teal-300 to-teal-400 bg-clip-text text-transparent">
+                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-teal-400" />
+                  Our Mission
+                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-teal-400" />
+                </h2>
+                <div className="absolute -top-2 -left-2 w-4 h-4 bg-teal-400 rounded-full animate-ping opacity-75"></div>
+                <div className="absolute -top-1 -left-1 w-2 h-2 bg-teal-300 rounded-full"></div>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-teal-400 rounded-full animate-ping opacity-75 [animation-delay:0.5s]"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-300 rounded-full"></div>
+              </div>
+              <div className="flex justify-center items-center gap-4 mt-4">
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                <div className="w-2 h-2 bg-teal-300 rounded-full animate-bounce [animation-delay:0.3s]"></div>
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full animate-pulse"></div>
+              </div>
+            </div>
             <div className="prose prose-lg mx-auto text-muted-foreground">
               <p className="text-lg md:text-xl leading-relaxed mb-6">
                 Cast is a <strong className="text-foreground">grassroots resource toolbox</strong> designed specifically for independent filmmakers, 
