@@ -35,6 +35,15 @@ export default function ToolboxHome() {
       route: "/storyboarding"
     },
     {
+      id: "scene_analysis",
+      name: "Scene Analysis",
+      description: "Detailed scene breakdown and analysis for better storytelling",
+      icon: FileText,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/scene-analysis"
+    },
+    {
       id: "festivals",
       name: "Festival Browser & Submitter",
       description: "Browse 2,000+ festivals worldwide with AI-powered matching and direct submission links",
@@ -44,6 +53,24 @@ export default function ToolboxHome() {
       route: "/festivals"
     },
     {
+      id: "auditions",
+      name: "Upload Auditions",
+      description: "Upload and manage audition tapes and casting materials",
+      icon: Users,
+      status: "active",
+      badge: "Core Tool",
+      route: "/upload-auditions"
+    },
+    {
+      id: "calendar",
+      name: "Production Calendar",
+      description: "Schedule shoots, meetings, and production milestones",
+      icon: MapPin,
+      status: "active",
+      badge: "Productivity",
+      route: "/calendar"
+    },
+    {
       id: "docs_library",
       name: "Docs Library",
       description: "Essential forms, templates, and deliverables checklists",
@@ -51,6 +78,15 @@ export default function ToolboxHome() {
       status: "protected",
       badge: "Premium",
       route: "/library"
+    },
+    {
+      id: "applications",
+      name: "Applications",
+      description: "Track and manage your project applications and submissions",
+      icon: Trophy,
+      status: "active",
+      badge: "Core Tool",
+      route: "/applications"
     },
     {
       id: "concierge",
