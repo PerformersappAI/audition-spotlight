@@ -237,8 +237,22 @@ const Index = () => {
       <div className="py-16 bg-muted/30">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Featured Casting Calls</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <div className="relative mb-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-50"></div>
+              <div className="relative bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+                <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight">
+                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-primary" />
+                  Featured Casting Calls
+                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-primary" />
+                </h2>
+              </div>
+              <div className="flex justify-center items-center gap-4 mt-4">
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               Discover exciting opportunities in film, television, and digital media
             </p>
           </div>
@@ -295,8 +309,24 @@ const Index = () => {
       <div className="py-16 bg-background">
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Featured Film Festivals</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <div className="relative mb-8">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-amber-500/40 to-amber-400/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-60"></div>
+              <div className="relative">
+                <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 bg-clip-text text-transparent">
+                  <Trophy className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-amber-400" />
+                  Featured Film Festivals
+                  <Trophy className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-amber-400" />
+                </h2>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-amber-400 rounded-full animate-ping opacity-75"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-300 rounded-full"></div>
+              </div>
+              <div className="flex justify-center items-center gap-4 mt-4">
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-amber-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full animate-pulse"></div>
+              </div>
+            </div>
+            <p className="text-muted-foreground max-w-2xl mx-auto text-lg">
               Submit your work to prestigious festivals and competitions
             </p>
           </div>
