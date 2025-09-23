@@ -66,6 +66,7 @@ const Storyboarding = () => {
   const [isProcessingScript, setIsProcessingScript] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [selectedProject, setSelectedProject] = useState<StoryboardProject | null>(null);
+  const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
   const [editingShot, setEditingShot] = useState<number | null>(null);
   const [editValues, setEditValues] = useState<Partial<Shot>>({});
@@ -82,6 +83,11 @@ const Storyboarding = () => {
   const tones = [
     "Serious", "Light-hearted", "Dark", "Uplifting", "Suspenseful", 
     "Melancholic", "Energetic", "Intimate", "Epic", "Mysterious"
+  ];
+
+  const directors = [
+    "Christopher Nolan", "Steven Spielberg", "Quentin Tarantino", 
+    "Denis Villeneuve", "Greta Gerwig", "Jordan Peele"
   ];
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {

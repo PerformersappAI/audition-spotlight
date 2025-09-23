@@ -46,7 +46,17 @@ serve(async (req) => {
             contents: [{
               parts: [
                 {
-                  text: "Please extract all the text content from this PDF document. Return only the text content, preserving line breaks and formatting where possible. Do not add any commentary or explanations."
+                  text: `Please extract and clean the script text from this PDF document. Focus on:
+1. Remove OCR artifacts, weird characters, and encoding issues
+2. Standardize character names to ALL CAPS format
+3. Clean up stage directions and put them in parentheses
+4. Preserve scene headings (INT./EXT.) 
+5. Remove page numbers, headers, footers
+6. Ensure proper spacing between dialogue and action lines
+7. Fix line breaks and formatting for readability
+8. Remove any non-script content like title pages or notes
+
+Return only the cleaned script text with proper formatting. Do not add commentary.`
                 },
                 {
                   inline_data: {

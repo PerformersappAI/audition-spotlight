@@ -29,6 +29,7 @@ interface ScriptAnalysis {
   genre: string;
   tone: string;
   characterCount: number;
+  selectedDirectors: string[];
   analysisResult: {
     emotionalBeats: string[];
     characterMotivations: string[];
@@ -38,6 +39,7 @@ interface ScriptAnalysis {
     estimatedDuration: string;
     difficultyLevel: "Beginner" | "Intermediate" | "Advanced";
     keyMoments: string[];
+    directorInsights?: string[];
   } | null;
   createdAt: Date;
 }
@@ -54,6 +56,7 @@ const ScriptAnalysis = () => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysis | null>(null);
+  const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -63,6 +66,11 @@ const ScriptAnalysis = () => {
   const tones = [
     "Serious", "Light-hearted", "Dark", "Uplifting", "Suspenseful", 
     "Melancholic", "Energetic", "Intimate", "Epic", "Mysterious"
+  ];
+
+  const directors = [
+    "Christopher Nolan", "Steven Spielberg", "Quentin Tarantino", 
+    "Denis Villeneuve", "Greta Gerwig", "Jordan Peele"
   ];
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -227,27 +235,48 @@ const ScriptAnalysis = () => {
 
     setIsAnalyzing(true);
 
-    // Simulate AI analysis
-    setTimeout(() => {
-      const newAnalysis: ScriptAnalysis = {
-        id: Date.now().toString(),
-        scriptText: currentScript.scriptText,
-        genre: currentScript.genre,
-        tone: currentScript.tone,
-        characterCount: countCharacters(currentScript.scriptText),
-        analysisResult: generateMockAnalysis(currentScript),
-        createdAt: new Date()
-      };
-
-      setAnalyses(prev => [newAnalysis, ...prev]);
-      setSelectedAnalysis(newAnalysis);
-      setIsAnalyzing(false);
-
-      toast({
-        title: "Analysis Complete",
-        description: "Your script has been analyzed successfully"
+    try {
+      const { data, error } = await supabase.functions.invoke('analyze-script', {
+        body: {
+          scriptText: currentScript.scriptText,
+          genre: currentScript.genre,
+          tone: currentScript.tone,
+          selectedDirectors
+        }
       });
-    }, 3000);
+
+      if (error) throw error;
+
+      if (data?.analysis) {
+        const newAnalysis: ScriptAnalysis = {
+          id: Date.now().toString(),
+          scriptText: currentScript.scriptText,
+          genre: currentScript.genre,
+          tone: currentScript.tone,
+          characterCount: countCharacters(currentScript.scriptText),
+          selectedDirectors,
+          analysisResult: data.analysis,
+          createdAt: new Date()
+        };
+
+        setAnalyses(prev => [newAnalysis, ...prev]);
+        setSelectedAnalysis(newAnalysis);
+
+        toast({
+          title: "Analysis Complete",
+          description: "Your script has been analyzed with AI insights"
+        });
+      }
+    } catch (error) {
+      console.error('Error analyzing script:', error);
+      toast({
+        variant: "destructive",
+        title: "Analysis Failed",
+        description: "Failed to analyze script. Please try again."
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const getDifficultyColor = (level: string) => {
@@ -468,6 +497,34 @@ const ScriptAnalysis = () => {
                     </div>
                   </div>
 
+                  {/* Director Selection */}
+                  <div className="space-y-2">
+                    <Label>Director Inspiration (Optional)</Label>
+                    <div className="space-y-2">
+                      <p className="text-sm text-muted-foreground">
+                        Select directors whose styles should inspire the analysis
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {directors.map((director) => (
+                          <Badge
+                            key={director}
+                            variant={selectedDirectors.includes(director) ? "default" : "outline"}
+                            className="cursor-pointer hover:bg-primary/10"
+                            onClick={() => {
+                              setSelectedDirectors(prev => 
+                                prev.includes(director) 
+                                  ? prev.filter(d => d !== director)
+                                  : [...prev, director]
+                              );
+                            }}
+                          >
+                            {director}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
                   <Button 
                     onClick={analyzeScript} 
                     disabled={isAnalyzing || isProcessingFile}
@@ -672,7 +729,39 @@ const ScriptAnalysis = () => {
                         <div className="text-sm text-muted-foreground mt-1">Difficulty</div>
                       </CardContent>
                     </Card>
+                    {/* Director Insights */}
+                    {selectedAnalysis.analysisResult.directorInsights && selectedAnalysis.analysisResult.directorInsights.length > 0 && (
+                      <div className="space-y-4 col-span-1 md:col-span-2">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          🎬 Director Insights
+                        </h3>
+                        <div className="grid gap-3">
+                          {selectedAnalysis.analysisResult.directorInsights.map((insight, index) => (
+                            <div key={index} className="flex items-start gap-3 p-3 bg-primary/5 rounded-lg">
+                              <span className="text-primary font-semibold min-w-[2rem] text-center">
+                                {index + 1}
+                              </span>
+                              <p className="text-sm text-muted-foreground flex-1">{insight}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
+
+                  {/* Selected Directors Display */}
+                  {selectedAnalysis.selectedDirectors && selectedAnalysis.selectedDirectors.length > 0 && (
+                    <div className="mt-6 p-4 bg-muted/50 rounded-lg">
+                      <h4 className="font-medium mb-2">Analysis inspired by:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedAnalysis.selectedDirectors.map((director) => (
+                          <Badge key={director} variant="secondary">
+                            {director}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             </div>
