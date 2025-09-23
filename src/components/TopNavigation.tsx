@@ -18,14 +18,16 @@ import {
   MessageCircle, 
   MapPin,
   Video,
-  Sparkles
+  Sparkles,
+  LogOut,
+  User
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 
 export const TopNavigation = () => {
   const location = useLocation();
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, signOut } = useAuth();
   
   // Main navigation items based on user role
   const getMainNavigation = () => {
@@ -181,6 +183,30 @@ export const TopNavigation = () => {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+
+      {/* User Profile Dropdown (only show if logged in) */}
+      {user && (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" className="flex items-center gap-2 text-sm">
+              <User className="h-4 w-4" />
+              Profile
+              <ChevronDown className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48 bg-background border shadow-lg">
+            <div className="px-3 py-2 border-b">
+              <div className="text-sm font-medium">{userProfile?.full_name || 'User'}</div>
+              <div className="text-xs text-muted-foreground">{user.email}</div>
+            </div>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={signOut} className="flex items-center gap-3 w-full cursor-pointer p-3 text-red-600 hover:text-red-700 hover:bg-red-50">
+              <LogOut className="h-4 w-4" />
+              <span>Sign out</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )}
     </nav>
   );
 };
