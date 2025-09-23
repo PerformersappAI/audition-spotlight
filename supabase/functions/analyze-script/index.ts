@@ -85,12 +85,15 @@ const DIRECTOR_KNOWLEDGE = {
 };
 
 serve(async (req) => {
+  console.log('Analyze-script function called');
+  
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
     const { scriptText, genre, tone, selectedDirectors = [] } = await req.json();
+    console.log(`Request received - Genre: ${genre}, Tone: ${tone}, Script length: ${scriptText?.length || 0}, Directors: ${selectedDirectors.length}`);
 
     if (!scriptText || !scriptText.trim()) {
       return new Response(
@@ -183,6 +186,30 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
     if (!response.ok) {
       const errorText = await response.text();
       console.error('Gemini API error:', response.status, errorText);
+      
+      // Handle specific Gemini API errors more gracefully
+      if (response.status === 503) {
+        return new Response(JSON.stringify({ 
+          error: 'AI service is temporarily overloaded. Please try analyzing again in a few moments.',
+          success: false,
+          retryable: true
+        }), {
+          status: 503,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded. Please wait a moment before trying again.',
+          success: false,
+          retryable: true
+        }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      
       throw new Error(`Gemini API error: ${response.status} - ${errorText}`);
     }
 

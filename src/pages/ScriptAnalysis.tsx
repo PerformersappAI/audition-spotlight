@@ -126,7 +126,15 @@ const ScriptAnalysis = () => {
               
               if (error) {
                 console.error('Document parsing error:', error);
-                throw new Error("Failed to parse PDF. Please ensure the file contains readable text.");
+                const errorMessage = error.message || error.toString();
+                
+                // Check if this is a retryable error (503 from Gemini)
+                if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
+                  toast.error("AI service is busy. Please try uploading again in a few moments.");
+                } else {
+                  toast.error(`Failed to parse PDF: ${errorMessage}`);
+                }
+                return;
               }
               
               if (data?.text && data.text.trim()) {
@@ -256,7 +264,18 @@ const ScriptAnalysis = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Script analysis error:', error);
+        const errorMessage = error.message || error.toString();
+        
+        // Check if this is a retryable error
+        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
+          toast.error("AI service is temporarily busy. Please try analyzing again in a few moments.");
+        } else {
+          toast.error(`Failed to analyze script: ${errorMessage}`);
+        }
+        return;
+      }
 
       if (data?.analysis) {
         const newAnalysis: ScriptAnalysis = {
