@@ -32,6 +32,38 @@ import ConsultingIntake from "./pages/ConsultingIntake";
 
 const queryClient = new QueryClient();
 
+const AppContent = () => (
+  <GlobalLayout>
+    <Routes>
+      <Route path="/" element={<Index />} />
+      <Route path="/auth" element={<Auth />} />
+      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/upload-auditions" element={<UploadAuditions />} />
+      <Route path="/scene-analysis" element={<SceneAnalysis />} />
+      <Route path="/script-analysis" element={<ScriptAnalysis />} />
+      <Route path="/storyboarding" element={<Storyboarding />} />
+      <Route path="/create-project" element={<CreateProject />} />
+      <Route path="/create-festival" element={<CreateFestival />} />
+      <Route path="/applications" element={<Applications />} />
+      <Route path="/festivals" element={<Festivals />} />
+      <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/filmmaker" element={<FilmmakerDashboard />} />
+      <Route path="/admin-login" element={<AdminLogin />} />
+      <Route path="/admin" element={<AdminDashboard />} />
+      <Route path="/admin/users" element={<AdminUsers />} />
+      <Route path="/admin/projects" element={<AdminProjects />} />
+      <Route path="/admin/festivals" element={<AdminFestivals />} />
+      <Route path="/admin/applications" element={<AdminApplications />} />
+      <Route path="/toolbox" element={<ToolboxHome />} />
+      <Route path="/submit" element={<MultiStepForm />} />
+      <Route path="/library" element={<DocsLibrary />} />
+      <Route path="/consulting" element={<ConsultingIntake />} />
+      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+      <Route path="*" element={<NotFound />} />
+    </Routes>
+  </GlobalLayout>
+);
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <AuthProvider>
@@ -39,35 +71,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <GlobalLayout>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/upload-auditions" element={<UploadAuditions />} />
-              <Route path="/scene-analysis" element={<SceneAnalysis />} />
-              <Route path="/script-analysis" element={<ScriptAnalysis />} />
-              <Route path="/storyboarding" element={<Storyboarding />} />
-              <Route path="/create-project" element={<CreateProject />} />
-              <Route path="/create-festival" element={<CreateFestival />} />
-              <Route path="/applications" element={<Applications />} />
-              <Route path="/festivals" element={<Festivals />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              <Route path="/filmmaker" element={<FilmmakerDashboard />} />
-              <Route path="/admin-login" element={<AdminLogin />} />
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/users" element={<AdminUsers />} />
-              <Route path="/admin/projects" element={<AdminProjects />} />
-              <Route path="/admin/festivals" element={<AdminFestivals />} />
-              <Route path="/admin/applications" element={<AdminApplications />} />
-              <Route path="/toolbox" element={<ToolboxHome />} />
-              <Route path="/submit" element={<MultiStepForm />} />
-              <Route path="/library" element={<DocsLibrary />} />
-              <Route path="/consulting" element={<ConsultingIntake />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </GlobalLayout>
+          <AppContent />
         </BrowserRouter>
       </TooltipProvider>
     </AuthProvider>
