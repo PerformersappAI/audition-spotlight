@@ -207,6 +207,15 @@ export const TopNavigation = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       )}
+
+      {/* Auth Button (only show if not logged in) */}
+      {!user && (
+        <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+          <Link to="/auth">
+            Create your account<span className="mx-2">|</span>Sign up
+          </Link>
+        </Button>
+      )}
     </nav>
   );
 };
