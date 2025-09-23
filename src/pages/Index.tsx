@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Users, Clock, Film, Trophy } from "lucide-react";
+import { MapPin, Calendar, Users, Clock, Film, Trophy, Drama, Video, FileVideo } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
@@ -260,9 +260,9 @@ const Index = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-gold/20 via-gold/40 to-gold/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-50"></div>
               <div className="relative bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight">
-                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-gold" />
+                  <Drama className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-gold rotate-12" />
                   Featured Casting Calls
-                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-gold" />
+                  <Drama className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-gold -rotate-12" />
                 </h2>
               </div>
               <div className="flex justify-center items-center gap-4 mt-4">
@@ -332,9 +332,9 @@ const Index = () => {
               <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-amber-500/40 to-amber-400/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-60"></div>
               <div className="relative">
                 <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-gradient-to-r from-amber-400 via-amber-300 to-amber-400 bg-clip-text text-transparent">
-                  <Trophy className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-amber-400" />
+                  <Video className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-amber-400" />
                   Featured Film Festivals
-                  <Trophy className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-amber-400" />
+                  <FileVideo className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-amber-400" />
                 </h2>
                 <div className="absolute -top-2 -right-2 w-4 h-4 bg-amber-400 rounded-full animate-ping opacity-75"></div>
                 <div className="absolute -top-1 -right-1 w-2 h-2 bg-amber-300 rounded-full"></div>
