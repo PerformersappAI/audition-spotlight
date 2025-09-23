@@ -127,6 +127,22 @@ ${directorContext ? `Consider these directorial perspectives in your analysis:\n
 
 Provide analysis in this exact JSON format:
 {
+  "sceneSynopsis": "Brief, engaging summary of the scene's main events and significance",
+  "castOfCharacters": [
+    {
+      "name": "Character Name",
+      "description": "Brief description of the character",
+      "role": "protagonist|antagonist|supporting|background"
+    }
+  ],
+  "characterDescriptions": [
+    {
+      "name": "Character Name",
+      "personality": "Key personality traits and characteristics",
+      "motivation": "What drives this character in this scene",
+      "arcTrajectory": "How this character develops or changes"
+    }
+  ],
   "emotionalBeats": ["beat1", "beat2", ...],
   "characterMotivations": ["motivation1", "motivation2", ...],
   "directorNotes": ["note1", "note2", ...],
@@ -184,6 +200,33 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
       console.error('Failed to parse AI response as JSON:', parseError);
       // Fallback to mock analysis if JSON parsing fails
       analysisResult = {
+        sceneSynopsis: `A compelling ${genre || 'drama'} scene exploring themes of conflict and character development`,
+        castOfCharacters: [
+          {
+            name: "Main Character",
+            description: "The central figure driving the scene",
+            role: "protagonist"
+          },
+          {
+            name: "Supporting Character", 
+            description: "Provides conflict and character development",
+            role: "supporting"
+          }
+        ],
+        characterDescriptions: [
+          {
+            name: "Main Character",
+            personality: "Complex and driven with clear objectives",
+            motivation: "Seeks resolution to central conflict",
+            arcTrajectory: "Moves from uncertainty to decisive action"
+          },
+          {
+            name: "Supporting Character",
+            personality: "Acts as catalyst for main character growth",
+            motivation: "Challenges protagonist's assumptions",
+            arcTrajectory: "Reveals hidden depths throughout scene"
+          }
+        ],
         emotionalBeats: [
           "Opening establishes character and world",
           "Rising tension builds toward conflict", 

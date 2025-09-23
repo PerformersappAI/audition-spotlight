@@ -33,6 +33,18 @@ interface ScriptAnalysis {
   characterCount: number;
   selectedDirectors: string[];
   analysisResult: {
+    sceneSynopsis: string;
+    castOfCharacters: Array<{
+      name: string;
+      description: string;
+      role: string;
+    }>;
+    characterDescriptions: Array<{
+      name: string;
+      personality: string;
+      motivation: string;
+      arcTrajectory: string;
+    }>;
     emotionalBeats: string[];
     characterMotivations: string[];
     directorNotes: string[];
@@ -157,6 +169,33 @@ const ScriptAnalysis = () => {
 
   const generateMockAnalysis = (script: typeof currentScript) => {
     return {
+      sceneSynopsis: `A compelling ${script.genre.toLowerCase()} scene that explores ${script.tone.toLowerCase()} themes through character interaction and conflict.`,
+      castOfCharacters: [
+        {
+          name: "Main Character",
+          description: "The central figure driving the scene's narrative",
+          role: "protagonist"
+        },
+        {
+          name: "Supporting Character",
+          description: "Provides counterpoint and conflict to the main character",
+          role: "supporting"
+        }
+      ],
+      characterDescriptions: [
+        {
+          name: "Main Character",
+          personality: "Complex and driven with internal contradictions",
+          motivation: "Seeks resolution to their central conflict",
+          arcTrajectory: "Moves from uncertainty toward decisive action"
+        },
+        {
+          name: "Supporting Character",
+          personality: "Acts as catalyst for main character's development",
+          motivation: "Challenges protagonist's assumptions",
+          arcTrajectory: "Reveals hidden depths as scene progresses"
+        }
+      ],
       emotionalBeats: [
         "Opening tension builds as protagonist faces internal conflict",
         "Mid-point revelation changes character perspective",
@@ -280,7 +319,77 @@ const ScriptAnalysis = () => {
     pdf.text(`Estimated Duration: ${selectedAnalysis.analysisResult.estimatedDuration}`, margin, yPosition);
     yPosition += 15;
 
+    // Scene Synopsis
+    if (selectedAnalysis.analysisResult.sceneSynopsis) {
+      pdf.setFontSize(14);
+      pdf.text('Scene Synopsis', margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      const synopsisLines = pdf.splitTextToSize(selectedAnalysis.analysisResult.sceneSynopsis, pageWidth - 2 * margin);
+      pdf.text(synopsisLines, margin, yPosition);
+      yPosition += synopsisLines.length * 5 + 10;
+    }
+
+    // Cast of Characters
+    if (selectedAnalysis.analysisResult.castOfCharacters?.length > 0) {
+      pdf.setFontSize(14);
+      pdf.text('Cast of Characters', margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      selectedAnalysis.analysisResult.castOfCharacters.forEach((character) => {
+        const characterText = `${character.name} (${character.role}): ${character.description}`;
+        const lines = pdf.splitTextToSize(characterText, pageWidth - 2 * margin);
+        pdf.text(lines, margin, yPosition);
+        yPosition += lines.length * 5 + 3;
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      });
+      yPosition += 10;
+    }
+
+    // Character Descriptions
+    if (selectedAnalysis.analysisResult.characterDescriptions?.length > 0) {
+      if (yPosition > 200) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+      pdf.setFontSize(14);
+      pdf.text('Character Analysis', margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      selectedAnalysis.analysisResult.characterDescriptions.forEach((character) => {
+        pdf.setFontSize(12);
+        pdf.text(character.name, margin, yPosition);
+        yPosition += 7;
+        pdf.setFontSize(10);
+        
+        const personalityLines = pdf.splitTextToSize(`• Personality: ${character.personality}`, pageWidth - 2 * margin);
+        pdf.text(personalityLines, margin, yPosition);
+        yPosition += personalityLines.length * 5;
+        
+        const motivationLines = pdf.splitTextToSize(`• Motivation: ${character.motivation}`, pageWidth - 2 * margin);
+        pdf.text(motivationLines, margin, yPosition);
+        yPosition += motivationLines.length * 5;
+        
+        const arcLines = pdf.splitTextToSize(`• Arc Trajectory: ${character.arcTrajectory}`, pageWidth - 2 * margin);
+        pdf.text(arcLines, margin, yPosition);
+        yPosition += arcLines.length * 5 + 8;
+        
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      });
+      yPosition += 10;
+    }
+
     // Emotional Beats
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
     pdf.setFontSize(14);
     pdf.text('Emotional Beats', margin, yPosition);
     yPosition += 10;
@@ -591,6 +700,72 @@ const ScriptAnalysis = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {/* Scene Synopsis */}
+                  {selectedAnalysis.analysisResult.sceneSynopsis && (
+                    <div className="mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
+                        📖 Scene Synopsis
+                      </h3>
+                      <p className="text-sm leading-relaxed">{selectedAnalysis.analysisResult.sceneSynopsis}</p>
+                    </div>
+                  )}
+
+                  {/* Cast of Characters */}
+                  {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                        🎭 Cast of Characters
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
+                          <Card key={index} className="border border-border/50">
+                            <CardContent className="p-4">
+                              <div className="flex items-start justify-between mb-2">
+                                <h4 className="font-medium text-sm">{character.name}</h4>
+                                <Badge variant="outline" className="text-xs">
+                                  {character.role}
+                                </Badge>
+                              </div>
+                              <p className="text-xs text-muted-foreground">{character.description}</p>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Character Descriptions */}
+                  {selectedAnalysis.analysisResult.characterDescriptions && selectedAnalysis.analysisResult.characterDescriptions.length > 0 && (
+                    <div className="mb-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                        👤 Character Analysis
+                      </h3>
+                      <div className="space-y-4">
+                        {selectedAnalysis.analysisResult.characterDescriptions.map((character, index) => (
+                          <Card key={index} className="border border-border/50">
+                            <CardContent className="p-4">
+                              <h4 className="font-medium text-sm mb-3">{character.name}</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                                <div>
+                                  <span className="font-medium text-primary">Personality:</span>
+                                  <p className="mt-1 text-muted-foreground">{character.personality}</p>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-primary">Motivation:</span>
+                                  <p className="mt-1 text-muted-foreground">{character.motivation}</p>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-primary">Arc Trajectory:</span>
+                                  <p className="mt-1 text-muted-foreground">{character.arcTrajectory}</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Emotional Beats */}
                     <div className="space-y-4">
