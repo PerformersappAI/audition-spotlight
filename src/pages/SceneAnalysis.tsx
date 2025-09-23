@@ -10,6 +10,26 @@ import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star } from "l
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Layout } from "@/components/Layout";
+import { supabase } from "@/integrations/supabase/client";
+
+interface Shot {
+  shotNumber: number;
+  description: string;
+  cameraAngle: string;
+  characters: string[];
+  visualElements: string;
+  duration: string;
+}
+
+interface StoryboardFrame {
+  shotNumber: number;
+  description: string;
+  cameraAngle: string;
+  characters: string[];
+  visualElements: string;
+  imageData?: string;
+  generatedAt?: string;
+}
 
 interface SceneAnalysis {
   id: string;
@@ -26,7 +46,9 @@ interface SceneAnalysis {
     estimatedDuration: string;
     difficultyLevel: "Beginner" | "Intermediate" | "Advanced";
     keyMoments: string[];
+    shots: Shot[];
   } | null;
+  storyboard?: StoryboardFrame[];
   createdAt: Date;
 }
 
@@ -41,6 +63,7 @@ const SceneAnalysis = () => {
   });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [selectedAnalysis, setSelectedAnalysis] = useState<SceneAnalysis | null>(null);
+  const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -109,6 +132,50 @@ const SceneAnalysis = () => {
       "Light-hearted": "Beginner",
       "Uplifting": "Beginner"
     };
+
+    // Generate shot breakdown
+    const shots: Shot[] = [
+      {
+        shotNumber: 1,
+        description: "Establishing shot of the location",
+        cameraAngle: "Wide shot",
+        characters: [],
+        visualElements: "Setting, environment, mood establishment",
+        duration: "5-8 seconds"
+      },
+      {
+        shotNumber: 2,
+        description: "Character introduction or entrance",
+        cameraAngle: "Medium shot",
+        characters: ["Main character"],
+        visualElements: "Character costume, posture, facial expression",
+        duration: "3-5 seconds"
+      },
+      {
+        shotNumber: 3,
+        description: "Dialogue or action sequence",
+        cameraAngle: "Close-up",
+        characters: ["Main character", "Secondary character"],
+        visualElements: "Facial expressions, emotions, props",
+        duration: "10-15 seconds"
+      },
+      {
+        shotNumber: 4,
+        description: "Reaction shot",
+        cameraAngle: "Medium close-up",
+        characters: ["Secondary character"],
+        visualElements: "Emotional response, body language",
+        duration: "3-5 seconds"
+      },
+      {
+        shotNumber: 5,
+        description: "Resolution or transition shot",
+        cameraAngle: "Wide shot or Medium shot",
+        characters: ["All present characters"],
+        visualElements: "Final positioning, scene conclusion",
+        duration: "5-8 seconds"
+      }
+    ];
     
     return {
       emotionalBeats: [
@@ -147,7 +214,8 @@ const SceneAnalysis = () => {
         "Physical action sequence",
         "Emotional climax dialogue",
         "Silent moment of realization"
-      ]
+      ],
+      shots
     };
   };
 
@@ -157,6 +225,52 @@ const SceneAnalysis = () => {
       case "Intermediate": return "bg-yellow-500";
       case "Advanced": return "bg-red-500";
       default: return "bg-gray-500";
+    }
+  };
+
+  const generateStoryboard = async () => {
+    if (!selectedAnalysis) return;
+
+    setGeneratingStoryboard(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-storyboard', {
+        body: {
+          shots: selectedAnalysis.analysisResult?.shots,
+          genre: selectedAnalysis.genre,
+          tone: selectedAnalysis.tone
+        }
+      });
+
+      if (error) throw error;
+
+      if (data?.success && data?.storyboard) {
+        // Update the selected analysis with storyboard data
+        const updatedAnalysis = {
+          ...selectedAnalysis,
+          storyboard: data.storyboard
+        };
+        
+        setSelectedAnalysis(updatedAnalysis);
+        
+        // Update the analyses array
+        setAnalyses(prev => prev.map(analysis => 
+          analysis.id === selectedAnalysis.id ? updatedAnalysis : analysis
+        ));
+
+        toast({
+          title: "Storyboard Generated",
+          description: `Successfully generated ${data.storyboard.length} storyboard frames`
+        });
+      }
+    } catch (error) {
+      console.error('Error generating storyboard:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to generate storyboard. Please try again."
+      });
+    } finally {
+      setGeneratingStoryboard(false);
     }
   };
 
@@ -312,11 +426,12 @@ SARAH: (softening) I... I don't know if I can.`}
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="overview" className="w-full">
-                    <TabsList className="grid w-full grid-cols-4">
+                    <TabsList className="grid w-full grid-cols-5">
                       <TabsTrigger value="overview">Overview</TabsTrigger>
                       <TabsTrigger value="directing">Directing</TabsTrigger>
                       <TabsTrigger value="casting">Casting</TabsTrigger>
                       <TabsTrigger value="technical">Technical</TabsTrigger>
+                      <TabsTrigger value="storyboard">Storyboard</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="overview" className="space-y-4">
@@ -409,6 +524,98 @@ SARAH: (softening) I... I don't know if I can.`}
                             </li>
                           ))}
                         </ul>
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent value="storyboard" className="space-y-4">
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-semibold">Shot Breakdown</h4>
+                          {!selectedAnalysis.storyboard && (
+                            <Button 
+                              onClick={generateStoryboard}
+                              disabled={generatingStoryboard}
+                              className="bg-primary hover:bg-primary/90"
+                            >
+                              {generatingStoryboard ? 'Generating...' : 'Generate Storyboard'}
+                            </Button>
+                          )}
+                        </div>
+
+                        {/* Shot Breakdown Table */}
+                        <div className="border rounded-lg overflow-hidden">
+                          <div className="bg-muted/50 px-4 py-2 font-medium text-sm border-b">
+                            Scene Shots ({selectedAnalysis.analysisResult?.shots?.length || 0} total)
+                          </div>
+                          <div className="divide-y">
+                            {selectedAnalysis.analysisResult?.shots?.map((shot, index) => (
+                              <div key={index} className="p-4 space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline">Shot {shot.shotNumber}</Badge>
+                                  <span className="text-sm font-medium">{shot.cameraAngle}</span>
+                                  <span className="text-xs text-muted-foreground">({shot.duration})</span>
+                                </div>
+                                <p className="text-sm">{shot.description}</p>
+                                {shot.characters.length > 0 && (
+                                  <div className="text-xs text-muted-foreground">
+                                    Characters: {shot.characters.join(', ')}
+                                  </div>
+                                )}
+                                <div className="text-xs text-muted-foreground">
+                                  Visual: {shot.visualElements}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* Storyboard Frames */}
+                        {selectedAnalysis.storyboard && (
+                          <div className="space-y-4">
+                            <h4 className="font-semibold">Visual Storyboard</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                              {selectedAnalysis.storyboard.map((frame, index) => (
+                                <div key={index} className="border rounded-lg overflow-hidden">
+                                  <div className="aspect-square bg-muted/50 relative">
+                                    {frame.imageData ? (
+                                      <img 
+                                        src={frame.imageData} 
+                                        alt={`Shot ${frame.shotNumber}`}
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                                        Generating...
+                                      </div>
+                                    )}
+                                    <div className="absolute top-2 left-2">
+                                      <Badge variant="secondary">Shot {frame.shotNumber}</Badge>
+                                    </div>
+                                  </div>
+                                  <div className="p-3 space-y-2">
+                                    <div className="text-sm font-medium">{frame.cameraAngle}</div>
+                                    <div className="text-xs text-muted-foreground line-clamp-2">
+                                      {frame.description}
+                                    </div>
+                                    {frame.characters.length > 0 && (
+                                      <div className="text-xs text-muted-foreground">
+                                        {frame.characters.join(', ')}
+                                      </div>
+                                    )}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {generatingStoryboard && (
+                          <div className="text-center py-8">
+                            <div className="text-sm text-muted-foreground">
+                              Generating storyboard frames... This may take a few moments.
+                            </div>
+                          </div>
+                        )}
                       </div>
                     </TabsContent>
                   </Tabs>
