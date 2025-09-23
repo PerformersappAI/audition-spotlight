@@ -6,7 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -29,29 +29,34 @@ serve(async (req) => {
       );
     }
 
-    if (!GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY not found in environment variables');
+    if (!OPENAI_API_KEY) {
+      console.error('OPENAI_API_KEY not found in environment variables');
       return new Response(
-        JSON.stringify({ error: 'Gemini API key not configured' }),
+        JSON.stringify({ error: 'OpenAI API key not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
 
     if (mimeType === 'application/pdf') {
       try {
-        console.log('Sending PDF to Gemini for processing...');
+        console.log('Sending PDF to OpenAI for processing...');
         
-        // Send PDF to Gemini for text extraction
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        // Convert PDF data to base64 if not already
+        const base64Data = fileData.startsWith('data:') ? fileData.split(',')[1] : fileData;
+        
+        // Send PDF to OpenAI for text extraction using vision model
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            contents: [{
-              parts: [
-                {
-                  text: `Please extract and clean the script text from this PDF document. Focus on:
+            model: 'gpt-4o', // Use vision-capable model for PDF processing
+            messages: [
+              {
+                role: 'system',
+                content: `You are a professional script formatting assistant. Extract and clean script text from the provided document. Focus on:
 1. Remove OCR artifacts, weird characters, and encoding issues
 2. Standardize character names to ALL CAPS format
 3. Clean up stage directions and put them in parentheses
@@ -62,32 +67,37 @@ serve(async (req) => {
 8. Remove any non-script content like title pages or notes
 
 Return only the cleaned script text with proper formatting. Do not add commentary.`
-                },
-                {
-                  inline_data: {
-                    mime_type: "application/pdf",
-                    data: fileData
+              },
+              {
+                role: 'user',
+                content: [
+                  {
+                    type: 'text',
+                    text: 'Please extract and clean the script text from this PDF document:'
+                  },
+                  {
+                    type: 'image_url',
+                    image_url: {
+                      url: `data:application/pdf;base64,${base64Data}`
+                    }
                   }
-                }
-              ]
-            }],
-            generationConfig: {
-              temperature: 0,
-              maxOutputTokens: 8192,
-            }
+                ]
+              }
+            ],
+            max_completion_tokens: 8000,
           })
         });
 
-        console.log(`Gemini response status: ${response.status}`);
+        console.log(`OpenAI response status: ${response.status}`);
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('Gemini API error:', response.status, errorText);
+          console.error('OpenAI API error:', response.status, errorText);
           
-          // Handle specific Gemini API errors more gracefully
+          // Handle specific OpenAI API errors more gracefully
           if (response.status === 503) {
             return new Response(JSON.stringify({ 
-              error: 'Gemini AI service is temporarily overloaded. Please try again in a few moments.',
+              error: 'OpenAI service is temporarily overloaded. Please try again in a few moments.',
               success: false,
               retryable: true
             }), {
@@ -107,12 +117,12 @@ Return only the cleaned script text with proper formatting. Do not add commentar
         }
 
         const result = await response.json();
-        console.log('Gemini response received');
+        console.log('OpenAI response received');
         
-        if (!result.candidates || !result.candidates[0] || !result.candidates[0].content) {
-          console.error('Unexpected Gemini response format:', result);
+        if (!result.choices || !result.choices[0] || !result.choices[0].message) {
+          console.error('Unexpected OpenAI response format:', result);
           return new Response(JSON.stringify({ 
-            error: 'No content returned from Gemini API',
+            error: 'No content returned from OpenAI API',
             success: false 
           }), {
             status: 500,
@@ -120,7 +130,7 @@ Return only the cleaned script text with proper formatting. Do not add commentar
           });
         }
 
-        const extractedText = result.candidates[0].content.parts[0].text;
+        const extractedText = result.choices[0].message.content;
         
         if (!extractedText || extractedText.trim().length === 0) {
           console.error('No text content extracted');
@@ -144,11 +154,11 @@ Return only the cleaned script text with proper formatting. Do not add commentar
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
         
-      } catch (geminiError) {
-        console.error('Gemini processing error:', geminiError);
+      } catch (openaiError) {
+        console.error('OpenAI processing error:', openaiError);
         return new Response(JSON.stringify({ 
-          error: "Failed to parse PDF with Gemini: " + (geminiError instanceof Error ? geminiError.message : geminiError),
-          success: false 
+          error: "Failed to parse PDF with OpenAI: " + (openaiError instanceof Error ? openaiError.message : openaiError),
+          success: false
         }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
