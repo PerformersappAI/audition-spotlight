@@ -1053,22 +1053,34 @@ const Storyboarding = () => {
                                </div>
                              </div>
                              
-                             {frame.imageData ? (
-                               <div className="aspect-video bg-muted rounded-lg overflow-hidden">
-                                 <img 
-                                   src={frame.imageData} 
-                                   alt={`Storyboard frame ${frame.shotNumber}`}
-                                   className="w-full h-full object-cover"
-                                 />
-                               </div>
-                             ) : (
-                               <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                 <div className="text-center">
-                                   <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                   <p className="text-sm text-muted-foreground">Frame generating...</p>
-                                 </div>
-                               </div>
-                             )}
+                              <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border">
+                                {frame.imageData ? (
+                                  <img 
+                                    src={frame.imageData} 
+                                    alt={`Storyboard frame ${frame.shotNumber}: ${frame.description}`}
+                                    className="w-full h-full object-contain bg-white"
+                                    onError={(e) => {
+                                      console.error('Failed to load storyboard image:', frame.imageData);
+                                      e.currentTarget.style.display = 'none';
+                                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                    }}
+                                  />
+                                ) : (
+                                  <div className="w-full h-full flex items-center justify-center bg-muted">
+                                    <div className="text-center">
+                                      <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                      <p className="text-sm text-muted-foreground">Generating frame...</p>
+                                    </div>
+                                  </div>
+                                )}
+                                {/* Fallback content for image load errors */}
+                                <div className="hidden w-full h-full flex items-center justify-center bg-muted">
+                                  <div className="text-center">
+                                    <Camera className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+                                    <p className="text-xs text-muted-foreground">Frame preview unavailable</p>
+                                  </div>
+                                </div>
+                              </div>
                              
                              <div className="space-y-2">
                                <div>
