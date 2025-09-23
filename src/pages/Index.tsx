@@ -92,49 +92,81 @@ const Index = () => {
               </div>
             )}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-5xl">
-              <div className="flex flex-col items-center gap-2">
-                <Button 
-                  variant="teal" 
-                  size="lg" 
-                  onClick={() => navigate('/auth')} 
-                  className="text-lg px-8 py-4 w-full"
-                >
-                  FILMMAKERS
-                </Button>
-                <p className="text-white text-sm font-medium">CREATE YOUR PROJECT</p>
+              <div className="flex flex-col items-center gap-3 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <Button 
+                    variant="teal" 
+                    size="lg" 
+                    onClick={() => navigate('/auth')} 
+                    className="text-lg px-8 py-4 w-full relative z-10 border border-teal-400/20"
+                  >
+                    <Film className="h-5 w-5 mr-2" />
+                    FILMMAKERS
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <p className="text-white text-sm font-medium tracking-wide">CREATE YOUR PROJECT</p>
+                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <Button 
-                  variant="burgundy" 
-                  size="lg" 
-                  onClick={() => navigate('/auth')} 
-                  className="text-lg px-8 py-4 w-full"
-                >
-                  ACTORS
-                </Button>
-                <p className="text-white text-sm font-medium">GET YOUR AUDITIONS</p>
+              <div className="flex flex-col items-center gap-3 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <Button 
+                    variant="burgundy" 
+                    size="lg" 
+                    onClick={() => navigate('/auth')} 
+                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
+                  >
+                    <Users className="h-5 w-5 mr-2" />
+                    ACTORS
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
+                  <p className="text-white text-sm font-medium tracking-wide">GET YOUR AUDITIONS</p>
+                  <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <Button 
-                  variant="burgundy" 
-                  size="lg" 
-                  onClick={() => navigate('/auth')} 
-                  className="text-lg px-8 py-4 w-full"
-                >
-                  CREW
-                </Button>
-                <p className="text-white text-sm font-medium">CREW JOBS</p>
+              <div className="flex flex-col items-center gap-3 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <Button 
+                    variant="burgundy" 
+                    size="lg" 
+                    onClick={() => navigate('/auth')} 
+                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
+                  >
+                    <Clock className="h-5 w-5 mr-2" />
+                    CREW
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                  <p className="text-white text-sm font-medium tracking-wide">CREW JOBS</p>
+                  <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                </div>
               </div>
-              <div className="flex flex-col items-center gap-2">
-                <Button 
-                  variant="burgundy" 
-                  size="lg" 
-                  onClick={() => navigate('/auth')} 
-                  className="text-lg px-8 py-4 w-full"
-                >
-                  FILM FESTIVALS
-                </Button>
-                <p className="text-white text-sm font-medium">ATTACH YOUR FILM</p>
+              <div className="flex flex-col items-center gap-3 group">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <Button 
+                    variant="burgundy" 
+                    size="lg" 
+                    onClick={() => navigate('/auth')} 
+                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
+                  >
+                    <Trophy className="h-5 w-5 mr-2" />
+                    FILM FESTIVALS
+                  </Button>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                  <p className="text-white text-sm font-medium tracking-wide">ATTACH YOUR FILM</p>
+                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
+                </div>
               </div>
             </div>
             
