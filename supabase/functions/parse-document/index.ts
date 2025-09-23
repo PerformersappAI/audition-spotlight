@@ -17,7 +17,10 @@ serve(async (req) => {
   console.log('Parse-document function called');
 
   try {
-    const { fileData, fileName, mimeType } = await req.json();
+    const { fileData, fileName, mimeType, idempotencyKey } = await req.json();
+    
+    // Log the request with idempotency key for debugging
+    console.log(`Processing request - File: ${fileName}, Idempotency Key: ${idempotencyKey || 'none'}`);
 
     console.log(`Processing file: ${fileName} (${mimeType})`);
 

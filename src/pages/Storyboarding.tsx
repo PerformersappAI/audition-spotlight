@@ -10,6 +10,7 @@ import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download,
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useOCRUpload } from "@/hooks/useOCRUpload";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 // Document parsing functionality
@@ -70,7 +71,7 @@ const Storyboarding = () => {
     tone: ""
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
-  const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
   const [selectedProject, setSelectedProject] = useState<StoryboardProject | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
@@ -100,126 +101,15 @@ const Storyboarding = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsProcessingFile(true);
-    
-    try {
-      if (file.type === "text/plain") {
-        const text = await file.text();
-        setCurrentProject(prev => ({ ...prev, scriptText: text }));
-        toast({
-          title: "Success",
-          description: "Script file loaded successfully"
-        });
-      } else if (file.type === "application/pdf") {
-        try {
-          toast({
-            title: "Processing PDF",
-            description: "Extracting text from PDF file..."
-          });
-          
-          // Convert file to base64 for document parsing
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            try {
-              const base64Data = e.target?.result as string;
-              const base64Content = base64Data.split(',')[1];
-              
-              // Use document parsing API
-              console.log('Calling parse-document function with file:', file.name);
-              const { data, error } = await supabase.functions.invoke('parse-document', {
-                body: { 
-                  fileData: base64Content,
-                  fileName: file.name,
-                  mimeType: file.type
-                }
-              });
-              
-              console.log('Parse-document response:', { data, error });
-              
-              if (error) {
-                console.error('Document parsing error:', error);
-                const errorMessage = error.message || error.toString();
-                
-                // Check if this is a retryable error (503 from Gemini)
-                if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
-                  toast({
-                    variant: "destructive",
-                    title: "Service Temporarily Unavailable", 
-                    description: "AI service is busy. Please try uploading again in a few moments.",
-                    action: (
-                      <Button
-                        variant="outline" 
-                        size="sm"
-                        onClick={() => {
-                          // Reset the file input to allow re-upload
-                          const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-                          if (fileInput) fileInput.value = '';
-                        }}
-                      >
-                        Try Again
-                      </Button>
-                    )
-                  });
-                } else {
-                  toast({
-                    variant: "destructive",
-                    title: "PDF Processing Failed", 
-                    description: `Failed to parse PDF: ${errorMessage}`
-                  });
-                }
-                return;
-              }
-              
-              if (data?.text && data.text.trim()) {
-                setCurrentProject(prev => ({ ...prev, scriptText: data.text }));
-                toast({
-                  title: "Success", 
-                  description: "PDF text extracted successfully!"
-                });
-              } else {
-                throw new Error("No readable text found in PDF. Please check if the file contains text or try a different format.");
-              }
-            } catch (parseError) {
-              console.error('Error in PDF processing:', parseError);
-              toast({
-                variant: "destructive",
-                title: "PDF Processing Failed", 
-                description: parseError instanceof Error ? parseError.message : "Failed to extract text from PDF"
-              });
-            }
-          };
-          
-          reader.onerror = () => {
-            toast({
-              variant: "destructive",
-              title: "Error",
-              description: "Failed to read PDF file"
-            });
-          };
-          
-          reader.readAsDataURL(file);
-          
-        } catch (error) {
-          console.error('Error processing PDF:', error);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: error instanceof Error ? error.message : "Failed to process PDF file"
-          });
-        }
-      } else {
-        throw new Error("Unsupported file type. Please upload PDF or text files.");
+    await processFile(
+      file,
+      (result) => {
+        setCurrentProject(prev => ({ ...prev, scriptText: result.text }));
+      },
+      (error) => {
+        console.error('File processing error:', error);
       }
-    } catch (error) {
-      console.error('Error processing file:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error ? error.message : "Failed to process file"
-      });
-    } finally {
-      setIsProcessingFile(false);
-    }
+    );
   };
 
   const parseScript = (scriptText: string) => {

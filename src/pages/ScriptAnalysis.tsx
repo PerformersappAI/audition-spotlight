@@ -12,6 +12,7 @@ import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, C
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useOCRUpload } from '@/hooks/useOCRUpload';
 import jsPDF from 'jspdf';
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
@@ -67,7 +68,7 @@ const ScriptAnalysis = () => {
     tone: ""
   });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [isProcessingFile, setIsProcessingFile] = useState(false);
+  const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
   const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysis | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
 
@@ -90,84 +91,15 @@ const ScriptAnalysis = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    setIsProcessingFile(true);
-    
-    try {
-      if (file.type === "text/plain") {
-        // Handle text files directly
-        const text = await file.text();
-        setCurrentScript(prev => ({ ...prev, scriptText: text }));
-        toast.success("Text file loaded successfully");
-      } else if (file.type === "application/pdf") {
-        // Handle PDF files with actual OCR
-        try {
-          toast.info("Extracting text from PDF file...");
-          
-          // Create a temporary file path for the uploaded PDF
-          const tempFileName = `temp-pdf-${Date.now()}.pdf`;
-          const formData = new FormData();
-          formData.append('file', file);
-          
-          // Convert file to base64 for document parsing
-          const reader = new FileReader();
-          reader.onload = async (e) => {
-            try {
-              const base64Data = e.target?.result as string;
-              const base64Content = base64Data.split(',')[1];
-              
-              // Use document parsing API
-              const { data, error } = await supabase.functions.invoke('parse-document', {
-                body: { 
-                  fileData: base64Content,
-                  fileName: file.name,
-                  mimeType: file.type
-                }
-              });
-              
-              if (error) {
-                console.error('Document parsing error:', error);
-                const errorMessage = error.message || error.toString();
-                
-                // Check if this is a retryable error (503 from Gemini)
-                if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
-                  toast.error("AI service is busy. Please try uploading again in a few moments.");
-                } else {
-                  toast.error(`Failed to parse PDF: ${errorMessage}`);
-                }
-                return;
-              }
-              
-              if (data?.text && data.text.trim()) {
-                setCurrentScript(prev => ({ ...prev, scriptText: data.text }));
-                toast.success("PDF text extracted successfully!");
-              } else {
-                throw new Error("No readable text found in PDF. Please check if the file contains text or try a different format.");
-              }
-            } catch (parseError) {
-              console.error('Error in PDF processing:', parseError);
-              toast.error(parseError instanceof Error ? parseError.message : "Failed to extract text from PDF");
-            }
-          };
-          
-          reader.onerror = () => {
-            toast.error("Failed to read PDF file");
-          };
-          
-          reader.readAsDataURL(file);
-          
-        } catch (error) {
-          console.error('Error processing PDF:', error);
-          toast.error(error instanceof Error ? error.message : "Failed to process PDF file");
-        }
-      } else {
-        throw new Error("Unsupported file type. Please upload PDF or text files.");
+    await processFile(
+      file,
+      (result) => {
+        setCurrentScript(prev => ({ ...prev, scriptText: result.text }));
+      },
+      (error) => {
+        console.error('File processing error:', error);
       }
-    } catch (error) {
-      console.error('Error processing file:', error);
-      toast.error(error instanceof Error ? error.message : "Failed to process file");
-    } finally {
-      setIsProcessingFile(false);
-    }
+    );
   };
 
   const countCharacters = (text: string): number => {
