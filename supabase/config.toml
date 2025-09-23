@@ -36,3 +36,6 @@ enable_confirmations = false
 
 [functions.generate-storyboard]
 verify_jwt = false
+
+[functions.parse-document]
+verify_jwt = false

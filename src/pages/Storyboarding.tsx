@@ -125,6 +125,7 @@ const Storyboarding = () => {
               const base64Content = base64Data.split(',')[1];
               
               // Use document parsing API
+              console.log('Calling parse-document function with file:', file.name);
               const { data, error } = await supabase.functions.invoke('parse-document', {
                 body: { 
                   fileData: base64Content,
@@ -133,9 +134,11 @@ const Storyboarding = () => {
                 }
               });
               
+              console.log('Parse-document response:', { data, error });
+              
               if (error) {
                 console.error('Document parsing error:', error);
-                throw new Error("Failed to parse PDF. Please ensure the file contains readable text.");
+                throw new Error(`Failed to parse PDF: ${error.message || error.toString()}`);
               }
               
               if (data?.text && data.text.trim()) {
