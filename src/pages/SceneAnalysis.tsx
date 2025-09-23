@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star } from "lucide-react";
+import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface Shot {
   shotNumber: number;
@@ -235,6 +237,177 @@ const SceneAnalysis = () => {
     }
   };
 
+  const exportSceneAnalysisToPDF = async () => {
+    if (!selectedAnalysis?.analysisResult) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+
+    // Title
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text('Scene Analysis Report', margin, yPosition);
+    yPosition += 15;
+
+    // Basic Info
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Characters: ${selectedAnalysis.characterCount}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Difficulty: ${selectedAnalysis.analysisResult.difficultyLevel}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Estimated Duration: ${selectedAnalysis.analysisResult.estimatedDuration}`, margin, yPosition);
+    yPosition += 15;
+
+    // Scene Text Preview
+    pdf.setFontSize(14);
+    pdf.text('Scene Text Preview', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(9);
+    const scenePreview = selectedAnalysis.sceneText.substring(0, 500) + (selectedAnalysis.sceneText.length > 500 ? '...' : '');
+    const sceneLines = pdf.splitTextToSize(scenePreview, pageWidth - 2 * margin);
+    pdf.text(sceneLines, margin, yPosition);
+    yPosition += sceneLines.length * 4 + 10;
+
+    // Emotional Beats
+    pdf.setFontSize(14);
+    pdf.text('Emotional Beats', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.emotionalBeats.forEach((beat, index) => {
+      const lines = pdf.splitTextToSize(`${index + 1}. ${beat}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    yPosition += 10;
+
+    // Check if we need a new page
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+
+    // Character Motivations
+    pdf.setFontSize(14);
+    pdf.text('Character Motivations', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.characterMotivations.forEach((motivation) => {
+      const lines = pdf.splitTextToSize(`• ${motivation}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    yPosition += 10;
+
+    // Director Notes
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text('Director Notes', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.directorNotes.forEach((note) => {
+      const lines = pdf.splitTextToSize(`• ${note}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+
+    // Save the PDF
+    pdf.save(`scene-analysis-${selectedAnalysis.genre || 'untitled'}-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF Exported",
+      description: "Scene analysis has been exported successfully"
+    });
+  };
+
+  const exportStoryboardToPDF = async () => {
+    if (!selectedAnalysis?.storyboard) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+
+    // Title
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text('Storyboard Report', margin, yPosition);
+    yPosition += 15;
+
+    // Basic Info
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 15;
+
+    // Storyboard Frames
+    for (const frame of selectedAnalysis.storyboard) {
+      if (yPosition > 200) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+
+      pdf.setFontSize(14);
+      pdf.text(`Shot ${frame.shotNumber}`, margin, yPosition);
+      yPosition += 10;
+
+      pdf.setFontSize(10);
+      pdf.text(`Camera: ${frame.cameraAngle}`, margin, yPosition);
+      yPosition += 7;
+      pdf.text(`Characters: ${frame.characters.join(', ')}`, margin, yPosition);
+      yPosition += 7;
+
+      const descLines = pdf.splitTextToSize(`Description: ${frame.description}`, pageWidth - 2 * margin);
+      pdf.text(descLines, margin, yPosition);
+      yPosition += descLines.length * 5;
+
+      const visualLines = pdf.splitTextToSize(`Visual Elements: ${frame.visualElements}`, pageWidth - 2 * margin);
+      pdf.text(visualLines, margin, yPosition);
+      yPosition += visualLines.length * 5 + 10;
+
+      // Add image if available
+      if (frame.imageData) {
+        try {
+          pdf.addImage(frame.imageData, 'JPEG', margin, yPosition, 80, 60);
+          yPosition += 70;
+        } catch (error) {
+          console.error('Error adding image to PDF:', error);
+        }
+      }
+
+      yPosition += 10;
+    }
+
+    // Save the PDF
+    pdf.save(`storyboard-${selectedAnalysis.genre || 'untitled'}-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF Exported",
+      description: "Storyboard has been exported successfully"
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
@@ -362,10 +535,16 @@ const SceneAnalysis = () => {
 
           {/* Results Section */}
           {selectedAnalysis?.analysisResult ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Analysis Results</CardTitle>
-              </CardHeader>
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Analysis Results</CardTitle>
+                    <Button onClick={exportSceneAnalysisToPDF} size="sm" variant="outline">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export Analysis PDF
+                    </Button>
+                  </div>
+                </CardHeader>
               <CardContent>
                 <Tabs defaultValue="overview" className="w-full">
                   <TabsList className="grid w-full grid-cols-5">
@@ -510,14 +689,22 @@ const SceneAnalysis = () => {
                           <Video className="h-5 w-5" />
                           Shot Breakdown
                         </h3>
-                        <Button 
-                          onClick={generateStoryboard}
-                          disabled={generatingStoryboard}
-                          variant="outline"
-                        >
-                          {generatingStoryboard ? "Generating..." : "Generate Visual Storyboard"}
-                        </Button>
-                      </div>
+                         <div className="flex gap-2">
+                           <Button 
+                             onClick={generateStoryboard}
+                             disabled={generatingStoryboard}
+                             size="sm"
+                           >
+                             {generatingStoryboard ? "Generating..." : "Generate Visual Storyboard"}
+                           </Button>
+                           {selectedAnalysis?.storyboard && (
+                             <Button onClick={exportStoryboardToPDF} size="sm" variant="outline">
+                               <Download className="h-4 w-4 mr-2" />
+                               Export Storyboard PDF
+                             </Button>
+                           )}
+                         </div>
+                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {selectedAnalysis.analysisResult.shots.map((shot) => (

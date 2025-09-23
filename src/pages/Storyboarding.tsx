@@ -6,10 +6,12 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 // Document parsing functionality implemented below
 
 interface Shot {
@@ -321,6 +323,74 @@ FADE TO BLACK.`;
     toast({
       title: "Shot Updated",
       description: "Shot has been updated successfully"
+    });
+  };
+
+  const exportStoryboardToPDF = async () => {
+    if (!selectedProject?.storyboard) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+
+    // Title
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text('Storyboard Report', margin, yPosition);
+    yPosition += 15;
+
+    // Basic Info
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedProject.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedProject.tone}`, margin, yPosition);
+    yPosition += 15;
+
+    // Storyboard Frames
+    for (const frame of selectedProject.storyboard) {
+      if (yPosition > 200) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+
+      pdf.setFontSize(14);
+      pdf.text(`Shot ${frame.shotNumber}`, margin, yPosition);
+      yPosition += 10;
+
+      pdf.setFontSize(10);
+      pdf.text(`Camera: ${frame.cameraAngle}`, margin, yPosition);
+      yPosition += 7;
+      pdf.text(`Characters: ${frame.characters.join(', ')}`, margin, yPosition);
+      yPosition += 7;
+
+      const descLines = pdf.splitTextToSize(`Description: ${frame.description}`, pageWidth - 2 * margin);
+      pdf.text(descLines, margin, yPosition);
+      yPosition += descLines.length * 5;
+
+      const visualLines = pdf.splitTextToSize(`Visual Elements: ${frame.visualElements}`, pageWidth - 2 * margin);
+      pdf.text(visualLines, margin, yPosition);
+      yPosition += visualLines.length * 5 + 10;
+
+      // Add image if available
+      if (frame.imageData) {
+        try {
+          pdf.addImage(frame.imageData, 'JPEG', margin, yPosition, 80, 60);
+          yPosition += 70;
+        } catch (error) {
+          console.error('Error adding image to PDF:', error);
+        }
+      }
+
+      yPosition += 10;
+    }
+
+    // Save the PDF
+    pdf.save(`storyboard-${selectedProject.genre || 'untitled'}-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF Exported",
+      description: "Storyboard has been exported successfully"
     });
   };
 
@@ -636,10 +706,16 @@ FADE TO BLACK.`;
               {selectedProject.storyboard && (
                 <Card className="border-2 border-primary/20 shadow-lg">
                   <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                      <Video className="h-5 w-5" />
-                      Visual Storyboard
-                    </CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="flex items-center gap-2">
+                        <Video className="h-5 w-5" />
+                        Visual Storyboard
+                      </CardTitle>
+                      <Button onClick={exportStoryboardToPDF} size="sm" variant="outline">
+                        <Download className="h-4 w-4 mr-2" />
+                        Export PDF
+                      </Button>
+                    </div>
                   </CardHeader>
                   <CardContent>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

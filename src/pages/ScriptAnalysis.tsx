@@ -6,9 +6,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Brain, FileText, Upload, Loader2 } from "lucide-react";
+import { Brain, FileText, Upload, Loader2, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import jsPDF from 'jspdf';
 // Document parsing functionality implemented below
 
 interface ScriptAnalysis {
@@ -248,6 +249,129 @@ FADE OUT.`;
     }
   };
 
+  const exportAnalysisToPDF = () => {
+    if (!selectedAnalysis?.analysisResult) return;
+
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+
+    // Title
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text('Script Analysis Report', margin, yPosition);
+    yPosition += 15;
+
+    // Basic Info
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Characters: ${selectedAnalysis.characterCount}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Difficulty: ${selectedAnalysis.analysisResult.difficultyLevel}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Estimated Duration: ${selectedAnalysis.analysisResult.estimatedDuration}`, margin, yPosition);
+    yPosition += 15;
+
+    // Emotional Beats
+    pdf.setFontSize(14);
+    pdf.text('Emotional Beats', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.emotionalBeats.forEach((beat, index) => {
+      const lines = pdf.splitTextToSize(`${index + 1}. ${beat}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+    });
+    yPosition += 10;
+
+    // Character Motivations
+    pdf.setFontSize(14);
+    pdf.text('Character Motivations', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.characterMotivations.forEach((motivation, index) => {
+      const lines = pdf.splitTextToSize(`• ${motivation}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+    });
+    yPosition += 10;
+
+    // Check if we need a new page
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+
+    // Director Notes
+    pdf.setFontSize(14);
+    pdf.text('Director Notes', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.directorNotes.forEach((note, index) => {
+      const lines = pdf.splitTextToSize(`• ${note}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+
+    // Check if we need a new page
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+
+    // Casting Tips
+    pdf.setFontSize(14);
+    pdf.text('Casting Tips', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.castingTips.forEach((tip, index) => {
+      const lines = pdf.splitTextToSize(`• ${tip}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+
+    // Check if we need a new page
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+
+    // Technical Requirements
+    pdf.setFontSize(14);
+    pdf.text('Technical Requirements', margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.technicalRequirements.forEach((req, index) => {
+      const lines = pdf.splitTextToSize(`• ${req}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+
+    // Save the PDF
+    pdf.save(`script-analysis-${selectedAnalysis.genre || 'untitled'}-${new Date().toISOString().split('T')[0]}.pdf`);
+    
+    toast({
+      title: "PDF Exported",
+      description: "Script analysis has been exported successfully"
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
@@ -410,10 +534,16 @@ FADE OUT.`;
             <div className="mt-8">
               <Card className="border-2 border-primary/20 shadow-lg">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Brain className="h-5 w-5" />
-                    Analysis Results
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="flex items-center gap-2">
+                      <Brain className="h-5 w-5" />
+                      Analysis Results
+                    </CardTitle>
+                    <Button onClick={exportAnalysisToPDF} size="sm" variant="outline">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export PDF
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
