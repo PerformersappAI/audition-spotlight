@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -55,6 +55,8 @@ const Storyboarding = () => {
   const [isProcessingFile, setIsProcessingFile] = useState(false);
   const [selectedProject, setSelectedProject] = useState<StoryboardProject | null>(null);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
+  const [editingShot, setEditingShot] = useState<number | null>(null);
+  const [editValues, setEditValues] = useState<Partial<Shot>>({});
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -287,6 +289,41 @@ FADE TO BLACK.`;
     }
   };
 
+  const startEditingShot = (shot: Shot) => {
+    setEditingShot(shot.shotNumber);
+    setEditValues(shot);
+  };
+
+  const cancelEditingShot = () => {
+    setEditingShot(null);
+    setEditValues({});
+  };
+
+  const saveEditedShot = () => {
+    if (!selectedProject || !editingShot) return;
+
+    const updatedShots = selectedProject.shots.map(shot => 
+      shot.shotNumber === editingShot 
+        ? { ...shot, ...editValues }
+        : shot
+    );
+
+    const updatedProject = {
+      ...selectedProject,
+      shots: updatedShots
+    };
+
+    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+    setSelectedProject(updatedProject);
+    setEditingShot(null);
+    setEditValues({});
+
+    toast({
+      title: "Shot Updated",
+      description: "Shot has been updated successfully"
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
@@ -477,47 +514,122 @@ FADE TO BLACK.`;
                     </Button>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {selectedProject.shots.map((shot) => (
-                      <Card key={shot.shotNumber} className="border border-border">
-                        <CardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <Badge variant="secondary">Shot {shot.shotNumber}</Badge>
-                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                              <Clock className="h-3 w-3" />
-                              {shot.duration}
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent className="space-y-3">
-                          <div>
-                            <h4 className="font-medium text-sm mb-1">Description</h4>
-                            <p className="text-sm text-muted-foreground">{shot.description}</p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
-                            <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-sm mb-1">Visual Elements</h4>
-                            <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
-                          </div>
-                          <div>
-                            <h4 className="font-medium text-sm mb-1">Characters</h4>
-                            <div className="flex flex-wrap gap-1">
-                              {shot.characters.map((character, index) => (
-                                <Badge key={index} variant="outline" className="text-xs">
-                                  {character}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </CardContent>
+                 <CardContent>
+                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                     {selectedProject.shots.map((shot) => (
+                       <Card key={shot.shotNumber} className="border border-border">
+                         <CardHeader className="pb-3">
+                           <div className="flex items-center justify-between">
+                             <Badge variant="secondary">Shot {shot.shotNumber}</Badge>
+                             <div className="flex items-center gap-2">
+                               {editingShot === shot.shotNumber ? (
+                                 <div className="flex items-center gap-1">
+                                   <Button
+                                     size="sm"
+                                     variant="ghost"
+                                     onClick={saveEditedShot}
+                                     className="h-6 w-6 p-0"
+                                   >
+                                     <Save className="h-3 w-3" />
+                                   </Button>
+                                   <Button
+                                     size="sm"
+                                     variant="ghost"
+                                     onClick={cancelEditingShot}
+                                     className="h-6 w-6 p-0"
+                                   >
+                                     <X className="h-3 w-3" />
+                                   </Button>
+                                 </div>
+                               ) : (
+                                 <Button
+                                   size="sm"
+                                   variant="ghost"
+                                   onClick={() => startEditingShot(shot)}
+                                   className="h-6 w-6 p-0"
+                                 >
+                                   <Edit2 className="h-3 w-3" />
+                                 </Button>
+                               )}
+                               <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                                 <Clock className="h-3 w-3" />
+                                 {editingShot === shot.shotNumber ? (
+                                   <Input
+                                     value={editValues.duration || shot.duration}
+                                     onChange={(e) => setEditValues(prev => ({ ...prev, duration: e.target.value }))}
+                                     className="h-5 w-16 text-xs"
+                                   />
+                                 ) : (
+                                   shot.duration
+                                 )}
+                               </div>
+                             </div>
+                           </div>
+                         </CardHeader>
+                         <CardContent className="space-y-3">
+                           <div>
+                             <h4 className="font-medium text-sm mb-1">Description</h4>
+                             {editingShot === shot.shotNumber ? (
+                               <Textarea
+                                 value={editValues.description || shot.description}
+                                 onChange={(e) => setEditValues(prev => ({ ...prev, description: e.target.value }))}
+                                 className="text-sm min-h-[60px]"
+                               />
+                             ) : (
+                               <p className="text-sm text-muted-foreground">{shot.description}</p>
+                             )}
+                           </div>
+                           <div>
+                             <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                             {editingShot === shot.shotNumber ? (
+                               <Input
+                                 value={editValues.cameraAngle || shot.cameraAngle}
+                                 onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                 className="text-sm"
+                               />
+                             ) : (
+                               <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                             )}
+                           </div>
+                           <div>
+                             <h4 className="font-medium text-sm mb-1">Visual Elements</h4>
+                             {editingShot === shot.shotNumber ? (
+                               <Textarea
+                                 value={editValues.visualElements || shot.visualElements}
+                                 onChange={(e) => setEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
+                                 className="text-sm min-h-[60px]"
+                               />
+                             ) : (
+                               <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
+                             )}
+                           </div>
+                           <div>
+                             <h4 className="font-medium text-sm mb-1">Characters</h4>
+                             {editingShot === shot.shotNumber ? (
+                               <Input
+                                 value={editValues.characters?.join(', ') || shot.characters.join(', ')}
+                                 onChange={(e) => setEditValues(prev => ({ 
+                                   ...prev, 
+                                   characters: e.target.value.split(',').map(s => s.trim()).filter(s => s) 
+                                 }))}
+                                 className="text-sm"
+                                 placeholder="Enter characters separated by commas"
+                               />
+                             ) : (
+                               <div className="flex flex-wrap gap-1">
+                                 {shot.characters.map((character, index) => (
+                                   <Badge key={index} variant="outline" className="text-xs">
+                                     {character}
+                                   </Badge>
+                                 ))}
+                               </div>
+                             )}
+                           </div>
+                         </CardContent>
+                       </Card>
+                     ))}
+                   </div>
+                 </CardContent>
               </Card>
 
               {/* Visual Storyboard Frames */}
