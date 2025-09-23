@@ -35,40 +35,31 @@ export default function ToolboxHome() {
       route: "/storyboarding"
     },
     {
-      id: "scene_analysis",
-      name: "Scene Analysis",
-      description: "Detailed scene breakdown and analysis for better storytelling",
-      icon: FileText,
-      status: "active",
-      badge: "AI Enhanced",
-      route: "/scene-analysis"
-    },
-    {
-      id: "festivals",
-      name: "Festival Browser & Submitter",
-      description: "Browse 2,000+ festivals worldwide with AI-powered matching and direct submission links",
-      icon: Trophy,
-      status: "active",
-      badge: "AI Enhanced",
-      route: "/festivals"
-    },
-    {
-      id: "auditions",
-      name: "Upload Auditions",
-      description: "Upload and manage audition tapes and casting materials",
+      id: "create_auditions",
+      name: "Create Auditions",
+      description: "Create and manage audition opportunities for your projects",
       icon: Users,
       status: "active",
       badge: "Core Tool",
-      route: "/upload-auditions"
+      route: "/create-auditions"
     },
     {
-      id: "calendar",
-      name: "Production Calendar",
-      description: "Schedule shoots, meetings, and production milestones",
-      icon: MapPin,
+      id: "cast_crew_board",
+      name: "Cast and Crew Board",
+      description: "Find and connect with talented cast and crew members",
+      icon: Users,
       status: "active",
-      badge: "Productivity",
-      route: "/calendar"
+      badge: "Community",
+      route: "/cast-crew-board"
+    },
+    {
+      id: "festival_submitter",
+      name: "Festival Submitter",
+      description: "Submit your projects to film festivals with AI-powered recommendations",
+      icon: Trophy,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/festival-submitter"
     },
     {
       id: "docs_library",
@@ -80,15 +71,6 @@ export default function ToolboxHome() {
       route: "/library"
     },
     {
-      id: "applications",
-      name: "Applications",
-      description: "Track and manage your project applications and submissions",
-      icon: Trophy,
-      status: "active",
-      badge: "Core Tool",
-      route: "/applications"
-    },
-    {
       id: "concierge",
       name: "Concierge / Consulting",
       description: "Direct access to our producer desk for guidance",
@@ -96,6 +78,24 @@ export default function ToolboxHome() {
       status: "active",
       badge: "Human Support",
       route: "/consulting"
+    },
+    {
+      id: "calendar",
+      name: "Production Calendar",
+      description: "Schedule shoots, meetings, and production milestones",
+      icon: MapPin,
+      status: "active",
+      badge: "Productivity",
+      route: "/calendar"
+    },
+    {
+      id: "browse_festivals",
+      name: "Browse Festivals and Submit",
+      description: "Browse 2,000+ festivals worldwide and submit directly",
+      icon: Trophy,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/festivals"
     }
   ]);
 
