@@ -31,6 +31,9 @@ interface Shot {
   characters: string[];
   visualElements: string;
   duration: string;
+  scriptSegment: string;
+  dialogueLines: string[];
+  sceneAction: string;
 }
 
 interface StoryboardFrame {
@@ -39,6 +42,9 @@ interface StoryboardFrame {
   cameraAngle: string;
   characters: string[];
   visualElements: string;
+  scriptSegment: string;
+  dialogueLines: string[];
+  sceneAction: string;
   imageData?: string;
   generatedAt?: string;
 }
@@ -184,31 +190,71 @@ const Storyboarding = () => {
     }
   };
 
+  const parseScript = (scriptText: string) => {
+    // Extract character names (typically in ALL CAPS)
+    const characterMatches = scriptText.match(/^[A-Z][A-Z\s]+(?=\n|\r)/gm) || [];
+    const characters = [...new Set(characterMatches.map(name => name.trim()))];
+    
+    // Split script into segments by scene breaks or character dialogue
+    const segments = scriptText.split(/\n\s*\n/).filter(seg => seg.trim());
+    
+    // Extract dialogue and actions
+    const dialoguePattern = /^([A-Z][A-Z\s]+)\s*\n(.+?)(?=\n[A-Z][A-Z\s]+|$)/gms;
+    const actionPattern = /^\((.+?)\)|^([^A-Z\n].+?)$/gm;
+    
+    return { characters, segments, dialoguePattern, actionPattern };
+  };
+
   const countCharacters = (text: string): number => {
-    const characterNames = text.match(/^[A-Z][A-Z\s]+$/gm) || [];
-    return new Set(characterNames.map(name => name.trim())).size;
+    const { characters } = parseScript(text);
+    return characters.length;
   };
 
   const generateShotBreakdown = (script: typeof currentProject): Shot[] => {
-    const shotCount = Math.max(3, Math.min(8, Math.floor(script.scriptText.length / 200)));
+    const { characters, segments } = parseScript(script.scriptText);
+    const shotCount = Math.max(3, Math.min(8, segments.length));
     const shots: Shot[] = [];
 
     for (let i = 1; i <= shotCount; i++) {
       const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view"];
       const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle"];
       
+      // Get the corresponding script segment
+      const segmentIndex = Math.floor((i - 1) * segments.length / shotCount);
+      const scriptSegment = segments[segmentIndex] || segments[0];
+      
+      // Extract dialogue from this segment
+      const dialogueMatches = scriptSegment.match(/^([A-Z][A-Z\s]+)\s*\n(.+?)$/gm) || [];
+      const dialogueLines = dialogueMatches.map(match => {
+        const lines = match.split('\n');
+        return lines.slice(1).join(' ').trim();
+      });
+      
+      // Extract scene action/description
+      const actionMatches = scriptSegment.match(/^\((.+?)\)|^([^A-Z\n].+?)$/gm) || [];
+      const sceneAction = actionMatches.join(' ').trim();
+      
+      // Get characters from this segment
+      const segmentCharacters = characters.filter(char => 
+        scriptSegment.toUpperCase().includes(char)
+      ).slice(0, 3);
+      
+      const selectedShotType = shotTypes[Math.floor(Math.random() * shotTypes.length)];
+      const selectedAngle = cameraAngles[Math.floor(Math.random() * cameraAngles.length)];
+      
       shots.push({
         shotNumber: i,
-        description: `Shot ${i}: ${script.genre === "Action" ? "Dynamic movement sequence" : 
-                     script.tone === "Intimate" ? "Character emotional moment" : 
-                     "Key narrative beat"}`,
-        cameraAngle: `${shotTypes[Math.floor(Math.random() * shotTypes.length)]} - ${cameraAngles[Math.floor(Math.random() * cameraAngles.length)]}`,
-        characters: [`Character ${Math.floor(Math.random() * 3) + 1}`],
+        description: `${selectedShotType}: ${sceneAction || dialogueLines[0] || 'Key scene moment'}`,
+        cameraAngle: `${selectedShotType} - ${selectedAngle}`,
+        characters: segmentCharacters.length > 0 ? segmentCharacters : characters.slice(0, 2),
         visualElements: script.genre === "Horror" ? "Dark lighting, shadows" :
                        script.genre === "Comedy" ? "Bright, colorful setting" :
                        script.tone === "Epic" ? "Dramatic wide landscape" :
                        "Natural lighting, realistic setting",
-        duration: `${Math.floor(Math.random() * 10) + 5} seconds`
+        duration: `${Math.floor(Math.random() * 10) + 5} seconds`,
+        scriptSegment: scriptSegment.substring(0, 200) + (scriptSegment.length > 200 ? '...' : ''),
+        dialogueLines: dialogueLines,
+        sceneAction: sceneAction || 'Scene action from script'
       });
     }
 
@@ -260,11 +306,9 @@ const Storyboarding = () => {
       const { data, error } = await supabase.functions.invoke('generate-storyboard', {
         body: {
           shots: selectedProject.shots,
-          sceneDetails: {
-            genre: selectedProject.genre,
-            tone: selectedProject.tone,
-            scriptText: selectedProject.scriptText.substring(0, 500)
-          }
+          genre: selectedProject.genre,
+          tone: selectedProject.tone,
+          scriptText: selectedProject.scriptText
         }
       });
 
@@ -481,6 +525,21 @@ const Storyboarding = () => {
       yPosition += 7;
       pdf.text(`Characters: ${frame.characters.join(', ')}`, margin, yPosition);
       yPosition += 7;
+
+      // Add script context
+      if (frame.scriptSegment) {
+        const scriptLines = pdf.splitTextToSize(`Script Context: "${frame.scriptSegment}"`, pageWidth - 2 * margin);
+        pdf.text(scriptLines, margin, yPosition);
+        yPosition += scriptLines.length * 5;
+      }
+
+      // Add dialogue
+      if (frame.dialogueLines && frame.dialogueLines.length > 0) {
+        const dialogueText = `Dialogue: ${frame.dialogueLines.join(' ')}`;
+        const dialogueLines = pdf.splitTextToSize(dialogueText, pageWidth - 2 * margin);
+        pdf.text(dialogueLines, margin, yPosition);
+        yPosition += dialogueLines.length * 5;
+      }
 
       const descLines = pdf.splitTextToSize(`Description: ${frame.description}`, pageWidth - 2 * margin);
       pdf.text(descLines, margin, yPosition);
@@ -830,28 +889,56 @@ const Storyboarding = () => {
                                <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
                              )}
                            </div>
-                           <div>
-                             <h4 className="font-medium text-sm mb-1">Characters</h4>
-                             {editingShot === shot.shotNumber ? (
-                               <Input
-                                 value={editValues.characters?.join(', ') || shot.characters.join(', ')}
-                                 onChange={(e) => setEditValues(prev => ({ 
-                                   ...prev, 
-                                   characters: e.target.value.split(',').map(s => s.trim()).filter(s => s) 
-                                 }))}
-                                 className="text-sm"
-                                 placeholder="Enter characters separated by commas"
-                               />
-                             ) : (
-                               <div className="flex flex-wrap gap-1">
-                                 {shot.characters.map((character, index) => (
-                                   <Badge key={index} variant="outline" className="text-xs">
-                                     {character}
-                                   </Badge>
-                                 ))}
-                               </div>
-                             )}
-                           </div>
+                            <div>
+                              <h4 className="font-medium text-sm mb-1">Characters</h4>
+                              {editingShot === shot.shotNumber ? (
+                                <Input
+                                  value={editValues.characters?.join(', ') || shot.characters.join(', ')}
+                                  onChange={(e) => setEditValues(prev => ({ 
+                                    ...prev, 
+                                    characters: e.target.value.split(',').map(s => s.trim()).filter(s => s) 
+                                  }))}
+                                  className="text-sm"
+                                  placeholder="Enter characters separated by commas"
+                                />
+                              ) : (
+                                <div className="flex flex-wrap gap-1">
+                                  {shot.characters.map((character, index) => (
+                                    <Badge key={index} variant="outline" className="text-xs">
+                                      {character}
+                                    </Badge>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                            {shot.scriptSegment && (
+                              <div className="border-t pt-3">
+                                <h4 className="font-medium text-sm mb-1 text-primary">Script Context</h4>
+                                <p className="text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic">
+                                  "{shot.scriptSegment}"
+                                </p>
+                              </div>
+                            )}
+                            {shot.dialogueLines && shot.dialogueLines.length > 0 && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1 text-primary">Dialogue</h4>
+                                <div className="space-y-1">
+                                  {shot.dialogueLines.map((dialogue, index) => (
+                                    <p key={index} className="text-xs text-muted-foreground bg-primary/10 p-2 rounded">
+                                      {dialogue}
+                                    </p>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {shot.sceneAction && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1 text-primary">Scene Action</h4>
+                                <p className="text-xs text-muted-foreground bg-accent/20 p-2 rounded">
+                                  {shot.sceneAction}
+                                </p>
+                              </div>
+                            )}
                          </CardContent>
                        </Card>
                      ))}
@@ -976,18 +1063,38 @@ const Storyboarding = () => {
                                    <p className="text-xs text-muted-foreground">{frame.cameraAngle}</p>
                                  )}
                                </div>
-                               <div>
-                                 <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
-                                 {editingFrame === frame.shotNumber ? (
-                                   <Textarea
-                                     value={frameEditValues.visualElements || frame.visualElements}
-                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
-                                     className="text-xs min-h-[40px]"
-                                   />
-                                 ) : (
-                                   <p className="text-xs text-muted-foreground">{frame.visualElements}</p>
-                                 )}
-                               </div>
+                                <div>
+                                  <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
+                                  {editingFrame === frame.shotNumber ? (
+                                    <Textarea
+                                      value={frameEditValues.visualElements || frame.visualElements}
+                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
+                                      className="text-xs min-h-[40px]"
+                                    />
+                                  ) : (
+                                    <p className="text-xs text-muted-foreground">{frame.visualElements}</p>
+                                  )}
+                                </div>
+                                {frame.scriptSegment && (
+                                  <div className="border-t pt-2">
+                                    <h4 className="font-medium text-xs mb-1 text-primary">Script Context</h4>
+                                    <p className="text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic">
+                                      "{frame.scriptSegment}"
+                                    </p>
+                                  </div>
+                                )}
+                                {frame.dialogueLines && frame.dialogueLines.length > 0 && (
+                                  <div>
+                                    <h4 className="font-medium text-xs mb-1 text-primary">Dialogue</h4>
+                                    <div className="space-y-1">
+                                      {frame.dialogueLines.slice(0, 2).map((dialogue, index) => (
+                                        <p key={index} className="text-xs text-muted-foreground bg-primary/10 p-1 rounded">
+                                          {dialogue}
+                                        </p>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                                {editingFrame === frame.shotNumber && (
                                  <Button
                                    size="sm"

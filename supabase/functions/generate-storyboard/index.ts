@@ -13,7 +13,7 @@ serve(async (req) => {
   }
 
   try {
-    const { shots, genre, tone } = await req.json();
+    const { shots, genre, tone, scriptText } = await req.json();
 
     if (!shots || !Array.isArray(shots)) {
       return new Response(
@@ -32,11 +32,20 @@ serve(async (req) => {
     const storyboardFrames = [];
 
     for (const shot of shots) {
-      const prompt = `Create a cinematic storyboard frame for a ${genre} film with ${tone} tone. 
+      const prompt = `Create a cinematic storyboard frame for a ${genre} film with ${tone} tone.
+      
+      SCRIPT CONTEXT: ${shot.scriptSegment || 'Scene from the script'}
+      
+      DIALOGUE: ${shot.dialogueLines?.length ? shot.dialogueLines.join(' ') : 'Character interaction'}
+      
+      SCENE ACTION: ${shot.sceneAction || 'Action taking place'}
+      
       Shot description: ${shot.description}
       Camera angle: ${shot.cameraAngle}
-      Characters: ${shot.characters.join(', ')}
+      Characters present: ${shot.characters.join(', ')}
       Visual elements: ${shot.visualElements}
+      
+      Create an image that specifically depicts the dialogue and action from the script context above. Show the characters ${shot.characters.join(' and ')} in a scene that matches the script content. Focus on the specific moment and emotion described in the script segment.
       
       Style: Professional storyboard illustration, black and white pencil sketch style, clear composition, cinematic framing, detailed but not photorealistic.`;
 
@@ -73,6 +82,9 @@ serve(async (req) => {
         cameraAngle: shot.cameraAngle,
         characters: shot.characters,
         visualElements: shot.visualElements,
+        scriptSegment: shot.scriptSegment,
+        dialogueLines: shot.dialogueLines,
+        sceneAction: shot.sceneAction,
         imageData: `data:image/png;base64,${imageData}`,
         generatedAt: new Date().toISOString()
       });
