@@ -77,7 +77,7 @@ const Index = () => {
         {/* Top Right Button for Non-logged Users */}
         {!user && (
           <div className="absolute top-6 right-6 z-20">
-            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button asChild className="bg-black text-white border border-white hover:bg-white hover:text-black transition-colors">
               <Link to="/auth">
                 Create your account<span className="mx-2">|</span>Sign up
               </Link>
