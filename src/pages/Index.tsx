@@ -94,21 +94,21 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-5xl">
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-teal-400 to-teal-600 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-gold/50 to-gold-light/50 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
                   <Button 
-                    variant="teal" 
+                    variant="gold" 
                     size="lg" 
                     onClick={() => navigate('/auth')} 
-                    className="text-lg px-8 py-4 w-full relative z-10 border border-teal-400/20"
+                    className="text-lg px-8 py-4 w-full relative z-10 border border-gold/20"
                   >
                     <Film className="h-5 w-5 mr-2" />
                     FILMMAKERS
                   </Button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
                   <p className="text-white text-sm font-medium tracking-wide">CREATE YOUR PROJECT</p>
-                  <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+                  <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
                 </div>
               </div>
               <div className="flex flex-col items-center gap-3 group">
@@ -187,23 +187,23 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-400/20 via-teal-500/40 to-teal-400/20 blur-3xl rounded-full h-32 w-full max-w-xl mx-auto opacity-60"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-gold/20 via-gold/40 to-gold/20 blur-3xl rounded-full h-32 w-full max-w-xl mx-auto opacity-60"></div>
               <div className="relative">
-                <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-gradient-to-r from-teal-400 via-teal-300 to-teal-400 bg-clip-text text-transparent">
-                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-teal-400" />
+                <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-gold" />
                   Our Mission
-                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-teal-400" />
+                  <Users className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-gold" />
                 </h2>
-                <div className="absolute -top-2 -left-2 w-4 h-4 bg-teal-400 rounded-full animate-ping opacity-75"></div>
-                <div className="absolute -top-1 -left-1 w-2 h-2 bg-teal-300 rounded-full"></div>
-                <div className="absolute -top-2 -right-2 w-4 h-4 bg-teal-400 rounded-full animate-ping opacity-75 [animation-delay:0.5s]"></div>
-                <div className="absolute -top-1 -right-1 w-2 h-2 bg-teal-300 rounded-full"></div>
+                <div className="absolute -top-2 -left-2 w-4 h-4 bg-gold rounded-full animate-ping opacity-75"></div>
+                <div className="absolute -top-1 -left-1 w-2 h-2 bg-gold-light rounded-full"></div>
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-gold rounded-full animate-ping opacity-75 [animation-delay:0.5s]"></div>
+                <div className="absolute -top-1 -right-1 w-2 h-2 bg-gold-light rounded-full"></div>
               </div>
               <div className="flex justify-center items-center gap-4 mt-4">
-                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-teal-400 rounded-full animate-bounce [animation-delay:0.1s]"></div>
-                <div className="w-2 h-2 bg-teal-300 rounded-full animate-bounce [animation-delay:0.3s]"></div>
-                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-teal-400 to-transparent rounded-full animate-pulse"></div>
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-gold rounded-full animate-bounce [animation-delay:0.1s]"></div>
+                <div className="w-2 h-2 bg-gold-light rounded-full animate-bounce [animation-delay:0.3s]"></div>
+                <div className="w-20 h-1 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full animate-pulse"></div>
               </div>
             </div>
             <div className="prose prose-lg mx-auto text-muted-foreground">
@@ -257,18 +257,18 @@ const Index = () => {
         <div className="container mx-auto px-6">
           <div className="text-center mb-12">
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/40 to-primary/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-50"></div>
-              <div className="relative bg-gradient-to-r from-primary via-primary-glow to-primary bg-clip-text text-transparent">
+              <div className="absolute inset-0 bg-gradient-to-r from-gold/20 via-gold/40 to-gold/20 blur-3xl rounded-full h-32 w-full max-w-2xl mx-auto opacity-50"></div>
+              <div className="relative bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
                 <h2 className="text-4xl md:text-5xl font-bold mb-2 tracking-tight">
-                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-primary" />
+                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 mr-3 text-gold" />
                   Featured Casting Calls
-                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-primary" />
+                  <Film className="inline-block h-8 w-8 md:h-10 md:w-10 ml-3 text-gold" />
                 </h2>
               </div>
               <div className="flex justify-center items-center gap-4 mt-4">
-                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full animate-pulse"></div>
-                <div className="w-2 h-2 bg-primary rounded-full animate-bounce"></div>
-                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full animate-pulse"></div>
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full animate-pulse"></div>
+                <div className="w-2 h-2 bg-gold rounded-full animate-bounce"></div>
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-gold to-transparent rounded-full animate-pulse"></div>
               </div>
             </div>
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">

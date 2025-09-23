@@ -42,6 +42,12 @@ All colors MUST be HSL.
     --success: 153 75% 51%;    /* #32D583 */
     --success-foreground: 225 30% 7%;
 
+    /* Gold color scheme */
+    --gold: 45 100% 60%;       /* #FFD700 - Primary gold */
+    --gold-light: 50 100% 70%; /* #FFEB3B - Light gold */
+    --gold-dark: 40 100% 50%;  /* #DAA520 - Dark gold */
+    --gold-foreground: 225 30% 7%;
+
     --border: 225 20% 20%;
     --input: 225 20% 15%;
     --ring: 175 76% 48%;
@@ -52,6 +58,8 @@ All colors MUST be HSL.
     --gradient-primary: linear-gradient(135deg, hsl(175 76% 48%), hsl(175 76% 58%));
     --gradient-surface: linear-gradient(135deg, hsl(225 26% 11%), hsl(225 30% 13%));
     --gradient-hero: linear-gradient(135deg, hsl(225 30% 7%) 0%, hsl(225 26% 11%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(45 100% 60%), hsl(50 100% 70%));
+    --gradient-gold-dark: linear-gradient(135deg, hsl(40 100% 50%), hsl(45 100% 60%));
     
     /* Cinematic shadows */
     --shadow-dramatic: 0 25px 50px -12px hsl(225 30% 4% / 0.8);
