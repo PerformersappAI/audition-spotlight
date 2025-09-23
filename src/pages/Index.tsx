@@ -73,6 +73,17 @@ const Index = () => {
         style={{ backgroundImage: `url(${filmStudioBg})` }}
       >
         <div className="absolute inset-0 bg-black/70"></div>
+        
+        {/* Top Right Button for Non-logged Users */}
+        {!user && (
+          <div className="absolute top-6 right-6 z-20">
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
+              <Link to="/auth">
+                Create your account<span className="mx-2">|</span>Sign up
+              </Link>
+            </Button>
+          </div>
+        )}
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
             FILMMAKERS
