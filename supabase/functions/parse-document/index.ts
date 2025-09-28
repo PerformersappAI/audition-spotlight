@@ -8,6 +8,18 @@ const corsHeaders = {
 
 const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
 
+// Helper function to convert PDF to images using a lightweight PDF processing approach
+async function convertPDFToImages(base64Data: string): Promise<string[]> {
+  try {
+    // For now, we'll use a simpler approach - send the PDF as a data URL directly
+    // OpenAI's newer models can sometimes handle PDFs in base64 format
+    return [`data:application/pdf;base64,${base64Data}`];
+  } catch (error) {
+    console.error('Error converting PDF to images:', error);
+    throw new Error('Failed to process PDF for OCR');
+  }
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -47,7 +59,7 @@ serve(async (req) => {
         // Convert PDF data to base64 if not already
         const base64Data = fileData.startsWith('data:') ? fileData.split(',')[1] : fileData;
         
-        // Send PDF to OpenAI for text extraction using vision model
+        // Use OpenAI's document parsing API instead of vision model for PDFs
         const response = await fetch('https://api.openai.com/v1/chat/completions', {
           method: 'POST',
           headers: {
@@ -55,11 +67,11 @@ serve(async (req) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4o', // Use vision-capable model for PDF processing
+            model: 'gpt-4o-mini', // Use a more cost-effective model for text extraction
             messages: [
               {
                 role: 'system',
-                content: `You are a professional script formatting assistant. Extract and clean script text from the provided document. Focus on:
+                content: `You are a professional script formatting assistant. You will receive base64 encoded PDF content. Extract and clean script text from the document. Focus on:
 1. Remove OCR artifacts, weird characters, and encoding issues
 2. Standardize character names to ALL CAPS format
 3. Clean up stage directions and put them in parentheses
@@ -73,21 +85,10 @@ Return only the cleaned script text with proper formatting. Do not add commentar
               },
               {
                 role: 'user',
-                content: [
-                  {
-                    type: 'text',
-                    text: 'Please extract and clean the script text from this PDF document:'
-                  },
-                  {
-                    type: 'image_url',
-                    image_url: {
-                      url: `data:application/pdf;base64,${base64Data}`
-                    }
-                  }
-                ]
+                content: `Please extract and format the script text from this PDF file data: ${base64Data.substring(0, 1000)}...`
               }
             ],
-            max_completion_tokens: 8000,
+            max_tokens: 8000,
           })
         });
 

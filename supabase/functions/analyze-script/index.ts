@@ -115,7 +115,7 @@ serve(async (req) => {
     // Build director-specific analysis prompts
     let directorContext = "";
     if (selectedDirectors.length > 0) {
-      directorContext = selectedDirectors.map(director => {
+      directorContext = selectedDirectors.map((director: any) => {
         const knowledge = DIRECTOR_KNOWLEDGE[director as keyof typeof DIRECTOR_KNOWLEDGE];
         if (knowledge) {
           return `${director}'s approach: ${knowledge.philosophy} Key techniques: ${knowledge.techniques.join('; ')}`;
@@ -304,7 +304,7 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
   } catch (error) {
     console.error('Error in analyze-script function:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       success: false 
     }), {
       status: 500,

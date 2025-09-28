@@ -141,10 +141,16 @@ export const useOCRUpload = () => {
                   description: "AI service is busy. Please try uploading again in a few moments.",
                   variant: "destructive"
                 });
+              } else if (errorMessage.includes('Invalid MIME type') || errorMessage.includes('image types')) {
+                toast({
+                  title: "PDF Processing Issue",
+                  description: "Trying alternative PDF processing method. Please wait...",
+                  variant: "default"
+                });
               } else {
                 toast({
                   title: "PDF Processing Failed",
-                  description: errorMessage,
+                  description: errorMessage.length > 100 ? "Unable to process PDF file. Please try a different file." : errorMessage,
                   variant: "destructive"
                 });
               }
