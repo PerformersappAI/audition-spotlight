@@ -493,11 +493,15 @@ const Storyboarding = () => {
 
       if (error) {
         console.error(`Frame ${shotNumber} generation error:`, error);
-        throw error;
+        setFrameErrors(prev => new Map(prev.set(shotNumber, `Function error: ${error.message || 'Failed to invoke edge function'}`)));
+        return;
       }
 
       if (!frameData || !frameData.imageData) {
-        throw new Error('Invalid response from frame generation service');
+        const errorMsg = 'Invalid response from frame generation service';
+        console.error(errorMsg);
+        setFrameErrors(prev => new Map(prev.set(shotNumber, errorMsg)));
+        return;
       }
 
       console.log(`Frame ${shotNumber} generated successfully`);
