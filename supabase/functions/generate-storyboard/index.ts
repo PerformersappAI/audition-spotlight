@@ -17,6 +17,8 @@ serve(async (req) => {
   try {
     const { shots, genre, tone, scriptText } = await req.json();
 
+    console.log('Request data:', { shotsCount: shots?.length, genre, tone });
+
     if (!shots || !Array.isArray(shots)) {
       console.error('Invalid shots data provided');
       return new Response(
@@ -24,6 +26,40 @@ serve(async (req) => {
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
       );
     }
+
+    // Create dynamic visual style based on genre and tone
+    const getVisualStyle = (genre: string, tone: string) => {
+      const genreStyles: Record<string, string> = {
+        'horror': 'dark, moody cinematography with deep shadows and cool blue/gray color palette, atmospheric noir lighting',
+        'comedy': 'bright, warm color palette with natural cheerful lighting, clear visibility of characters and expressions',
+        'documentary': 'realistic, natural lighting with authentic color grading, journalistic composition style',
+        'sci-fi': 'futuristic color palette with blues and teals, dramatic lighting, high contrast cinematic style',
+        'drama': 'naturalistic lighting with warm earth tones, intimate character-focused compositions',
+        'action': 'dynamic high-contrast lighting, bold color palette, wide dramatic compositions',
+        'romance': 'soft warm lighting with pastel tones, intimate close-up compositions',
+        'thriller': 'high contrast lighting with stark shadows, desaturated color palette, tense compositions',
+        'mystery': 'noir-style lighting with dramatic shadows, muted color palette, atmospheric compositions',
+        'fantasy': 'magical ethereal lighting with rich vibrant colors, epic wide compositions'
+      };
+
+      const toneModifiers: Record<string, string> = {
+        'dark': 'with deeper shadows, desaturated colors, and ominous atmosphere',
+        'light': 'with bright natural lighting, saturated colors, and uplifting atmosphere',
+        'serious': 'with realistic lighting, grounded color palette, and authentic compositions',
+        'playful': 'with vibrant colors, dynamic lighting, and energetic compositions',
+        'mysterious': 'with dramatic chiaroscuro lighting, muted colors, and enigmatic atmosphere',
+        'epic': 'with grand cinematic lighting, rich colors, and sweeping wide compositions',
+        'intimate': 'with soft natural lighting, warm tones, and close personal framing',
+        'tense': 'with harsh contrasting lights, stark colors, and tight claustrophobic framing'
+      };
+
+      const baseStyle = genreStyles[genre?.toLowerCase()] || 'cinematic lighting with balanced color palette';
+      const toneModifier = toneModifiers[tone?.toLowerCase()] || '';
+      
+      return `${baseStyle} ${toneModifier}`.trim();
+    };
+
+    const visualStyle = getVisualStyle(genre, tone);
 
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
@@ -39,7 +75,7 @@ serve(async (req) => {
     const storyboardFrames = [];
 
     for (const shot of shots) {
-      const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone. 
+      const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone.
 
 Scene: ${shot.scriptSegment || 'Script scene'}
 Action: ${shot.sceneAction || shot.description}
@@ -47,9 +83,11 @@ Characters: ${shot.characters.join(', ')}
 Camera: ${shot.cameraAngle}
 Visual elements: ${shot.visualElements}
 
-Style: Black and white pencil sketch storyboard, cinematic composition, clear framing, professional film industry standard. Show the characters and action clearly with dramatic lighting and composition.`;
+Visual Style: ${visualStyle}
 
-      console.log(`Generating storyboard image for shot: ${shot.shotNumber}`);
+Create a detailed cinematic storyboard frame with professional composition and clear character visibility. The image should capture the mood and atmosphere appropriate for the ${genre} genre with ${tone} tone. Use proper cinematic framing and staging to effectively communicate the scene's action and emotion.`;
+
+      console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 
       // Generate the actual storyboard image using OpenAI's DALL-E 3
       const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
@@ -70,23 +108,35 @@ Style: Black and white pencil sketch storyboard, cinematic composition, clear fr
 
       if (!imageResponse.ok) {
         const errorText = await imageResponse.text();
-        console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, imageResponse.status, errorText);
+        console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, {
+          status: imageResponse.status,
+          statusText: imageResponse.statusText,
+          error: errorText,
+          apiKeyExists: !!OPENAI_API_KEY,
+          promptLength: imagePrompt.length
+        });
         
         // Create fallback SVG if image generation fails
         const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
           <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
             <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
-            <text x="50%" y="30%" text-anchor="middle" font-size="18" font-family="Arial" fill="#495057" font-weight="bold">
+            <text x="50%" y="25%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
               Storyboard Frame ${shot.shotNumber}
             </text>
-            <text x="50%" y="45%" text-anchor="middle" font-size="14" font-family="Arial" fill="#6c757d">
+            <text x="50%" y="35%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+              ${genre} | ${tone}
+            </text>
+            <text x="50%" y="45%" text-anchor="middle" font-size="11" font-family="Arial" fill="#6c757d">
               ${shot.cameraAngle}
             </text>
-            <text x="50%" y="55%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+            <text x="50%" y="55%" text-anchor="middle" font-size="10" font-family="Arial" fill="#6c757d">
               ${shot.characters.join(', ')}
             </text>
-            <text x="50%" y="75%" text-anchor="middle" font-size="10" font-family="Arial" fill="#adb5bd">
-              Image generation temporarily unavailable
+            <text x="50%" y="75%" text-anchor="middle" font-size="9" font-family="Arial" fill="#adb5bd">
+              Image generation error: ${imageResponse.status}
+            </text>
+            <text x="50%" y="85%" text-anchor="middle" font-size="8" font-family="Arial" fill="#adb5bd">
+              Check function logs for details
             </text>
           </svg>
         `)}`;
