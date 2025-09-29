@@ -34,7 +34,7 @@ serve(async (req) => {
       );
     }
 
-    console.log(`Generating storyboard for ${shots.length} shots using OpenAI GPT-5 and image generation`);
+    console.log(`Generating storyboard for ${shots.length} shots using OpenAI DALL-E 3`);
 
     const storyboardFrames = [];
 
@@ -51,7 +51,7 @@ Style: Black and white pencil sketch storyboard, cinematic composition, clear fr
 
       console.log(`Generating storyboard image for shot: ${shot.shotNumber}`);
 
-      // Generate the actual storyboard image using OpenAI's image generation
+      // Generate the actual storyboard image using OpenAI's DALL-E 3
       const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
         method: 'POST',
         headers: {
@@ -59,12 +59,12 @@ Style: Black and white pencil sketch storyboard, cinematic composition, clear fr
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-image-1',
+          model: 'dall-e-3',
           prompt: imagePrompt,
           n: 1,
           size: '1024x1024',
-          quality: 'high',
-          output_format: 'png'
+          quality: 'hd',
+          style: 'natural'
         })
       });
 
@@ -137,8 +137,14 @@ Style: Black and white pencil sketch storyboard, cinematic composition, clear fr
         continue;
       }
 
-      // OpenAI returns base64 data directly for gpt-image-1
-      const generatedImageData = `data:image/png;base64,${imageData.data[0].b64_json}`;
+      // DALL-E 3 returns URL, need to fetch and convert to base64
+      const imageUrl = imageData.data[0].url;
+      
+      // Fetch the image and convert to base64
+      const imageBlob = await fetch(imageUrl);
+      const imageBuffer = await imageBlob.arrayBuffer();
+      const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+      const generatedImageData = `data:image/png;base64,${base64Image}`;
 
       storyboardFrames.push({
         shotNumber: shot.shotNumber,
@@ -157,7 +163,7 @@ Style: Black and white pencil sketch storyboard, cinematic composition, clear fr
       console.log(`Successfully generated storyboard image for shot ${shot.shotNumber}`);
     }
 
-    console.log(`Successfully generated ${storyboardFrames.length} storyboard frames using OpenAI GPT-5 and image generation`);
+    console.log(`Successfully generated ${storyboardFrames.length} storyboard frames using OpenAI DALL-E 3`);
 
     return new Response(JSON.stringify({ 
       success: true, 
