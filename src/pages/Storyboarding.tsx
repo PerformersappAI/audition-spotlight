@@ -499,9 +499,14 @@ const Storyboarding = () => {
 
       if (!frameData || !frameData.imageData) {
         const errorMsg = 'Invalid response from frame generation service';
-        console.error(errorMsg);
+        console.error(errorMsg, { frameData });
         setFrameErrors(prev => new Map(prev.set(shotNumber, errorMsg)));
         return;
+      }
+
+      // Check if this is a fallback image with an error
+      if (frameData.error) {
+        console.warn(`Frame ${shotNumber} generated with fallback:`, frameData.error);
       }
 
       console.log(`Frame ${shotNumber} generated successfully`);

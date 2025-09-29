@@ -83,32 +83,25 @@ serve(async (req) => {
     const visualStyle = getVisualStyle(genre, tone);
     console.log(`Visual style for ${genre}/${tone}: ${visualStyle}`);
 
-    // Construct detailed image prompt
-    const sceneContext = shot.scriptSegment 
-      ? `Scene context: "${shot.scriptSegment.substring(0, 200)}"`
-      : '';
-    
-    const dialogueContext = shot.dialogueLines && shot.dialogueLines.length > 0
-      ? `Dialogue: "${shot.dialogueLines.slice(0, 2).join('. ')}"`
-      : '';
-
+    // Construct safe, professional storyboard prompt
     const charactersText = shot.characters && shot.characters.length > 0
-      ? `Characters in scene: ${shot.characters.join(', ')}`
+      ? `People in scene: ${shot.characters.length} character(s)`
       : '';
 
-    const imagePrompt = `Create a cinematic storyboard frame showing: ${shot.description}
+    // Create a safe, professional prompt focusing on cinematography
+    const imagePrompt = `Professional storyboard illustration in black and white sketch style showing:
 
-Camera angle: ${shot.cameraAngle}
-Visual elements: ${shot.visualElements}
+Scene setup: ${shot.description}
+Camera perspective: ${shot.cameraAngle} 
+Visual composition: ${shot.visualElements}
 ${charactersText}
-${sceneContext}
-${dialogueContext}
 
-Visual style: ${visualStyle}
+Art style: Clean line art storyboard drawing, professional film pre-production illustration, ${visualStyle}
 
-This should be a professional storyboard illustration with clear composition, ${genre.toLowerCase()} genre aesthetic, and ${tone.toLowerCase()} tone. The image should effectively communicate the scene for film production purposes.`;
+This should be a traditional storyboard panel with clear visual communication for film production, focusing on composition and cinematography rather than detailed character features.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
+    console.log(`Full prompt: ${imagePrompt}`);
 
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
