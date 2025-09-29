@@ -73,9 +73,18 @@ serve(async (req) => {
     console.log(`Generating storyboard for ${shots.length} shots using OpenAI DALL-E 3`);
 
     const storyboardFrames = [];
-
-    for (const shot of shots) {
-      const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone.
+    const batchSize = 5; // Process in batches to prevent timeouts
+    
+    // Process shots in batches for better performance and error handling
+    for (let batchStart = 0; batchStart < shots.length; batchStart += batchSize) {
+      const batchEnd = Math.min(batchStart + batchSize, shots.length);
+      const batch = shots.slice(batchStart, batchEnd);
+      
+      console.log(`Processing batch ${Math.floor(batchStart/batchSize) + 1}/${Math.ceil(shots.length/batchSize)} (shots ${batchStart + 1}-${batchEnd})`);
+      
+      // Process each shot in the current batch
+      for (const shot of batch) {
+        const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone.
 
 Scene: ${shot.scriptSegment || 'Script scene'}
 Action: ${shot.sceneAction || shot.description}
@@ -87,130 +96,216 @@ Visual Style: ${visualStyle}
 
 Create a detailed cinematic storyboard frame with professional composition and clear character visibility. The image should capture the mood and atmosphere appropriate for the ${genre} genre with ${tone} tone. Use proper cinematic framing and staging to effectively communicate the scene's action and emotion.`;
 
-      console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
+        console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 
-      // Generate the actual storyboard image using OpenAI's DALL-E 3
-      const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'dall-e-3',
-          prompt: imagePrompt,
-          n: 1,
-          size: '1024x1024',
-          quality: 'hd',
-          style: 'natural'
-        })
-      });
-
-      if (!imageResponse.ok) {
-        const errorText = await imageResponse.text();
-        console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, {
-          status: imageResponse.status,
-          statusText: imageResponse.statusText,
-          error: errorText,
-          apiKeyExists: !!OPENAI_API_KEY,
-          promptLength: imagePrompt.length
-        });
+        // Generate the actual storyboard image using OpenAI's DALL-E 3
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 60000); // 60 second timeout
         
-        // Create fallback SVG if image generation fails
-        const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
-          <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-            <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
-            <text x="50%" y="25%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
-              Storyboard Frame ${shot.shotNumber}
-            </text>
-            <text x="50%" y="35%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
-              ${genre} | ${tone}
-            </text>
-            <text x="50%" y="45%" text-anchor="middle" font-size="11" font-family="Arial" fill="#6c757d">
-              ${shot.cameraAngle}
-            </text>
-            <text x="50%" y="55%" text-anchor="middle" font-size="10" font-family="Arial" fill="#6c757d">
-              ${shot.characters.join(', ')}
-            </text>
-            <text x="50%" y="75%" text-anchor="middle" font-size="9" font-family="Arial" fill="#adb5bd">
-              Image generation error: ${imageResponse.status}
-            </text>
-            <text x="50%" y="85%" text-anchor="middle" font-size="8" font-family="Arial" fill="#adb5bd">
-              Check function logs for details
-            </text>
-          </svg>
-        `)}`;
+        try {
+          const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${OPENAI_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              model: 'dall-e-3',
+              prompt: imagePrompt,
+              n: 1,
+              size: '1024x1024',
+              quality: 'hd',
+              style: 'natural'
+            }),
+            signal: controller.signal
+          });
+          
+          clearTimeout(timeoutId);
 
-        storyboardFrames.push({
-          shotNumber: shot.shotNumber,
-          description: shot.description,
-          cameraAngle: shot.cameraAngle,
-          characters: shot.characters,
-          visualElements: shot.visualElements,
-          scriptSegment: shot.scriptSegment,
-          dialogueLines: shot.dialogueLines,
-          sceneAction: shot.sceneAction,
-          imageData: fallbackImageData,
-          imagePrompt: imagePrompt,
-          generatedAt: new Date().toISOString()
-        });
-        continue;
+          if (!imageResponse.ok) {
+            const errorText = await imageResponse.text();
+            console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, {
+              status: imageResponse.status,
+              statusText: imageResponse.statusText,
+              error: errorText,
+              apiKeyExists: !!OPENAI_API_KEY,
+              promptLength: imagePrompt.length
+            });
+            
+            // Create fallback SVG if image generation fails
+            const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
+              <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+                <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+                <text x="50%" y="25%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
+                  Storyboard Frame ${shot.shotNumber}
+                </text>
+                <text x="50%" y="35%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+                  ${genre} | ${tone}
+                </text>
+                <text x="50%" y="45%" text-anchor="middle" font-size="11" font-family="Arial" fill="#6c757d">
+                  ${shot.cameraAngle}
+                </text>
+                <text x="50%" y="55%" text-anchor="middle" font-size="10" font-family="Arial" fill="#6c757d">
+                  ${shot.characters.join(', ')}
+                </text>
+                <text x="50%" y="75%" text-anchor="middle" font-size="9" font-family="Arial" fill="#adb5bd">
+                  Image generation error: ${imageResponse.status}
+                </text>
+                <text x="50%" y="85%" text-anchor="middle" font-size="8" font-family="Arial" fill="#adb5bd">
+                  Check function logs for details
+                </text>
+              </svg>
+            `)}`;
+
+            storyboardFrames.push({
+              shotNumber: shot.shotNumber,
+              description: shot.description,
+              cameraAngle: shot.cameraAngle,
+              characters: shot.characters,
+              visualElements: shot.visualElements,
+              scriptSegment: shot.scriptSegment,
+              dialogueLines: shot.dialogueLines,
+              sceneAction: shot.sceneAction,
+              imageData: fallbackImageData,
+              imagePrompt: imagePrompt,
+              generatedAt: new Date().toISOString()
+            });
+            continue;
+          }
+
+          const imageData = await imageResponse.json();
+          
+          if (!imageData.data || !imageData.data[0]) {
+            console.error('Unexpected OpenAI image response format:', imageData);
+            // Use fallback for this frame
+            const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
+              <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+                <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+                <text x="50%" y="50%" text-anchor="middle" font-size="16" font-family="Arial" fill="#6c757d">
+                  Frame ${shot.shotNumber} - Processing Error
+                </text>
+              </svg>
+            `)}`;
+
+            storyboardFrames.push({
+              shotNumber: shot.shotNumber,
+              description: shot.description,
+              cameraAngle: shot.cameraAngle,
+              characters: shot.characters,
+              visualElements: shot.visualElements,
+              scriptSegment: shot.scriptSegment,
+              dialogueLines: shot.dialogueLines,
+              sceneAction: shot.sceneAction,
+              imageData: fallbackImageData,
+              imagePrompt: imagePrompt,
+              generatedAt: new Date().toISOString()
+            });
+            continue;
+          }
+
+          // DALL-E 3 returns URL, need to fetch and convert to base64
+          const imageUrl = imageData.data[0].url;
+          
+          let generatedImageData: string;
+          
+          try {
+            // Fetch the image and convert to base64 safely
+            const imageBlob = await fetch(imageUrl);
+            if (!imageBlob.ok) {
+              throw new Error(`Failed to fetch image: ${imageBlob.status}`);
+            }
+            
+            const imageBuffer = await imageBlob.arrayBuffer();
+            
+            // Convert to base64 safely without stack overflow
+            const uint8Array = new Uint8Array(imageBuffer);
+            let binary = '';
+            const chunkSize = 32768; // Process in chunks to avoid stack overflow
+            
+            for (let i = 0; i < uint8Array.length; i += chunkSize) {
+              const chunk = uint8Array.slice(i, i + chunkSize);
+              binary += String.fromCharCode(...chunk);
+            }
+            
+            const base64Image = btoa(binary);
+            generatedImageData = `data:image/png;base64,${base64Image}`;
+            
+          } catch (conversionError) {
+            console.error(`Error converting image to base64 for shot ${shot.shotNumber}:`, conversionError);
+            
+            // Use fallback SVG if conversion fails
+            generatedImageData = `data:image/svg+xml;base64,${btoa(`
+              <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+                <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+                <text x="50%" y="40%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
+                  Storyboard Frame ${shot.shotNumber}
+                </text>
+                <text x="50%" y="50%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+                  ${genre} | ${tone}
+                </text>
+                <text x="50%" y="70%" text-anchor="middle" font-size="10" font-family="Arial" fill="#adb5bd">
+                  Image conversion error - Please try regenerating
+                </text>
+              </svg>
+            `)}`;
+          }
+
+          storyboardFrames.push({
+            shotNumber: shot.shotNumber,
+            description: shot.description,
+            cameraAngle: shot.cameraAngle,
+            characters: shot.characters,
+            visualElements: shot.visualElements,
+            scriptSegment: shot.scriptSegment,
+            dialogueLines: shot.dialogueLines,
+            sceneAction: shot.sceneAction,
+            imageData: generatedImageData,
+            imagePrompt: imagePrompt,
+            generatedAt: new Date().toISOString()
+          });
+
+          console.log(`Successfully generated storyboard image for shot ${shot.shotNumber}`);
+          
+        } catch (fetchError) {
+          clearTimeout(timeoutId);
+          console.error(`Network error generating image for shot ${shot.shotNumber}:`, fetchError);
+          
+          // Create timeout/network error fallback
+          const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
+            <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
+              <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
+              <text x="50%" y="40%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
+                Storyboard Frame ${shot.shotNumber}
+              </text>
+              <text x="50%" y="50%" text-anchor="middle" font-size="12" font-family="Arial" fill="#6c757d">
+                ${genre} | ${tone}
+              </text>
+              <text x="50%" y="70%" text-anchor="middle" font-size="10" font-family="Arial" fill="#adb5bd">
+                Network timeout - Please try regenerating
+              </text>
+            </svg>
+          `)}`;
+
+          storyboardFrames.push({
+            shotNumber: shot.shotNumber,
+            description: shot.description,
+            cameraAngle: shot.cameraAngle,
+            characters: shot.characters,
+            visualElements: shot.visualElements,
+            scriptSegment: shot.scriptSegment,
+            dialogueLines: shot.dialogueLines,
+            sceneAction: shot.sceneAction,
+            imageData: fallbackImageData,
+            imagePrompt: imagePrompt,
+            generatedAt: new Date().toISOString()
+          });
+        }
       }
-
-      const imageData = await imageResponse.json();
       
-      if (!imageData.data || !imageData.data[0]) {
-        console.error('Unexpected OpenAI image response format:', imageData);
-        // Use fallback for this frame
-        const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
-          <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-            <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
-            <text x="50%" y="50%" text-anchor="middle" font-size="16" font-family="Arial" fill="#6c757d">
-              Frame ${shot.shotNumber} - Processing Error
-            </text>
-          </svg>
-        `)}`;
-
-        storyboardFrames.push({
-          shotNumber: shot.shotNumber,
-          description: shot.description,
-          cameraAngle: shot.cameraAngle,
-          characters: shot.characters,
-          visualElements: shot.visualElements,
-          scriptSegment: shot.scriptSegment,
-          dialogueLines: shot.dialogueLines,
-          sceneAction: shot.sceneAction,
-          imageData: fallbackImageData,
-          imagePrompt: imagePrompt,
-          generatedAt: new Date().toISOString()
-        });
-        continue;
+      // Add a small delay between batches to prevent rate limiting
+      if (batchEnd < shots.length) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
       }
-
-      // DALL-E 3 returns URL, need to fetch and convert to base64
-      const imageUrl = imageData.data[0].url;
-      
-      // Fetch the image and convert to base64
-      const imageBlob = await fetch(imageUrl);
-      const imageBuffer = await imageBlob.arrayBuffer();
-      const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
-      const generatedImageData = `data:image/png;base64,${base64Image}`;
-
-      storyboardFrames.push({
-        shotNumber: shot.shotNumber,
-        description: shot.description,
-        cameraAngle: shot.cameraAngle,
-        characters: shot.characters,
-        visualElements: shot.visualElements,
-        scriptSegment: shot.scriptSegment,
-        dialogueLines: shot.dialogueLines,
-        sceneAction: shot.sceneAction,
-        imageData: generatedImageData,
-        imagePrompt: imagePrompt,
-        generatedAt: new Date().toISOString()
-      });
-
-      console.log(`Successfully generated storyboard image for shot ${shot.shotNumber}`);
     }
 
     console.log(`Successfully generated ${storyboardFrames.length} storyboard frames using OpenAI DALL-E 3`);

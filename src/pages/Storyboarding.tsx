@@ -117,14 +117,41 @@ const Storyboarding = () => {
     const characterMatches = scriptText.match(/^[A-Z][A-Z\s]+(?=\n|\r)/gm) || [];
     const characters = [...new Set(characterMatches.map(name => name.trim()))];
     
-    // Split script into segments by scene breaks or character dialogue
-    const segments = scriptText.split(/\n\s*\n/).filter(seg => seg.trim());
+    // Enhanced scene detection - look for common screenplay patterns
+    const sceneHeaders = scriptText.match(/(INT\.|EXT\.|FADE IN:|FADE OUT:|CUT TO:|SCENE \d+)/gi) || [];
+    
+    // Split by natural breaks: scene headers, double line breaks, or major dialogue shifts
+    let segments = scriptText.split(/\n\s*\n/).filter(seg => seg.trim());
+    
+    // Further split on scene headers if they exist
+    if (sceneHeaders.length > 0) {
+      const scenePattern = /(INT\.|EXT\.|FADE IN:|FADE OUT:|CUT TO:|SCENE \d+)/gi;
+      segments = scriptText.split(scenePattern).filter(seg => seg.trim());
+    }
+    
+    // Split large segments that might contain multiple scenes
+    const processedSegments = [];
+    for (const segment of segments) {
+      if (segment.length > 800) {
+        // Split long segments by character dialogue changes
+        const dialogueBreaks = segment.split(/\n(?=[A-Z][A-Z\s]+\n)/);
+        processedSegments.push(...dialogueBreaks.filter(seg => seg.trim()));
+      } else {
+        processedSegments.push(segment);
+      }
+    }
     
     // Extract dialogue and actions
     const dialoguePattern = /^([A-Z][A-Z\s]+)\s*\n(.+?)(?=\n[A-Z][A-Z\s]+|$)/gms;
     const actionPattern = /^\((.+?)\)|^([^A-Z\n].+?)$/gm;
     
-    return { characters, segments, dialoguePattern, actionPattern };
+    return { 
+      characters, 
+      segments: processedSegments.filter(seg => seg.trim()), 
+      dialoguePattern, 
+      actionPattern,
+      sceneCount: sceneHeaders.length 
+    };
   };
 
   const countCharacters = (text: string): number => {
@@ -133,17 +160,45 @@ const Storyboarding = () => {
   };
 
   const generateShotBreakdown = (script: typeof currentProject): Shot[] => {
-    const { characters, segments } = parseScript(script.scriptText);
-    const shotCount = Math.max(3, Math.min(8, segments.length));
+    const { characters, segments, sceneCount } = parseScript(script.scriptText);
+    
+    // Intelligent shot calculation based on script content
+    const minShots = 3;
+    const baseSegments = segments.length;
+    
+    // Calculate shots based on script complexity and length
+    let shotCount = Math.max(minShots, baseSegments);
+    
+    // Additional shots for longer scripts
+    const scriptWordCount = script.scriptText.split(/\s+/).length;
+    if (scriptWordCount > 1000) shotCount += Math.floor(scriptWordCount / 500);
+    if (scriptWordCount > 2000) shotCount += Math.floor(scriptWordCount / 300);
+    
+    // Factor in detected scenes
+    if (sceneCount > 0) {
+      shotCount = Math.max(shotCount, sceneCount * 2); // At least 2 shots per scene
+    }
+    
+    // Consider genre complexity
+    const complexGenres = ['action', 'thriller', 'sci-fi', 'fantasy'];
+    if (complexGenres.includes(script.genre.toLowerCase())) {
+      shotCount = Math.ceil(shotCount * 1.3);
+    }
+    
+    // Cap at reasonable maximum for performance
+    shotCount = Math.min(shotCount, 50);
+    
+    console.log(`Generating ${shotCount} shots for script with ${baseSegments} segments, ${sceneCount} scenes, and ${scriptWordCount} words`);
+    
     const shots: Shot[] = [];
 
     for (let i = 1; i <= shotCount; i++) {
-      const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view"];
-      const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle"];
+      const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view", "Extreme Close-up", "Long Shot"];
+      const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle", "Bird's eye", "Worm's eye"];
       
-      // Get the corresponding script segment
+      // Distribute shots more evenly across all segments
       const segmentIndex = Math.floor((i - 1) * segments.length / shotCount);
-      const scriptSegment = segments[segmentIndex] || segments[0];
+      const scriptSegment = segments[segmentIndex] || segments[Math.min(i - 1, segments.length - 1)];
       
       // Extract dialogue from this segment
       const dialogueMatches = scriptSegment.match(/^([A-Z][A-Z\s]+)\s*\n(.+?)$/gm) || [];
@@ -225,6 +280,15 @@ const Storyboarding = () => {
     setGeneratingStoryboard(true);
 
     try {
+      // Show progress for larger storyboards
+      const shotCount = selectedProject.shots.length;
+      if (shotCount > 8) {
+        toast({
+          title: "Large Storyboard Detected",
+          description: `Generating ${shotCount} shots. This may take several minutes...`
+        });
+      }
+
       const { data, error } = await supabase.functions.invoke('generate-storyboard', {
         body: {
           shots: selectedProject.shots,
@@ -234,7 +298,10 @@ const Storyboarding = () => {
         }
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase function error:', error);
+        throw error;
+      }
 
       if (data?.storyboard) {
         const updatedProject = {
@@ -245,17 +312,30 @@ const Storyboarding = () => {
         setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
         setSelectedProject(updatedProject);
 
+        // Count successful vs failed generations
+        const successfulFrames = data.storyboard.filter((frame: any) => 
+          frame.imageData && !frame.imageData.includes('svg+xml')
+        ).length;
+        
+        const failedFrames = data.storyboard.length - successfulFrames;
+
         toast({
           title: "Storyboard Generated!",
-          description: "Visual storyboard frames have been created successfully"
+          description: failedFrames > 0 
+            ? `${successfulFrames} frames generated successfully, ${failedFrames} frames failed (you can regenerate them individually)`
+            : `All ${successfulFrames} visual storyboard frames created successfully!`
         });
+      } else {
+        throw new Error('No storyboard data received from server');
       }
     } catch (error) {
       console.error('Error generating storyboard:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to generate storyboard. Please try again."
+        description: error instanceof Error 
+          ? `Failed to generate storyboard: ${error.message}`
+          : "Failed to generate storyboard. Please try again."
       });
     } finally {
       setGeneratingStoryboard(false);
