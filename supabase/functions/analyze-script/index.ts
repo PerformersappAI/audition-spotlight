@@ -178,6 +178,7 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
           { role: 'user', content: userPrompt }
         ],
         max_completion_tokens: 2000,
+        response_format: { type: "json_object" }
       })
     });
 
@@ -218,11 +219,25 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
       throw new Error('No content returned from OpenAI API');
     }
 
-    let analysisResult;
+    let analysisResult: any;
+    let confidenceScore = 0.9; // Default high confidence for successful parsing
     try {
       analysisResult = JSON.parse(data.choices[0].message.content);
+      
+      // Validate required fields are present and meaningful
+      const requiredFields = ['sceneSynopsis', 'castOfCharacters', 'emotionalBeats'];
+      const isValid = requiredFields.every((field: string) => 
+        analysisResult[field] && 
+        (Array.isArray(analysisResult[field]) ? analysisResult[field].length > 0 : analysisResult[field].trim().length > 10)
+      );
+      
+      if (!isValid) {
+        console.warn('AI response lacks required detailed content');
+        confidenceScore = 0.4; // Low confidence for incomplete responses
+      }
     } catch (parseError) {
       console.error('Failed to parse AI response as JSON:', parseError);
+      confidenceScore = 0.2; // Very low confidence for fallback
       // Fallback to mock analysis if JSON parsing fails
       analysisResult = {
         sceneSynopsis: `A compelling ${genre || 'drama'} scene exploring themes of conflict and character development`,
@@ -296,7 +311,10 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
     
     return new Response(JSON.stringify({ 
       success: true, 
-      analysis: analysisResult 
+      analysis: analysisResult,
+      confidenceScore,
+      isAiGenerated: true,
+      generatedAt: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });

@@ -8,11 +8,12 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft } from 'lucide-react';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useOCRUpload } from '@/hooks/useOCRUpload';
+import { useScriptAnalysis } from '@/hooks/useScriptAnalysis';
 import jsPDF from 'jspdf';
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
@@ -26,13 +27,16 @@ const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => 
   }
 };
 
-interface ScriptAnalysis {
+interface ScriptAnalysisLocal {
   id: string;
   scriptText: string;
   genre: string;
   tone: string;
   characterCount: number;
   selectedDirectors: string[];
+  confidenceScore?: number;
+  isAiGenerated?: boolean;
+  createdAt: Date;
   analysisResult: {
     sceneSynopsis: string;
     castOfCharacters: Array<{
@@ -56,12 +60,12 @@ interface ScriptAnalysis {
     keyMoments: string[];
     directorInsights?: string[];
   } | null;
-  createdAt: Date;
 }
 
 const ScriptAnalysis = () => {
   const navigate = useNavigate();
-  const [analyses, setAnalyses] = useState<ScriptAnalysis[]>([]);
+  const { userProfile } = useAuth();
+  const { analyses, loading, saveAnalysis, deleteAnalysis } = useScriptAnalysis();
   const [currentScript, setCurrentScript] = useState({
     scriptText: "",
     genre: "",
@@ -69,7 +73,7 @@ const ScriptAnalysis = () => {
   });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
-  const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysis | null>(null);
+  const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysisLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
 
   const genres = [
@@ -184,6 +188,11 @@ const ScriptAnalysis = () => {
       return;
     }
 
+    if (!userProfile?.user_id) {
+      toast.error("Please log in to analyze scripts");
+      return;
+    }
+
     setIsAnalyzing(true);
 
     try {
@@ -210,21 +219,32 @@ const ScriptAnalysis = () => {
       }
 
       if (data?.analysis) {
-        const newAnalysis: ScriptAnalysis = {
-          id: Date.now().toString(),
-          scriptText: currentScript.scriptText,
-          genre: currentScript.genre,
-          tone: currentScript.tone,
-          characterCount: countCharacters(currentScript.scriptText),
+        // Save to database
+        const savedAnalysis = await saveAnalysis(
+          currentScript.scriptText,
+          currentScript.genre,
+          currentScript.tone,
           selectedDirectors,
-          analysisResult: data.analysis,
-          createdAt: new Date()
-        };
+          data.analysis,
+          data.confidenceScore || 0.5
+        );
 
-        setAnalyses(prev => [newAnalysis, ...prev]);
-        setSelectedAnalysis(newAnalysis);
+        if (savedAnalysis) {
+          setSelectedAnalysis({
+            id: savedAnalysis.id,
+            scriptText: savedAnalysis.script_text,
+            genre: savedAnalysis.genre || "",
+            tone: savedAnalysis.tone || "",
+            characterCount: savedAnalysis.character_count,
+            selectedDirectors: savedAnalysis.selected_directors || [],
+            analysisResult: savedAnalysis.analysis_result,
+            confidenceScore: savedAnalysis.confidence_score,
+            isAiGenerated: data.isAiGenerated,
+            createdAt: new Date(savedAnalysis.created_at)
+          });
 
-        toast.success("Your script has been analyzed with AI insights");
+          toast.success("Your script has been analyzed with AI insights and saved");
+        }
       }
     } catch (error) {
       console.error('Error analyzing script:', error);
@@ -241,6 +261,17 @@ const ScriptAnalysis = () => {
       case "Advanced": return "bg-red-100 text-red-800 border-red-300";
       default: return "bg-gray-100 text-gray-800 border-gray-300";
     }
+  };
+
+  const getConfidenceColor = (score: number) => {
+    if (score >= 0.8) return "text-green-600";
+    if (score >= 0.6) return "text-yellow-600";
+    return "text-red-600";
+  };
+
+  const getConfidenceIcon = (score: number) => {
+    if (score >= 0.7) return <CheckCircle className="h-4 w-4 text-green-600" />;
+    return <AlertTriangle className="h-4 w-4 text-yellow-600" />;
   };
 
   const exportAnalysisToPDF = () => {
@@ -606,23 +637,34 @@ const ScriptAnalysis = () => {
                               ? 'border-primary bg-primary/5' 
                               : 'border-border hover:border-primary/50'
                           }`}
-                          onClick={() => setSelectedAnalysis(analysis)}
+                           onClick={() => setSelectedAnalysis({
+                             id: analysis.id,
+                             scriptText: analysis.script_text,
+                             genre: analysis.genre || "",
+                             tone: analysis.tone || "",
+                             characterCount: analysis.character_count,
+                             selectedDirectors: analysis.selected_directors || [],
+                             analysisResult: analysis.analysis_result,
+                             confidenceScore: analysis.confidence_score || 0.5,
+                             isAiGenerated: true,
+                             createdAt: new Date(analysis.created_at)
+                           })}
                         >
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
                               <span className="font-medium text-sm">
                                 {analysis.genre || "No Genre"}
                               </span>
-                              <Badge className={getDifficultyColor(analysis.analysisResult?.difficultyLevel || "Beginner")}>
-                                {analysis.analysisResult?.difficultyLevel || "Beginner"}
+                              <Badge className={getDifficultyColor(analysis.analysis_result?.difficultyLevel || "Beginner")}>
+                                {analysis.analysis_result?.difficultyLevel || "Beginner"}
                               </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2">
-                              {analysis.scriptText.substring(0, 100)}...
+                              {analysis.script_text.substring(0, 100)}...
                             </p>
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
-                              <span>{analysis.characterCount} characters</span>
-                              <span>{analysis.createdAt.toLocaleDateString()}</span>
+                              <span>{analysis.character_count} characters</span>
+                              <span>{new Date(analysis.created_at).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>

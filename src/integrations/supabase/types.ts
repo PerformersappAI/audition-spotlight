@@ -272,6 +272,93 @@ export type Database = {
         }
         Relationships: []
       }
+      script_analyses: {
+        Row: {
+          analysis_result: Json | null
+          character_count: number | null
+          confidence_score: number | null
+          created_at: string
+          genre: string | null
+          id: string
+          is_validated: boolean | null
+          script_text: string
+          selected_directors: string[] | null
+          tone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          analysis_result?: Json | null
+          character_count?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_validated?: boolean | null
+          script_text: string
+          selected_directors?: string[] | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          analysis_result?: Json | null
+          character_count?: number | null
+          confidence_score?: number | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_validated?: boolean | null
+          script_text?: string
+          selected_directors?: string[] | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      storyboard_projects: {
+        Row: {
+          character_count: number | null
+          created_at: string
+          genre: string | null
+          id: string
+          is_complete: boolean | null
+          script_text: string
+          shots: Json | null
+          storyboard_frames: Json | null
+          tone: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          character_count?: number | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_complete?: boolean | null
+          script_text: string
+          shots?: Json | null
+          storyboard_frames?: Json | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          character_count?: number | null
+          created_at?: string
+          genre?: string | null
+          id?: string
+          is_complete?: boolean | null
+          script_text?: string
+          shots?: Json | null
+          storyboard_frames?: Json | null
+          tone?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

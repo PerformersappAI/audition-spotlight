@@ -6,11 +6,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
+import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
+import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 // Document parsing functionality
@@ -50,7 +52,7 @@ interface StoryboardFrame {
   generatedAt?: string;
 }
 
-interface StoryboardProject {
+interface StoryboardProjectLocal {
   id: string;
   scriptText: string;
   genre: string;
@@ -64,7 +66,8 @@ interface StoryboardProject {
 const Storyboarding = () => {
   const { userProfile } = useAuth();
   const { toast } = useToast();
-  const [projects, setProjects] = useState<StoryboardProject[]>([]);
+  const navigate = useNavigate();
+  const { projects, loading, saveProject, updateProject, deleteProject } = useStoryboardProjects();
   const [currentProject, setCurrentProject] = useState({
     scriptText: "",
     genre: "",
@@ -72,7 +75,7 @@ const Storyboarding = () => {
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
   const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
-  const [selectedProject, setSelectedProject] = useState<StoryboardProject | null>(null);
+  const [selectedProject, setSelectedProject] = useState<StoryboardProjectLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
   const [editingShot, setEditingShot] = useState<number | null>(null);
@@ -251,34 +254,52 @@ const Storyboarding = () => {
       return;
     }
 
+    if (!userProfile?.user_id) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please log in to create storyboards"
+      });
+      return;
+    }
+
     setIsProcessingScript(true);
 
-    setTimeout(() => {
+    setTimeout(async () => {
       const shots = generateShotBreakdown(currentProject);
       
-      const newProject: StoryboardProject = {
-        id: Date.now().toString(),
-        scriptText: currentProject.scriptText,
-        genre: currentProject.genre,
-        tone: currentProject.tone,
-        characterCount: countCharacters(currentProject.scriptText),
-        shots,
-        createdAt: new Date()
-      };
+      const savedProject = await saveProject(
+        currentProject.scriptText,
+        currentProject.genre,
+        currentProject.tone,
+        shots
+      );
 
-      setProjects(prev => [newProject, ...prev]);
-      setSelectedProject(newProject);
+      if (savedProject) {
+        // Map database project to local interface
+        const localProject: StoryboardProjectLocal = {
+          id: savedProject.id,
+          scriptText: savedProject.script_text,
+          genre: savedProject.genre || "",
+          tone: savedProject.tone || "",
+          characterCount: savedProject.character_count,
+          shots: savedProject.shots || [],
+          storyboard: savedProject.storyboard_frames || undefined,
+          createdAt: new Date(savedProject.created_at)
+        };
+        setSelectedProject(localProject);
+        toast({
+          title: "Shot Breakdown Complete",
+          description: "Your script has been broken down into shots and saved. Generate visual storyboard frames now!"
+        });
+      }
+      
       setIsProcessingScript(false);
-
-      toast({
-        title: "Shot Breakdown Complete",
-        description: "Your script has been broken down into shots. Generate visual storyboard frames now!"
-      });
     }, 2000);
   };
 
   // Initialize empty storyboard frames for shot breakdown
-  const initializeStoryboard = () => {
+  const initializeStoryboard = async () => {
     if (!selectedProject || !selectedProject.shots) return;
 
     // Create empty frames for each shot
@@ -288,18 +309,28 @@ const Storyboarding = () => {
       generatedAt: undefined
     }));
 
-    const updatedProject = {
-      ...selectedProject,
-      storyboard: emptyFrames
-    };
-
-    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
-    setSelectedProject(updatedProject);
-
-    toast({
-      title: "Storyboard Ready",
-      description: "Click 'Generate Frame' on individual shots or 'Generate All Frames' to create visuals."
+    const updatedProject = await updateProject(selectedProject.id, {
+      storyboard_frames: emptyFrames
     });
+
+    if (updatedProject) {
+      // Map database project to local interface
+      const localProject: StoryboardProjectLocal = {
+        id: updatedProject.id,
+        scriptText: updatedProject.script_text,
+        genre: updatedProject.genre || "",
+        tone: updatedProject.tone || "",
+        characterCount: updatedProject.character_count,
+        shots: updatedProject.shots || [],
+        storyboard: updatedProject.storyboard_frames || undefined,
+        createdAt: new Date(updatedProject.created_at)
+      };
+      setSelectedProject(localProject);
+      toast({
+        title: "Storyboard Ready",
+        description: "Click 'Generate Frame' on individual shots or 'Generate All Frames' to create visuals."
+      });
+    }
   };
 
   const startEditingShot = (shot: Shot) => {
@@ -312,29 +343,42 @@ const Storyboarding = () => {
     setEditValues({});
   };
 
-  const saveEditedShot = () => {
+  const saveEditedShot = async () => {
     if (!selectedProject || !editingShot) return;
 
-    const updatedShots = selectedProject.shots.map(shot => 
+    const updatedShots = selectedProject.shots?.map(shot => 
       shot.shotNumber === editingShot 
         ? { ...shot, ...editValues }
         : shot
     );
 
-    const updatedProject = {
-      ...selectedProject,
-      shots: updatedShots
-    };
+    if (updatedShots) {
+      const updatedProject = await updateProject(selectedProject.id, {
+        shots: updatedShots
+      });
 
-    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
-    setSelectedProject(updatedProject);
-    setEditingShot(null);
-    setEditValues({});
+      if (updatedProject) {
+        // Map database project to local interface
+        const localProject: StoryboardProjectLocal = {
+          id: updatedProject.id,
+          scriptText: updatedProject.script_text,
+          genre: updatedProject.genre || "",
+          tone: updatedProject.tone || "",
+          characterCount: updatedProject.character_count,
+          shots: updatedProject.shots || [],
+          storyboard: updatedProject.storyboard_frames || undefined,
+          createdAt: new Date(updatedProject.created_at)
+        };
+        setSelectedProject(localProject);
+        setEditingShot(null);
+        setEditValues({});
 
-    toast({
-      title: "Shot Updated",
-      description: "Shot has been updated successfully"
-    });
+        toast({
+          title: "Shot Updated",
+          description: "Shot has been updated successfully"
+        });
+      }
+    }
   };
 
   const startEditingFrame = (frame: StoryboardFrame) => {
@@ -347,7 +391,7 @@ const Storyboarding = () => {
     setFrameEditValues({});
   };
 
-  const saveEditedFrame = () => {
+  const saveEditedFrame = async () => {
     if (!selectedProject || !editingFrame || !selectedProject.storyboard) return;
 
     const updatedStoryboard = selectedProject.storyboard.map(frame => 
@@ -356,20 +400,31 @@ const Storyboarding = () => {
         : frame
     );
 
-    const updatedProject = {
-      ...selectedProject,
-      storyboard: updatedStoryboard
-    };
-
-    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
-    setSelectedProject(updatedProject);
-    setEditingFrame(null);
-    setFrameEditValues({});
-
-    toast({
-      title: "Frame Updated",
-      description: "Storyboard frame has been updated successfully"
+    const updatedProject = await updateProject(selectedProject.id, {
+      storyboard_frames: updatedStoryboard
     });
+
+    if (updatedProject) {
+      // Map database project to local interface
+      const localProject: StoryboardProjectLocal = {
+        id: updatedProject.id,
+        scriptText: updatedProject.script_text,
+        genre: updatedProject.genre || "",
+        tone: updatedProject.tone || "",
+        characterCount: updatedProject.character_count,
+        shots: updatedProject.shots || [],
+        storyboard: updatedProject.storyboard_frames || undefined,
+        createdAt: new Date(updatedProject.created_at)
+      };
+      setSelectedProject(localProject);
+      setEditingFrame(null);
+      setFrameEditValues({});
+
+      toast({
+        title: "Frame Updated",
+        description: "Storyboard frame has been updated successfully"
+      });
+    }
   };
 
   // This function is now replaced by generateSingleFrame - keeping for compatibility
@@ -452,10 +507,10 @@ const Storyboarding = () => {
         storyboard: updatedStoryboard
       };
 
-      setSelectedProject(updatedProject);
-      setProjects(prev => prev.map(p => 
-        p.id === selectedProject.id ? updatedProject : p
-      ));
+      // Update in database and refresh local state
+      await updateProject(selectedProject.id, {
+        storyboard_frames: updatedStoryboard
+      });
 
       toast({
         title: "Frame generated!",
