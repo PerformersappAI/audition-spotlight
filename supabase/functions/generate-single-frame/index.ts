@@ -96,8 +96,8 @@ serve(async (req) => {
     const summarizedDescription = summarizeDescription(shot.description);
     const summarizedVisualElements = summarizeDescription(shot.visualElements);
 
-    // Create a focused single-shot prompt
-    const imagePrompt = `SINGLE CAMERA SHOT - What the director's camera sees:
+    // Create a focused single-shot prompt using film terminology
+    const imagePrompt = `FILM SCENE SKETCH - Single movie camera shot:
 
 ${summarizedDescription}
 
@@ -105,9 +105,9 @@ Camera angle: ${shot.cameraAngle}
 Frame composition: ${summarizedVisualElements}
 Subject count: ${shot.characters?.length || 1} person(s) in frame
 
-Visual style: Black and white storyboard sketch, ${visualStyle}
+Visual style: Black and white pencil sketch, ${visualStyle}
 
-IMPORTANT: Show exactly what ONE camera captures from this specific angle. This is NOT a multi-panel storyboard grid. This is a single moment frozen in time as seen through the camera viewfinder. Focus on framing and composition for this one specific shot.`;
+This is what the movie camera records - a single continuous image filling the entire frame. Draw exactly what the director sees through the camera viewfinder for this specific shot. Focus on cinematic framing and composition. This is NOT a multi-panel layout - it's one complete film still sketch.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
