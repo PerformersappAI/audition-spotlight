@@ -67,7 +67,7 @@ const Storyboarding = () => {
   const { userProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { projects, loading, saveProject, updateProject, deleteProject } = useStoryboardProjects();
+  const { projects, loading, saveProject, updateProject, deleteProject, refetch } = useStoryboardProjects();
   const [currentProject, setCurrentProject] = useState({
     scriptText: "",
     genre: "",
@@ -508,9 +508,18 @@ const Storyboarding = () => {
       };
 
       // Update in database and refresh local state
-      await updateProject(selectedProject.id, {
+      const dbUpdatedProject = await updateProject(selectedProject.id, {
         storyboard_frames: updatedStoryboard
       });
+
+      // Update local state with the new frame data
+      if (dbUpdatedProject) {
+        setSelectedProject({
+          ...selectedProject,
+          storyboard: updatedStoryboard
+        });
+        console.log(`Frame ${shotNumber} generated and state updated`);
+      }
 
       toast({
         title: "Frame generated!",
@@ -554,6 +563,25 @@ const Storyboarding = () => {
       await generateSingleFrame(shot.shotNumber);
       // Small delay between frames to prevent overwhelming the API
       await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    // Refresh the selected project from database to ensure UI is up to date
+    if (selectedProject) {
+      await refetch();
+      const refreshedProject = projects.find(p => p.id === selectedProject.id);
+      if (refreshedProject) {
+        setSelectedProject({
+          id: refreshedProject.id,
+          scriptText: refreshedProject.script_text,
+          genre: refreshedProject.genre || "",
+          tone: refreshedProject.tone || "",
+          characterCount: refreshedProject.character_count,
+          shots: refreshedProject.shots || [],
+          storyboard: refreshedProject.storyboard_frames || undefined,
+          createdAt: new Date(refreshedProject.created_at)
+        });
+        console.log("All frames generated, state refreshed from database");
+      }
     }
 
     setIsGenerating(false);
