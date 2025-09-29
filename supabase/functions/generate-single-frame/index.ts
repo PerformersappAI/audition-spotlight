@@ -23,34 +23,34 @@ interface Shot {
 function getVisualStyle(genre: string, tone: string): string {
   const styles = {
     'Drama': {
-      'Emotional': 'warm color palette with natural lighting, intimate close-ups and medium shots, emotional depth in compositions',
-      'Serious': 'muted earth tones, deliberate pacing, thoughtful framing with meaningful negative space',
-      'Inspiring': 'uplifting warm tones, dynamic angles, inspiring compositions with aspirational lighting'
+      'Emotional': 'warm, intimate setting with soft lighting',
+      'Serious': 'muted tones, thoughtful composition',
+      'Inspiring': 'uplifting atmosphere with bright lighting'
     },
     'Comedy': {
-      'Light': 'bright and colorful palette, playful compositions, energetic framing with comedic timing',
-      'Satirical': 'exaggerated visual elements, bold contrasts, ironic compositions with clever visual metaphors',
-      'Quirky': 'unconventional angles, whimsical color choices, unique visual perspective with playful elements'
+      'Light': 'bright, cheerful setting',
+      'Satirical': 'exaggerated expressions and poses',
+      'Quirky': 'unusual perspective, whimsical elements'
     },
     'Thriller': {
-      'Mysterious': 'high contrast lighting with stark shadows, desaturated color palette, tense compositions with dramatic chiaroscuro lighting, muted colors, and enigmatic atmosphere',
-      'Suspenseful': 'moody lighting with deep shadows, tension-building angles, atmospheric depth with noir influences',
-      'Dark': 'noir-inspired cinematography, heavy shadows, cold color temperature with ominous undertones'
+      'Mysterious': 'dark shadows, high contrast lighting',
+      'Suspenseful': 'tense atmosphere with dramatic shadows',
+      'Dark': 'noir-style lighting with deep shadows'
     },
     'Action': {
-      'Exciting': 'dynamic camera angles, vibrant colors, fast-paced visual energy with motion blur effects',
-      'Intense': 'high contrast lighting, aggressive framing, adrenaline-inducing compositions',
-      'Epic': 'grand scale compositions, heroic lighting, cinematic scope with dramatic perspectives'
+      'Exciting': 'dynamic poses, energetic composition',
+      'Intense': 'dramatic angles, high contrast',
+      'Epic': 'grand scale, heroic positioning'
     },
     'Horror': {
-      'Scary': 'low-key lighting, unsettling angles, psychological tension through visual composition',
-      'Creepy': 'eerie atmosphere, disturbing visual elements, unnatural color grading',
-      'Disturbing': 'psychological horror aesthetics, uncomfortable framing, haunting visual metaphors'
+      'Scary': 'eerie lighting, unsettling atmosphere',
+      'Creepy': 'disturbing elements, unnatural shadows',
+      'Disturbing': 'psychological tension, uncomfortable framing'
     },
     'Romance': {
-      'Romantic': 'soft warm lighting, intimate compositions, beautiful color harmony with dreamy aesthetics',
-      'Sweet': 'pastel color palette, gentle lighting, tender visual moments',
-      'Passionate': 'dramatic romantic lighting, intense emotional framing, passionate color schemes'
+      'Romantic': 'soft, warm lighting with intimate positioning',
+      'Sweet': 'gentle lighting, tender expressions',
+      'Passionate': 'dramatic lighting, intense emotional connection'
     }
   };
 
@@ -60,7 +60,7 @@ function getVisualStyle(genre: string, tone: string): string {
     if (toneStyle) return toneStyle;
   }
 
-  return 'cinematic composition with professional lighting and visual storytelling';
+  return 'clear, simple composition';
 }
 
 serve(async (req) => {
@@ -96,18 +96,22 @@ serve(async (req) => {
     const summarizedDescription = summarizeDescription(shot.description);
     const summarizedVisualElements = summarizeDescription(shot.visualElements);
 
-    // Create a focused single-shot prompt using film terminology
-    const imagePrompt = `FILM SCENE SKETCH - Single movie camera shot:
+    // Create a simple scene sketch prompt
+    const viewAngle = shot.cameraAngle.toLowerCase().includes('close') ? 'close view' :
+                      shot.cameraAngle.toLowerCase().includes('wide') ? 'wide view' :
+                      shot.cameraAngle.toLowerCase().includes('medium') ? 'medium view' :
+                      shot.cameraAngle.toLowerCase().includes('bird') ? 'from above' :
+                      shot.cameraAngle.toLowerCase().includes('low') ? 'from below' : 'standard view';
 
-${summarizedDescription}
+    const imagePrompt = `Simple black and white pencil sketch showing: ${summarizedDescription}
 
-Camera angle: ${shot.cameraAngle}
-Frame composition: ${summarizedVisualElements}
-Subject count: ${shot.characters?.length || 1} person(s) in frame
+View: ${viewAngle}
+Setting: ${summarizedVisualElements}
+Characters: ${shot.characters?.length || 1} person(s)
 
-Visual style: Black and white pencil sketch, ${visualStyle}
+Style: ${visualStyle}
 
-This is what the movie camera records - a single continuous image filling the entire frame. Draw exactly what the director sees through the camera viewfinder for this specific shot. Focus on cinematic framing and composition. This is NOT a multi-panel layout - it's one complete film still sketch.`;
+Draw a clean, simple sketch of this scene with clear lines and good contrast. Focus on the characters, their actions, and the setting. Keep it simple and easy to understand.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
