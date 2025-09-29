@@ -83,22 +83,31 @@ serve(async (req) => {
     const visualStyle = getVisualStyle(genre, tone);
     console.log(`Visual style for ${genre}/${tone}: ${visualStyle}`);
 
-    // Construct safe, professional storyboard prompt
-    const charactersText = shot.characters && shot.characters.length > 0
-      ? `People in scene: ${shot.characters.length} character(s)`
-      : '';
+    // Summarize long descriptions to avoid overwhelming the AI
+    const summarizeDescription = (desc: string): string => {
+      if (desc.length <= 100) return desc;
+      
+      // Extract key visual elements and camera action
+      const words = desc.split(' ');
+      const keyWords = words.slice(0, 15).join(' ');
+      return keyWords + (words.length > 15 ? '...' : '');
+    };
 
-    // Create a safe, professional prompt focusing on cinematography
-    const imagePrompt = `Professional storyboard illustration in black and white sketch style showing:
+    const summarizedDescription = summarizeDescription(shot.description);
+    const summarizedVisualElements = summarizeDescription(shot.visualElements);
 
-Scene setup: ${shot.description}
-Camera perspective: ${shot.cameraAngle} 
-Visual composition: ${shot.visualElements}
-${charactersText}
+    // Create a focused single-shot prompt
+    const imagePrompt = `SINGLE CAMERA SHOT - What the director's camera sees:
 
-Art style: Clean line art storyboard drawing, professional film pre-production illustration, ${visualStyle}
+${summarizedDescription}
 
-This should be a traditional storyboard panel with clear visual communication for film production, focusing on composition and cinematography rather than detailed character features.`;
+Camera angle: ${shot.cameraAngle}
+Frame composition: ${summarizedVisualElements}
+Subject count: ${shot.characters?.length || 1} person(s) in frame
+
+Visual style: Black and white storyboard sketch, ${visualStyle}
+
+IMPORTANT: Show exactly what ONE camera captures from this specific angle. This is NOT a multi-panel storyboard grid. This is a single moment frozen in time as seen through the camera viewfinder. Focus on framing and composition for this one specific shot.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -117,7 +126,7 @@ This should be a traditional storyboard panel with clear visual communication fo
         model: 'dall-e-3',
         prompt: imagePrompt,
         n: 1,
-        size: '1024x1024',
+        size: '1792x1024',
         quality: 'standard',
         response_format: 'b64_json'
       }),
