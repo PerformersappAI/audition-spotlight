@@ -6,19 +6,7 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-
-// Helper function to convert PDF to images using a lightweight PDF processing approach
-async function convertPDFToImages(base64Data: string): Promise<string[]> {
-  try {
-    // For now, we'll use a simpler approach - send the PDF as a data URL directly
-    // OpenAI's newer models can sometimes handle PDFs in base64 format
-    return [`data:application/pdf;base64,${base64Data}`];
-  } catch (error) {
-    console.error('Error converting PDF to images:', error);
-    throw new Error('Failed to process PDF for OCR');
-  }
-}
+const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 
 serve(async (req) => {
   // Handle CORS preflight requests
@@ -44,34 +32,33 @@ serve(async (req) => {
       );
     }
 
-    if (!OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY not found in environment variables');
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY not found in environment variables');
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'Gemini API key not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
 
     if (mimeType === 'application/pdf') {
       try {
-        console.log('Sending PDF to OpenAI for processing...');
+        console.log('Sending PDF to Gemini for processing...');
         
         // Convert PDF data to base64 if not already
         const base64Data = fileData.startsWith('data:') ? fileData.split(',')[1] : fileData;
         
-        // Use OpenAI's document parsing API instead of vision model for PDFs
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        // Use Gemini's vision model for PDF processing
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-4o-mini', // Use a more cost-effective model for text extraction
-            messages: [
+            contents: [
               {
-                role: 'system',
-                content: `You are a professional script formatting assistant. You will receive base64 encoded PDF content. Extract and clean script text from the document. Focus on:
+                parts: [
+                  {
+                    text: `You are a professional script formatting assistant. Extract and clean script text from the provided PDF document. Focus on:
 1. Remove OCR artifacts, weird characters, and encoding issues
 2. Standardize character names to ALL CAPS format
 3. Clean up stage directions and put them in parentheses
@@ -82,26 +69,33 @@ serve(async (req) => {
 8. Remove any non-script content like title pages or notes
 
 Return only the cleaned script text with proper formatting. Do not add commentary.`
-              },
-              {
-                role: 'user',
-                content: `Please extract and format the script text from this PDF file data: ${base64Data.substring(0, 1000)}...`
+                  },
+                  {
+                    inline_data: {
+                      mime_type: "application/pdf",
+                      data: base64Data
+                    }
+                  }
+                ]
               }
             ],
-            max_tokens: 8000,
+            generationConfig: {
+              maxOutputTokens: 8000,
+              temperature: 0.1
+            }
           })
         });
 
-        console.log(`OpenAI response status: ${response.status}`);
+        console.log(`Gemini response status: ${response.status}`);
 
         if (!response.ok) {
           const errorText = await response.text();
-          console.error('OpenAI API error:', response.status, errorText);
+          console.error('Gemini API error:', response.status, errorText);
           
-          // Handle specific OpenAI API errors more gracefully
+          // Handle specific Gemini API errors more gracefully
           if (response.status === 503) {
             return new Response(JSON.stringify({ 
-              error: 'OpenAI service is temporarily overloaded. Please try again in a few moments.',
+              error: 'Gemini service is temporarily overloaded. Please try again in a few moments.',
               success: false,
               retryable: true
             }), {
@@ -110,10 +104,21 @@ Return only the cleaned script text with proper formatting. Do not add commentar
             });
           }
           
+          if (response.status === 429) {
+            return new Response(JSON.stringify({ 
+              error: 'Rate limit exceeded. Please try again later.',
+              success: false,
+              retryable: true
+            }), {
+              status: 429,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+          
           return new Response(JSON.stringify({ 
-            error: `PDF processing failed: ${response.status === 429 ? 'Rate limit exceeded. Please try again later.' : 'AI service error'}`,
+            error: `PDF processing failed: ${response.status >= 500 ? 'AI service error' : 'Invalid request'}`,
             success: false,
-            retryable: response.status === 429 || response.status >= 500
+            retryable: response.status >= 500
           }), {
             status: response.status >= 500 ? 503 : 400,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -121,12 +126,12 @@ Return only the cleaned script text with proper formatting. Do not add commentar
         }
 
         const result = await response.json();
-        console.log('OpenAI response received');
+        console.log('Gemini response received');
         
-        if (!result.choices || !result.choices[0] || !result.choices[0].message) {
-          console.error('Unexpected OpenAI response format:', result);
+        if (!result.candidates || !result.candidates[0] || !result.candidates[0].content || !result.candidates[0].content.parts || !result.candidates[0].content.parts[0]) {
+          console.error('Unexpected Gemini response format:', result);
           return new Response(JSON.stringify({ 
-            error: 'No content returned from OpenAI API',
+            error: 'No content returned from Gemini API',
             success: false 
           }), {
             status: 500,
@@ -134,7 +139,7 @@ Return only the cleaned script text with proper formatting. Do not add commentar
           });
         }
 
-        const extractedText = result.choices[0].message.content;
+        const extractedText = result.candidates[0].content.parts[0].text;
         
         if (!extractedText || extractedText.trim().length === 0) {
           console.error('No text content extracted');
@@ -158,10 +163,10 @@ Return only the cleaned script text with proper formatting. Do not add commentar
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
         
-      } catch (openaiError) {
-        console.error('OpenAI processing error:', openaiError);
+      } catch (geminiError) {
+        console.error('Gemini processing error:', geminiError);
         return new Response(JSON.stringify({ 
-          error: "Failed to parse PDF with OpenAI: " + (openaiError instanceof Error ? openaiError.message : openaiError),
+          error: "Failed to parse PDF with Gemini: " + (geminiError instanceof Error ? geminiError.message : geminiError),
           success: false
         }), {
           status: 500,
