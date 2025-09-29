@@ -277,72 +277,29 @@ const Storyboarding = () => {
     }, 2000);
   };
 
-  const generateStoryboard = async () => {
-    if (!selectedProject) return;
+  // Initialize empty storyboard frames for shot breakdown
+  const initializeStoryboard = () => {
+    if (!selectedProject || !selectedProject.shots) return;
 
-    setGeneratingStoryboard(true);
+    // Create empty frames for each shot
+    const emptyFrames = selectedProject.shots.map(shot => ({
+      ...shot,
+      imageData: undefined,
+      generatedAt: undefined
+    }));
 
-    try {
-      // Show progress for larger storyboards
-      const shotCount = selectedProject.shots.length;
-      if (shotCount > 8) {
-        toast({
-          title: "Large Storyboard Detected",
-          description: `Generating ${shotCount} shots. This may take several minutes...`
-        });
-      }
+    const updatedProject = {
+      ...selectedProject,
+      storyboard: emptyFrames
+    };
 
-      const { data, error } = await supabase.functions.invoke('generate-storyboard', {
-        body: {
-          shots: selectedProject.shots,
-          genre: selectedProject.genre,
-          tone: selectedProject.tone,
-          scriptText: selectedProject.scriptText
-        }
-      });
+    setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
+    setSelectedProject(updatedProject);
 
-      if (error) {
-        console.error('Supabase function error:', error);
-        throw error;
-      }
-
-      if (data?.storyboard) {
-        const updatedProject = {
-          ...selectedProject,
-          storyboard: data.storyboard
-        };
-        
-        setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
-        setSelectedProject(updatedProject);
-
-        // Count successful vs failed generations
-        const successfulFrames = data.storyboard.filter((frame: any) => 
-          frame.imageData && !frame.imageData.includes('svg+xml')
-        ).length;
-        
-        const failedFrames = data.storyboard.length - successfulFrames;
-
-        toast({
-          title: "Storyboard Generated!",
-          description: failedFrames > 0 
-            ? `${successfulFrames} frames generated successfully, ${failedFrames} frames failed (you can regenerate them individually)`
-            : `All ${successfulFrames} visual storyboard frames created successfully!`
-        });
-      } else {
-        throw new Error('No storyboard data received from server');
-      }
-    } catch (error) {
-      console.error('Error generating storyboard:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error instanceof Error 
-          ? `Failed to generate storyboard: ${error.message}`
-          : "Failed to generate storyboard. Please try again."
-      });
-    } finally {
-      setGeneratingStoryboard(false);
-    }
+    toast({
+      title: "Storyboard Ready",
+      description: "Click 'Generate Frame' on individual shots or 'Generate All Frames' to create visuals."
+    });
   };
 
   const startEditingShot = (shot: Shot) => {
@@ -415,55 +372,9 @@ const Storyboarding = () => {
     });
   };
 
+  // This function is now replaced by generateSingleFrame - keeping for compatibility
   const regenerateFrame = async (shotNumber: number) => {
-    if (!selectedProject?.storyboard) return;
-
-    setRegeneratingFrame(shotNumber);
-
-    try {
-      const frameToRegenerate = selectedProject.storyboard.find(f => f.shotNumber === shotNumber);
-      if (!frameToRegenerate) return;
-
-      const { data, error } = await supabase.functions.invoke('generate-storyboard', {
-        body: {
-          shots: [frameToRegenerate],
-          genre: selectedProject.genre,
-          tone: selectedProject.tone
-        }
-      });
-
-      if (error) throw error;
-
-      if (data?.storyboard && data.storyboard[0]) {
-        const updatedStoryboard = selectedProject.storyboard.map(frame => 
-          frame.shotNumber === shotNumber 
-            ? { ...frame, imageData: data.storyboard[0].imageData, generatedAt: new Date().toISOString() }
-            : frame
-        );
-
-        const updatedProject = {
-          ...selectedProject,
-          storyboard: updatedStoryboard
-        };
-        
-        setProjects(prev => prev.map(p => p.id === selectedProject.id ? updatedProject : p));
-        setSelectedProject(updatedProject);
-
-        toast({
-          title: "Frame Regenerated!",
-          description: "Storyboard frame has been regenerated successfully"
-        });
-      }
-    } catch (error) {
-      console.error('Error regenerating frame:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to regenerate frame. Please try again."
-      });
-    } finally {
-      setRegeneratingFrame(null);
-    }
+    return generateSingleFrame(shotNumber);
   };
 
   // Generate individual frame
@@ -917,23 +828,37 @@ const Storyboarding = () => {
                       <Camera className="h-5 w-5" />
                       Shot Breakdown
                     </CardTitle>
-                    <Button 
-                      onClick={generateStoryboard}
-                      disabled={generatingStoryboard}
-                      variant="outline"
-                    >
-                      {generatingStoryboard ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating...
-                        </>
-                      ) : (
-                        <>
-                          <Video className="mr-2 h-4 w-4" />
-                          Generate Visual Storyboard
-                        </>
+                    <div className="flex gap-2">
+                      <Button 
+                        onClick={initializeStoryboard}
+                        disabled={selectedProject.storyboard && selectedProject.storyboard.length > 0}
+                        variant="outline"
+                        size="sm"
+                      >
+                        <Video className="mr-2 h-4 w-4" />
+                        Initialize Frames
+                      </Button>
+                      {selectedProject.storyboard && selectedProject.storyboard.length > 0 && (
+                        <Button 
+                          onClick={generateAllFrames}
+                          disabled={isGenerating}
+                          variant="default"
+                          size="sm"
+                        >
+                          {isGenerating ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Camera className="mr-2 h-4 w-4" />
+                              Generate All Frames
+                            </>
+                          )}
+                        </Button>
                       )}
-                    </Button>
+                    </div>
                   </div>
                 </CardHeader>
                  <CardContent>
