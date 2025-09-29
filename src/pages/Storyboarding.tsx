@@ -841,7 +841,16 @@ const Storyboarding = () => {
                               ? 'border-primary bg-primary/5' 
                               : 'border-border hover:border-primary/50'
                           }`}
-                          onClick={() => setSelectedProject(project)}
+                          onClick={() => setSelectedProject({
+                            id: project.id,
+                            scriptText: project.script_text,
+                            genre: project.genre || "",
+                            tone: project.tone || "",
+                            characterCount: project.character_count,
+                            shots: project.shots || [],
+                            storyboard: project.storyboard_frames || undefined,
+                            createdAt: new Date(project.created_at)
+                          })}
                         >
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -849,18 +858,18 @@ const Storyboarding = () => {
                                 {project.genre || "No Genre"}
                               </span>
                               <Badge variant="outline">
-                                {project.shots.length} shots
+                                {project.shots?.length || 0} shots
                               </Badge>
                             </div>
                             <p className="text-xs text-muted-foreground line-clamp-2">
-                              {project.scriptText.substring(0, 100)}...
+                              {project.script_text.substring(0, 100)}...
                             </p>
                             <div className="flex items-center justify-between text-xs text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Users className="h-3 w-3" />
-                                {project.characterCount}
+                                {project.character_count}
                               </span>
-                              <span>{project.createdAt.toLocaleDateString()}</span>
+                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </div>
