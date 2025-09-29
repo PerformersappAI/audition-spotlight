@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -80,6 +80,9 @@ const Storyboarding = () => {
   const [editingFrame, setEditingFrame] = useState<number | null>(null);
   const [frameEditValues, setFrameEditValues] = useState<Partial<StoryboardFrame>>({});
   const [regeneratingFrame, setRegeneratingFrame] = useState<number | null>(null);
+  const [generatingFrames, setGeneratingFrames] = useState<Set<number>>(new Set());
+  const [frameErrors, setFrameErrors] = useState<Map<number, string>>(new Map());
+  const [isGenerating, setIsGenerating] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
 
   const genres = [
@@ -461,6 +464,128 @@ const Storyboarding = () => {
     } finally {
       setRegeneratingFrame(null);
     }
+  };
+
+  // Generate individual frame
+  const generateSingleFrame = async (shotNumber: number) => {
+    if (!selectedProject || !selectedProject.shots) return;
+
+    const shot = selectedProject.shots.find(s => s.shotNumber === shotNumber);
+    if (!shot) return;
+
+    try {
+      setGeneratingFrames(prev => new Set([...prev, shotNumber]));
+      setFrameErrors(prev => {
+        const newErrors = new Map(prev);
+        newErrors.delete(shotNumber);
+        return newErrors;
+      });
+
+      console.log(`Generating frame ${shotNumber}`);
+
+      const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
+        body: { 
+          shot,
+          genre: selectedProject.genre || 'Drama',
+          tone: selectedProject.tone || 'Emotional'
+        }
+      });
+
+      if (error) {
+        console.error(`Frame ${shotNumber} generation error:`, error);
+        throw error;
+      }
+
+      if (!frameData || !frameData.imageData) {
+        throw new Error('Invalid response from frame generation service');
+      }
+
+      console.log(`Frame ${shotNumber} generated successfully`);
+
+      // Update the specific frame in the storyboard
+      const newFrame = {
+        ...shot,
+        imageData: frameData.imageData,
+        generatedAt: frameData.generatedAt || new Date().toISOString()
+      };
+
+      const updatedStoryboard = selectedProject.storyboard ? 
+        selectedProject.storyboard.map(frame => 
+          frame.shotNumber === shotNumber ? newFrame : frame
+        ) : 
+        [newFrame];
+
+      // If this is the first frame, initialize the storyboard array
+      if (!selectedProject.storyboard) {
+        const emptyFrames = selectedProject.shots.map(shot => ({
+          ...shot,
+          imageData: undefined,
+          generatedAt: undefined
+        }));
+        updatedStoryboard.splice(0, 1, ...emptyFrames.map(frame => 
+          frame.shotNumber === shotNumber ? newFrame : frame
+        ));
+      }
+
+      const updatedProject = {
+        ...selectedProject,
+        storyboard: updatedStoryboard
+      };
+
+      setSelectedProject(updatedProject);
+      setProjects(prev => prev.map(p => 
+        p.id === selectedProject.id ? updatedProject : p
+      ));
+
+      toast({
+        title: "Frame generated!",
+        description: `Frame ${shotNumber} created successfully.`,
+      });
+
+    } catch (error) {
+      console.error(`Error generating frame ${shotNumber}:`, error);
+      setFrameErrors(prev => new Map([...prev, [shotNumber, error instanceof Error ? error.message : "Generation failed"]]));
+      
+      toast({
+        title: "Frame generation failed",
+        description: `Failed to generate frame ${shotNumber}. Please try again.`,
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingFrames(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(shotNumber);
+        return newSet;
+      });
+    }
+  };
+
+  // Generate all remaining frames sequentially
+  const generateAllFrames = async () => {
+    if (!selectedProject || !selectedProject.shots) return;
+
+    setIsGenerating(true);
+    const ungenerated = selectedProject.shots.filter(shot => {
+      const existingFrame = selectedProject.storyboard?.find(f => f.shotNumber === shot.shotNumber);
+      return !existingFrame?.imageData;
+    });
+
+    toast({
+      title: "Generating storyboard",
+      description: `Processing ${ungenerated.length} frames sequentially...`,
+    });
+
+    for (const shot of ungenerated) {
+      await generateSingleFrame(shot.shotNumber);
+      // Small delay between frames to prevent overwhelming the API
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    }
+
+    setIsGenerating(false);
+    toast({
+      title: "Storyboard complete!",
+      description: `All ${ungenerated.length} frames generated successfully.`,
+    });
   };
 
   const glossaryTerms = {
@@ -949,7 +1074,7 @@ const Storyboarding = () => {
               </Card>
 
               {/* Visual Storyboard Frames */}
-              {selectedProject.storyboard && (
+              {selectedProject.shots && selectedProject.shots.length > 0 && (
                 <Card className="border-2 border-primary/20 shadow-lg">
                   <CardHeader>
                     <div className="flex items-center justify-between">
@@ -965,13 +1090,27 @@ const Storyboarding = () => {
                   </CardHeader>
                   <CardContent>
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                       {selectedProject.storyboard.map((frame) => (
-                         <Card key={frame.shotNumber} className="border border-border">
-                           <CardContent className="p-4 space-y-4">
-                             <div className="flex items-center justify-between">
-                               <Badge variant="secondary">Frame {frame.shotNumber}</Badge>
-                               <div className="flex items-center gap-2">
-                                 {editingFrame === frame.shotNumber ? (
+                       {selectedProject.shots.map((shot) => {
+                         const frame = selectedProject.storyboard?.find(f => f.shotNumber === shot.shotNumber);
+                         const isGenerating = generatingFrames.has(shot.shotNumber);
+                         const error = frameErrors.get(shot.shotNumber);
+                         
+                         return (
+                         <Card key={shot.shotNumber} className="border border-border">
+                            <CardContent className="p-4 space-y-4">
+                              <div className="flex items-center justify-between">
+                                <Badge variant="secondary">Frame {shot.shotNumber}</Badge>
+                                <div className="flex items-center gap-2">
+                                  {!frame?.imageData && !isGenerating && !error && (
+                                    <Button
+                                      size="sm"
+                                      onClick={() => generateSingleFrame(shot.shotNumber)}
+                                      className="h-6 px-2 text-xs"
+                                    >
+                                      Generate
+                                    </Button>
+                                  )}
+                                  {editingFrame === shot.shotNumber ? (
                                    <div className="flex items-center gap-1">
                                      <Button
                                        size="sm"
@@ -992,148 +1131,185 @@ const Storyboarding = () => {
                                    </div>
                                  ) : (
                                    <div className="flex items-center gap-1">
-                                     <Button
-                                       size="sm"
-                                       variant="ghost"
-                                       onClick={() => startEditingFrame(frame)}
-                                       className="h-6 w-6 p-0"
-                                     >
-                                       <Edit2 className="h-3 w-3" />
-                                     </Button>
-                                     <Button
-                                       size="sm"
-                                       variant="ghost"
-                                       onClick={() => regenerateFrame(frame.shotNumber)}
-                                       disabled={regeneratingFrame === frame.shotNumber}
-                                       className="h-6 w-6 p-0"
-                                     >
-                                       {regeneratingFrame === frame.shotNumber ? (
-                                         <Loader2 className="h-3 w-3 animate-spin" />
-                                       ) : (
-                                         <RefreshCw className="h-3 w-3" />
-                                       )}
-                                     </Button>
+                                      {frame?.imageData && (
+                                        <>
+                                          <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => startEditingFrame({...shot, ...frame})}
+                                            className="h-6 w-6 p-0"
+                                          >
+                                            <Edit2 className="h-3 w-3" />
+                                          </Button>
+                                          <Button
+                                            size="sm"
+                                            variant="ghost"
+                                            onClick={() => generateSingleFrame(shot.shotNumber)}
+                                            disabled={isGenerating}
+                                            className="h-6 w-6 p-0"
+                                          >
+                                            {isGenerating ? (
+                                              <Loader2 className="h-3 w-3 animate-spin" />
+                                            ) : (
+                                              <RefreshCw className="h-3 w-3" />
+                                            )}
+                                          </Button>
+                                        </>
+                                      )}
                                    </div>
                                  )}
-                                 {frame.generatedAt && (
-                                   <span className="text-xs text-muted-foreground">
-                                     {new Date(frame.generatedAt).toLocaleTimeString()}
-                                   </span>
-                                 )}
+                                  {frame?.generatedAt && (
+                                    <span className="text-xs text-muted-foreground">
+                                      {new Date(frame.generatedAt).toLocaleTimeString()}
+                                    </span>
+                                  )}
+                                  {isGenerating && (
+                                    <span className="text-xs text-blue-600">
+                                      Generating...
+                                    </span>
+                                  )}
+                                  {error && (
+                                    <span className="text-xs text-red-600">
+                                      Failed
+                                    </span>
+                                  )}
                                </div>
                              </div>
                              
-                              <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border">
-                                {frame.imageData ? (
-                                  <img 
-                                    src={frame.imageData} 
-                                    alt={`Storyboard frame ${frame.shotNumber}: ${frame.description}`}
-                                    className="w-full h-full object-contain bg-white"
-                                    onError={(e) => {
-                                      console.error('Failed to load storyboard image:', frame.imageData);
-                                      e.currentTarget.style.display = 'none';
-                                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                                    }}
-                                  />
-                                ) : (
-                                  <div className="w-full h-full flex items-center justify-center bg-muted">
-                                    <div className="text-center">
-                                      <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                      <p className="text-sm text-muted-foreground">Generating frame...</p>
-                                    </div>
-                                  </div>
-                                )}
-                                {/* Fallback content for image load errors */}
-                                <div className="hidden w-full h-full flex items-center justify-center bg-muted">
-                                  <div className="text-center">
-                                    <Camera className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
-                                    <p className="text-xs text-muted-foreground">Frame preview unavailable</p>
-                                  </div>
-                                </div>
-                              </div>
+                               <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border">
+                                 {frame?.imageData ? (
+                                   <img 
+                                     src={frame.imageData} 
+                                     alt={`Storyboard frame ${shot.shotNumber}: ${shot.description}`}
+                                     className="w-full h-full object-contain bg-white"
+                                     onError={(e) => {
+                                       console.error('Failed to load storyboard image:', frame.imageData);
+                                       e.currentTarget.style.display = 'none';
+                                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                     }}
+                                   />
+                                 ) : isGenerating ? (
+                                   <div className="w-full h-full flex items-center justify-center bg-muted">
+                                     <div className="text-center">
+                                       <Loader2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground animate-spin" />
+                                       <p className="text-sm text-muted-foreground">Generating frame {shot.shotNumber}...</p>
+                                     </div>
+                                   </div>
+                                 ) : error ? (
+                                   <div className="w-full h-full flex items-center justify-center bg-red-50">
+                                     <div className="text-center">
+                                       <AlertCircle className="h-8 w-8 mx-auto mb-2 text-red-500" />
+                                       <p className="text-sm text-red-600">Generation failed</p>
+                                       <Button 
+                                         size="sm" 
+                                         variant="outline" 
+                                         onClick={() => generateSingleFrame(shot.shotNumber)}
+                                         className="mt-2"
+                                       >
+                                         Retry
+                                       </Button>
+                                     </div>
+                                   </div>
+                                 ) : (
+                                   <div className="w-full h-full flex items-center justify-center bg-muted">
+                                     <div className="text-center">
+                                       <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                       <p className="text-sm text-muted-foreground">Click Generate to create frame</p>
+                                     </div>
+                                   </div>
+                                 )}
+                                 {/* Fallback content for image load errors */}
+                                 <div className="hidden w-full h-full flex items-center justify-center bg-muted">
+                                   <div className="text-center">
+                                     <Camera className="h-6 w-6 mx-auto mb-2 text-muted-foreground" />
+                                     <p className="text-xs text-muted-foreground">Frame preview unavailable</p>
+                                   </div>
+                                 </div>
+                               </div>
                              
                              <div className="space-y-2">
-                               <div>
-                                 <h4 className="font-medium text-xs mb-1">Description</h4>
-                                 {editingFrame === frame.shotNumber ? (
-                                   <Textarea
-                                     value={frameEditValues.description || frame.description}
-                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, description: e.target.value }))}
-                                     className="text-xs min-h-[50px]"
-                                   />
-                                 ) : (
-                                   <p className="text-xs text-muted-foreground">{frame.description}</p>
-                                 )}
-                               </div>
-                               <div>
-                                 <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
-                                 {editingFrame === frame.shotNumber ? (
-                                   <Input
-                                     value={frameEditValues.cameraAngle || frame.cameraAngle}
-                                     onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                     className="text-xs"
-                                   />
-                                 ) : (
-                                   <p className="text-xs text-muted-foreground">{frame.cameraAngle}</p>
-                                 )}
-                               </div>
                                 <div>
-                                  <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
-                                  {editingFrame === frame.shotNumber ? (
+                                  <h4 className="font-medium text-xs mb-1">Description</h4>
+                                  {editingFrame === shot.shotNumber ? (
                                     <Textarea
-                                      value={frameEditValues.visualElements || frame.visualElements}
-                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
-                                      className="text-xs min-h-[40px]"
+                                      value={frameEditValues.description || shot.description}
+                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, description: e.target.value }))}
+                                      className="text-xs min-h-[50px]"
                                     />
                                   ) : (
-                                    <p className="text-xs text-muted-foreground">{frame.visualElements}</p>
+                                    <p className="text-xs text-muted-foreground">{shot.description}</p>
                                   )}
                                 </div>
-                                {frame.scriptSegment && (
-                                  <div className="border-t pt-2">
-                                    <h4 className="font-medium text-xs mb-1 text-primary">Script Context</h4>
-                                    <p className="text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic">
-                                      "{frame.scriptSegment}"
-                                    </p>
-                                  </div>
-                                )}
-                                {frame.dialogueLines && frame.dialogueLines.length > 0 && (
-                                  <div>
-                                    <h4 className="font-medium text-xs mb-1 text-primary">Dialogue</h4>
-                                    <div className="space-y-1">
-                                      {frame.dialogueLines.slice(0, 2).map((dialogue, index) => (
-                                        <p key={index} className="text-xs text-muted-foreground bg-primary/10 p-1 rounded">
-                                          {dialogue}
-                                        </p>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                               {editingFrame === frame.shotNumber && (
-                                 <Button
-                                   size="sm"
-                                   onClick={() => regenerateFrame(frame.shotNumber)}
-                                   disabled={regeneratingFrame === frame.shotNumber}
-                                   className="w-full mt-2"
-                                 >
-                                   {regeneratingFrame === frame.shotNumber ? (
-                                     <>
-                                       <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                                       Regenerating...
-                                     </>
+                                <div>
+                                  <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
+                                  {editingFrame === shot.shotNumber ? (
+                                    <Input
+                                      value={frameEditValues.cameraAngle || shot.cameraAngle}
+                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                      className="text-xs"
+                                    />
+                                  ) : (
+                                    <p className="text-xs text-muted-foreground">{shot.cameraAngle}</p>
+                                  )}
+                                </div>
+                                 <div>
+                                   <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
+                                   {editingFrame === shot.shotNumber ? (
+                                     <Textarea
+                                       value={frameEditValues.visualElements || shot.visualElements}
+                                       onChange={(e) => setFrameEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
+                                       className="text-xs min-h-[40px]"
+                                     />
                                    ) : (
-                                     <>
-                                       <RefreshCw className="mr-2 h-3 w-3" />
-                                       Regenerate Frame
-                                     </>
+                                     <p className="text-xs text-muted-foreground">{shot.visualElements}</p>
                                    )}
-                                 </Button>
-                               )}
+                                 </div>
+                                 {shot.scriptSegment && (
+                                   <div className="border-t pt-2">
+                                     <h4 className="font-medium text-xs mb-1 text-primary">Script Context</h4>
+                                     <p className="text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic">
+                                       "{shot.scriptSegment}"
+                                     </p>
+                                   </div>
+                                 )}
+                                 {shot.dialogueLines && shot.dialogueLines.length > 0 && (
+                                   <div>
+                                     <h4 className="font-medium text-xs mb-1 text-primary">Dialogue</h4>
+                                     <div className="space-y-1">
+                                       {shot.dialogueLines.slice(0, 2).map((dialogue, index) => (
+                                         <p key={index} className="text-xs text-muted-foreground bg-primary/10 p-1 rounded">
+                                           {dialogue}
+                                         </p>
+                                       ))}
+                                     </div>
+                                   </div>
+                                 )}
+                                {editingFrame === shot.shotNumber && frame?.imageData && (
+                                  <Button
+                                    size="sm"
+                                    onClick={() => generateSingleFrame(shot.shotNumber)}
+                                    disabled={isGenerating}
+                                    className="w-full mt-2"
+                                  >
+                                    {isGenerating ? (
+                                      <>
+                                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                                        Regenerating...
+                                      </>
+                                    ) : (
+                                      <>
+                                        <RefreshCw className="mr-2 h-3 w-3" />
+                                        Regenerate Frame
+                                      </>
+                                    )}
+                                  </Button>
+                                )}
                              </div>
                            </CardContent>
                          </Card>
-                       ))}
-                     </div>
+                        );
+                       })}
+                      </div>
                   </CardContent>
                 </Card>
               )}
