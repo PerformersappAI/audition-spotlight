@@ -1,6 +1,11 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+// Global style configuration for cinematic frames
+const CINEMATIC_STYLE_PREFIX = `Cinematic film frame, 16:9 full-bleed (1920×1080), shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
+
+const NEGATIVE_PROMPT = `border, frame, paper texture, page, margin, white background, hand, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, "concept art", letterbox, black bars, side bars`;
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -84,17 +89,25 @@ serve(async (req) => {
       
       // Process each shot in the current batch
       for (const shot of batch) {
-        const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone. FULL-FRAME WIDESCREEN CINEMATIC COMPOSITION in 16:9 aspect ratio.
+        // Map camera angle to cinematographic terms
+        const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? 'close-up, 85mm lens' :
+                            shot.cameraAngle.toLowerCase().includes('medium') ? 'medium shot, 50mm lens' :
+                            shot.cameraAngle.toLowerCase().includes('wide') ? 'wide shot, 24mm lens' :
+                            shot.cameraAngle.toLowerCase().includes('bird') ? 'high angle, birds eye view' :
+                            shot.cameraAngle.toLowerCase().includes('low') ? 'low angle, worms eye view' :
+                            'eye level, 35mm lens';
 
-Scene: ${shot.scriptSegment || 'Script scene'}
-Action: ${shot.sceneAction || shot.description}
+        const imagePrompt = `${CINEMATIC_STYLE_PREFIX}
+
+Camera: ${cameraSetup}, angle: eye level
+Time: day
+Location: ${shot.visualElements}
 Characters: ${shot.characters.join(', ')}
-Camera: ${shot.cameraAngle}
-Visual elements: ${shot.visualElements}
+Action: ${shot.sceneAction || shot.description}
+Mood: ${tone}, ${visualStyle}
 
-Visual Style: ${visualStyle}
-
-Create a detailed cinematic storyboard frame with professional composition and clear character visibility. The image MUST fill the entire 16:9 widescreen frame with no letterboxing, borders, or padding. Use proper cinematic framing and staging to effectively communicate the scene's action and emotion in full widescreen format.`;
+Exclude: ${NEGATIVE_PROMPT}
+Output: 16:9 full-bleed image only.`;
 
         console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 

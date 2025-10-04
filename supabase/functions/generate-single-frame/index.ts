@@ -1,6 +1,11 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+// Global style configuration for cinematic frames
+const CINEMATIC_STYLE_PREFIX = `Cinematic film frame, 16:9 full-bleed (1920×1080), shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
+
+const NEGATIVE_PROMPT = `border, frame, paper texture, page, margin, white background, hand, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, "concept art", letterbox, black bars, side bars`;
+
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 const corsHeaders = {
@@ -93,25 +98,21 @@ serve(async (req) => {
       return keyWords + (words.length > 15 ? '...' : '');
     };
 
-    const summarizedDescription = summarizeDescription(shot.description);
-    const summarizedVisualElements = summarizeDescription(shot.visualElements);
+    const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? 'close-up, 85mm lens' :
+                        shot.cameraAngle.toLowerCase().includes('medium') ? 'medium shot, 50mm lens' :
+                        shot.cameraAngle.toLowerCase().includes('wide') ? 'wide shot, 24mm lens' :
+                        'standard framing, 50mm lens';
 
-    // Create a simple scene sketch prompt
-    const viewAngle = shot.cameraAngle.toLowerCase().includes('close') ? 'close view' :
-                      shot.cameraAngle.toLowerCase().includes('wide') ? 'wide view' :
-                      shot.cameraAngle.toLowerCase().includes('medium') ? 'medium view' :
-                      shot.cameraAngle.toLowerCase().includes('bird') ? 'from above' :
-                      shot.cameraAngle.toLowerCase().includes('low') ? 'from below' : 'standard view';
+    const imagePrompt = `${CINEMATIC_STYLE_PREFIX}
 
-    const imagePrompt = `Simple black and white pencil sketch showing: ${summarizedDescription}
+Camera: ${cameraSetup}
+Location: ${shot.visualElements || 'interior setting'}
+Characters: ${shot.characters?.join(', ') || 'person'}
+Action: ${shot.description}
+Mood: ${visualStyle}
 
-View: ${viewAngle}
-Setting: ${summarizedVisualElements}
-Characters: ${shot.characters?.length || 1} person(s)
-
-Style: ${visualStyle}
-
-Draw a clean, simple sketch of this scene with clear lines and good contrast. Focus on the characters, their actions, and the setting. Keep it simple and easy to understand.`;
+Exclude: ${NEGATIVE_PROMPT}
+Output: 16:9 full-bleed image only.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -131,7 +132,8 @@ Draw a clean, simple sketch of this scene with clear lines and good contrast. Fo
         prompt: imagePrompt,
         n: 1,
         size: '1792x1024',
-        quality: 'standard',
+        quality: 'hd',
+        style: 'natural',
         response_format: 'b64_json'
       }),
     });

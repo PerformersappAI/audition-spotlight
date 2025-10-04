@@ -1202,19 +1202,20 @@ const Storyboarding = () => {
                                </div>
                              </div>
                              
-                               <div className="aspect-video bg-muted rounded-lg overflow-hidden border border-border">
-                                 {frame?.imageData ? (
-                                   <img 
-                                     src={frame.imageData} 
-                                     alt={`Storyboard frame ${shot.shotNumber}: ${shot.description}`}
-                                     className="w-full h-full object-contain bg-white"
-                                     onError={(e) => {
-                                       console.error('Failed to load storyboard image:', frame.imageData);
-                                       e.currentTarget.style.display = 'none';
-                                       e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                                     }}
-                                   />
-                                 ) : isGenerating ? (
+                                <div className="bg-muted rounded-lg overflow-hidden border border-border" style={{ aspectRatio: '16 / 9' }}>
+                                  {frame?.imageData ? (
+                                    <img 
+                                      src={frame.imageData} 
+                                      alt={`Storyboard frame ${shot.shotNumber}: ${shot.description}`}
+                                      className="w-full h-full object-cover"
+                                      style={{ aspectRatio: '16 / 9' }}
+                                      onError={(e) => {
+                                        console.error('Failed to load storyboard image:', frame.imageData);
+                                        e.currentTarget.style.display = 'none';
+                                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                                      }}
+                                    />
+                                  ) : isGenerating ? (
                                    <div className="w-full h-full flex items-center justify-center bg-muted">
                                      <div className="text-center">
                                        <Loader2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground animate-spin" />
