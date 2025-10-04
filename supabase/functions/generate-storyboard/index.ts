@@ -84,7 +84,7 @@ serve(async (req) => {
       
       // Process each shot in the current batch
       for (const shot of batch) {
-        const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone.
+        const imagePrompt = `Professional storyboard frame for a ${genre} film with ${tone} tone. FULL-FRAME WIDESCREEN CINEMATIC COMPOSITION in 16:9 aspect ratio.
 
 Scene: ${shot.scriptSegment || 'Script scene'}
 Action: ${shot.sceneAction || shot.description}
@@ -94,7 +94,7 @@ Visual elements: ${shot.visualElements}
 
 Visual Style: ${visualStyle}
 
-Create a detailed cinematic storyboard frame with professional composition and clear character visibility. The image should capture the mood and atmosphere appropriate for the ${genre} genre with ${tone} tone. Use proper cinematic framing and staging to effectively communicate the scene's action and emotion.`;
+Create a detailed cinematic storyboard frame with professional composition and clear character visibility. The image MUST fill the entire 16:9 widescreen frame with no letterboxing, borders, or padding. Use proper cinematic framing and staging to effectively communicate the scene's action and emotion in full widescreen format.`;
 
         console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 
@@ -113,7 +113,7 @@ Create a detailed cinematic storyboard frame with professional composition and c
               model: 'dall-e-3',
               prompt: imagePrompt,
               n: 1,
-              size: '1024x1024',
+              size: '1792x1024',
               quality: 'hd',
               style: 'natural'
             }),
