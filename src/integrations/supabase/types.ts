@@ -62,113 +62,268 @@ export type Database = {
       audition_notices: {
         Row: {
           additional_credits: string | null
+          additional_materials: string | null
           age_range: string | null
+          agent_fee_included: boolean | null
           allow_online_demo: boolean | null
           audition_date: string | null
+          audition_window: string | null
+          callback_dates: string | null
           casting_director: string | null
           character_background: string | null
+          compensation_rate: string | null
+          compensation_type: string | null
+          conflicts: string | null
+          contact_email: string | null
+          contact_phone: string | null
           created_at: string
           director: string | null
+          director_cd: string | null
           ethnicity_requirement: string | null
           first_ad: string | null
           gender_preference: string | null
           genre: string | null
+          has_intimacy: boolean | null
+          has_minors: boolean | null
+          has_nudity: boolean | null
+          has_violence: boolean | null
+          headshot_url: string | null
           id: string
           line_producer: string | null
           location: string
+          location_type: string | null
+          logline: string | null
           materials_required: string[] | null
+          posting_targets: string[] | null
           producer: string | null
+          production_company: string | null
           project_name: string
           project_type: string
           rate_of_pay: string
+          reel_link: string | null
+          resume_url: string | null
           role_description: string
           role_name: string
+          safety_details: string | null
+          self_tape_deadline: string | null
+          shoot_city: string | null
+          shoot_country: string | null
           shoot_end_date: string | null
           shoot_start_date: string | null
+          slate_link: string | null
           special_instructions: string | null
           status: string
           storyline: string
           submission_deadline: string
+          synopsis: string | null
+          travel_details: string | null
+          travel_lodging: string | null
           union_status: string | null
           updated_at: string
+          usage_terms: string | null
           user_id: string
+          visibility: string | null
+          website: string | null
           work_dates: string | null
           work_location: string | null
           work_type: string
         }
         Insert: {
           additional_credits?: string | null
+          additional_materials?: string | null
           age_range?: string | null
+          agent_fee_included?: boolean | null
           allow_online_demo?: boolean | null
           audition_date?: string | null
+          audition_window?: string | null
+          callback_dates?: string | null
           casting_director?: string | null
           character_background?: string | null
+          compensation_rate?: string | null
+          compensation_type?: string | null
+          conflicts?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           director?: string | null
+          director_cd?: string | null
           ethnicity_requirement?: string | null
           first_ad?: string | null
           gender_preference?: string | null
           genre?: string | null
+          has_intimacy?: boolean | null
+          has_minors?: boolean | null
+          has_nudity?: boolean | null
+          has_violence?: boolean | null
+          headshot_url?: string | null
           id?: string
           line_producer?: string | null
           location: string
+          location_type?: string | null
+          logline?: string | null
           materials_required?: string[] | null
+          posting_targets?: string[] | null
           producer?: string | null
+          production_company?: string | null
           project_name: string
           project_type: string
           rate_of_pay: string
+          reel_link?: string | null
+          resume_url?: string | null
           role_description: string
           role_name: string
+          safety_details?: string | null
+          self_tape_deadline?: string | null
+          shoot_city?: string | null
+          shoot_country?: string | null
           shoot_end_date?: string | null
           shoot_start_date?: string | null
+          slate_link?: string | null
           special_instructions?: string | null
           status?: string
           storyline: string
           submission_deadline: string
+          synopsis?: string | null
+          travel_details?: string | null
+          travel_lodging?: string | null
           union_status?: string | null
           updated_at?: string
+          usage_terms?: string | null
           user_id: string
+          visibility?: string | null
+          website?: string | null
           work_dates?: string | null
           work_location?: string | null
           work_type: string
         }
         Update: {
           additional_credits?: string | null
+          additional_materials?: string | null
           age_range?: string | null
+          agent_fee_included?: boolean | null
           allow_online_demo?: boolean | null
           audition_date?: string | null
+          audition_window?: string | null
+          callback_dates?: string | null
           casting_director?: string | null
           character_background?: string | null
+          compensation_rate?: string | null
+          compensation_type?: string | null
+          conflicts?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
           created_at?: string
           director?: string | null
+          director_cd?: string | null
           ethnicity_requirement?: string | null
           first_ad?: string | null
           gender_preference?: string | null
           genre?: string | null
+          has_intimacy?: boolean | null
+          has_minors?: boolean | null
+          has_nudity?: boolean | null
+          has_violence?: boolean | null
+          headshot_url?: string | null
           id?: string
           line_producer?: string | null
           location?: string
+          location_type?: string | null
+          logline?: string | null
           materials_required?: string[] | null
+          posting_targets?: string[] | null
           producer?: string | null
+          production_company?: string | null
           project_name?: string
           project_type?: string
           rate_of_pay?: string
+          reel_link?: string | null
+          resume_url?: string | null
           role_description?: string
           role_name?: string
+          safety_details?: string | null
+          self_tape_deadline?: string | null
+          shoot_city?: string | null
+          shoot_country?: string | null
           shoot_end_date?: string | null
           shoot_start_date?: string | null
+          slate_link?: string | null
           special_instructions?: string | null
           status?: string
           storyline?: string
           submission_deadline?: string
+          synopsis?: string | null
+          travel_details?: string | null
+          travel_lodging?: string | null
           union_status?: string | null
           updated_at?: string
+          usage_terms?: string | null
           user_id?: string
+          visibility?: string | null
+          website?: string | null
           work_dates?: string | null
           work_location?: string | null
           work_type?: string
         }
         Relationships: []
+      }
+      audition_roles: {
+        Row: {
+          age_range: string | null
+          audition_id: string
+          created_at: string
+          description: string
+          gender_presentation: string | null
+          id: string
+          open_ethnicity: boolean | null
+          rate: string | null
+          role_name: string
+          role_type: string | null
+          sides_link: string | null
+          skills: string | null
+          updated_at: string
+          work_dates: string | null
+        }
+        Insert: {
+          age_range?: string | null
+          audition_id: string
+          created_at?: string
+          description: string
+          gender_presentation?: string | null
+          id?: string
+          open_ethnicity?: boolean | null
+          rate?: string | null
+          role_name: string
+          role_type?: string | null
+          sides_link?: string | null
+          skills?: string | null
+          updated_at?: string
+          work_dates?: string | null
+        }
+        Update: {
+          age_range?: string | null
+          audition_id?: string
+          created_at?: string
+          description?: string
+          gender_presentation?: string | null
+          id?: string
+          open_ethnicity?: boolean | null
+          rate?: string | null
+          role_name?: string
+          role_type?: string | null
+          sides_link?: string | null
+          skills?: string | null
+          updated_at?: string
+          work_dates?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audition_roles_audition_id_fkey"
+            columns: ["audition_id"]
+            isOneToOne: false
+            referencedRelation: "audition_notices"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       film_festivals: {
         Row: {
