@@ -59,6 +59,117 @@ export type Database = {
           },
         ]
       }
+      audition_notices: {
+        Row: {
+          additional_credits: string | null
+          age_range: string | null
+          allow_online_demo: boolean | null
+          audition_date: string | null
+          casting_director: string | null
+          character_background: string | null
+          created_at: string
+          director: string | null
+          ethnicity_requirement: string | null
+          first_ad: string | null
+          gender_preference: string | null
+          genre: string | null
+          id: string
+          line_producer: string | null
+          location: string
+          materials_required: string[] | null
+          producer: string | null
+          project_name: string
+          project_type: string
+          rate_of_pay: string
+          role_description: string
+          role_name: string
+          shoot_end_date: string | null
+          shoot_start_date: string | null
+          special_instructions: string | null
+          status: string
+          storyline: string
+          submission_deadline: string
+          union_status: string | null
+          updated_at: string
+          user_id: string
+          work_dates: string | null
+          work_location: string | null
+          work_type: string
+        }
+        Insert: {
+          additional_credits?: string | null
+          age_range?: string | null
+          allow_online_demo?: boolean | null
+          audition_date?: string | null
+          casting_director?: string | null
+          character_background?: string | null
+          created_at?: string
+          director?: string | null
+          ethnicity_requirement?: string | null
+          first_ad?: string | null
+          gender_preference?: string | null
+          genre?: string | null
+          id?: string
+          line_producer?: string | null
+          location: string
+          materials_required?: string[] | null
+          producer?: string | null
+          project_name: string
+          project_type: string
+          rate_of_pay: string
+          role_description: string
+          role_name: string
+          shoot_end_date?: string | null
+          shoot_start_date?: string | null
+          special_instructions?: string | null
+          status?: string
+          storyline: string
+          submission_deadline: string
+          union_status?: string | null
+          updated_at?: string
+          user_id: string
+          work_dates?: string | null
+          work_location?: string | null
+          work_type: string
+        }
+        Update: {
+          additional_credits?: string | null
+          age_range?: string | null
+          allow_online_demo?: boolean | null
+          audition_date?: string | null
+          casting_director?: string | null
+          character_background?: string | null
+          created_at?: string
+          director?: string | null
+          ethnicity_requirement?: string | null
+          first_ad?: string | null
+          gender_preference?: string | null
+          genre?: string | null
+          id?: string
+          line_producer?: string | null
+          location?: string
+          materials_required?: string[] | null
+          producer?: string | null
+          project_name?: string
+          project_type?: string
+          rate_of_pay?: string
+          role_description?: string
+          role_name?: string
+          shoot_end_date?: string | null
+          shoot_start_date?: string | null
+          special_instructions?: string | null
+          status?: string
+          storyline?: string
+          submission_deadline?: string
+          union_status?: string | null
+          updated_at?: string
+          user_id?: string
+          work_dates?: string | null
+          work_location?: string | null
+          work_type?: string
+        }
+        Relationships: []
+      }
       film_festivals: {
         Row: {
           acceptance_rate: number | null

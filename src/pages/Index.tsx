@@ -118,7 +118,9 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
-                  <p className="text-white text-sm font-medium tracking-wide">CREATE YOUR PROJECT</p>
+                  <Link to="/create-audition" className="text-white text-sm font-medium tracking-wide hover:text-gold transition-colors">
+                    CREATE YOUR AUDITION
+                  </Link>
                   <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
                 </div>
               </div>
@@ -137,7 +139,9 @@ const Index = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
-                  <p className="text-white text-sm font-medium tracking-wide">GET YOUR AUDITIONS</p>
+                  <Link to="/auditions" className="text-white text-sm font-medium tracking-wide hover:text-destructive transition-colors">
+                    GET YOUR AUDITIONS
+                  </Link>
                   <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
                 </div>
               </div>

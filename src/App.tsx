@@ -9,6 +9,9 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
+import CreateAudition from "./pages/CreateAudition";
+import Auditions from "./pages/Auditions";
+import AuditionDetail from "./pages/AuditionDetail";
 import UploadAuditions from "./pages/UploadAuditions";
 import SceneAnalysis from "./pages/SceneAnalysis";
 import ScriptAnalysis from "./pages/ScriptAnalysis";
@@ -38,6 +41,9 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/create-audition" element={<CreateAudition />} />
+      <Route path="/auditions" element={<Auditions />} />
+      <Route path="/audition/:id" element={<AuditionDetail />} />
       <Route path="/upload-auditions" element={<UploadAuditions />} />
       <Route path="/scene-analysis" element={<SceneAnalysis />} />
       <Route path="/script-analysis" element={<ScriptAnalysis />} />
