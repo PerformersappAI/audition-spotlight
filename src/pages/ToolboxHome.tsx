@@ -41,7 +41,7 @@ export default function ToolboxHome() {
       icon: Users,
       status: "active",
       badge: "Core Tool",
-      route: "/create-auditions"
+      route: "/create-audition"
     },
     {
       id: "cast_crew_board",

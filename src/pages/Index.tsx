@@ -116,13 +116,6 @@ const Index = () => {
                   FILMMAKERS
                 </Button>
                 </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
-                  <Link to="/create-audition" className="text-white text-sm font-medium tracking-wide hover:text-gold transition-colors">
-                    CREATE YOUR AUDITION
-                  </Link>
-                  <div className="w-2 h-2 bg-gold rounded-full animate-pulse"></div>
-                </div>
               </div>
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">
