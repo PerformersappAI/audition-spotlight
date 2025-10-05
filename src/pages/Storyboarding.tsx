@@ -71,7 +71,8 @@ const Storyboarding = () => {
   const [currentProject, setCurrentProject] = useState({
     scriptText: "",
     genre: "",
-    tone: ""
+    tone: "",
+    aspectRatio: "16:9" as "16:9" | "9:16"
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
   const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
@@ -453,7 +454,8 @@ const Storyboarding = () => {
         body: { 
           shot,
           genre: selectedProject.genre || 'Drama',
-          tone: selectedProject.tone || 'Emotional'
+          tone: selectedProject.tone || 'Emotional',
+          aspectRatio: currentProject.aspectRatio || '16:9'
         }
       });
 
@@ -756,8 +758,8 @@ const Storyboarding = () => {
                     />
                   </div>
 
-                  {/* Genre and Tone Selection */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Genre, Tone, and Aspect Ratio Selection */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
                       <Label>Genre</Label>
                       <Select value={currentProject.genre} onValueChange={(value) => setCurrentProject(prev => ({ ...prev, genre: value }))}>
@@ -782,6 +784,19 @@ const Storyboarding = () => {
                           {tones.map((tone) => (
                             <SelectItem key={tone} value={tone}>{tone}</SelectItem>
                           ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label>Aspect Ratio</Label>
+                      <Select value={currentProject.aspectRatio} onValueChange={(value: "16:9" | "9:16") => setCurrentProject(prev => ({ ...prev, aspectRatio: value }))}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="16:9">16:9 (Film/Commercial)</SelectItem>
+                          <SelectItem value="9:16">9:16 (Vertical/Social)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

@@ -2,7 +2,10 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 // Global style configuration for cinematic frames
-const CINEMATIC_STYLE_PREFIX = `Cinematic film frame, 16:9 full-bleed (1920×1080), shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
+const getCinematicStylePrefix = (aspectRatio: string = "16:9") => {
+  const format = aspectRatio === "9:16" ? "9:16 vertical format (1080×1920)" : "16:9 full-bleed (1920×1080)";
+  return `Cinematic film frame, ${format}, shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
+};
 
 const NEGATIVE_PROMPT = `border, frame, paper texture, page, margin, white background, hand, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, "concept art", letterbox, black bars, side bars`;
 
@@ -77,7 +80,7 @@ serve(async (req) => {
   console.log('Generate-single-frame function called');
 
   try {
-    const { shot, genre, tone } = await req.json();
+    const { shot, genre, tone, aspectRatio = "16:9" } = await req.json();
     
     if (!shot || !genre || !tone) {
       throw new Error('Missing required parameters: shot, genre, tone');
@@ -103,6 +106,9 @@ serve(async (req) => {
                         shot.cameraAngle.toLowerCase().includes('wide') ? 'wide shot, 24mm lens' :
                         'standard framing, 50mm lens';
 
+    const CINEMATIC_STYLE_PREFIX = getCinematicStylePrefix(aspectRatio);
+    const outputFormat = aspectRatio === "9:16" ? "9:16 vertical format image only" : "16:9 full-bleed image only";
+
     const imagePrompt = `${CINEMATIC_STYLE_PREFIX}
 
 Camera: ${cameraSetup}
@@ -112,7 +118,7 @@ Action: ${shot.description}
 Mood: ${visualStyle}
 
 Exclude: ${NEGATIVE_PROMPT}
-Output: 16:9 full-bleed image only.`;
+Output: ${outputFormat}.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -120,6 +126,9 @@ Output: 16:9 full-bleed image only.`;
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
+
+    // Determine image size based on aspect ratio
+    const imageSize = aspectRatio === "9:16" ? "1024x1792" : "1792x1024";
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
@@ -131,7 +140,7 @@ Output: 16:9 full-bleed image only.`;
         model: 'dall-e-3',
         prompt: imagePrompt,
         n: 1,
-        size: '1792x1024',
+        size: imageSize,
         quality: 'hd',
         style: 'natural',
         response_format: 'b64_json'
