@@ -2,10 +2,27 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock, MapPin, Users, Film, Trophy } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, MapPin, Users, Film, Trophy, Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { Layout } from "@/components/Layout";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface CalendarEvent {
   id: string;
@@ -20,6 +37,7 @@ interface CalendarEvent {
 const CalendarPage = () => {
   const { userProfile } = useAuth();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
+  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
   
   // Mock events - in real app, these would come from the database
   const [events] = useState<CalendarEvent[]>([
@@ -99,8 +117,7 @@ const CalendarPage = () => {
   const eventDates = events.map(event => event.date);
 
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
-      <div className="space-y-6">
+    <div className="container mx-auto py-6 space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -110,10 +127,55 @@ const CalendarPage = () => {
             </h1>
             <p className="text-muted-foreground">Track your auditions, deadlines, and industry events</p>
           </div>
-          <Button className="flex items-center gap-2">
-            <CalendarIcon className="h-4 w-4" />
-            Add Event
-          </Button>
+          <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
+            <DialogTrigger asChild>
+              <Button className="flex items-center gap-2">
+                <Plus className="h-4 w-4" />
+                Add Event
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add New Event</DialogTitle>
+                <DialogDescription>
+                  Create a new calendar event for auditions, festivals, deadlines, or meetings.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4 py-4">
+                <div className="space-y-2">
+                  <Label htmlFor="event-title">Event Title</Label>
+                  <Input id="event-title" placeholder="Enter event title" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="event-type">Event Type</Label>
+                  <Select>
+                    <SelectTrigger id="event-type">
+                      <SelectValue placeholder="Select event type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="audition">Audition</SelectItem>
+                      <SelectItem value="festival">Festival</SelectItem>
+                      <SelectItem value="deadline">Deadline</SelectItem>
+                      <SelectItem value="meeting">Meeting</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="event-date">Date</Label>
+                  <Input id="event-date" type="date" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="event-location">Location (optional)</Label>
+                  <Input id="event-location" placeholder="Enter location" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="event-description">Description (optional)</Label>
+                  <Textarea id="event-description" placeholder="Enter event description" />
+                </div>
+                <Button className="w-full">Create Event</Button>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
 
         {/* Stats */}
@@ -314,7 +376,6 @@ const CalendarPage = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 
