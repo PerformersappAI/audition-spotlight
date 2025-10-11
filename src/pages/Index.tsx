@@ -39,7 +39,7 @@ const Index = () => {
         project_type: 'Short Film',
         location: 'Seattle, WA',
         audition_date: '2024-10-20T14:00:00Z',
-        profiles: { first_name: 'Sarah', last_name: 'Johnson' }
+        profiles: { company_name: 'Emerald City Films' }
       }
     ];
 
