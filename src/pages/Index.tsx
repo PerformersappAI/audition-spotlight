@@ -93,30 +93,18 @@ const Index = () => {
           </p>
           <div className="flex flex-col gap-6 justify-center items-center">
             {user && (
-              <div className="flex gap-4 mb-4">
-                <Button size="lg" onClick={() => navigate('/dashboard')} variant="gold" className="text-lg px-8 py-3">
-                  Dashboard
-                </Button>
-                <Button size="lg" onClick={() => navigate('/toolbox')} variant="outline" className="text-lg px-8 py-3 border-white text-white hover:bg-white hover:text-black">
+              <div className="mb-8">
+                <Button 
+                  size="lg" 
+                  onClick={() => navigate('/toolbox')} 
+                  variant="gold" 
+                  className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
+                >
                   Filmmaker Toolbox
                 </Button>
               </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full max-w-5xl">
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-gold/50 to-gold-light/50 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                <Button 
-                  variant="gold" 
-                  size="lg" 
-                  onClick={() => user ? navigate('/filmmaker') : navigate('/auth')} 
-                  className="text-lg px-8 py-4 w-full relative z-10 border border-gold/20"
-                >
-                  <Film className="h-5 w-5 mr-2" />
-                  FILMMAKERS
-                </Button>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
