@@ -32,6 +32,7 @@ import ToolboxHome from "./pages/ToolboxHome";
 import MultiStepForm from "./pages/MultiStepForm";
 import DocsLibrary from "./pages/DocsLibrary";
 import ConsultingIntake from "./pages/ConsultingIntake";
+import ActorHub from "./pages/ActorHub";
 
 const queryClient = new QueryClient();
 
@@ -41,6 +42,7 @@ const AppContent = () => (
       <Route path="/" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/actor" element={<ActorHub />} />
       <Route path="/create-audition" element={<CreateAudition />} />
       <Route path="/auditions" element={<Auditions />} />
       <Route path="/audition/:id" element={<AuditionDetail />} />
