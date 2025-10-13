@@ -86,7 +86,7 @@ const Index = () => {
         )}
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
           <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            MyFilmmakerai.com
+            MyFilmmakerai
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
             Connect Filmmakers, Crew, Festivals, and Actors In One Powerful Platform
