@@ -1,9 +1,10 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Film, Menu, X } from 'lucide-react';
+import { Film, Menu, X, Zap } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useCredits } from '@/hooks/useCredits';
 import { TopNavigation } from './TopNavigation';
 import { useState } from 'react';
 
@@ -14,6 +15,7 @@ interface GlobalLayoutProps {
 export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const location = useLocation();
   const { user, userProfile } = useAuth();
+  const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // Don't show layout on auth pages or homepage for non-logged-in users
@@ -59,6 +61,17 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               {/* User Profile */}
               {user && (
                 <div className="flex items-center space-x-3">
+                  {/* Credits Display */}
+                  <Link to="/membership">
+                    <Badge 
+                      variant="outline" 
+                      className="border-gold text-gold hover:bg-gold/10 transition-colors cursor-pointer hidden sm:flex items-center gap-1.5"
+                    >
+                      <Zap className="h-3.5 w-3.5" />
+                      {credits?.available_credits || 0} Credits
+                    </Badge>
+                  </Link>
+
                   <Badge variant="outline" className="border-gold text-gold hidden sm:flex">
                     {userProfile?.role || 'USER'}
                   </Badge>

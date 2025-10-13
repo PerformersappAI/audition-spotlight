@@ -92,18 +92,21 @@ const Index = () => {
             Connect Filmmakers, Crew, Festivals, and Actors In One Powerful Platform
           </p>
           <div className="flex flex-col gap-6 justify-center items-center">
-            {user && (
-              <div className="mb-8">
-                <Button 
-                  size="lg" 
-                  onClick={() => navigate('/toolbox')} 
-                  variant="gold" 
-                  className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
-                >
-                  Filmmaker Toolbox
-                </Button>
-              </div>
+          <div className="mb-8">
+            <Button 
+              size="lg" 
+              onClick={() => user ? navigate('/toolbox') : navigate('/membership')} 
+              variant="gold" 
+              className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
+            >
+              Filmmaker Toolbox
+            </Button>
+            {!user && (
+              <p className="text-white/80 text-sm mt-3">
+                Sign up to access powerful filmmaking tools
+              </p>
             )}
+          </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">

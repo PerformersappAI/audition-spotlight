@@ -33,6 +33,7 @@ import MultiStepForm from "./pages/MultiStepForm";
 import DocsLibrary from "./pages/DocsLibrary";
 import ConsultingIntake from "./pages/ConsultingIntake";
 import ActorHub from "./pages/ActorHub";
+import Membership from "./pages/Membership";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const AppContent = () => (
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
       <Route path="/consulting" element={<ConsultingIntake />} />
+      <Route path="/membership" element={<Membership />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
