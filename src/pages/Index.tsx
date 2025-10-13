@@ -96,7 +96,7 @@ const Index = () => {
             <Button 
               size="lg" 
               onClick={() => user ? navigate('/toolbox') : navigate('/membership')} 
-              variant="red" 
+              variant="gold" 
               className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
             >
               Filmmaker Toolbox
@@ -107,7 +107,7 @@ const Index = () => {
               </p>
             )}
           </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
               <div className="flex flex-col items-center gap-3 group">
                 <div className="relative">
                   <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
@@ -146,25 +146,6 @@ const Index = () => {
                   <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
                   <p className="text-white text-sm font-medium tracking-wide">CREW JOBS</p>
                   <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <Button 
-                    variant="burgundy" 
-                    size="lg" 
-                    onClick={() => user ? navigate('/festivals') : navigate('/auth')} 
-                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
-                  >
-                    <Trophy className="h-5 w-5 mr-2" />
-                    FILM FESTIVALS
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
-                  <p className="text-white text-sm font-medium tracking-wide">ATTACH YOUR FILM</p>
-                  <div className="w-2 h-2 bg-success rounded-full animate-pulse"></div>
                 </div>
               </div>
             </div>
