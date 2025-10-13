@@ -135,7 +135,7 @@ const Index = () => {
                   <Button 
                     variant="burgundy" 
                     size="lg" 
-                    onClick={() => user ? navigate('/dashboard') : navigate('/auth')} 
+                    onClick={() => user ? navigate('/crew') : navigate('/auth')} 
                     className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
                   >
                     <Clock className="h-5 w-5 mr-2" />

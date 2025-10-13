@@ -7,7 +7,7 @@ import { Link, useLocation } from 'react-router-dom';
 
 interface LayoutProps {
   children: React.ReactNode;
-  userRole?: 'ACTOR' | 'FILMMAKER' | 'FILM_FESTIVAL' | 'ADMIN';
+  userRole?: 'ACTOR' | 'FILMMAKER' | 'FILM_FESTIVAL' | 'ADMIN' | 'CREW';
 }
 
 export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
@@ -33,6 +33,11 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
     { name: 'Manage Users', href: '/admin/users', icon: Users },
     { name: 'All Projects', href: '/admin/projects', icon: Film },
+  ] : userRole === 'CREW' ? [
+    { name: 'Crew Hub', href: '/crew', icon: Briefcase },
+    { name: 'Find Jobs', href: '/crew/jobs', icon: Film },
+    { name: 'My Applications', href: '/applications', icon: Users },
+    { name: 'Calendar', href: '/calendar', icon: Calendar },
   ] : [
     { name: 'Find Auditions', href: '/', icon: Film },
     { name: 'My Applications', href: '/applications', icon: Users },
