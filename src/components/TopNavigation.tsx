@@ -64,11 +64,7 @@ export const TopNavigation = () => {
       ];
     } else {
       // ACTOR or default
-      return [
-        { name: 'Find Auditions', href: '/', icon: Film },
-        { name: 'My Applications', href: '/applications', icon: Users },
-        { name: 'Calendar', href: '/calendar', icon: Calendar },
-      ];
+      return [];
     }
   };
 
