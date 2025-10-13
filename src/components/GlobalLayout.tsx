@@ -38,7 +38,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                   <Film className="h-6 w-6 text-gold-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">Cast</h1>
+                  <h1 className="text-xl font-bold text-foreground">MyFilmmakerai</h1>
                   <p className="text-sm text-muted-foreground">Filmmaker Platform</p>
                 </div>
               </Link>
@@ -153,7 +153,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
       <footer className="border-t border-border bg-muted/30 py-8 mt-auto">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>&copy; 2024 Cast. Connecting the entertainment industry.</p>
+            <p>&copy; 2024 MyFilmmakerai. Connecting the entertainment industry.</p>
           </div>
         </div>
       </footer>
