@@ -96,7 +96,7 @@ const Index = () => {
             <Button 
               size="lg" 
               onClick={() => user ? navigate('/toolbox') : navigate('/membership')} 
-              variant="gold" 
+              variant="red" 
               className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
             >
               Filmmaker Toolbox
