@@ -434,7 +434,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
                     <Input
                       id="characterName"
                       value={characterName}
-                      onChange={(e) => setCharacterName(e.target.value)}
+                      readOnly
                       placeholder="Enter character name"
                     />
                   </div>
@@ -443,7 +443,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
                     <Input
                       id="sceneDescription"
                       value={sceneDescription}
-                      onChange={(e) => setSceneDescription(e.target.value)}
+                      readOnly
                       placeholder="Brief scene description"
                     />
                   </div>
@@ -453,7 +453,7 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
                   <Textarea
                     id="scriptText"
                     value={scriptText}
-                    onChange={(e) => setScriptText(e.target.value)}
+                    readOnly
                     placeholder="Paste the script text for context..."
                     rows={4}
                   />
