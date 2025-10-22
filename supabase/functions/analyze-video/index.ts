@@ -324,8 +324,9 @@ Return your analysis in a structured format with clear sections and specific exa
 
   } catch (error) {
     console.error('Error in analyze-video function:', error);
+    const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: errorMessage,
       success: false 
     }), {
       status: 500,
