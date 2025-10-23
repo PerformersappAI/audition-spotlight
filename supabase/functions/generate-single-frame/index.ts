@@ -181,8 +181,8 @@ OUTPUT REQUIREMENT: Single photographic-quality film frame only, as if captured 
       throw new Error('OpenAI API key not configured');
     }
 
-    // Determine image size based on aspect ratio (gpt-image-1 supports 1536x1024, 1024x1536, 1024x1024)
-    const imageSize = aspectRatio === "9:16" ? "1024x1536" : "1536x1024";
+    // Determine image size based on aspect ratio (DALL-E 3 supports 1792x1024, 1024x1792, 1024x1024)
+    const imageSize = aspectRatio === "9:16" ? "1024x1792" : "1792x1024";
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
@@ -191,14 +191,13 @@ OUTPUT REQUIREMENT: Single photographic-quality film frame only, as if captured 
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
+        model: 'dall-e-3',
         prompt: imagePrompt,
         n: 1,
         size: imageSize,
-        quality: 'high',
-        output_format: 'png',
-        output_compression: 90,
-        moderation: 'auto'
+        quality: 'hd',
+        style: 'natural',
+        response_format: 'b64_json'
       }),
     });
 

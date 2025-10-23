@@ -176,14 +176,13 @@ OUTPUT REQUIREMENT: Single photographic-quality film frame only, as if captured 
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'gpt-image-1',
+              model: 'dall-e-3',
               prompt: imagePrompt,
               n: 1,
-              size: '1536x1024', // gpt-image-1 supported size for 16:9
-              quality: 'high',
-              output_format: 'png',
-              output_compression: 90,
-              moderation: 'auto'
+              size: '1792x1024', // DALL-E 3 widescreen format
+              quality: 'hd',
+              style: 'natural',
+              response_format: 'b64_json'
             }),
             signal: controller.signal
           });
