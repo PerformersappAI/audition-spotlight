@@ -7,7 +7,44 @@ const getCinematicStylePrefix = (aspectRatio: string = "16:9") => {
   return `Cinematic film frame, ${format}, shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
 };
 
-const NEGATIVE_PROMPT = `border, frame, paper texture, page, margin, white background, hand, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, "concept art", letterbox, black bars, side bars`;
+const NEGATIVE_PROMPT = `STRICTLY EXCLUDE: border, frame, paper texture, page, margin, white background, hand, hands, fingers, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, artist hands, person drawing, sketchbook, notepad, sticky notes, annotations, labels, any meta-framing elements, any reference to drawing or sketching, "concept art", letterbox, black bars, side bars`;
+
+function getCameraInstructions(cameraAngle: string): string {
+  const angle = cameraAngle.toLowerCase();
+  
+  if (angle.includes('extreme close') || angle.includes('ecu')) {
+    return 'EXTREME CLOSE-UP FRAMING: Face detail only, eyes or mouth fill frame, minimal background visible, ultra-tight composition';
+  }
+  if (angle.includes('close up') || angle.includes('close-up') || angle.includes('cu')) {
+    return 'CLOSE-UP FRAMING: Head and shoulders only, subject fills frame, minimal background visible';
+  }
+  if (angle.includes('medium close') || angle.includes('mcu')) {
+    return 'MEDIUM CLOSE-UP FRAMING: Chest and up visible, moderate background context, intimate feel';
+  }
+  if (angle.includes('medium') || angle.includes('ms')) {
+    return 'MEDIUM SHOT FRAMING: Waist and up visible, balanced subject and environment, conversational distance';
+  }
+  if (angle.includes('long shot') || angle.includes('full shot') || angle.includes('ls')) {
+    return 'LONG SHOT FRAMING: Full body visible head to toe, significant environmental context, establish location';
+  }
+  if (angle.includes('wide') || angle.includes('ws') || angle.includes('establishing')) {
+    return 'WIDE SHOT FRAMING: Full environment emphasis, characters are smaller in frame, location is primary';
+  }
+  if (angle.includes('extreme wide') || angle.includes('ews')) {
+    return 'EXTREME WIDE SHOT FRAMING: Vast environment, characters are tiny or distant, epic scope, aerial perspective';
+  }
+  if (angle.includes('high angle') || angle.includes('bird')) {
+    return 'HIGH ANGLE FRAMING: Camera positioned above subject looking down, creates vulnerability or overview perspective';
+  }
+  if (angle.includes('low angle')) {
+    return 'LOW ANGLE FRAMING: Camera positioned below subject looking up, creates power or dominance, heroic feel';
+  }
+  if (angle.includes('over shoulder') || angle.includes('os')) {
+    return 'OVER-SHOULDER FRAMING: Frame includes foreground shoulder/head, subject in background, conversational setup';
+  }
+  
+  return 'STANDARD FRAMING: Balanced composition appropriate for narrative, professional film framing';
+}
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
@@ -101,24 +138,41 @@ serve(async (req) => {
       return keyWords + (words.length > 15 ? '...' : '');
     };
 
-    const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? 'close-up, 85mm lens' :
-                        shot.cameraAngle.toLowerCase().includes('medium') ? 'medium shot, 50mm lens' :
-                        shot.cameraAngle.toLowerCase().includes('wide') ? 'wide shot, 24mm lens' :
-                        'standard framing, 50mm lens';
+    const cameraInstructions = getCameraInstructions(shot.cameraAngle);
+    
+    const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? '85mm portrait lens, f/2.0' :
+                        shot.cameraAngle.toLowerCase().includes('medium') ? '50mm standard lens, f/2.8' :
+                        shot.cameraAngle.toLowerCase().includes('wide') ? '24mm wide lens, f/4.0' :
+                        '50mm lens, f/2.8';
 
     const CINEMATIC_STYLE_PREFIX = getCinematicStylePrefix(aspectRatio);
-    const outputFormat = aspectRatio === "9:16" ? "9:16 vertical format image only" : "16:9 full-bleed image only";
+    const outputFormat = aspectRatio === "9:16" ? "9:16 vertical format" : "16:9 widescreen format";
 
-    const imagePrompt = `${CINEMATIC_STYLE_PREFIX}
+    const imagePrompt = `PROFESSIONAL FILM STORYBOARD FRAME - Pre-production planning reference for ${genre} film
 
-Camera: ${cameraSetup}
-Location: ${shot.visualElements || 'interior setting'}
-Characters: ${shot.characters?.join(', ') || 'person'}
-Action: ${shot.description}
-Mood: ${visualStyle}
+${cameraInstructions}
 
-Exclude: ${NEGATIVE_PROMPT}
-Output: ${outputFormat}.`;
+CAMERA TECHNICAL:
+Lens: ${cameraSetup}
+Shot Type: ${shot.cameraAngle}
+
+SCENE COMPOSITION:
+Location/Setting: ${shot.visualElements || 'interior setting'}
+Characters Present: ${shot.characters?.join(', ') || 'person'}
+Scene Action: ${shot.sceneAction || shot.description}
+Visual Mood: ${visualStyle}
+
+PRODUCTION NOTES:
+- Professional film set environment only
+- Realistic character positioning and spatial relationships
+- Clear blocking and composition
+- Production design reference
+- Shot on professional cinema camera
+- ${outputFormat} aspect ratio
+
+${NEGATIVE_PROMPT}
+
+OUTPUT REQUIREMENT: Single photographic-quality film frame only, as if captured on set during production. No additional framing, borders, or meta-elements of any kind.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -127,8 +181,8 @@ Output: ${outputFormat}.`;
       throw new Error('OpenAI API key not configured');
     }
 
-    // Determine image size based on aspect ratio
-    const imageSize = aspectRatio === "9:16" ? "1024x1792" : "1792x1024";
+    // Determine image size based on aspect ratio (gpt-image-1 supports 1536x1024, 1024x1536, 1024x1024)
+    const imageSize = aspectRatio === "9:16" ? "1024x1536" : "1536x1024";
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
