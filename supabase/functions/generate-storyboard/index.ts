@@ -123,12 +123,14 @@ Output: 16:9 full-bleed image only.`;
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              model: 'dall-e-3',
+              model: 'gpt-image-1',
               prompt: imagePrompt,
               n: 1,
               size: '1792x1024',
-              quality: 'hd',
-              style: 'natural'
+              quality: 'high',
+              output_format: 'png',
+              output_compression: 90,
+              moderation: 'auto'
             }),
             signal: controller.signal
           });

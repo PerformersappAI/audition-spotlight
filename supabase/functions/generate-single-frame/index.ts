@@ -137,13 +137,14 @@ Output: ${outputFormat}.`;
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'dall-e-3',
+        model: 'gpt-image-1',
         prompt: imagePrompt,
         n: 1,
         size: imageSize,
-        quality: 'hd',
-        style: 'natural',
-        response_format: 'b64_json'
+        quality: 'high',
+        output_format: 'png',
+        output_compression: 90,
+        moderation: 'auto'
       }),
     });
 
