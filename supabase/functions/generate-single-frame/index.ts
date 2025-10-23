@@ -1,13 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-// Global style configuration for cinematic frames
-const getCinematicStylePrefix = (aspectRatio: string = "16:9") => {
-  const format = aspectRatio === "9:16" ? "9:16 vertical format (1080×1920)" : "16:9 full-bleed (1920×1080)";
-  return `Cinematic film frame, ${format}, shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
-};
-
-const NEGATIVE_PROMPT = `STRICTLY EXCLUDE: border, frame, paper texture, page, margin, white background, hand, hands, fingers, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, artist hands, person drawing, sketchbook, notepad, sticky notes, annotations, labels, any meta-framing elements, any reference to drawing or sketching, "concept art", letterbox, black bars, side bars`;
+const NEGATIVE_PROMPT = `NO overlays, NO text, NO numbers, NO grid lines, NO technical data, NO camera measurements, NO aspect ratio markers, NO framing guides, NO watermarks, NO borders, NO labels, NO annotations, NO UI elements, NO storyboard sheet, NO paper texture, NO drawing, NO sketch, NO comic style, NO panels, NO meta elements`;
 
 function getCameraInstructions(cameraAngle: string): string {
   const angle = cameraAngle.toLowerCase();
@@ -139,40 +133,15 @@ serve(async (req) => {
     };
 
     const cameraInstructions = getCameraInstructions(shot.cameraAngle);
-    
-    const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? '85mm portrait lens, f/2.0' :
-                        shot.cameraAngle.toLowerCase().includes('medium') ? '50mm standard lens, f/2.8' :
-                        shot.cameraAngle.toLowerCase().includes('wide') ? '24mm wide lens, f/4.0' :
-                        '50mm lens, f/2.8';
 
-    const CINEMATIC_STYLE_PREFIX = getCinematicStylePrefix(aspectRatio);
-    const outputFormat = aspectRatio === "9:16" ? "9:16 vertical format" : "16:9 widescreen format";
+    const imagePrompt = `Cinematic photograph: ${shot.sceneAction || shot.description}
 
-    const imagePrompt = `PROFESSIONAL FILM STORYBOARD FRAME - Pre-production planning reference for ${genre} film
+Camera: ${cameraInstructions}
+Setting: ${shot.visualElements || 'interior setting'}
+Characters: ${shot.characters?.join(', ') || 'person'}
+Mood: ${visualStyle}
 
-${cameraInstructions}
-
-CAMERA TECHNICAL:
-Lens: ${cameraSetup}
-Shot Type: ${shot.cameraAngle}
-
-SCENE COMPOSITION:
-Location/Setting: ${shot.visualElements || 'interior setting'}
-Characters Present: ${shot.characters?.join(', ') || 'person'}
-Scene Action: ${shot.sceneAction || shot.description}
-Visual Mood: ${visualStyle}
-
-PRODUCTION NOTES:
-- Professional film set environment only
-- Realistic character positioning and spatial relationships
-- Clear blocking and composition
-- Production design reference
-- Shot on professional cinema camera
-- ${outputFormat} aspect ratio
-
-${NEGATIVE_PROMPT}
-
-OUTPUT REQUIREMENT: Single photographic-quality film frame only, as if captured on set during production. No additional framing, borders, or meta-elements of any kind.`;
+Professional cinema quality. Clean image. ${NEGATIVE_PROMPT}`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
