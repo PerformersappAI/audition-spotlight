@@ -4,7 +4,44 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 // Global style configuration for cinematic frames
 const CINEMATIC_STYLE_PREFIX = `Cinematic film frame, 16:9 full-bleed (1920×1080), shot-on-set look, no borders, no frames, no paper, no hands, no sketchbook, no "drawn" look, not a comic panel. Clean composition, sharp focus, natural lighting, graded like a feature film.`;
 
-const NEGATIVE_PROMPT = `border, frame, paper texture, page, margin, white background, hand, pencil, pen, marker, tape, Post-it, UI, watermark, text, caption, signature, drawing, comic, manga, storyboard sheet, panel lines, sketch, "concept art", letterbox, black bars, side bars`;
+const NEGATIVE_PROMPT = `NO overlays, NO text, NO numbers, NO grid lines, NO technical data, NO camera measurements, NO aspect ratio markers, NO framing guides, NO watermarks, NO borders, NO labels, NO annotations, NO UI elements, NO storyboard sheet, NO paper texture, NO drawing, NO sketch, NO comic style, NO panels, NO meta elements`;
+
+function getCameraInstructions(cameraAngle: string): string {
+  const angle = cameraAngle.toLowerCase();
+  
+  if (angle.includes('extreme close') || angle.includes('ecu')) {
+    return 'EXTREME CLOSE-UP FRAMING: Face detail only, eyes or mouth fill frame, minimal background visible, ultra-tight composition';
+  }
+  if (angle.includes('close up') || angle.includes('close-up') || angle.includes('cu')) {
+    return 'CLOSE-UP FRAMING: Head and shoulders only, subject fills frame, minimal background visible';
+  }
+  if (angle.includes('medium close') || angle.includes('mcu')) {
+    return 'MEDIUM CLOSE-UP FRAMING: Chest and up visible, moderate background context, intimate feel';
+  }
+  if (angle.includes('medium') || angle.includes('ms')) {
+    return 'MEDIUM SHOT FRAMING: Waist and up visible, balanced subject and environment, conversational distance';
+  }
+  if (angle.includes('long shot') || angle.includes('full shot') || angle.includes('ls')) {
+    return 'LONG SHOT FRAMING: Full body visible head to toe, significant environmental context, establish location';
+  }
+  if (angle.includes('wide') || angle.includes('ws') || angle.includes('establishing')) {
+    return 'WIDE SHOT FRAMING: Full environment emphasis, characters are smaller in frame, location is primary';
+  }
+  if (angle.includes('extreme wide') || angle.includes('ews')) {
+    return 'EXTREME WIDE SHOT FRAMING: Vast environment, characters are tiny or distant, epic scope, aerial perspective';
+  }
+  if (angle.includes('high angle') || angle.includes('bird')) {
+    return 'HIGH ANGLE FRAMING: Camera positioned above subject looking down, creates vulnerability or overview perspective';
+  }
+  if (angle.includes('low angle')) {
+    return 'LOW ANGLE FRAMING: Camera positioned below subject looking up, creates power or dominance, heroic feel';
+  }
+  if (angle.includes('over shoulder') || angle.includes('os')) {
+    return 'OVER-SHOULDER FRAMING: Frame includes foreground shoulder/head, subject in background, conversational setup';
+  }
+  
+  return 'STANDARD FRAMING: Balanced composition appropriate for narrative, professional film framing';
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -89,25 +126,32 @@ serve(async (req) => {
       
       // Process each shot in the current batch
       for (const shot of batch) {
-        // Map camera angle to cinematographic terms
-        const cameraSetup = shot.cameraAngle.toLowerCase().includes('close') ? 'close-up, 85mm lens' :
-                            shot.cameraAngle.toLowerCase().includes('medium') ? 'medium shot, 50mm lens' :
-                            shot.cameraAngle.toLowerCase().includes('wide') ? 'wide shot, 24mm lens' :
-                            shot.cameraAngle.toLowerCase().includes('bird') ? 'high angle, birds eye view' :
-                            shot.cameraAngle.toLowerCase().includes('low') ? 'low angle, worms eye view' :
-                            'eye level, 35mm lens';
+        const cameraInstructions = getCameraInstructions(shot.cameraAngle);
+        
+        // Map camera angle to cinematographic lens choices
+        const cameraInstructions = getCameraInstructions(shot.cameraAngle);
+        
+        // Construct detailed prompt using rich AI-analyzed data
+        const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
+        const location = shot.location || '';
+        const action = shot.action || shot.description;
+        const lighting = shot.lighting || '';
+        const keyProps = shot.keyProps || '';
+        const emotionalTone = shot.emotionalTone || '';
+        
+        const imagePrompt = `Cinematic storyboard frame: ${visualDesc}
 
-        const imagePrompt = `${CINEMATIC_STYLE_PREFIX}
+${location ? `Location: ${location}` : ''}
+${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
+${lighting ? `Lighting: ${lighting}` : ''}
+${keyProps ? `Key Props: ${keyProps}` : ''}
+${emotionalTone ? `Mood: ${emotionalTone}` : ''}
 
-Camera: ${cameraSetup}, angle: eye level
-Time: day
-Location: ${shot.visualElements}
-Characters: ${shot.characters.join(', ')}
-Action: ${shot.sceneAction || shot.description}
-Mood: ${tone}, ${visualStyle}
+${cameraInstructions}
 
-Exclude: ${NEGATIVE_PROMPT}
-Output: 16:9 full-bleed image only.`;
+Professional film pre-production reference frame.
+
+${NEGATIVE_PROMPT}`;
 
         console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 
@@ -126,9 +170,10 @@ Output: 16:9 full-bleed image only.`;
               model: 'dall-e-3',
               prompt: imagePrompt,
               n: 1,
-              size: '1792x1024',
+              size: '1792x1024', // DALL-E 3 widescreen format
               quality: 'hd',
-              style: 'natural'
+              style: 'natural',
+              response_format: 'b64_json'
             }),
             signal: controller.signal
           });
@@ -216,38 +261,13 @@ Output: 16:9 full-bleed image only.`;
             continue;
           }
 
-          // DALL-E 3 returns URL, need to fetch and convert to base64
-          const imageUrl = imageData.data[0].url;
+          // gpt-image-1 returns base64 directly in b64_json field
+          const base64Data = imageData.data[0].b64_json;
           
-          let generatedImageData: string;
-          
-          try {
-            // Fetch the image and convert to base64 safely
-            const imageBlob = await fetch(imageUrl);
-            if (!imageBlob.ok) {
-              throw new Error(`Failed to fetch image: ${imageBlob.status}`);
-            }
-            
-            const imageBuffer = await imageBlob.arrayBuffer();
-            
-            // Convert to base64 safely without stack overflow
-            const uint8Array = new Uint8Array(imageBuffer);
-            let binary = '';
-            const chunkSize = 32768; // Process in chunks to avoid stack overflow
-            
-            for (let i = 0; i < uint8Array.length; i += chunkSize) {
-              const chunk = uint8Array.slice(i, i + chunkSize);
-              binary += String.fromCharCode(...chunk);
-            }
-            
-            const base64Image = btoa(binary);
-            generatedImageData = `data:image/png;base64,${base64Image}`;
-            
-          } catch (conversionError) {
-            console.error(`Error converting image to base64 for shot ${shot.shotNumber}:`, conversionError);
-            
-            // Use fallback SVG if conversion fails
-            generatedImageData = `data:image/svg+xml;base64,${btoa(`
+          if (!base64Data) {
+            console.error('No base64 data in response for shot:', shot.shotNumber);
+            // Use fallback SVG if no base64 data
+            const fallbackImageData = `data:image/svg+xml;base64,${btoa(`
               <svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
                 <rect width="512" height="512" fill="#f8f9fa" stroke="#e9ecef" stroke-width="2"/>
                 <text x="50%" y="40%" text-anchor="middle" font-size="16" font-family="Arial" fill="#495057" font-weight="bold">
@@ -257,11 +277,28 @@ Output: 16:9 full-bleed image only.`;
                   ${genre} | ${tone}
                 </text>
                 <text x="50%" y="70%" text-anchor="middle" font-size="10" font-family="Arial" fill="#adb5bd">
-                  Image conversion error - Please try regenerating
+                  No image data returned - Please try regenerating
                 </text>
               </svg>
             `)}`;
+
+            storyboardFrames.push({
+              shotNumber: shot.shotNumber,
+              description: shot.description,
+              cameraAngle: shot.cameraAngle,
+              characters: shot.characters,
+              visualElements: shot.visualElements,
+              scriptSegment: shot.scriptSegment,
+              dialogueLines: shot.dialogueLines,
+              sceneAction: shot.sceneAction,
+              imageData: fallbackImageData,
+              imagePrompt: imagePrompt,
+              generatedAt: new Date().toISOString()
+            });
+            continue;
           }
+          
+          const generatedImageData = `data:image/png;base64,${base64Data}`;
 
           storyboardFrames.push({
             shotNumber: shot.shotNumber,

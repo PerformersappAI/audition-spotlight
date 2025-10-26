@@ -45,3 +45,6 @@ verify_jwt = false
 
 [functions.analyze-script]
 verify_jwt = false
+
+[functions.analyze-shots]
+verify_jwt = false
