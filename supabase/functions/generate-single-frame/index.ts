@@ -134,14 +134,27 @@ serve(async (req) => {
 
     const cameraInstructions = getCameraInstructions(shot.cameraAngle);
 
-    const imagePrompt = `Cinematic photograph: ${shot.sceneAction || shot.description}
+    // Construct detailed prompt using rich AI-analyzed data
+    const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
+    const location = shot.location || '';
+    const action = shot.action || shot.description;
+    const lighting = shot.lighting || '';
+    const keyProps = shot.keyProps || '';
+    const emotionalTone = shot.emotionalTone || '';
+    
+    const imagePrompt = `Cinematic storyboard frame: ${visualDesc}
 
-Camera: ${cameraInstructions}
-Setting: ${shot.visualElements || 'interior setting'}
-Characters: ${shot.characters?.join(', ') || 'person'}
-Mood: ${visualStyle}
+${location ? `Location: ${location}` : ''}
+${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
+${lighting ? `Lighting: ${lighting}` : ''}
+${keyProps ? `Key Props: ${keyProps}` : ''}
+${emotionalTone ? `Mood: ${emotionalTone}` : ''}
 
-Professional cinema quality. Clean image. ${NEGATIVE_PROMPT}`;
+${cameraInstructions}
+
+Professional film pre-production reference frame.
+
+${NEGATIVE_PROMPT}`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);

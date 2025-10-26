@@ -37,6 +37,15 @@ interface Shot {
   scriptSegment: string;
   dialogueLines: string[];
   sceneAction: string;
+  // Enhanced fields from AI analysis
+  visualDescription?: string;
+  location?: string;
+  action?: string;
+  emotionalTone?: string;
+  shotType?: string;
+  lighting?: string;
+  keyProps?: string;
+  dialogue?: string;
 }
 
 interface StoryboardFrame {
@@ -166,83 +175,65 @@ const Storyboarding = () => {
     return characters.length;
   };
 
-  const generateShotBreakdown = (script: typeof currentProject): Shot[] => {
-    const { characters, segments, sceneCount } = parseScript(script.scriptText);
+  // Generate AI-enhanced shot breakdown from script
+  const generateShotBreakdown = async (
+    scriptText: string,
+    genre: string,
+    tone: string
+  ): Promise<Shot[]> => {
+    console.log("Starting AI-enhanced shot breakdown generation...");
     
-    // Intelligent shot calculation based on script content
-    const minShots = 3;
-    const baseSegments = segments.length;
+    const lines = scriptText.split('\n');
+    const sceneCount = lines.filter(line => 
+      line.trim().match(/^(INT\.|EXT\.|SCENE|Scene)/i)
+    ).length;
     
-    // Calculate shots based on script complexity and length
-    let shotCount = Math.max(minShots, baseSegments);
+    // Calculate appropriate number of shots based on script length
+    const wordCount = scriptText.split(/\s+/).length;
+    let desiredShots = Math.ceil(wordCount / 150); // ~1 shot per 150 words
+    desiredShots = Math.max(6, Math.min(desiredShots, 24)); // Between 6-24 shots
     
-    // Additional shots for longer scripts
-    const scriptWordCount = script.scriptText.split(/\s+/).length;
-    if (scriptWordCount > 1000) shotCount += Math.floor(scriptWordCount / 500);
-    if (scriptWordCount > 2000) shotCount += Math.floor(scriptWordCount / 300);
-    
-    // Factor in detected scenes
-    if (sceneCount > 0) {
-      shotCount = Math.max(shotCount, sceneCount * 2); // At least 2 shots per scene
-    }
-    
-    // Consider genre complexity
-    const complexGenres = ['action', 'thriller', 'sci-fi', 'fantasy'];
-    if (complexGenres.includes(script.genre.toLowerCase())) {
-      shotCount = Math.ceil(shotCount * 1.3);
-    }
-    
-    // Cap at reasonable maximum for performance
-    shotCount = Math.min(shotCount, 50);
-    
-    console.log(`Generating ${shotCount} shots for script with ${baseSegments} segments, ${sceneCount} scenes, and ${scriptWordCount} words`);
-    
-    const shots: Shot[] = [];
-
-    for (let i = 1; i <= shotCount; i++) {
-      const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view", "Extreme Close-up", "Long Shot"];
-      const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle", "Bird's eye", "Worm's eye"];
-      
-      // Distribute shots more evenly across all segments
-      const segmentIndex = Math.floor((i - 1) * segments.length / shotCount);
-      const scriptSegment = segments[segmentIndex] || segments[Math.min(i - 1, segments.length - 1)];
-      
-      // Extract dialogue from this segment
-      const dialogueMatches = scriptSegment.match(/^([A-Z][A-Z\s]+)\s*\n(.+?)$/gm) || [];
-      const dialogueLines = dialogueMatches.map(match => {
-        const lines = match.split('\n');
-        return lines.slice(1).join(' ').trim();
+    try {
+      toast({
+        title: "Analyzing Script",
+        description: `Using AI to generate ${desiredShots} detailed storyboard shots...`,
       });
-      
-      // Extract scene action/description
-      const actionMatches = scriptSegment.match(/^\((.+?)\)|^([^A-Z\n].+?)$/gm) || [];
-      const sceneAction = actionMatches.join(' ').trim();
-      
-      // Get characters from this segment
-      const segmentCharacters = characters.filter(char => 
-        scriptSegment.toUpperCase().includes(char)
-      ).slice(0, 3);
-      
-      const selectedShotType = shotTypes[Math.floor(Math.random() * shotTypes.length)];
-      const selectedAngle = cameraAngles[Math.floor(Math.random() * cameraAngles.length)];
-      
-      shots.push({
-        shotNumber: i,
-        description: `${selectedShotType}: ${sceneAction || dialogueLines[0] || 'Key scene moment'}`,
-        cameraAngle: `${selectedShotType} - ${selectedAngle}`,
-        characters: segmentCharacters.length > 0 ? segmentCharacters : characters.slice(0, 2),
-        visualElements: script.genre === "Horror" ? "Dark lighting, shadows" :
-                       script.genre === "Comedy" ? "Bright, colorful setting" :
-                       script.tone === "Epic" ? "Dramatic wide landscape" :
-                       "Natural lighting, realistic setting",
-        duration: `${Math.floor(Math.random() * 10) + 5} seconds`,
-        scriptSegment: scriptSegment.substring(0, 200) + (scriptSegment.length > 200 ? '...' : ''),
-        dialogueLines: dialogueLines,
-        sceneAction: sceneAction || 'Scene action from script'
-      });
-    }
 
-    return shots;
+      const { data, error } = await supabase.functions.invoke('analyze-shots', {
+        body: {
+          scriptText,
+          genre,
+          tone,
+          shotCount: desiredShots
+        }
+      });
+
+      if (error) {
+        console.error('Error calling analyze-shots:', error);
+        throw error;
+      }
+
+      if (!data || !data.shots) {
+        throw new Error('Invalid response from analyze-shots function');
+      }
+
+      console.log(`AI generated ${data.shots.length} detailed shots`);
+      
+      toast({
+        title: "Script Analysis Complete",
+        description: `Generated ${data.shots.length} storyboard frames with detailed descriptions`,
+      });
+
+      return data.shots;
+    } catch (error) {
+      console.error('Error generating shot breakdown:', error);
+      toast({
+        title: "Error",
+        description: "Failed to analyze script. Please try again.",
+        variant: "destructive",
+      });
+      throw error;
+    }
   };
 
   const createStoryboard = async () => {
@@ -266,8 +257,12 @@ const Storyboarding = () => {
 
     setIsProcessingScript(true);
 
-    setTimeout(async () => {
-      const shots = generateShotBreakdown(currentProject);
+    try {
+      const shots = await generateShotBreakdown(
+        currentProject.scriptText,
+        currentProject.genre,
+        currentProject.tone
+      );
       
       const savedProject = await saveProject(
         currentProject.scriptText,
@@ -294,9 +289,11 @@ const Storyboarding = () => {
           description: "Your script has been broken down into shots and saved. Generate visual storyboard frames now!"
         });
       }
-      
+    } catch (error) {
+      console.error('Error creating storyboard:', error);
+    } finally {
       setIsProcessingScript(false);
-    }, 2000);
+    }
   };
 
   // Initialize empty storyboard frames for shot breakdown
@@ -1020,43 +1017,132 @@ const Storyboarding = () => {
                              </div>
                            </div>
                          </CardHeader>
-                         <CardContent className="space-y-3">
-                           <div>
-                             <h4 className="font-medium text-sm mb-1">Description</h4>
-                             {editingShot === shot.shotNumber ? (
-                               <Textarea
-                                 value={editValues.description || shot.description}
-                                 onChange={(e) => setEditValues(prev => ({ ...prev, description: e.target.value }))}
-                                 className="text-sm min-h-[60px]"
-                               />
-                             ) : (
-                               <p className="text-sm text-muted-foreground">{shot.description}</p>
-                             )}
-                           </div>
-                           <div>
-                             <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
-                             {editingShot === shot.shotNumber ? (
-                               <Input
-                                 value={editValues.cameraAngle || shot.cameraAngle}
-                                 onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                 className="text-sm"
-                               />
-                             ) : (
-                               <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
-                             )}
-                           </div>
-                           <div>
-                             <h4 className="font-medium text-sm mb-1">Visual Elements</h4>
-                             {editingShot === shot.shotNumber ? (
-                               <Textarea
-                                 value={editValues.visualElements || shot.visualElements}
-                                 onChange={(e) => setEditValues(prev => ({ ...prev, visualElements: e.target.value }))}
-                                 className="text-sm min-h-[60px]"
-                               />
-                             ) : (
-                               <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
-                             )}
-                           </div>
+                          <CardContent className="space-y-3">
+                            {/* Visual Description */}
+                            {shot.visualDescription && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Visual Description</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Textarea
+                                    value={editValues.visualDescription || shot.visualDescription}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, visualDescription: e.target.value }))}
+                                    className="text-sm min-h-[80px]"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.visualDescription}</p>
+                                )}
+                              </div>
+                            )}
+                            
+                            {/* Location */}
+                            {shot.location && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Location</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.location || shot.location}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, location: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.location}</p>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Action */}
+                            {shot.action && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Action</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.action || shot.action}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, action: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.action}</p>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Shot Type & Camera Angle */}
+                            <div className="grid grid-cols-2 gap-2">
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Shot Type</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.shotType || shot.shotType || shot.cameraAngle}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, shotType: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.shotType || shot.cameraAngle}</p>
+                                )}
+                              </div>
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.cameraAngle || shot.cameraAngle}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                                )}
+                              </div>
+                            </div>
+
+                            {/* Lighting */}
+                            {shot.lighting && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Lighting</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.lighting || shot.lighting}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, lighting: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.lighting}</p>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Emotional Tone */}
+                            {shot.emotionalTone && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Emotional Tone</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.emotionalTone || shot.emotionalTone}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, emotionalTone: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.emotionalTone}</p>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Key Props */}
+                            {shot.keyProps && (
+                              <div>
+                                <h4 className="font-medium text-sm mb-1">Key Props</h4>
+                                {editingShot === shot.shotNumber ? (
+                                  <Input
+                                    value={editValues.keyProps || shot.keyProps}
+                                    onChange={(e) => setEditValues(prev => ({ ...prev, keyProps: e.target.value }))}
+                                    className="text-sm"
+                                  />
+                                ) : (
+                                  <p className="text-sm text-muted-foreground">{shot.keyProps}</p>
+                                )}
+                              </div>
+                            )}
+
+                            {/* Characters */}
                             <div>
                               <h4 className="font-medium text-sm mb-1">Characters</h4>
                               {editingShot === shot.shotNumber ? (
@@ -1079,35 +1165,17 @@ const Storyboarding = () => {
                                 </div>
                               )}
                             </div>
-                            {shot.scriptSegment && (
+
+                            {/* Dialogue */}
+                            {shot.dialogue && shot.dialogue !== "None" && (
                               <div className="border-t pt-3">
-                                <h4 className="font-medium text-sm mb-1 text-primary">Script Context</h4>
-                                <p className="text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic">
-                                  "{shot.scriptSegment}"
-                                </p>
-                              </div>
-                            )}
-                            {shot.dialogueLines && shot.dialogueLines.length > 0 && (
-                              <div>
                                 <h4 className="font-medium text-sm mb-1 text-primary">Dialogue</h4>
-                                <div className="space-y-1">
-                                  {shot.dialogueLines.map((dialogue, index) => (
-                                    <p key={index} className="text-xs text-muted-foreground bg-primary/10 p-2 rounded">
-                                      {dialogue}
-                                    </p>
-                                  ))}
-                                </div>
-                              </div>
-                            )}
-                            {shot.sceneAction && (
-                              <div>
-                                <h4 className="font-medium text-sm mb-1 text-primary">Scene Action</h4>
-                                <p className="text-xs text-muted-foreground bg-accent/20 p-2 rounded">
-                                  {shot.sceneAction}
+                                <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded">
+                                  {shot.dialogue}
                                 </p>
                               </div>
                             )}
-                         </CardContent>
+                          </CardContent>
                        </Card>
                      ))}
                    </div>
