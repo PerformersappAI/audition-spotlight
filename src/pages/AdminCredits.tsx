@@ -30,16 +30,31 @@ const AdminCredits = () => {
 
   const fetchCredits = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all credits
+      const { data: creditsData, error: creditsError } = await supabase
         .from('user_credits')
-        .select(`
-          *,
-          profiles!user_credits_user_id_fkey(user_id, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
-      setCredits(data || []);
+      if (creditsError) throw creditsError;
+
+      // Then get profiles for each user
+      const creditsWithProfiles = await Promise.all(
+        (creditsData || []).map(async (credit) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('email, first_name, last_name')
+            .eq('user_id', credit.user_id)
+            .maybeSingle();
+
+          return {
+            ...credit,
+            profile: profileData
+          };
+        })
+      );
+
+      setCredits(creditsWithProfiles);
     } catch (error) {
       console.error('Error fetching credits:', error);
       toast({
@@ -52,17 +67,32 @@ const AdminCredits = () => {
 
   const fetchTransactions = async () => {
     try {
-      const { data, error } = await supabase
+      // First get all transactions
+      const { data: transactionsData, error: transactionsError } = await supabase
         .from('credit_transactions')
-        .select(`
-          *,
-          profiles!credit_transactions_user_id_fkey(user_id, email)
-        `)
+        .select('*')
         .order('created_at', { ascending: false })
         .limit(100);
 
-      if (error) throw error;
-      setTransactions(data || []);
+      if (transactionsError) throw transactionsError;
+
+      // Then get profiles for each user
+      const transactionsWithProfiles = await Promise.all(
+        (transactionsData || []).map(async (transaction) => {
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('email, first_name, last_name')
+            .eq('user_id', transaction.user_id)
+            .maybeSingle();
+
+          return {
+            ...transaction,
+            profile: profileData
+          };
+        })
+      );
+
+      setTransactions(transactionsWithProfiles);
     } catch (error) {
       console.error('Error fetching transactions:', error);
       toast({
@@ -293,7 +323,7 @@ const AdminCredits = () => {
                   ) : (
                     filteredCredits.map((credit) => (
                       <TableRow key={credit.id}>
-                        <TableCell>{credit.profiles?.email || credit.user_id}</TableCell>
+                        <TableCell>{credit.profile?.email || credit.user_id}</TableCell>
                         <TableCell>
                           <Badge variant="secondary">{credit.total_credits}</Badge>
                         </TableCell>
@@ -344,7 +374,7 @@ const AdminCredits = () => {
                   ) : (
                     transactions.map((transaction) => (
                       <TableRow key={transaction.id}>
-                        <TableCell>{transaction.profiles?.email || transaction.user_id}</TableCell>
+                        <TableCell>{transaction.profile?.email || transaction.user_id}</TableCell>
                         <TableCell>
                           <Badge variant={
                             transaction.transaction_type === 'purchase' ? 'default' :
