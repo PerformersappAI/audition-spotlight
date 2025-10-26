@@ -13,7 +13,8 @@ import {
   BarChart3, 
   Settings,
   Home,
-  LogOut
+  LogOut,
+  DollarSign
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -75,6 +76,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { path: '/admin/projects', label: 'Projects', icon: Film },
     { path: '/admin/festivals', label: 'Festivals', icon: Trophy },
     { path: '/admin/applications', label: 'Applications', icon: FileText },
+    { path: '/admin/credits', label: 'Credits', icon: DollarSign },
   ];
 
   return (

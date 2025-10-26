@@ -28,6 +28,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminProjects from "./pages/AdminProjects";
 import AdminFestivals from "./pages/AdminFestivals";
 import AdminApplications from "./pages/AdminApplications";
+import AdminCredits from "./pages/AdminCredits";
 import ToolboxHome from "./pages/ToolboxHome";
 import MultiStepForm from "./pages/MultiStepForm";
 import DocsLibrary from "./pages/DocsLibrary";
@@ -67,6 +68,7 @@ const AppContent = () => (
       <Route path="/admin/projects" element={<AdminProjects />} />
       <Route path="/admin/festivals" element={<AdminFestivals />} />
       <Route path="/admin/applications" element={<AdminApplications />} />
+      <Route path="/admin/credits" element={<AdminCredits />} />
       <Route path="/toolbox" element={<ToolboxHome />} />
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
