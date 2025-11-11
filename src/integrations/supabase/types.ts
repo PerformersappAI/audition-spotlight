@@ -616,6 +616,7 @@ export type Database = {
       storyboard_projects: {
         Row: {
           character_count: number | null
+          character_definitions: Json | null
           created_at: string
           genre: string | null
           id: string
@@ -623,12 +624,14 @@ export type Database = {
           script_text: string
           shots: Json | null
           storyboard_frames: Json | null
+          style_reference_prompt: string | null
           tone: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
           character_count?: number | null
+          character_definitions?: Json | null
           created_at?: string
           genre?: string | null
           id?: string
@@ -636,12 +639,14 @@ export type Database = {
           script_text: string
           shots?: Json | null
           storyboard_frames?: Json | null
+          style_reference_prompt?: string | null
           tone?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
           character_count?: number | null
+          character_definitions?: Json | null
           created_at?: string
           genre?: string | null
           id?: string
@@ -649,6 +654,7 @@ export type Database = {
           script_text?: string
           shots?: Json | null
           storyboard_frames?: Json | null
+          style_reference_prompt?: string | null
           tone?: string | null
           updated_at?: string
           user_id?: string | null

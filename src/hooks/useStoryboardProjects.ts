@@ -4,6 +4,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 import type { Database } from '@/integrations/supabase/types';
 
+export interface CharacterDefinition {
+  name: string;
+  description: string;
+  traits: string;
+}
+
 export interface Shot {
   shotNumber: number;
   description: string;
@@ -14,6 +20,8 @@ export interface Shot {
   scriptSegment: string;
   dialogueLines: string[];
   sceneAction: string;
+  dialogue?: string;
+  characterNotes?: Record<string, string>;
 }
 
 export interface StoryboardFrame {
@@ -41,6 +49,8 @@ export interface StoryboardProject {
   is_complete: boolean;
   created_at: string;
   updated_at: string;
+  character_definitions?: CharacterDefinition[];
+  style_reference_prompt?: string;
 }
 
 type DbStoryboardProject = Database['public']['Tables']['storyboard_projects']['Row'];
@@ -80,7 +90,9 @@ export const useStoryboardProjects = () => {
         storyboard_frames: Array.isArray(row.storyboard_frames) ? row.storyboard_frames as unknown as StoryboardFrame[] : null,
         is_complete: row.is_complete,
         created_at: row.created_at,
-        updated_at: row.updated_at
+        updated_at: row.updated_at,
+        character_definitions: Array.isArray(row.character_definitions) ? row.character_definitions as unknown as CharacterDefinition[] : [],
+        style_reference_prompt: row.style_reference_prompt || ''
       }));
       setProjects(transformedProjects);
     } catch (error) {
@@ -95,7 +107,9 @@ export const useStoryboardProjects = () => {
     scriptText: string,
     genre: string,
     tone: string,
-    shots: Shot[]
+    shots: Shot[],
+    characterDefinitions?: CharacterDefinition[],
+    styleReferencePrompt?: string
   ): Promise<StoryboardProject | null> => {
     if (!userProfile?.user_id) {
       toast.error('Please log in to save projects');
@@ -115,7 +129,9 @@ export const useStoryboardProjects = () => {
           character_count: characterCount,
           shots: shots as any,
           storyboard_frames: null,
-          is_complete: false
+          is_complete: false,
+          character_definitions: characterDefinitions as any || [],
+          style_reference_prompt: styleReferencePrompt || ''
         })
         .select()
         .single();
@@ -138,7 +154,9 @@ export const useStoryboardProjects = () => {
           storyboard_frames: Array.isArray(data.storyboard_frames) ? data.storyboard_frames as unknown as StoryboardFrame[] : null,
           is_complete: data.is_complete,
           created_at: data.created_at,
-          updated_at: data.updated_at
+          updated_at: data.updated_at,
+          character_definitions: Array.isArray(data.character_definitions) ? data.character_definitions as unknown as CharacterDefinition[] : [],
+          style_reference_prompt: data.style_reference_prompt || ''
         };
         setProjects(prev => [transformedProject, ...prev]);
         toast.success('Project saved successfully');
@@ -164,6 +182,8 @@ export const useStoryboardProjects = () => {
       if (updates.is_complete !== undefined) dbUpdates.is_complete = updates.is_complete;
       if (updates.genre) dbUpdates.genre = updates.genre;
       if (updates.tone) dbUpdates.tone = updates.tone;
+      if (updates.character_definitions) dbUpdates.character_definitions = updates.character_definitions as any;
+      if (updates.style_reference_prompt !== undefined) dbUpdates.style_reference_prompt = updates.style_reference_prompt;
       
       const { data, error } = await supabase
         .from('storyboard_projects')
@@ -190,7 +210,9 @@ export const useStoryboardProjects = () => {
           storyboard_frames: Array.isArray(data.storyboard_frames) ? data.storyboard_frames as unknown as StoryboardFrame[] : null,
           is_complete: data.is_complete,
           created_at: data.created_at,
-          updated_at: data.updated_at
+          updated_at: data.updated_at,
+          character_definitions: Array.isArray(data.character_definitions) ? data.character_definitions as unknown as CharacterDefinition[] : [],
+          style_reference_prompt: data.style_reference_prompt || ''
         };
         setProjects(prev => prev.map(p => p.id === id ? transformedProject : p));
         return transformedProject;

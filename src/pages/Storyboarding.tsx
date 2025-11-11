@@ -17,6 +17,8 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
+import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
+import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -85,7 +87,9 @@ const Storyboarding = () => {
     tone: "",
     artStyle: "comic",
     customStylePrompt: "",
-    aspectRatio: "16:9" as "16:9" | "9:16"
+    aspectRatio: "16:9" as "16:9" | "9:16",
+    characterDefinitions: [] as CharacterDefinition[],
+    styleReferencePrompt: ""
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
   const { 
@@ -280,7 +284,9 @@ const Storyboarding = () => {
         currentProject.scriptText,
         currentProject.genre,
         currentProject.tone,
-        shots
+        shots,
+        currentProject.characterDefinitions,
+        currentProject.styleReferencePrompt
       );
 
       if (savedProject) {
@@ -572,11 +578,27 @@ const Storyboarding = () => {
         ? currentProject.customStylePrompt 
         : (selectedArtStyle?.promptModifier || 'black and white storyboard frame, hand-drawn sketch');
 
+      // Build character descriptions for this shot
+      const characterDescriptions = shot.characters
+        .map(charName => {
+          const def = currentProject.characterDefinitions.find(
+            c => c.name.toLowerCase() === charName.toLowerCase()
+          );
+          if (def) {
+            return `${def.name}: ${def.description}. ${def.traits}`;
+          }
+          return null;
+        })
+        .filter(Boolean)
+        .join('\n');
+
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
           shot,
           artStyle: stylePrompt,
-          aspectRatio: currentProject.aspectRatio || '16:9'
+          aspectRatio: currentProject.aspectRatio || '16:9',
+          characterDescriptions,
+          styleReference: currentProject.styleReferencePrompt
         }
       });
 
@@ -895,6 +917,18 @@ const Storyboarding = () => {
                     customStylePrompt={currentProject.customStylePrompt}
                     onStyleChange={(styleId) => setCurrentProject(prev => ({ ...prev, artStyle: styleId }))}
                     onCustomPromptChange={(prompt) => setCurrentProject(prev => ({ ...prev, customStylePrompt: prompt }))}
+                  />
+
+                  {/* Character Definitions */}
+                  <CharacterDefinitionManager
+                    characters={currentProject.characterDefinitions}
+                    onChange={(characters) => setCurrentProject(prev => ({ ...prev, characterDefinitions: characters }))}
+                  />
+
+                  {/* Style Reference */}
+                  <StyleReferenceInput
+                    value={currentProject.styleReferencePrompt}
+                    onChange={(value) => setCurrentProject(prev => ({ ...prev, styleReferencePrompt: value }))}
                   />
 
                   {/* Aspect Ratio Selection */}

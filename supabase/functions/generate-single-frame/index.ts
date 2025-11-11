@@ -111,7 +111,7 @@ serve(async (req) => {
   console.log('Generate-single-frame function called');
 
   try {
-    const { shot, artStyle, aspectRatio = "16:9" } = await req.json();
+    const { shot, artStyle, aspectRatio = "16:9", characterDescriptions = "", styleReference = "" } = await req.json();
     
     if (!shot || !artStyle) {
       throw new Error('Missing required parameters: shot, artStyle');
@@ -139,7 +139,21 @@ serve(async (req) => {
     const keyProps = shot.keyProps || '';
     const emotionalTone = shot.emotionalTone || '';
     
-    const imagePrompt = `${visualDesc}, 
+    // Build comprehensive image prompt with consistency elements
+    let imagePrompt = '';
+    
+    // Add style reference first if provided
+    if (styleReference) {
+      imagePrompt += `VISUAL STYLE REFERENCE: ${styleReference}\n\nMAINTAIN THIS EXACT ARTISTIC STYLE THROUGHOUT.\n\n`;
+    }
+    
+    // Add character descriptions if provided
+    if (characterDescriptions) {
+      imagePrompt += `CHARACTERS IN SCENE:\n${characterDescriptions}\n\nIMPORTANT: Characters must match these exact descriptions.\n\n`;
+    }
+    
+    // Main shot description
+    imagePrompt += `${visualDesc}, 
 storyboard frame, 
 film previsualization, 
 professional concept art for film production, 
