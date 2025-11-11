@@ -15,6 +15,7 @@ import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
 import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -84,7 +85,15 @@ const Storyboarding = () => {
     aspectRatio: "16:9" as "16:9" | "9:16"
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
-  const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
+  const { 
+    processFile, 
+    isProcessing: isProcessingFile, 
+    currentStage, 
+    elapsedTime, 
+    progress, 
+    currentFileName, 
+    currentFileSize 
+  } = useOCRUpload();
   const [selectedProject, setSelectedProject] = useState<StoryboardProjectLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
@@ -840,9 +849,19 @@ const Storyboarding = () => {
                         disabled={isProcessingFile}
                         className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                       />
-                      {isProcessingFile && <Loader2 className="h-4 w-4 animate-spin" />}
                     </div>
                   </div>
+
+                  {/* Upload Progress Card */}
+                  {isProcessingFile && currentFileName && (
+                    <PDFUploadProgress
+                      fileName={currentFileName}
+                      fileSize={currentFileSize}
+                      stage={currentStage}
+                      elapsedTime={elapsedTime}
+                      progress={progress}
+                    />
+                  )}
 
                   {/* Manual Text Input */}
                   <div className="space-y-2">
