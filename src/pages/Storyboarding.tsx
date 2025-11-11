@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
+import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -82,6 +83,8 @@ const Storyboarding = () => {
     scriptText: "",
     genre: "",
     tone: "",
+    artStyle: "comic",
+    customStylePrompt: "",
     aspectRatio: "16:9" as "16:9" | "9:16"
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
@@ -333,10 +336,16 @@ const Storyboarding = () => {
         description: "Creating storyboard panels with sketch-style visuals...",
       });
 
+      // Get the art style prompt modifier
+      const selectedArtStyle = artStyles.find(s => s.id === currentProject.artStyle);
+      const stylePrompt = currentProject.artStyle === 'custom' 
+        ? currentProject.customStylePrompt 
+        : (selectedArtStyle?.promptModifier || '');
+
       const { data, error } = await supabase.functions.invoke('generate-storyboard-simple', {
         body: {
           scene_text: currentProject.scriptText,
-          style: `${currentProject.genre}, ${currentProject.tone} style`
+          style: stylePrompt
         }
       });
 
@@ -557,11 +566,16 @@ const Storyboarding = () => {
 
       console.log(`Generating frame ${shotNumber}`);
 
+      // Get the art style prompt modifier
+      const selectedArtStyle = artStyles.find(s => s.id === currentProject.artStyle);
+      const stylePrompt = currentProject.artStyle === 'custom' 
+        ? currentProject.customStylePrompt 
+        : (selectedArtStyle?.promptModifier || 'black and white storyboard frame, hand-drawn sketch');
+
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
           shot,
-          genre: selectedProject.genre || 'Drama',
-          tone: selectedProject.tone || 'Emotional',
+          artStyle: stylePrompt,
           aspectRatio: currentProject.aspectRatio || '16:9'
         }
       });
@@ -875,48 +889,26 @@ const Storyboarding = () => {
                     />
                   </div>
 
-                  {/* Genre, Tone, and Aspect Ratio Selection */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="space-y-2">
-                      <Label>Genre</Label>
-                      <Select value={currentProject.genre} onValueChange={(value) => setCurrentProject(prev => ({ ...prev, genre: value }))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select genre" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {genres.map((genre) => (
-                            <SelectItem key={genre} value={genre}>{genre}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {/* Art Style Selection */}
+                  <ArtStyleSelector
+                    selectedStyle={currentProject.artStyle}
+                    customStylePrompt={currentProject.customStylePrompt}
+                    onStyleChange={(styleId) => setCurrentProject(prev => ({ ...prev, artStyle: styleId }))}
+                    onCustomPromptChange={(prompt) => setCurrentProject(prev => ({ ...prev, customStylePrompt: prompt }))}
+                  />
 
-                    <div className="space-y-2">
-                      <Label>Tone</Label>
-                      <Select value={currentProject.tone} onValueChange={(value) => setCurrentProject(prev => ({ ...prev, tone: value }))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select tone" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {tones.map((tone) => (
-                            <SelectItem key={tone} value={tone}>{tone}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Aspect Ratio</Label>
-                      <Select value={currentProject.aspectRatio} onValueChange={(value: "16:9" | "9:16") => setCurrentProject(prev => ({ ...prev, aspectRatio: value }))}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select format" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="16:9">16:9 (Film/Commercial)</SelectItem>
-                          <SelectItem value="9:16">9:16 (Vertical/Social)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  {/* Aspect Ratio Selection */}
+                  <div className="space-y-2">
+                    <Label>Aspect Ratio</Label>
+                    <Select value={currentProject.aspectRatio} onValueChange={(value: "16:9" | "9:16") => setCurrentProject(prev => ({ ...prev, aspectRatio: value }))}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select format" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="16:9">16:9 (Film/Commercial)</SelectItem>
+                        <SelectItem value="9:16">9:16 (Vertical/Social)</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

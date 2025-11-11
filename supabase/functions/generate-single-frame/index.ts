@@ -111,16 +111,13 @@ serve(async (req) => {
   console.log('Generate-single-frame function called');
 
   try {
-    const { shot, genre, tone, aspectRatio = "16:9" } = await req.json();
+    const { shot, artStyle, aspectRatio = "16:9" } = await req.json();
     
-    if (!shot || !genre || !tone) {
-      throw new Error('Missing required parameters: shot, genre, tone');
+    if (!shot || !artStyle) {
+      throw new Error('Missing required parameters: shot, artStyle');
     }
 
-    console.log(`Generating single frame for shot ${shot.shotNumber}`);
-
-    const visualStyle = getVisualStyle(genre, tone);
-    console.log(`Visual style for ${genre}/${tone}: ${visualStyle}`);
+    console.log(`Generating single frame for shot ${shot.shotNumber} with art style`);
 
     // Summarize long descriptions to avoid overwhelming the AI
     const summarizeDescription = (desc: string): string => {
@@ -143,15 +140,11 @@ serve(async (req) => {
     const emotionalTone = shot.emotionalTone || '';
     
     const imagePrompt = `${visualDesc}, 
-black and white storyboard frame, 
-film previsualization storyboard, 
+storyboard frame, 
+film previsualization, 
 professional concept art for film production, 
-hand-drawn sketch aesthetic with clean linework, 
 35mm film composition and framing, 
-consistent character designs, 
-production design reference sketch,
-NOT a photograph, NOT in color, NOT realistic,
-pen and ink illustration style,
+${artStyle},
 ${location ? `Location: ${location}` : ''}
 ${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
 ${lighting ? `Lighting: ${lighting}` : ''}

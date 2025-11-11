@@ -106,17 +106,12 @@ serve(async (req) => {
       const cameraInstructions = getCameraInstructions(shot.cameraAngle || 'medium shot');
       const description = shot.visualDescription || shot.description;
 
-      // Create the "bossy" storyboard prompt
+      // Create the storyboard prompt with art style
       const storyboardPrompt = `${description}, 
-black and white storyboard frame, 
-film previsualization storyboard, 
+storyboard frame, 
+film previsualization, 
 professional concept art for film production, 
-hand-drawn sketch aesthetic with clean linework, 
 35mm film composition and framing, 
-consistent character designs, 
-production design reference sketch,
-NOT a photograph, NOT in color, NOT realistic,
-pen and ink illustration style,
 ${style},
 ${cameraInstructions}`;
 
