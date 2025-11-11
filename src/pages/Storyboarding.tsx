@@ -296,6 +296,107 @@ const Storyboarding = () => {
     }
   };
 
+  // Quick storyboard generation using simplified API
+  const createQuickStoryboard = async () => {
+    if (!currentProject.scriptText.trim()) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter script text or upload a file"
+      });
+      return;
+    }
+
+    if (!currentProject.genre || !currentProject.tone) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please select both genre and tone"
+      });
+      return;
+    }
+
+    setGeneratingStoryboard(true);
+
+    try {
+      toast({
+        title: "Generating Quick Storyboard",
+        description: "Creating storyboard panels with sketch-style visuals...",
+      });
+
+      const { data, error } = await supabase.functions.invoke('generate-storyboard-simple', {
+        body: {
+          scene_text: currentProject.scriptText,
+          style: `${currentProject.genre}, ${currentProject.tone} style`
+        }
+      });
+
+      if (error) {
+        console.error('Error calling generate-storyboard-simple:', error);
+        throw error;
+      }
+
+      if (!data || !data.panels) {
+        throw new Error('Invalid response from storyboard generation');
+      }
+
+      console.log(`Generated ${data.panels.length} panels`);
+      
+      // Convert panels to storyboard frames format
+      const storyboardFrames = data.panels.map((panel: any) => ({
+        shotNumber: panel.shot_id,
+        description: panel.description,
+        cameraAngle: "medium shot",
+        characters: [],
+        visualElements: "",
+        scriptSegment: "",
+        dialogueLines: [],
+        sceneAction: panel.description,
+        imageData: `data:image/png;base64,${panel.image_b64}`,
+        generatedAt: new Date().toISOString()
+      }));
+
+      // Create a temporary project to display the results
+      const tempProject: StoryboardProjectLocal = {
+        id: 'quick-' + Date.now(),
+        scriptText: currentProject.scriptText,
+        genre: currentProject.genre,
+        tone: currentProject.tone,
+        characterCount: 0,
+        shots: data.panels.map((panel: any, index: number) => ({
+          shotNumber: panel.shot_id,
+          description: panel.description,
+          cameraAngle: "medium shot",
+          characters: [],
+          visualElements: "",
+          duration: "5s",
+          scriptSegment: "",
+          dialogueLines: [],
+          sceneAction: panel.description,
+        })),
+        storyboard: storyboardFrames,
+        createdAt: new Date()
+      };
+
+      setSelectedProject(tempProject);
+
+      toast({
+        title: "Quick Storyboard Complete",
+        description: `Generated ${data.panels.length} storyboard panels!`,
+      });
+
+    } catch (error) {
+      console.error('Error creating quick storyboard:', error);
+      toast({
+        title: "Error",
+        description: "Failed to generate storyboard. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingStoryboard(false);
+    }
+  };
+
   // Initialize empty storyboard frames for shot breakdown
   const initializeStoryboard = async () => {
     if (!selectedProject || !selectedProject.shots) return;
@@ -799,24 +900,50 @@ const Storyboarding = () => {
                     </div>
                   </div>
 
-                  <Button 
-                    onClick={createStoryboard} 
-                    disabled={isProcessingScript || isProcessingFile}
-                    className="w-full"
-                    size="lg"
-                  >
-                    {isProcessingScript ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Creating Shot Breakdown...
-                      </>
-                    ) : (
-                      <>
-                        <Camera className="mr-2 h-4 w-4" />
-                        Create Shot Breakdown
-                      </>
-                    )}
-                  </Button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Button 
+                      onClick={createStoryboard} 
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      size="lg"
+                      variant="default"
+                    >
+                      {isProcessingScript ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Creating Breakdown...
+                        </>
+                      ) : (
+                        <>
+                          <Camera className="mr-2 h-4 w-4" />
+                          Detailed Breakdown
+                        </>
+                      )}
+                    </Button>
+
+                    <Button 
+                      onClick={createQuickStoryboard} 
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      size="lg"
+                      variant="secondary"
+                    >
+                      {generatingStoryboard ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Generating...
+                        </>
+                      ) : (
+                        <>
+                          <Video className="mr-2 h-4 w-4" />
+                          Quick Storyboard
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  
+                  <div className="text-xs text-muted-foreground text-center space-y-1">
+                    <p><strong>Detailed Breakdown:</strong> Creates shot analysis first, then generate visuals individually</p>
+                    <p><strong>Quick Storyboard:</strong> Generates complete storyboard with sketch-style frames instantly</p>
+                  </div>
                 </CardContent>
               </Card>
             </div>

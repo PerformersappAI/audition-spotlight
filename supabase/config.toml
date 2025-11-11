@@ -48,3 +48,6 @@ verify_jwt = false
 
 [functions.analyze-shots]
 verify_jwt = false
+
+[functions.generate-storyboard-simple]
+verify_jwt = false

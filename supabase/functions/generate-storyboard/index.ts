@@ -128,9 +128,6 @@ serve(async (req) => {
       for (const shot of batch) {
         const cameraInstructions = getCameraInstructions(shot.cameraAngle);
         
-        // Map camera angle to cinematographic lens choices
-        const cameraInstructions = getCameraInstructions(shot.cameraAngle);
-        
         // Construct detailed prompt using rich AI-analyzed data
         const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
         const location = shot.location || '';
@@ -139,19 +136,22 @@ serve(async (req) => {
         const keyProps = shot.keyProps || '';
         const emotionalTone = shot.emotionalTone || '';
         
-        const imagePrompt = `Cinematic storyboard frame: ${visualDesc}
-
+        const imagePrompt = `${visualDesc}, 
+black and white storyboard frame, 
+film previsualization storyboard, 
+professional concept art for film production, 
+hand-drawn sketch aesthetic with clean linework, 
+35mm film composition and framing, 
+consistent character designs, 
+production design reference sketch,
+NOT a photograph, NOT in color, NOT realistic,
+pen and ink illustration style,
 ${location ? `Location: ${location}` : ''}
 ${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
 ${lighting ? `Lighting: ${lighting}` : ''}
 ${keyProps ? `Key Props: ${keyProps}` : ''}
 ${emotionalTone ? `Mood: ${emotionalTone}` : ''}
-
-${cameraInstructions}
-
-Professional film pre-production reference frame.
-
-${NEGATIVE_PROMPT}`;
+${cameraInstructions}`;
 
         console.log(`Generating storyboard image for shot: ${shot.shotNumber} with style: ${visualStyle}`);
 
@@ -171,7 +171,7 @@ ${NEGATIVE_PROMPT}`;
               prompt: imagePrompt,
               n: 1,
               size: '1792x1024', // DALL-E 3 widescreen format
-              quality: 'hd',
+              quality: 'standard', // 'standard' is better for sketch style
               style: 'natural',
               response_format: 'b64_json'
             }),

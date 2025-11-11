@@ -142,19 +142,22 @@ serve(async (req) => {
     const keyProps = shot.keyProps || '';
     const emotionalTone = shot.emotionalTone || '';
     
-    const imagePrompt = `Cinematic storyboard frame: ${visualDesc}
-
+    const imagePrompt = `${visualDesc}, 
+black and white storyboard frame, 
+film previsualization storyboard, 
+professional concept art for film production, 
+hand-drawn sketch aesthetic with clean linework, 
+35mm film composition and framing, 
+consistent character designs, 
+production design reference sketch,
+NOT a photograph, NOT in color, NOT realistic,
+pen and ink illustration style,
 ${location ? `Location: ${location}` : ''}
 ${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
 ${lighting ? `Lighting: ${lighting}` : ''}
 ${keyProps ? `Key Props: ${keyProps}` : ''}
 ${emotionalTone ? `Mood: ${emotionalTone}` : ''}
-
-${cameraInstructions}
-
-Professional film pre-production reference frame.
-
-${NEGATIVE_PROMPT}`;
+${cameraInstructions}`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -177,7 +180,7 @@ ${NEGATIVE_PROMPT}`;
         prompt: imagePrompt,
         n: 1,
         size: imageSize,
-        quality: 'hd',
+        quality: 'standard', // 'standard' is better for sketch style
         style: 'natural',
         response_format: 'b64_json'
       }),
