@@ -21,7 +21,7 @@ export interface Discussion {
   reply_count?: number;
 }
 
-export interface DiscussionReply {
+export interface Reply {
   id: string;
   discussion_id: string;
   user_id: string;
@@ -41,13 +41,13 @@ export const useCourseDiscussions = (courseId: string) => {
   const queryClient = useQueryClient();
 
   const { data: discussions, isLoading } = useQuery({
-    queryKey: ["discussions", courseId],
+    queryKey: ["course-discussions", courseId],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("course_discussions")
         .select(`
           *,
-          profiles!course_discussions_user_id_fkey (first_name, last_name, email)
+          profiles (first_name, last_name, email)
         `)
         .eq("course_id", courseId)
         .order("is_pinned", { ascending: false })
@@ -55,7 +55,6 @@ export const useCourseDiscussions = (courseId: string) => {
 
       if (error) throw error;
 
-      // Get reply counts for each discussion
       const discussionsWithCounts = await Promise.all(
         (data || []).map(async (discussion) => {
           const { count } = await supabase
@@ -63,14 +62,11 @@ export const useCourseDiscussions = (courseId: string) => {
             .select("*", { count: "exact", head: true })
             .eq("discussion_id", discussion.id);
 
-          return {
-            ...discussion,
-            reply_count: count || 0,
-          };
+          return { ...discussion, reply_count: count || 0 };
         })
       );
 
-      return discussionsWithCounts as any[];
+      return discussionsWithCounts as Discussion[];
     },
   });
 
@@ -79,46 +75,42 @@ export const useCourseDiscussions = (courseId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("course_discussions").insert({
-        course_id: courseId,
-        user_id: user.id,
-        title: data.title,
-        content: data.content,
-      });
+      const { data: discussion, error } = await supabase
+        .from("course_discussions")
+        .insert({
+          course_id: courseId,
+          user_id: user.id,
+          title: data.title,
+          content: data.content,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+      return discussion;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["discussions", courseId] });
+      queryClient.invalidateQueries({ queryKey: ["course-discussions", courseId] });
       toast({
         title: "Discussion created",
         description: "Your discussion has been posted successfully.",
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to create discussion.",
+        description: "Failed to create discussion. Please try again.",
         variant: "destructive",
       });
+      console.error("Error creating discussion:", error);
     },
   });
 
   const incrementViewCount = useMutation({
     mutationFn: async (discussionId: string) => {
-      const { data: discussion } = await supabase
-        .from("course_discussions")
-        .select("view_count")
-        .eq("id", discussionId)
-        .single();
-
-      if (!discussion) return;
-
-      const { error } = await supabase
-        .from("course_discussions")
-        .update({ view_count: discussion.view_count + 1 })
-        .eq("id", discussionId);
-
+      const { error } = await supabase.rpc('increment_discussion_views', {
+        discussion_id: discussionId
+      });
       if (error) throw error;
     },
   });
@@ -142,15 +134,15 @@ export const useDiscussionReplies = (discussionId: string) => {
         .from("discussion_replies")
         .select(`
           *,
-          profiles!discussion_replies_user_id_fkey (first_name, last_name, email)
+          profiles (first_name, last_name, email)
         `)
         .eq("discussion_id", discussionId)
-        .order("is_solution", { ascending: false })
         .order("created_at", { ascending: true });
 
       if (error) throw error;
-      return data as any[];
+      return data as Reply[];
     },
+    enabled: !!discussionId,
   });
 
   const createReply = useMutation({
@@ -158,13 +150,18 @@ export const useDiscussionReplies = (discussionId: string) => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      const { error } = await supabase.from("discussion_replies").insert({
-        discussion_id: discussionId,
-        user_id: user.id,
-        content,
-      });
+      const { data: reply, error } = await supabase
+        .from("discussion_replies")
+        .insert({
+          discussion_id: discussionId,
+          user_id: user.id,
+          content,
+        })
+        .select()
+        .single();
 
       if (error) throw error;
+      return reply;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["discussion-replies", discussionId] });
@@ -173,12 +170,13 @@ export const useDiscussionReplies = (discussionId: string) => {
         description: "Your reply has been added successfully.",
       });
     },
-    onError: () => {
+    onError: (error) => {
       toast({
         title: "Error",
-        description: "Failed to post reply.",
+        description: "Failed to post reply. Please try again.",
         variant: "destructive",
       });
+      console.error("Error creating reply:", error);
     },
   });
 
@@ -194,8 +192,8 @@ export const useDiscussionReplies = (discussionId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["discussion-replies", discussionId] });
       toast({
-        title: "Marked as solution",
-        description: "This reply has been marked as the solution.",
+        title: "Solution marked",
+        description: "Reply has been marked as the solution.",
       });
     },
   });
