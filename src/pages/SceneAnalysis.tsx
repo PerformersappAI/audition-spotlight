@@ -10,6 +10,7 @@ import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star, Download
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { ToolPageRecommendations } from "@/components/training/ToolPageRecommendations";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -530,6 +531,12 @@ const SceneAnalysis = () => {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Training Recommendations */}
+              <ToolPageRecommendations 
+                toolName="scene-analysis"
+                maxCourses={2}
+              />
             </div>
           </div>
 

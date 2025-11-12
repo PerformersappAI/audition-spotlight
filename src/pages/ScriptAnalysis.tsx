@@ -14,6 +14,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { useOCRUpload } from '@/hooks/useOCRUpload';
 import { useScriptAnalysis } from '@/hooks/useScriptAnalysis';
+import { ToolPageRecommendations } from '@/components/training/ToolPageRecommendations';
 import jsPDF from 'jspdf';
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
@@ -673,6 +674,12 @@ const ScriptAnalysis = () => {
                   )}
                 </CardContent>
               </Card>
+
+              {/* Training Recommendations */}
+              <ToolPageRecommendations 
+                toolName="script-analysis"
+                maxCourses={2}
+              />
             </div>
           </div>
 
