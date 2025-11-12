@@ -135,6 +135,50 @@ export default function ToolboxHome() {
           </p>
         </div>
 
+        {/* Filmmaking Journey Phases */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-16">
+          <Link to="/toolbox/pre-production">
+            <Card className="h-48 bg-gradient-to-br from-blue-400 to-blue-500 border-none hover:scale-105 transition-all duration-200 cursor-pointer">
+              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6">
+                <h3 className="text-xl font-bold text-white mb-2">Pre Production</h3>
+                <p className="text-white/90 text-sm">Screenwriting, Storyboarding, etc.</p>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/toolbox/production">
+            <Card className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer">
+              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6">
+                <h3 className="text-xl font-bold text-white mb-2">Production</h3>
+                <p className="text-white/90 text-sm">iPhone or Cannon, Hollywood Cinematography</p>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/toolbox/post-production">
+            <Card className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer">
+              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6">
+                <h3 className="text-xl font-bold text-white mb-2">Post Production</h3>
+                <p className="text-white/90 text-sm">Editing</p>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/toolbox/film-release">
+            <Card className="h-48 bg-gradient-to-br from-blue-600 to-blue-700 border-none hover:scale-105 transition-all duration-200 cursor-pointer">
+              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6">
+                <h3 className="text-xl font-bold text-white mb-2">Film Release</h3>
+                <p className="text-white/90 text-sm">Marketing, Film Festival</p>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link to="/toolbox/distribution">
+            <Card className="h-48 bg-gradient-to-br from-blue-700 to-blue-900 border-none hover:scale-105 transition-all duration-200 cursor-pointer">
+              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6">
+                <h3 className="text-xl font-bold text-white mb-2">Distribution</h3>
+                <p className="text-white/90 text-sm">Monetization</p>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
 
         {/* Modules Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

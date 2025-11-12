@@ -33,6 +33,11 @@ import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
 import ToolboxHome from "./pages/ToolboxHome";
+import PreProductionPhase from "./pages/PreProductionPhase";
+import ProductionPhase from "./pages/ProductionPhase";
+import PostProductionPhase from "./pages/PostProductionPhase";
+import FilmReleasePhase from "./pages/FilmReleasePhase";
+import DistributionPhase from "./pages/DistributionPhase";
 import MultiStepForm from "./pages/MultiStepForm";
 import DocsLibrary from "./pages/DocsLibrary";
 import ConsultingIntake from "./pages/ConsultingIntake";
@@ -81,6 +86,11 @@ const AppContent = () => (
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
       <Route path="/toolbox" element={<ToolboxHome />} />
+      <Route path="/toolbox/pre-production" element={<PreProductionPhase />} />
+      <Route path="/toolbox/production" element={<ProductionPhase />} />
+      <Route path="/toolbox/post-production" element={<PostProductionPhase />} />
+      <Route path="/toolbox/film-release" element={<FilmReleasePhase />} />
+      <Route path="/toolbox/distribution" element={<DistributionPhase />} />
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
           <Route path="/consulting" element={<ConsultingIntake />} />
