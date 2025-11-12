@@ -31,6 +31,7 @@ import AdminApplications from "./pages/AdminApplications";
 import AdminCredits from "./pages/AdminCredits";
 import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
+import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
 import ToolboxHome from "./pages/ToolboxHome";
 import MultiStepForm from "./pages/MultiStepForm";
 import DocsLibrary from "./pages/DocsLibrary";
@@ -78,6 +79,7 @@ const AppContent = () => (
       <Route path="/admin/credits" element={<AdminCredits />} />
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
+      <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
       <Route path="/toolbox" element={<ToolboxHome />} />
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
