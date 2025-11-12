@@ -109,12 +109,10 @@ const ActorProfile = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Actor Profile</h1>
-              <p className="text-muted-foreground">Manage your professional profile and portfolio</p>
-            </div>
-            <div className="flex gap-2">
+          <div className="text-center py-12 mb-8">
+            <h1 className="text-5xl font-bold text-gold mb-4">Actor Profile</h1>
+            <p className="text-xl text-foreground/80 mb-8">Manage your professional profile and portfolio</p>
+            <div className="flex gap-2 justify-center">
               {isEditing ? (
                 <>
                   <Button

@@ -99,22 +99,17 @@ const Dashboard = () => {
     <Layout userRole={userProfile?.role?.toUpperCase()}>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">
-              Welcome back, {userProfile?.first_name}!
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              {userProfile?.role === 'filmmaker' ? 'Filmmaker Dashboard' : 'Film Festival Dashboard'}
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <Button onClick={() => navigate('/create-project')} className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
+        <div className="text-center py-12 mb-8">
+          <h1 className="text-5xl font-bold text-gold mb-4">
+            Welcome back, {userProfile?.first_name}!
+          </h1>
+          <p className="text-xl text-foreground/80 mb-8">
+            {userProfile?.role === 'filmmaker' ? 'Filmmaker Dashboard' : 'Film Festival Dashboard'}
+          </p>
+          <div className="flex gap-2 justify-center">
+            <Button onClick={() => navigate('/create-project')} className="flex items-center gap-2 bg-gradient-primary hover:shadow-glow transition-all duration-300" size="lg">
+              <Plus className="h-5 w-5" />
               {userProfile?.role === 'filmmaker' ? 'New Project' : 'New Festival'}
-            </Button>
-            <Button variant="outline" onClick={signOut}>
-              Sign Out
             </Button>
           </div>
         </div>

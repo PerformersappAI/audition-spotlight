@@ -104,11 +104,9 @@ const UploadAuditions = () => {
     <Layout userRole={userProfile?.role?.toUpperCase()}>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">Audition Management</h1>
-            <p className="text-muted-foreground">Upload, review, and manage actor submissions</p>
-          </div>
+        <div className="text-center py-12 mb-8">
+          <h1 className="text-5xl font-bold text-gold mb-4">Audition Management</h1>
+          <p className="text-xl text-foreground/80">Upload, review, and manage actor submissions</p>
         </div>
 
         {/* Project Selection */}

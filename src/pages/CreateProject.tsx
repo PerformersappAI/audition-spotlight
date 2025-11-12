@@ -294,14 +294,12 @@ const CreateProject = () => {
     <Layout userRole={userProfile?.role?.toUpperCase()}>
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Film className="h-8 w-8" />
-              Create Professional Audition Notice
-            </h1>
-            <p className="text-muted-foreground">Create a comprehensive casting breakdown following industry standards</p>
-          </div>
+        <div className="text-center py-12 mb-8">
+          <h1 className="text-5xl font-bold text-gold mb-4 flex items-center gap-3 justify-center">
+            <Film className="h-12 w-12" />
+            Create Professional Audition Notice
+          </h1>
+          <p className="text-xl text-foreground/80">Create a comprehensive casting breakdown following industry standards</p>
         </div>
 
         {/* Form */}

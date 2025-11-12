@@ -79,14 +79,12 @@ const CreateFestival = () => {
     <Layout userRole={userProfile?.role?.toUpperCase()}>
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold flex items-center gap-2">
-              <Trophy className="h-8 w-8" />
-              Create New Festival
-            </h1>
-            <p className="text-muted-foreground">Launch a new film festival and start accepting submissions</p>
-          </div>
+        <div className="text-center py-12 mb-8">
+          <h1 className="text-5xl font-bold text-gold mb-4 flex items-center gap-3 justify-center">
+            <Trophy className="h-12 w-12" />
+            Create New Festival
+          </h1>
+          <p className="text-xl text-foreground/80">Launch a new film festival and start accepting submissions</p>
         </div>
 
         {/* Form */}

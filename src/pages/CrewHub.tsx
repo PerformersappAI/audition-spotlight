@@ -34,11 +34,11 @@ const CrewHub = () => {
 
           {/* Main Content */}
           <div className="flex-1">
-            <div className="mb-8">
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary via-primary-glow to-accent bg-clip-text text-transparent mb-2">
+            <div className="text-center py-12 mb-8">
+              <h1 className="text-5xl font-bold text-gold mb-4">
                 Crew Hub
               </h1>
-              <p className="text-muted-foreground text-lg">
+              <p className="text-xl text-foreground/80">
                 Manage your crew profile and find job opportunities
               </p>
             </div>
