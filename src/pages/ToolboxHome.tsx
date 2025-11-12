@@ -11,7 +11,8 @@ import {
   FileText, 
   MessageCircle, 
   Sparkles,
-  ChevronRight 
+  ChevronRight,
+  GraduationCap
 } from "lucide-react";
 
 export default function ToolboxHome() {
@@ -96,6 +97,15 @@ export default function ToolboxHome() {
       status: "active",
       badge: "AI Enhanced",
       route: "/festivals"
+    },
+    {
+      id: "training_academy",
+      name: "Training Academy",
+      description: "Learn from Feifer Film Academy with courses and certifications",
+      icon: GraduationCap,
+      status: "active",
+      badge: "Learn & Grow",
+      route: "/training"
     }
   ]);
 

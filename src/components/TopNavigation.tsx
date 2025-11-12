@@ -20,7 +20,8 @@ import {
   Video,
   Sparkles,
   LogOut,
-  User
+  User,
+  GraduationCap
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -174,6 +175,15 @@ export const TopNavigation = () => {
               <div>
                 <div className="font-medium">Consulting</div>
                 <div className="text-xs text-muted-foreground">Expert guidance</div>
+              </div>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/training" className="flex items-center gap-3 w-full cursor-pointer p-3">
+              <GraduationCap className="h-4 w-4 text-primary" />
+              <div>
+                <div className="font-medium">Training Academy</div>
+                <div className="text-xs text-muted-foreground">Courses & certifications</div>
               </div>
             </Link>
           </DropdownMenuItem>

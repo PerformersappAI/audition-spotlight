@@ -37,6 +37,7 @@ import ActorHub from "./pages/ActorHub";
 import ActorProfile from "./pages/ActorProfile";
 import CrewHub from "./pages/CrewHub";
 import Membership from "./pages/Membership";
+import TrainingHub from "./pages/TrainingHub";
 
 const queryClient = new QueryClient();
 
@@ -74,6 +75,7 @@ const AppContent = () => (
       <Route path="/library" element={<DocsLibrary />} />
       <Route path="/consulting" element={<ConsultingIntake />} />
       <Route path="/membership" element={<Membership />} />
+      <Route path="/training" element={<TrainingHub />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
