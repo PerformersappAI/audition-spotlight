@@ -140,7 +140,7 @@ export const TopNavigation = () => {
         </DropdownMenuContent>
       </DropdownMenu>
 
-      {/* Actors Tool Box */}
+      {/* Toolbox */}
       <Link
         to="/toolbox"
         className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -149,7 +149,7 @@ export const TopNavigation = () => {
             : 'text-foreground hover:text-gold'
         }`}
       >
-        Actors Tool Box
+        Toolbox
       </Link>
 
       {/* Admin Dropdown (only for admins) */}
