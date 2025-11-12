@@ -6,11 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { VideoPlayer } from '@/components/training/VideoPlayer';
 import { CourseEnrollButton } from '@/components/training/CourseEnrollButton';
 import { ProgressTracker } from '@/components/training/ProgressTracker';
 import { RelatedToolsSection } from '@/components/training/RelatedToolsSection';
-import { ArrowLeft, Clock, BookOpen, Award, Download } from 'lucide-react';
+import { QuizTaker } from '@/components/training/QuizTaker';
+import { QuizResults } from '@/components/training/QuizResults';
+import { useCourseQuizzes, useUserQuizAttempts } from '@/hooks/useCourseQuizzes';
+import { ArrowLeft, Clock, BookOpen, Award, Download, FileQuestion, CheckCircle, XCircle } from 'lucide-react';
 import type { AcademyCourse, UserCourseProgress } from '@/types/training';
 import { useState } from 'react';
 
@@ -18,6 +22,8 @@ export default function CourseDetail() {
   const { courseId } = useParams<{ courseId: string }>();
   const { user } = useAuth();
   const [videoProgress, setVideoProgress] = useState(0);
+  const [activeQuiz, setActiveQuiz] = useState<any>(null);
+  const [quizResult, setQuizResult] = useState<any>(null);
 
   const { data: course, isLoading: courseLoading } = useQuery({
     queryKey: ['course', courseId],
@@ -51,6 +57,8 @@ export default function CourseDetail() {
     },
     enabled: !!user?.id && !!courseId,
   });
+
+  const { data: quizzes } = useCourseQuizzes(courseId || '');
 
   const getCategoryColor = (category: string | null) => {
     switch (category) {
@@ -231,6 +239,102 @@ export default function CourseDetail() {
 
             {/* Related Tools */}
             <RelatedToolsSection relatedTool={course.related_tool} />
+
+            {/* Quizzes */}
+            {quizzes && quizzes.length > 0 && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileQuestion className="h-5 w-5" />
+                    Course Quizzes
+                  </CardTitle>
+                  <CardDescription>
+                    Test your knowledge and earn your certification
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {activeQuiz ? (
+                    quizResult ? (
+                      <QuizResults
+                        quiz={activeQuiz}
+                        attempt={quizResult}
+                        onRetake={() => setQuizResult(null)}
+                        onClose={() => {
+                          setActiveQuiz(null);
+                          setQuizResult(null);
+                        }}
+                      />
+                    ) : (
+                      <QuizTaker
+                        quiz={activeQuiz}
+                        userId={user?.id || ''}
+                        onComplete={(attempt) => setQuizResult(attempt)}
+                        onCancel={() => setActiveQuiz(null)}
+                      />
+                    )
+                  ) : (
+                    <div className="space-y-4">
+                      {quizzes.map((quiz) => {
+                        const QuizAttemptStatus = ({ quizId }: { quizId: string }) => {
+                          const { data: attempts } = useUserQuizAttempts(user?.id || '', quizId);
+                          const lastAttempt = attempts?.[0];
+                          const hasPassedAttempt = attempts?.some(a => a.passed);
+
+                          return (
+                            <div className="flex items-center justify-between p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <h3 className="font-semibold">{quiz.title}</h3>
+                                  {quiz.is_required_for_certification && (
+                                    <Badge variant="secondary" className="text-xs">Required</Badge>
+                                  )}
+                                </div>
+                                {quiz.description && (
+                                  <p className="text-sm text-muted-foreground">{quiz.description}</p>
+                                )}
+                                <div className="flex gap-4 mt-2 text-xs text-muted-foreground">
+                                  <span>Passing: {quiz.passing_score}%</span>
+                                  <span>Max Attempts: {quiz.max_attempts}</span>
+                                  {quiz.time_limit_minutes && (
+                                    <span>Time: {quiz.time_limit_minutes} min</span>
+                                  )}
+                                </div>
+                                {lastAttempt && (
+                                  <div className="flex items-center gap-2 mt-2">
+                                    {hasPassedAttempt ? (
+                                      <Badge className="bg-green-500/10 text-green-600 gap-1">
+                                        <CheckCircle className="h-3 w-3" />
+                                        Passed ({lastAttempt.score}%)
+                                      </Badge>
+                                    ) : (
+                                      <Badge variant="destructive" className="gap-1">
+                                        <XCircle className="h-3 w-3" />
+                                        Not Passed ({lastAttempt.score}%)
+                                      </Badge>
+                                    )}
+                                    <span className="text-xs text-muted-foreground">
+                                      Attempt {lastAttempt.attempt_number}/{quiz.max_attempts}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                              <Button
+                                onClick={() => setActiveQuiz(quiz)}
+                                disabled={!user || !userProgress}
+                              >
+                                {lastAttempt ? 'Retake' : 'Start Quiz'}
+                              </Button>
+                            </div>
+                          );
+                        };
+
+                        return <QuizAttemptStatus key={quiz.id} quizId={quiz.id} />;
+                      })}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Sidebar */}
