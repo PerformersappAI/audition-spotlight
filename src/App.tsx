@@ -38,6 +38,7 @@ import ActorProfile from "./pages/ActorProfile";
 import CrewHub from "./pages/CrewHub";
 import Membership from "./pages/Membership";
 import TrainingHub from "./pages/TrainingHub";
+import CourseDetail from "./pages/CourseDetail";
 
 const queryClient = new QueryClient();
 
@@ -73,11 +74,12 @@ const AppContent = () => (
       <Route path="/toolbox" element={<ToolboxHome />} />
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
-      <Route path="/consulting" element={<ConsultingIntake />} />
-      <Route path="/membership" element={<Membership />} />
-      <Route path="/training" element={<TrainingHub />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
+          <Route path="/consulting" element={<ConsultingIntake />} />
+          <Route path="/membership" element={<Membership />} />
+          <Route path="/training" element={<TrainingHub />} />
+          <Route path="/training/:courseId" element={<CourseDetail />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
     </Routes>
   </GlobalLayout>
 );
