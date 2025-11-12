@@ -92,9 +92,9 @@ export function ProgressTracker({
             <p className="text-sm font-medium text-green-600">
               Completed on {new Date(userProgress.completed_at).toLocaleDateString()}
             </p>
-            <p className="text-xs text-muted-foreground mt-1">
-              View your certificate in the Certifications gallery
-            </p>
+            <a href="/training/certifications" className="text-xs text-primary hover:underline mt-1 block">
+              View your certificate in the Certifications gallery →
+            </a>
           </div>
         )}
       </CardContent>
