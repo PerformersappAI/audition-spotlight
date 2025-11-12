@@ -427,6 +427,13 @@ export type Database = {
             referencedRelation: "academy_courses"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "course_discussions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       course_quizzes: {
@@ -544,6 +551,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "course_discussions"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discussion_replies_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -1142,6 +1156,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      increment_discussion_views: {
+        Args: { discussion_id: string }
+        Returns: undefined
       }
     }
     Enums: {
