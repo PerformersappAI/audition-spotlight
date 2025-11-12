@@ -205,6 +205,12 @@ export const TopNavigation = () => {
               <div className="text-sm font-medium">{userProfile?.full_name || 'User'}</div>
               <div className="text-xs text-muted-foreground">{user.email}</div>
             </div>
+            <DropdownMenuItem asChild>
+              <Link to="/training/my-learning" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <GraduationCap className="h-4 w-4" />
+                <span>My Learning</span>
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={signOut} className="flex items-center gap-3 w-full cursor-pointer p-3 text-red-600 hover:text-red-700 hover:bg-red-50">
               <LogOut className="h-4 w-4" />
