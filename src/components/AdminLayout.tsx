@@ -15,7 +15,8 @@ import {
   Home,
   LogOut,
   DollarSign,
-  GraduationCap
+  GraduationCap,
+  ClipboardList
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -79,6 +80,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { path: '/admin/applications', label: 'Applications', icon: FileText },
     { path: '/admin/credits', label: 'Credits', icon: DollarSign },
     { path: '/admin/courses', label: 'Courses', icon: GraduationCap },
+    { path: '/admin/quizzes', label: 'Quizzes', icon: ClipboardList },
   ];
 
   return (
