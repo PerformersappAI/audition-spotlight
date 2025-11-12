@@ -74,137 +74,146 @@ export const TopNavigation = () => {
 
   return (
     <nav className="hidden md:flex items-center space-x-1">
-      {/* Main Navigation */}
-      {navigation.map((item) => (
-        <Link
-          key={item.name}
-          to={item.href}
-          className={`flex items-center px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-            location.pathname === item.href 
-              ? 'bg-gold/10 text-gold border border-gold/20' 
-              : 'text-muted-foreground hover:text-foreground hover:bg-accent'
-          }`}
-        >
-          <item.icon className="mr-2 h-4 w-4" />
-          {item.name}
-        </Link>
-      ))}
-      
-      {/* Filmmaker Tools Dropdown */}
-      {isFilmmaker && (
+      {/* Home */}
+      <Link
+        to="/"
+        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          location.pathname === '/' 
+            ? 'bg-gold/10 text-gold' 
+            : 'text-foreground hover:text-gold'
+        }`}
+      >
+        Home
+      </Link>
+
+      {/* Membership */}
+      <Link
+        to="/membership"
+        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          location.pathname === '/membership' 
+            ? 'bg-gold/10 text-gold' 
+            : 'text-foreground hover:text-gold'
+        }`}
+      >
+        Membership
+      </Link>
+
+      {/* Contact */}
+      <Link
+        to="/consulting"
+        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          location.pathname === '/consulting' 
+            ? 'bg-gold/10 text-gold' 
+            : 'text-foreground hover:text-gold'
+        }`}
+      >
+        Contact
+      </Link>
+
+      {/* About Dropdown */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="flex items-center gap-1 text-sm font-medium hover:text-gold">
+            About
+            <ChevronDown className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg z-50">
+          <DropdownMenuItem asChild>
+            <Link to="/festivals" className="flex items-center gap-3 w-full cursor-pointer p-3">
+              <Trophy className="h-4 w-4" />
+              <span>Film Festivals</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/library" className="flex items-center gap-3 w-full cursor-pointer p-3">
+              <FileText className="h-4 w-4" />
+              <span>Document Library</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link to="/training" className="flex items-center gap-3 w-full cursor-pointer p-3">
+              <GraduationCap className="h-4 w-4" />
+              <span>Training Academy</span>
+            </Link>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      {/* Actors Tool Box */}
+      <Link
+        to="/toolbox"
+        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          location.pathname === '/toolbox' 
+            ? 'bg-gold/10 text-gold' 
+            : 'text-foreground hover:text-gold'
+        }`}
+      >
+        Actors Tool Box
+      </Link>
+
+      {/* Admin Dropdown (only for admins) */}
+      {userProfile?.role === 'ADMIN' && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 text-sm">
-              <Settings className="h-4 w-4" />
-              Tools
+            <Button variant="ghost" className="flex items-center gap-1 text-sm font-medium hover:text-gold">
+              Admin
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-64 bg-background border shadow-lg">
+          <DropdownMenuContent align="start" className="w-56 bg-background border shadow-lg z-50">
             <DropdownMenuItem asChild>
-              <Link to="/upload-auditions" className="flex items-center gap-3 w-full cursor-pointer p-3">
-                <Upload className="h-4 w-4 text-primary" />
-                <div>
-                  <div className="font-medium">Upload Auditions</div>
-                  <div className="text-xs text-muted-foreground">Manage audition materials</div>
-                </div>
+              <Link to="/admin" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <BarChart3 className="h-4 w-4" />
+                <span>Dashboard</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/scene-analysis" className="flex items-center gap-3 w-full cursor-pointer p-3">
-                <Brain className="h-4 w-4 text-primary" />
-                <div>
-                  <div className="font-medium">AI Scene Analysis</div>
-                  <div className="text-xs text-muted-foreground">Analyze beats and tone</div>
-                </div>
+              <Link to="/admin/users" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <Users className="h-4 w-4" />
+                <span>Users</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/create-project" className="flex items-center gap-3 w-full cursor-pointer p-3">
-                <Plus className="h-4 w-4 text-primary" />
-                <div>
-                  <div className="font-medium">Create Project</div>
-                  <div className="text-xs text-muted-foreground">Start new casting call</div>
-                </div>
+              <Link to="/admin/projects" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <Film className="h-4 w-4" />
+                <span>Projects</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/create-festival" className="flex items-center gap-3 w-full cursor-pointer p-3">
-                <Trophy className="h-4 w-4 text-primary" />
-                <div>
-                  <div className="font-medium">Create Festival</div>
-                  <div className="text-xs text-muted-foreground">Set up festival listing</div>
-                </div>
+              <Link to="/admin/festivals" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <Trophy className="h-4 w-4" />
+                <span>Festivals</span>
               </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )}
 
-      {/* Resources Dropdown */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="flex items-center gap-2 text-sm">
-            <MapPin className="h-4 w-4" />
-            Resources
-            <ChevronDown className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end" className="w-64 bg-background border shadow-lg">
-          <DropdownMenuItem asChild>
-            <Link to="/festivals" className="flex items-center gap-3 w-full cursor-pointer p-3">
-              <Trophy className="h-4 w-4 text-primary" />
-              <div>
-                <div className="font-medium">Film Festivals</div>
-                <div className="text-xs text-muted-foreground">Find and submit to festivals</div>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/library" className="flex items-center gap-3 w-full cursor-pointer p-3">
-              <FileText className="h-4 w-4 text-primary" />
-              <div>
-                <div className="font-medium">Document Library</div>
-                <div className="text-xs text-muted-foreground">Templates and forms</div>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/consulting" className="flex items-center gap-3 w-full cursor-pointer p-3">
-              <MessageCircle className="h-4 w-4 text-primary" />
-              <div>
-                <div className="font-medium">Consulting</div>
-                <div className="text-xs text-muted-foreground">Expert guidance</div>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/training" className="flex items-center gap-3 w-full cursor-pointer p-3">
-              <GraduationCap className="h-4 w-4 text-primary" />
-              <div>
-                <div className="font-medium">Training Academy</div>
-                <div className="text-xs text-muted-foreground">Courses & certifications</div>
-              </div>
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      {/* Help */}
+      <Button variant="ghost" className="text-sm font-medium hover:text-gold" asChild>
+        <Link to="/consulting">Help</Link>
+      </Button>
 
-      {/* User Profile Dropdown (only show if logged in) */}
+      {/* User Profile (only show if logged in) */}
       {user && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 text-sm">
-              <User className="h-4 w-4" />
-              Profile
-              <ChevronDown className="h-4 w-4" />
+            <Button variant="ghost" size="icon" className="rounded-full">
+              <User className="h-5 w-5" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48 bg-background border shadow-lg">
+          <DropdownMenuContent align="end" className="w-56 bg-background border shadow-lg z-50">
             <div className="px-3 py-2 border-b">
               <div className="text-sm font-medium">{userProfile?.full_name || 'User'}</div>
               <div className="text-xs text-muted-foreground">{user.email}</div>
             </div>
+            <DropdownMenuItem asChild>
+              <Link to="/dashboard" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <BarChart3 className="h-4 w-4" />
+                <span>Dashboard</span>
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link to="/training/my-learning" className="flex items-center gap-3 w-full cursor-pointer p-3">
                 <GraduationCap className="h-4 w-4" />
@@ -222,10 +231,8 @@ export const TopNavigation = () => {
 
       {/* Auth Button (only show if not logged in) */}
       {!user && (
-        <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90">
-          <Link to="/auth">
-            Create your account<span className="mx-2">|</span>Sign up
-          </Link>
+        <Button asChild className="bg-gold text-foreground hover:bg-gold/90">
+          <Link to="/auth">Sign In</Link>
         </Button>
       )}
     </nav>
