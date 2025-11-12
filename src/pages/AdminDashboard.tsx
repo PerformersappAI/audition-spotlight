@@ -10,9 +10,11 @@ import {
   FileText,
   TrendingUp,
   Calendar,
-  Activity
+  Activity,
+  GraduationCap
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
+import { Link } from 'react-router-dom';
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState({
@@ -141,17 +143,29 @@ const AdminDashboard = () => {
               <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full justify-start gap-2" variant="outline">
-                <Users className="w-4 h-4" />
-                Manage Users
+              <Button className="w-full justify-start gap-2" variant="outline" asChild>
+                <Link to="/admin/users">
+                  <Users className="w-4 h-4" />
+                  Manage Users
+                </Link>
               </Button>
-              <Button className="w-full justify-start gap-2" variant="outline">
-                <Film className="w-4 h-4" />
-                Create Project
+              <Button className="w-full justify-start gap-2" variant="outline" asChild>
+                <Link to="/admin/projects">
+                  <Film className="w-4 h-4" />
+                  Manage Projects
+                </Link>
               </Button>
-              <Button className="w-full justify-start gap-2" variant="outline">
-                <Trophy className="w-4 h-4" />
-                Add Festival
+              <Button className="w-full justify-start gap-2" variant="outline" asChild>
+                <Link to="/admin/festivals">
+                  <Trophy className="w-4 h-4" />
+                  Manage Festivals
+                </Link>
+              </Button>
+              <Button className="w-full justify-start gap-2" variant="outline" asChild>
+                <Link to="/admin/courses">
+                  <GraduationCap className="w-4 h-4" />
+                  Manage Courses
+                </Link>
               </Button>
             </CardContent>
           </Card>
