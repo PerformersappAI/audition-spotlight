@@ -3,6 +3,41 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const NEGATIVE_PROMPT = `NO overlays, NO text, NO numbers, NO grid lines, NO technical data, NO camera measurements, NO aspect ratio markers, NO framing guides, NO watermarks, NO borders, NO labels, NO annotations, NO UI elements, NO storyboard sheet, NO paper texture, NO drawing, NO sketch, NO comic style, NO panels, NO meta elements`;
 
+function getStrictStyleInstructions(artStyle: string): string {
+  const artStyleLower = artStyle.toLowerCase();
+  
+  // Black & white styles - STRICTLY enforce no color
+  if (artStyleLower.includes('noir') || artStyleLower.includes('film noir')) {
+    return `STRICTLY BLACK AND WHITE FILM NOIR STYLE. ABSOLUTELY NO COLOR. MONOCHROME ONLY. High contrast black and white with dramatic shadows and lighting. NO realistic photography, NO color elements whatsoever. Pure black and white cinematography style.`;
+  }
+  if (artStyleLower.includes('charcoal')) {
+    return `STRICTLY BLACK AND WHITE CHARCOAL DRAWING. ABSOLUTELY NO COLOR. MONOCHROME ONLY. Hand-drawn sketch style with charcoal texture and shading. NO realistic details, NO color of any kind. Pure black and white charcoal art.`;
+  }
+  if (artStyleLower.includes('pencil')) {
+    return `STRICTLY BLACK AND WHITE PENCIL SKETCH. ABSOLUTELY NO COLOR. MONOCHROME ONLY. Hand-drawn with pencil lines and graphite shading. NO realism, NO color whatsoever. Pure black and white pencil drawing.`;
+  }
+  
+  // Other specific styles
+  if (artStyleLower.includes('graphic novel')) {
+    return `GRAPHIC NOVEL ILLUSTRATION STYLE - detailed ink work, sequential art style, professional comic book illustration. NOT realistic photography. Bold ink lines and defined shapes.`;
+  }
+  if (artStyleLower.includes('comic')) {
+    return `COMIC BOOK ART STYLE - bold outlines, clear panels style, sequential art. Professional comic illustration with defined ink work.`;
+  }
+  if (artStyleLower.includes('watercolor')) {
+    return `WATERCOLOR PAINTING STYLE - soft washes, artistic interpretation, painterly quality. Hand-painted watercolor aesthetic.`;
+  }
+  if (artStyleLower.includes('anime')) {
+    return `ANIME ART STYLE - Japanese animation style, characteristic anime features, cel-shaded look.`;
+  }
+  if (artStyleLower.includes('3d') || artStyleLower.includes('rendered')) {
+    return `3D RENDERED STYLE - computer generated aesthetic, clean rendering, professional 3D visualization.`;
+  }
+  
+  // Return the original style with emphasis
+  return `ARTISTIC STYLE: ${artStyle}. STRICTLY FOLLOW THIS EXACT STYLE. NOT realistic photography.`;
+}
+
 function getCameraInstructions(cameraAngle: string): string {
   const angle = cameraAngle.toLowerCase();
   
@@ -111,7 +146,7 @@ serve(async (req) => {
   console.log('Generate-single-frame function called');
 
   try {
-    const { shot, artStyle, aspectRatio = "16:9", characterDescriptions = "", styleReference = "" } = await req.json();
+    const { shot, artStyle, aspectRatio = "16:9", characterDescriptions = "", characterImages = [], styleReference = "" } = await req.json();
     
     if (!shot || !artStyle) {
       throw new Error('Missing required parameters: shot, artStyle');
@@ -119,17 +154,10 @@ serve(async (req) => {
 
     console.log(`Generating single frame for shot ${shot.shotNumber} with art style`);
 
-    // Summarize long descriptions to avoid overwhelming the AI
-    const summarizeDescription = (desc: string): string => {
-      if (desc.length <= 100) return desc;
-      
-      // Extract key visual elements and camera action
-      const words = desc.split(' ');
-      const keyWords = words.slice(0, 15).join(' ');
-      return keyWords + (words.length > 15 ? '...' : '');
-    };
-
     const cameraInstructions = getCameraInstructions(shot.cameraAngle);
+
+    // Get strict style instructions
+    const strictStyleInstructions = getStrictStyleInstructions(artStyle);
 
     // Construct detailed prompt using rich AI-analyzed data
     const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
@@ -139,10 +167,13 @@ serve(async (req) => {
     const keyProps = shot.keyProps || '';
     const emotionalTone = shot.emotionalTone || '';
     
-    // Build comprehensive image prompt with consistency elements
+    // Build comprehensive image prompt with style FIRST for priority
     let imagePrompt = '';
     
-    // Add style reference first if provided
+    // CRITICAL: Art style comes FIRST for highest priority
+    imagePrompt += `${strictStyleInstructions}\n\n`;
+    
+    // Add style reference if provided
     if (styleReference) {
       imagePrompt += `VISUAL STYLE REFERENCE: ${styleReference}\n\nMAINTAIN THIS EXACT ARTISTIC STYLE THROUGHOUT.\n\n`;
     }
@@ -151,20 +182,26 @@ serve(async (req) => {
     if (characterDescriptions) {
       imagePrompt += `CHARACTERS IN SCENE:\n${characterDescriptions}\n\nIMPORTANT: Characters must match these exact descriptions.\n\n`;
     }
+
+    // Character images reference
+    if (characterImages && characterImages.length > 0) {
+      const charNames = characterImages.map((c: any) => c.name).join(', ');
+      imagePrompt += `CHARACTER REFERENCE IMAGES PROVIDED FOR: ${charNames}. Match their exact appearance from the reference photos.\n\n`;
+    }
     
     // Main shot description
-    imagePrompt += `${visualDesc}, 
-storyboard frame, 
-film previsualization, 
-professional concept art for film production, 
-35mm film composition and framing, 
-${artStyle},
+    imagePrompt += `SCENE: ${visualDesc}
+
+STORYBOARD FRAME - film previsualization, professional concept art for film production, 35mm film composition and framing
+
 ${location ? `Location: ${location}` : ''}
 ${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
 ${lighting ? `Lighting: ${lighting}` : ''}
 ${keyProps ? `Key Props: ${keyProps}` : ''}
 ${emotionalTone ? `Mood: ${emotionalTone}` : ''}
-${cameraInstructions}`;
+${cameraInstructions}
+
+${strictStyleInstructions}`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);

@@ -8,6 +8,7 @@ export interface CharacterDefinition {
   name: string;
   description: string;
   traits: string;
+  imageUrl?: string;
 }
 
 export interface Shot {

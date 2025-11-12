@@ -114,6 +114,7 @@ const Storyboarding = () => {
   const [frameErrors, setFrameErrors] = useState<Map<number, string>>(new Map());
   const [isGenerating, setIsGenerating] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
+  const [isSavingCharacters, setIsSavingCharacters] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -551,6 +552,53 @@ const Storyboarding = () => {
     }
   };
 
+  const handleSaveCharacters = async () => {
+    if (!selectedProject) {
+      toast({
+        title: "No project selected",
+        description: "Please select or create a project first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSavingCharacters(true);
+
+    try {
+      const updatedProject = await updateProject(selectedProject.id, {
+        character_definitions: currentProject.characterDefinitions
+      });
+
+      if (updatedProject) {
+        const localProject: StoryboardProjectLocal = {
+          id: updatedProject.id,
+          scriptText: updatedProject.script_text,
+          genre: updatedProject.genre || "",
+          tone: updatedProject.tone || "",
+          characterCount: updatedProject.character_count,
+          shots: updatedProject.shots || [],
+          storyboard: updatedProject.storyboard_frames || undefined,
+          createdAt: new Date(updatedProject.created_at)
+        };
+        setSelectedProject(localProject);
+
+        toast({
+          title: "Characters Saved",
+          description: "Character definitions saved successfully",
+        });
+      }
+    } catch (error) {
+      console.error('Error saving characters:', error);
+      toast({
+        title: "Save Failed",
+        description: "Failed to save character definitions",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSavingCharacters(false);
+    }
+  };
+
   // This function is now replaced by generateSingleFrame - keeping for compatibility
   const regenerateFrame = async (shotNumber: number) => {
     return generateSingleFrame(shotNumber);
@@ -586,12 +634,26 @@ const Storyboarding = () => {
             c => c.name.toLowerCase() === charName.toLowerCase()
           );
           if (def) {
-            return `${def.name}: ${def.description}. ${def.traits}`;
+            let desc = `${def.name}: ${def.description}. ${def.traits}`;
+            if (def.imageUrl) {
+              desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
+            }
+            return desc;
           }
           return null;
         })
         .filter(Boolean)
         .join('\n');
+
+      // Collect character image URLs
+      const characterImages = shot.characters
+        .map(charName => {
+          const def = currentProject.characterDefinitions.find(
+            c => c.name.toLowerCase() === charName.toLowerCase()
+          );
+          return def?.imageUrl ? { name: def.name, imageUrl: def.imageUrl } : null;
+        })
+        .filter(Boolean);
 
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
@@ -599,6 +661,7 @@ const Storyboarding = () => {
           artStyle: stylePrompt,
           aspectRatio: currentProject.aspectRatio || '16:9',
           characterDescriptions,
+          characterImages,
           styleReference: currentProject.styleReferencePrompt
         }
       });
@@ -924,6 +987,9 @@ const Storyboarding = () => {
                   <CharacterDefinitionManager
                     characters={currentProject.characterDefinitions}
                     onChange={(characters) => setCurrentProject(prev => ({ ...prev, characterDefinitions: characters }))}
+                    onSave={handleSaveCharacters}
+                    canSave={!!selectedProject}
+                    isSaving={isSavingCharacters}
                   />
 
                   {/* Style Reference */}
