@@ -133,7 +133,7 @@ export default function ToolboxHome() {
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
             Complete your film journey with AI-powered tools, curated resources, and expert guidance
           </p>
-          <p className="text-lg text-foreground max-w-2xl mx-auto">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
             Need help with the process of filmmaking from start to distribution, click these boxes.
           </p>
         </div>
@@ -143,69 +143,55 @@ export default function ToolboxHome() {
           <Link to="/toolbox/pre-production">
             <Card className="h-48 bg-gradient-to-br from-blue-400 to-blue-500 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
               <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-xl font-bold text-white mb-2">Pre Production</h3>
-                <p className="text-white/90 text-sm">Screenwriting, Storyboarding, etc.</p>
+                <h3 className="text-2xl font-bold text-white mb-3">Pre Production</h3>
+                <p className="text-white/90 text-base">Screenwriting, Storyboarding, etc.</p>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <svg viewBox="0 0 200 200" className="w-32 h-32">
-                  <path d="M20,100 L50,50 L50,150 Z M80,50 L80,150 M110,150 L110,50 L140,50" stroke="white" strokeWidth="8" fill="none"/>
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <span className="text-[180px] font-bold text-white">1</span>
               </div>
             </Card>
           </Link>
           <Link to="/toolbox/production">
             <Card className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
               <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-xl font-bold text-white mb-2">Production</h3>
-                <p className="text-white/90 text-sm">iPhone or Cannon, Hollywood Cinematography</p>
+                <h3 className="text-2xl font-bold text-white mb-3">Production</h3>
+                <p className="text-white/90 text-base">iPhone or Cannon, Hollywood Cinematography</p>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <svg viewBox="0 0 200 200" className="w-32 h-32">
-                  <circle cx="70" cy="100" r="40" stroke="white" strokeWidth="8" fill="none"/>
-                  <circle cx="130" cy="100" r="40" stroke="white" strokeWidth="8" fill="none"/>
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <span className="text-[180px] font-bold text-white">2</span>
               </div>
             </Card>
           </Link>
           <Link to="/toolbox/post-production">
             <Card className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
               <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-xl font-bold text-white mb-2">Post Production</h3>
-                <p className="text-white/90 text-sm">Editing</p>
+                <h3 className="text-2xl font-bold text-white mb-3">Post Production</h3>
+                <p className="text-white/90 text-base">Editing</p>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <svg viewBox="0 0 200 200" className="w-32 h-32">
-                  <path d="M60,60 Q100,80 140,60 Q100,100 140,140 Q100,120 60,140 Q100,100 60,60 Z" stroke="white" strokeWidth="8" fill="none"/>
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <span className="text-[180px] font-bold text-white">3</span>
               </div>
             </Card>
           </Link>
           <Link to="/toolbox/film-release">
             <Card className="h-48 bg-gradient-to-br from-blue-600 to-blue-700 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
               <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-xl font-bold text-white mb-2">Film Release</h3>
-                <p className="text-white/90 text-sm">Marketing, Film Festival</p>
+                <h3 className="text-2xl font-bold text-white mb-3">Film Release</h3>
+                <p className="text-white/90 text-base">Marketing, Film Festival</p>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <svg viewBox="0 0 200 200" className="w-32 h-32">
-                  <polygon points="60,50 140,50 160,100 140,150 60,150 40,100" stroke="white" strokeWidth="8" fill="none"/>
-                  <circle cx="100" cy="70" r="8" fill="white"/>
-                  <circle cx="100" cy="130" r="8" fill="white"/>
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <span className="text-[180px] font-bold text-white">4</span>
               </div>
             </Card>
           </Link>
           <Link to="/toolbox/distribution">
             <Card className="h-48 bg-gradient-to-br from-blue-700 to-blue-900 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
               <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-xl font-bold text-white mb-2">Distribution</h3>
-                <p className="text-white/90 text-sm">Monetization</p>
+                <h3 className="text-2xl font-bold text-white mb-3">Distribution</h3>
+                <p className="text-white/90 text-base">Monetization</p>
               </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-20">
-                <svg viewBox="0 0 200 200" className="w-32 h-32">
-                  <circle cx="100" cy="100" r="50" stroke="white" strokeWidth="8" fill="none"/>
-                  <path d="M100,50 L100,150 M50,100 L150,100" stroke="white" strokeWidth="8"/>
-                </svg>
+              <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                <span className="text-[180px] font-bold text-white">5</span>
               </div>
             </Card>
           </Link>
@@ -213,7 +199,7 @@ export default function ToolboxHome() {
 
         {/* Divider Text */}
         <div className="text-center my-12 py-8">
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
             Or just click on the tool that you need to help you with your filmmaking
           </p>
         </div>
