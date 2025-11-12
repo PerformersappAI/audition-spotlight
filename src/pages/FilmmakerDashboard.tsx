@@ -60,15 +60,13 @@ export const FilmmakerDashboard = () => {
       <div className="min-h-screen bg-gradient-hero">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-4xl font-bold text-foreground mb-2">
-                Filmmaker Dashboard
-              </h1>
-              <p className="text-xl text-muted-foreground">
-                Manage your casting projects and auditions
-              </p>
-            </div>
+          <div className="text-center py-12 mb-8">
+            <h1 className="text-5xl font-bold text-gold mb-4">
+              Filmmaker Dashboard
+            </h1>
+            <p className="text-xl text-foreground/80 mb-8">
+              Manage your casting projects and auditions
+            </p>
             <Button size="lg" className="bg-gradient-primary hover:shadow-glow transition-all duration-300">
               <Plus className="h-5 w-5 mr-2" />
               Create New Role
