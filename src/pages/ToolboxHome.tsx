@@ -127,12 +127,9 @@ export default function ToolboxHome() {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Filmmaker Toolbox
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-6">
-            Complete your film journey with AI-powered tools, curated resources, and expert guidance
-          </p>
           <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
             Need help with the process of filmmaking from start to distribution, click these boxes.
           </p>
