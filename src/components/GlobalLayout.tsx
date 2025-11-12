@@ -33,7 +33,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           <div className="flex items-center justify-between">
             {/* Logo and Brand */}
             <div className="flex items-center space-x-4">
-              <Link to={user ? '/dashboard' : '/'} className="flex items-center space-x-3">
+              <Link to={user ? '/toolbox' : '/'} className="flex items-center space-x-3">
                 <div className="bg-gradient-to-r from-gold to-gold-light p-2 rounded-lg">
                   <Film className="h-6 w-6 text-gold-foreground" />
                 </div>
