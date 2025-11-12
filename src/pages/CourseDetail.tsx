@@ -13,7 +13,10 @@ import { ProgressTracker } from '@/components/training/ProgressTracker';
 import { RelatedToolsSection } from '@/components/training/RelatedToolsSection';
 import { QuizTaker } from '@/components/training/QuizTaker';
 import { QuizResults } from '@/components/training/QuizResults';
+import { DiscussionList } from '@/components/training/DiscussionList';
+import { DiscussionThread } from '@/components/training/DiscussionThread';
 import { useCourseQuizzes, useUserQuizAttempts } from '@/hooks/useCourseQuizzes';
+import { useCourseDiscussions, Discussion } from '@/hooks/useCourseDiscussions';
 import { ArrowLeft, Clock, BookOpen, Award, Download, FileQuestion, CheckCircle, XCircle } from 'lucide-react';
 import type { AcademyCourse, UserCourseProgress } from '@/types/training';
 import { useState } from 'react';
@@ -24,6 +27,8 @@ export default function CourseDetail() {
   const [videoProgress, setVideoProgress] = useState(0);
   const [activeQuiz, setActiveQuiz] = useState<any>(null);
   const [quizResult, setQuizResult] = useState<any>(null);
+  const [selectedDiscussion, setSelectedDiscussion] = useState<Discussion | null>(null);
+  const { incrementViewCount } = useCourseDiscussions(courseId || '');
 
   const { data: course, isLoading: courseLoading } = useQuery({
     queryKey: ['course', courseId],
@@ -240,7 +245,15 @@ export default function CourseDetail() {
             {/* Related Tools */}
             <RelatedToolsSection relatedTool={course.related_tool} />
 
-            {/* Quizzes */}
+            {/* Tabs for Quizzes and Discussions */}
+            <Tabs defaultValue="quizzes" className="w-full">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="quizzes">Quizzes</TabsTrigger>
+                <TabsTrigger value="discussions">Discussions</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="quizzes">
+                {/* Quizzes */}
             {quizzes && quizzes.length > 0 && (
               <Card>
                 <CardHeader>
@@ -335,6 +348,29 @@ export default function CourseDetail() {
                 </CardContent>
               </Card>
             )}
+              </TabsContent>
+
+              <TabsContent value="discussions">
+                <Card>
+                  <CardContent className="pt-6">
+                    {selectedDiscussion ? (
+                      <DiscussionThread
+                        discussion={selectedDiscussion}
+                        onBack={() => setSelectedDiscussion(null)}
+                      />
+                    ) : (
+                      <DiscussionList
+                        courseId={courseId || ''}
+                        onSelectDiscussion={(discussion) => {
+                          setSelectedDiscussion(discussion);
+                          incrementViewCount.mutate(discussion.id);
+                        }}
+                      />
+                    )}
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Sidebar */}

@@ -382,6 +382,53 @@ export type Database = {
           },
         ]
       }
+      course_discussions: {
+        Row: {
+          content: string
+          course_id: string
+          created_at: string | null
+          id: string
+          is_locked: boolean | null
+          is_pinned: boolean | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          view_count: number | null
+        }
+        Insert: {
+          content: string
+          course_id: string
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          view_count?: number | null
+        }
+        Update: {
+          content?: string
+          course_id?: string
+          created_at?: string | null
+          id?: string
+          is_locked?: boolean | null
+          is_pinned?: boolean | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          view_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_discussions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "academy_courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_quizzes: {
         Row: {
           course_id: string
@@ -461,6 +508,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      discussion_replies: {
+        Row: {
+          content: string
+          created_at: string | null
+          discussion_id: string
+          id: string
+          is_solution: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          discussion_id: string
+          id?: string
+          is_solution?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          discussion_id?: string
+          id?: string
+          is_solution?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discussion_replies_discussion_id_fkey"
+            columns: ["discussion_id"]
+            isOneToOne: false
+            referencedRelation: "course_discussions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       film_festivals: {
         Row: {
