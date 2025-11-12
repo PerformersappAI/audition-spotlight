@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, Video, FileText, User, Calendar, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Layout } from "@/components/Layout";
 
 interface AuditionSubmission {
   id: string;
@@ -101,7 +100,7 @@ const UploadAuditions = () => {
   };
 
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
+    <div className="container mx-auto px-4 py-8">
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center py-12 mb-8">
@@ -330,7 +329,7 @@ const UploadAuditions = () => {
           </Card>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

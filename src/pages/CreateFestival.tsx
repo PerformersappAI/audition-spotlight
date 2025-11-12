@@ -10,7 +10,6 @@ import { CalendarIcon, Trophy, MapPin, DollarSign, Users, Globe } from "lucide-r
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Layout } from "@/components/Layout";
 import { format } from "date-fns";
 
 const CreateFestival = () => {
@@ -76,7 +75,7 @@ const CreateFestival = () => {
   };
 
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
+    <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center py-12 mb-8">
@@ -340,7 +339,7 @@ const CreateFestival = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

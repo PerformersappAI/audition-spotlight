@@ -1,4 +1,3 @@
-import { Layout } from "@/components/Layout";
 import { RoleCard } from "@/components/RoleCard";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,8 +55,7 @@ export const FilmmakerDashboard = () => {
   const lockedRoles = roles.filter(role => role.status === 'LOCKED').length;
 
   return (
-    <Layout userRole="FILMMAKER">
-      <div className="min-h-screen bg-gradient-hero">
+    <div className="min-h-screen bg-gradient-hero">
         <div className="container mx-auto px-4 py-8">
           {/* Header */}
           <div className="text-center py-12 mb-8">
@@ -196,6 +194,5 @@ export const FilmmakerDashboard = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };

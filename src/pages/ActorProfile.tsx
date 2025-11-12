@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Layout } from "@/components/Layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -105,8 +104,7 @@ const ActorProfile = () => {
   };
 
   return (
-    <Layout userRole="ACTOR">
-      <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
           <div className="text-center py-12 mb-8">
@@ -390,7 +388,6 @@ const ActorProfile = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

@@ -14,7 +14,6 @@ import { CalendarIcon, Film, MapPin, DollarSign, Users, Clock, Upload, FileText,
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import { Layout } from "@/components/Layout";
 import { format } from "date-fns";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -291,7 +290,7 @@ const CreateProject = () => {
   };
 
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
+    <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="text-center py-12 mb-8">
@@ -1049,7 +1048,7 @@ const CreateProject = () => {
           </div>
         </div>
       </div>
-    </Layout>
+    </div>
   );
 };
 

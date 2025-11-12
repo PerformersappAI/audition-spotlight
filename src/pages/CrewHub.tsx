@@ -1,4 +1,3 @@
-import { Layout } from "@/components/Layout";
 import { CrewSidebar } from "@/components/CrewSidebar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +25,7 @@ const CrewHub = () => {
   ];
 
   return (
-    <Layout userRole="CREW">
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/30">
         <div className="flex gap-6 p-6 max-w-7xl mx-auto">
           {/* Sidebar */}
           <CrewSidebar />
@@ -76,7 +74,6 @@ const CrewHub = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

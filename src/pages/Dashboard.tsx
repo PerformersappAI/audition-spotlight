@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { Layout } from "@/components/Layout";
 
 const Dashboard = () => {
   const { user, userProfile, signOut } = useAuth();
@@ -87,16 +86,14 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Layout userRole={userProfile?.role?.toUpperCase()}>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-lg">Loading...</div>
-        </div>
-      </Layout>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-lg">Loading...</div>
+      </div>
     );
   }
 
   return (
-    <Layout userRole={userProfile?.role?.toUpperCase()}>
+    <div className="container mx-auto px-4 py-8">
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center py-12 mb-8">
@@ -396,7 +393,7 @@ const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </div>
-    </Layout>
+    </div>
   );
 };
 

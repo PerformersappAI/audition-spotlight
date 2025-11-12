@@ -1,4 +1,3 @@
-import { Layout } from "@/components/Layout";
 import { ActorSidebar } from "@/components/ActorSidebar";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,8 +25,7 @@ const ActorHub = () => {
   ];
 
   return (
-    <Layout userRole="ACTOR">
-      <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/30">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-surface/30">
         <div className="flex gap-6 p-6 max-w-7xl mx-auto">
           {/* Sidebar */}
           <ActorSidebar />
@@ -76,7 +74,6 @@ const ActorHub = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
 

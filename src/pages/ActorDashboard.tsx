@@ -1,4 +1,3 @@
-import { Layout } from "@/components/Layout";
 import { RoleCard } from "@/components/RoleCard";
 import { FilterChips } from "@/components/FilterChips";
 import { Button } from "@/components/ui/button";
@@ -91,8 +90,7 @@ export const ActorDashboard = () => {
   });
 
   return (
-    <Layout userRole="ACTOR">
-      <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background">
         {/* Hero Section with Film Background */}
         <div 
           className="relative min-h-screen bg-cover bg-center bg-no-repeat"
@@ -263,6 +261,5 @@ export const ActorDashboard = () => {
           </div>
         </div>
       </div>
-    </Layout>
   );
 };
