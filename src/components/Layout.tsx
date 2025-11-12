@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
-import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3, Briefcase, Trophy, FileText, MessageCircle, MapPin, Video } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Home, Film, Calendar, Users, Settings, ChevronDown, Upload, Brain, Plus, BarChart3, Briefcase, Trophy, FileText, MessageCircle, MapPin, Video, LogOut, Coins } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useCredits } from '@/hooks/useCredits';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -12,11 +14,20 @@ interface LayoutProps {
 
 export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
   const location = useLocation();
-  const [currentUser] = useState({
-    name: "Sarah Chen",
-    role: userRole,
-    email: "sarah@example.com"
-  });
+  const navigate = useNavigate();
+  const { user, userProfile, signOut } = useAuth();
+  const { credits } = useCredits();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/auth');
+  };
+
+  const displayName = userProfile?.first_name && userProfile?.last_name 
+    ? `${userProfile.first_name} ${userProfile.last_name}`
+    : userProfile?.email?.split('@')[0] || 'User';
+  
+  const displayRole = userProfile?.role?.toUpperCase() || userRole;
 
   const navigation = userRole === 'FILMMAKER' ? [
     { name: 'Dashboard', href: '/dashboard', icon: BarChart3 },
@@ -56,8 +67,8 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                   <Film className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">Cast</h1>
-                  <p className="text-sm text-muted-foreground">Professional Casting Platform</p>
+                  <h1 className="text-xl font-bold text-foreground">MyFilmmakerAI</h1>
+                  <p className="text-sm text-muted-foreground">AI-Powered Film Production Tools</p>
                 </div>
               </Link>
             </div>
@@ -163,21 +174,46 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                 </DropdownMenu>
               </nav>
 
+              {credits && (
+                <Badge variant="outline" className="border-gold text-gold flex items-center gap-1">
+                  <Coins className="h-3 w-3" />
+                  {credits.available_credits} Credits
+                </Badge>
+              )}
+
               <Badge variant="outline" className="border-primary text-primary">
-                {currentUser.role}
+                {displayRole}
               </Badge>
               
-              <div className="flex items-center space-x-3 bg-accent/50 p-2 rounded-lg">
-                <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
-                  <span className="text-sm font-medium text-primary-foreground">
-                    {currentUser.name.split(' ').map(n => n[0]).join('')}
-                  </span>
-                </div>
-                <div className="hidden md:block">
-                  <p className="text-sm font-medium text-foreground">{currentUser.name}</p>
-                  <p className="text-xs text-muted-foreground">{currentUser.email}</p>
-                </div>
-              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="flex items-center space-x-3 bg-accent/50 p-2 rounded-lg hover:bg-accent">
+                    <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
+                      <span className="text-sm font-medium text-primary-foreground">
+                        {displayName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="hidden md:block text-left">
+                      <p className="text-sm font-medium text-foreground">{displayName}</p>
+                      <p className="text-xs text-muted-foreground">{userProfile?.email || user?.email}</p>
+                    </div>
+                    <ChevronDown className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 bg-background border shadow-lg">
+                  <DropdownMenuItem asChild>
+                    <Link to="/membership" className="flex items-center gap-2 w-full cursor-pointer">
+                      <Coins className="h-4 w-4" />
+                      Manage Credits
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 cursor-pointer text-destructive">
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
@@ -192,7 +228,7 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
       <footer className="border-t border-border bg-muted/30 py-8">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>&copy; 2024 Cast. Professional casting made simple.</p>
+            <p>&copy; 2024 MyFilmmakerAI. AI-Powered Film Production Tools.</p>
           </div>
         </div>
       </footer>
