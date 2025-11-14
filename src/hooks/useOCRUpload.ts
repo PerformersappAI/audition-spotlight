@@ -141,6 +141,15 @@ export const useOCRUpload = () => {
           description: "Text file loaded successfully"
         });
         
+        // Cleanup with delay to show completion state
+        setTimeout(() => {
+          setIsProcessing(false);
+          setCurrentStage('idle');
+          setProgress(0);
+          setCurrentFileName('');
+          setCurrentFileSize(0);
+        }, 1500);
+        
       } else if (file.type === "application/pdf") {
         setProgress(10);
 
@@ -204,6 +213,13 @@ export const useOCRUpload = () => {
               }
               
               onError?.(errorMessage);
+              
+              // Cleanup immediately on error
+              setIsProcessing(false);
+              setCurrentStage('idle');
+              setProgress(0);
+              setCurrentFileName('');
+              setCurrentFileSize(0);
               return;
             }
             
@@ -228,6 +244,15 @@ export const useOCRUpload = () => {
                 title: "Success",
                 description: "PDF text extracted successfully!"
               });
+              
+              // Cleanup with delay to show completion state
+              setTimeout(() => {
+                setIsProcessing(false);
+                setCurrentStage('idle');
+                setProgress(0);
+                setCurrentFileName('');
+                setCurrentFileSize(0);
+              }, 1500);
             } else {
               const errorMsg = "No readable text found in PDF. Please check if the file contains text or try a different format.";
               
@@ -243,6 +268,13 @@ export const useOCRUpload = () => {
                 variant: "destructive"
               });
               onError?.(errorMsg);
+              
+              // Cleanup immediately on error
+              setIsProcessing(false);
+              setCurrentStage('idle');
+              setProgress(0);
+              setCurrentFileName('');
+              setCurrentFileSize(0);
             }
           } catch (parseError) {
             console.error('[OCR] Error in PDF processing:', parseError);
@@ -260,6 +292,13 @@ export const useOCRUpload = () => {
               variant: "destructive"
             });
             onError?.(errorMsg);
+            
+            // Cleanup immediately on error
+            setIsProcessing(false);
+            setCurrentStage('idle');
+            setProgress(0);
+            setCurrentFileName('');
+            setCurrentFileSize(0);
           }
         };
         
@@ -276,6 +315,13 @@ export const useOCRUpload = () => {
             variant: "destructive"
           });
           onError?.("Failed to read PDF file");
+          
+          // Cleanup immediately on error
+          setIsProcessing(false);
+          setCurrentStage('idle');
+          setProgress(0);
+          setCurrentFileName('');
+          setCurrentFileSize(0);
         };
         
         reader.readAsDataURL(file);
@@ -295,6 +341,13 @@ export const useOCRUpload = () => {
           variant: "destructive"
         });
         onError?.(errorMsg);
+        
+        // Cleanup immediately on error
+        setIsProcessing(false);
+        setCurrentStage('idle');
+        setProgress(0);
+        setCurrentFileName('');
+        setCurrentFileSize(0);
       }
       
     } catch (error) {
@@ -313,10 +366,13 @@ export const useOCRUpload = () => {
         variant: "destructive"
       });
       onError?.(errorMsg);
-    } finally {
+      
+      // Cleanup immediately on error
       setIsProcessing(false);
       setCurrentStage('idle');
       setProgress(0);
+      setCurrentFileName('');
+      setCurrentFileSize(0);
     }
   }, [cleanupOldEntries]);
 
