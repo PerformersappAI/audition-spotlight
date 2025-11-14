@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -990,6 +990,14 @@ const Storyboarding = () => {
                       progress={progress}
                     />
                   )}
+
+                  {/* Privacy Statement */}
+                  <div className="flex items-start gap-2 p-3 bg-muted/30 rounded-lg border border-muted">
+                    <Shield className="h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      Your privacy matters. We will never use your scripts, images, likeness, voiceover, or any creative work for training, marketing, or any other purpose. Your content remains yours.
+                    </p>
+                  </div>
 
                   {/* Manual Text Input */}
                   <div className="space-y-2">
