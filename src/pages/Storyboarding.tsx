@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -93,6 +93,7 @@ const Storyboarding = () => {
     styleReferencePrompt: ""
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
+  const [processingElapsedTime, setProcessingElapsedTime] = useState(0);
   const { 
     processFile, 
     isProcessing: isProcessingFile, 
@@ -105,6 +106,7 @@ const Storyboarding = () => {
   const [selectedProject, setSelectedProject] = useState<StoryboardProjectLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
+  const [generatingElapsedTime, setGeneratingElapsedTime] = useState(0);
   const [editingShot, setEditingShot] = useState<number | null>(null);
   const [editValues, setEditValues] = useState<Partial<Shot>>({});
   const [editingFrame, setEditingFrame] = useState<number | null>(null);
@@ -130,6 +132,28 @@ const Storyboarding = () => {
     "Christopher Nolan", "Steven Spielberg", "Quentin Tarantino", 
     "Denis Villeneuve", "Greta Gerwig", "Jordan Peele"
   ];
+
+  // Track elapsed time during script processing
+  useEffect(() => {
+    if (!isProcessingScript) return;
+    
+    const interval = setInterval(() => {
+      setProcessingElapsedTime(prev => prev + 1);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [isProcessingScript]);
+
+  // Track elapsed time during storyboard generation
+  useEffect(() => {
+    if (!generatingStoryboard) return;
+    
+    const interval = setInterval(() => {
+      setGeneratingElapsedTime(prev => prev + 1);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [generatingStoryboard]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -274,6 +298,7 @@ const Storyboarding = () => {
     }
 
     setIsProcessingScript(true);
+    setProcessingElapsedTime(0);
 
     try {
       const shots = await generateShotBreakdown(
@@ -313,6 +338,7 @@ const Storyboarding = () => {
       console.error('Error creating storyboard:', error);
     } finally {
       setIsProcessingScript(false);
+      setProcessingElapsedTime(0);
     }
   };
 
@@ -337,6 +363,7 @@ const Storyboarding = () => {
     }
 
     setGeneratingStoryboard(true);
+    setGeneratingElapsedTime(0);
 
     try {
       toast({
@@ -420,6 +447,7 @@ const Storyboarding = () => {
       });
     } finally {
       setGeneratingStoryboard(false);
+      setGeneratingElapsedTime(0);
     }
   };
 
@@ -1011,6 +1039,60 @@ const Storyboarding = () => {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {/* Script Processing Progress */}
+                  {isProcessingScript && (
+                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="p-6 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="flex-shrink-0 p-2 rounded-lg bg-blue-500/10">
+                              <Camera className="h-6 w-6 text-blue-500 animate-pulse" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">Processing your script...</p>
+                              <p className="text-xs text-muted-foreground">This may take 30-60 seconds. Please standby.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
+                            <Clock className="h-4 w-4" />
+                            <span className="font-mono">{processingElapsedTime}s</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-blue-500" />
+                          <span className="text-sm text-muted-foreground">Creating shot breakdown...</span>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* Storyboard Generation Progress */}
+                  {generatingStoryboard && (
+                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="p-6 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="flex-shrink-0 p-2 rounded-lg bg-green-500/10">
+                              <Video className="h-6 w-6 text-green-500 animate-pulse" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">Generating storyboard with AI...</p>
+                              <p className="text-xs text-muted-foreground">This may take 30-60 seconds. Please standby.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
+                            <Clock className="h-4 w-4" />
+                            <span className="font-mono">{generatingElapsedTime}s</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-green-500" />
+                          <span className="text-sm text-muted-foreground">Creating visual frames...</span>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Button 

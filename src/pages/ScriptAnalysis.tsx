@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { useOCRUpload } from '@/hooks/useOCRUpload';
 import { useScriptAnalysis } from '@/hooks/useScriptAnalysis';
 import { ToolPageRecommendations } from '@/components/training/ToolPageRecommendations';
+import { PDFUploadProgress } from '@/components/PDFUploadProgress';
 import jsPDF from 'jspdf';
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
@@ -73,7 +74,16 @@ const ScriptAnalysis = () => {
     tone: ""
   });
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { processFile, isProcessing: isProcessingFile } = useOCRUpload();
+  const [analysisElapsedTime, setAnalysisElapsedTime] = useState(0);
+  const { 
+    processFile, 
+    isProcessing: isProcessingFile,
+    currentStage,
+    currentFileName,
+    currentFileSize,
+    elapsedTime,
+    progress
+  } = useOCRUpload();
   const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysisLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
 
@@ -91,6 +101,17 @@ const ScriptAnalysis = () => {
     "Christopher Nolan", "Steven Spielberg", "Quentin Tarantino", 
     "Denis Villeneuve", "Greta Gerwig", "Jordan Peele"
   ];
+
+  // Track elapsed time during AI analysis
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    
+    const interval = setInterval(() => {
+      setAnalysisElapsedTime(prev => prev + 1);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [isAnalyzing]);
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -195,6 +216,8 @@ const ScriptAnalysis = () => {
     }
 
     setIsAnalyzing(true);
+    setAnalysisElapsedTime(0);
+    const startTime = Date.now();
 
     try {
       const { data, error } = await supabase.functions.invoke('analyze-script', {
@@ -252,6 +275,7 @@ const ScriptAnalysis = () => {
       toast.error("Failed to analyze script. Please try again.");
     } finally {
       setIsAnalyzing(false);
+      setAnalysisElapsedTime(0);
     }
   };
 
@@ -520,8 +544,18 @@ const ScriptAnalysis = () => {
                         disabled={isProcessingFile}
                         className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
                       />
-                      {isProcessingFile && <Loader2 className="h-4 w-4 animate-spin" />}
                     </div>
+                    
+                    {/* File Upload Progress */}
+                    {isProcessingFile && currentFileName && (
+                      <PDFUploadProgress 
+                        fileName={currentFileName}
+                        fileSize={currentFileSize}
+                        stage={currentStage}
+                        elapsedTime={elapsedTime}
+                        progress={progress}
+                      />
+                    )}
                   </div>
 
                   {/* Manual Text Input */}
@@ -594,6 +628,33 @@ const ScriptAnalysis = () => {
                       </div>
                     </div>
                   </div>
+
+                  {/* AI Analysis Progress */}
+                  {isAnalyzing && (
+                    <Card className="border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500">
+                      <div className="p-6 space-y-4">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-center gap-3 flex-1">
+                            <div className="flex-shrink-0 p-2 rounded-lg bg-purple-500/10">
+                              <Brain className="h-6 w-6 text-purple-500 animate-pulse" />
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-medium text-sm">Analyzing your script with AI...</p>
+                              <p className="text-xs text-muted-foreground">This may take 30-60 seconds. Please standby.</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0">
+                            <Clock className="h-4 w-4" />
+                            <span className="font-mono">{analysisElapsedTime}s</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="h-4 w-4 animate-spin text-purple-500" />
+                          <span className="text-sm text-muted-foreground">Processing...</span>
+                        </div>
+                      </div>
+                    </Card>
+                  )}
 
                   <Button 
                     onClick={analyzeScript} 
