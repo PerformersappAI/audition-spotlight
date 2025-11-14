@@ -45,6 +45,8 @@ interface ScriptAnalysisLocal {
       name: string;
       description: string;
       role: string;
+      objective?: string;
+      fear?: string;
     }>;
     characterDescriptions: Array<{
       name: string;
@@ -53,6 +55,9 @@ interface ScriptAnalysisLocal {
       arcTrajectory: string;
     }>;
     emotionalBeats: string[];
+    visualSuggestions?: string[];
+    soundAndPacing?: string[];
+    stakesAndPurpose?: string[];
     characterMotivations: string[];
     directorNotes: string[];
     castingTips: string[];
@@ -790,10 +795,12 @@ const ScriptAnalysis = () => {
                         {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
                           <div 
                             key={index}
-                            className="flex-shrink-0 px-4 py-2 bg-background rounded-md border border-border/50 min-w-[200px]"
+                            className="flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[240px] space-y-1"
                           >
                             <div className="font-medium text-sm mb-1">{character.name}</div>
-                            <div className="text-xs text-muted-foreground line-clamp-1">{character.role}</div>
+                            <div className="text-xs text-muted-foreground line-clamp-1">
+                              {character.objective || character.role}
+                            </div>
                           </div>
                         ))}
                       </div>
@@ -888,6 +895,57 @@ const ScriptAnalysis = () => {
                         ))}
                       </ul>
                     </div>
+
+                    {/* Visual Suggestions */}
+                    {selectedAnalysis.analysisResult.visualSuggestions && selectedAnalysis.analysisResult.visualSuggestions.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          🎥 Visual Suggestions
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.visualSuggestions.map((suggestion, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-primary">•</span>
+                              <span className="text-sm">{suggestion}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Sound & Pacing */}
+                    {selectedAnalysis.analysisResult.soundAndPacing && selectedAnalysis.analysisResult.soundAndPacing.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          🎵 Sound & Pacing
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.soundAndPacing.map((note, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-primary">•</span>
+                              <span className="text-sm">{note}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Stakes & Purpose */}
+                    {selectedAnalysis.analysisResult.stakesAndPurpose && selectedAnalysis.analysisResult.stakesAndPurpose.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold flex items-center gap-2">
+                          ⚡ Stakes & Purpose
+                        </h3>
+                        <ul className="space-y-2">
+                          {selectedAnalysis.analysisResult.stakesAndPurpose.map((stake, index) => (
+                            <li key={index} className="flex items-start gap-2">
+                              <span className="text-primary">•</span>
+                              <span className="text-sm">{stake}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
                     {/* Director Notes */}
                     <div className="space-y-4">
