@@ -779,6 +779,27 @@ const ScriptAnalysis = () => {
                     </div>
                   )}
 
+                  {/* Characters Quick Reference */}
+                  {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
+                    <div className="mb-6 p-4 bg-accent/30 rounded-lg border border-accent">
+                      <h3 className="text-sm font-semibold flex items-center gap-2 mb-3 text-foreground">
+                        <Users className="h-4 w-4" />
+                        Characters in Scene
+                      </h3>
+                      <div className="flex gap-3 overflow-x-auto pb-2">
+                        {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
+                          <div 
+                            key={index}
+                            className="flex-shrink-0 px-4 py-2 bg-background rounded-md border border-border/50 min-w-[200px]"
+                          >
+                            <div className="font-medium text-sm mb-1">{character.name}</div>
+                            <div className="text-xs text-muted-foreground line-clamp-1">{character.role}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Cast of Characters */}
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
                     <div className="mb-6">
