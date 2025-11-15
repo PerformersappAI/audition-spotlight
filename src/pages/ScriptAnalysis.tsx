@@ -97,6 +97,7 @@ const ScriptAnalysis = () => {
   const [chatMessages, setChatMessages] = useState<Array<{role: string, content: string}>>([]);
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
+  const chatInputRef = useRef<HTMLDivElement>(null);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -528,6 +529,11 @@ const ScriptAnalysis = () => {
         content: data.choices[0].message.content
       };
       setChatMessages([...newMessages, assistantMessage]);
+      
+      // Scroll back to chat input after response
+      setTimeout(() => {
+        chatInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
     } catch (error) {
       console.error('Chat error:', error);
       toast.error('Failed to get response');
@@ -935,7 +941,7 @@ const ScriptAnalysis = () => {
                             </div>
                           )}
                         </ScrollArea>
-                        <div className="border-t border-border p-4">
+                        <div ref={chatInputRef} className="border-t border-border p-4">
                           <form
                             onSubmit={(e) => {
                               e.preventDefault();
