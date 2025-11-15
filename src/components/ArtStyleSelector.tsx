@@ -125,27 +125,27 @@ export function ArtStyleSelector({
 }: ArtStyleSelectorProps) {
   return (
     <div className="space-y-4">
-      <div>
-        <h3 className="text-lg font-semibold mb-2">Choose Art Style</h3>
-        <p className="text-sm text-muted-foreground mb-4">
+      <div className="mb-3">
+        <h3 className="text-base font-semibold mb-1">Choose Art Style</h3>
+        <p className="text-xs text-muted-foreground">
           Select a visual style for your storyboard frames
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      <div className="flex gap-3 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory scrollbar-thin">
         {artStyles.map((style) => (
           <Card
             key={style.id}
-            className={`cursor-pointer transition-all hover:scale-105 hover:shadow-lg relative ${
+            className={`flex-shrink-0 w-[140px] cursor-pointer transition-all hover:scale-105 relative ${
               selectedStyle === style.id
-                ? 'ring-2 ring-primary shadow-lg'
+                ? 'ring-2 ring-primary'
                 : 'hover:ring-1 hover:ring-border'
             }`}
             onClick={() => onStyleChange(style.id)}
           >
-            <CardContent className="p-3">
+            <CardContent className="p-2">
               {style.thumbnail ? (
-                <div className="aspect-square rounded-md overflow-hidden mb-2 bg-muted">
+                <div className="w-full h-20 rounded-md overflow-hidden mb-1.5 bg-muted">
                   <img
                     src={style.thumbnail}
                     alt={style.name}
@@ -153,19 +153,18 @@ export function ArtStyleSelector({
                   />
                 </div>
               ) : (
-                <div className="aspect-square rounded-md overflow-hidden mb-2 bg-muted flex items-center justify-center">
-                  <span className="text-4xl">✨</span>
+                <div className="w-full h-20 rounded-md bg-muted flex items-center justify-center mb-1.5">
+                  <span className="text-2xl">✨</span>
                 </div>
               )}
-              <CardTitle className="text-sm font-semibold mb-1">
-                {style.name}
-              </CardTitle>
-              <CardDescription className="text-xs">
-                {style.description}
-              </CardDescription>
+              <div className="text-center">
+                <p className="text-xs font-medium truncate">
+                  {style.name}
+                </p>
+              </div>
               {selectedStyle === style.id && (
-                <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
-                  <Check className="h-4 w-4" />
+                <div className="absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5">
+                  <Check className="h-3 w-3" />
                 </div>
               )}
             </CardContent>
