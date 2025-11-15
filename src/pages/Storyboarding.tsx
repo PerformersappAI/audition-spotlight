@@ -119,6 +119,7 @@ const Storyboarding = () => {
   const [isSavingCharacters, setIsSavingCharacters] = useState(false);
   const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
   const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
+  const [frameStyles, setFrameStyles] = useState<Map<number, string>>(new Map());
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -726,9 +727,10 @@ const Storyboarding = () => {
 
       console.log(`Generating frame ${shotNumber}`);
 
-      // Get the art style prompt modifier
-      const selectedArtStyle = artStyles.find(s => s.id === currentProject.artStyle);
-      const stylePrompt = currentProject.artStyle === 'custom' 
+      // Get the art style - use frame-specific style if set, otherwise use project default
+      const frameSpecificStyle = frameStyles.get(shotNumber) || currentProject.artStyle;
+      const selectedArtStyle = artStyles.find(s => s.id === frameSpecificStyle);
+      const stylePrompt = frameSpecificStyle === 'custom' 
         ? currentProject.customStylePrompt 
         : (selectedArtStyle?.promptModifier || 'black and white storyboard frame, hand-drawn sketch');
 
@@ -1675,18 +1677,37 @@ const Storyboarding = () => {
                          return (
                          <Card key={shot.shotNumber} className="border border-border">
                             <CardContent className="p-4 space-y-4">
-                              <div className="flex items-center justify-between">
-                                <Badge variant="secondary">Frame {shot.shotNumber}</Badge>
-                                <div className="flex items-center gap-2">
-                                  {!frame?.imageData && !isGenerating && !error && (
-                                    <Button
-                                      size="sm"
-                                      onClick={() => generateSingleFrame(shot.shotNumber)}
-                                      className="h-6 px-2 text-xs"
-                                    >
-                                      Generate
-                                    </Button>
-                                  )}
+                               <div className="flex items-center justify-between">
+                                 <Badge variant="secondary">Frame {shot.shotNumber}</Badge>
+                                 <div className="flex items-center gap-2">
+                                   {!frame?.imageData && !isGenerating && !error && (
+                                     <>
+                                       <Select
+                                         value={frameStyles.get(shot.shotNumber) || currentProject.artStyle}
+                                         onValueChange={(value) => {
+                                           setFrameStyles(prev => new Map(prev).set(shot.shotNumber, value));
+                                         }}
+                                       >
+                                         <SelectTrigger className="h-6 w-[140px] text-xs">
+                                           <SelectValue placeholder="Visual Style" />
+                                         </SelectTrigger>
+                                         <SelectContent>
+                                           {artStyles.map((style) => (
+                                             <SelectItem key={style.id} value={style.id} className="text-xs">
+                                               {style.name}
+                                             </SelectItem>
+                                           ))}
+                                         </SelectContent>
+                                       </Select>
+                                       <Button
+                                         size="sm"
+                                         onClick={() => generateSingleFrame(shot.shotNumber)}
+                                         className="h-6 px-2 text-xs"
+                                       >
+                                         Generate
+                                       </Button>
+                                     </>
+                                   )}
                                   {editingFrame === shot.shotNumber ? (
                                    <div className="flex items-center gap-1">
                                      <Button
