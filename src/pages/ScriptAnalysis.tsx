@@ -146,34 +146,25 @@ const ScriptAnalysis = () => {
   };
 
   const generateMockAnalysis = (script: typeof currentScript) => {
+    // Extract actual character names from the script
+    const characterMatches = script.scriptText.match(/^[A-Z][A-Z\s]+$/gm) || [];
+    const uniqueCharacters = Array.from(new Set(characterMatches.map(name => name.trim())));
+    
+    const castOfCharacters = uniqueCharacters.slice(0, 5).map((name, index) => ({
+      name,
+      description: index === 0 ? "Primary character in the scene" : "Character in the scene",
+      role: index === 0 ? "protagonist" : "supporting"
+    }));
+
     return {
-      sceneSynopsis: `A compelling ${script.genre.toLowerCase()} scene that explores ${script.tone.toLowerCase()} themes through character interaction and conflict.`,
-      castOfCharacters: [
-        {
-          name: "Main Character",
-          description: "The central figure driving the scene's narrative",
-          role: "protagonist"
-        },
-        {
-          name: "Supporting Character",
-          description: "Provides counterpoint and conflict to the main character",
-          role: "supporting"
-        }
-      ],
-      characterDescriptions: [
-        {
-          name: "Main Character",
-          personality: "Complex and driven with internal contradictions",
-          motivation: "Seeks resolution to their central conflict",
-          arcTrajectory: "Moves from uncertainty toward decisive action"
-        },
-        {
-          name: "Supporting Character",
-          personality: "Acts as catalyst for main character's development",
-          motivation: "Challenges protagonist's assumptions",
-          arcTrajectory: "Reveals hidden depths as scene progresses"
-        }
-      ],
+      sceneSynopsis: `This ${script.genre.toLowerCase()} scene features ${uniqueCharacters.length} character${uniqueCharacters.length !== 1 ? 's' : ''} with a ${script.tone.toLowerCase()} tone.`,
+      castOfCharacters: castOfCharacters.length > 0 ? castOfCharacters : [],
+      characterDescriptions: uniqueCharacters.slice(0, 5).map((name, index) => ({
+        name,
+        personality: "Character analysis requires full AI processing",
+        motivation: "Character analysis requires full AI processing",
+        arcTrajectory: "Character analysis requires full AI processing"
+      })),
       emotionalBeats: [
         "Opening tension builds as protagonist faces internal conflict",
         "Mid-point revelation changes character perspective",
@@ -823,7 +814,17 @@ const ScriptAnalysis = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {/* Characters in Scene - Moved to Top */}
+                  {/* Scene Summary - Now at Top */}
+                  {selectedAnalysis.analysisResult.sceneSynopsis && (
+                    <div className="mb-6 p-5 bg-primary/10 rounded-lg border-2 border-primary/30">
+                      <h3 className="text-xl font-bold flex items-center gap-2 mb-3 text-foreground">
+                        📖 Scene Summary
+                      </h3>
+                      <p className="text-base leading-relaxed">{selectedAnalysis.analysisResult.sceneSynopsis}</p>
+                    </div>
+                  )}
+
+                  {/* Characters in Scene */}
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
                     <div className="mb-6 p-4 bg-accent/30 rounded-lg border border-accent">
                       <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-foreground">
@@ -843,16 +844,6 @@ const ScriptAnalysis = () => {
                           </div>
                         ))}
                       </div>
-                    </div>
-                  )}
-
-                  {/* Scene Synopsis */}
-                  {selectedAnalysis.analysisResult.sceneSynopsis && (
-                    <div className="mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
-                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-3">
-                        📖 Scene Synopsis
-                      </h3>
-                      <p className="text-sm leading-relaxed">{selectedAnalysis.analysisResult.sceneSynopsis}</p>
                     </div>
                   )}
 
