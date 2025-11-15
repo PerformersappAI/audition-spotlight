@@ -375,48 +375,53 @@ Examples: ${knowledge.examples}`;
       }).filter(Boolean).join('\n\n');
     }
 
-    const systemPrompt = `You are an expert script analyst with deep knowledge of scene construction, character psychology, and directorial approaches.
+    const systemPrompt = `You are an expert film director and script analyst. Your task is to analyze THIS SPECIFIC SCENE in deep detail.
 
-**COMPREHENSIVE SCENE ANALYSIS FRAMEWORK:**
+**PRIMARY OBJECTIVES:**
+1. FIRST: Carefully identify and list ALL characters who appear or are mentioned in this scene
+2. Extract the SPECIFIC dramatic beats, action, and dialogue from THIS scene only
+3. Analyze what makes THIS particular scene unique and cinematically important
+4. Provide scene-specific insights that directly reference moments from the text
 
-Analyze every scene through these essential dimensions:
+**SCENE ANALYSIS FRAMEWORK:**
 
-1. **Scene Purpose:**
-   - Why does this scene exist?
-   - What narrative purpose does it serve (reveal, tension, reversal, setup, payoff)?
-   - What MUST change in the audience or character by the end?
+Analyze THIS scene through these essential dimensions:
 
-2. **Character Objectives & Dynamics:**
-   - What does each character want?
-   - What is each character afraid of losing?
-   - What obstacles exist (internal/external)?
-   - How does the power dynamic shift during the scene?
+1. **Scene Purpose & Stakes:**
+   - Why does THIS scene exist in the story?
+   - What specific narrative purpose does it serve?
+   - What MUST change by the end of THIS scene?
+   - What is at risk for the characters IN THIS MOMENT?
 
-3. **Emotional Arc:**
-   - What is the emotional anchor of this scene?
-   - Where does the emotional state start and end?
-   - Is the emotion straightforward or contrasted?
+2. **Character Objectives & Dynamics IN THIS SCENE:**
+   - What does each character want IN THIS SPECIFIC MOMENT?
+   - What is each character afraid of losing HERE?
+   - What obstacles exist in THIS scene?
+   - How does the power dynamic shift DURING THIS SCENE?
 
-4. **Visual & Spatial Grammar:**
-   - What must the audience SEE to understand the scene?
-   - Where should the camera be to reflect the emotional power?
-   - How is blocking used to support story?
-   - Are there insert shots carrying symbolism?
+3. **Emotional Arc OF THIS SCENE:**
+   - What is the emotional anchor of THIS scene?
+   - Where does the emotional state start and end IN THIS SCENE?
+   - How do emotions shift through THIS scene?
 
-5. **Sound & Rhythm:**
-   - What does the soundscape communicate?
-   - Is silence used to build tension?
-   - What pacing supports the scene's emotion?
+4. **Visual & Spatial Grammar FOR THIS SCENE:**
+   - What must the audience SEE to understand THIS scene?
+   - Where should the camera be for the key moments IN THIS SCENE?
+   - How should blocking support the story beats IN THIS SCENE?
+   - What insert shots could enhance THIS scene?
 
-6. **Stakes:**
-   - What is at risk for the character?
-   - How are the stakes visually communicated?
+5. **Sound & Rhythm FOR THIS SCENE:**
+   - What soundscape fits THIS scene?
+   - Where should silence be used IN THIS SCENE?
+   - What pacing supports THIS scene's emotion?
 
-7. **Transitions:**
-   - How does the previous scene feed into this?
-   - How does this scene prepare or launch the next?
+6. **Transitions:**
+   - How might this scene connect to what comes before/after?
 
-${directorContext ? `\n**DIRECTOR-SPECIFIC ANALYSIS:**\n${directorContext}\n\nApply each director's style focus and answer their internal questions. Provide specific recommendations aligned with their established methods.\n` : ''}
+${directorContext ? `\n**DIRECTOR-SPECIFIC LENS FOR THIS SCENE:**\n${directorContext}\n\nApply the selected director's approach to THIS SPECIFIC SCENE. Reference specific moments from the scene and explain how this director would handle them.\n` : ''}
+
+**CRITICAL: Base ALL analysis on the actual scene provided. Quote specific lines, reference specific moments, and give practical direction for shooting THIS scene.**
+
 
 Provide analysis in this exact JSON format:
 {
@@ -454,11 +459,23 @@ Provide analysis in this exact JSON format:
 
 Focus on deep, actionable insights that help filmmakers understand the scene's psychological truth and execute it with precision.`;
 
-    const userPrompt = `Analyze this ${genre || 'unspecified genre'} script with a ${tone || 'neutral'} tone:
+    const userPrompt = `Analyze THIS SPECIFIC SCENE in detail:
 
 ${scriptText.substring(0, 8000)}
 
-Provide detailed analysis considering the genre, tone, and ${selectedDirectors.length > 0 ? `the directorial styles of ${selectedDirectors.join(' and ')}` : 'general filmmaking principles'}.`;
+Genre: ${genre || 'unspecified'}
+Tone: ${tone || 'neutral'}
+${selectedDirectors.length > 0 ? `Director Style(s): ${selectedDirectors.join(', ')}` : ''}
+
+CRITICAL INSTRUCTIONS:
+1. First, carefully read the scene and identify ALL characters who appear or are mentioned
+2. Extract the specific action, dialogue, and dramatic beats from THIS scene
+3. Analyze what makes THIS particular scene unique and important
+4. Provide scene-specific insights that directly reference moments from the uploaded text
+5. Give directors practical, actionable guidance for shooting THIS scene
+6. Consider the directorial style(s) and how they would approach THIS specific scene
+
+Make your analysis deeply personal to this scene - reference specific lines, actions, and moments.
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
