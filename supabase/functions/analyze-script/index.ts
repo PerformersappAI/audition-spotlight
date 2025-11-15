@@ -588,6 +588,35 @@ Make your analysis deeply personal to this scene - reference specific lines, act
       throw new Error('No content returned from OpenAI API');
     }
 
+    // Helper function to extract actual character names from script
+    const extractCharacterNames = (script: string): string[] => {
+      const names: Set<string> = new Set();
+      
+      // Match character names before dialogue (ALL CAPS lines)
+      const dialogueMatches = script.match(/^([A-Z][A-Z\s'-]+)(\s*\(.*?\))?[\s:]/gm);
+      if (dialogueMatches) {
+        dialogueMatches.forEach(match => {
+          const name = match.replace(/\(.*?\)/g, '').replace(/[:\s]/g, '').trim();
+          if (name.length > 1 && name.length < 40) {
+            names.add(name);
+          }
+        });
+      }
+      
+      return Array.from(names);
+    };
+
+    // Helper to detect generic character names
+    const isGenericName = (name: string): boolean => {
+      const genericNames = [
+        'main character', 'supporting character', 'protagonist', 'antagonist',
+        'character a', 'character b', 'character 1', 'character 2',
+        'lead character', 'primary character', 'secondary character',
+        'the protagonist', 'the antagonist', 'narrator'
+      ];
+      return genericNames.some(generic => name.toLowerCase().includes(generic));
+    };
+
     let analysisResult: any;
     let confidenceScore = 0.9; // Default high confidence for successful parsing
     try {
@@ -604,38 +633,77 @@ Make your analysis deeply personal to this scene - reference specific lines, act
         console.warn('AI response lacks required detailed content');
         confidenceScore = 0.4; // Low confidence for incomplete responses
       }
+
+      // Check for generic character names and replace with extracted ones
+      if (analysisResult.castOfCharacters && Array.isArray(analysisResult.castOfCharacters)) {
+        const hasGenericNames = analysisResult.castOfCharacters.some((char: any) => 
+          isGenericName(char.name || '')
+        );
+        
+        if (hasGenericNames) {
+          console.warn('Detected generic character names, extracting from script...');
+          const extractedNames = extractCharacterNames(scriptText);
+          console.info(`Extracted actual names from script: ${extractedNames.join(', ')}`);
+          
+          if (extractedNames.length > 0) {
+            // Replace generic names with extracted ones
+            analysisResult.castOfCharacters = extractedNames.map((name, index) => ({
+              name,
+              description: analysisResult.castOfCharacters[index]?.description || 
+                          (index === 0 ? "Primary character in the scene" : "Character in the scene"),
+              role: analysisResult.castOfCharacters[index]?.role || 
+                   (index === 0 ? "protagonist" : "supporting"),
+              objective: analysisResult.castOfCharacters[index]?.objective,
+              fear: analysisResult.castOfCharacters[index]?.fear
+            }));
+            
+            // Also update characterDescriptions
+            if (analysisResult.characterDescriptions && Array.isArray(analysisResult.characterDescriptions)) {
+              analysisResult.characterDescriptions = extractedNames.map((name, index) => ({
+                name,
+                personality: analysisResult.characterDescriptions[index]?.personality || 
+                           "Character analysis available with full AI processing",
+                motivation: analysisResult.characterDescriptions[index]?.motivation || 
+                          "Character motivation available with full AI processing",
+                arcTrajectory: analysisResult.characterDescriptions[index]?.arcTrajectory || 
+                             "Character arc available with full AI processing"
+              }));
+            }
+            
+            confidenceScore = 0.7; // Medium confidence with name substitution
+          }
+        }
+      }
     } catch (parseError) {
       console.error('Failed to parse AI response as JSON:', parseError);
       confidenceScore = 0.2; // Very low confidence for fallback
-      // Fallback to mock analysis if JSON parsing fails
+      
+      // Extract actual character names from the script
+      const extractedNames = extractCharacterNames(scriptText);
+      console.info(`Fallback: Extracted names from script: ${extractedNames.join(', ')}`);
+      
+      // Fallback to mock analysis with extracted names if available
+      const characters = extractedNames.length > 0 
+        ? extractedNames.map((name, index) => ({
+            name,
+            description: index === 0 ? "Primary character in the scene" : "Character in the scene",
+            role: index === 0 ? "protagonist" : "supporting"
+          }))
+        : [{
+            name: "Character name extraction in progress",
+            description: "Full analysis requires AI processing",
+            role: "unknown"
+          }];
+      
       analysisResult = {
-        sceneSynopsis: `A compelling ${genre || 'drama'} scene exploring themes of conflict and character development`,
-        castOfCharacters: [
-          {
-            name: "Main Character",
-            description: "The central figure driving the scene",
-            role: "protagonist"
-          },
-          {
-            name: "Supporting Character", 
-            description: "Provides conflict and character development",
-            role: "supporting"
-          }
-        ],
-        characterDescriptions: [
-          {
-            name: "Main Character",
-            personality: "Complex and driven with clear objectives",
-            motivation: "Seeks resolution to central conflict",
-            arcTrajectory: "Moves from uncertainty to decisive action"
-          },
-          {
-            name: "Supporting Character",
-            personality: "Acts as catalyst for main character growth",
-            motivation: "Challenges protagonist's assumptions",
-            arcTrajectory: "Reveals hidden depths throughout scene"
-          }
-        ],
+        sceneSynopsis: `A ${genre || 'drama'} scene with ${extractedNames.length || 'multiple'} character${extractedNames.length !== 1 ? 's' : ''}. Detailed analysis requires AI processing.`,
+        castOfCharacters: characters,
+        characterDescriptions: characters.map(char => ({
+          name: char.name,
+          personality: "Detailed analysis requires AI processing",
+          motivation: "Detailed analysis requires AI processing",
+          arcTrajectory: "Detailed analysis requires AI processing"
+        })),
         emotionalBeats: [
           "Opening establishes character and world",
           "Rising tension builds toward conflict", 
