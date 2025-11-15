@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -117,6 +117,8 @@ const Storyboarding = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showGlossary, setShowGlossary] = useState(false);
   const [isSavingCharacters, setIsSavingCharacters] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
+  const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -531,6 +533,81 @@ const Storyboarding = () => {
           description: "Shot has been updated successfully"
         });
       }
+    }
+  };
+
+  const parseAIPrompt = async (shotNumber: number, prompt: string) => {
+    if (!selectedProject || !prompt.trim()) return;
+
+    const currentShot = selectedProject.shots.find(s => s.shotNumber === shotNumber);
+    if (!currentShot) return;
+
+    setIsParsingPrompt(prev => new Map(prev).set(shotNumber, true));
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-parse-shot-prompt', {
+        body: { 
+          prompt: prompt.trim(),
+          existingShot: currentShot 
+        }
+      });
+
+      if (error) {
+        console.error('AI parsing error:', error);
+        
+        if (error.message?.includes('Rate limit') || error.message?.includes('429')) {
+          toast({
+            title: "Rate limit exceeded",
+            description: "Please wait a moment and try again.",
+            variant: "destructive"
+          });
+        } else if (error.message?.includes('credits') || error.message?.includes('402')) {
+          toast({
+            title: "AI credits depleted",
+            description: "Please add credits in Settings → Workspace → Usage.",
+            variant: "destructive"
+          });
+        } else {
+          toast({
+            title: "AI parsing failed",
+            description: "Failed to parse your prompt. Please try again.",
+            variant: "destructive"
+          });
+        }
+        return;
+      }
+
+      if (data?.parsedShot) {
+        // Update editValues with the parsed data
+        setEditValues(data.parsedShot);
+        
+        // Count how many fields were updated
+        const updatedFields = Object.keys(data.parsedShot).filter(
+          key => data.parsedShot[key] !== currentShot[key as keyof Shot]
+        ).length;
+
+        // Clear the AI prompt
+        setAiPrompt(prev => {
+          const newMap = new Map(prev);
+          newMap.delete(shotNumber);
+          return newMap;
+        });
+
+        toast({
+          title: "✓ Shot details auto-filled!",
+          description: `Updated ${updatedFields} field${updatedFields !== 1 ? 's' : ''} from your prompt.`
+        });
+      }
+
+    } catch (error) {
+      console.error('Error calling AI parse function:', error);
+      toast({
+        title: "Failed to parse prompt",
+        description: "An error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsParsingPrompt(prev => new Map(prev).set(shotNumber, false));
     }
   };
 
@@ -1351,9 +1428,65 @@ const Storyboarding = () => {
                                </div>
                              </div>
                            </div>
-                         </CardHeader>
-                          <CardContent className="space-y-3">
-                            {/* Visual Description */}
+                          </CardHeader>
+                           <CardContent className="space-y-3">
+                             {/* AI Prompt Section - Shows FIRST when editing */}
+                             {editingShot === shot.shotNumber && (
+                               <>
+                                 <div className="bg-primary/5 p-3 rounded-lg border border-primary/20">
+                                   <div className="flex items-start gap-2 mb-2">
+                                     <Sparkles className="h-4 w-4 text-primary mt-0.5" />
+                                     <div className="flex-1">
+                                       <Label className="text-sm font-medium">
+                                         AI Shot Assistant
+                                       </Label>
+                                       <p className="text-xs text-muted-foreground">
+                                         Describe what you want and AI will fill the fields below
+                                       </p>
+                                     </div>
+                                   </div>
+                                   <Textarea
+                                     placeholder="e.g., 'Close-up of Sarah looking worried in dimly lit kitchen, dramatic side lighting, 3-4 seconds'"
+                                     value={aiPrompt.get(shot.shotNumber) || ''}
+                                     onChange={(e) => setAiPrompt(new Map(aiPrompt).set(shot.shotNumber, e.target.value))}
+                                     className="text-sm mb-2"
+                                     rows={3}
+                                   />
+                                   <Button
+                                     size="sm"
+                                     onClick={() => parseAIPrompt(shot.shotNumber, aiPrompt.get(shot.shotNumber) || '')}
+                                     disabled={!aiPrompt.get(shot.shotNumber)?.trim() || isParsingPrompt.get(shot.shotNumber)}
+                                     className="w-full"
+                                   >
+                                     {isParsingPrompt.get(shot.shotNumber) ? (
+                                       <>
+                                         <Loader2 className="h-3 w-3 mr-2 animate-spin" />
+                                         Parsing...
+                                       </>
+                                     ) : (
+                                       <>
+                                         <Wand2 className="h-3 w-3 mr-2" />
+                                         Auto-Fill Fields
+                                       </>
+                                     )}
+                                   </Button>
+                                 </div>
+
+                                 {/* Divider */}
+                                 <div className="relative my-4">
+                                   <div className="absolute inset-0 flex items-center">
+                                     <span className="w-full border-t" />
+                                   </div>
+                                   <div className="relative flex justify-center text-xs uppercase">
+                                     <span className="bg-background px-2 text-muted-foreground">
+                                       Or edit manually
+                                     </span>
+                                   </div>
+                                 </div>
+                               </>
+                             )}
+
+                             {/* Visual Description */}
                             {shot.visualDescription && (
                               <div>
                                 <h4 className="font-medium text-sm mb-1">Visual Description</h4>
