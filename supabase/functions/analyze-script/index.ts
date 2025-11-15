@@ -493,24 +493,23 @@ CRITICAL INSTRUCTIONS FOR CHARACTER EXTRACTION - READ CAREFULLY:
    - Include ALL speaking characters and main non-speaking characters
 
 3. **THE "castOfCharacters" ARRAY MUST CONTAIN ACTUAL NAMES:**
-   ```json
+   Example:
    "castOfCharacters": [
      {
-       "name": "JOHN SMITH",  // ← ACTUAL NAME FROM SCRIPT
+       "name": "JOHN SMITH",
        "role": "protagonist",
        "description": "A detective investigating...",
        "objective": "To find the truth about...",
        "fear": "Losing his badge..."
      },
      {
-       "name": "SARAH CHEN",  // ← ACTUAL NAME FROM SCRIPT
+       "name": "SARAH CHEN",
        "role": "supporting",
        "description": "John's partner who...",
        "objective": "To protect John from...",
        "fear": "Betraying her oath..."
      }
    ]
-   ```
 
 4. **FORBIDDEN - NEVER USE THESE:**
    ❌ "Main Character"
