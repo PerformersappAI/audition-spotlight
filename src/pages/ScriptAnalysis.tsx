@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send, Pencil } from 'lucide-react';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send, Pencil, ChevronDown } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -1031,8 +1032,8 @@ const ScriptAnalysis = () => {
                               </div>
                               <p className="text-xs text-muted-foreground mb-2">{character.description}</p>
                               {characterNotes[character.name] && (
-                                <div className="mt-3 pt-3 border-t border-border/50">
-                                  <p className="text-xs font-medium text-foreground mb-1">Director Notes:</p>
+                                <div className="mt-3 pt-3 border-t border-border">
+                                  <p className="text-xs font-medium mb-1">Director Notes:</p>
                                   <p className="text-xs text-muted-foreground whitespace-pre-wrap">{characterNotes[character.name]}</p>
                                 </div>
                               )}
@@ -1043,181 +1044,173 @@ const ScriptAnalysis = () => {
                     </div>
                   )}
 
-                  {/* Character Descriptions */}
-                  {selectedAnalysis.analysisResult.characterDescriptions && selectedAnalysis.analysisResult.characterDescriptions.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
-                        👤 Character Analysis
-                      </h3>
-                      <div className="space-y-4">
-                        {selectedAnalysis.analysisResult.characterDescriptions.map((character, index) => (
-                          <Card key={index} className="border border-border/50">
-                            <CardContent className="p-4">
-                              <h4 className="font-medium text-sm mb-3">{character.name}</h4>
-                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                                <div>
-                                  <span className="font-medium text-primary">Personality:</span>
-                                  <p className="mt-1 text-muted-foreground">{character.personality}</p>
-                                </div>
-                                <div>
-                                  <span className="font-medium text-primary">Motivation:</span>
-                                  <p className="mt-1 text-muted-foreground">{character.motivation}</p>
-                                </div>
-                                <div>
-                                  <span className="font-medium text-primary">Arc Trajectory:</span>
-                                  <p className="mt-1 text-muted-foreground">{character.arcTrajectory}</p>
-                                </div>
+                  {/* Accordion Sections */}
+                  <div className="space-y-4">
+                    <Accordion type="single" collapsible className="space-y-4">
+                      {/* Emotional Beats */}
+                      {selectedAnalysis.analysisResult.emotionalBeats && selectedAnalysis.analysisResult.emotionalBeats.length > 0 && (
+                        <AccordionItem value="emotional-beats" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                                <span className="text-xl">🎭</span>
                               </div>
-                            </CardContent>
-                          </Card>
-                        ))}
-                      </div>
-                    </div>
-                  )}
+                              <div className="text-left">
+                                <h3 className="font-semibold">Emotional Beats</h3>
+                                <p className="text-sm text-muted-foreground">Opening establishes character and world</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-4 pt-2">
+                              {selectedAnalysis.analysisResult.emotionalBeats.map((beat, index) => (
+                                <div key={index} className="flex gap-4">
+                                  <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center text-sm font-medium">
+                                    {index + 1}
+                                  </div>
+                                  <p className="text-sm pt-1">{beat}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Emotional Beats */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        🎭 Emotional Beats
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.emotionalBeats.map((beat, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mt-0.5">
-                              {index + 1}
-                            </span>
-                            <span className="text-sm">{beat}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                      {/* Director Notes */}
+                      {selectedAnalysis.analysisResult.directorNotes && selectedAnalysis.analysisResult.directorNotes.length > 0 && (
+                        <AccordionItem value="director-notes" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                <span className="text-xl">🎬</span>
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-semibold">Director's Notes</h3>
+                                <p className="text-sm text-muted-foreground">Focus on visual storytelling over exposition</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-3 pt-2">
+                              {selectedAnalysis.analysisResult.directorNotes.map((note, index) => (
+                                <div key={index} className="flex gap-3">
+                                  <span className="text-primary mt-1">•</span>
+                                  <p className="text-sm">{note}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                    {/* Character Motivations */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        🎯 Character Motivations
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.characterMotivations.map((motivation, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            <span className="text-sm">{motivation}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                      {/* Character Motivations */}
+                      {selectedAnalysis.analysisResult.characterMotivations && selectedAnalysis.analysisResult.characterMotivations.length > 0 && (
+                        <AccordionItem value="character-motivations" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center">
+                                <span className="text-xl">🎯</span>
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-semibold">Character Motivations</h3>
+                                <p className="text-sm text-muted-foreground">Protagonist driven by clear goal or need</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-3 pt-2">
+                              {selectedAnalysis.analysisResult.characterMotivations.map((motivation, index) => (
+                                <div key={index} className="flex gap-3">
+                                  <span className="text-primary mt-1">•</span>
+                                  <p className="text-sm">{motivation}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                    {/* Visual Suggestions */}
-                    {selectedAnalysis.analysisResult.visualSuggestions && selectedAnalysis.analysisResult.visualSuggestions.length > 0 && (
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          🎥 Visual Suggestions
-                        </h3>
-                        <ul className="space-y-2">
-                          {selectedAnalysis.analysisResult.visualSuggestions.map((suggestion, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary">•</span>
-                              <span className="text-sm">{suggestion}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                      {/* Casting Tips */}
+                      {selectedAnalysis.analysisResult.castingTips && selectedAnalysis.analysisResult.castingTips.length > 0 && (
+                        <AccordionItem value="casting-tips" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <span className="text-xl">👥</span>
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-semibold">Casting Tips</h3>
+                                <p className="text-sm text-muted-foreground">Look for actors who can convey subtext</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-3 pt-2">
+                              {selectedAnalysis.analysisResult.castingTips.map((tip, index) => (
+                                <div key={index} className="flex gap-3">
+                                  <span className="text-primary mt-1">•</span>
+                                  <p className="text-sm">{tip}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                    {/* Sound & Pacing */}
-                    {selectedAnalysis.analysisResult.soundAndPacing && selectedAnalysis.analysisResult.soundAndPacing.length > 0 && (
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          🎵 Sound & Pacing
-                        </h3>
-                        <ul className="space-y-2">
-                          {selectedAnalysis.analysisResult.soundAndPacing.map((note, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary">•</span>
-                              <span className="text-sm">{note}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
+                      {/* Technical Requirements */}
+                      {selectedAnalysis.analysisResult.technicalRequirements && selectedAnalysis.analysisResult.technicalRequirements.length > 0 && (
+                        <AccordionItem value="technical-requirements" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                <span className="text-xl">⚙️</span>
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-semibold">Technical Requirements</h3>
+                                <p className="text-sm text-muted-foreground">Standard lighting and camera equipment</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-3 pt-2">
+                              {selectedAnalysis.analysisResult.technicalRequirements.map((req, index) => (
+                                <div key={index} className="flex gap-3">
+                                  <span className="text-primary mt-1">•</span>
+                                  <p className="text-sm">{req}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
 
-                    {/* Stakes & Purpose */}
-                    {selectedAnalysis.analysisResult.stakesAndPurpose && selectedAnalysis.analysisResult.stakesAndPurpose.length > 0 && (
-                      <div className="space-y-4">
-                        <h3 className="text-lg font-semibold flex items-center gap-2">
-                          ⚡ Stakes & Purpose
-                        </h3>
-                        <ul className="space-y-2">
-                          {selectedAnalysis.analysisResult.stakesAndPurpose.map((stake, index) => (
-                            <li key={index} className="flex items-start gap-2">
-                              <span className="text-primary">•</span>
-                              <span className="text-sm">{stake}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Director Notes */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        🎬 Director's Notes
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.directorNotes.map((note, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            <span className="text-sm">{note}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Casting Tips */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        👥 Casting Tips
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.castingTips.map((tip, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            <span className="text-sm">{tip}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Technical Requirements */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        ⚙️ Technical Requirements
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.technicalRequirements.map((req, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            <span className="text-sm">{req}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Key Moments */}
-                    <div className="space-y-4">
-                      <h3 className="text-lg font-semibold flex items-center gap-2">
-                        ⭐ Key Moments
-                      </h3>
-                      <ul className="space-y-2">
-                        {selectedAnalysis.analysisResult.keyMoments.map((moment, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <span className="text-primary">•</span>
-                            <span className="text-sm">{moment}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                      {/* Key Moments */}
+                      {selectedAnalysis.analysisResult.keyMoments && selectedAnalysis.analysisResult.keyMoments.length > 0 && (
+                        <AccordionItem value="key-moments" className="border rounded-lg bg-card">
+                          <AccordionTrigger className="px-6 hover:no-underline">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
+                                <span className="text-xl">⭐</span>
+                              </div>
+                              <div className="text-left">
+                                <h3 className="font-semibold">Key Moments</h3>
+                                <p className="text-sm text-muted-foreground">Opening hook</p>
+                              </div>
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent className="px-6 pb-6">
+                            <div className="space-y-3 pt-2">
+                              {selectedAnalysis.analysisResult.keyMoments.map((moment, index) => (
+                                <div key={index} className="flex gap-3">
+                                  <span className="text-primary mt-1">•</span>
+                                  <p className="text-sm">{moment}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </AccordionContent>
+                        </AccordionItem>
+                      )}
+                    </Accordion>
                   </div>
 
                   {/* Summary Cards */}
