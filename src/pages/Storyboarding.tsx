@@ -1175,7 +1175,7 @@ const Storyboarding = () => {
                       onChange={(e) => setCurrentProject(prev => ({ ...prev, scriptText: e.target.value }))}
                       className="min-h-[300px] resize-none"
                     />
-                    {selectedProject && currentProject.scriptText !== selectedProject.scriptText && (
+                    {selectedProject && (
                       <Button 
                         onClick={async () => {
                           if (!selectedProject) return;
@@ -1212,9 +1212,10 @@ const Storyboarding = () => {
                         }}
                         className="w-full"
                         variant="default"
+                        disabled={!selectedProject}
                       >
                         <Save className="h-4 w-4 mr-2" />
-                        Save Script Changes
+                        Save Script
                       </Button>
                     )}
                   </div>
@@ -1225,15 +1226,6 @@ const Storyboarding = () => {
                     customStylePrompt={currentProject.customStylePrompt}
                     onStyleChange={(styleId) => setCurrentProject(prev => ({ ...prev, artStyle: styleId }))}
                     onCustomPromptChange={(prompt) => setCurrentProject(prev => ({ ...prev, customStylePrompt: prompt }))}
-                  />
-
-                  {/* Character Definitions */}
-                  <CharacterDefinitionManager
-                    characters={currentProject.characterDefinitions}
-                    onChange={(characters) => setCurrentProject(prev => ({ ...prev, characterDefinitions: characters }))}
-                    onSave={handleSaveCharacters}
-                    canSave={!!selectedProject}
-                    isSaving={isSavingCharacters}
                   />
 
                   {/* Style Reference */}
