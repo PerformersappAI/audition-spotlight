@@ -467,29 +467,64 @@ Genre: ${genre || 'unspecified'}
 Tone: ${tone || 'neutral'}
 ${selectedDirectors.length > 0 ? `Director Style(s): ${selectedDirectors.join(', ')}` : ''}
 
-CRITICAL INSTRUCTIONS FOR CHARACTER EXTRACTION:
-1. **SCAN THE SCRIPT THOROUGHLY FOR ALL CHARACTER NAMES IN THESE FORMATS:**
-   - Dialogue format: Lines starting with a character name (often in ALL CAPS or Title Case) followed by dialogue
-     Example: "JOHN: I can't believe this." or "John: What's happening?"
-   - All caps names in action lines: Look for consistently capitalized names
-     Example: "SARAH enters the room. JOHN looks up from his desk."
-   - Character names with parentheticals: "DETECTIVE MILLER (annoyed): Not again."
-   - Any proper noun that appears multiple times and represents a speaking character
+CRITICAL INSTRUCTIONS FOR CHARACTER EXTRACTION - READ CAREFULLY:
 
-2. **DO NOT USE GENERIC PLACEHOLDERS:** Extract the ACTUAL character names from the script text
-   - ❌ NEVER use: "Main Character", "Supporting Character", "protagonist", "antagonist" as names
-   - ✅ ALWAYS use: The specific name like "JOHN SMITH", "SARAH", "DR. MARTINEZ", etc.
+**YOU MUST EXTRACT ACTUAL CHARACTER NAMES FROM THE SCRIPT TEXT. THIS IS MANDATORY.**
 
-3. **FOR EACH CHARACTER FOUND:**
-   - name: Use the EXACT character name as it appears in the script
-   - role: Classify their narrative function (protagonist/antagonist/supporting/ensemble)
-   - description: Brief description of their role in THIS specific scene
-   - objective: What they want in this scene (reference specific dialogue/actions)
-   - fear: What they're afraid of losing (if evident in the scene)
+1. **SEARCH THE SCRIPT FOR CHARACTER NAMES IN THESE FORMATS:**
+   a) Standard script format with character names before dialogue:
+      - "JOHN:" or "JOHN" followed by dialogue
+      - "SARAH:" or "SARAH" followed by dialogue
+      - Look for any ALL CAPS words followed by colons or dialogue
+   
+   b) Character names in action lines:
+      - "SARAH enters the room"
+      - "JOHN looks at his watch"
+      - Any consistently capitalized proper nouns
+   
+   c) Character names with descriptions:
+      - "DETECTIVE MILLER (tired):"
+      - "DR. CHEN:"
+      - "MRS. JOHNSON:"
 
-4. **REFERENCE ACTUAL CONTENT:** When describing characters, quote or reference specific lines, actions, or moments from the scene that reveal their character.
+2. **EXTRACT EVERY UNIQUE CHARACTER NAME YOU FIND**
+   - Make a list of ALL character names that appear in the script
+   - Use their EXACT names as written (e.g., "JOHN", "SARAH", "DETECTIVE MILLER")
+   - Include ALL speaking characters and main non-speaking characters
 
-If you cannot find ANY character names in the script (which would be unusual), then you may use role-based descriptions, but ALWAYS try to extract actual names first.
+3. **THE "castOfCharacters" ARRAY MUST CONTAIN ACTUAL NAMES:**
+   ```json
+   "castOfCharacters": [
+     {
+       "name": "JOHN SMITH",  // ← ACTUAL NAME FROM SCRIPT
+       "role": "protagonist",
+       "description": "A detective investigating...",
+       "objective": "To find the truth about...",
+       "fear": "Losing his badge..."
+     },
+     {
+       "name": "SARAH CHEN",  // ← ACTUAL NAME FROM SCRIPT
+       "role": "supporting",
+       "description": "John's partner who...",
+       "objective": "To protect John from...",
+       "fear": "Betraying her oath..."
+     }
+   ]
+   ```
+
+4. **FORBIDDEN - NEVER USE THESE:**
+   ❌ "Main Character"
+   ❌ "Supporting Character" 
+   ❌ "Protagonist"
+   ❌ "Antagonist"
+   ❌ "Character A"
+   ❌ Any generic placeholder
+
+5. **IF YOU TRULY CANNOT FIND ANY NAMES:**
+   - Only then use descriptive names like "The Detective" or "The Stranger"
+   - But this should be extremely rare - scripts almost always have character names
+
+**REMEMBER: Look at the actual script text provided and extract the names you see there. They are written in the script!**
 
 SCENE ANALYSIS INSTRUCTIONS:
 1. Extract the specific action, dialogue, and dramatic beats from THIS scene
@@ -643,6 +678,14 @@ Make your analysis deeply personal to this scene - reference specific lines, act
     }
 
     console.log('Script analysis completed successfully');
+    
+    // Log character extraction for debugging
+    if (analysisResult.castOfCharacters) {
+      console.log('Extracted characters:', analysisResult.castOfCharacters.map((c: any) => c.name).join(', '));
+      console.log('Character count:', analysisResult.castOfCharacters.length);
+    } else {
+      console.log('WARNING: No castOfCharacters in analysis result!');
+    }
     
     return new Response(JSON.stringify({ 
       success: true, 
