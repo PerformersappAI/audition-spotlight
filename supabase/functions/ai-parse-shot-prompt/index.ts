@@ -31,16 +31,24 @@ serve(async (req) => {
 
     const systemPrompt = `You are a cinematography expert helping parse shot descriptions into structured data.
 Extract detailed information from natural language descriptions and format them professionally.
-If information isn't mentioned in the user's prompt, preserve the existing values.
-Be specific and use proper cinematography terminology.`;
+If information isn't mentioned in the user's prompt, preserve the existing values from the shot.
+NEVER use placeholder text like "[RECOMMEND SOMETHING]" - either keep the existing value or provide a real suggestion.
+When making suggestions, be specific and creative based on the context of the shot.
+Use proper cinematography terminology.`;
 
     const userPrompt = `Parse this shot description: "${prompt}"
 
 ${existingShot ? `Existing shot data for context:\n${JSON.stringify(existingShot, null, 2)}` : ''}
 
+Extract and update ONLY the information that is clearly mentioned or can be intelligently inferred from the prompt.
+For any field not mentioned:
+- If there's an existing value, keep it unchanged (return null or undefined for that field)
+- If you can make an intelligent suggestion based on context (e.g., inferring a location from the action), provide it
+- NEVER use placeholder text like "[RECOMMEND SOMETHING]" - either skip the field or provide a real suggestion
+
 Extract the following information:
 - visualDescription: Overall visual description of the shot
-- location: Where the shot takes place
+- location: Where the shot takes place (be specific - e.g., "abandoned warehouse", "suburban kitchen", "city street at night")
 - action: What action is happening
 - shotType: Type of shot (e.g., close-up, medium shot, wide shot, extreme close-up, over-the-shoulder)
 - cameraAngle: Camera angle/movement (e.g., high angle, low angle, eye level, Dutch angle, tracking shot)
