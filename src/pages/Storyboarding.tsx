@@ -1175,6 +1175,48 @@ const Storyboarding = () => {
                       onChange={(e) => setCurrentProject(prev => ({ ...prev, scriptText: e.target.value }))}
                       className="min-h-[300px] resize-none"
                     />
+                    {selectedProject && currentProject.scriptText !== selectedProject.scriptText && (
+                      <Button 
+                        onClick={async () => {
+                          if (!selectedProject) return;
+                          try {
+                            const updatedProject = await updateProject(selectedProject.id, {
+                              script_text: currentProject.scriptText
+                            });
+                            
+                            if (updatedProject) {
+                              const localProject = {
+                                id: updatedProject.id,
+                                scriptText: updatedProject.script_text,
+                                genre: updatedProject.genre || "",
+                                tone: updatedProject.tone || "",
+                                characterCount: updatedProject.character_count || 0,
+                                shots: updatedProject.shots ? (updatedProject.shots as Shot[]) : [],
+                                storyboard: updatedProject.storyboard_frames ? (updatedProject.storyboard_frames as StoryboardFrame[]) : undefined,
+                                createdAt: new Date(updatedProject.created_at)
+                              };
+                              setSelectedProject(localProject);
+                              toast({
+                                title: "Script saved",
+                                description: "Your script changes have been saved successfully.",
+                              });
+                            }
+                          } catch (error) {
+                            console.error('Error saving script:', error);
+                            toast({
+                              title: "Error",
+                              description: "Failed to save script changes. Please try again.",
+                              variant: "destructive"
+                            });
+                          }
+                        }}
+                        className="w-full"
+                        variant="default"
+                      >
+                        <Save className="h-4 w-4 mr-2" />
+                        Save Script Changes
+                      </Button>
+                    )}
                   </div>
 
                   {/* Art Style Selection */}
