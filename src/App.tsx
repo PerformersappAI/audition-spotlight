@@ -25,6 +25,7 @@ import { FilmmakerDashboard } from "./pages/FilmmakerDashboard";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminUsers from "./pages/AdminUsers";
+import AdminAuditions from "./pages/AdminAuditions";
 import AdminProjects from "./pages/AdminProjects";
 import AdminFestivals from "./pages/AdminFestivals";
 import AdminApplications from "./pages/AdminApplications";
@@ -78,6 +79,7 @@ const AppContent = () => (
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
       <Route path="/admin/users" element={<AdminUsers />} />
+      <Route path="/admin/auditions" element={<AdminAuditions />} />
       <Route path="/admin/projects" element={<AdminProjects />} />
       <Route path="/admin/festivals" element={<AdminFestivals />} />
       <Route path="/admin/applications" element={<AdminApplications />} />

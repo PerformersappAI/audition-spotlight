@@ -76,7 +76,8 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: BarChart3 },
     { path: '/admin/users', label: 'Users', icon: Users },
-    { path: '/admin/projects', label: 'Projects', icon: Film },
+    { path: '/admin/auditions', label: 'Auditions', icon: Film },
+    { path: '/admin/projects', label: 'Projects', icon: FileText },
     { path: '/admin/festivals', label: 'Festivals', icon: Trophy },
     { path: '/admin/applications', label: 'Applications', icon: FileText },
     { path: '/admin/credits', label: 'Credits', icon: DollarSign },
