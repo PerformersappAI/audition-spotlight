@@ -540,89 +540,6 @@ const ScriptAnalysis = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto relative">
-        {/* Chat Assistant Button */}
-        {selectedAnalysis?.analysisResult && (
-          <Button
-            onClick={() => setChatOpen(!chatOpen)}
-            className="fixed bottom-6 right-6 z-50 rounded-full w-16 h-16 shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground animate-pulse hover:animate-none"
-            size="icon"
-          >
-            <MessageSquare className="h-7 w-7" />
-          </Button>
-        )}
-
-          {/* Chat Window */}
-          {chatOpen && (
-            <Card className="fixed bottom-24 right-6 w-96 h-[500px] z-50 shadow-2xl flex flex-col">
-              <div className="p-4 border-b flex justify-between items-center bg-muted/50">
-                <h3 className="font-semibold">Ask About Your Scene</h3>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setChatOpen(false)}
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              
-              <ScrollArea className="flex-1 p-4">
-                {chatMessages.length === 0 ? (
-                  <div className="text-center text-muted-foreground py-8">
-                    <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                    <p className="text-sm">Ask me anything about your scene, characters, or directorial approach!</p>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {chatMessages.map((msg, idx) => (
-                      <div
-                        key={idx}
-                        className={`p-3 rounded-lg ${
-                          msg.role === 'user'
-                            ? 'bg-primary text-primary-foreground ml-8'
-                            : 'bg-muted mr-8'
-                        }`}
-                      >
-                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
-                      </div>
-                    ))}
-                    {chatLoading && (
-                      <div className="bg-muted p-3 rounded-lg mr-8">
-                        <div className="flex gap-1">
-                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
-                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" />
-                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.4s]" />
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-              </ScrollArea>
-
-              <div className="p-4 border-t">
-                <div className="flex gap-2">
-                  <Textarea
-                    value={chatInput}
-                    onChange={(e) => setChatInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        sendChatMessage();
-                      }
-                    }}
-                    placeholder="Ask about characters, pacing, visuals..."
-                    className="min-h-[60px] resize-none"
-                  />
-                  <Button
-                    onClick={sendChatMessage}
-                    disabled={!chatInput.trim() || chatLoading}
-                    size="icon"
-                  >
-                    <Send className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          )}
 
           {/* Header */}
           <div className="text-center mb-8">
@@ -957,7 +874,6 @@ const ScriptAnalysis = () => {
                             key={idx}
                             onClick={() => {
                               setChatInput(question);
-                              setChatOpen(true);
                             }}
                             className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm"
                           >
@@ -968,8 +884,83 @@ const ScriptAnalysis = () => {
                     </Card>
                   </div>
 
+                  {/* Inline Chat Interface */}
+                  <div className="mb-6">
+                    <Card className="bg-card border-border">
+                      <CardHeader className="bg-primary/10 border-b border-border">
+                        <div className="flex items-center gap-2">
+                          <MessageSquare className="h-5 w-5 text-primary" />
+                          <CardTitle className="text-base">Ask About Your Scene</CardTitle>
+                        </div>
+                        <CardDescription className="text-sm">
+                          Ask me anything about your scene, characters, or directorial approach!
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <ScrollArea className="h-[300px] p-4">
+                          {chatMessages.length === 0 ? (
+                            <div className="text-center text-muted-foreground py-8">
+                              <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                              <p className="text-sm">Type a question below or click one of the quick questions above</p>
+                            </div>
+                          ) : (
+                            <div className="space-y-4">
+                              {chatMessages.map((msg, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                                >
+                                  <div
+                                    className={`max-w-[80%] rounded-lg px-4 py-2 ${
+                                      msg.role === 'user'
+                                        ? 'bg-primary text-primary-foreground'
+                                        : 'bg-muted text-foreground'
+                                    }`}
+                                  >
+                                    <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                                  </div>
+                                </div>
+                              ))}
+                              {chatLoading && (
+                                <div className="flex justify-start">
+                                  <div className="bg-muted rounded-lg px-4 py-2">
+                                    <div className="flex gap-1">
+                                      <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
+                                      <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" />
+                                      <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.4s]" />
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </ScrollArea>
+                        <div className="border-t border-border p-4">
+                          <form
+                            onSubmit={(e) => {
+                              e.preventDefault();
+                              sendChatMessage();
+                            }}
+                            className="flex gap-2"
+                          >
+                            <Input
+                              value={chatInput}
+                              onChange={(e) => setChatInput(e.target.value)}
+                              placeholder="Ask about characters, pacing, visuals..."
+                              disabled={chatLoading}
+                              className="flex-1"
+                            />
+                            <Button type="submit" disabled={chatLoading || !chatInput.trim()} size="icon">
+                              <Send className="w-4 h-4" />
+                            </Button>
+                          </form>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </div>
 
-                  {/* Cast of Characters */}
+
+
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
                     <div className="mb-6">
                       <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">

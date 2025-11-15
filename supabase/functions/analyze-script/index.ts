@@ -468,14 +468,28 @@ Tone: ${tone || 'neutral'}
 ${selectedDirectors.length > 0 ? `Director Style(s): ${selectedDirectors.join(', ')}` : ''}
 
 CRITICAL INSTRUCTIONS FOR CHARACTER EXTRACTION:
-1. **SCAN FOR ALL CHARACTER NAMES:** Look for names in these formats:
-   - Dialogue format: "CHARACTER NAME:" followed by dialogue
-   - All caps names in action lines: "JOHN enters the room"
-   - Parenthetical speakers: "SARAH (angry):"
-   - Any name that appears in the scene text
-2. **EVERY CHARACTER MUST BE IN castOfCharacters:** Do not skip any character, no matter how small their role
-3. For each character, analyze what they specifically DO and WANT in this scene
-4. Reference actual dialogue and actions from the scene for each character
+1. **SCAN THE SCRIPT THOROUGHLY FOR ALL CHARACTER NAMES IN THESE FORMATS:**
+   - Dialogue format: Lines starting with a character name (often in ALL CAPS or Title Case) followed by dialogue
+     Example: "JOHN: I can't believe this." or "John: What's happening?"
+   - All caps names in action lines: Look for consistently capitalized names
+     Example: "SARAH enters the room. JOHN looks up from his desk."
+   - Character names with parentheticals: "DETECTIVE MILLER (annoyed): Not again."
+   - Any proper noun that appears multiple times and represents a speaking character
+
+2. **DO NOT USE GENERIC PLACEHOLDERS:** Extract the ACTUAL character names from the script text
+   - ❌ NEVER use: "Main Character", "Supporting Character", "protagonist", "antagonist" as names
+   - ✅ ALWAYS use: The specific name like "JOHN SMITH", "SARAH", "DR. MARTINEZ", etc.
+
+3. **FOR EACH CHARACTER FOUND:**
+   - name: Use the EXACT character name as it appears in the script
+   - role: Classify their narrative function (protagonist/antagonist/supporting/ensemble)
+   - description: Brief description of their role in THIS specific scene
+   - objective: What they want in this scene (reference specific dialogue/actions)
+   - fear: What they're afraid of losing (if evident in the scene)
+
+4. **REFERENCE ACTUAL CONTENT:** When describing characters, quote or reference specific lines, actions, or moments from the scene that reveal their character.
+
+If you cannot find ANY character names in the script (which would be unusual), then you may use role-based descriptions, but ALWAYS try to extract actual names first.
 
 SCENE ANALYSIS INSTRUCTIONS:
 1. Extract the specific action, dialogue, and dramatic beats from THIS scene
