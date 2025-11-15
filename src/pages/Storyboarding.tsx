@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2 } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -702,6 +702,93 @@ const Storyboarding = () => {
       });
     } finally {
       setIsSavingCharacters(false);
+    }
+  };
+
+  const addNewShot = async (insertAfterShotNumber?: number) => {
+    if (!selectedProject) return;
+    
+    const shots = selectedProject.shots || [];
+    
+    // Create new shot with default values
+    const newShot: Shot = {
+      shotNumber: shots.length + 1,
+      description: "",
+      cameraAngle: "Medium Shot",
+      characters: [],
+      visualElements: "",
+      duration: "3-5s",
+      scriptSegment: "",
+      dialogueLines: [],
+      sceneAction: "",
+      visualDescription: "",
+      location: "",
+      action: "",
+      emotionalTone: "",
+      shotType: "Medium Shot",
+      lighting: "",
+      keyProps: "",
+      dialogue: ""
+    };
+    
+    let updatedShots: Shot[];
+    
+    if (insertAfterShotNumber !== undefined) {
+      // Insert after specific shot
+      const insertIndex = shots.findIndex(s => s.shotNumber === insertAfterShotNumber);
+      updatedShots = [
+        ...shots.slice(0, insertIndex + 1),
+        newShot,
+        ...shots.slice(insertIndex + 1)
+      ];
+    } else {
+      // Add at end
+      updatedShots = [...shots, newShot];
+    }
+    
+    // Renumber all shots sequentially
+    updatedShots = updatedShots.map((shot, index) => ({
+      ...shot,
+      shotNumber: index + 1
+    }));
+    
+    try {
+      // Update project in database
+      const updatedProject = await updateProject(selectedProject.id, {
+        shots: updatedShots
+      });
+      
+      if (updatedProject) {
+        const localProject: StoryboardProjectLocal = {
+          id: updatedProject.id,
+          scriptText: updatedProject.script_text,
+          genre: updatedProject.genre || "",
+          tone: updatedProject.tone || "",
+          characterCount: updatedProject.character_count,
+          shots: updatedProject.shots || [],
+          storyboard: updatedProject.storyboard_frames || undefined,
+          createdAt: new Date(updatedProject.created_at)
+        };
+        setSelectedProject(localProject);
+        
+        // Automatically start editing the new shot
+        const newShotNumber = insertAfterShotNumber !== undefined 
+          ? insertAfterShotNumber + 1 
+          : updatedShots.length;
+        setEditingShot(newShotNumber);
+        
+        toast({
+          title: "Shot Added",
+          description: `New shot ${newShotNumber} added successfully`,
+        });
+      }
+    } catch (error) {
+      console.error("Error adding shot:", error);
+      toast({
+        title: "Error",
+        description: "Failed to add shot",
+        variant: "destructive",
+      });
     }
   };
 
@@ -1650,14 +1737,37 @@ const Storyboarding = () => {
                             {shot.dialogue && shot.dialogue !== "None" && (
                               <div className="border-t pt-3">
                                 <h4 className="font-medium text-sm mb-1 text-primary">Dialogue</h4>
-                                <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded">
+                                 <p className="text-xs text-muted-foreground bg-primary/10 p-2 rounded">
                                   {shot.dialogue}
                                 </p>
-                              </div>
-                            )}
-                          </CardContent>
-                       </Card>
-                     ))}
+                        </div>
+                      )}
+                      
+                      <div className="pt-3 mt-3 border-t">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => addNewShot(shot.shotNumber)}
+                          className="w-full"
+                        >
+                          <Plus className="h-4 w-4 mr-2" />
+                          Insert Shot Below
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+                   </div>
+                   
+                   <div className="mt-4 flex justify-center">
+                     <Button
+                       variant="outline"
+                       onClick={() => addNewShot()}
+                       className="w-full max-w-md"
+                     >
+                       <Plus className="h-4 w-4 mr-2" />
+                       Add Another Shot
+                     </Button>
                    </div>
                  </CardContent>
               </Card>
