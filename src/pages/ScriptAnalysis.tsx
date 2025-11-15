@@ -9,7 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send } from 'lucide-react';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send, Pencil } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -98,6 +99,9 @@ const ScriptAnalysis = () => {
   const [chatInput, setChatInput] = useState('');
   const [chatLoading, setChatLoading] = useState(false);
   const chatInputRef = useRef<HTMLDivElement>(null);
+  const [characterNotes, setCharacterNotes] = useState<Record<string, string>>({});
+  const [editingCharacter, setEditingCharacter] = useState<{name: string, notes: string} | null>(null);
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -969,11 +973,69 @@ const ScriptAnalysis = () => {
                             <CardContent className="p-4">
                               <div className="flex items-start justify-between mb-2">
                                 <h4 className="font-medium text-sm">{character.name}</h4>
-                                <Badge variant="outline" className="text-xs">
-                                  {character.role}
-                                </Badge>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="outline" className="text-xs">
+                                    {character.role}
+                                  </Badge>
+                                  <Dialog open={noteDialogOpen && editingCharacter?.name === character.name} onOpenChange={(open) => {
+                                    setNoteDialogOpen(open);
+                                    if (!open) setEditingCharacter(null);
+                                  }}>
+                                    <DialogTrigger asChild>
+                                      <Button 
+                                        variant="ghost" 
+                                        size="sm" 
+                                        className="h-7 w-7 p-0"
+                                        onClick={() => {
+                                          setEditingCharacter({
+                                            name: character.name,
+                                            notes: characterNotes[character.name] || ''
+                                          });
+                                          setNoteDialogOpen(true);
+                                        }}
+                                      >
+                                        <Pencil className="h-3 w-3" />
+                                      </Button>
+                                    </DialogTrigger>
+                                    <DialogContent>
+                                      <DialogHeader>
+                                        <DialogTitle>Director Notes: {character.name}</DialogTitle>
+                                      </DialogHeader>
+                                      <div className="space-y-4 py-4">
+                                        <Textarea
+                                          placeholder="Add your director notes for this character..."
+                                          value={editingCharacter?.notes || ''}
+                                          onChange={(e) => setEditingCharacter(prev => prev ? {...prev, notes: e.target.value} : null)}
+                                          rows={6}
+                                        />
+                                        <Button 
+                                          onClick={() => {
+                                            if (editingCharacter) {
+                                              setCharacterNotes(prev => ({
+                                                ...prev,
+                                                [editingCharacter.name]: editingCharacter.notes
+                                              }));
+                                              toast.success('Director notes saved');
+                                            }
+                                            setNoteDialogOpen(false);
+                                            setEditingCharacter(null);
+                                          }}
+                                          className="w-full"
+                                        >
+                                          Save Notes
+                                        </Button>
+                                      </div>
+                                    </DialogContent>
+                                  </Dialog>
+                                </div>
                               </div>
-                              <p className="text-xs text-muted-foreground">{character.description}</p>
+                              <p className="text-xs text-muted-foreground mb-2">{character.description}</p>
+                              {characterNotes[character.name] && (
+                                <div className="mt-3 pt-3 border-t border-border/50">
+                                  <p className="text-xs font-medium text-foreground mb-1">Director Notes:</p>
+                                  <p className="text-xs text-muted-foreground whitespace-pre-wrap">{characterNotes[character.name]}</p>
+                                </div>
+                              )}
                             </CardContent>
                           </Card>
                         ))}
