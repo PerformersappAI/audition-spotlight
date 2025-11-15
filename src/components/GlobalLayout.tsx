@@ -71,10 +71,6 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                       {credits?.available_credits || 0} Credits
                     </Badge>
                   </Link>
-
-                  <Badge variant="outline" className="border-gold text-gold hidden sm:flex">
-                    {userProfile?.role || 'USER'}
-                  </Badge>
                   
                   <div className="flex items-center space-x-3 bg-accent/50 p-2 rounded-lg">
                     <div className="h-8 w-8 rounded-full bg-gradient-to-r from-gold to-gold-light flex items-center justify-center">
