@@ -8,7 +8,8 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -92,6 +93,10 @@ const ScriptAnalysis = () => {
   const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysisLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
   const [quickQuestion, setQuickQuestion] = useState("");
+  const [chatOpen, setChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState<Array<{role: string, content: string}>>([]);
+  const [chatInput, setChatInput] = useState('');
+  const [chatLoading, setChatLoading] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -495,10 +500,128 @@ const ScriptAnalysis = () => {
     toast.success("Script analysis has been exported successfully");
   };
 
+  const sendChatMessage = async () => {
+    if (!chatInput.trim()) return;
+
+    const userMessage = { role: 'user', content: chatInput };
+    const newMessages = [...chatMessages, userMessage];
+    setChatMessages(newMessages);
+    setChatInput('');
+    setChatLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('chat-with-analysis', {
+        body: {
+          messages: newMessages,
+          scriptText: currentScript.scriptText,
+          genre: currentScript.genre,
+          tone: currentScript.tone,
+          selectedDirectors,
+          analysisResult: selectedAnalysis?.analysisResult
+        }
+      });
+
+      if (error) throw error;
+
+      const assistantMessage = {
+        role: 'assistant',
+        content: data.choices[0].message.content
+      };
+      setChatMessages([...newMessages, assistantMessage]);
+    } catch (error) {
+      console.error('Chat error:', error);
+      toast.error('Failed to get response');
+    } finally {
+      setChatLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-7xl mx-auto relative">
+          {/* Chat Assistant Button */}
+          <Button
+            onClick={() => setChatOpen(!chatOpen)}
+            className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg"
+            size="icon"
+          >
+            <MessageSquare className="h-6 w-6" />
+          </Button>
+
+          {/* Chat Window */}
+          {chatOpen && (
+            <Card className="fixed bottom-24 right-6 w-96 h-[500px] z-50 shadow-2xl flex flex-col">
+              <div className="p-4 border-b flex justify-between items-center bg-muted/50">
+                <h3 className="font-semibold">Ask About Your Scene</h3>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setChatOpen(false)}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <ScrollArea className="flex-1 p-4">
+                {chatMessages.length === 0 ? (
+                  <div className="text-center text-muted-foreground py-8">
+                    <MessageSquare className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                    <p className="text-sm">Ask me anything about your scene, characters, or directorial approach!</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {chatMessages.map((msg, idx) => (
+                      <div
+                        key={idx}
+                        className={`p-3 rounded-lg ${
+                          msg.role === 'user'
+                            ? 'bg-primary text-primary-foreground ml-8'
+                            : 'bg-muted mr-8'
+                        }`}
+                      >
+                        <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      </div>
+                    ))}
+                    {chatLoading && (
+                      <div className="bg-muted p-3 rounded-lg mr-8">
+                        <div className="flex gap-1">
+                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce" />
+                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" />
+                          <div className="w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.4s]" />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </ScrollArea>
+
+              <div className="p-4 border-t">
+                <div className="flex gap-2">
+                  <Textarea
+                    value={chatInput}
+                    onChange={(e) => setChatInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage();
+                      }
+                    }}
+                    placeholder="Ask about characters, pacing, visuals..."
+                    className="min-h-[60px] resize-none"
+                  />
+                  <Button
+                    onClick={sendChatMessage}
+                    disabled={!chatInput.trim() || chatLoading}
+                    size="icon"
+                  >
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+            </Card>
+          )}
+
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-between mb-4">
