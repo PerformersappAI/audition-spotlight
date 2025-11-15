@@ -475,7 +475,7 @@ CRITICAL INSTRUCTIONS:
 5. Give directors practical, actionable guidance for shooting THIS scene
 6. Consider the directorial style(s) and how they would approach THIS specific scene
 
-Make your analysis deeply personal to this scene - reference specific lines, actions, and moments.
+Make your analysis deeply personal to this scene - reference specific lines, actions, and moments.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
