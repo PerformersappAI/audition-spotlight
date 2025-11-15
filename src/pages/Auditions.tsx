@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Calendar, MapPin, Briefcase, DollarSign, Users, Filter } from "lucide-react";
-import { format } from "date-fns";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface AuditionNotice {
   id: string;
@@ -25,6 +26,8 @@ interface AuditionNotice {
   submission_deadline: string;
   created_at: string;
   genre: string | null;
+  casting_director: string | null;
+  audition_date: string | null;
 }
 
 export default function Auditions() {
@@ -34,6 +37,12 @@ export default function Auditions() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("all");
   const [filterLocation, setFilterLocation] = useState("all");
+  const [filterUnion, setFilterUnion] = useState("all");
+  const [filterGenre, setFilterGenre] = useState("all");
+  const [showBackgroundOnly, setShowBackgroundOnly] = useState(false);
+  const [showPayingOnly, setShowPayingOnly] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 20;
 
   useEffect(() => {
     fetchAuditions();
@@ -41,7 +50,7 @@ export default function Auditions() {
 
   useEffect(() => {
     applyFilters();
-  }, [auditions, searchTerm, filterType, filterLocation]);
+  }, [auditions, searchTerm, filterType, filterLocation, filterUnion, filterGenre, showBackgroundOnly, showPayingOnly]);
 
   const fetchAuditions = async () => {
     try {
@@ -68,7 +77,8 @@ export default function Auditions() {
         (a) =>
           a.project_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           a.role_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          a.role_description.toLowerCase().includes(searchTerm.toLowerCase())
+          a.role_description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          (a.casting_director && a.casting_director.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -82,13 +92,64 @@ export default function Auditions() {
       );
     }
 
+    if (filterUnion !== "all") {
+      filtered = filtered.filter((a) => a.union_status === filterUnion);
+    }
+
+    if (filterGenre !== "all") {
+      filtered = filtered.filter((a) => a.genre === filterGenre);
+    }
+
+    if (showBackgroundOnly) {
+      filtered = filtered.filter((a) => 
+        a.role_name.toLowerCase().includes("background") || 
+        a.role_name.toLowerCase().includes("extra") ||
+        a.role_description.toLowerCase().includes("background")
+      );
+    }
+
+    if (showPayingOnly) {
+      filtered = filtered.filter((a) => 
+        a.rate_of_pay && 
+        a.rate_of_pay !== "Unpaid" && 
+        a.rate_of_pay !== "Deferred" &&
+        !a.rate_of_pay.toLowerCase().includes("unpaid")
+      );
+    }
+
     setFilteredAuditions(filtered);
+    setCurrentPage(1);
   };
 
   const uniqueTypes = Array.from(new Set(auditions.map((a) => a.project_type)));
   const uniqueLocations = Array.from(
     new Set(auditions.map((a) => a.location.split(",")[0].trim()))
   );
+  const uniqueUnions = Array.from(
+    new Set(auditions.map((a) => a.union_status).filter(Boolean))
+  );
+  const uniqueGenres = Array.from(
+    new Set(auditions.map((a) => a.genre).filter(Boolean))
+  );
+
+  const totalPages = Math.ceil(filteredAuditions.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const paginatedAuditions = filteredAuditions.slice(startIndex, startIndex + itemsPerPage);
+
+  const clearFilters = () => {
+    setSearchTerm("");
+    setFilterType("all");
+    setFilterLocation("all");
+    setFilterUnion("all");
+    setFilterGenre("all");
+    setShowBackgroundOnly(false);
+    setShowPayingOnly(false);
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+  };
 
   if (isLoading) {
     return (
@@ -102,36 +163,34 @@ export default function Auditions() {
     <div className="min-h-screen bg-background py-8">
       <div className="container mx-auto px-4">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Available Auditions</h1>
+          <h1 className="text-4xl font-bold mb-2">Audition Breakdowns</h1>
           <p className="text-muted-foreground">
-            Browse and apply to current casting opportunities
+            Find your next role from active casting calls
           </p>
         </div>
 
         {/* Filters */}
         <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Filter className="h-5 w-5" />
-              Filter Auditions
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="space-y-2">
+          <CardContent className="pt-6">
+            <div className="space-y-4">
+              {/* Search Bar */}
+              <div className="w-full">
                 <Input
-                  placeholder="Search by project or role..."
+                  placeholder="Search by project title, role, or casting director..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full"
                 />
               </div>
-              <div className="space-y-2">
+
+              {/* Filter Row */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Select value={filterType} onValueChange={setFilterType}>
                   <SelectTrigger>
-                    <SelectValue placeholder="All Project Types" />
+                    <SelectValue placeholder="All Breakdowns" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Project Types</SelectItem>
+                    <SelectItem value="all">All Breakdowns</SelectItem>
                     {uniqueTypes.map((type) => (
                       <SelectItem key={type} value={type}>
                         {type}
@@ -139,8 +198,7 @@ export default function Auditions() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
-              <div className="space-y-2">
+
                 <Select value={filterLocation} onValueChange={setFilterLocation}>
                   <SelectTrigger>
                     <SelectValue placeholder="All Locations" />
@@ -154,98 +212,152 @@ export default function Auditions() {
                     ))}
                   </SelectContent>
                 </Select>
+
+                <Select value={filterUnion} onValueChange={setFilterUnion}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Union Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Union Status</SelectItem>
+                    {uniqueUnions.map((union) => (
+                      <SelectItem key={union} value={union}>
+                        {union}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+
+                <Select value={filterGenre} onValueChange={setFilterGenre}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="All Genres" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Genres</SelectItem>
+                    {uniqueGenres.map((genre) => (
+                      <SelectItem key={genre} value={genre}>
+                        {genre}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Checkbox Filters */}
+              <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="background" 
+                    checked={showBackgroundOnly}
+                    onCheckedChange={(checked) => setShowBackgroundOnly(checked as boolean)}
+                  />
+                  <label htmlFor="background" className="text-sm cursor-pointer">
+                    Show Background Roles Only
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox 
+                    id="paying" 
+                    checked={showPayingOnly}
+                    onCheckedChange={(checked) => setShowPayingOnly(checked as boolean)}
+                  />
+                  <label htmlFor="paying" className="text-sm cursor-pointer">
+                    Show Paying Roles Only
+                  </label>
+                </div>
+                <Button variant="outline" size="sm" onClick={clearFilters}>
+                  Clear All Filters
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Auditions List */}
+        {/* Results Count */}
+        <div className="mb-4 flex justify-between items-center">
+          <p className="text-sm text-muted-foreground">
+            Page {currentPage} of {totalPages} ({filteredAuditions.length} total results)
+          </p>
+        </div>
+
+        {/* Auditions Table */}
         {filteredAuditions.length === 0 ? (
           <Card>
-            <CardContent className="py-12 text-center">
-              <p className="text-muted-foreground mb-4">
-                No auditions found matching your criteria
-              </p>
-              <Button onClick={() => { setSearchTerm(""); setFilterType("all"); setFilterLocation("all"); }}>
-                Clear Filters
+            <CardContent className="text-center py-12">
+              <p className="text-muted-foreground mb-4">No auditions match your search criteria</p>
+              <Button variant="outline" onClick={clearFilters}>
+                Clear All Filters
               </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 gap-6">
-            {filteredAuditions.map((audition) => (
-              <Card key={audition.id} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <CardTitle className="text-2xl mb-2">
-                        {audition.role_name}
-                      </CardTitle>
-                      <CardDescription className="text-lg">
-                        {audition.project_name}
-                      </CardDescription>
-                    </div>
-                    <div className="flex flex-col gap-2 items-end">
-                      <Badge variant="secondary">{audition.project_type}</Badge>
-                      {audition.union_status && (
-                        <Badge variant="outline">{audition.union_status}</Badge>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground mb-4 line-clamp-2">
-                    {audition.role_description}
-                  </p>
+          <>
+            <Card>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-24">Date</TableHead>
+                    <TableHead>Title</TableHead>
+                    <TableHead>Type</TableHead>
+                    <TableHead>Casting Director</TableHead>
+                    <TableHead className="w-24">Deadline</TableHead>
+                    <TableHead className="w-32">Union</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {paginatedAuditions.map((audition) => (
+                    <TableRow key={audition.id} className="cursor-pointer hover:bg-muted/50">
+                      <TableCell className="text-xs">
+                        {formatDate(audition.audition_date || audition.created_at)}
+                      </TableCell>
+                      <TableCell>
+                        <Link to={`/audition/${audition.id}`} className="text-primary hover:underline font-medium">
+                          {audition.project_name}
+                        </Link>
+                        <p className="text-xs text-muted-foreground mt-1">{audition.role_name}</p>
+                      </TableCell>
+                      <TableCell className="text-sm">{audition.project_type}</TableCell>
+                      <TableCell className="text-sm">{audition.casting_director || "N/A"}</TableCell>
+                      <TableCell className="text-xs">
+                        {formatDate(audition.submission_deadline)}
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline" className="text-xs">
+                          {audition.union_status || "NON-UNION"}
+                        </Badge>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div className="flex items-center gap-2 text-sm">
-                      <MapPin className="h-4 w-4 text-muted-foreground" />
-                      <span>{audition.location}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Briefcase className="h-4 w-4 text-muted-foreground" />
-                      <span>{audition.work_type}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <DollarSign className="h-4 w-4 text-muted-foreground" />
-                      <span>{audition.rate_of_pay}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Calendar className="h-4 w-4 text-muted-foreground" />
-                      <span>
-                        Deadline: {format(new Date(audition.submission_deadline), "MMM d, yyyy")}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {audition.age_range && (
-                      <Badge variant="outline">Age: {audition.age_range}</Badge>
-                    )}
-                    {audition.gender_preference && (
-                      <Badge variant="outline">{audition.gender_preference}</Badge>
-                    )}
-                    {audition.ethnicity_requirement && (
-                      <Badge variant="outline">{audition.ethnicity_requirement}</Badge>
-                    )}
-                    {audition.genre && (
-                      <Badge variant="outline">{audition.genre}</Badge>
-                    )}
-                  </div>
-
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-muted-foreground">
-                      Posted {format(new Date(audition.created_at), "MMM d, yyyy")}
-                    </span>
-                    <Link to={`/audition/${audition.id}`}>
-                      <Button>View Full Breakdown</Button>
-                    </Link>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4 mr-1" />
+                  Previous
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  Page {currentPage} of {totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </Button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>
