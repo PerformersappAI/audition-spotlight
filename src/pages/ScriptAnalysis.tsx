@@ -91,6 +91,7 @@ const ScriptAnalysis = () => {
   } = useOCRUpload();
   const [selectedAnalysis, setSelectedAnalysis] = useState<ScriptAnalysisLocal | null>(null);
   const [selectedDirectors, setSelectedDirectors] = useState<string[]>([]);
+  const [quickQuestion, setQuickQuestion] = useState("");
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -783,6 +784,38 @@ const ScriptAnalysis = () => {
                       <p className="text-sm leading-relaxed">{selectedAnalysis.analysisResult.sceneSynopsis}</p>
                     </div>
                   )}
+
+                  {/* Quick Director Questions */}
+                  <div className="mb-6">
+                    <Card className="bg-accent/30 border-accent">
+                      <CardHeader>
+                        <CardTitle className="text-base flex items-center gap-2">
+                          <Lightbulb className="h-4 w-4" />
+                          Quick Director Questions
+                        </CardTitle>
+                        <CardDescription className="text-sm">
+                          Click any question to explore this aspect of your scene
+                        </CardDescription>
+                      </CardHeader>
+                      <CardContent className="space-y-2">
+                        {[
+                          "What is the primary dramatic purpose of this scene?",
+                          "How do power dynamics shift between characters?",
+                          "What visual language best serves the emotional truth?",
+                          "Where should the camera be to maximize impact?",
+                          "What key moments anchor this scene's arc?"
+                        ].map((question, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setQuickQuestion(question)}
+                            className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm"
+                          >
+                            {question}
+                          </button>
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </div>
 
                   {/* Characters Quick Reference */}
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
