@@ -377,82 +377,91 @@ Examples: ${knowledge.examples}`;
 
     const systemPrompt = `You are an expert script analyst with deep knowledge of scene construction, character psychology, and directorial approaches.
 
+CRITICAL INSTRUCTION: You are analyzing a SPECIFIC scene provided by the user. Every answer, every insight, every recommendation MUST be directly based on the actual content of this scene. 
+
+DO NOT provide generic filmmaking advice or use placeholder names. Extract ACTUAL character names from the scene text (look for character names in ALL CAPS before dialogue, or in action lines). Analyze their SPECIFIC actions, dialogue, and motivations as they appear IN THIS SCENE.
+
+Reference specific moments, dialogue lines, or actions from the scene in your analysis.
+
 **COMPREHENSIVE SCENE ANALYSIS FRAMEWORK:**
 
-Analyze every scene through these essential dimensions:
+Analyze THIS SPECIFIC SCENE through these essential dimensions:
 
-1. **Scene Purpose:**
-   - Why does this scene exist?
-   - What narrative purpose does it serve (reveal, tension, reversal, setup, payoff)?
-   - What MUST change in the audience or character by the end?
+1. **Scene Purpose (answer for THIS scene):**
+   - Why does THIS specific scene exist in the story?
+   - What specific narrative purpose does it serve (reveal, tension, reversal, setup, payoff)?
+   - What MUST change by the end of THIS scene?
+   - Quote or reference specific moments that reveal this purpose
 
-2. **Character Objectives & Dynamics:**
-   - What does each character want?
-   - What is each character afraid of losing?
-   - What obstacles exist (internal/external)?
-   - How does the power dynamic shift during the scene?
+2. **Character Objectives & Dynamics (from THIS scene's content):**
+   - Extract each character's ACTUAL name from the scene text
+   - What does each character specifically want IN THIS SCENE? (Reference their dialogue or actions)
+   - What specific obstacle exists in THIS scene?
+   - Describe the specific power dynamics and how they shift (reference specific moments)
+   - What is each character afraid of losing IN THIS SCENE?
 
-3. **Emotional Arc:**
-   - What is the emotional anchor of this scene?
-   - Where does the emotional state start and end?
-   - Is the emotion straightforward or contrasted?
+3. **Emotional Arc (of THIS scene):**
+   - What specific emotion anchors THIS scene?
+   - Describe the emotional journey from beginning to end of THIS scene
+   - Reference specific moments or dialogue from the scene
 
-4. **Visual & Spatial Grammar:**
-   - What must the audience SEE to understand the scene?
-   - Where should the camera be to reflect the emotional power?
-   - How is blocking used to support story?
-   - Are there insert shots carrying symbolism?
+4. **Visual & Spatial Grammar (for THIS scene specifically):**
+   - What specific locations/settings appear in THIS scene?
+   - Suggest camera positions that reflect the emotional dynamics of THIS scene
+   - Reference specific blocking moments or character movements from the scene
+   - What insert shots would work for THIS scene's specific props or objects?
 
-5. **Sound & Rhythm:**
-   - What does the soundscape communicate?
-   - Is silence used to build tension?
-   - What pacing supports the scene's emotion?
+5. **Sound & Rhythm (for THIS scene):**
+   - What soundscape would fit THIS scene's specific setting and mood?
+   - Where in THIS scene should silence be used?
+   - What pacing supports THIS scene's specific emotional arc?
 
-6. **Stakes:**
-   - What is at risk for the character?
-   - How are the stakes visually communicated?
+6. **Stakes (in THIS scene):**
+   - What is specifically at risk for each character IN THIS SCENE?
+   - How can the stakes be visually communicated based on THIS scene's content?
 
 7. **Transitions:**
-   - How does the previous scene feed into this?
-   - How does this scene prepare or launch the next?
+   - Based on THIS scene's content, what might have led to this moment?
+   - Where does THIS scene leave the characters emotionally/dramatically?
 
-${directorContext ? `\n**DIRECTOR-SPECIFIC ANALYSIS:**\n${directorContext}\n\nApply each director's style focus and answer their internal questions. Provide specific recommendations aligned with their established methods.\n` : ''}
+${directorContext ? `\n**DIRECTOR-SPECIFIC ANALYSIS:**\n${directorContext}\n\nApply each director's style focus to THIS SPECIFIC SCENE. Answer their internal questions using actual content from the scene. Provide specific recommendations aligned with their methods for executing THIS PARTICULAR SCENE.\n` : ''}
 
-Provide analysis in this exact JSON format:
+Provide analysis in this exact JSON format. ALL FIELDS MUST REFERENCE THE ACTUAL SCENE CONTENT:
+
 {
-  "sceneSynopsis": "Brief, engaging summary of the scene's main events and significance",
+  "sceneSynopsis": "Summary of THIS scene's main events (reference specific actions/dialogue)",
   "castOfCharacters": [
     {
-      "name": "Character Name",
-      "description": "Brief description of the character",
+      "name": "ACTUAL character name from the scene (NEVER use 'Character 1', 'Main Character', etc.)",
+      "description": "Brief description based on THIS scene",
       "role": "protagonist|antagonist|supporting|background",
-      "objective": "What this character wants in the scene",
-      "fear": "What this character is afraid of losing"
+      "objective": "What this specific character wants IN THIS SCENE (reference their dialogue/actions)",
+      "fear": "What this character is afraid of losing IN THIS SCENE (based on scene content)"
     }
   ],
   "characterDescriptions": [
     {
-      "name": "Character Name",
-      "personality": "Key personality traits and characteristics",
-      "motivation": "What drives this character in this scene",
-      "arcTrajectory": "How this character develops or changes"
+      "name": "ACTUAL character name",
+      "personality": "Traits evident IN THIS SCENE",
+      "motivation": "What drives this character IN THIS SCENE (reference specific moments)",
+      "arcTrajectory": "How this character develops IN THIS SCENE"
     }
   ],
-  "emotionalBeats": ["Description of emotional shifts and power dynamics throughout the scene"],
-  "visualSuggestions": ["Camera placement, blocking, insert shots, and visual symbolism ideas"],
-  "soundAndPacing": ["Soundscape, use of silence, rhythm, and pacing recommendations"],
-  "stakesAndPurpose": ["What's at risk, why this scene exists, what must change"],
-  "characterMotivations": ["Key motivations driving the scene"],
-  "directorNotes": ["Specific actionable guidance for execution"],
-  "castingTips": ["Casting suggestions based on character needs"],
-  "technicalRequirements": ["Shot types, camera movements, spatial geography considerations"],
+  "emotionalBeats": ["Specific emotional shifts in THIS scene with references to actual moments"],
+  "visualSuggestions": ["Specific camera ideas for THIS scene's locations, blocking, and moments"],
+  "soundAndPacing": ["Soundscape for THIS scene's specific setting and mood"],
+  "stakesAndPurpose": ["What's specifically at risk IN THIS SCENE and why it exists"],
+  "characterMotivations": ["Specific motivations in THIS scene with dialogue/action references"],
+  "directorNotes": ["Actionable guidance for executing THIS SPECIFIC SCENE"],
+  "castingTips": ["Casting based on THIS scene's character requirements"],
+  "technicalRequirements": ["Specific shots needed for THIS scene's locations and moments"],
   "estimatedDuration": "X-Y minutes",
   "difficultyLevel": "Beginner|Intermediate|Advanced",
-  "keyMoments": ["Critical moments that anchor the scene"],
-  "directorInsights": ["Director-specific insights and recommendations"]
+  "keyMoments": ["Specific critical moments from THIS scene"],
+  "directorInsights": ["Director-specific insights for THIS scene"]
 }
 
-Focus on deep, actionable insights that help filmmakers understand the scene's psychological truth and execute it with precision.`;
+Remember: Base EVERY answer on the ACTUAL scene content. Quote or reference specific moments. Use REAL character names from the scene text.`;
 
     const userPrompt = `Analyze this ${genre || 'unspecified genre'} script with a ${tone || 'neutral'} tone:
 
@@ -472,7 +481,7 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_completion_tokens: 2000,
+        max_completion_tokens: 6000,
         response_format: { type: "json_object" }
       })
     });
@@ -532,74 +541,17 @@ Provide detailed analysis considering the genre, tone, and ${selectedDirectors.l
       }
     } catch (parseError) {
       console.error('Failed to parse AI response as JSON:', parseError);
-      confidenceScore = 0.2; // Very low confidence for fallback
-      // Fallback to mock analysis if JSON parsing fails
-      analysisResult = {
-        sceneSynopsis: `A compelling ${genre || 'drama'} scene exploring themes of conflict and character development`,
-        castOfCharacters: [
-          {
-            name: "Main Character",
-            description: "The central figure driving the scene",
-            role: "protagonist"
-          },
-          {
-            name: "Supporting Character", 
-            description: "Provides conflict and character development",
-            role: "supporting"
-          }
-        ],
-        characterDescriptions: [
-          {
-            name: "Main Character",
-            personality: "Complex and driven with clear objectives",
-            motivation: "Seeks resolution to central conflict",
-            arcTrajectory: "Moves from uncertainty to decisive action"
-          },
-          {
-            name: "Supporting Character",
-            personality: "Acts as catalyst for main character growth",
-            motivation: "Challenges protagonist's assumptions",
-            arcTrajectory: "Reveals hidden depths throughout scene"
-          }
-        ],
-        emotionalBeats: [
-          "Opening establishes character and world",
-          "Rising tension builds toward conflict", 
-          "Climactic moment tests character",
-          "Resolution provides emotional payoff"
-        ],
-        characterMotivations: [
-          "Protagonist driven by clear goal or need",
-          "Supporting characters have distinct perspectives",
-          "Antagonist represents meaningful opposition"
-        ],
-        directorNotes: [
-          "Focus on visual storytelling over exposition",
-          "Use lighting and framing to support mood",
-          "Consider pacing in relation to emotional beats"
-        ],
-        castingTips: [
-          "Look for actors who can convey subtext",
-          "Ensure cast chemistry serves the story",
-          "Consider the physical demands of the role"
-        ],
-        technicalRequirements: [
-          "Standard lighting and camera equipment",
-          "Location needs assessment",
-          "Post-production considerations"
-        ],
-        estimatedDuration: genre === "Comedy" ? "4-6 minutes" : "6-10 minutes",
-        difficultyLevel: "Intermediate",
-        keyMoments: [
-          "Opening hook",
-          "Character introduction",
-          "Conflict escalation",
-          "Climactic resolution"
-        ],
-        directorInsights: selectedDirectors.length > 0 ? 
-          [`Consider ${selectedDirectors[0]}'s approach to similar material`] : 
-          ["Apply proven filmmaking principles to serve the story"]
-      };
+      console.error('Raw AI response:', data.choices[0].message.content);
+      
+      return new Response(JSON.stringify({ 
+        error: 'Unable to complete scene analysis. The response was incomplete or invalid. This may happen with very long scenes. Try analyzing a shorter scene or contact support if the issue persists.',
+        success: false,
+        retryable: true,
+        rawError: parseError.message
+      }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     console.log('Script analysis completed successfully');

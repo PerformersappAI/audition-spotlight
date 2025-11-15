@@ -239,11 +239,18 @@ const ScriptAnalysis = () => {
         const errorMessage = error.message || error.toString();
         
         // Check if this is a retryable error
-        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
-          toast.error("AI service is temporarily busy. Please try analyzing again in a few moments.");
+        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit') || errorMessage.includes('incomplete')) {
+          toast.error("AI service is temporarily busy or the scene was too long. Please try analyzing again with a shorter scene.");
         } else {
           toast.error(`Failed to analyze script: ${errorMessage}`);
         }
+        return;
+      }
+
+      // Check if data contains an error field (new error format from edge function)
+      if (data?.error) {
+        console.error('Script analysis returned error:', data.error);
+        toast.error(data.error);
         return;
       }
 
@@ -787,20 +794,29 @@ const ScriptAnalysis = () => {
                   {/* Characters Quick Reference */}
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
                     <div className="mb-6 p-4 bg-accent/30 rounded-lg border border-accent">
-                      <h3 className="text-sm font-semibold flex items-center gap-2 mb-3 text-foreground">
-                        <Users className="h-4 w-4" />
+                      <h3 className="text-base font-semibold flex items-center gap-2 mb-4 text-foreground">
+                        <Users className="h-5 w-5" />
                         Characters in Scene
                       </h3>
-                      <div className="flex gap-3 overflow-x-auto pb-2">
+                      <div className="flex gap-4 overflow-x-auto pb-2">
                         {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
                           <div 
                             key={index}
-                            className="flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[240px] space-y-1"
+                            className="flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[280px] space-y-2"
                           >
-                            <div className="font-medium text-sm mb-1">{character.name}</div>
-                            <div className="text-xs text-muted-foreground line-clamp-1">
-                              {character.objective || character.role}
-                            </div>
+                            <div className="font-semibold text-base text-foreground">{character.name}</div>
+                            {character.objective && (
+                              <div className="flex items-start gap-2 text-xs">
+                                <span className="text-primary font-medium mt-0.5">→</span>
+                                <span className="text-muted-foreground flex-1">{character.objective}</span>
+                              </div>
+                            )}
+                            {character.fear && (
+                              <div className="flex items-start gap-2 text-xs">
+                                <span className="text-destructive font-medium mt-0.5">⚠</span>
+                                <span className="text-muted-foreground flex-1">{character.fear}</span>
+                              </div>
+                            )}
                           </div>
                         ))}
                       </div>
