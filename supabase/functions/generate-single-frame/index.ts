@@ -8,34 +8,40 @@ function getStrictStyleInstructions(artStyle: string): string {
   
   // Black & white styles - STRICTLY enforce no color
   if (artStyleLower.includes('noir') || artStyleLower.includes('film noir')) {
-    return `STRICTLY BLACK AND WHITE FILM NOIR STYLE. ABSOLUTELY NO COLOR. MONOCHROME ONLY. High contrast black and white with dramatic shadows and lighting. NO realistic photography, NO color elements whatsoever. Pure black and white cinematography style.`;
+    return `FILM NOIR STYLE - STRICTLY BLACK AND WHITE ONLY. ABSOLUTELY NO COLOR. High contrast monochrome cinematography. Deep shadows, dramatic lighting, venetian blind shadows, rain-slicked streets aesthetic. Classic 1940s crime film look. MUST BE PURE BLACK AND WHITE. NO color whatsoever. NO realistic photography - stylized noir illustration.`;
   }
   if (artStyleLower.includes('charcoal')) {
-    return `STRICTLY BLACK AND WHITE CHARCOAL DRAWING. ABSOLUTELY NO COLOR. MONOCHROME ONLY. Hand-drawn sketch style with charcoal texture and shading. NO realistic details, NO color of any kind. Pure black and white charcoal art.`;
+    return `CHARCOAL DRAWING STYLE - STRICTLY BLACK AND WHITE HAND-DRAWN ART. Rough charcoal texture, smudged shading, sketch-like quality. Hand-drawn on paper aesthetic with visible charcoal strokes and grain. ABSOLUTELY NO COLOR. MUST look hand-drawn with charcoal. NOT photography. Pure monochrome sketched art.`;
   }
   if (artStyleLower.includes('pencil')) {
-    return `STRICTLY BLACK AND WHITE PENCIL SKETCH. ABSOLUTELY NO COLOR. MONOCHROME ONLY. Hand-drawn with pencil lines and graphite shading. NO realism, NO color whatsoever. Pure black and white pencil drawing.`;
+    return `PENCIL SKETCH STYLE - STRICTLY BLACK AND WHITE HAND-DRAWN. Clean pencil lines, graphite shading, sketch aesthetic. Hand-drawn illustration with visible pencil strokes and hatching. ABSOLUTELY NO COLOR. MUST appear hand-sketched with pencil. NOT realistic photo. Pure monochrome pencil drawing.`;
   }
   
-  // Other specific styles
+  // Illustrated styles - NOT photography
   if (artStyleLower.includes('graphic novel')) {
-    return `GRAPHIC NOVEL ILLUSTRATION STYLE - detailed ink work, sequential art style, professional comic book illustration. NOT realistic photography. Bold ink lines and defined shapes.`;
+    return `GRAPHIC NOVEL ILLUSTRATION - PROFESSIONAL COMIC BOOK ART STYLE. Bold ink outlines, clear panel composition, sequential art aesthetic. Similar to DC Comics, Marvel, or Image Comics style. Strong ink work with defined shapes and dramatic composition. VIBRANT COLORS with professional comic book color palette. High contrast inking with solid blacks and clear line work. MUST look like professional comic book illustration. ABSOLUTELY NOT realistic photography. NOT sketch or rough drawing - finished professional comic art with polished inking and coloring.`;
   }
   if (artStyleLower.includes('comic')) {
-    return `COMIC BOOK ART STYLE - bold outlines, clear panels style, sequential art. Professional comic illustration with defined ink work.`;
+    return `COMIC BOOK STYLE - BOLD PROFESSIONAL COMIC ILLUSTRATION. Strong outlines, clear shapes, dramatic poses and expressions. Classic superhero comic aesthetic with dynamic action poses. Professional comic book inking and coloring. Ben-Day dots optional. VIBRANT comic book colors. MUST look like published comic book art. NOT realistic photography. NOT sketch - finished professional comic illustration.`;
   }
   if (artStyleLower.includes('watercolor')) {
-    return `WATERCOLOR PAINTING STYLE - soft washes, artistic interpretation, painterly quality. Hand-painted watercolor aesthetic.`;
+    return `WATERCOLOR PAINTING STYLE - HAND-PAINTED ARTISTIC AESTHETIC. Soft color washes, wet-on-wet blending, visible brushstrokes and paper texture. Loose painterly quality with flowing colors and organic edges. Traditional watercolor on paper look. MUST appear hand-painted with watercolors. NOT photography. Artistic interpretation with painterly quality and soft edges.`;
   }
   if (artStyleLower.includes('anime')) {
-    return `ANIME ART STYLE - Japanese animation style, characteristic anime features, cel-shaded look.`;
+    return `ANIME ART STYLE - JAPANESE ANIMATION AESTHETIC. Clean cel-shaded look, characteristic anime features (large expressive eyes, distinctive hair), smooth gradients. Studio Ghibli or modern anime series quality. Vibrant colors with smooth shading. MUST look like Japanese animation frames. NOT realistic photography. Professional anime illustration with clean lines and cel-shading.`;
   }
   if (artStyleLower.includes('3d') || artStyleLower.includes('rendered')) {
-    return `3D RENDERED STYLE - computer generated aesthetic, clean rendering, professional 3D visualization.`;
+    return `3D RENDERED STYLE - COMPUTER GENERATED IMAGERY (CGI). Clean Pixar/Disney 3D animation quality, smooth surfaces, professional 3D modeling and rendering. Stylized 3D characters and environments. Professional CG animation aesthetic. MUST look like 3D rendered animation. NOT realistic photography. Polished CGI with proper lighting and materials.`;
+  }
+  if (artStyleLower.includes('vector')) {
+    return `VECTOR ART STYLE - CLEAN DIGITAL ILLUSTRATION. Flat colors, geometric shapes, smooth curves, no texture. Adobe Illustrator style with crisp edges and solid colors. Modern minimalist illustration aesthetic. MUST look like vector graphics. NOT photography. Clean digital art with flat colors and smooth shapes.`;
+  }
+  if (artStyleLower.includes('cinematic')) {
+    return `CINEMATIC PHOTOGRAPHIC STYLE - PROFESSIONAL FILM PHOTOGRAPHY. 35mm film quality, proper depth of field, professional cinematography lighting. Movie production quality with cinematic color grading. Professional film camera aesthetic with bokeh and proper exposure. High-budget film production look. Realistic photographic quality with dramatic cinematic composition.`;
   }
   
-  // Return the original style with emphasis
-  return `ARTISTIC STYLE: ${artStyle}. STRICTLY FOLLOW THIS EXACT STYLE. NOT realistic photography.`;
+  // Return the original style with strong emphasis
+  return `ARTISTIC STYLE: ${artStyle}. THIS IS THE PRIMARY STYLE - FOLLOW IT EXACTLY. MUST look like ${artStyle}. NOT realistic photography unless specifically a photographic style. Create in the exact aesthetic of ${artStyle} with all its characteristic visual features.`;
 }
 
 function getCameraInstructions(cameraAngle: string): string {
@@ -192,7 +198,7 @@ serve(async (req) => {
     // Main shot description
     imagePrompt += `SCENE: ${visualDesc}
 
-STORYBOARD FRAME - film previsualization, professional concept art for film production, 35mm film composition and framing
+STORYBOARD FRAME - film previsualization, professional concept art for film production
 
 ${location ? `Location: ${location}` : ''}
 ${shot.characters && shot.characters.length > 0 ? `Characters: ${shot.characters.join(', ')} - ${action}` : ''}
@@ -201,7 +207,9 @@ ${keyProps ? `Key Props: ${keyProps}` : ''}
 ${emotionalTone ? `Mood: ${emotionalTone}` : ''}
 ${cameraInstructions}
 
-${strictStyleInstructions}`;
+REMEMBER: ${strictStyleInstructions}
+
+CRITICAL EXCLUSIONS: NO photograph unless specifically requested, NO sketch if not requested, NO realistic photo if illustration style is specified, NO pencil drawing if other style is specified. MAINTAIN THE SPECIFIED ARTISTIC STYLE EXACTLY.`;
 
     console.log(`Generating image for shot ${shot.shotNumber} with prompt length: ${imagePrompt.length}`);
     console.log(`Full prompt: ${imagePrompt}`);
@@ -232,6 +240,13 @@ ${strictStyleInstructions}`;
 
     if (!response.ok) {
       const errorData = await response.text();
+      let errorJson;
+      try {
+        errorJson = JSON.parse(errorData);
+      } catch (e) {
+        errorJson = { error: { message: errorData } };
+      }
+      
       console.error(`OpenAI Image API error for shot ${shot.shotNumber}:`, {
         status: response.status,
         statusText: response.statusText,
@@ -240,21 +255,26 @@ ${strictStyleInstructions}`;
         promptLength: imagePrompt.length
       });
 
-      // Return a fallback SVG for content policy violations or other errors
+      // Check if it's a content policy violation
+      const isContentPolicy = errorJson?.error?.code === 'content_policy_violation' || 
+                             errorData.includes('content_policy_violation') ||
+                             errorData.includes('content policy');
+      const errorMessage = isContentPolicy 
+        ? 'Content policy violation - Try adjusting the scene description'
+        : `Generation failed: ${errorJson?.error?.message || 'Unknown error'}`;
+
+      // Return a more informative fallback
       const fallbackSvg = `data:image/svg+xml;base64,${btoa(`
-        <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
-          <rect width="400" height="300" fill="#f3f4f6"/>
-          <text x="200" y="120" text-anchor="middle" font-family="Arial" font-size="14" fill="#6b7280">
-            Storyboard Frame ${shot.shotNumber}
+        <svg width="1792" height="1024" xmlns="http://www.w3.org/2000/svg">
+          <rect width="1792" height="1024" fill="#fef2f2"/>
+          <text x="896" y="480" text-anchor="middle" font-family="Arial" font-size="24" fill="#dc2626">
+            Generation Failed
           </text>
-          <text x="200" y="140" text-anchor="middle" font-family="Arial" font-size="12" fill="#6b7280">
-            ${shot.cameraAngle}
+          <text x="896" y="520" text-anchor="middle" font-family="Arial" font-size="16" fill="#991b1b">
+            ${isContentPolicy ? 'Content Policy Violation' : 'Error Occurred'}
           </text>
-          <text x="200" y="170" text-anchor="middle" font-family="Arial" font-size="10" fill="#9ca3af">
-            ${shot.description.substring(0, 80)}${shot.description.length > 80 ? '...' : ''}
-          </text>
-          <text x="200" y="190" text-anchor="middle" font-family="Arial" font-size="10" fill="#9ca3af">
-            Content policy prevented generation
+          <text x="896" y="560" text-anchor="middle" font-family="Arial" font-size="14" fill="#991b1b">
+            ${isContentPolicy ? 'Try modifying the scene description' : 'Please try again'}
           </text>
         </svg>
       `)}`;
@@ -262,8 +282,10 @@ ${strictStyleInstructions}`;
       return new Response(JSON.stringify({ 
         imageData: fallbackSvg,
         shotNumber: shot.shotNumber,
-        error: 'Content policy violation - using fallback'
+        error: errorMessage,
+        errorType: isContentPolicy ? 'content_policy' : 'generation_error'
       }), {
+        status: response.status,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

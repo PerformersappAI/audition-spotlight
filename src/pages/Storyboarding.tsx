@@ -1894,42 +1894,46 @@ const Storyboarding = () => {
                                </div>
                              </div>
                              
-                                <div className="bg-muted rounded-lg overflow-hidden border border-border" style={{ aspectRatio: '16 / 9' }}>
-                                  {frame?.imageData ? (
-                                    <img 
-                                      src={frame.imageData} 
-                                      alt={`Storyboard frame ${shot.shotNumber}: ${shot.description}`}
-                                      className="w-full h-full object-cover"
-                                      style={{ aspectRatio: '16 / 9' }}
-                                      onError={(e) => {
-                                        console.error('Failed to load storyboard image:', frame.imageData);
-                                        e.currentTarget.style.display = 'none';
-                                        e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                                      }}
-                                    />
-                                  ) : isGenerating ? (
+              <div className="bg-muted rounded-lg overflow-hidden border border-border aspect-video">
+                {frame?.imageData ? (
+                  <img 
+                    src={frame.imageData} 
+                    alt={`Storyboard frame ${shot.shotNumber}: ${shot.description}`}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.error('Failed to load storyboard image:', frame.imageData);
+                      e.currentTarget.style.display = 'none';
+                      e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                    }}
+                  />
+                ) : isGenerating ? (
                                    <div className="w-full h-full flex items-center justify-center bg-muted">
                                      <div className="text-center">
                                        <Loader2 className="h-8 w-8 mx-auto mb-2 text-muted-foreground animate-spin" />
                                        <p className="text-sm text-muted-foreground">Generating frame {shot.shotNumber}...</p>
                                      </div>
                                    </div>
-                                 ) : error ? (
-                                   <div className="w-full h-full flex items-center justify-center bg-red-50">
-                                     <div className="text-center">
-                                       <AlertCircle className="h-8 w-8 mx-auto mb-2 text-red-500" />
-                                       <p className="text-sm text-red-600">Generation failed</p>
-                                       <Button 
-                                         size="sm" 
-                                         variant="outline" 
-                                         onClick={() => generateSingleFrame(shot.shotNumber)}
-                                         className="mt-2"
-                                       >
-                                         Retry
-                                       </Button>
-                                     </div>
-                                   </div>
-                                 ) : (
+                ) : error ? (
+                  <div className="w-full h-full flex items-center justify-center bg-red-50">
+                    <div className="text-center px-4">
+                      <AlertCircle className="h-8 w-8 mx-auto mb-2 text-red-500" />
+                      <p className="text-sm font-medium text-red-600 mb-1">Generation failed</p>
+                      {error.includes('policy') && (
+                        <p className="text-xs text-red-500 mb-2">
+                          Content policy violation. Try adjusting the scene description.
+                        </p>
+                      )}
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        onClick={() => generateSingleFrame(shot.shotNumber)}
+                        className="mt-2"
+                      >
+                        Retry
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
                                    <div className="w-full h-full flex items-center justify-center bg-muted">
                                      <div className="text-center">
                                        <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
