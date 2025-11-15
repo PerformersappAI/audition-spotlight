@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -30,6 +30,7 @@ export default function CreateAudition() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [previousAuditions, setPreviousAuditions] = useState<any[]>([]);
   const [roles, setRoles] = useState<Role[]>([{
     role_name: "",
     role_type: "Principal",
@@ -80,6 +81,25 @@ export default function CreateAudition() {
     visibility: "public",
     submission_deadline: "",
   });
+
+  useEffect(() => {
+    const fetchPreviousAuditions = async () => {
+      if (!user) return;
+      
+      const { data, error } = await supabase
+        .from("audition_notices")
+        .select("id, project_name, project_type, created_at, status")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5);
+      
+      if (!error && data) {
+        setPreviousAuditions(data);
+      }
+    };
+
+    fetchPreviousAuditions();
+  }, [user]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -626,6 +646,44 @@ export default function CreateAudition() {
             </Button>
           </div>
         </form>
+
+        {/* Previous Auditions Section */}
+        {previousAuditions.length > 0 && (
+          <Card className="mt-8">
+            <CardHeader>
+              <CardTitle>Your Previous Auditions</CardTitle>
+              <CardDescription>Recent casting notices you've posted</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {previousAuditions.map((audition) => (
+                  <Link
+                    key={audition.id}
+                    to={`/audition/${audition.id}`}
+                    className="block p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-semibold">{audition.project_name}</h4>
+                        <p className="text-sm text-muted-foreground">{audition.project_type}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(audition.created_at).toLocaleDateString()}
+                        </p>
+                        <span className={`text-xs px-2 py-1 rounded ${
+                          audition.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'
+                        }`}>
+                          {audition.status}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
     </div>
   );
