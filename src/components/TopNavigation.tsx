@@ -153,7 +153,7 @@ export const TopNavigation = () => {
       </Link>
 
       {/* Admin Dropdown (only for admins) */}
-      {userProfile?.role === 'ADMIN' && (
+      {userProfile?.role === 'admin' && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="flex items-center gap-1 text-sm font-medium hover:text-gold">
@@ -172,6 +172,12 @@ export const TopNavigation = () => {
               <Link to="/admin/users" className="flex items-center gap-3 w-full cursor-pointer p-3">
                 <Users className="h-4 w-4" />
                 <span>Users</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/admin/auditions" className="flex items-center gap-3 w-full cursor-pointer p-3">
+                <Film className="h-4 w-4" />
+                <span>Auditions</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
