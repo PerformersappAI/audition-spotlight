@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2 } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -1271,20 +1271,20 @@ const Storyboarding = () => {
 
               {/* Recent Projects */}
               <Card>
-                <CardHeader>
-                  <CardTitle>Recent Projects</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-base">Recent Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
                   {projects.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-8">
+                    <p className="text-muted-foreground text-center py-6 text-sm">
                       No storyboard projects yet. Upload a script to get started!
                     </p>
                   ) : (
-                    <div className="space-y-4">
+                    <div className="space-y-2">
                       {projects.slice(0, 5).map((project) => (
                         <div
                           key={project.id}
-                          className={`p-4 rounded-lg border cursor-pointer transition-colors ${
+                          className={`relative p-2.5 rounded-lg border cursor-pointer transition-colors ${
                             selectedProject?.id === project.id 
                               ? 'border-primary bg-primary/5' 
                               : 'border-border hover:border-primary/50'
@@ -1300,25 +1300,35 @@ const Storyboarding = () => {
                             createdAt: new Date(project.created_at)
                           })}
                         >
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <span className="font-medium text-sm">
-                                {project.genre || "No Genre"}
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6 hover:bg-destructive/10 hover:text-destructive"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm('Delete this project? This cannot be undone.')) {
+                                deleteProject(project.id);
+                                if (selectedProject?.id === project.id) {
+                                  setSelectedProject(null);
+                                }
+                              }
+                            }}
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                          
+                          <div className="pr-6">
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="font-medium text-xs truncate flex-1">
+                                {project.genre || "No Genre"} • {new Date(project.created_at).toLocaleDateString()}
                               </span>
-                              <Badge variant="outline">
-                                {project.shots?.length || 0} shots
+                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 ml-2">
+                                {project.shots?.length || 0}
                               </Badge>
                             </div>
-                            <p className="text-xs text-muted-foreground line-clamp-2">
-                              {project.script_text.substring(0, 100)}...
+                            <p className="text-[11px] text-muted-foreground line-clamp-1">
+                              {project.script_text.substring(0, 80)}...
                             </p>
-                            <div className="flex items-center justify-between text-xs text-muted-foreground">
-                              <span className="flex items-center gap-1">
-                                <Users className="h-3 w-3" />
-                                {project.character_count}
-                              </span>
-                              <span>{new Date(project.created_at).toLocaleDateString()}</span>
-                            </div>
                           </div>
                         </div>
                       ))}
