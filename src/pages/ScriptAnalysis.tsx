@@ -540,14 +540,16 @@ const ScriptAnalysis = () => {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto relative">
-          {/* Chat Assistant Button */}
+        {/* Chat Assistant Button */}
+        {selectedAnalysis?.analysisResult && (
           <Button
             onClick={() => setChatOpen(!chatOpen)}
-            className="fixed bottom-6 right-6 z-50 rounded-full w-14 h-14 shadow-lg"
+            className="fixed bottom-6 right-6 z-50 rounded-full w-16 h-16 shadow-2xl bg-primary hover:bg-primary/90 text-primary-foreground animate-pulse hover:animate-none"
             size="icon"
           >
-            <MessageSquare className="h-6 w-6" />
+            <MessageSquare className="h-7 w-7" />
           </Button>
+        )}
 
           {/* Chat Window */}
           {chatOpen && (
@@ -898,6 +900,29 @@ const ScriptAnalysis = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
+                  {/* Characters in Scene - Moved to Top */}
+                  {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
+                    <div className="mb-6 p-4 bg-accent/30 rounded-lg border border-accent">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-3 text-foreground">
+                        <Users className="h-4 w-4" />
+                        Characters in This Scene
+                      </h3>
+                      <div className="flex gap-3 overflow-x-auto pb-2">
+                        {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
+                          <div 
+                            key={index}
+                            className="flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[240px] space-y-1"
+                          >
+                            <div className="font-semibold text-base mb-1">{character.name}</div>
+                            <div className="text-xs text-muted-foreground">
+                              {character.objective || character.role}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                   {/* Scene Synopsis */}
                   {selectedAnalysis.analysisResult.sceneSynopsis && (
                     <div className="mb-6 p-4 bg-primary/5 rounded-lg border border-primary/20">
@@ -930,7 +955,10 @@ const ScriptAnalysis = () => {
                         ].map((question, idx) => (
                           <button
                             key={idx}
-                            onClick={() => setQuickQuestion(question)}
+                            onClick={() => {
+                              setChatInput(question);
+                              setChatOpen(true);
+                            }}
                             className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm"
                           >
                             {question}
@@ -940,28 +968,6 @@ const ScriptAnalysis = () => {
                     </Card>
                   </div>
 
-                  {/* Characters Quick Reference */}
-                  {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
-                    <div className="mb-6 p-4 bg-accent/30 rounded-lg border border-accent">
-                      <h3 className="text-sm font-semibold flex items-center gap-2 mb-3 text-foreground">
-                        <Users className="h-4 w-4" />
-                        Characters in Scene
-                      </h3>
-                      <div className="flex gap-3 overflow-x-auto pb-2">
-                        {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
-                          <div 
-                            key={index}
-                            className="flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[240px] space-y-1"
-                          >
-                            <div className="font-medium text-sm mb-1">{character.name}</div>
-                            <div className="text-xs text-muted-foreground line-clamp-1">
-                              {character.objective || character.role}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
 
                   {/* Cast of Characters */}
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (

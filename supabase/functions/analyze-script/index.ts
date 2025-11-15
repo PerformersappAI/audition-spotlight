@@ -467,13 +467,22 @@ Genre: ${genre || 'unspecified'}
 Tone: ${tone || 'neutral'}
 ${selectedDirectors.length > 0 ? `Director Style(s): ${selectedDirectors.join(', ')}` : ''}
 
-CRITICAL INSTRUCTIONS:
-1. First, carefully read the scene and identify ALL characters who appear or are mentioned
-2. Extract the specific action, dialogue, and dramatic beats from THIS scene
-3. Analyze what makes THIS particular scene unique and important
-4. Provide scene-specific insights that directly reference moments from the uploaded text
-5. Give directors practical, actionable guidance for shooting THIS scene
-6. Consider the directorial style(s) and how they would approach THIS specific scene
+CRITICAL INSTRUCTIONS FOR CHARACTER EXTRACTION:
+1. **SCAN FOR ALL CHARACTER NAMES:** Look for names in these formats:
+   - Dialogue format: "CHARACTER NAME:" followed by dialogue
+   - All caps names in action lines: "JOHN enters the room"
+   - Parenthetical speakers: "SARAH (angry):"
+   - Any name that appears in the scene text
+2. **EVERY CHARACTER MUST BE IN castOfCharacters:** Do not skip any character, no matter how small their role
+3. For each character, analyze what they specifically DO and WANT in this scene
+4. Reference actual dialogue and actions from the scene for each character
+
+SCENE ANALYSIS INSTRUCTIONS:
+1. Extract the specific action, dialogue, and dramatic beats from THIS scene
+2. Analyze what makes THIS particular scene unique and important
+3. Provide scene-specific insights that directly reference moments from the uploaded text
+4. Give directors practical, actionable guidance for shooting THIS scene
+5. Consider the directorial style(s) and how they would approach THIS specific scene
 
 Make your analysis deeply personal to this scene - reference specific lines, actions, and moments.`;
 
