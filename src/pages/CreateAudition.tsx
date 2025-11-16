@@ -11,7 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, FileText, Download } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, FileText, Download, Edit, Save } from "lucide-react";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { Progress } from "@/components/ui/progress";
 import { exportAuditionToPDF } from "@/utils/exportAuditionToPDF";
@@ -35,6 +35,7 @@ export default function CreateAudition() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousAuditions, setPreviousAuditions] = useState<any[]>([]);
   const [isParsingFile, setIsParsingFile] = useState(false);
+  const [isEditingSynopsis, setIsEditingSynopsis] = useState(true);
   
   const { 
     processFile, 
@@ -348,6 +349,8 @@ export default function CreateAudition() {
                 })));
               }
 
+              setIsEditingSynopsis(false);
+              
               toast({
                 title: "Success!",
                 description: "Form populated from uploaded file. Please review and adjust as needed.",
@@ -569,8 +572,48 @@ export default function CreateAudition() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Synopsis *</Label>
-                    <Textarea required rows={6} value={formData.synopsis} onChange={(e) => updateField("synopsis", e.target.value)} />
+                    <div className="flex items-center justify-between">
+                      <Label>Synopsis *</Label>
+                      {isEditingSynopsis ? (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => {
+                            setIsEditingSynopsis(false);
+                            toast({
+                              title: "Saved",
+                              description: "Synopsis saved successfully",
+                            });
+                          }}
+                        >
+                          <Save className="h-4 w-4 mr-2" />
+                          Save
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setIsEditingSynopsis(true)}
+                        >
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit
+                        </Button>
+                      )}
+                    </div>
+                    {isEditingSynopsis ? (
+                      <Textarea 
+                        required 
+                        rows={6} 
+                        value={formData.synopsis} 
+                        onChange={(e) => updateField("synopsis", e.target.value)} 
+                      />
+                    ) : (
+                      <div className="p-3 rounded-md border bg-muted/50 min-h-[120px] whitespace-pre-wrap">
+                        {formData.synopsis || "No synopsis provided"}
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
