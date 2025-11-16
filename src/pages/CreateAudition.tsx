@@ -11,9 +11,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, FileText } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, FileText, Download } from "lucide-react";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { Progress } from "@/components/ui/progress";
+import { exportAuditionToPDF } from "@/utils/exportAuditionToPDF";
 
 interface Role {
   role_name: string;
@@ -255,11 +256,20 @@ export default function CreateAudition() {
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'text/plain'];
+    const validTypes = [
+      'application/pdf', 
+      'image/jpeg', 
+      'image/jpg', 
+      'image/png', 
+      'text/plain',
+      'text/csv',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ];
     if (!validTypes.includes(file.type)) {
       toast({
         title: "Invalid file type",
-        description: "Please upload a PDF, image file (JPG, PNG), or text file",
+        description: "Please upload a PDF, image (JPG, PNG), text, CSV, or Excel file",
         variant: "destructive",
       });
       return;
@@ -377,12 +387,39 @@ export default function CreateAudition() {
     event.target.value = '';
   };
 
+  const handleDownloadPDF = () => {
+    try {
+      exportAuditionToPDF(formData, roles);
+      toast({
+        title: "PDF Downloaded",
+        description: "Your audition notice has been saved as a PDF",
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Unable to generate PDF. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container max-w-4xl mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">Create Audition Notice</h1>
-          <p className="text-muted-foreground">Post a professional casting breakdown</p>
+        <div className="mb-8 flex items-start justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Create Audition Notice</h1>
+            <p className="text-muted-foreground">Post a professional casting breakdown</p>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleDownloadPDF}
+            className="gap-2"
+          >
+            <Download className="h-4 w-4" />
+            Download PDF
+          </Button>
         </div>
 
         {/* File Upload Section */}
@@ -393,7 +430,7 @@ export default function CreateAudition() {
               Quick Fill from Document
             </CardTitle>
             <CardDescription>
-              Upload a PDF, image (JPG/PNG), or text file of your audition notice to auto-populate the form
+              Upload a PDF, image (JPG/PNG), text, CSV, or Excel file of your audition notice to auto-populate the form
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -402,7 +439,7 @@ export default function CreateAudition() {
                 <input
                   type="file"
                   id="audition-file"
-                  accept=".pdf,.txt,image/jpeg,image/jpg,image/png"
+                  accept=".pdf,.txt,.csv,.xls,.xlsx,image/jpeg,image/jpg,image/png"
                   onChange={handleFileUpload}
                   className="hidden"
                   disabled={isOCRProcessing || isParsingFile}
@@ -418,7 +455,7 @@ export default function CreateAudition() {
                   {isOCRProcessing || isParsingFile ? 'Processing...' : 'Browse Files'}
                 </Button>
                 <span className="text-sm text-muted-foreground">
-                  PDF, JPG, or PNG (Max 20MB)
+                  PDF, Image, Text, CSV, or Excel (Max 20MB)
                 </span>
               </div>
 
