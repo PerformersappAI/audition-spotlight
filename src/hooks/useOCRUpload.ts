@@ -150,7 +150,7 @@ export const useOCRUpload = () => {
           setCurrentFileSize(0);
         }, 1500);
         
-      } else if (file.type === "application/pdf") {
+      } else if (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png") {
         setProgress(10);
 
         const reader = new FileReader();
@@ -242,7 +242,7 @@ export const useOCRUpload = () => {
               onSuccess(data);
               toast({
                 title: "Success",
-                description: "PDF text extracted successfully!"
+                description: file.type === "application/pdf" ? "PDF text extracted successfully!" : "Image text extracted successfully!"
               });
               
               // Cleanup with delay to show completion state
@@ -254,7 +254,9 @@ export const useOCRUpload = () => {
                 setCurrentFileSize(0);
               }, 1500);
             } else {
-              const errorMsg = "No readable text found in PDF. Please check if the file contains text or try a different format.";
+              const errorMsg = file.type === "application/pdf" 
+                ? "No readable text found in PDF. Please check if the file contains text or try a different format."
+                : "No readable text found in image. Please check if the image contains text or try a different file.";
               
               // Mark as error
               uploadStatusRef.current[fileKey] = {
@@ -285,7 +287,7 @@ export const useOCRUpload = () => {
               timestamp: Date.now()
             };
             
-            const errorMsg = parseError instanceof Error ? parseError.message : "Failed to extract text from PDF";
+            const errorMsg = parseError instanceof Error ? parseError.message : (file.type === "application/pdf" ? "Failed to extract text from PDF" : "Failed to extract text from image");
             toast({
               title: "Processing Error",
               description: errorMsg,
@@ -311,10 +313,10 @@ export const useOCRUpload = () => {
           
           toast({
             title: "File Read Error",
-            description: "Failed to read PDF file",
+            description: file.type === "application/pdf" ? "Failed to read PDF file" : "Failed to read image file",
             variant: "destructive"
           });
-          onError?.("Failed to read PDF file");
+          onError?.(file.type === "application/pdf" ? "Failed to read PDF file" : "Failed to read image file");
           
           // Cleanup immediately on error
           setIsProcessing(false);
@@ -327,7 +329,7 @@ export const useOCRUpload = () => {
         reader.readAsDataURL(file);
         
       } else {
-        const errorMsg = "Unsupported file type. Please upload PDF or text files.";
+        const errorMsg = "Unsupported file type. Please upload PDF, image (PNG/JPEG), or text files.";
         
         // Mark as error
         uploadStatusRef.current[fileKey] = {

@@ -255,11 +255,11 @@ export default function CreateAudition() {
     if (!file) return;
 
     // Validate file type
-    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png', 'text/plain'];
     if (!validTypes.includes(file.type)) {
       toast({
         title: "Invalid file type",
-        description: "Please upload a PDF or image file (JPG, PNG)",
+        description: "Please upload a PDF, image file (JPG, PNG), or text file",
         variant: "destructive",
       });
       return;
@@ -393,7 +393,7 @@ export default function CreateAudition() {
               Quick Fill from Document
             </CardTitle>
             <CardDescription>
-              Upload a PDF or image of your audition notice to auto-populate the form
+              Upload a PDF, image (JPG/PNG), or text file of your audition notice to auto-populate the form
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -402,7 +402,7 @@ export default function CreateAudition() {
                 <input
                   type="file"
                   id="audition-file"
-                  accept=".pdf,image/jpeg,image/jpg,image/png"
+                  accept=".pdf,.txt,image/jpeg,image/jpg,image/png"
                   onChange={handleFileUpload}
                   className="hidden"
                   disabled={isOCRProcessing || isParsingFile}
