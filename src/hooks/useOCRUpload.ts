@@ -120,11 +120,11 @@ export const useOCRUpload = () => {
       setCurrentStage('reading');
       setProgress(5);
 
-      if (file.type === "text/plain") {
+      if (file.type === "text/plain" || file.type === "text/csv") {
         setProgress(50);
         const text = await file.text();
         setProgress(90);
-        const result = { text, type: "text" };
+        const result = { text, type: file.type === "text/csv" ? "csv" : "text" };
         
         // Mark as done and cache result
         uploadStatusRef.current[fileKey] = {
@@ -138,7 +138,7 @@ export const useOCRUpload = () => {
         onSuccess(result);
         toast({
           title: "Success",
-          description: "Text file loaded successfully"
+          description: `${file.type === "text/csv" ? 'CSV' : 'Text'} file loaded successfully`
         });
         
         // Cleanup with delay to show completion state
@@ -150,7 +150,14 @@ export const useOCRUpload = () => {
           setCurrentFileSize(0);
         }, 1500);
         
-      } else if (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png") {
+      } else if (
+        file.type === "application/pdf" || 
+        file.type === "image/jpeg" || 
+        file.type === "image/jpg" || 
+        file.type === "image/png" ||
+        file.type === "application/vnd.ms-excel" ||
+        file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
         setProgress(10);
 
         const reader = new FileReader();
@@ -329,7 +336,7 @@ export const useOCRUpload = () => {
         reader.readAsDataURL(file);
         
       } else {
-        const errorMsg = "Unsupported file type. Please upload PDF, image (PNG/JPEG), or text files.";
+        const errorMsg = "Unsupported file type. Please upload PDF, image (PNG/JPEG), text, CSV, or Excel files.";
         
         // Mark as error
         uploadStatusRef.current[fileKey] = {
