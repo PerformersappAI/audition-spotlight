@@ -11,7 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2 } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, FileText } from "lucide-react";
+import { useOCRUpload } from "@/hooks/useOCRUpload";
+import { Progress } from "@/components/ui/progress";
 
 interface Role {
   role_name: string;
@@ -31,6 +33,15 @@ export default function CreateAudition() {
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [previousAuditions, setPreviousAuditions] = useState<any[]>([]);
+  const [isParsingFile, setIsParsingFile] = useState(false);
+  
+  const { 
+    processFile, 
+    isProcessing: isOCRProcessing, 
+    currentStage,
+    progress: ocrProgress,
+    currentFileName 
+  } = useOCRUpload();
   const [roles, setRoles] = useState<Role[]>([{
     role_name: "",
     role_type: "Principal",
@@ -239,6 +250,133 @@ export default function CreateAudition() {
     }));
   };
 
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    const validTypes = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
+    if (!validTypes.includes(file.type)) {
+      toast({
+        title: "Invalid file type",
+        description: "Please upload a PDF or image file (JPG, PNG)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // First, process the file with OCR
+      await processFile(
+        file,
+        async (ocrResult) => {
+          // OCR complete, now parse with AI
+          setIsParsingFile(true);
+          
+          try {
+            const { data, error } = await supabase.functions.invoke('parse-audition-notice', {
+              body: { text: ocrResult.text }
+            });
+
+            if (error) throw error;
+
+            if (data.success && data.data) {
+              const parsed = data.data;
+              
+              // Update form data
+              setFormData(prev => ({
+                ...prev,
+                project_name: parsed.project_name || prev.project_name,
+                project_type: parsed.project_type || prev.project_type,
+                union_status: parsed.union_status || prev.union_status,
+                production_company: parsed.production_company || prev.production_company,
+                director_cd: parsed.director_cd || prev.director_cd,
+                contact_email: parsed.contact_email || prev.contact_email,
+                contact_phone: parsed.contact_phone || prev.contact_phone,
+                website: parsed.website || prev.website,
+                logline: parsed.logline || prev.logline,
+                synopsis: parsed.synopsis || prev.synopsis,
+                shoot_city: parsed.shoot_city || prev.shoot_city,
+                shoot_country: parsed.shoot_country || prev.shoot_country,
+                shoot_dates: parsed.shoot_dates || prev.shoot_dates,
+                audition_window: parsed.audition_window || prev.audition_window,
+                callback_dates: parsed.callback_dates || prev.callback_dates,
+                self_tape_deadline: parsed.self_tape_deadline || prev.self_tape_deadline,
+                location_type: parsed.location_type || prev.location_type,
+                travel_lodging: parsed.travel_lodging || prev.travel_lodging,
+                travel_details: parsed.travel_details || prev.travel_details,
+                compensation_type: parsed.compensation_type || prev.compensation_type,
+                compensation_rate: parsed.compensation_rate || prev.compensation_rate,
+                usage_terms: parsed.usage_terms || prev.usage_terms,
+                agent_fee_included: parsed.agent_fee_included || prev.agent_fee_included,
+                conflicts: parsed.conflicts || prev.conflicts,
+                has_nudity: parsed.has_nudity || prev.has_nudity,
+                has_intimacy: parsed.has_intimacy || prev.has_intimacy,
+                has_violence: parsed.has_violence || prev.has_violence,
+                safety_details: parsed.safety_details || prev.safety_details,
+                has_minors: parsed.has_minors || prev.has_minors,
+                slate_link: parsed.slate_link || prev.slate_link,
+                reel_link: parsed.reel_link || prev.reel_link,
+                additional_materials: parsed.additional_materials || prev.additional_materials,
+                posting_targets: parsed.posting_targets?.length > 0 ? parsed.posting_targets : prev.posting_targets,
+                visibility: parsed.visibility || prev.visibility,
+              }));
+
+              // Update roles if provided
+              if (parsed.roles && Array.isArray(parsed.roles) && parsed.roles.length > 0) {
+                setRoles(parsed.roles.map((role: any) => ({
+                  role_name: role.role_name || "",
+                  role_type: role.role_type || "Principal",
+                  age_range: role.age_range || "",
+                  gender_presentation: role.gender_presentation || "",
+                  open_ethnicity: role.open_ethnicity !== undefined ? role.open_ethnicity : true,
+                  skills: role.skills || "",
+                  description: role.description || "",
+                  work_dates: role.work_dates || "",
+                  rate: role.rate || "",
+                  sides_link: role.sides_link || ""
+                })));
+              }
+
+              toast({
+                title: "Success!",
+                description: "Form populated from uploaded file. Please review and adjust as needed.",
+              });
+            } else {
+              throw new Error('Failed to parse audition notice');
+            }
+          } catch (parseError: any) {
+            console.error('Parse error:', parseError);
+            toast({
+              title: "Parsing Error",
+              description: "Could not extract all fields. Please fill in manually.",
+              variant: "destructive",
+            });
+          } finally {
+            setIsParsingFile(false);
+          }
+        },
+        (error) => {
+          toast({
+            title: "OCR Error",
+            description: error || "Failed to read file",
+            variant: "destructive",
+          });
+        }
+      );
+    } catch (error) {
+      console.error('File upload error:', error);
+      toast({
+        title: "Upload Error",
+        description: "Failed to process file",
+        variant: "destructive",
+      });
+    }
+
+    // Reset file input
+    event.target.value = '';
+  };
+
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="container max-w-4xl mx-auto px-4">
@@ -246,6 +384,60 @@ export default function CreateAudition() {
           <h1 className="text-4xl font-bold mb-2">Create Audition Notice</h1>
           <p className="text-muted-foreground">Post a professional casting breakdown</p>
         </div>
+
+        {/* File Upload Section */}
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Quick Fill from Document
+            </CardTitle>
+            <CardDescription>
+              Upload a PDF or image of your audition notice to auto-populate the form
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  id="audition-file"
+                  accept=".pdf,image/jpeg,image/jpg,image/png"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  disabled={isOCRProcessing || isParsingFile}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById('audition-file')?.click()}
+                  disabled={isOCRProcessing || isParsingFile}
+                  className="gap-2"
+                >
+                  <FileText className="h-4 w-4" />
+                  {isOCRProcessing || isParsingFile ? 'Processing...' : 'Browse Files'}
+                </Button>
+                <span className="text-sm text-muted-foreground">
+                  PDF, JPG, or PNG (Max 20MB)
+                </span>
+              </div>
+
+              {(isOCRProcessing || isParsingFile) && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="font-medium">
+                      {isOCRProcessing ? `Processing: ${currentStage}` : 'Extracting information...'}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {currentFileName}
+                    </span>
+                  </div>
+                  <Progress value={isOCRProcessing ? ocrProgress : 75} className="h-2" />
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
 
         <form onSubmit={handleSubmit}>
           <Tabs defaultValue="project" className="w-full">
