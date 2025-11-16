@@ -54,3 +54,6 @@ verify_jwt = false
 
 [functions.ai-parse-shot-prompt]
 verify_jwt = false
+
+[functions.parse-audition-notice]
+verify_jwt = false
