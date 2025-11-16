@@ -12,10 +12,14 @@ serve(async (req) => {
   }
 
   try {
+    console.log('parse-audition-notice: Request received');
     const { text } = await req.json();
+    console.log('parse-audition-notice: Text length:', text?.length || 0);
+    
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
     
     if (!LOVABLE_API_KEY) {
+      console.error('parse-audition-notice: LOVABLE_API_KEY not configured');
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
@@ -134,11 +138,18 @@ ${text}`;
     );
 
   } catch (error) {
-    console.error('Error in parse-audition-notice:', error);
+    console.error('parse-audition-notice ERROR:', error);
+    console.error('parse-audition-notice ERROR type:', typeof error);
+    if (error instanceof Error) {
+      console.error('parse-audition-notice ERROR message:', error.message);
+      console.error('parse-audition-notice ERROR stack:', error.stack);
+    }
     return new Response(
       JSON.stringify({ 
         success: false, 
-        error: error instanceof Error ? error.message : 'Unknown error' 
+        error: error instanceof Error ? error.message : 'Unknown error',
+        errorType: typeof error,
+        errorString: String(error)
       }),
       { 
         status: 500,
