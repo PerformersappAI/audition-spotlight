@@ -27,6 +27,8 @@ For array fields like posting_targets, return an array of strings.`;
 
     const userPrompt = `Extract audition notice details from this text and return ONLY valid JSON with these exact fields:
 
+IMPORTANT: If the text contains multiple roles/characters, extract ALL of them and include each one as a separate object in the "roles" array. Do not combine multiple roles into one entry.
+
 {
   "project_name": "string or null",
   "project_type": "string or null (e.g., Feature Film, TV Series, Short Film, Commercial, Theater, Web Series, Student Film)",
@@ -77,6 +79,8 @@ For array fields like posting_targets, return an array of strings.`;
     }
   ]
 }
+
+Note: Extract ALL roles mentioned in the text. If multiple characters/roles are described, include each one as a separate entry in the roles array.
 
 Text to parse:
 ${text}`;
