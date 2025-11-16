@@ -111,6 +111,48 @@ Return only the cleaned script text with proper formatting. Do not add commentar
   return response;
 }
 
+async function processImageWithGemini(base64Data: string, modelName: string, mimeType: string): Promise<any> {
+  const prompt = `Extract all readable text from this image using OCR.
+
+Instructions:
+1. Accurately transcribe all visible text
+2. Preserve layout and structure where possible
+3. Handle any handwriting if present
+4. Clean up any OCR artifacts
+5. If there are multiple sections or columns, transcribe them in logical reading order
+6. Return plain text without markdown formatting
+
+Return only the extracted text without any commentary.`;
+
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      contents: [
+        {
+          parts: [
+            { text: prompt },
+            {
+              inline_data: {
+                mime_type: mimeType,
+                data: base64Data
+              }
+            }
+          ]
+        }
+      ],
+      generationConfig: {
+        maxOutputTokens: 8000,
+        temperature: 0.1
+      }
+    })
+  });
+
+  return response;
+}
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -143,11 +185,27 @@ serve(async (req) => {
       );
     }
 
-    if (mimeType === 'application/pdf') {
+    // Validate file type - support PDF and images
+    const supportedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+    const isPDF = mimeType === 'application/pdf';
+    const isImage = ['image/png', 'image/jpeg', 'image/jpg'].includes(mimeType);
+    
+    if (!supportedTypes.includes(mimeType)) {
+      console.error('Unsupported file type:', mimeType);
+      return new Response(JSON.stringify({ 
+        error: "Unsupported file type. Supported types: PDF, PNG, JPEG",
+        success: false 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (isPDF || isImage) {
       try {
-        console.log('Processing PDF with Gemini...');
+        console.log(`Processing ${isPDF ? 'PDF' : 'image'} with Gemini...`);
         
-        // Convert PDF data to base64 if not already
+        // Convert data to base64 if not already
         const base64Data = fileData.startsWith('data:') ? fileData.split(',')[1] : fileData;
         
         // Discover available models
@@ -159,9 +217,11 @@ serve(async (req) => {
         // Try each available model until one works
         for (const modelName of availableModels) {
           try {
-            console.log(`Attempting PDF processing with model: ${modelName}`);
+            console.log(`Attempting ${isPDF ? 'PDF' : 'image'} processing with model: ${modelName}`);
             
-            const response = await processWithGemini(base64Data, modelName);
+            const response = isPDF 
+              ? await processWithGemini(base64Data, modelName)
+              : await processImageWithGemini(base64Data, modelName, mimeType);
             
             console.log(`${modelName} response status: ${response.status}`);
 
@@ -170,7 +230,7 @@ serve(async (req) => {
               
               if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
                 successfulModel = modelName;
-                console.log(`✅ Successfully processed PDF with model: ${modelName}`);
+                console.log(`✅ Successfully processed ${isPDF ? 'PDF' : 'image'} with model: ${modelName}`);
                 
                 const extractedText = result.candidates[0].content.parts[0].text;
                 
@@ -247,7 +307,7 @@ serve(async (req) => {
            'Unknown error') : 'Unknown error';
         
         return new Response(JSON.stringify({ 
-          error: `PDF processing failed with all available models. Last error: ${errorMessage}`,
+          error: `${isPDF ? 'PDF' : 'Image'} processing failed with all available models. Last error: ${errorMessage}`,
           success: false,
           retryable: true,
           modelsAttempted: availableModels
@@ -258,22 +318,13 @@ serve(async (req) => {
       } catch (geminiError) {
         console.error('Gemini processing error:', geminiError);
         return new Response(JSON.stringify({ 
-          error: "Failed to parse PDF with Gemini: " + (geminiError instanceof Error ? geminiError.message : String(geminiError)),
+          error: `Failed to parse ${isPDF ? 'PDF' : 'image'} with Gemini: ` + (geminiError instanceof Error ? geminiError.message : String(geminiError)),
           success: false
         }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
-    } else {
-      console.error('Unsupported file type:', mimeType);
-      return new Response(JSON.stringify({ 
-        error: "Unsupported file type. Only PDF files are currently supported.",
-        success: false 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
     }
 
   } catch (error) {
