@@ -36,6 +36,15 @@ export default function ToolboxHome() {
       route: "/storyboarding"
     },
     {
+      id: "call_sheet",
+      name: "Call Sheet Generator",
+      description: "Create professional production call sheets with OCR upload support",
+      icon: FileText,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/call-sheet"
+    },
+    {
       id: "create_auditions",
       name: "Create Auditions",
       description: "Create and manage audition opportunities for your projects",
