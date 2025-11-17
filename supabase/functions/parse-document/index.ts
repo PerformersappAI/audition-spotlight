@@ -70,17 +70,20 @@ async function discoverAvailableModels(): Promise<string[]> {
 }
 
 async function processWithGemini(base64Data: string, modelName: string): Promise<any> {
-  const prompt = `You are a professional script formatting assistant. Extract and clean script text from the provided PDF document. Focus on:
-1. Remove OCR artifacts, weird characters, and encoding issues
-2. Standardize character names to ALL CAPS format
-3. Clean up stage directions and put them in parentheses
-4. Preserve scene headings (INT./EXT.) 
-5. Remove page numbers, headers, footers
-6. Ensure proper spacing between dialogue and action lines
-7. Fix line breaks and formatting for readability
-8. Remove any non-script content like title pages or notes
+  const prompt = `Extract ALL text content from this document with complete accuracy.
 
-Return only the cleaned script text with proper formatting. Do not add commentary.`;
+Instructions:
+1. Transcribe every word, number, and piece of text visible in the document
+2. Preserve document structure including headers, sections, tables, and lists
+3. Include ALL metadata such as dates, names, locations, times, and contact information
+4. Maintain the original layout and organization of the content
+5. Do not filter, remove, or skip any content - extract everything
+6. For tables: preserve row and column structure with clear formatting
+7. Clean up OCR artifacts (weird characters, encoding issues) but keep all real content
+8. Preserve formatting like bold, italics, and line breaks where visible
+9. Include page headers, footers, and any watermarks if present
+
+Return the complete extracted text exactly as it appears in the document. Include all sections, all fields, and all data. Do not add commentary or explanations.`;
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
