@@ -119,48 +119,17 @@ export const useCallSheets = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("Not authenticated");
 
-      // Sanitize data - convert empty strings to null for optional time/date fields
-      const sanitizedData = {
-        ...callSheetData,
-        user_id: user.id,
-        // Convert empty strings to null for time fields
-        general_crew_call: callSheetData.general_crew_call || null,
-        shooting_call: callSheetData.shooting_call || null,
-        lunch_time: callSheetData.lunch_time || null,
-        courtesy_breakfast_time: callSheetData.courtesy_breakfast_time || null,
-        wrap_time: callSheetData.wrap_time || null,
-        // Convert empty strings to null for optional text fields
-        day_number: callSheetData.day_number || null,
-        director: callSheetData.director || null,
-        associate_director: callSheetData.associate_director || null,
-        line_producer: callSheetData.line_producer || null,
-        upm: callSheetData.upm || null,
-        shooting_location: callSheetData.shooting_location || null,
-        location_address: callSheetData.location_address || null,
-        crew_parking: callSheetData.crew_parking || null,
-        basecamp: callSheetData.basecamp || null,
-        nearest_hospital: callSheetData.nearest_hospital || null,
-        hospital_address: callSheetData.hospital_address || null,
-        weather_description: callSheetData.weather_description || null,
-        high_temp: callSheetData.high_temp || null,
-        low_temp: callSheetData.low_temp || null,
-        sunrise_time: callSheetData.sunrise_time || null,
-        sunset_time: callSheetData.sunset_time || null,
-        dawn_time: callSheetData.dawn_time || null,
-        twilight_time: callSheetData.twilight_time || null,
-      };
-
       // Insert call sheet
       const { data: callSheet, error: callSheetError } = await supabase
         .from('call_sheets')
-        .insert(sanitizedData)
+        .insert({
+          ...callSheetData,
+          user_id: user.id,
+        })
         .select()
         .single();
 
-      if (callSheetError) {
-        console.error('Call sheet error:', callSheetError);
-        throw new Error(`Failed to save call sheet: ${callSheetError.message}`);
-      }
+      if (callSheetError) throw callSheetError;
 
       const callSheetId = callSheet.id;
 

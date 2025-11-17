@@ -269,35 +269,6 @@ const CallSheet = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate required fields
-    if (!formData.production_company?.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Production Company is required",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!formData.project_name?.trim()) {
-      toast({
-        title: "Validation Error",
-        description: "Project Name is required",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (!formData.shoot_date) {
-      toast({
-        title: "Validation Error",
-        description: "Shoot Date is required",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsSubmitting(true);
 
     try {
@@ -309,11 +280,6 @@ const CallSheet = () => {
       navigate("/production");
     } catch (error) {
       console.error('Error saving call sheet:', error);
-      toast({
-        title: "Save Failed",
-        description: error instanceof Error ? error.message : "Failed to save call sheet. Please check your data and try again.",
-        variant: "destructive",
-      });
     } finally {
       setIsSubmitting(false);
     }
