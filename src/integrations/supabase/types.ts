@@ -390,6 +390,290 @@ export type Database = {
           },
         ]
       }
+      call_sheet_background: {
+        Row: {
+          call_sheet_id: string
+          call_time: string | null
+          description: string
+          id: string
+          notes: string | null
+          quantity: number | null
+        }
+        Insert: {
+          call_sheet_id: string
+          call_time?: string | null
+          description: string
+          id?: string
+          notes?: string | null
+          quantity?: number | null
+        }
+        Update: {
+          call_sheet_id?: string
+          call_time?: string | null
+          description?: string
+          id?: string
+          notes?: string | null
+          quantity?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_background_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_sheet_cast: {
+        Row: {
+          actor_name: string
+          call_sheet_id: string
+          call_time: string | null
+          cast_id: string | null
+          character_name: string
+          id: string
+          order_index: number | null
+          pickup_time: string | null
+          set_ready_time: string | null
+          special_instructions: string | null
+          status: string | null
+        }
+        Insert: {
+          actor_name: string
+          call_sheet_id: string
+          call_time?: string | null
+          cast_id?: string | null
+          character_name: string
+          id?: string
+          order_index?: number | null
+          pickup_time?: string | null
+          set_ready_time?: string | null
+          special_instructions?: string | null
+          status?: string | null
+        }
+        Update: {
+          actor_name?: string
+          call_sheet_id?: string
+          call_time?: string | null
+          cast_id?: string | null
+          character_name?: string
+          id?: string
+          order_index?: number | null
+          pickup_time?: string | null
+          set_ready_time?: string | null
+          special_instructions?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_cast_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_sheet_crew: {
+        Row: {
+          call_sheet_id: string
+          call_time: string | null
+          department: string
+          id: string
+          name: string
+          order_index: number | null
+          title: string
+        }
+        Insert: {
+          call_sheet_id: string
+          call_time?: string | null
+          department: string
+          id?: string
+          name: string
+          order_index?: number | null
+          title: string
+        }
+        Update: {
+          call_sheet_id?: string
+          call_time?: string | null
+          department?: string
+          id?: string
+          name?: string
+          order_index?: number | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_crew_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_sheet_scenes: {
+        Row: {
+          call_sheet_id: string
+          cast_ids: string[] | null
+          day_night: string | null
+          id: string
+          location: string | null
+          notes: string | null
+          order_index: number | null
+          pages: string | null
+          scene_number: string
+          set_description: string
+        }
+        Insert: {
+          call_sheet_id: string
+          cast_ids?: string[] | null
+          day_night?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          order_index?: number | null
+          pages?: string | null
+          scene_number: string
+          set_description: string
+        }
+        Update: {
+          call_sheet_id?: string
+          cast_ids?: string[] | null
+          day_night?: string | null
+          id?: string
+          location?: string | null
+          notes?: string | null
+          order_index?: number | null
+          pages?: string | null
+          scene_number?: string
+          set_description?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_scenes_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      call_sheets: {
+        Row: {
+          associate_director: string | null
+          basecamp: string | null
+          courtesy_breakfast_time: string | null
+          created_at: string
+          crew_parking: string | null
+          dawn_time: string | null
+          day_number: string | null
+          director: string | null
+          executive_producers: string[] | null
+          general_crew_call: string | null
+          high_temp: string | null
+          hospital_address: string | null
+          id: string
+          line_producer: string | null
+          location_address: string | null
+          low_temp: string | null
+          lunch_time: string | null
+          nearest_hospital: string | null
+          producers: string[] | null
+          production_company: string
+          production_office_address: string | null
+          project_name: string
+          schedule_color: string | null
+          script_color: string | null
+          shoot_date: string
+          shooting_call: string | null
+          shooting_location: string | null
+          sunrise_time: string | null
+          sunset_time: string | null
+          twilight_time: string | null
+          updated_at: string
+          upm: string | null
+          user_id: string
+          weather_description: string | null
+          wrap_time: string | null
+        }
+        Insert: {
+          associate_director?: string | null
+          basecamp?: string | null
+          courtesy_breakfast_time?: string | null
+          created_at?: string
+          crew_parking?: string | null
+          dawn_time?: string | null
+          day_number?: string | null
+          director?: string | null
+          executive_producers?: string[] | null
+          general_crew_call?: string | null
+          high_temp?: string | null
+          hospital_address?: string | null
+          id?: string
+          line_producer?: string | null
+          location_address?: string | null
+          low_temp?: string | null
+          lunch_time?: string | null
+          nearest_hospital?: string | null
+          producers?: string[] | null
+          production_company: string
+          production_office_address?: string | null
+          project_name: string
+          schedule_color?: string | null
+          script_color?: string | null
+          shoot_date: string
+          shooting_call?: string | null
+          shooting_location?: string | null
+          sunrise_time?: string | null
+          sunset_time?: string | null
+          twilight_time?: string | null
+          updated_at?: string
+          upm?: string | null
+          user_id: string
+          weather_description?: string | null
+          wrap_time?: string | null
+        }
+        Update: {
+          associate_director?: string | null
+          basecamp?: string | null
+          courtesy_breakfast_time?: string | null
+          created_at?: string
+          crew_parking?: string | null
+          dawn_time?: string | null
+          day_number?: string | null
+          director?: string | null
+          executive_producers?: string[] | null
+          general_crew_call?: string | null
+          high_temp?: string | null
+          hospital_address?: string | null
+          id?: string
+          line_producer?: string | null
+          location_address?: string | null
+          low_temp?: string | null
+          lunch_time?: string | null
+          nearest_hospital?: string | null
+          producers?: string[] | null
+          production_company?: string
+          production_office_address?: string | null
+          project_name?: string
+          schedule_color?: string | null
+          script_color?: string | null
+          shoot_date?: string
+          shooting_call?: string | null
+          shooting_location?: string | null
+          sunrise_time?: string | null
+          sunset_time?: string | null
+          twilight_time?: string | null
+          updated_at?: string
+          upm?: string | null
+          user_id?: string
+          weather_description?: string | null
+          wrap_time?: string | null
+        }
+        Relationships: []
+      }
       course_discussions: {
         Row: {
           content: string

@@ -57,3 +57,6 @@ verify_jwt = false
 
 [functions.parse-audition-notice]
 verify_jwt = false
+
+[functions.parse-call-sheet]
+verify_jwt = false

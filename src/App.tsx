@@ -16,6 +16,7 @@ import UploadAuditions from "./pages/UploadAuditions";
 import SceneAnalysis from "./pages/SceneAnalysis";
 import ScriptAnalysis from "./pages/ScriptAnalysis";
 import Storyboarding from "./pages/Storyboarding";
+import CallSheet from "./pages/CallSheet";
 import CreateProject from "./pages/CreateProject";
 import CreateFestival from "./pages/CreateFestival";
 import Applications from "./pages/Applications";
@@ -70,6 +71,7 @@ const AppContent = () => (
       <Route path="/scene-analysis" element={<SceneAnalysis />} />
       <Route path="/script-analysis" element={<ScriptAnalysis />} />
       <Route path="/storyboarding" element={<Storyboarding />} />
+      <Route path="/call-sheet" element={<CallSheet />} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />
