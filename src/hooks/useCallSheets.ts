@@ -116,10 +116,15 @@ export const useCallSheets = () => {
     background: CallSheetBackground[]
   ) => {
     try {
+      console.log('🚀 Starting call sheet save...', { callSheetData, scenesCount: scenes.length, castCount: cast.length });
+      
       const { data: { user } } = await supabase.auth.getUser();
+      console.log('👤 User check:', user ? `Logged in as ${user.id}` : 'Not logged in');
+      
       if (!user) throw new Error("Not authenticated");
 
       // Insert call sheet
+      console.log('💾 Inserting call sheet to database...');
       const { data: callSheet, error: callSheetError } = await supabase
         .from('call_sheets')
         .insert({
@@ -129,12 +134,18 @@ export const useCallSheets = () => {
         .select()
         .single();
 
-      if (callSheetError) throw callSheetError;
+      if (callSheetError) {
+        console.error('❌ Call sheet insert error:', callSheetError);
+        throw callSheetError;
+      }
+      
+      console.log('✅ Call sheet inserted:', callSheet.id);
 
       const callSheetId = callSheet.id;
 
       // Insert scenes
       if (scenes.length > 0) {
+        console.log(`📋 Inserting ${scenes.length} scenes...`);
         const scenesWithId = scenes.map((scene, index) => ({
           ...scene,
           call_sheet_id: callSheetId,
@@ -145,11 +156,16 @@ export const useCallSheets = () => {
           .from('call_sheet_scenes')
           .insert(scenesWithId);
 
-        if (scenesError) throw scenesError;
+        if (scenesError) {
+          console.error('❌ Scenes insert error:', scenesError);
+          throw scenesError;
+        }
+        console.log('✅ Scenes inserted');
       }
 
       // Insert cast
       if (cast.length > 0) {
+        console.log(`👥 Inserting ${cast.length} cast members...`);
         const castWithId = cast.map((member, index) => ({
           ...member,
           call_sheet_id: callSheetId,
@@ -160,11 +176,16 @@ export const useCallSheets = () => {
           .from('call_sheet_cast')
           .insert(castWithId);
 
-        if (castError) throw castError;
+        if (castError) {
+          console.error('❌ Cast insert error:', castError);
+          throw castError;
+        }
+        console.log('✅ Cast inserted');
       }
 
       // Insert crew
       if (crew.length > 0) {
+        console.log(`🎬 Inserting ${crew.length} crew members...`);
         const crewWithId = crew.map((member, index) => ({
           ...member,
           call_sheet_id: callSheetId,
@@ -175,11 +196,16 @@ export const useCallSheets = () => {
           .from('call_sheet_crew')
           .insert(crewWithId);
 
-        if (crewError) throw crewError;
+        if (crewError) {
+          console.error('❌ Crew insert error:', crewError);
+          throw crewError;
+        }
+        console.log('✅ Crew inserted');
       }
 
       // Insert background
       if (background.length > 0) {
+        console.log(`🎭 Inserting ${background.length} background performers...`);
         const backgroundWithId = background.map(item => ({
           ...item,
           call_sheet_id: callSheetId,
@@ -189,21 +215,27 @@ export const useCallSheets = () => {
           .from('call_sheet_background')
           .insert(backgroundWithId);
 
-        if (backgroundError) throw backgroundError;
+        if (backgroundError) {
+          console.error('❌ Background insert error:', backgroundError);
+          throw backgroundError;
+        }
+        console.log('✅ Background inserted');
       }
+
+      console.log('🎉 Call sheet saved successfully! ID:', callSheetId);
 
       toast({
         title: "Success",
-        description: "Call sheet saved successfully",
+        description: "Call sheet saved successfully!",
       });
 
       await fetchCallSheets();
       return callSheetId;
     } catch (error) {
-      console.error('Error saving call sheet:', error);
+      console.error('❌ Error saving call sheet:', error);
       toast({
         title: "Error",
-        description: "Failed to save call sheet",
+        description: error instanceof Error ? error.message : "Failed to save call sheet. Please try again.",
         variant: "destructive",
       });
       throw error;

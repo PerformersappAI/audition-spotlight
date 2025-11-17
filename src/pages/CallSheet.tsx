@@ -268,18 +268,34 @@ const CallSheet = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    console.log('💾 Submit button clicked');
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
+      console.log('📝 Form data:', { 
+        formData, 
+        scenesCount: scenes.length, 
+        castCount: cast.length,
+        crewCount: crew.length,
+        backgroundCount: background.length
+      });
+      
       await saveCallSheet(formData, scenes, cast, crew, background);
+      
+      console.log('✅ Save successful, navigating to dashboard...');
       toast({
         title: "Success!",
         description: "Call sheet saved successfully.",
       });
       navigate("/dashboard");
     } catch (error) {
-      console.error('Error saving call sheet:', error);
+      console.error('❌ Error in handleSubmit:', error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save call sheet.",
+        variant: "destructive",
+      });
     } finally {
       setIsSubmitting(false);
     }
