@@ -797,6 +797,111 @@ const Storyboarding = () => {
     return generateSingleFrame(shotNumber);
   };
 
+  // Handle image upload for storyboard frame
+  const handleImageUpload = async (shotNumber: number, event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !selectedProject) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload an image file (PNG, JPEG, etc.)",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      toast({
+        title: "File Too Large",
+        description: "Image must be smaller than 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      setGeneratingFrames(prev => new Set([...prev, shotNumber]));
+
+      // Convert image to base64
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64Data = e.target?.result as string;
+        
+        const shot = selectedProject.shots.find(s => s.shotNumber === shotNumber);
+        if (!shot) return;
+
+        const newFrame = {
+          ...shot,
+          imageData: base64Data,
+          generatedAt: new Date().toISOString()
+        };
+
+        const updatedStoryboard = [...(selectedProject.storyboard || [])];
+        const existingIndex = updatedStoryboard.findIndex(f => f.shotNumber === shotNumber);
+        
+        if (existingIndex >= 0) {
+          updatedStoryboard[existingIndex] = newFrame;
+        } else {
+          updatedStoryboard.push(newFrame);
+        }
+
+        // Save to database
+        const updatedProject = await updateProject(selectedProject.id, {
+          storyboard_frames: updatedStoryboard
+        });
+
+        setSelectedProject({
+          ...selectedProject,
+          storyboard: updatedProject.storyboard_frames || undefined
+        });
+        
+        toast({
+          title: "Image Uploaded",
+          description: `Frame ${shotNumber} has been updated with your image.`,
+        });
+
+        setGeneratingFrames(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(shotNumber);
+          return newSet;
+        });
+      };
+
+      reader.onerror = () => {
+        toast({
+          title: "Upload Failed",
+          description: "Failed to read the image file.",
+          variant: "destructive",
+        });
+        setGeneratingFrames(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(shotNumber);
+          return newSet;
+        });
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Upload Failed",
+        description: "An error occurred while uploading the image.",
+        variant: "destructive",
+      });
+      setGeneratingFrames(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(shotNumber);
+        return newSet;
+      });
+    }
+
+    // Clear the input
+    event.target.value = '';
+  };
+
   // Generate individual frame
   const generateSingleFrame = async (shotNumber: number) => {
     if (!selectedProject || !selectedProject.shots) return;
@@ -1834,34 +1939,61 @@ const Storyboarding = () => {
                                <div className="flex items-center justify-between">
                                  <Badge variant="secondary">Frame {shot.shotNumber}</Badge>
                                  <div className="flex items-center gap-2">
-                                   {!frame?.imageData && !isGenerating && !error && (
-                                     <>
-                                       <Select
-                                         value={frameStyles.get(shot.shotNumber) || currentProject.artStyle}
-                                         onValueChange={(value) => {
-                                           setFrameStyles(prev => new Map(prev).set(shot.shotNumber, value));
-                                         }}
-                                       >
-                                         <SelectTrigger className="h-6 w-[140px] text-xs">
-                                           <SelectValue placeholder="Visual Style" />
-                                         </SelectTrigger>
-                                         <SelectContent>
-                                           {artStyles.map((style) => (
-                                             <SelectItem key={style.id} value={style.id} className="text-xs">
-                                               {style.name}
-                                             </SelectItem>
-                                           ))}
-                                         </SelectContent>
-                                       </Select>
-                                       <Button
-                                         size="sm"
-                                         onClick={() => generateSingleFrame(shot.shotNumber)}
-                                         className="h-6 px-2 text-xs"
-                                       >
-                                         Generate
-                                       </Button>
-                                     </>
-                                   )}
+                                    {!frame?.imageData && !isGenerating && !error && (
+                                      <>
+                                        <Select
+                                          value={frameStyles.get(shot.shotNumber) || currentProject.artStyle}
+                                          onValueChange={(value) => {
+                                            setFrameStyles(prev => new Map(prev).set(shot.shotNumber, value));
+                                          }}
+                                        >
+                                          <SelectTrigger className="h-6 w-[140px] text-xs">
+                                            <SelectValue placeholder="Visual Style" />
+                                          </SelectTrigger>
+                                          <SelectContent>
+                                            {artStyles.map((style) => (
+                                              <SelectItem key={style.id} value={style.id} className="text-xs">
+                                                {style.name}
+                                              </SelectItem>
+                                            ))}
+                                          </SelectContent>
+                                        </Select>
+                                        <Button
+                                          size="sm"
+                                          onClick={() => generateSingleFrame(shot.shotNumber)}
+                                          className="h-6 px-2 text-xs"
+                                        >
+                                          <Camera className="h-3 w-3 mr-1" />
+                                          Generate
+                                        </Button>
+                                        <div className="relative">
+                                          <Input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={(e) => handleImageUpload(shot.shotNumber, e)}
+                                            className="hidden"
+                                            id={`upload-frame-${shot.shotNumber}`}
+                                          />
+                                          <Label
+                                            htmlFor={`upload-frame-${shot.shotNumber}`}
+                                            className="cursor-pointer"
+                                          >
+                                            <Button
+                                              type="button"
+                                              size="sm"
+                                              variant="outline"
+                                              className="h-6 px-2 text-xs"
+                                              asChild
+                                            >
+                                              <span>
+                                                <Upload className="h-3 w-3 mr-1" />
+                                                Upload
+                                              </span>
+                                            </Button>
+                                          </Label>
+                                        </div>
+                                      </>
+                                    )}
                                   {editingFrame === shot.shotNumber ? (
                                    <div className="flex items-center gap-1">
                                      <Button
@@ -1968,12 +2100,13 @@ const Storyboarding = () => {
                     </div>
                   </div>
                 ) : (
-                                   <div className="w-full h-full flex items-center justify-center bg-muted">
-                                     <div className="text-center">
-                                       <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                                       <p className="text-sm text-muted-foreground">Click Generate to create frame</p>
-                                     </div>
-                                   </div>
+                                    <div className="w-full h-full flex items-center justify-center bg-muted">
+                                      <div className="text-center">
+                                        <Camera className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
+                                        <p className="text-sm text-muted-foreground mb-2">Click Generate to create frame</p>
+                                        <p className="text-xs text-muted-foreground">or Upload your own image</p>
+                                      </div>
+                                    </div>
                                  )}
                                  {/* Fallback content for image load errors */}
                                  <div className="hidden w-full h-full flex items-center justify-center bg-muted">
