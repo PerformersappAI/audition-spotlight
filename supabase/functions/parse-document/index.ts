@@ -70,20 +70,30 @@ async function discoverAvailableModels(): Promise<string[]> {
 }
 
 async function processWithGemini(base64Data: string, modelName: string): Promise<any> {
-  const prompt = `Extract ALL text content from this document with complete accuracy.
+  const prompt = `You are a comprehensive document OCR system. Extract ALL text content from this document with COMPLETE accuracy.
 
-Instructions:
-1. Transcribe every word, number, and piece of text visible in the document
-2. Preserve document structure including headers, sections, tables, and lists
-3. Include ALL metadata such as dates, names, locations, times, and contact information
-4. Maintain the original layout and organization of the content
-5. Do not filter, remove, or skip any content - extract everything
-6. For tables: preserve row and column structure with clear formatting
-7. Clean up OCR artifacts (weird characters, encoding issues) but keep all real content
-8. Preserve formatting like bold, italics, and line breaks where visible
-9. Include page headers, footers, and any watermarks if present
+CRITICAL INSTRUCTIONS - Extract EVERYTHING:
+1. Transcribe EVERY word, number, symbol, and text element visible
+2. Include ALL production information: names, titles, roles, departments
+3. Extract ALL contact information: phone numbers, emails, addresses  
+4. Capture ALL scheduling data: times, dates, locations, durations
+5. Preserve ALL tabular data: cast lists, crew lists, scene breakdowns, equipment lists
+6. Include ALL metadata: production company, project names, day numbers, dates
+7. Maintain document structure: headers, sections, tables, lists, notes
+8. DO NOT filter based on content type - extract scripts, call sheets, schedules, forms equally
+9. DO NOT remove anything - extract production documents completely
+10. Clean OCR artifacts but preserve all legitimate content
 
-Return the complete extracted text exactly as it appears in the document. Include all sections, all fields, and all data. Do not add commentary or explanations.`;
+For call sheets specifically, ensure you extract:
+- Production company, project name, shoot date, day number
+- All crew positions and names (director, producers, ADs, etc.)
+- Complete cast list with character names and call times
+- Full scene breakdown with numbers, descriptions, locations
+- Background actors with quantities and call times
+- All timing information (call times, meals, wrap)
+- Weather, location addresses, contact numbers
+
+Return the complete extracted text exactly as it appears. Include EVERY field and EVERY section.`;
 
   const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
     method: 'POST',
