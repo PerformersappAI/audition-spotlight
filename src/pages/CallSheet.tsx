@@ -335,7 +335,7 @@ const CallSheet = () => {
             <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors">
               <Input
                 type="file"
-                accept=".pdf"
+                accept=".pdf,.jpg,.jpeg,.png,.xls,.xlsx"
                 onChange={handleFileUpload}
                 disabled={isProcessingFile || isParsingData}
                 className="hidden"
@@ -345,7 +345,7 @@ const CallSheet = () => {
                 <Upload className="h-12 w-12 mx-auto mb-4 text-muted-foreground" />
                 <p className="text-lg font-medium mb-2">Click to upload or drag and drop</p>
                 <p className="text-sm text-muted-foreground">
-                  PDF files only (Max 20MB)
+                  PDF, JPG, PNG, or Excel files (Max 20MB)
                 </p>
               </Label>
             </div>
