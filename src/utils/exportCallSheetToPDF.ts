@@ -1,12 +1,13 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew } from '@/hooks/useCallSheets';
+import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew, CallSheetBackground } from '@/hooks/useCallSheets';
 
 export const exportCallSheetToPDF = (
   callSheet: CallSheetData,
   scenes: CallSheetScene[],
   cast: CallSheetCast[],
-  crew: CallSheetCrew[]
+  crew: CallSheetCrew[],
+  background: CallSheetBackground[]
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
@@ -235,6 +236,43 @@ export const exportCallSheetToPDF = (
         1: { cellWidth: 50 },
         2: { cellWidth: 55 },
         3: { cellWidth: 35 },
+      },
+    });
+
+    yPosition = (doc as any).lastAutoTable.finalY + 10;
+  }
+
+  // Background Actors
+  if (background.length > 0) {
+    if (yPosition > 240 || crew.length === 0) {
+      doc.addPage();
+      yPosition = 15;
+    }
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.text('BACKGROUND ACTORS', 14, yPosition);
+    yPosition += 3;
+
+    const backgroundData = background.map(item => [
+      item.quantity?.toString() || '',
+      item.description,
+      item.call_time || '',
+      item.notes || '',
+    ]);
+
+    autoTable(doc, {
+      startY: yPosition,
+      head: [['Quantity', 'Description', 'Call Time', 'Notes']],
+      body: backgroundData,
+      theme: 'grid',
+      styles: { fontSize: 9, cellPadding: 2 },
+      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold' },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 75 },
+        2: { cellWidth: 35 },
+        3: { cellWidth: 50 },
       },
     });
   }
