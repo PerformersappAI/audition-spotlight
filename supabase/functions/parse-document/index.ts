@@ -105,7 +105,7 @@ Return the complete extracted text exactly as it appears in the document. Includ
         }
       ],
       generationConfig: {
-        maxOutputTokens: 8000,
+        maxOutputTokens: 32000,
         temperature: 0.1
       }
     })
@@ -147,7 +147,7 @@ Return only the extracted text without any commentary.`;
         }
       ],
       generationConfig: {
-        maxOutputTokens: 8000,
+        maxOutputTokens: 32000,
         temperature: 0.1
       }
     })
