@@ -277,7 +277,7 @@ const CallSheet = () => {
         title: "Success!",
         description: "Call sheet saved successfully.",
       });
-      navigate("/production");
+      navigate("/dashboard");
     } catch (error) {
       console.error('Error saving call sheet:', error);
     } finally {
