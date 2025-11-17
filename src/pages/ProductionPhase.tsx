@@ -2,10 +2,17 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MapPin, ChevronRight, MessageCircle } from "lucide-react";
+import { Users, MapPin, ChevronRight, MessageCircle, FileText } from "lucide-react";
 
 export default function ProductionPhase() {
   const tools = [
+    {
+      name: "Call Sheet Generator",
+      description: "Create professional production call sheets with OCR upload support",
+      icon: FileText,
+      badge: "AI Enhanced",
+      route: "/call-sheet"
+    },
     {
       name: "Create Auditions",
       description: "Create and manage audition opportunities for your projects",
