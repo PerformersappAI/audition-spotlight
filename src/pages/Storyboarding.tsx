@@ -1142,75 +1142,109 @@ const Storyboarding = () => {
   const exportStoryboardToPDF = async () => {
     if (!selectedProject?.storyboard) return;
 
-    const pdf = new jsPDF();
+    // Use landscape orientation for grid layout
+    const pdf = new jsPDF('landscape', 'mm', 'a4');
     const pageWidth = pdf.internal.pageSize.width;
-    const margin = 20;
-    let yPosition = margin;
-
-    // Title
-    pdf.setFontSize(20);
+    const pageHeight = pdf.internal.pageSize.height;
+    const margin = 10;
+    const shotsPerRow = 4;
+    const shotsPerPage = 8; // 2 rows of 4
+    
+    // Calculate dimensions for each cell
+    const cellWidth = (pageWidth - margin * (shotsPerRow + 1)) / shotsPerRow;
+    const cellHeight = (pageHeight - margin * 3) / 2; // 2 rows
+    const imageHeight = cellHeight * 0.65; // Image takes 65% of cell height
+    const noteHeight = cellHeight * 0.35; // Notes take 35% of cell height
+    
+    let currentPage = 0;
+    
+    // Add title page
+    pdf.setFontSize(24);
     pdf.setTextColor(40, 40, 40);
-    pdf.text('Storyboard Report', margin, yPosition);
-    yPosition += 15;
-
-    // Basic Info
+    const title = 'Storyboard';
+    const titleWidth = pdf.getTextWidth(title);
+    pdf.text(title, (pageWidth - titleWidth) / 2, 20);
+    
+    // Add project info
     pdf.setFontSize(12);
-    pdf.text(`Genre: ${selectedProject.genre}`, margin, yPosition);
-    yPosition += 7;
-    pdf.text(`Tone: ${selectedProject.tone}`, margin, yPosition);
-    yPosition += 15;
-
-    // Storyboard Frames
-    for (const frame of selectedProject.storyboard) {
-      if (yPosition > 200) {
-        pdf.addPage();
-        yPosition = margin;
+    const projectInfo = `${selectedProject.genre ? selectedProject.genre : ''} ${selectedProject.tone ? '- ' + selectedProject.tone : ''}`.trim();
+    if (projectInfo) {
+      const infoWidth = pdf.getTextWidth(projectInfo);
+      pdf.text(projectInfo, (pageWidth - infoWidth) / 2, 30);
+    }
+    
+    // Process frames in groups
+    const frames = selectedProject.storyboard;
+    for (let i = 0; i < frames.length; i += shotsPerPage) {
+      // Add new page for each set of 8 shots
+      if (i > 0 || frames.length > 0) {
+        pdf.addPage('landscape');
+        currentPage++;
       }
-
-      pdf.setFontSize(14);
-      pdf.text(`Shot ${frame.shotNumber}`, margin, yPosition);
-      yPosition += 10;
-
-      pdf.setFontSize(10);
-      pdf.text(`Camera: ${frame.cameraAngle}`, margin, yPosition);
-      yPosition += 7;
-      pdf.text(`Characters: ${frame.characters.join(', ')}`, margin, yPosition);
-      yPosition += 7;
-
-      // Add script context
-      if (frame.scriptSegment) {
-        const scriptLines = pdf.splitTextToSize(`Script Context: "${frame.scriptSegment}"`, pageWidth - 2 * margin);
-        pdf.text(scriptLines, margin, yPosition);
-        yPosition += scriptLines.length * 5;
-      }
-
-      // Add dialogue
-      if (frame.dialogueLines && frame.dialogueLines.length > 0) {
-        const dialogueText = `Dialogue: ${frame.dialogueLines.join(' ')}`;
-        const dialogueLines = pdf.splitTextToSize(dialogueText, pageWidth - 2 * margin);
-        pdf.text(dialogueLines, margin, yPosition);
-        yPosition += dialogueLines.length * 5;
-      }
-
-      const descLines = pdf.splitTextToSize(`Description: ${frame.description}`, pageWidth - 2 * margin);
-      pdf.text(descLines, margin, yPosition);
-      yPosition += descLines.length * 5;
-
-      const visualLines = pdf.splitTextToSize(`Visual Elements: ${frame.visualElements}`, pageWidth - 2 * margin);
-      pdf.text(visualLines, margin, yPosition);
-      yPosition += visualLines.length * 5 + 10;
-
-      // Add image if available
-      if (frame.imageData) {
-        try {
-          pdf.addImage(frame.imageData, 'JPEG', margin, yPosition, 80, 60);
-          yPosition += 70;
-        } catch (error) {
-          console.error('Error adding image to PDF:', error);
+      
+      const pageFrames = frames.slice(i, i + shotsPerPage);
+      
+      // Draw each frame in the grid
+      pageFrames.forEach((frame, index) => {
+        const row = Math.floor(index / shotsPerRow);
+        const col = index % shotsPerRow;
+        
+        const x = margin + col * (cellWidth + margin);
+        const y = margin + row * (cellHeight + margin);
+        
+        // Draw border around cell
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(0.5);
+        pdf.rect(x, y, cellWidth, cellHeight);
+        
+        // Add image if available
+        if (frame.imageData) {
+          try {
+            const imgWidth = cellWidth - 4;
+            const imgHeight = imageHeight - 4;
+            pdf.addImage(frame.imageData, 'JPEG', x + 2, y + 2, imgWidth, imgHeight);
+          } catch (error) {
+            console.error('Error adding image to PDF:', error);
+            // Draw placeholder if image fails
+            pdf.setFillColor(240, 240, 240);
+            pdf.rect(x + 2, y + 2, cellWidth - 4, imageHeight - 4, 'F');
+          }
+        } else {
+          // Draw placeholder box for missing image
+          pdf.setFillColor(240, 240, 240);
+          pdf.rect(x + 2, y + 2, cellWidth - 4, imageHeight - 4, 'F');
         }
-      }
-
-      yPosition += 10;
+        
+        // Add shot number
+        const shotNumY = y + imageHeight + 4;
+        pdf.setFontSize(11);
+        pdf.setFont(undefined, 'bold');
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(`Shot ${frame.shotNumber}`, x + 3, shotNumY);
+        
+        // Add notes/description
+        pdf.setFont(undefined, 'normal');
+        pdf.setFontSize(8);
+        pdf.setTextColor(60, 60, 60);
+        
+        const noteY = shotNumY + 4;
+        const noteWidth = cellWidth - 6;
+        
+        // Combine description with key details
+        let noteText = `Note: ${frame.description}`;
+        if (frame.cameraAngle) {
+          noteText += ` (${frame.cameraAngle})`;
+        }
+        
+        // Split text to fit in note area
+        const lines = pdf.splitTextToSize(noteText, noteWidth);
+        const maxLines = Math.floor((noteHeight - 8) / 3); // Limit lines to fit in note area
+        const displayLines = lines.slice(0, maxLines);
+        
+        displayLines.forEach((line: string, lineIndex: number) => {
+          pdf.text(line, x + 3, noteY + (lineIndex * 3));
+        });
+      });
     }
 
     // Save the PDF
@@ -1218,7 +1252,7 @@ const Storyboarding = () => {
     
     toast({
       title: "PDF Exported",
-      description: "Storyboard has been exported successfully"
+      description: "Storyboard exported in grid format"
     });
   };
 
