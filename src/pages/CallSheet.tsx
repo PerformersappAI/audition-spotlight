@@ -11,12 +11,23 @@ import { supabase } from "@/integrations/supabase/client";
 import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground } from "@/hooks/useCallSheets";
 import { exportCallSheetToPDF } from "@/utils/exportCallSheetToPDF";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useOCRUpload } from "@/hooks/useOCRUpload";
+import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 
 const CallSheet = () => {
   const navigate = useNavigate();
   const { saveCallSheet } = useCallSheets();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
+  const [isParsingData, setIsParsingData] = useState(false);
+  const { 
+    processFile, 
+    isProcessing: isProcessingFile,
+    currentStage,
+    currentFileName,
+    currentFileSize,
+    elapsedTime,
+    progress
+  } = useOCRUpload();
   
   const [formData, setFormData] = useState<CallSheetData>({
     production_company: "",
@@ -164,100 +175,96 @@ const CallSheet = () => {
       return;
     }
 
-    setIsUploading(true);
+    // Step 1: Extract text from PDF using OCR
+    await processFile(
+      file,
+      async (result) => {
+        // Step 2: Parse extracted text into structured call sheet data
+        setIsParsingData(true);
+        try {
+          const { data, error } = await supabase.functions.invoke('parse-call-sheet', {
+            body: { text: result.text }
+          });
 
-    try {
-      // Convert PDF to base64
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onload = () => {
-          const base64 = reader.result as string;
-          // Remove data URL prefix to get pure base64
-          const base64Data = base64.split(',')[1];
-          resolve(base64Data);
-        };
-        reader.onerror = reject;
-      });
-      
-      reader.readAsDataURL(file);
-      const fileData = await base64Promise;
+          if (error) throw error;
 
-      // Call parse-call-sheet directly with PDF data
-      const { data, error } = await supabase.functions.invoke('parse-call-sheet', {
-        body: { 
-          fileData,
-          mimeType: file.type 
+          if (data) {
+            // Populate form data
+            if (data.production_company) updateField("production_company", data.production_company);
+            if (data.project_name) updateField("project_name", data.project_name);
+            if (data.shoot_date) updateField("shoot_date", data.shoot_date);
+            if (data.day_number) updateField("day_number", data.day_number);
+            if (data.script_color) updateField("script_color", data.script_color);
+            if (data.schedule_color) updateField("schedule_color", data.schedule_color);
+            if (data.general_crew_call) updateField("general_crew_call", data.general_crew_call);
+            if (data.shooting_call) updateField("shooting_call", data.shooting_call);
+            if (data.lunch_time) updateField("lunch_time", data.lunch_time);
+            if (data.courtesy_breakfast_time) updateField("courtesy_breakfast_time", data.courtesy_breakfast_time);
+            if (data.director) updateField("director", data.director);
+            if (data.line_producer) updateField("line_producer", data.line_producer);
+            if (data.upm) updateField("upm", data.upm);
+            if (data.shooting_location) updateField("shooting_location", data.shooting_location);
+            if (data.location_address) updateField("location_address", data.location_address);
+            if (data.crew_parking) updateField("crew_parking", data.crew_parking);
+            if (data.basecamp) updateField("basecamp", data.basecamp);
+            if (data.nearest_hospital) updateField("nearest_hospital", data.nearest_hospital);
+            if (data.hospital_address) updateField("hospital_address", data.hospital_address);
+            if (data.weather_description) updateField("weather_description", data.weather_description);
+            if (data.high_temp) updateField("high_temp", data.high_temp);
+            if (data.low_temp) updateField("low_temp", data.low_temp);
+            if (data.sunrise_time) updateField("sunrise_time", data.sunrise_time);
+            if (data.sunset_time) updateField("sunset_time", data.sunset_time);
+            if (data.executive_producers) updateField("executive_producers", data.executive_producers);
+            if (data.producers) updateField("producers", data.producers);
+
+            // Populate scenes
+            if (data.scenes && data.scenes.length > 0) {
+              setScenes(data.scenes);
+            }
+
+            // Populate cast
+            if (data.cast && data.cast.length > 0) {
+              setCast(data.cast);
+            }
+
+            // Populate crew
+            if (data.crew && data.crew.length > 0) {
+              setCrew(data.crew);
+            }
+
+            // Populate background
+            if (data.background && data.background.length > 0) {
+              setBackground(data.background);
+            }
+
+            toast({
+              title: "Success",
+              description: "Call sheet data extracted successfully.",
+            });
+          }
+        } catch (error) {
+          console.error('Call sheet parsing error:', error);
+          toast({
+            title: "Parsing Failed",
+            description: error instanceof Error ? error.message : "Failed to parse call sheet",
+            variant: "destructive",
+          });
+        } finally {
+          setIsParsingData(false);
         }
-      });
-
-      if (error) throw error;
-
-      if (data) {
-        // Populate form data
-        if (data.production_company) updateField("production_company", data.production_company);
-        if (data.project_name) updateField("project_name", data.project_name);
-        if (data.shoot_date) updateField("shoot_date", data.shoot_date);
-        if (data.day_number) updateField("day_number", data.day_number);
-        if (data.script_color) updateField("script_color", data.script_color);
-        if (data.schedule_color) updateField("schedule_color", data.schedule_color);
-        if (data.general_crew_call) updateField("general_crew_call", data.general_crew_call);
-        if (data.shooting_call) updateField("shooting_call", data.shooting_call);
-        if (data.lunch_time) updateField("lunch_time", data.lunch_time);
-        if (data.courtesy_breakfast_time) updateField("courtesy_breakfast_time", data.courtesy_breakfast_time);
-        if (data.director) updateField("director", data.director);
-        if (data.line_producer) updateField("line_producer", data.line_producer);
-        if (data.upm) updateField("upm", data.upm);
-        if (data.shooting_location) updateField("shooting_location", data.shooting_location);
-        if (data.location_address) updateField("location_address", data.location_address);
-        if (data.crew_parking) updateField("crew_parking", data.crew_parking);
-        if (data.basecamp) updateField("basecamp", data.basecamp);
-        if (data.nearest_hospital) updateField("nearest_hospital", data.nearest_hospital);
-        if (data.hospital_address) updateField("hospital_address", data.hospital_address);
-        if (data.weather_description) updateField("weather_description", data.weather_description);
-        if (data.high_temp) updateField("high_temp", data.high_temp);
-        if (data.low_temp) updateField("low_temp", data.low_temp);
-        if (data.sunrise_time) updateField("sunrise_time", data.sunrise_time);
-        if (data.sunset_time) updateField("sunset_time", data.sunset_time);
-        if (data.executive_producers) updateField("executive_producers", data.executive_producers);
-        if (data.producers) updateField("producers", data.producers);
-
-        // Populate scenes
-        if (data.scenes && data.scenes.length > 0) {
-          setScenes(data.scenes);
-        }
-
-        // Populate cast
-        if (data.cast && data.cast.length > 0) {
-          setCast(data.cast);
-        }
-
-        // Populate crew
-        if (data.crew && data.crew.length > 0) {
-          setCrew(data.crew);
-        }
-
-        // Populate background
-        if (data.background && data.background.length > 0) {
-          setBackground(data.background);
-        }
-
+      },
+      (error) => {
+        console.error('PDF processing error:', error);
         toast({
-          title: "Success!",
-          description: "Call sheet data has been extracted in 5-10 seconds.",
+          title: "Upload Failed",
+          description: error,
+          variant: "destructive",
         });
       }
-    } catch (error) {
-      console.error('Error parsing call sheet:', error);
-      toast({
-        title: "Error",
-        description: "Failed to parse call sheet. Please check the format and try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsUploading(false);
-      // Reset file input
-      event.target.value = '';
-    }
+    );
+    
+    // Reset file input
+    event.target.value = '';
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -295,11 +302,24 @@ const CallSheet = () => {
           <Film className="h-12 w-12 text-primary" />
         </div>
 
-        {isUploading && (
+        {(isProcessingFile || isParsingData) && (
           <Card className="mb-6">
-            <CardContent className="flex items-center justify-center gap-3 py-8">
-              <Loader2 className="h-6 w-6 animate-spin text-primary" />
-              <p className="text-lg">Processing call sheet... This should take 5-10 seconds</p>
+            <CardContent className="py-6">
+              {isProcessingFile && (
+                <PDFUploadProgress
+                  fileName={currentFileName}
+                  fileSize={currentFileSize}
+                  stage={currentStage}
+                  elapsedTime={elapsedTime}
+                  progress={progress}
+                />
+              )}
+              {isParsingData && (
+                <div className="flex items-center justify-center gap-3">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                  <p className="text-lg">Extracting structured data...</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         )}
@@ -317,7 +337,7 @@ const CallSheet = () => {
                 type="file"
                 accept=".pdf"
                 onChange={handleFileUpload}
-                disabled={isUploading}
+                disabled={isProcessingFile || isParsingData}
                 className="hidden"
                 id="file-upload"
               />
