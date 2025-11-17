@@ -286,7 +286,7 @@ const CallSheet = () => {
   };
 
   const handleDownloadPDF = () => {
-    exportCallSheetToPDF(formData, scenes, cast, crew);
+    exportCallSheetToPDF(formData, scenes, cast, crew, background);
   };
 
   return (
