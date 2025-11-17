@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone } from "lucide-react";
+import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone, FileText, Briefcase, Star } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
+import { GlobalLayout } from "@/components/GlobalLayout";
 
 const Dashboard = () => {
-  const { user, userProfile, signOut } = useAuth();
+  const { user, userProfile } = useAuth();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [festivals, setFestivals] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [callSheets, setCallSheets] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -60,6 +63,14 @@ const Dashboard = () => {
         .eq('applicant_user_id', user.id)
         .order('applied_at', { ascending: false });
       setApplications(applicationsData || []);
+
+      // Fetch call sheets
+      const { data: callSheetsData } = await supabase
+        .from('call_sheets')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('shoot_date', { ascending: false });
+      setCallSheets(callSheetsData || []);
       
     } catch (error) {
       console.error('Error fetching user content:', error);
@@ -93,10 +104,11 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="text-center py-12 mb-8">
+    <GlobalLayout>
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="text-center py-12 mb-8">
           <h1 className="text-5xl font-bold text-gold mb-4">
             Welcome back, {userProfile?.first_name}!
           </h1>
@@ -135,6 +147,9 @@ const Dashboard = () => {
             <Button variant="outline" size="sm" onClick={() => navigate('/calendar')}>
               📅 Calendar
             </Button>
+            <Button variant="outline" size="sm" onClick={() => navigate('/call-sheet')}>
+              📋 Call Sheet Maker
+            </Button>
           </div>
         )}
 
@@ -159,30 +174,28 @@ const Dashboard = () => {
           
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Applications Sent</CardTitle>
+              <CardTitle className="text-sm font-medium">Call Sheets</CardTitle>
+              <FileText className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{callSheets.length}</div>
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Applications</CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{applications.length}</div>
             </CardContent>
           </Card>
-          
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Total Listings</CardTitle>
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">
-                {userProfile?.role === 'filmmaker' ? projects.length : festivals.length}
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
         {/* Content Tabs */}
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-4' : 'grid-cols-2'}`}>
+          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-5' : 'grid-cols-3'}`}>
             <TabsTrigger value="projects">
               {userProfile?.role === 'filmmaker' ? 'Projects' : 'My Festivals'}
             </TabsTrigger>
@@ -192,6 +205,7 @@ const Dashboard = () => {
                 <TabsTrigger value="crew">Crew</TabsTrigger>
               </>
             )}
+            <TabsTrigger value="callsheets">Call Sheets</TabsTrigger>
             <TabsTrigger value="applications">Applications</TabsTrigger>
           </TabsList>
           
@@ -352,6 +366,102 @@ const Dashboard = () => {
             </TabsContent>
           )}
           
+          <TabsContent value="callsheets" className="space-y-4">
+            {callSheets.length === 0 ? (
+              <Card>
+                <CardContent className="text-center py-8">
+                  <FileText className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <p className="text-muted-foreground mb-4">No call sheets yet</p>
+                  <Button onClick={() => navigate("/call-sheet")}>
+                    Create Your First Call Sheet
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {callSheets.map((sheet: any) => (
+                  <Card key={sheet.id}>
+                    <CardHeader>
+                      <CardTitle className="text-lg">{sheet.project_name}</CardTitle>
+                      <CardDescription>{sheet.production_company}</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                      <div className="flex items-center text-sm">
+                        <Calendar className="mr-2 h-4 w-4" />
+                        {formatDate(sheet.shoot_date)}
+                      </div>
+                      {sheet.day_number && (
+                        <div className="text-sm text-muted-foreground">
+                          Day {sheet.day_number}
+                        </div>
+                      )}
+                      {sheet.shooting_location && (
+                        <div className="flex items-center text-sm text-muted-foreground">
+                          <MapPin className="mr-2 h-4 w-4" />
+                          {sheet.shooting_location}
+                        </div>
+                      )}
+                    </CardContent>
+                    <CardContent className="pt-0 flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => navigate(`/call-sheet?id=${sheet.id}`)}
+                      >
+                        View/Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            // Fetch complete call sheet data with all related tables
+                            const { data: completeSheet, error } = await supabase
+                              .from('call_sheets')
+                              .select(`
+                                *,
+                                call_sheet_scenes(*),
+                                call_sheet_cast(*),
+                                call_sheet_crew(*),
+                                call_sheet_background(*)
+                              `)
+                              .eq('id', sheet.id)
+                              .single();
+
+                            if (error) throw error;
+
+                            const { exportCallSheetToPDF } = await import("@/utils/exportCallSheetToPDF");
+                            await exportCallSheetToPDF(
+                              completeSheet,
+                              completeSheet.call_sheet_scenes || [],
+                              completeSheet.call_sheet_cast || [],
+                              completeSheet.call_sheet_crew || [],
+                              completeSheet.call_sheet_background || []
+                            );
+                            toast({
+                              title: "PDF Downloaded",
+                              description: "Your call sheet has been downloaded.",
+                            });
+                          } catch (error) {
+                            console.error('Error downloading PDF:', error);
+                            toast({
+                              title: "Error",
+                              description: "Failed to download call sheet PDF.",
+                              variant: "destructive",
+                            });
+                          }
+                        }}
+                      >
+                        PDF
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </TabsContent>
+          
           <TabsContent value="applications" className="space-y-4">
             {applications.length === 0 ? (
               <Card>
@@ -394,6 +504,7 @@ const Dashboard = () => {
         </Tabs>
       </div>
     </div>
+    </GlobalLayout>
   );
 };
 
