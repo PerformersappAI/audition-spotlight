@@ -11,11 +11,11 @@ serve(async (req) => {
   }
 
   try {
-    const { text, fileData, mimeType } = await req.json();
+    const { text } = await req.json();
     
-    if (!text && !fileData) {
+    if (!text) {
       return new Response(
-        JSON.stringify({ error: 'No text or file provided' }),
+        JSON.stringify({ error: 'Text must be provided' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -107,28 +107,8 @@ Extract all relevant information and return it as valid JSON with the following 
 
 Extract ALL information available. Use null for missing fields. Be thorough and accurate.`;
 
-    let userContent;
-    
-    // If PDF file is provided, use vision capabilities
-    if (fileData && mimeType) {
-      console.log('Processing PDF file directly with vision...');
-      userContent = [
-        {
-          type: "text",
-          text: "Extract all information from this call sheet document:"
-        },
-        {
-          type: "image_url",
-          image_url: {
-            url: `data:${mimeType};base64,${fileData}`
-          }
-        }
-      ];
-    } else {
-      // Fallback to text processing
-      console.log('Processing text content...');
-      userContent = `Extract all information from this call sheet:\n\n${text}`;
-    }
+    // Use the extracted text directly
+    const userContent = `Extract all information from this call sheet:\n\n${text}`;
 
     console.log('Calling Lovable AI for call sheet parsing...');
     
