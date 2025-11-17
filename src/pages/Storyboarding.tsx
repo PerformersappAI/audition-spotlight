@@ -853,10 +853,12 @@ const Storyboarding = () => {
           storyboard_frames: updatedStoryboard
         });
 
-        setSelectedProject({
-          ...selectedProject,
-          storyboard: updatedProject.storyboard_frames || undefined
-        });
+        if (updatedProject) {
+          setSelectedProject({
+            ...selectedProject,
+            storyboard: updatedProject.storyboard_frames || undefined
+          });
+        }
         
         toast({
           title: "Image Uploaded",
@@ -992,11 +994,22 @@ const Storyboarding = () => {
         generatedAt: frameData.generatedAt || new Date().toISOString()
       };
 
-      const updatedStoryboard = selectedProject.storyboard ? 
-        selectedProject.storyboard.map(frame => 
-          frame.shotNumber === shotNumber ? newFrame : frame
-        ) : 
-        [newFrame];
+      let updatedStoryboard: StoryboardFrame[];
+      if (selectedProject.storyboard) {
+        const existingIndex = selectedProject.storyboard.findIndex(f => f.shotNumber === shotNumber);
+        if (existingIndex >= 0) {
+          // Replace existing frame
+          updatedStoryboard = selectedProject.storyboard.map(frame => 
+            frame.shotNumber === shotNumber ? newFrame : frame
+          );
+        } else {
+          // Add new frame
+          updatedStoryboard = [...selectedProject.storyboard, newFrame];
+        }
+      } else {
+        // Initialize storyboard
+        updatedStoryboard = [newFrame];
+      }
 
       // If this is the first frame, initialize the storyboard array
       if (!selectedProject.storyboard) {
