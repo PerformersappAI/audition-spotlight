@@ -60,3 +60,21 @@ verify_jwt = false
 
 [functions.parse-call-sheet]
 verify_jwt = false
+
+[functions.inpaint-frame]
+verify_jwt = false
+
+[functions.generate-animatic]
+verify_jwt = false
+
+[functions.analyze-style-reference]
+verify_jwt = false
+
+[functions.generate-certificate]
+verify_jwt = false
+
+[functions.analyze-video]
+verify_jwt = false
+
+[functions.chat-with-analysis]
+verify_jwt = false
