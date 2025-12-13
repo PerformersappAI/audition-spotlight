@@ -78,3 +78,6 @@ verify_jwt = false
 
 [functions.chat-with-analysis]
 verify_jwt = false
+
+[functions.contract-assistant]
+verify_jwt = false

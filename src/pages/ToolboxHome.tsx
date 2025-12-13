@@ -12,7 +12,8 @@ import {
   MessageCircle, 
   Sparkles,
   ChevronRight,
-  GraduationCap
+  GraduationCap,
+  Scale
 } from "lucide-react";
 
 export default function ToolboxHome() {
@@ -115,6 +116,15 @@ export default function ToolboxHome() {
       status: "active",
       badge: "Learn & Grow",
       route: "/training"
+    },
+    {
+      id: "contract_assistant",
+      name: "SAG-AFTRA Contract Assistant",
+      description: "AI-powered guidance for union contracts and becoming a signatory producer",
+      icon: Scale,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/contract-assistant"
     }
   ]);
 
