@@ -52,6 +52,7 @@ import CourseDetail from "./pages/CourseDetail";
 import CertificationGallery from "./pages/CertificationGallery";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import MyLearning from "./pages/MyLearning";
+import ContractAssistant from "./pages/ContractAssistant";
 
 const queryClient = new QueryClient();
 
@@ -104,6 +105,7 @@ const AppContent = () => (
           <Route path="/training/my-learning" element={<MyLearning />} />
           <Route path="/training/certifications" element={<CertificationGallery />} />
           <Route path="/verify-certificate/:certificateNumber" element={<VerifyCertificate />} />
+          <Route path="/contract-assistant" element={<ContractAssistant />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
