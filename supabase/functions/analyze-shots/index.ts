@@ -142,10 +142,35 @@ REMEMBER: Each description should be precise enough that an AI image generator c
     }
 
     const data = await response.json();
-    console.log('GPT-5.2 response received');
+    console.log('GPT-5.2 full response:', JSON.stringify(data, null, 2));
 
-    const content = data.choices[0].message.content;
-    const parsed = JSON.parse(content);
+    // Check for API errors in response
+    if (data.error) {
+      console.error('OpenAI API returned error:', data.error);
+      throw new Error(`OpenAI API error: ${data.error.message || JSON.stringify(data.error)}`);
+    }
+
+    // Check if choices exist
+    if (!data.choices || data.choices.length === 0) {
+      console.error('No choices in response:', data);
+      throw new Error('OpenAI returned no choices in response');
+    }
+
+    const content = data.choices[0]?.message?.content;
+    console.log('Content to parse:', content ? content.substring(0, 500) + '...' : 'EMPTY');
+
+    if (!content || content.trim() === '') {
+      console.error('Empty content from GPT-5.2. Full response:', JSON.stringify(data, null, 2));
+      throw new Error('GPT-5.2 returned empty content - model may not support json_object response format');
+    }
+
+    let parsed;
+    try {
+      parsed = JSON.parse(content);
+    } catch (parseError) {
+      console.error('JSON parse error. Content was:', content);
+      throw new Error(`Failed to parse GPT response as JSON: ${parseError.message}`);
+    }
 
     // Transform the AI response into the format expected by the frontend
     const analyzedShots: AnalyzedShot[] = parsed.shots.map((shot: any) => ({
