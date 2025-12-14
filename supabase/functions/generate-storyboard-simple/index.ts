@@ -7,41 +7,38 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-function getCameraInstructions(cameraAngle: string): string {
-  const angle = cameraAngle.toLowerCase();
+function getShotFraming(cameraAngle: string): string {
+  const angle = (cameraAngle || '').toLowerCase();
   
   if (angle.includes('extreme close') || angle.includes('ecu')) {
-    return 'EXTREME CLOSE-UP FRAMING: Face detail only, eyes or mouth fill frame';
+    return 'Extreme close-up. Detail fills frame.';
   }
-  if (angle.includes('close up') || angle.includes('close-up') || angle.includes('cu')) {
-    return 'CLOSE-UP FRAMING: Head and shoulders only';
+  if (angle.includes('close-up') || angle.includes('close up') || angle.includes('cu')) {
+    return 'Close-up. Head and shoulders only.';
   }
   if (angle.includes('medium close') || angle.includes('mcu')) {
-    return 'MEDIUM CLOSE-UP FRAMING: Chest and up visible';
+    return 'Medium close-up. Chest and up visible.';
   }
   if (angle.includes('medium') || angle.includes('ms')) {
-    return 'MEDIUM SHOT FRAMING: Waist and up visible';
+    return 'Medium shot. Waist and up visible.';
   }
-  if (angle.includes('long shot') || angle.includes('full shot') || angle.includes('ls')) {
-    return 'LONG SHOT FRAMING: Full body visible';
-  }
-  if (angle.includes('wide') || angle.includes('ws') || angle.includes('establishing')) {
-    return 'WIDE SHOT FRAMING: Full environment emphasis';
+  if (angle.includes('wide') || angle.includes('ws') || angle.includes('full') || angle.includes('long')) {
+    return 'Wide shot. Full body and environment.';
   }
   if (angle.includes('extreme wide') || angle.includes('ews')) {
-    return 'EXTREME WIDE SHOT FRAMING: Vast environment, epic scope';
+    return 'Extreme wide. Vast environment.';
   }
-  if (angle.includes('high angle') || angle.includes('bird')) {
-    return 'HIGH ANGLE FRAMING: Camera above subject looking down';
+  if (angle.includes('high angle')) {
+    return 'High angle. Camera above looking down.';
   }
   if (angle.includes('low angle')) {
-    return 'LOW ANGLE FRAMING: Camera below subject looking up';
+    return 'Low angle. Camera below looking up.';
   }
   if (angle.includes('over shoulder') || angle.includes('os')) {
-    return 'OVER-SHOULDER FRAMING: Foreground shoulder visible';
+    return 'Over-the-shoulder framing.';
   }
   
-  return 'STANDARD FRAMING: Balanced composition';
+  return 'Standard framing.';
 }
 
 serve(async (req) => {
@@ -49,7 +46,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  console.log('Generate-storyboard-simple function called');
+  console.log('Generate-storyboard-simple function called (gpt-image-1)');
 
   try {
     const { scene_text, style } = await req.json();
@@ -72,9 +69,9 @@ serve(async (req) => {
     const { data: shotsData, error: shotsError } = await supabase.functions.invoke('analyze-shots', {
       body: { 
         scriptText: scene_text, 
-        genre: 'drama', // Default to drama for simple API
+        genre: 'drama',
         tone: 'serious',
-        shotCount: 6 // Default to 6 shots
+        shotCount: 6
       }
     });
 
@@ -89,7 +86,7 @@ serve(async (req) => {
     const shots = shotsData.shots || [];
     console.log(`Analyzed into ${shots.length} shots`);
 
-    // Step 2: Generate storyboard frames for each shot
+    // Step 2: Generate storyboard frames using gpt-image-1
     const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
     if (!OPENAI_API_KEY) {
       return new Response(
@@ -103,17 +100,19 @@ serve(async (req) => {
     for (const shot of shots) {
       console.log(`Generating image for shot ${shot.shotNumber}`);
 
-      const cameraInstructions = getCameraInstructions(shot.cameraAngle || 'medium shot');
+      const framingPrompt = getShotFraming(shot.cameraAngle || 'medium shot');
       const description = shot.visualDescription || shot.description;
 
-      // Create the storyboard prompt with art style
-      const storyboardPrompt = `${description}, 
-storyboard frame, 
-film previsualization, 
-professional concept art for film production, 
-35mm film composition and framing, 
-${style},
-${cameraInstructions}`;
+      // Build clean prompt for gpt-image-1
+      const storyboardPrompt = `Storyboard frame for film production.
+
+STYLE: ${style}
+
+FRAMING: ${framingPrompt}
+
+SCENE: ${description}
+${shot.location ? `LOCATION: ${shot.location}` : ''}
+${shot.characters?.length > 0 ? `CHARACTERS: ${shot.characters.join(', ')}` : ''}`;
 
       try {
         const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
@@ -123,13 +122,12 @@ ${cameraInstructions}`;
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'dall-e-3',
+            model: 'gpt-image-1',
             prompt: storyboardPrompt,
             n: 1,
-            size: '1792x1024',
-            quality: 'standard', // Better for sketch style
-            style: 'natural',
-            response_format: 'b64_json'
+            size: '1536x1024',
+            quality: 'high',
+            output_format: 'png'
           }),
         });
 
@@ -139,24 +137,24 @@ ${cameraInstructions}`;
         }
 
         const imageData = await imageResponse.json();
-        const base64Data = imageData.data[0].b64_json;
+        const base64Data = imageData.data?.[0]?.b64_json;
 
-        panels.push({
-          shot_id: shot.shotNumber,
-          description: description,
-          prompt_used: storyboardPrompt,
-          image_b64: base64Data
-        });
-
-        console.log(`Successfully generated shot ${shot.shotNumber}`);
+        if (base64Data) {
+          panels.push({
+            shot_id: shot.shotNumber,
+            description: description,
+            prompt_used: storyboardPrompt,
+            image_b64: base64Data
+          });
+          console.log(`Successfully generated shot ${shot.shotNumber}`);
+        }
 
       } catch (error) {
         console.error(`Error generating shot ${shot.shotNumber}:`, error);
-        // Continue with other shots even if one fails
       }
 
-      // Small delay to prevent rate limiting
-      await new Promise(resolve => setTimeout(resolve, 500));
+      // Delay between requests
+      await new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     console.log(`Successfully generated ${panels.length} panels`);
@@ -166,9 +164,9 @@ ${cameraInstructions}`;
     });
 
   } catch (error) {
-    console.error('Error in generate-storyboard-simple function:', error);
+    console.error('Error in generate-storyboard-simple:', error);
     return new Response(JSON.stringify({ 
-      error: error instanceof Error ? error.message : 'Unknown error occurred'
+      error: error instanceof Error ? error.message : 'Unknown error'
     }), {
       status: 500,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

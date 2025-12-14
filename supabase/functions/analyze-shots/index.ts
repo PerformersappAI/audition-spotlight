@@ -33,45 +33,71 @@ serve(async (req) => {
   try {
     const { scriptText, genre, tone, shotCount } = await req.json();
 
-    console.log(`Analyzing script for ${shotCount} shots...`);
+    console.log(`Analyzing script for ${shotCount} shots using GPT-5.2...`);
 
     if (!openAIApiKey) {
       throw new Error('OpenAI API key not configured');
     }
 
-    const systemPrompt = `You are a professional storyboard artist and cinematographer with decades of experience in film pre-production. Your job is to analyze scripts and break them down into specific, actionable storyboard frames that filmmakers can use as visual references.`;
+    const systemPrompt = `You are a professional film director and cinematographer breaking down a script into specific storyboard shots. Your descriptions must be PRECISE and LITERAL - describe exactly what the camera sees, nothing more. 
 
-    const userPrompt = `Analyze this script and break it down into exactly ${shotCount} specific storyboard frames. Each frame should capture a key visual moment that advances the story or reveals character.
+CRITICAL RULES FOR SHOT DESCRIPTIONS:
+- Be LITERAL: Describe only what is physically in the frame
+- Be SPECIFIC: Include exact positions, distances, and compositions
+- NO interpretation or metaphor - just visual facts
+- NO extra elements that aren't in the script
+- Each shot should have ONE clear focal point
+- Think like a director planning actual camera setups`;
 
-For each frame, provide detailed information that would allow an artist to draw it or a filmmaker to plan the shot:
+    const userPrompt = `Break this script into exactly ${shotCount} storyboard shots. Each shot must be a specific camera setup that could be filmed.
 
-1. **visualDescription**: A vivid, specific description of what's literally in the frame. Include character positions, expressions, actions, setting details, and props. Be concrete and visual (e.g., "Tommy stands in narrow apartment hallway, hand raised mid-knock on door 3B, nervous expression, looking over shoulder toward dimly lit stairwell")
+FOR EACH SHOT, PROVIDE:
 
-2. **characters**: Array of character names visible in this frame
+1. **visualDescription**: LITERAL description of what the camera captures. Be specific about:
+   - Subject position in frame (left/center/right, foreground/background)
+   - Distance from camera (in feet if helpful)
+   - Exact action being captured
+   - Background elements visible
+   Example: "Woman stands center frame, 4 feet from camera, hand on doorknob, looking back over left shoulder. Dimly lit hallway behind her."
 
-3. **location**: Specific location with relevant details (e.g., "Third-floor apartment hallway, worn carpet, flickering fluorescent overhead, peeling wallpaper, door marked '3B'")
+2. **characters**: Array of character names IN THIS FRAME ONLY
 
-4. **action**: The specific action or moment being captured (e.g., "Hesitant knock while checking surroundings")
+3. **location**: Specific set/location with only relevant visible details
 
-5. **emotionalTone**: The feeling this frame should convey to the audience (e.g., "Tension, uncertainty, mild paranoia")
+4. **action**: The single action this frame captures (keep it simple)
 
-6. **shotType**: Choose from: Extreme Wide Shot, Wide Shot, Medium Wide Shot, Medium Shot, Medium Close-Up, Close-Up, Extreme Close-Up, Over-the-Shoulder, POV Shot, Insert Shot, Two Shot
+5. **emotionalTone**: One or two words for the mood
 
-7. **cameraAngle**: Choose from: Eye Level, High Angle, Low Angle, Bird's Eye View, Dutch Angle, Worm's Eye View - and briefly explain why this angle serves the story
+6. **shotType**: EXACT shot size - choose from:
+   - Extreme Close-Up (eyes only, or small object detail)
+   - Close-Up (face fills frame, shoulders barely visible)
+   - Medium Close-Up (chest up, some background)
+   - Medium Shot (waist up, balanced with environment)
+   - Medium Wide Shot (knees up, more environment)
+   - Wide Shot (full body with environment)
+   - Extreme Wide Shot (vast environment, small figures)
 
-8. **lighting**: Specific lighting description that creates mood (e.g., "Overhead fluorescent creating harsh shadows, dim natural light from stairwell window")
+7. **cameraAngle**: Camera position - choose from:
+   - Eye Level (neutral, standard)
+   - High Angle (camera above, looking down)
+   - Low Angle (camera below, looking up)
+   - Dutch Angle (tilted for unease)
+   - Over-the-Shoulder (from behind one character toward another)
+   - POV (what the character sees)
 
-9. **keyProps**: Important props or set dressing visible in frame (comma-separated)
+8. **lighting**: Simple lighting description (e.g., "harsh overhead", "soft window light from left", "backlit silhouette")
 
-10. **dialogue**: Any dialogue happening in this moment (or "None" if silent)
+9. **keyProps**: Only props VISIBLE in this specific frame
 
-Script:
+10. **dialogue**: Exact dialogue during this shot, or "None"
+
+SCRIPT:
 ${scriptText}
 
-Genre: ${genre}
-Tone: ${tone}
+GENRE: ${genre}
+TONE: ${tone}
 
-Return ONLY a valid JSON object with this structure:
+Return ONLY valid JSON:
 {
   "shots": [
     {
@@ -90,7 +116,7 @@ Return ONLY a valid JSON object with this structure:
   ]
 }
 
-Make each frame description vivid and specific enough that a filmmaker could visualize the exact shot. Focus on visual storytelling - what the audience SEES, not what they're told.`;
+REMEMBER: Each description should be precise enough that an AI image generator can create EXACTLY that shot with no ambiguity or added elements.`;
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -99,12 +125,12 @@ Make each frame description vivid and specific enough that a filmmaker could vis
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-mini-2025-08-07',
+        model: 'gpt-5-2025-08-07',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_completion_tokens: 4000,
+        max_completion_tokens: 6000,
         response_format: { type: "json_object" }
       }),
     });
@@ -116,7 +142,7 @@ Make each frame description vivid and specific enough that a filmmaker could vis
     }
 
     const data = await response.json();
-    console.log('OpenAI response received');
+    console.log('GPT-5.2 response received');
 
     const content = data.choices[0].message.content;
     const parsed = JSON.parse(content);
@@ -135,12 +161,12 @@ Make each frame description vivid and specific enough that a filmmaker could vis
       keyProps: shot.keyProps,
       dialogue: shot.dialogue,
       // Also include legacy fields for backward compatibility
-      description: shot.action, // Use action as the brief description
-      visualElements: [shot.lighting, shot.emotionalTone], // Combine lighting and tone
-      sceneAction: shot.visualDescription // Use full visual description
+      description: shot.action,
+      visualElements: [shot.lighting, shot.emotionalTone],
+      sceneAction: shot.visualDescription
     }));
 
-    console.log(`Successfully analyzed ${analyzedShots.length} shots`);
+    console.log(`Successfully analyzed ${analyzedShots.length} shots with GPT-5.2`);
 
     return new Response(
       JSON.stringify({ shots: analyzedShots }),
