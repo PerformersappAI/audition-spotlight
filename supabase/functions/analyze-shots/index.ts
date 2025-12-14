@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -33,10 +33,10 @@ serve(async (req) => {
   try {
     const { scriptText, genre, tone, shotCount } = await req.json();
 
-    console.log(`Analyzing script for ${shotCount} shots using GPT-5.2...`);
+    console.log(`Analyzing script for ${shotCount} shots using Gemini...`);
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!lovableApiKey) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
     const systemPrompt = `You are a professional film director and cinematographer breaking down a script into specific storyboard shots. Your descriptions must be PRECISE and LITERAL - describe exactly what the camera sees, nothing more. 
@@ -47,7 +47,9 @@ CRITICAL RULES FOR SHOT DESCRIPTIONS:
 - NO interpretation or metaphor - just visual facts
 - NO extra elements that aren't in the script
 - Each shot should have ONE clear focal point
-- Think like a director planning actual camera setups`;
+- Think like a director planning actual camera setups
+
+IMPORTANT: You must respond with ONLY valid JSON, no markdown formatting or code blocks.`;
 
     const userPrompt = `Break this script into exactly ${shotCount} storyboard shots. Each shot must be a specific camera setup that could be filmed.
 
@@ -97,7 +99,7 @@ ${scriptText}
 GENRE: ${genre}
 TONE: ${tone}
 
-Return ONLY valid JSON:
+Return ONLY valid JSON (no markdown, no code blocks):
 {
   "shots": [
     {
@@ -118,58 +120,64 @@ Return ONLY valid JSON:
 
 REMEMBER: Each description should be precise enough that an AI image generator can create EXACTLY that shot with no ambiguity or added elements.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${lovableApiKey}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'google/gemini-2.5-flash',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_completion_tokens: 6000,
-        response_format: { type: "json_object" }
       }),
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
-      throw new Error(`OpenAI API error: ${response.status}`);
+      console.error('Lovable AI API error:', response.status, errorText);
+      
+      if (response.status === 429) {
+        throw new Error('Rate limit exceeded. Please try again in a moment.');
+      }
+      if (response.status === 402) {
+        throw new Error('Credits depleted. Please add credits to continue.');
+      }
+      throw new Error(`AI API error: ${response.status}`);
     }
 
     const data = await response.json();
-    console.log('GPT-5.2 full response:', JSON.stringify(data, null, 2));
+    console.log('Gemini response received');
 
-    // Check for API errors in response
-    if (data.error) {
-      console.error('OpenAI API returned error:', data.error);
-      throw new Error(`OpenAI API error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
-
-    // Check if choices exist
-    if (!data.choices || data.choices.length === 0) {
-      console.error('No choices in response:', data);
-      throw new Error('OpenAI returned no choices in response');
-    }
-
-    const content = data.choices[0]?.message?.content;
-    console.log('Content to parse:', content ? content.substring(0, 500) + '...' : 'EMPTY');
-
+    const content = data.choices?.[0]?.message?.content;
+    
     if (!content || content.trim() === '') {
-      console.error('Empty content from GPT-5.2. Full response:', JSON.stringify(data, null, 2));
-      throw new Error('GPT-5.2 returned empty content - model may not support json_object response format');
+      console.error('Empty content from Gemini. Full response:', JSON.stringify(data, null, 2));
+      throw new Error('AI returned empty content');
     }
+
+    // Extract JSON from response (handle potential markdown code blocks)
+    let jsonContent = content.trim();
+    
+    // Remove markdown code blocks if present
+    if (jsonContent.startsWith('```json')) {
+      jsonContent = jsonContent.slice(7);
+    } else if (jsonContent.startsWith('```')) {
+      jsonContent = jsonContent.slice(3);
+    }
+    if (jsonContent.endsWith('```')) {
+      jsonContent = jsonContent.slice(0, -3);
+    }
+    jsonContent = jsonContent.trim();
 
     let parsed;
     try {
-      parsed = JSON.parse(content);
+      parsed = JSON.parse(jsonContent);
     } catch (parseError) {
-      console.error('JSON parse error. Content was:', content);
-      throw new Error(`Failed to parse GPT response as JSON: ${parseError.message}`);
+      console.error('JSON parse error. Content was:', content.substring(0, 500));
+      throw new Error(`Failed to parse AI response as JSON: ${parseError.message}`);
     }
 
     // Transform the AI response into the format expected by the frontend
@@ -191,7 +199,7 @@ REMEMBER: Each description should be precise enough that an AI image generator c
       sceneAction: shot.visualDescription
     }));
 
-    console.log(`Successfully analyzed ${analyzedShots.length} shots with GPT-5.2`);
+    console.log(`Successfully analyzed ${analyzedShots.length} shots with Gemini`);
 
     return new Response(
       JSON.stringify({ shots: analyzedShots }),
