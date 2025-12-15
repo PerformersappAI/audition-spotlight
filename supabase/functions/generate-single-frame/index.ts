@@ -1,7 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -114,7 +114,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  console.log('Generate-single-frame function called (gpt-image-1)');
+  console.log('Generate-single-frame function called (Gemini 2.5 Flash Image)');
 
   try {
     const { shot, artStyle, aspectRatio = "16:9", characterDescriptions = "", styleReference = "" } = await req.json();
@@ -123,35 +123,35 @@ serve(async (req) => {
       throw new Error('Missing required parameters: shot, artStyle');
     }
 
-    console.log(`Generating frame for shot ${shot.shotNumber} with gpt-image-1`);
+    console.log(`Generating frame for shot ${shot.shotNumber} with Gemini 2.5 Flash Image`);
 
-    if (!openAIApiKey) {
-      throw new Error('OpenAI API key not configured');
+    if (!LOVABLE_API_KEY) {
+      throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    // Build clean, direct prompt for gpt-image-1
+    // Build clean, direct prompt for Gemini
     const artStylePrompt = getArtStylePrompt(artStyle);
     const framingPrompt = getShotFraming(shot.shotType || shot.cameraAngle, shot.cameraAngle);
     
     // Get the visual description
     const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
     
-    // Build prompt - gpt-image-1 follows instructions precisely, so be direct
-    let imagePrompt = `Storyboard frame for film production.\n\n`;
-    imagePrompt += `STYLE: ${artStylePrompt}\n\n`;
-    imagePrompt += `FRAMING: ${framingPrompt}\n\n`;
-    imagePrompt += `SCENE: ${visualDesc}\n`;
+    // Build prompt - Gemini follows instructions precisely
+    let imagePrompt = `Generate a storyboard frame for film production.\n\n`;
+    imagePrompt += `ART STYLE: ${artStylePrompt}\n\n`;
+    imagePrompt += `CAMERA FRAMING: ${framingPrompt}\n\n`;
+    imagePrompt += `SCENE DESCRIPTION: ${visualDesc}\n`;
     
     if (shot.location) {
       imagePrompt += `LOCATION: ${shot.location}\n`;
     }
     
     if (shot.characters && shot.characters.length > 0) {
-      imagePrompt += `CHARACTERS: ${shot.characters.join(', ')}\n`;
+      imagePrompt += `CHARACTERS IN FRAME: ${shot.characters.join(', ')}\n`;
     }
     
     if (characterDescriptions) {
-      imagePrompt += `CHARACTER DETAILS: ${characterDescriptions}\n`;
+      imagePrompt += `CHARACTER APPEARANCE: ${characterDescriptions}\n`;
     }
     
     if (shot.lighting) {
@@ -159,43 +159,67 @@ serve(async (req) => {
     }
     
     if (shot.keyProps) {
-      imagePrompt += `PROPS: ${shot.keyProps}\n`;
+      imagePrompt += `KEY PROPS: ${shot.keyProps}\n`;
     }
     
     if (styleReference) {
-      imagePrompt += `\nVISUAL REFERENCE: ${styleReference}\n`;
+      imagePrompt += `\nVISUAL STYLE REFERENCE: ${styleReference}\n`;
+    }
+
+    // Add aspect ratio hint
+    if (aspectRatio === "9:16") {
+      imagePrompt += `\nIMAGE FORMAT: Vertical/portrait orientation (9:16 aspect ratio)`;
+    } else {
+      imagePrompt += `\nIMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
     }
 
     console.log(`Prompt for shot ${shot.shotNumber}: ${imagePrompt}`);
 
-    // Determine image size - gpt-image-1 supports: 1024x1024, 1536x1024, 1024x1536
-    const imageSize = aspectRatio === "9:16" ? "1024x1536" : "1536x1024";
-
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-image-1',
-        prompt: imagePrompt,
-        n: 1,
-        size: imageSize,
-        quality: 'high',
-        output_format: 'png'
+        model: 'google/gemini-2.5-flash-image-preview',
+        messages: [
+          { role: 'user', content: imagePrompt }
+        ],
+        modalities: ['image', 'text']
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error(`gpt-image-1 error for shot ${shot.shotNumber}:`, {
+      console.error(`Gemini error for shot ${shot.shotNumber}:`, {
         status: response.status,
         error: errorData
       });
 
+      // Check for rate limits or credits
+      if (response.status === 429) {
+        return new Response(JSON.stringify({ 
+          error: 'Rate limit exceeded. Please try again in a moment.',
+          errorType: 'rate_limit'
+        }), {
+          status: 429,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ 
+          error: 'AI credits required. Please add credits to continue.',
+          errorType: 'credits_required'
+        }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
       // Check for content policy violation
-      const isContentPolicy = errorData.includes('content_policy') || errorData.includes('safety');
+      const isContentPolicy = errorData.includes('content') || errorData.includes('safety') || errorData.includes('blocked');
       
       const fallbackSvg = `data:image/svg+xml;base64,${btoa(`
         <svg width="1536" height="1024" xmlns="http://www.w3.org/2000/svg">
@@ -222,20 +246,18 @@ serve(async (req) => {
 
     const data = await response.json();
     
-    // gpt-image-1 returns base64 in b64_json field
-    const base64Data = data.data?.[0]?.b64_json;
+    // Gemini returns images in the images array
+    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
     
-    if (!base64Data) {
-      console.error('No image data returned for shot:', shot.shotNumber);
+    if (!imageUrl) {
+      console.error('No image data returned for shot:', shot.shotNumber, data);
       throw new Error('No image data in response');
     }
 
-    const imageData = `data:image/png;base64,${base64Data}`;
-
-    console.log(`Successfully generated shot ${shot.shotNumber} with gpt-image-1`);
+    console.log(`Successfully generated shot ${shot.shotNumber} with Gemini 2.5 Flash Image`);
 
     return new Response(JSON.stringify({ 
-      imageData,
+      imageData: imageUrl,
       shotNumber: shot.shotNumber,
       generatedAt: new Date().toISOString()
     }), {

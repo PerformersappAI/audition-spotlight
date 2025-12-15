@@ -7,6 +7,8 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+
 function getShotFraming(cameraAngle: string): string {
   const angle = (cameraAngle || '').toLowerCase();
   
@@ -46,7 +48,7 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  console.log('Generate-storyboard-simple function called (gpt-image-1)');
+  console.log('Generate-storyboard-simple function called (Gemini 2.5 Flash Image)');
 
   try {
     const { scene_text, style } = await req.json();
@@ -86,11 +88,10 @@ serve(async (req) => {
     const shots = shotsData.shots || [];
     console.log(`Analyzed into ${shots.length} shots`);
 
-    // Step 2: Generate storyboard frames using gpt-image-1
-    const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-    if (!OPENAI_API_KEY) {
+    // Step 2: Generate storyboard frames using Gemini 2.5 Flash Image
+    if (!LOVABLE_API_KEY) {
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'LOVABLE_API_KEY not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
@@ -103,43 +104,55 @@ serve(async (req) => {
       const framingPrompt = getShotFraming(shot.cameraAngle || 'medium shot');
       const description = shot.visualDescription || shot.description;
 
-      // Build clean prompt for gpt-image-1
-      const storyboardPrompt = `Storyboard frame for film production.
+      // Build clean prompt for Gemini
+      const storyboardPrompt = `Generate a storyboard frame for film production.
 
-STYLE: ${style}
+ART STYLE: ${style}
 
-FRAMING: ${framingPrompt}
+CAMERA FRAMING: ${framingPrompt}
 
-SCENE: ${description}
+SCENE DESCRIPTION: ${description}
 ${shot.location ? `LOCATION: ${shot.location}` : ''}
-${shot.characters?.length > 0 ? `CHARACTERS: ${shot.characters.join(', ')}` : ''}`;
+${shot.characters?.length > 0 ? `CHARACTERS IN FRAME: ${shot.characters.join(', ')}` : ''}
+
+IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
 
       try {
-        const imageResponse = await fetch('https://api.openai.com/v1/images/generations', {
+        const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
           headers: {
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'gpt-image-1',
-            prompt: storyboardPrompt,
-            n: 1,
-            size: '1536x1024',
-            quality: 'high',
-            output_format: 'png'
+            model: 'google/gemini-2.5-flash-image-preview',
+            messages: [
+              { role: 'user', content: storyboardPrompt }
+            ],
+            modalities: ['image', 'text']
           }),
         });
 
         if (!imageResponse.ok) {
-          console.error(`Image generation failed for shot ${shot.shotNumber}`);
+          console.error(`Image generation failed for shot ${shot.shotNumber}:`, imageResponse.status);
+          
+          // Check for rate limits
+          if (imageResponse.status === 429) {
+            console.log('Rate limited, adding delay...');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+          }
           continue;
         }
 
         const imageData = await imageResponse.json();
-        const base64Data = imageData.data?.[0]?.b64_json;
+        const imageUrl = imageData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
-        if (base64Data) {
+        if (imageUrl) {
+          // Extract base64 data from data URL if present
+          const base64Data = imageUrl.startsWith('data:image') 
+            ? imageUrl.split(',')[1] 
+            : imageUrl;
+            
           panels.push({
             shot_id: shot.shotNumber,
             description: description,
@@ -153,8 +166,8 @@ ${shot.characters?.length > 0 ? `CHARACTERS: ${shot.characters.join(', ')}` : ''
         console.error(`Error generating shot ${shot.shotNumber}:`, error);
       }
 
-      // Delay between requests
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Delay between requests to avoid rate limiting
+      await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     console.log(`Successfully generated ${panels.length} panels`);
