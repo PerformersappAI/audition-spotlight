@@ -70,7 +70,7 @@ export default function CreateAudition() {
     synopsis: "",
     shoot_city: "",
     shoot_country: "",
-    shoot_dates: "",
+    work_dates: "",
     audition_window: "",
     callback_dates: "",
     self_tape_deadline: "",
@@ -145,7 +145,7 @@ export default function CreateAudition() {
           synopsis: formData.synopsis,
           shoot_city: formData.shoot_city,
           shoot_country: formData.shoot_country,
-          shoot_dates: formData.shoot_dates,
+          work_dates: formData.work_dates,
           audition_window: formData.audition_window,
           callback_dates: formData.callback_dates,
           self_tape_deadline: formData.self_tape_deadline || null,
@@ -309,7 +309,7 @@ export default function CreateAudition() {
                 synopsis: parsed.synopsis || prev.synopsis,
                 shoot_city: parsed.shoot_city || prev.shoot_city,
                 shoot_country: parsed.shoot_country || prev.shoot_country,
-                shoot_dates: parsed.shoot_dates || prev.shoot_dates,
+                work_dates: parsed.work_dates || parsed.shoot_dates || prev.work_dates,
                 audition_window: parsed.audition_window || prev.audition_window,
                 callback_dates: parsed.callback_dates || prev.callback_dates,
                 self_tape_deadline: parsed.self_tape_deadline || prev.self_tape_deadline,
@@ -639,7 +639,7 @@ export default function CreateAudition() {
 
                   <div className="space-y-2">
                     <Label>Shoot Dates</Label>
-                    <Input placeholder="Oct 16–17, 2025 or TBD" value={formData.shoot_dates} onChange={(e) => updateField("shoot_dates", e.target.value)} />
+                    <Input placeholder="Oct 16–17, 2025 or TBD" value={formData.work_dates} onChange={(e) => updateField("work_dates", e.target.value)} />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
