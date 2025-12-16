@@ -77,6 +77,72 @@ export interface CallSheetBackground {
   notes?: string;
 }
 
+// Sanitize "null" strings to actual null, and validate time fields
+const sanitizeValue = (value: any, isTimeField: boolean = false): any => {
+  // Convert "null" strings and empty strings to actual null
+  if (value === 'null' || value === 'NULL' || value === '' || value === undefined) {
+    return null;
+  }
+  
+  // For time fields, validate HH:MM format or set to null
+  if (isTimeField && value !== null) {
+    const timeValue = String(value);
+    // Check if it's a valid time format (HH:MM or HH:MM:SS)
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(timeValue)) {
+      return timeValue;
+    }
+    return null;
+  }
+  
+  return value;
+};
+
+const sanitizeCallSheetData = (data: CallSheetData): Partial<CallSheetData> => {
+  const timeFields = ['general_crew_call', 'shooting_call', 'lunch_time', 'courtesy_breakfast_time', 'wrap_time'];
+  const sanitized: any = {};
+  
+  for (const [key, value] of Object.entries(data)) {
+    if (key === 'id') continue;
+    sanitized[key] = sanitizeValue(value, timeFields.includes(key));
+  }
+  
+  return sanitized;
+};
+
+const sanitizeCastData = (cast: CallSheetCast[]): CallSheetCast[] => {
+  const timeFields = ['pickup_time', 'call_time', 'set_ready_time'];
+  return cast.map(member => {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(member)) {
+      if (key === 'id') continue;
+      sanitized[key] = sanitizeValue(value, timeFields.includes(key));
+    }
+    return sanitized as CallSheetCast;
+  });
+};
+
+const sanitizeCrewData = (crew: CallSheetCrew[]): CallSheetCrew[] => {
+  return crew.map(member => {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(member)) {
+      if (key === 'id') continue;
+      sanitized[key] = sanitizeValue(value, key === 'call_time');
+    }
+    return sanitized as CallSheetCrew;
+  });
+};
+
+const sanitizeBackgroundData = (background: CallSheetBackground[]): CallSheetBackground[] => {
+  return background.map(item => {
+    const sanitized: any = {};
+    for (const [key, value] of Object.entries(item)) {
+      if (key === 'id') continue;
+      sanitized[key] = sanitizeValue(value, key === 'call_time');
+    }
+    return sanitized as CallSheetBackground;
+  });
+};
+
 export const useCallSheets = () => {
   const [callSheets, setCallSheets] = useState<CallSheetData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -124,12 +190,49 @@ export const useCallSheets = () => {
       
       if (!user) throw new Error("Not authenticated");
 
+      // Sanitize data before insert
+      const sanitizedCallSheet = sanitizeCallSheetData(callSheetData);
+      const sanitizedCast = sanitizeCastData(cast);
+      const sanitizedCrew = sanitizeCrewData(crew);
+      const sanitizedBackground = sanitizeBackgroundData(background);
+
       // Insert call sheet
       console.log('💾 Inserting call sheet to database...');
       const { data: callSheet, error: callSheetError } = await supabase
         .from('call_sheets')
         .insert({
-          ...callSheetData,
+          production_company: sanitizedCallSheet.production_company || '',
+          project_name: sanitizedCallSheet.project_name || '',
+          shoot_date: sanitizedCallSheet.shoot_date || new Date().toISOString().split('T')[0],
+          day_number: sanitizedCallSheet.day_number,
+          total_days: sanitizedCallSheet.total_days,
+          script_color: sanitizedCallSheet.script_color,
+          schedule_color: sanitizedCallSheet.schedule_color,
+          general_crew_call: sanitizedCallSheet.general_crew_call,
+          shooting_call: sanitizedCallSheet.shooting_call,
+          lunch_time: sanitizedCallSheet.lunch_time,
+          courtesy_breakfast_time: sanitizedCallSheet.courtesy_breakfast_time,
+          wrap_time: sanitizedCallSheet.wrap_time,
+          executive_producers: sanitizedCallSheet.executive_producers,
+          producers: sanitizedCallSheet.producers,
+          director: sanitizedCallSheet.director,
+          associate_director: sanitizedCallSheet.associate_director,
+          line_producer: sanitizedCallSheet.line_producer,
+          upm: sanitizedCallSheet.upm,
+          production_office_address: sanitizedCallSheet.production_office_address,
+          shooting_location: sanitizedCallSheet.shooting_location,
+          location_address: sanitizedCallSheet.location_address,
+          crew_parking: sanitizedCallSheet.crew_parking,
+          basecamp: sanitizedCallSheet.basecamp,
+          nearest_hospital: sanitizedCallSheet.nearest_hospital,
+          hospital_address: sanitizedCallSheet.hospital_address,
+          weather_description: sanitizedCallSheet.weather_description,
+          high_temp: sanitizedCallSheet.high_temp,
+          low_temp: sanitizedCallSheet.low_temp,
+          sunrise_time: sanitizedCallSheet.sunrise_time,
+          sunset_time: sanitizedCallSheet.sunset_time,
+          dawn_time: sanitizedCallSheet.dawn_time,
+          twilight_time: sanitizedCallSheet.twilight_time,
           user_id: user.id,
         })
         .select()
@@ -165,10 +268,17 @@ export const useCallSheets = () => {
       }
 
       // Insert cast
-      if (cast.length > 0) {
-        console.log(`👥 Inserting ${cast.length} cast members...`);
-        const castWithId = cast.map((member, index) => ({
-          ...member,
+      if (sanitizedCast.length > 0) {
+        console.log(`👥 Inserting ${sanitizedCast.length} cast members...`);
+        const castWithId = sanitizedCast.map((member, index) => ({
+          character_name: member.character_name || '',
+          actor_name: member.actor_name || '',
+          status: member.status,
+          pickup_time: member.pickup_time,
+          call_time: member.call_time,
+          set_ready_time: member.set_ready_time,
+          special_instructions: member.special_instructions,
+          cast_id: member.cast_id,
           call_sheet_id: callSheetId,
           order_index: index,
         }));
@@ -185,10 +295,13 @@ export const useCallSheets = () => {
       }
 
       // Insert crew
-      if (crew.length > 0) {
-        console.log(`🎬 Inserting ${crew.length} crew members...`);
-        const crewWithId = crew.map((member, index) => ({
-          ...member,
+      if (sanitizedCrew.length > 0) {
+        console.log(`🎬 Inserting ${sanitizedCrew.length} crew members...`);
+        const crewWithId = sanitizedCrew.map((member, index) => ({
+          department: member.department || '',
+          title: member.title || '',
+          name: member.name || '',
+          call_time: member.call_time,
           call_sheet_id: callSheetId,
           order_index: index,
         }));
@@ -205,10 +318,13 @@ export const useCallSheets = () => {
       }
 
       // Insert background
-      if (background.length > 0) {
-        console.log(`🎭 Inserting ${background.length} background performers...`);
-        const backgroundWithId = background.map(item => ({
-          ...item,
+      if (sanitizedBackground.length > 0) {
+        console.log(`🎭 Inserting ${sanitizedBackground.length} background performers...`);
+        const backgroundWithId = sanitizedBackground.map(item => ({
+          description: item.description || '',
+          quantity: item.quantity,
+          call_time: item.call_time,
+          notes: item.notes,
           call_sheet_id: callSheetId,
         }));
 
