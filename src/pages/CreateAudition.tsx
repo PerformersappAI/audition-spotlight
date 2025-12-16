@@ -340,7 +340,8 @@ export default function CreateAudition() {
                 additional_materials: parsed.additional_materials || prev.additional_materials,
                 posting_targets: parsed.posting_targets?.length > 0 ? parsed.posting_targets : prev.posting_targets,
                 visibility: parsed.visibility || prev.visibility,
-                submission_deadline: parsed.submission_deadline || prev.submission_deadline,
+                submission_deadline: parsed.submission_deadline || 
+                  (parsed.self_tape_deadline ? parsed.self_tape_deadline.split('T')[0] : prev.submission_deadline),
               }));
 
               // Update roles if provided
@@ -669,6 +670,11 @@ export default function CreateAudition() {
                   </div>
 
                   <div className="space-y-2">
+                    <Label>Submission Deadline *</Label>
+                    <Input type="date" value={formData.submission_deadline} onChange={(e) => updateField("submission_deadline", e.target.value)} required />
+                  </div>
+
+                  <div className="space-y-2">
                     <Label>Location Type</Label>
                     <Select value={formData.location_type} onValueChange={(v) => updateField("location_type", v)}>
                       <SelectTrigger><SelectValue /></SelectTrigger>
@@ -884,10 +890,6 @@ export default function CreateAudition() {
                     <Input placeholder="Voice sample, movement, instrument…" value={formData.additional_materials} onChange={(e) => updateField("additional_materials", e.target.value)} />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Submission Deadline *</Label>
-                    <Input type="date" value={formData.submission_deadline} onChange={(e) => updateField("submission_deadline", e.target.value)} required />
-                  </div>
 
                   <div className="space-y-3">
                     <Label>Where to Post</Label>
