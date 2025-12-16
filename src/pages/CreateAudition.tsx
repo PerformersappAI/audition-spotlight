@@ -126,6 +126,15 @@ export default function CreateAudition() {
       return;
     }
 
+    if (!formData.submission_deadline) {
+      toast({
+        title: "Missing Required Field",
+        description: "Submission deadline is required",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -167,7 +176,7 @@ export default function CreateAudition() {
           additional_materials: formData.additional_materials,
           posting_targets: formData.posting_targets,
           visibility: formData.visibility,
-          submission_deadline: formData.submission_deadline || null,
+          submission_deadline: formData.submission_deadline,
           status: 'active',
           // Legacy fields for compatibility with current types
           location: formData.shoot_city || 'TBD',
@@ -331,6 +340,7 @@ export default function CreateAudition() {
                 additional_materials: parsed.additional_materials || prev.additional_materials,
                 posting_targets: parsed.posting_targets?.length > 0 ? parsed.posting_targets : prev.posting_targets,
                 visibility: parsed.visibility || prev.visibility,
+                submission_deadline: parsed.submission_deadline || prev.submission_deadline,
               }));
 
               // Update roles if provided
@@ -875,8 +885,8 @@ export default function CreateAudition() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Submission Deadline</Label>
-                    <Input type="date" value={formData.submission_deadline} onChange={(e) => updateField("submission_deadline", e.target.value)} />
+                    <Label>Submission Deadline *</Label>
+                    <Input type="date" value={formData.submission_deadline} onChange={(e) => updateField("submission_deadline", e.target.value)} required />
                   </div>
 
                   <div className="space-y-3">
