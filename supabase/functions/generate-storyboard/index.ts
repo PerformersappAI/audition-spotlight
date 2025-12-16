@@ -96,9 +96,16 @@ serve(async (req) => {
     }
 
     console.log('Authenticated user:', user.id);
-    const { shots, genre, tone, scriptText } = await req.json();
+    const { 
+      shots, 
+      genre, 
+      tone, 
+      scriptText,
+      characterImages = [],  // Array of { name, imageUrl }
+      styleReferenceImage = ""  // Actual base64/URL of style reference
+    } = await req.json();
 
-    console.log('Request:', { shotsCount: shots?.length, genre, tone });
+    console.log('Request:', { shotsCount: shots?.length, genre, tone, characterImages: characterImages?.length || 0 });
 
     if (!shots || !Array.isArray(shots)) {
       return new Response(
@@ -123,8 +130,8 @@ serve(async (req) => {
       const framingPrompt = getShotFraming(shot.cameraAngle);
       const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
       
-      // Build clean, direct prompt for Gemini
-      const imagePrompt = `Generate a storyboard frame for film production.
+      // Build text prompt for Gemini
+      let imagePrompt = `Generate a storyboard frame for film production.
 
 ART STYLE: Black and white sketch. Clean pencil lines. Professional storyboard art. ${genreStyle}
 
@@ -138,7 +145,62 @@ ${shot.keyProps ? `KEY PROPS: ${shot.keyProps}` : ''}
 
 IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
 
+      // Add consistency instructions if reference images are provided
+      const hasReferenceImages = (characterImages && characterImages.length > 0) || styleReferenceImage;
+      if (hasReferenceImages) {
+        imagePrompt += `\n\nCRITICAL CONSISTENCY INSTRUCTIONS:`;
+        if (characterImages && characterImages.length > 0) {
+          // Find character images relevant to this shot
+          const shotCharImages = characterImages.filter((ci: any) => 
+            shot.characters?.some((c: string) => c.toLowerCase() === ci.name.toLowerCase())
+          );
+          if (shotCharImages.length > 0) {
+            imagePrompt += `\n- Match the character appearance from the provided reference images EXACTLY`;
+            imagePrompt += `\n- Maintain same facial features, age, body type, and clothing`;
+            imagePrompt += `\n- Characters: ${shotCharImages.map((c: any) => c.name).join(', ')}`;
+          }
+        }
+        if (styleReferenceImage) {
+          imagePrompt += `\n- Match the visual art style from the style reference image`;
+        }
+      }
+
       console.log(`Generating shot ${shot.shotNumber}`);
+
+      // Build multimodal content array
+      const content: any[] = [];
+
+      // Add character reference images for characters in this shot
+      if (characterImages && characterImages.length > 0 && shot.characters) {
+        for (const charImage of characterImages) {
+          const charInShot = shot.characters.some((c: string) => 
+            c.toLowerCase() === charImage.name.toLowerCase()
+          );
+          if (charInShot && charImage.imageUrl) {
+            console.log(`Adding character reference for ${charImage.name} in shot ${shot.shotNumber}`);
+            content.push({
+              type: 'image_url',
+              image_url: { url: charImage.imageUrl }
+            });
+          }
+        }
+      }
+
+      // Add style reference image
+      if (styleReferenceImage) {
+        content.push({
+          type: 'image_url',
+          image_url: { url: styleReferenceImage }
+        });
+      }
+
+      // Add text prompt
+      content.push({
+        type: 'text',
+        text: imagePrompt
+      });
+
+      const messageContent = content.length > 1 ? content : imagePrompt;
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 90000); // 90 second timeout
@@ -153,7 +215,7 @@ IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
           body: JSON.stringify({
             model: 'google/gemini-2.5-flash-image-preview',
             messages: [
-              { role: 'user', content: imagePrompt }
+              { role: 'user', content: messageContent }
             ],
             modalities: ['image', 'text']
           }),

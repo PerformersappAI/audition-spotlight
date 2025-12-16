@@ -20,6 +20,7 @@ import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
 import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
+import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -90,7 +91,8 @@ const Storyboarding = () => {
     customStylePrompt: "",
     aspectRatio: "16:9" as "16:9" | "9:16",
     characterDefinitions: [] as CharacterDefinition[],
-    styleReferencePrompt: ""
+    styleReferencePrompt: "",
+    styleReferenceImage: "" // Actual base64 image URL for style reference
   });
   const [isProcessingScript, setIsProcessingScript] = useState(false);
   const [processingElapsedTime, setProcessingElapsedTime] = useState(0);
@@ -380,10 +382,17 @@ const Storyboarding = () => {
         ? currentProject.customStylePrompt 
         : (selectedArtStyle?.promptModifier || '');
 
+      // Collect character images for reference
+      const characterImages = currentProject.characterDefinitions
+        .filter(c => c.imageUrl)
+        .map(c => ({ name: c.name, imageUrl: c.imageUrl }));
+
       const { data, error } = await supabase.functions.invoke('generate-storyboard-simple', {
         body: {
           scene_text: currentProject.scriptText,
-          style: stylePrompt
+          style: stylePrompt,
+          characterImages,
+          styleReferenceImage: currentProject.styleReferenceImage
         }
       });
 
@@ -963,7 +972,8 @@ const Storyboarding = () => {
           aspectRatio: currentProject.aspectRatio || '16:9',
           characterDescriptions,
           characterImages,
-          styleReference: currentProject.styleReferencePrompt
+          styleReference: currentProject.styleReferencePrompt,
+          styleReferenceImage: currentProject.styleReferenceImage
         }
       });
 
@@ -1380,7 +1390,18 @@ const Storyboarding = () => {
                     onCustomPromptChange={(prompt) => setCurrentProject(prev => ({ ...prev, customStylePrompt: prompt }))}
                   />
 
-                  {/* Style Reference */}
+                  {/* Style Reference Upload (Image) */}
+                  <StyleReferenceUpload
+                    styleImageUrl={currentProject.styleReferenceImage}
+                    onStyleImageChange={(url) => setCurrentProject(prev => ({ ...prev, styleReferenceImage: url || "" }))}
+                    onStyleDescriptionGenerated={(description) => {
+                      if (description && !currentProject.styleReferencePrompt) {
+                        setCurrentProject(prev => ({ ...prev, styleReferencePrompt: description }));
+                      }
+                    }}
+                  />
+
+                  {/* Style Reference Text Description */}
                   <StyleReferenceInput
                     value={currentProject.styleReferencePrompt}
                     onChange={(value) => setCurrentProject(prev => ({ ...prev, styleReferencePrompt: value }))}
