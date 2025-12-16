@@ -26,7 +26,7 @@ interface AuditionData {
   synopsis: string;
   shoot_city: string;
   shoot_country: string;
-  shoot_dates: string;
+  work_dates: string;
   audition_window: string;
   callback_dates: string;
   self_tape_deadline: string;
@@ -113,7 +113,7 @@ export const exportAuditionToPDF = (auditionData: AuditionData, roles: Role[]) =
   addText('DATES & LOCATION', 14, true);
   addSection('Shoot City:', auditionData.shoot_city);
   addSection('Shoot Country:', auditionData.shoot_country);
-  addSection('Shoot Dates:', auditionData.shoot_dates);
+  addSection('Shoot Dates:', auditionData.work_dates);
   addSection('Audition Window:', auditionData.audition_window);
   addSection('Callback Dates:', auditionData.callback_dates);
   addSection('Self-Tape Deadline:', auditionData.self_tape_deadline);
