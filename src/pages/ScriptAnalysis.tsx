@@ -138,6 +138,7 @@ const ScriptAnalysis = () => {
       file,
       (result) => {
         setCurrentScript(prev => ({ ...prev, scriptText: result.text }));
+        toast.success(`Extracted ${result.text.length} characters from "${file.name}". Please review the text before analyzing.`);
       },
       (error) => {
         console.error('File processing error:', error);
@@ -757,18 +758,27 @@ const ScriptAnalysis = () => {
                               ? 'border-primary bg-primary/5' 
                               : 'border-border hover:border-primary/50'
                           }`}
-                           onClick={() => setSelectedAnalysis({
-                             id: analysis.id,
-                             scriptText: analysis.script_text,
-                             genre: analysis.genre || "",
-                             tone: analysis.tone || "",
-                             characterCount: analysis.character_count,
-                             selectedDirectors: analysis.selected_directors || [],
-                             analysisResult: analysis.analysis_result,
-                             confidenceScore: analysis.confidence_score || 0.5,
-                             isAiGenerated: true,
-                             createdAt: new Date(analysis.created_at)
-                           })}
+                           onClick={() => {
+                             setSelectedAnalysis({
+                               id: analysis.id,
+                               scriptText: analysis.script_text,
+                               genre: analysis.genre || "",
+                               tone: analysis.tone || "",
+                               characterCount: analysis.character_count,
+                               selectedDirectors: analysis.selected_directors || [],
+                               analysisResult: analysis.analysis_result,
+                               confidenceScore: analysis.confidence_score || 0.5,
+                               isAiGenerated: true,
+                               createdAt: new Date(analysis.created_at)
+                             });
+                             // Also populate input for editing
+                             setCurrentScript({
+                               scriptText: analysis.script_text,
+                               genre: analysis.genre || "",
+                               tone: analysis.tone || ""
+                             });
+                             setSelectedDirectors(analysis.selected_directors || []);
+                           }}
                         >
                           <div className="space-y-2">
                             <div className="flex items-center justify-between">
@@ -819,8 +829,52 @@ const ScriptAnalysis = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  {/* Scene Summary - Now at Top */}
-                  {selectedAnalysis.analysisResult.sceneSynopsis && (
+                  {/* Extracted Scene Text - Show what was analyzed */}
+                  {selectedAnalysis.scriptText && (
+                    <div className="mb-6 p-4 bg-muted/30 rounded-lg border border-border">
+                      <Accordion type="single" collapsible>
+                        <AccordionItem value="scene-text" className="border-none">
+                          <AccordionTrigger className="hover:no-underline py-2">
+                            <div className="flex items-center gap-2 text-lg font-semibold">
+                              <FileText className="h-4 w-4" />
+                              Extracted Scene Text (OCR Result)
+                            </div>
+                          </AccordionTrigger>
+                          <AccordionContent>
+                            <pre className="whitespace-pre-wrap text-sm text-foreground/80 max-h-[300px] overflow-y-auto p-3 bg-background rounded border mt-2">
+                              {selectedAnalysis.scriptText}
+                            </pre>
+                          </AccordionContent>
+                        </AccordionItem>
+                      </Accordion>
+                    </div>
+                  )}
+
+                  {/* Error State - AI couldn't analyze properly */}
+                  {selectedAnalysis.analysisResult.sceneSynopsis?.toLowerCase().includes("don't have") && (
+                    <div className="mb-6 p-5 bg-destructive/10 rounded-lg border-2 border-destructive/30">
+                      <h3 className="text-xl font-bold flex items-center gap-2 mb-3 text-destructive">
+                        <AlertTriangle className="h-5 w-5" />
+                        Analysis Issue
+                      </h3>
+                      <p className="text-sm mb-4">
+                        The AI couldn't properly analyze this scene. This usually happens when:
+                      </p>
+                      <ul className="list-disc list-inside text-sm space-y-1 mb-4 text-muted-foreground">
+                        <li>The OCR extraction didn't capture the text correctly</li>
+                        <li>The uploaded file was an image/scan with poor quality</li>
+                        <li>The script format wasn't recognized</li>
+                      </ul>
+                      <p className="text-sm font-medium">
+                        Check the "Extracted Scene Text" section above to verify what was captured, 
+                        then edit it in the input area and re-analyze.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Scene Summary - Now at Top (only show if analysis succeeded) */}
+                  {selectedAnalysis.analysisResult.sceneSynopsis && 
+                   !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") && (
                     <div className="mb-6 p-5 bg-primary/10 rounded-lg border-2 border-primary/30">
                       <h3 className="text-xl font-bold flex items-center gap-2 mb-3 text-foreground">
                         📖 Scene Summary
@@ -852,39 +906,43 @@ const ScriptAnalysis = () => {
                     </div>
                   )}
 
-                  {/* Quick Director Questions */}
-                  <div className="mb-6">
-                    <Card className="bg-accent/30 border-accent">
-                      <CardHeader>
-                        <CardTitle className="text-base flex items-center gap-2">
-                          <Lightbulb className="h-4 w-4" />
-                          Quick Director Questions
-                        </CardTitle>
-                        <CardDescription className="text-sm">
-                          Click any question to explore this aspect of your scene
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="space-y-2">
-                        {[
-                          "What is the primary dramatic purpose of this scene?",
-                          "How do power dynamics shift between characters?",
-                          "What visual language best serves the emotional truth?",
-                          "Where should the camera be to maximize impact?",
-                          "What key moments anchor this scene's arc?"
-                        ].map((question, idx) => (
-                          <button
-                            key={idx}
-                            onClick={() => {
-                              setChatInput(question);
-                            }}
-                            className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm"
-                          >
-                            {question}
-                          </button>
-                        ))}
-                      </CardContent>
-                    </Card>
-                  </div>
+                  {/* Quick Director Questions - Only show if analysis succeeded */}
+                  {selectedAnalysis.analysisResult.sceneSynopsis && 
+                   !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") &&
+                   !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("please paste") && (
+                    <div className="mb-6">
+                      <Card className="bg-accent/30 border-accent">
+                        <CardHeader>
+                          <CardTitle className="text-base flex items-center gap-2">
+                            <Lightbulb className="h-4 w-4" />
+                            Quick Director Questions
+                          </CardTitle>
+                          <CardDescription className="text-sm">
+                            Click any question to explore this aspect of your scene
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-2">
+                          {[
+                            "What is the primary dramatic purpose of this scene?",
+                            "How do power dynamics shift between characters?",
+                            "What visual language best serves the emotional truth?",
+                            "Where should the camera be to maximize impact?",
+                            "What key moments anchor this scene's arc?"
+                          ].map((question, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => {
+                                setChatInput(question);
+                              }}
+                              className="w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm"
+                            >
+                              {question}
+                            </button>
+                          ))}
+                        </CardContent>
+                      </Card>
+                    </div>
+                  )}
 
                   {/* Inline Chat Interface */}
                   <div className="mb-6">
