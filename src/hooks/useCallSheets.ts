@@ -8,6 +8,7 @@ export interface CallSheetData {
   project_name: string;
   shoot_date: string;
   day_number?: string;
+  total_days?: string;
   script_color?: string;
   schedule_color?: string;
   general_crew_call?: string;
