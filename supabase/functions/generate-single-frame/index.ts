@@ -117,13 +117,23 @@ serve(async (req) => {
   console.log('Generate-single-frame function called (Gemini 2.5 Flash Image)');
 
   try {
-    const { shot, artStyle, aspectRatio = "16:9", characterDescriptions = "", styleReference = "" } = await req.json();
+    const { 
+      shot, 
+      artStyle, 
+      aspectRatio = "16:9", 
+      characterDescriptions = "", 
+      characterImages = [],  // Array of { name, imageUrl }
+      styleReference = "",
+      styleReferenceImage = ""  // Actual base64/URL of style reference
+    } = await req.json();
     
     if (!shot || !artStyle) {
       throw new Error('Missing required parameters: shot, artStyle');
     }
 
     console.log(`Generating frame for shot ${shot.shotNumber} with Gemini 2.5 Flash Image`);
+    console.log(`Character images provided: ${characterImages?.length || 0}`);
+    console.log(`Style reference image provided: ${styleReferenceImage ? 'yes' : 'no'}`);
 
     if (!LOVABLE_API_KEY) {
       throw new Error('LOVABLE_API_KEY not configured');
@@ -136,7 +146,7 @@ serve(async (req) => {
     // Get the visual description
     const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
     
-    // Build prompt - Gemini follows instructions precisely
+    // Build text prompt
     let imagePrompt = `Generate a storyboard frame for film production.\n\n`;
     imagePrompt += `ART STYLE: ${artStylePrompt}\n\n`;
     imagePrompt += `CAMERA FRAMING: ${framingPrompt}\n\n`;
@@ -173,7 +183,57 @@ serve(async (req) => {
       imagePrompt += `\nIMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
     }
 
-    console.log(`Prompt for shot ${shot.shotNumber}: ${imagePrompt}`);
+    // Add consistency instructions if reference images are provided
+    const hasReferenceImages = (characterImages && characterImages.length > 0) || styleReferenceImage;
+    if (hasReferenceImages) {
+      imagePrompt += `\n\nCRITICAL CONSISTENCY INSTRUCTIONS:`;
+      if (characterImages && characterImages.length > 0) {
+        imagePrompt += `\n- Match the character appearance from the provided reference images EXACTLY`;
+        imagePrompt += `\n- Maintain the same facial features, age, body type, and clothing as shown in the reference`;
+        imagePrompt += `\n- The character(s) should look like the SAME person from the reference photos`;
+        imagePrompt += `\n- Characters: ${characterImages.map((c: any) => c.name).join(', ')}`;
+      }
+      if (styleReferenceImage) {
+        imagePrompt += `\n- Match the visual art style from the style reference image`;
+        imagePrompt += `\n- Use similar color palette, line work, and rendering style`;
+      }
+    }
+
+    console.log(`Prompt for shot ${shot.shotNumber}: ${imagePrompt.substring(0, 200)}...`);
+
+    // Build multimodal content array for Gemini
+    const content: any[] = [];
+
+    // Add character reference images FIRST (Gemini uses them as visual context)
+    if (characterImages && characterImages.length > 0) {
+      for (const charImage of characterImages) {
+        if (charImage.imageUrl) {
+          console.log(`Adding character reference image for: ${charImage.name}`);
+          content.push({
+            type: 'image_url',
+            image_url: { url: charImage.imageUrl }
+          });
+        }
+      }
+    }
+
+    // Add style reference image if provided
+    if (styleReferenceImage) {
+      console.log('Adding style reference image');
+      content.push({
+        type: 'image_url',
+        image_url: { url: styleReferenceImage }
+      });
+    }
+
+    // Add text prompt last
+    content.push({
+      type: 'text',
+      text: imagePrompt
+    });
+
+    // Use multimodal content if we have images, otherwise use simple string
+    const messageContent = content.length > 1 ? content : imagePrompt;
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -184,7 +244,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'google/gemini-2.5-flash-image-preview',
         messages: [
-          { role: 'user', content: imagePrompt }
+          { role: 'user', content: messageContent }
         ],
         modalities: ['image', 'text']
       }),

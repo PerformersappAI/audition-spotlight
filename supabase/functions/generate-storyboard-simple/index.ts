@@ -51,7 +51,12 @@ serve(async (req) => {
   console.log('Generate-storyboard-simple function called (Gemini 2.5 Flash Image)');
 
   try {
-    const { scene_text, style } = await req.json();
+    const { 
+      scene_text, 
+      style,
+      characterImages = [],  // Array of { name, imageUrl }
+      styleReferenceImage = ""  // Actual base64/URL of style reference
+    } = await req.json();
 
     if (!scene_text || !style) {
       return new Response(
@@ -61,6 +66,7 @@ serve(async (req) => {
     }
 
     console.log('Analyzing scene...');
+    console.log(`Character images provided: ${characterImages?.length || 0}`);
 
     // Create Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -104,8 +110,8 @@ serve(async (req) => {
       const framingPrompt = getShotFraming(shot.cameraAngle || 'medium shot');
       const description = shot.visualDescription || shot.description;
 
-      // Build clean prompt for Gemini
-      const storyboardPrompt = `Generate a storyboard frame for film production.
+      // Build text prompt for Gemini
+      let storyboardPrompt = `Generate a storyboard frame for film production.
 
 ART STYLE: ${style}
 
@@ -117,6 +123,60 @@ ${shot.characters?.length > 0 ? `CHARACTERS IN FRAME: ${shot.characters.join(', 
 
 IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
 
+      // Add consistency instructions if reference images are provided
+      const hasReferenceImages = (characterImages && characterImages.length > 0) || styleReferenceImage;
+      if (hasReferenceImages) {
+        storyboardPrompt += `\n\nCRITICAL CONSISTENCY INSTRUCTIONS:`;
+        if (characterImages && characterImages.length > 0) {
+          const shotCharImages = characterImages.filter((ci: any) => 
+            shot.characters?.some((c: string) => c.toLowerCase() === ci.name.toLowerCase())
+          );
+          if (shotCharImages.length > 0) {
+            storyboardPrompt += `\n- Match the character appearance from the provided reference images EXACTLY`;
+            storyboardPrompt += `\n- Maintain same facial features, age, body type, and clothing`;
+            storyboardPrompt += `\n- Characters: ${shotCharImages.map((c: any) => c.name).join(', ')}`;
+          }
+        }
+        if (styleReferenceImage) {
+          storyboardPrompt += `\n- Match the visual art style from the style reference image`;
+        }
+      }
+
+      // Build multimodal content array
+      const content: any[] = [];
+
+      // Add character reference images for characters in this shot
+      if (characterImages && characterImages.length > 0 && shot.characters) {
+        for (const charImage of characterImages) {
+          const charInShot = shot.characters.some((c: string) => 
+            c.toLowerCase() === charImage.name.toLowerCase()
+          );
+          if (charInShot && charImage.imageUrl) {
+            console.log(`Adding character reference for ${charImage.name} in shot ${shot.shotNumber}`);
+            content.push({
+              type: 'image_url',
+              image_url: { url: charImage.imageUrl }
+            });
+          }
+        }
+      }
+
+      // Add style reference image
+      if (styleReferenceImage) {
+        content.push({
+          type: 'image_url',
+          image_url: { url: styleReferenceImage }
+        });
+      }
+
+      // Add text prompt
+      content.push({
+        type: 'text',
+        text: storyboardPrompt
+      });
+
+      const messageContent = content.length > 1 ? content : storyboardPrompt;
+
       try {
         const imageResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
@@ -127,7 +187,7 @@ IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
           body: JSON.stringify({
             model: 'google/gemini-2.5-flash-image-preview',
             messages: [
-              { role: 'user', content: storyboardPrompt }
+              { role: 'user', content: messageContent }
             ],
             modalities: ['image', 'text']
           }),
