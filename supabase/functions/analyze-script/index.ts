@@ -452,7 +452,7 @@ ${directorContext ? `\n**DIRECTOR-SPECIFIC LENS FOR THIS SCENE:**\n${directorCon
 
 Provide analysis in this exact JSON format:
 {
-  "sceneSynopsis": "Brief, engaging summary of the scene's main events and significance",
+  "sceneSynopsis": "Comprehensive director's summary (3-5 sentences) that covers: the core dramatic conflict driving this scene, the emotional journey from beginning to end, how each main character functions within the scene dynamics, the key turning point or climactic moment, and what the audience should feel. This is for directors - be specific about dramatic purpose, character interactions, and the scene's role in the larger narrative.",
   "castOfCharacters": [
     {
       "name": "Character Name",

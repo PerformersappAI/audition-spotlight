@@ -946,13 +946,13 @@ const ScriptAnalysis = () => {
 
                   {/* Inline Chat Interface */}
                   <div className="mb-6">
-                    <Card className="bg-card border-border">
-                      <CardHeader className="bg-primary/10 border-b border-border">
+                    <Card className="bg-card border-2 border-primary shadow-lg shadow-primary/10">
+                      <CardHeader className="bg-primary/20 border-b-2 border-primary/50">
                         <div className="flex items-center gap-2">
-                          <MessageSquare className="h-5 w-5 text-primary" />
-                          <CardTitle className="text-base">Ask About Your Scene</CardTitle>
+                          <MessageSquare className="h-6 w-6 text-primary" />
+                          <CardTitle className="text-lg font-bold text-primary">💬 Ask About Your Scene</CardTitle>
                         </div>
-                        <CardDescription className="text-sm">
+                        <CardDescription className="text-sm text-foreground/80">
                           Ask me anything about your scene, characters, or directorial approach!
                         </CardDescription>
                       </CardHeader>
@@ -1022,10 +1022,13 @@ const ScriptAnalysis = () => {
 
 
                   {selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && (
-                    <div className="mb-6">
-                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-4">
+                    <div className="mb-6 border-t border-border pt-6">
+                      <h3 className="text-lg font-semibold flex items-center gap-2 mb-2">
                         🎭 Cast of Characters
                       </h3>
+                      <p className="text-sm text-muted-foreground mb-4">
+                        Please fill in any particular notes about the actor type you want, or the current actor you have, with a brief description for each character. Click the <Pencil className="inline h-3 w-3" /> pencil icon to add notes.
+                      </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => (
                           <Card key={index} className="border border-border/50">
@@ -1104,7 +1107,7 @@ const ScriptAnalysis = () => {
 
                   {/* Accordion Sections */}
                   <div className="space-y-4">
-                    <Accordion type="single" collapsible className="space-y-4">
+                    <Accordion type="multiple" defaultValue={["emotional-beats", "director-notes", "character-motivations", "casting-tips", "technical-requirements", "key-moments"]} className="space-y-4">
                       {/* Emotional Beats */}
                       {selectedAnalysis.analysisResult.emotionalBeats && selectedAnalysis.analysisResult.emotionalBeats.length > 0 && (
                         <AccordionItem value="emotional-beats" className="border rounded-lg bg-card">
