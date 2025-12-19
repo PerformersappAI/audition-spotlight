@@ -452,7 +452,7 @@ ${directorContext ? `\n**DIRECTOR-SPECIFIC LENS FOR THIS SCENE:**\n${directorCon
 
 Provide analysis in this exact JSON format:
 {
-  "sceneSynopsis": "Comprehensive director's summary (3-5 sentences) that covers: the core dramatic conflict driving this scene, the emotional journey from beginning to end, how each main character functions within the scene dynamics, the key turning point or climactic moment, and what the audience should feel. This is for directors - be specific about dramatic purpose, character interactions, and the scene's role in the larger narrative.",
+  "sceneSynopsis": "Write a detailed 4-6 sentence summary of WHAT SPECIFICALLY HAPPENS in this scene. Include: (1) The setting/location from the script, (2) Which characters are present and their relationships, (3) The main action or conflict that unfolds with specific examples, (4) Key dialogue moments or revelations (quote actual lines if possible), (5) How the scene ends and what changes. Be SPECIFIC to THIS script - no generic descriptions.",
   "castOfCharacters": [
     {
       "name": "Character Name",
@@ -470,17 +470,17 @@ Provide analysis in this exact JSON format:
       "arcTrajectory": "How this character develops or changes"
     }
   ],
-  "emotionalBeats": ["Description of emotional shifts and power dynamics throughout the scene"],
+  "emotionalBeats": ["For each beat, describe WHAT SPECIFICALLY HAPPENS in the script that creates this emotion. Quote dialogue or describe specific actions. Format: 'When [specific moment from script], the audience feels [emotion] because [reason]'"],
   "visualSuggestions": ["Camera placement, blocking, insert shots, and visual symbolism ideas"],
   "soundAndPacing": ["Soundscape, use of silence, rhythm, and pacing recommendations"],
   "stakesAndPurpose": ["What's at risk, why this scene exists, what must change"],
-  "characterMotivations": ["Key motivations driving the scene"],
-  "directorNotes": ["Specific actionable guidance for execution"],
-  "castingTips": ["Casting suggestions based on character needs"],
-  "technicalRequirements": ["Shot types, camera movements, spatial geography considerations"],
+  "characterMotivations": ["For each character BY NAME, explain what they want IN THIS SCENE and why. Reference their specific lines or actions as evidence. Format: '[CHARACTER NAME] wants [goal] because [reason from script]'"],
+  "directorNotes": ["Specific, actionable direction for THIS scene. Reference specific lines or moments. Format: 'For the moment when [character] does [action], consider [specific camera/blocking/tone suggestion]'"],
+  "castingTips": ["Specific casting advice for each named character based on their dialogue and actions in THIS scene. Reference specific moments that require certain acting skills."],
+  "technicalRequirements": ["Specific equipment, lighting, or location needs based on the actual scene description. Reference specific moments requiring special consideration."],
   "estimatedDuration": "X-Y minutes",
   "difficultyLevel": "Beginner|Intermediate|Advanced",
-  "keyMoments": ["Critical moments that anchor the scene"],
+  "keyMoments": ["List the 3-5 most important moments in THIS scene by describing exactly what happens. Quote dialogue or describe specific actions. Format: 'The moment when [specific thing happens] - this is crucial because [reason]'"],
   "directorInsights": ["Director-specific insights and recommendations"]
 }
 
@@ -568,12 +568,12 @@ Make your analysis deeply personal to this scene - reference specific lines, act
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-5-2025-08-07',
+        model: 'gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
-        max_completion_tokens: 2000,
+        max_tokens: 3000,
         response_format: { type: "json_object" }
       })
     });
@@ -703,71 +703,23 @@ Make your analysis deeply personal to this scene - reference specific lines, act
       }
     } catch (parseError) {
       console.error('Failed to parse AI response as JSON:', parseError);
-      confidenceScore = 0.2; // Very low confidence for fallback
+      console.error('Raw AI response:', data.choices[0]?.message?.content);
+      confidenceScore = 0.0; // Zero confidence for failed analysis
       
-      // Extract actual character names from the script
-      const extractedNames = extractCharacterNames(scriptText);
-      console.info(`Fallback: Extracted names from script: ${extractedNames.join(', ')}`);
-      
-      // Fallback to mock analysis with extracted names if available
-      const characters = extractedNames.length > 0 
-        ? extractedNames.map((name, index) => ({
-            name,
-            description: index === 0 ? "Primary character in the scene" : "Character in the scene",
-            role: index === 0 ? "protagonist" : "supporting"
-          }))
-        : [{
-            name: "Character name extraction in progress",
-            description: "Full analysis requires AI processing",
-            role: "unknown"
-          }];
-      
+      // Return error state instead of fake generic content
       analysisResult = {
-        sceneSynopsis: `A ${genre || 'drama'} scene with ${extractedNames.length || 'multiple'} character${extractedNames.length !== 1 ? 's' : ''}. Detailed analysis requires AI processing.`,
-        castOfCharacters: characters,
-        characterDescriptions: characters.map(char => ({
-          name: char.name,
-          personality: "Detailed analysis requires AI processing",
-          motivation: "Detailed analysis requires AI processing",
-          arcTrajectory: "Detailed analysis requires AI processing"
-        })),
-        emotionalBeats: [
-          "Opening establishes character and world",
-          "Rising tension builds toward conflict", 
-          "Climactic moment tests character",
-          "Resolution provides emotional payoff"
-        ],
-        characterMotivations: [
-          "Protagonist driven by clear goal or need",
-          "Supporting characters have distinct perspectives",
-          "Antagonist represents meaningful opposition"
-        ],
-        directorNotes: [
-          "Focus on visual storytelling over exposition",
-          "Use lighting and framing to support mood",
-          "Consider pacing in relation to emotional beats"
-        ],
-        castingTips: [
-          "Look for actors who can convey subtext",
-          "Ensure cast chemistry serves the story",
-          "Consider the physical demands of the role"
-        ],
-        technicalRequirements: [
-          "Standard lighting and camera equipment",
-          "Location needs assessment",
-          "Post-production considerations"
-        ],
-        estimatedDuration: genre === "Comedy" ? "4-6 minutes" : "6-10 minutes",
-        difficultyLevel: "Intermediate",
-        keyMoments: [
-          "Opening hook",
-          "Character introduction",
-          "Conflict escalation",
-          "Climactic resolution"
-        ],
-        directorInsights: selectedDirectors.length > 0 ? 
-          [`Consider ${selectedDirectors[0]}'s approach to similar material`] : 
-          ["Apply proven filmmaking principles to serve the story"]
+        sceneSynopsis: "⚠️ AI analysis failed - the response could not be parsed. Please try analyzing your script again. If this persists, the AI service may be experiencing issues.",
+        castOfCharacters: [],
+        characterDescriptions: [],
+        emotionalBeats: ["⚠️ Analysis failed - please try again"],
+        characterMotivations: ["⚠️ Analysis failed - please try again"],
+        directorNotes: ["⚠️ Analysis failed - please try again"],
+        castingTips: ["⚠️ Analysis failed - please try again"],
+        technicalRequirements: ["⚠️ Analysis failed - please try again"],
+        estimatedDuration: "Unknown",
+        difficultyLevel: "Unknown",
+        keyMoments: ["⚠️ Analysis failed - please try again"],
+        directorInsights: ["⚠️ Analysis failed - please try again"]
       };
     }
 
