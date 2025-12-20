@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Calendar as CalendarIcon, Clock, MapPin, Users, Film, Trophy, Plus } from "lucide-react";
+import { Calendar as CalendarIcon, Clock, MapPin, Users, Film, Trophy, Plus, Download, Mail, Send, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -23,6 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { useToast } from "@/hooks/use-toast";
+import { exportCalendarToPDF } from "@/utils/exportCalendarToPDF";
+import { supabase } from "@/integrations/supabase/client";
 
 interface CalendarEvent {
   id: string;
@@ -36,8 +40,17 @@ interface CalendarEvent {
 
 const CalendarPage = () => {
   const { userProfile } = useAuth();
+  const { toast } = useToast();
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  
+  // Share form state
+  const [shareEmails, setShareEmails] = useState("");
+  const [shareMessage, setShareMessage] = useState("");
+  const [upcomingOnly, setUpcomingOnly] = useState(false);
   
   // Mock events - in real app, these would come from the database
   const [events] = useState<CalendarEvent[]>([
@@ -111,6 +124,95 @@ const CalendarPage = () => {
       .slice(0, 5);
   };
 
+  const handleExportPDF = () => {
+    setIsExporting(true);
+    try {
+      const fileName = exportCalendarToPDF(events, selectedDate);
+      toast({
+        title: "PDF Exported",
+        description: `Calendar saved as ${fileName}`,
+      });
+    } catch (error) {
+      toast({
+        title: "Export Failed",
+        description: "Failed to export calendar to PDF",
+        variant: "destructive",
+      });
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
+  const handleShareCalendar = async () => {
+    const emailList = shareEmails
+      .split(/[,\n]/)
+      .map(e => e.trim())
+      .filter(e => e.length > 0);
+
+    if (emailList.length === 0) {
+      toast({
+        title: "No Recipients",
+        description: "Please enter at least one email address",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const invalidEmails = emailList.filter(e => !emailRegex.test(e));
+    if (invalidEmails.length > 0) {
+      toast({
+        title: "Invalid Email",
+        description: `Invalid email format: ${invalidEmails.join(", ")}`,
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsSending(true);
+    try {
+      const eventsForEmail = events.map(e => ({
+        ...e,
+        date: e.date.toISOString(),
+      }));
+
+      const { data, error } = await supabase.functions.invoke('send-calendar', {
+        body: {
+          recipients: emailList,
+          events: eventsForEmail,
+          message: shareMessage || undefined,
+          senderName: userProfile?.first_name 
+            ? `${userProfile.first_name} ${userProfile.last_name || ''}`.trim()
+            : undefined,
+          upcomingOnly,
+        },
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Calendar Shared",
+        description: data.message || `Calendar sent to ${emailList.length} recipient(s)`,
+      });
+
+      // Reset form
+      setShareEmails("");
+      setShareMessage("");
+      setUpcomingOnly(false);
+      setIsShareOpen(false);
+    } catch (error: any) {
+      console.error("Error sharing calendar:", error);
+      toast({
+        title: "Share Failed",
+        description: error.message || "Failed to share calendar",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : [];
   const upcomingEvents = getUpcomingEvents();
 
@@ -119,7 +221,7 @@ const CalendarPage = () => {
   return (
     <div className="container mx-auto py-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-3xl font-bold flex items-center gap-2">
               <CalendarIcon className="h-8 w-8" />
@@ -127,55 +229,65 @@ const CalendarPage = () => {
             </h1>
             <p className="text-muted-foreground">Track your auditions, deadlines, and industry events</p>
           </div>
-          <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
-            <DialogTrigger asChild>
-              <Button className="flex items-center gap-2">
-                <Plus className="h-4 w-4" />
-                Add Event
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add New Event</DialogTitle>
-                <DialogDescription>
-                  Create a new calendar event for auditions, festivals, deadlines, or meetings.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 py-4">
-                <div className="space-y-2">
-                  <Label htmlFor="event-title">Event Title</Label>
-                  <Input id="event-title" placeholder="Enter event title" />
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleExportPDF}
+              disabled={isExporting}
+            >
+              <Download className="h-4 w-4 mr-2" />
+              {isExporting ? "Exporting..." : "Export PDF"}
+            </Button>
+            <Dialog open={isAddEventOpen} onOpenChange={setIsAddEventOpen}>
+              <DialogTrigger asChild>
+                <Button className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Add Event
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Add New Event</DialogTitle>
+                  <DialogDescription>
+                    Create a new calendar event for auditions, festivals, deadlines, or meetings.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="event-title">Event Title</Label>
+                    <Input id="event-title" placeholder="Enter event title" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="event-type">Event Type</Label>
+                    <Select>
+                      <SelectTrigger id="event-type">
+                        <SelectValue placeholder="Select event type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="audition">Audition</SelectItem>
+                        <SelectItem value="festival">Festival</SelectItem>
+                        <SelectItem value="deadline">Deadline</SelectItem>
+                        <SelectItem value="meeting">Meeting</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="event-date">Date</Label>
+                    <Input id="event-date" type="date" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="event-location">Location (optional)</Label>
+                    <Input id="event-location" placeholder="Enter location" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="event-description">Description (optional)</Label>
+                    <Textarea id="event-description" placeholder="Enter event description" />
+                  </div>
+                  <Button className="w-full">Create Event</Button>
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="event-type">Event Type</Label>
-                  <Select>
-                    <SelectTrigger id="event-type">
-                      <SelectValue placeholder="Select event type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="audition">Audition</SelectItem>
-                      <SelectItem value="festival">Festival</SelectItem>
-                      <SelectItem value="deadline">Deadline</SelectItem>
-                      <SelectItem value="meeting">Meeting</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="event-date">Date</Label>
-                  <Input id="event-date" type="date" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="event-location">Location (optional)</Label>
-                  <Input id="event-location" placeholder="Enter location" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="event-description">Description (optional)</Label>
-                  <Textarea id="event-description" placeholder="Enter event description" />
-                </div>
-                <Button className="w-full">Create Event</Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
 
         {/* Stats */}
@@ -288,6 +400,75 @@ const CalendarPage = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Share Calendar */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5" />
+                  Share Calendar
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {!isShareOpen ? (
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => setIsShareOpen(true)}
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Share with Team
+                  </Button>
+                ) : (
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-sm font-medium">Send to:</Label>
+                      <Button 
+                        variant="ghost" 
+                        size="icon"
+                        className="h-6 w-6"
+                        onClick={() => setIsShareOpen(false)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Textarea
+                      placeholder="Enter email addresses (comma or newline separated)"
+                      value={shareEmails}
+                      onChange={(e) => setShareEmails(e.target.value)}
+                      className="min-h-[80px]"
+                    />
+                    <div className="space-y-2">
+                      <Label className="text-sm">Message (optional)</Label>
+                      <Textarea
+                        placeholder="Add a personal message..."
+                        value={shareMessage}
+                        onChange={(e) => setShareMessage(e.target.value)}
+                        className="min-h-[60px]"
+                      />
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="upcoming-only" className="text-sm">
+                        Upcoming events only
+                      </Label>
+                      <Switch
+                        id="upcoming-only"
+                        checked={upcomingOnly}
+                        onCheckedChange={setUpcomingOnly}
+                      />
+                    </div>
+                    <Button 
+                      className="w-full" 
+                      onClick={handleShareCalendar}
+                      disabled={isSending}
+                    >
+                      <Send className="h-4 w-4 mr-2" />
+                      {isSending ? "Sending..." : "Send Calendar"}
+                    </Button>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
             {/* Upcoming Events */}
             <Card>
               <CardHeader>
