@@ -13,11 +13,23 @@ import {
   Sparkles,
   ChevronRight,
   GraduationCap,
-  Scale
+  Scale,
+  ExternalLink
 } from "lucide-react";
 
+interface Module {
+  id: string;
+  name: string;
+  description: string;
+  icon: React.ElementType;
+  status: string;
+  badge: string;
+  route?: string;
+  externalUrl?: string;
+}
+
 export default function ToolboxHome() {
-  const [modules] = useState([
+  const [modules] = useState<Module[]>([
     {
       id: "script_analysis",
       name: "Script Analysis",
@@ -64,13 +76,13 @@ export default function ToolboxHome() {
       route: "/crew-hire"
     },
     {
-      id: "festival_submitter",
-      name: "Festival Submitter",
-      description: "Submit your projects to film festivals with AI-powered recommendations",
-      icon: Trophy,
+      id: "festival_finder",
+      name: "Film Festivals in Your Area",
+      description: "Find Film Festivals in and around your area to attend or submit your Film. Enter your ZIP code and we'll give you a list.",
+      icon: MapPin,
       status: "active",
-      badge: "AI Enhanced",
-      route: "/festival-submitter"
+      badge: "Location Based",
+      route: "/festival-finder"
     },
     {
       id: "docs_library",
@@ -100,22 +112,13 @@ export default function ToolboxHome() {
       route: "/calendar"
     },
     {
-      id: "browse_festivals",
-      name: "Browse Festivals and Submit",
-      description: "Browse 2,000+ festivals worldwide and submit directly",
-      icon: Trophy,
-      status: "active",
-      badge: "AI Enhanced",
-      route: "/festivals"
-    },
-    {
       id: "training_academy",
-      name: "Training Academy",
-      description: "Learn from Feifer Film Academy with courses and certifications",
+      name: "Michael Feifer Film Academy",
+      description: "Learn from Feifer Film Academy with professional courses and certifications",
       icon: GraduationCap,
       status: "active",
-      badge: "Learn & Grow",
-      route: "/training"
+      badge: "External",
+      externalUrl: "https://feiferfilmacademy.com"
     },
     {
       id: "contract_assistant",
@@ -127,7 +130,6 @@ export default function ToolboxHome() {
       route: "/contract-assistant"
     }
   ]);
-
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
       case "AI Enhanced": return "default";
@@ -237,16 +239,33 @@ export default function ToolboxHome() {
                   <CardDescription>{module.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button 
-                    variant="ghost" 
-                    className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
-                    asChild
-                  >
-                    <Link to={module.route}>
-                      {module.status === "protected" ? "Access Library" : "Open Tool"}
-                      <ChevronRight className="h-4 w-4" />
-                    </Link>
-                  </Button>
+                  {module.externalUrl ? (
+                    <a 
+                      href={module.externalUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="block"
+                    >
+                      <Button 
+                        variant="ghost" 
+                        className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
+                      >
+                        Visit Academy
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </a>
+                  ) : (
+                    <Button 
+                      variant="ghost" 
+                      className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
+                      asChild
+                    >
+                      <Link to={module.route || "#"}>
+                        {module.status === "protected" ? "Access Library" : "Open Tool"}
+                        <ChevronRight className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
                 </CardContent>
               </Card>
             );

@@ -1,4 +1,5 @@
 import { Toaster } from "@/components/ui/toaster";
+import FestivalFinder from "./pages/FestivalFinder";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -79,6 +80,7 @@ const AppContent = () => (
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />
       <Route path="/festivals" element={<Festivals />} />
+      <Route path="/festival-finder" element={<FestivalFinder />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/filmmaker" element={<FilmmakerDashboard />} />
       <Route path="/admin-login" element={<AdminLogin />} />
