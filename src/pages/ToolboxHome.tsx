@@ -55,13 +55,13 @@ export default function ToolboxHome() {
       route: "/create-audition"
     },
     {
-      id: "cast_crew_board",
-      name: "Cast and Crew Board",
-      description: "Find and connect with talented cast and crew members",
+      id: "crew_hire",
+      name: "Crew Hire",
+      description: "Post crew calls to find talented crew members for your production",
       icon: Users,
       status: "active",
-      badge: "Community",
-      route: "/cast-crew-board"
+      badge: "Hire Crew",
+      route: "/crew-hire"
     },
     {
       id: "festival_submitter",

@@ -46,6 +46,7 @@ import ConsultingIntake from "./pages/ConsultingIntake";
 import ActorHub from "./pages/ActorHub";
 import ActorProfile from "./pages/ActorProfile";
 import CrewHub from "./pages/CrewHub";
+import CrewHire from "./pages/CrewHire";
 import Membership from "./pages/Membership";
 import TrainingHub from "./pages/TrainingHub";
 import CourseDetail from "./pages/CourseDetail";
@@ -65,6 +66,7 @@ const AppContent = () => (
       <Route path="/actor" element={<ActorHub />} />
       <Route path="/actor/profile" element={<ActorProfile />} />
       <Route path="/crew" element={<CrewHub />} />
+      <Route path="/crew-hire" element={<CrewHire />} />
       <Route path="/create-audition" element={<CreateAudition />} />
       <Route path="/auditions" element={<Auditions />} />
       <Route path="/audition/:id" element={<AuditionDetail />} />
