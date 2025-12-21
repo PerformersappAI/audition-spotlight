@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import FestivalFinder from "./pages/FestivalFinder";
+import PitchDeckMaker from "./pages/PitchDeckMaker";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
