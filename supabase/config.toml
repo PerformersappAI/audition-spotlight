@@ -84,3 +84,6 @@ verify_jwt = false
 
 [functions.send-calendar]
 verify_jwt = false
+
+[functions.generate-pitch-content]
+verify_jwt = false
