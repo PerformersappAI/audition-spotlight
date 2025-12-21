@@ -14,7 +14,8 @@ import {
   ChevronRight,
   GraduationCap,
   Scale,
-  ExternalLink
+  ExternalLink,
+  Presentation
 } from "lucide-react";
 
 interface Module {
@@ -30,6 +31,15 @@ interface Module {
 
 export default function ToolboxHome() {
   const [modules] = useState<Module[]>([
+    {
+      id: "pitch_deck_maker",
+      name: "AI Pitch Deck Maker",
+      description: "Create professional Film & TV pitch decks with AI-powered content generation",
+      icon: Presentation,
+      status: "active",
+      badge: "AI Enhanced",
+      route: "/pitch-deck"
+    },
     {
       id: "script_analysis",
       name: "Script Analysis",
