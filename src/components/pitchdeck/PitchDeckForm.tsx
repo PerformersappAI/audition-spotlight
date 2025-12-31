@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, Loader2, Upload, X, CheckCircle } from "lucide-react";
+import { Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, Loader2, Upload, X, CheckCircle, Image, User } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
@@ -46,7 +46,10 @@ const platforms = [
 
 const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }: PitchDeckFormProps) => {
   const [isGenerating, setIsGenerating] = useState<string | null>(null);
+  const [generatingPortrait, setGeneratingPortrait] = useState<number | null>(null);
+  const [generatingScene, setGeneratingScene] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const characterPhotoRefs = useRef<{ [key: number]: HTMLInputElement | null }>({});
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -75,7 +78,6 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
       reader.readAsDataURL(file);
     });
 
-    // Reset input
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
@@ -85,6 +87,97 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
     const newUploads = [...(data.moodboardUploads || [])];
     newUploads.splice(index, 1);
     onChange({ ...data, moodboardUploads: newUploads });
+  };
+
+  const handleCharacterPhotoUpload = (e: React.ChangeEvent<HTMLInputElement>, charIndex: number) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image too large. Max 5MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64 = event.target?.result as string;
+      const newChars = [...data.characters];
+      newChars[charIndex] = { ...newChars[charIndex], referencePhoto: base64 };
+      onChange({ ...data, characters: newChars });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const generateCharacterPortrait = async (charIndex: number) => {
+    const char = data.characters[charIndex];
+    if (!char.name) {
+      toast.error("Please add a character name first");
+      return;
+    }
+
+    setGeneratingPortrait(charIndex);
+    try {
+      const { data: result, error } = await supabase.functions.invoke("generate-character-portrait", {
+        body: {
+          characterName: char.name,
+          characterDescription: char.description,
+          characterRole: char.role,
+          referencePhotoUrl: char.referencePhoto || null,
+          styleDescription: data.visualStyle,
+          genre: data.genre,
+          projectTitle: data.projectTitle
+        }
+      });
+
+      if (error) throw error;
+
+      if (result?.imageUrl) {
+        const newChars = [...data.characters];
+        newChars[charIndex] = { ...newChars[charIndex], aiPortrait: result.imageUrl };
+        onChange({ ...data, characters: newChars });
+        toast.success(`Portrait generated for ${char.name}!`);
+      }
+    } catch (error) {
+      console.error("Portrait generation error:", error);
+      toast.error("Failed to generate portrait. Please try again.");
+    } finally {
+      setGeneratingPortrait(null);
+    }
+  };
+
+  const generateSceneImage = async (sceneType: string) => {
+    setGeneratingScene(sceneType);
+    try {
+      const moodboardImages = [
+        ...(data.moodboardUploads || []),
+        ...data.moodboardImages.filter(Boolean)
+      ].slice(0, 2);
+
+      const { data: result, error } = await supabase.functions.invoke("generate-scene-image", {
+        body: {
+          sceneType,
+          synopsis: data.synopsis,
+          visualStyle: data.visualStyle,
+          genre: data.genre,
+          projectTitle: data.projectTitle,
+          moodboardImages: moodboardImages.length > 0 ? moodboardImages : null
+        }
+      });
+
+      if (error) throw error;
+
+      if (result?.imageUrl) {
+        if (sceneType === "synopsis") {
+          onChange({ ...data, synopsisImage: result.imageUrl });
+        }
+        toast.success("Scene image generated!");
+      }
+    } catch (error) {
+      console.error("Scene generation error:", error);
+      toast.error("Failed to generate scene. Please try again.");
+    } finally {
+      setGeneratingScene(null);
+    }
   };
 
   const updateField = <K extends keyof PitchDeckData>(field: K, value: PitchDeckData[K]) => {
@@ -146,7 +239,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
   const addCharacter = () => {
     updateField("characters", [
       ...data.characters,
-      { name: "", role: "supporting", description: "" }
+      { name: "", role: "supporting", description: "", referencePhoto: "", aiPortrait: "" }
     ]);
   };
 
@@ -323,6 +416,62 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               </Button>
             </div>
 
+            {/* Synopsis Scene Image */}
+            <div className="p-4 rounded-lg bg-gradient-to-br from-purple-500/10 to-pink-500/10 border border-purple-500/20">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Image className="h-4 w-4 text-purple-500" />
+                Synopsis Scene Image
+              </h4>
+              <p className="text-xs text-muted-foreground mb-3">
+                Generate a dramatic scene that visualizes your story
+              </p>
+              
+              {data.synopsisImage ? (
+                <div className="space-y-3">
+                  <div className="aspect-video rounded-lg overflow-hidden border border-border">
+                    <img src={data.synopsisImage} alt="Synopsis scene" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => generateSceneImage("synopsis")}
+                      disabled={generatingScene === "synopsis" || !data.synopsis}
+                    >
+                      {generatingScene === "synopsis" ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 mr-2" />
+                      )}
+                      Regenerate
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => updateField("synopsisImage", "")}
+                    >
+                      <X className="h-4 w-4 mr-1" /> Remove
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateSceneImage("synopsis")}
+                  disabled={generatingScene === "synopsis" || !data.synopsis}
+                  className="w-full"
+                >
+                  {generatingScene === "synopsis" ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  Generate Scene Image
+                </Button>
+              )}
+            </div>
+
             <div>
               <Label>Director's Vision</Label>
               <Textarea
@@ -366,7 +515,10 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
         return (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <Label>Main Characters</Label>
+              <div>
+                <Label>Main Characters</Label>
+                <p className="text-xs text-muted-foreground">Upload actor photos and generate AI character portraits</p>
+              </div>
               <Button variant="outline" size="sm" onClick={addCharacter}>
                 <Plus className="h-4 w-4 mr-1" /> Add Character
               </Button>
@@ -379,7 +531,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
             )}
 
             {data.characters.map((char, index) => (
-              <div key={index} className="border border-border rounded-lg p-4 space-y-3">
+              <div key={index} className="border border-border rounded-lg p-4 space-y-4">
                 <div className="flex justify-between items-start">
                   <Input
                     value={char.name}
@@ -447,6 +599,102 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                   )}
                   Generate Description
                 </Button>
+
+                {/* Character Images Section */}
+                <div className="pt-3 border-t border-border">
+                  <Label className="text-xs text-muted-foreground mb-2 block">Character Imagery</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Reference Photo */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium">Actor Reference</p>
+                      {char.referencePhoto ? (
+                        <div className="relative aspect-[3/4] rounded-lg overflow-hidden border border-border">
+                          <img src={char.referencePhoto} alt="Actor reference" className="w-full h-full object-cover" />
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6"
+                            onClick={() => {
+                              const newChars = [...data.characters];
+                              newChars[index] = { ...char, referencePhoto: "" };
+                              updateField("characters", newChars);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div 
+                          className="aspect-[3/4] rounded-lg border-2 border-dashed border-border flex flex-col items-center justify-center cursor-pointer hover:border-amber-500/50 transition-colors"
+                          onClick={() => characterPhotoRefs.current[index]?.click()}
+                        >
+                          <User className="h-6 w-6 text-muted-foreground mb-1" />
+                          <span className="text-xs text-muted-foreground">Upload Photo</span>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        ref={(el) => { characterPhotoRefs.current[index] = el; }}
+                        onChange={(e) => handleCharacterPhotoUpload(e, index)}
+                      />
+                    </div>
+
+                    {/* AI Portrait */}
+                    <div className="space-y-2">
+                      <p className="text-xs font-medium">AI Portrait</p>
+                      {char.aiPortrait ? (
+                        <div className="relative aspect-[3/4] rounded-lg overflow-hidden border border-amber-500/50">
+                          <img src={char.aiPortrait} alt="AI portrait" className="w-full h-full object-cover" />
+                          <Button
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-1 right-1 h-6 w-6"
+                            onClick={() => {
+                              const newChars = [...data.characters];
+                              newChars[index] = { ...char, aiPortrait: "" };
+                              updateField("characters", newChars);
+                            }}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ) : (
+                        <div 
+                          className="aspect-[3/4] rounded-lg border-2 border-dashed border-amber-500/30 flex flex-col items-center justify-center cursor-pointer hover:border-amber-500/60 transition-colors bg-gradient-to-br from-amber-500/5 to-orange-500/5"
+                          onClick={() => char.name && generateCharacterPortrait(index)}
+                        >
+                          {generatingPortrait === index ? (
+                            <Loader2 className="h-6 w-6 text-amber-500 animate-spin" />
+                          ) : (
+                            <>
+                              <Sparkles className="h-6 w-6 text-amber-500 mb-1" />
+                              <span className="text-xs text-amber-500">Generate AI</span>
+                            </>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  
+                  {char.name && !char.aiPortrait && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full mt-2"
+                      onClick={() => generateCharacterPortrait(index)}
+                      disabled={generatingPortrait === index}
+                    >
+                      {generatingPortrait === index ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-4 w-4 mr-2" />
+                      )}
+                      Generate AI Character Portrait
+                    </Button>
+                  )}
+                </div>
               </div>
             ))}
           </div>
@@ -487,74 +735,86 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               <Textarea
                 value={data.visualStyle}
                 onChange={(e) => updateField("visualStyle", e.target.value)}
-                placeholder="Describe the visual aesthetic, cinematography style, color palette..."
+                placeholder="Describe the visual aesthetic, cinematography style, color palette, lighting mood..."
                 rows={4}
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                This description will guide AI image generation throughout your pitch deck
+              </p>
             </div>
 
-            {/* Moodboard Image Upload */}
-            <div className="space-y-3">
-              <div>
-                <Label>Moodboard Images</Label>
-                <p className="text-xs text-muted-foreground">
-                  Upload images or add URLs to define your visual reference (max 6)
-                </p>
-              </div>
-
-              {/* Upload Button */}
-              <div className="flex gap-2">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={handleImageUpload}
-                  className="hidden"
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => fileInputRef.current?.click()}
-                  disabled={(data.moodboardUploads?.length || 0) + data.moodboardImages.filter(Boolean).length >= 6}
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Upload Images
-                </Button>
-              </div>
-
-              {/* Uploaded Images Preview */}
+            {/* Image Upload Section */}
+            <div>
+              <Label className="flex items-center gap-2">
+                Style Reference Images
+                <Badge variant="outline" className="text-xs">Optional</Badge>
+              </Label>
+              <p className="text-xs text-muted-foreground mb-3">
+                Upload images that represent your film's visual style. These will guide AI generation.
+              </p>
+              
+              {/* Uploaded Images Grid */}
               {(data.moodboardUploads?.length || 0) > 0 && (
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-3 gap-2 mb-3">
                   {data.moodboardUploads?.map((img, i) => (
-                    <div key={i} className="relative group aspect-video rounded-lg overflow-hidden border border-border">
-                      <img src={img} alt={`Uploaded ${i + 1}`} className="w-full h-full object-cover" />
-                      <button
+                    <div key={i} className="relative aspect-video rounded-lg overflow-hidden border border-border">
+                      <img src={img} alt={`Style ref ${i + 1}`} className="w-full h-full object-cover" />
+                      <Button
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6"
                         onClick={() => removeUploadedImage(i)}
-                        className="absolute top-1 right-1 p-1 bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                       >
-                        <X className="h-3 w-3 text-white" />
-                      </button>
+                        <X className="h-3 w-3" />
+                      </Button>
                     </div>
                   ))}
                 </div>
               )}
-
-              {/* URL Inputs */}
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Or add image URLs:</Label>
-                {[0, 1, 2].map((i) => (
-                  <Input
-                    key={i}
-                    value={data.moodboardImages[i] || ""}
-                    onChange={(e) => {
-                      const newImages = [...data.moodboardImages];
-                      newImages[i] = e.target.value;
-                      updateField("moodboardImages", newImages.filter(Boolean));
-                    }}
-                    placeholder={`Image URL ${i + 1}`}
-                  />
-                ))}
+              
+              <div className="flex gap-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                  ref={fileInputRef}
+                  onChange={handleImageUpload}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={(data.moodboardUploads?.length || 0) >= 6}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Images
+                </Button>
+                <span className="text-xs text-muted-foreground self-center">
+                  {data.moodboardUploads?.length || 0}/6 images
+                </span>
               </div>
+            </div>
+
+            {/* URL References */}
+            <div>
+              <Label>Image URLs (optional)</Label>
+              <p className="text-xs text-muted-foreground mb-2">
+                Or paste URLs to reference images
+              </p>
+              {[0, 1, 2].map((i) => (
+                <Input
+                  key={i}
+                  value={data.moodboardImages[i] || ""}
+                  onChange={(e) => {
+                    const newImages = [...data.moodboardImages];
+                    newImages[i] = e.target.value;
+                    updateField("moodboardImages", newImages);
+                  }}
+                  placeholder={`Reference image URL ${i + 1}`}
+                  className="mb-2"
+                />
+              ))}
             </div>
           </div>
         );
@@ -563,33 +823,37 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
         return (
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <div>
-                <Label>Comparable Projects</Label>
-                <p className="text-xs text-muted-foreground">Films/shows similar to your project</p>
+              <Label>Comparable Projects</Label>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => generateWithAI("comps", { 
+                    title: data.projectTitle,
+                    genre: data.genre,
+                    logline: data.logline,
+                    type: data.projectType
+                  })}
+                  disabled={isGenerating === "comps" || !data.logline}
+                >
+                  {isGenerating === "comps" ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4 mr-2" />
+                  )}
+                  Suggest Comps
+                </Button>
+                <Button variant="outline" size="sm" onClick={addComparable}>
+                  <Plus className="h-4 w-4 mr-1" /> Add
+                </Button>
               </div>
-              <Button variant="outline" size="sm" onClick={addComparable}>
-                <Plus className="h-4 w-4 mr-1" /> Add Comp
-              </Button>
             </div>
 
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => generateWithAI("comps", { 
-                title: data.projectTitle,
-                logline: data.logline,
-                genre: data.genre,
-                type: data.projectType 
-              })}
-              disabled={isGenerating === "comps" || !data.logline}
-            >
-              {isGenerating === "comps" ? (
-                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              ) : (
-                <Sparkles className="h-4 w-4 mr-2" />
-              )}
-              Suggest Comps with AI
-            </Button>
+            {data.comparables.length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-4">
+                Add films/shows that are similar to your project to help investors understand your vision.
+              </p>
+            )}
 
             {data.comparables.map((comp, index) => (
               <div key={index} className="border border-border rounded-lg p-4 space-y-3">
@@ -601,7 +865,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                       newComps[index] = { ...comp, title: e.target.value };
                       updateField("comparables", newComps);
                     }}
-                    placeholder="Title"
+                    placeholder="Film/Show Title"
                     className="flex-1"
                   />
                   <Input
@@ -612,7 +876,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                       updateField("comparables", newComps);
                     }}
                     placeholder="Year"
-                    className="w-24"
+                    className="w-20"
                   />
                   <Button
                     variant="ghost"
@@ -629,7 +893,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                     newComps[index] = { ...comp, whySimilar: e.target.value };
                     updateField("comparables", newComps);
                   }}
-                  placeholder="Why is this project similar?"
+                  placeholder="Why is this project similar? (tone, story, audience appeal...)"
                   rows={2}
                 />
               </div>
@@ -645,7 +909,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               <Input
                 value={data.primaryDemographic}
                 onChange={(e) => updateField("primaryDemographic", e.target.value)}
-                placeholder="e.g., Adults 25-45, fans of psychological thrillers"
+                placeholder="e.g., Adults 18-34, fans of psychological thrillers"
               />
             </div>
 
@@ -654,7 +918,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               <Input
                 value={data.secondaryAudience}
                 onChange={(e) => updateField("secondaryAudience", e.target.value)}
-                placeholder="e.g., Young adults 18-24, true crime enthusiasts"
+                placeholder="e.g., True crime enthusiasts, book club members"
               />
             </div>
 
@@ -663,8 +927,8 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               <Textarea
                 value={data.marketAnalysis}
                 onChange={(e) => updateField("marketAnalysis", e.target.value)}
-                placeholder="Describe the market opportunity and audience trends..."
-                rows={6}
+                placeholder="Explain why this project will resonate with audiences..."
+                rows={4}
               />
               <Button
                 variant="outline"
@@ -672,10 +936,9 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                 className="mt-2"
                 onClick={() => generateWithAI("audience", { 
                   title: data.projectTitle,
-                  logline: data.logline,
                   genre: data.genre,
-                  type: data.projectType,
-                  comparables: data.comparables
+                  logline: data.logline,
+                  comparables: data.comparables.map(c => c.title)
                 })}
                 disabled={isGenerating === "audience" || !data.logline}
               >
@@ -684,7 +947,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                 ) : (
                   <Sparkles className="h-4 w-4 mr-2" />
                 )}
-                Generate Analysis
+                Analyze Market Fit
               </Button>
             </div>
           </div>
@@ -694,7 +957,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
         return (
           <div className="space-y-4">
             <div>
-              <Label>Estimated Budget Range</Label>
+              <Label>Budget Range</Label>
               <Select
                 value={data.budgetRange}
                 onValueChange={(value) => updateField("budgetRange", value)}
@@ -716,17 +979,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
               <Input
                 value={data.shootingLocations}
                 onChange={(e) => updateField("shootingLocations", e.target.value)}
-                placeholder="e.g., Los Angeles, New York, Vancouver"
-              />
-            </div>
-
-            <div>
-              <Label>Timeline</Label>
-              <Textarea
-                value={data.timeline}
-                onChange={(e) => updateField("timeline", e.target.value)}
-                placeholder="Pre-production: Q1 2025&#10;Principal Photography: Q2 2025&#10;Post-Production: Q3 2025&#10;Target Release: Q4 2025"
-                rows={4}
+                placeholder="e.g., Los Angeles, CA; New York, NY"
               />
             </div>
 
@@ -742,9 +995,19 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                 <SelectContent>
                   <SelectItem value="sag">SAG-AFTRA</SelectItem>
                   <SelectItem value="non_union">Non-Union</SelectItem>
-                  <SelectItem value="tbd">To Be Determined</SelectItem>
+                  <SelectItem value="tbd">TBD</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+
+            <div>
+              <Label>Timeline</Label>
+              <Textarea
+                value={data.timeline}
+                onChange={(e) => updateField("timeline", e.target.value)}
+                placeholder="Outline key production milestones and target dates..."
+                rows={4}
+              />
             </div>
           </div>
         );
@@ -761,7 +1024,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
 
             {data.teamMembers.length === 0 && (
               <p className="text-sm text-muted-foreground text-center py-4">
-                No team members added yet. Click "Add Team Member" to get started.
+                Add director, producers, writers, and other key creative talent.
               </p>
             )}
 
@@ -785,7 +1048,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                       newMembers[index] = { ...member, role: e.target.value };
                       updateField("teamMembers", newMembers);
                     }}
-                    placeholder="Role"
+                    placeholder="Role (Director, Producer...)"
                     className="flex-1"
                   />
                   <Button
@@ -815,7 +1078,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
         return (
           <div className="space-y-4">
             <div>
-              <Label>Target Platforms (select multiple)</Label>
+              <Label>Target Platforms</Label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {platforms.map((platform) => (
                   <Badge
@@ -836,17 +1099,17 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                 value={data.marketingHighlights}
                 onChange={(e) => updateField("marketingHighlights", e.target.value)}
                 placeholder="Key selling points and marketing angles..."
-                rows={4}
+                rows={3}
               />
             </div>
 
             <div>
-              <Label>Distribution Strategy</Label>
+              <Label>Distribution Plan</Label>
               <Textarea
                 value={data.distributionPlan}
                 onChange={(e) => updateField("distributionPlan", e.target.value)}
-                placeholder="Describe your distribution plan..."
-                rows={6}
+                placeholder="Outline your distribution strategy..."
+                rows={4}
               />
               <Button
                 variant="outline"

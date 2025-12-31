@@ -26,15 +26,18 @@ export interface PitchDeckData {
   
   // Story & Synopsis
   synopsis: string;
+  synopsisImage: string; // AI-generated scene for synopsis
   directorVision: string;
   toneMood: string;
   themes: string[];
   
-  // Characters
+  // Characters - now with images
   characters: {
     name: string;
     role: "lead" | "supporting" | "recurring";
     description: string;
+    referencePhoto: string; // Actor photo uploaded by user
+    aiPortrait: string;     // AI-generated character portrait
   }[];
   
   // Visual Style
@@ -90,6 +93,7 @@ const initialData: PitchDeckData = {
   genre: [],
   targetRating: "",
   synopsis: "",
+  synopsisImage: "",
   directorVision: "",
   toneMood: "",
   themes: [],
@@ -127,7 +131,16 @@ const PitchDeckMaker = () => {
     if (savedDraft) {
       try {
         const parsed = JSON.parse(savedDraft);
-        setPitchData(parsed);
+        // Ensure new fields exist
+        parsed.synopsisImage = parsed.synopsisImage || "";
+        if (parsed.characters) {
+          parsed.characters = parsed.characters.map((c: any) => ({
+            ...c,
+            referencePhoto: c.referencePhoto || "",
+            aiPortrait: c.aiPortrait || ""
+          }));
+        }
+        setPitchData({ ...initialData, ...parsed });
         // If template was selected, skip to form
         if (parsed.selectedTemplate) {
           setCurrentStep(0);
