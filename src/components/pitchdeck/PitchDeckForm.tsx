@@ -1,23 +1,23 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Sparkles, Plus, Trash2, ChevronLeft, ChevronRight, Loader2, Upload, X, CheckCircle } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
+import PosterGenerator from "./PosterGenerator";
 
 interface PitchDeckFormProps {
   data: PitchDeckData;
   onChange: (data: PitchDeckData) => void;
   currentStep: number;
   onStepChange: (step: number) => void;
+  onComplete?: () => void;
 }
-
-import PosterGenerator from "./PosterGenerator";
 
 const steps = [
   { id: 0, title: "Project Basics", icon: "🎬" },
@@ -44,8 +44,48 @@ const platforms = [
   "Apple TV+", "Theatrical", "Film Festivals", "Self-Distribution"
 ];
 
-const PitchDeckForm = ({ data, onChange, currentStep, onStepChange }: PitchDeckFormProps) => {
+const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }: PitchDeckFormProps) => {
   const [isGenerating, setIsGenerating] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+
+    const currentUploads = data.moodboardUploads || [];
+    if (currentUploads.length + files.length > 6) {
+      toast.error("Maximum 6 moodboard images allowed");
+      return;
+    }
+
+    Array.from(files).forEach((file) => {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`${file.name} is too large. Max 5MB per image.`);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64 = event.target?.result as string;
+        onChange({
+          ...data,
+          moodboardUploads: [...(data.moodboardUploads || []), base64]
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Reset input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  const removeUploadedImage = (index: number) => {
+    const newUploads = [...(data.moodboardUploads || [])];
+    newUploads.splice(index, 1);
+    onChange({ ...data, moodboardUploads: newUploads });
+  };
 
   const updateField = <K extends keyof PitchDeckData>(field: K, value: PitchDeckData[K]) => {
     onChange({ ...data, [field]: value });
@@ -414,35 +454,107 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange }: PitchDeckF
 
       case 3:
         return (
-          <div className="space-y-4">
+          <div className="space-y-6">
+            {/* AI Poster Generator */}
+            <div className="p-4 rounded-lg bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
+              <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                AI Movie Poster
+              </h4>
+              <p className="text-xs text-muted-foreground mb-4">
+                Generate a cinematic poster for your project's cover page
+              </p>
+              <PosterGenerator
+                projectTitle={data.projectTitle}
+                logline={data.logline}
+                genre={data.genre}
+                visualStyle={data.visualStyle}
+                template={data.selectedTemplate}
+                posterImage={data.posterImage}
+                posterPrompt={data.posterPrompt}
+                onPosterGenerated={(imageUrl, prompt) => {
+                  onChange({
+                    ...data,
+                    posterImage: imageUrl,
+                    posterPrompt: prompt
+                  });
+                }}
+              />
+            </div>
+
             <div>
               <Label>Visual Style Description</Label>
               <Textarea
                 value={data.visualStyle}
                 onChange={(e) => updateField("visualStyle", e.target.value)}
                 placeholder="Describe the visual aesthetic, cinematography style, color palette..."
-                rows={6}
+                rows={4}
               />
             </div>
 
-            <div>
-              <Label>Moodboard Images (URLs)</Label>
-              <p className="text-xs text-muted-foreground mb-2">
-                Add up to 6 reference image URLs for your moodboard
-              </p>
-              {[0, 1, 2, 3, 4, 5].map((i) => (
-                <Input
-                  key={i}
-                  value={data.moodboardImages[i] || ""}
-                  onChange={(e) => {
-                    const newImages = [...data.moodboardImages];
-                    newImages[i] = e.target.value;
-                    updateField("moodboardImages", newImages.filter(Boolean));
-                  }}
-                  placeholder={`Image URL ${i + 1}`}
-                  className="mb-2"
+            {/* Moodboard Image Upload */}
+            <div className="space-y-3">
+              <div>
+                <Label>Moodboard Images</Label>
+                <p className="text-xs text-muted-foreground">
+                  Upload images or add URLs to define your visual reference (max 6)
+                </p>
+              </div>
+
+              {/* Upload Button */}
+              <div className="flex gap-2">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={handleImageUpload}
+                  className="hidden"
                 />
-              ))}
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={(data.moodboardUploads?.length || 0) + data.moodboardImages.filter(Boolean).length >= 6}
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  Upload Images
+                </Button>
+              </div>
+
+              {/* Uploaded Images Preview */}
+              {(data.moodboardUploads?.length || 0) > 0 && (
+                <div className="grid grid-cols-3 gap-2">
+                  {data.moodboardUploads?.map((img, i) => (
+                    <div key={i} className="relative group aspect-video rounded-lg overflow-hidden border border-border">
+                      <img src={img} alt={`Uploaded ${i + 1}`} className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => removeUploadedImage(i)}
+                        className="absolute top-1 right-1 p-1 bg-black/70 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* URL Inputs */}
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">Or add image URLs:</Label>
+                {[0, 1, 2].map((i) => (
+                  <Input
+                    key={i}
+                    value={data.moodboardImages[i] || ""}
+                    onChange={(e) => {
+                      const newImages = [...data.moodboardImages];
+                      newImages[i] = e.target.value;
+                      updateField("moodboardImages", newImages.filter(Boolean));
+                    }}
+                    placeholder={`Image URL ${i + 1}`}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         );
@@ -864,14 +976,24 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange }: PitchDeckF
           <ChevronLeft className="h-4 w-4 mr-1" />
           Previous
         </Button>
-        <Button
-          onClick={() => onStepChange(Math.min(steps.length - 1, currentStep + 1))}
-          disabled={currentStep === steps.length - 1}
-          className="bg-gradient-to-r from-amber-500 to-orange-600"
-        >
-          Next
-          <ChevronRight className="h-4 w-4 ml-1" />
-        </Button>
+        
+        {currentStep === steps.length - 1 ? (
+          <Button
+            onClick={onComplete}
+            className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Complete Pitch Deck
+          </Button>
+        ) : (
+          <Button
+            onClick={() => onStepChange(currentStep + 1)}
+            className="bg-gradient-to-r from-amber-500 to-orange-600"
+          >
+            Next
+            <ChevronRight className="h-4 w-4 ml-1" />
+          </Button>
+        )}
       </div>
     </div>
   );

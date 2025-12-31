@@ -40,6 +40,7 @@ export interface PitchDeckData {
   // Visual Style
   visualStyle: string;
   moodboardImages: string[];
+  moodboardUploads: string[];
   
   // Comps
   comparables: {
@@ -95,6 +96,7 @@ const initialData: PitchDeckData = {
   characters: [],
   visualStyle: "",
   moodboardImages: [],
+  moodboardUploads: [],
   comparables: [],
   primaryDemographic: "",
   secondaryAudience: "",
@@ -167,6 +169,26 @@ const PitchDeckMaker = () => {
   const handleSaveDraft = () => {
     localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
     toast.success("Draft saved locally");
+  };
+
+  const handleComplete = () => {
+    // Save draft first
+    localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
+    
+    // Show success with options
+    toast.success(
+      <div className="space-y-2">
+        <p className="font-semibold">Pitch Deck Complete! 🎬</p>
+        <p className="text-sm">Your deck is ready. Export to PDF or continue editing.</p>
+      </div>,
+      {
+        duration: 5000,
+        action: {
+          label: "Export PDF",
+          onClick: handleExportPDF,
+        },
+      }
+    );
   };
 
   // Template selection screen
@@ -265,6 +287,7 @@ const PitchDeckMaker = () => {
                 onChange={setPitchData}
                 currentStep={currentStep}
                 onStepChange={setCurrentStep}
+                onComplete={handleComplete}
               />
             </Card>
           </div>

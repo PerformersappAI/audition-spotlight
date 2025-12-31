@@ -139,13 +139,31 @@ const PitchDeckPreview = ({ data }: PitchDeckPreviewProps) => {
       )}
 
       {/* Visual Style */}
-      {data.visualStyle && (
+      {(data.visualStyle || (data.moodboardUploads?.length || 0) > 0 || data.moodboardImages.filter(Boolean).length > 0) && (
         <div className="p-8" style={{ backgroundColor: colors.bg }}>
           <div className="flex items-center gap-3 mb-6">
             <Film className="w-6 h-6" style={{ color: colors.primary }} />
             <h2 className="text-2xl font-bold" style={{ color: colors.text }}>Visual Style</h2>
           </div>
-          <p className="text-base leading-relaxed" style={{ color: colors.muted }}>{data.visualStyle}</p>
+          {data.visualStyle && (
+            <p className="text-base leading-relaxed mb-6" style={{ color: colors.muted }}>{data.visualStyle}</p>
+          )}
+          
+          {/* Moodboard Grid */}
+          {((data.moodboardUploads?.length || 0) > 0 || data.moodboardImages.filter(Boolean).length > 0) && (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {data.moodboardUploads?.map((img, i) => (
+                <div key={`upload-${i}`} className="aspect-video rounded-lg overflow-hidden border" style={{ borderColor: `${colors.primary}33` }}>
+                  <img src={img} alt={`Moodboard ${i + 1}`} className="w-full h-full object-cover" />
+                </div>
+              ))}
+              {data.moodboardImages.filter(Boolean).map((url, i) => (
+                <div key={`url-${i}`} className="aspect-video rounded-lg overflow-hidden border" style={{ borderColor: `${colors.primary}33` }}>
+                  <img src={url} alt={`Reference ${i + 1}`} className="w-full h-full object-cover" onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

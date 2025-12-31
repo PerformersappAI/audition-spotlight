@@ -83,16 +83,31 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
   pdf.setFillColor(20, 20, 30);
   pdf.rect(0, 0, pageWidth, pageHeight, "F");
 
+  // Add poster image if available
+  if (data.posterImage) {
+    try {
+      // Add poster as background, covering most of the page
+      pdf.addImage(data.posterImage, "JPEG", 0, 0, pageWidth, pageHeight * 0.7);
+      // Add gradient overlay effect (dark bottom)
+      pdf.setFillColor(20, 20, 30);
+      pdf.setGState(new (pdf as any).GState({ opacity: 0.8 }));
+      pdf.rect(0, pageHeight * 0.5, pageWidth, pageHeight * 0.5, "F");
+      pdf.setGState(new (pdf as any).GState({ opacity: 1 }));
+    } catch (e) {
+      console.log("Could not add poster image to PDF:", e);
+    }
+  }
+
   pdf.setFontSize(12);
   pdf.setTextColor(217, 119, 6);
   pdf.setFont("helvetica", "normal");
-  pdf.text("PITCH DECK", pageWidth / 2, 50, { align: "center" });
+  pdf.text("PITCH DECK", pageWidth / 2, pageHeight * 0.55, { align: "center" });
 
   pdf.setFontSize(32);
   pdf.setTextColor(255, 255, 255);
   pdf.setFont("helvetica", "bold");
   const titleLines = pdf.splitTextToSize(data.projectTitle || "Untitled Project", contentWidth);
-  let titleY = 80;
+  let titleY = pageHeight * 0.6;
   titleLines.forEach((line: string) => {
     pdf.text(line, pageWidth / 2, titleY, { align: "center" });
     titleY += 14;
@@ -115,7 +130,7 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
     pdf.setTextColor(200, 200, 200);
     pdf.setFont("helvetica", "italic");
     const loglineLines = pdf.splitTextToSize(`"${data.logline}"`, contentWidth - 20);
-    let loglineY = titleY + 50;
+    let loglineY = titleY + 45;
     loglineLines.forEach((line: string) => {
       pdf.text(line, pageWidth / 2, loglineY, { align: "center" });
       loglineY += 8;
@@ -125,7 +140,7 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
   if (data.targetRating) {
     pdf.setFontSize(11);
     pdf.setTextColor(150, 150, 150);
-    pdf.text(`Rated ${data.targetRating}`, pageWidth / 2, pageHeight - 40, { align: "center" });
+    pdf.text(`Rated ${data.targetRating}`, pageWidth / 2, pageHeight - 20, { align: "center" });
   }
 
   // ===== SYNOPSIS PAGE =====
@@ -186,12 +201,61 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
   }
 
   // ===== VISUAL STYLE PAGE =====
-  if (data.visualStyle) {
+  if (data.visualStyle || (data.moodboardUploads && data.moodboardUploads.length > 0) || data.moodboardImages.filter(Boolean).length > 0) {
     pdf.addPage();
     yPos = margin;
 
     addSection("Visual Style");
-    addParagraph(data.visualStyle);
+    
+    if (data.visualStyle) {
+      addParagraph(data.visualStyle);
+    }
+
+    // Add moodboard images
+    const allImages = [
+      ...(data.moodboardUploads || []),
+      ...data.moodboardImages.filter(Boolean)
+    ];
+
+    if (allImages.length > 0) {
+      yPos += 10;
+      pdf.setFontSize(12);
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Moodboard", margin, yPos);
+      yPos += 10;
+
+      // Create a 2x3 grid for images
+      const imgWidth = (contentWidth - 10) / 2;
+      const imgHeight = imgWidth * 0.6;
+      let col = 0;
+      let row = 0;
+
+      for (const imgSrc of allImages.slice(0, 6)) {
+        const x = margin + col * (imgWidth + 10);
+        const y = yPos + row * (imgHeight + 5);
+
+        if (y + imgHeight > pageHeight - margin) {
+          pdf.addPage();
+          yPos = margin;
+          row = 0;
+        }
+
+        try {
+          pdf.addImage(imgSrc, "JPEG", x, y, imgWidth, imgHeight);
+        } catch (e) {
+          // Skip invalid images
+          console.log("Could not add moodboard image:", e);
+        }
+
+        col++;
+        if (col >= 2) {
+          col = 0;
+          row++;
+        }
+      }
+
+      yPos += (row + 1) * (imgHeight + 5) + 10;
+    }
   }
 
   // ===== COMPARABLES PAGE =====
