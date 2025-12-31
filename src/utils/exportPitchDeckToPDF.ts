@@ -83,16 +83,18 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
   pdf.setFillColor(20, 20, 30);
   pdf.rect(0, 0, pageWidth, pageHeight, "F");
 
-  // Add poster image if available
+  // Add poster image if available - full cover
   if (data.posterImage) {
     try {
-      // Add poster as background, covering most of the page
-      pdf.addImage(data.posterImage, "JPEG", 0, 0, pageWidth, pageHeight * 0.7);
-      // Add gradient overlay effect (dark bottom)
+      pdf.addImage(data.posterImage, "JPEG", 0, 0, pageWidth, pageHeight * 0.65);
+      // Add dark gradient at bottom (simple overlay without opacity)
       pdf.setFillColor(20, 20, 30);
-      pdf.setGState(new (pdf as any).GState({ opacity: 0.8 }));
-      pdf.rect(0, pageHeight * 0.5, pageWidth, pageHeight * 0.5, "F");
-      pdf.setGState(new (pdf as any).GState({ opacity: 1 }));
+      for (let i = 0; i < 50; i++) {
+        const alpha = i / 50;
+        const y = pageHeight * 0.45 + (pageHeight * 0.55 * (i / 50));
+        pdf.setFillColor(20, 20, 30);
+        pdf.rect(0, y, pageWidth, pageHeight * 0.55 / 50, "F");
+      }
     } catch (e) {
       console.log("Could not add poster image to PDF:", e);
     }
@@ -144,11 +146,28 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
   }
 
   // ===== SYNOPSIS PAGE =====
-  if (data.synopsis || data.directorVision) {
+  if (data.synopsis || data.directorVision || data.synopsisImage) {
     pdf.addPage();
-    pdf.setFillColor(255, 255, 255);
-    pdf.rect(0, 0, pageWidth, pageHeight, "F");
-    yPos = margin;
+    
+    // Add synopsis scene image as background if available
+    if (data.synopsisImage) {
+      try {
+        pdf.addImage(data.synopsisImage, "JPEG", 0, 0, pageWidth, pageHeight * 0.4);
+        // Add gradient overlay
+        pdf.setFillColor(255, 255, 255);
+        for (let i = 0; i < 30; i++) {
+          const y = pageHeight * 0.25 + (pageHeight * 0.15 * (i / 30));
+          pdf.rect(0, y, pageWidth, pageHeight * 0.15 / 30, "F");
+        }
+      } catch (e) {
+        console.log("Could not add synopsis image:", e);
+      }
+      yPos = pageHeight * 0.42;
+    } else {
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, 0, pageWidth, pageHeight, "F");
+      yPos = margin;
+    }
 
     addSection("The Story");
 
@@ -182,22 +201,92 @@ export const exportPitchDeckToPDF = async (data: PitchDeckData): Promise<void> =
 
     addSection("Characters");
 
-    data.characters.forEach((char) => {
-      addNewPageIfNeeded(30);
-      pdf.setFontSize(13);
-      pdf.setFont("helvetica", "bold");
-      pdf.text(char.name || "Unnamed Character", margin, yPos);
-      pdf.setFontSize(10);
-      pdf.setFont("helvetica", "normal");
-      pdf.setTextColor(100, 100, 100);
-      pdf.text(` (${char.role})`, margin + pdf.getTextWidth(char.name || "Unnamed Character") + 2, yPos);
-      pdf.setTextColor(0, 0, 0);
-      yPos += 8;
-      if (char.description) {
-        addParagraph(char.description, 10);
+    // Calculate grid layout for character portraits
+    const charsWithPortraits = data.characters.filter(c => c.aiPortrait || c.referencePhoto);
+    const hasPortraits = charsWithPortraits.length > 0;
+
+    if (hasPortraits) {
+      // Grid layout with portraits
+      const portraitWidth = 35;
+      const portraitHeight = 45;
+      const cardWidth = (contentWidth - 10) / 2;
+      const cardHeight = portraitHeight + 30;
+      let col = 0;
+
+      data.characters.forEach((char, index) => {
+        if (yPos + cardHeight > pageHeight - margin) {
+          pdf.addPage();
+          yPos = margin;
+          col = 0;
+        }
+
+        const xPos = margin + col * (cardWidth + 10);
+        
+        // Draw card background
+        pdf.setFillColor(245, 245, 245);
+        pdf.roundedRect(xPos, yPos, cardWidth, cardHeight, 3, 3, "F");
+        
+        // Add portrait if available
+        const portrait = char.aiPortrait || char.referencePhoto;
+        if (portrait) {
+          try {
+            pdf.addImage(portrait, "JPEG", xPos + 5, yPos + 5, portraitWidth, portraitHeight);
+          } catch (e) {
+            console.log("Could not add character portrait:", e);
+          }
+        }
+
+        // Add character info
+        const textX = portrait ? xPos + portraitWidth + 10 : xPos + 5;
+        const textWidth = portrait ? cardWidth - portraitWidth - 15 : cardWidth - 10;
+        
+        pdf.setFontSize(11);
+        pdf.setFont("helvetica", "bold");
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(char.name || "Unnamed", textX, yPos + 12);
+        
+        pdf.setFontSize(9);
+        pdf.setTextColor(217, 119, 6);
+        pdf.text(char.role.toUpperCase(), textX, yPos + 18);
+        
+        if (char.description) {
+          pdf.setFontSize(8);
+          pdf.setTextColor(80, 80, 80);
+          const descLines = pdf.splitTextToSize(char.description, textWidth);
+          descLines.slice(0, 4).forEach((line: string, i: number) => {
+            pdf.text(line, textX, yPos + 25 + (i * 5));
+          });
+        }
+
+        col++;
+        if (col >= 2) {
+          col = 0;
+          yPos += cardHeight + 5;
+        }
+      });
+
+      if (col !== 0) {
+        yPos += cardHeight + 5;
       }
-      yPos += 4;
-    });
+    } else {
+      // Text-only layout
+      data.characters.forEach((char) => {
+        addNewPageIfNeeded(30);
+        pdf.setFontSize(13);
+        pdf.setFont("helvetica", "bold");
+        pdf.text(char.name || "Unnamed Character", margin, yPos);
+        pdf.setFontSize(10);
+        pdf.setFont("helvetica", "normal");
+        pdf.setTextColor(100, 100, 100);
+        pdf.text(` (${char.role})`, margin + pdf.getTextWidth(char.name || "Unnamed Character") + 2, yPos);
+        pdf.setTextColor(0, 0, 0);
+        yPos += 8;
+        if (char.description) {
+          addParagraph(char.description, 10);
+        }
+        yPos += 4;
+      });
+    }
   }
 
   // ===== VISUAL STYLE PAGE =====

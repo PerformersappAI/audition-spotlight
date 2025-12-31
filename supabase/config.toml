@@ -87,3 +87,12 @@ verify_jwt = false
 
 [functions.generate-pitch-content]
 verify_jwt = false
+
+[functions.generate-pitch-poster]
+verify_jwt = false
+
+[functions.generate-character-portrait]
+verify_jwt = false
+
+[functions.generate-scene-image]
+verify_jwt = false

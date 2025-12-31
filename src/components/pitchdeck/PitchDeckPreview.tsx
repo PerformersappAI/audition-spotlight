@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
 import { templates, type PitchTemplate } from "./TemplateSelector";
-import { Mail, Phone, Globe, Users, Target, Film, Clapperboard } from "lucide-react";
+import { Mail, Phone, Globe, Users, Target, Film, Clapperboard, Sparkles } from "lucide-react";
 
 interface PitchDeckPreviewProps {
   data: PitchDeckData;
@@ -90,31 +90,39 @@ const PitchDeckPreview = ({ data }: PitchDeckPreviewProps) => {
         </div>
       </div>
 
-      {/* Synopsis */}
-      {(data.synopsis || data.directorVision) && (
-        <div className="p-8 space-y-6" style={{ backgroundColor: colors.bg }}>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 rounded-full" style={{ backgroundColor: colors.primary }} />
-            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>The Story</h2>
+      {/* Synopsis with Scene Image */}
+      {(data.synopsis || data.directorVision || data.synopsisImage) && (
+        <div className="relative overflow-hidden" style={{ backgroundColor: colors.bg }}>
+          {data.synopsisImage && (
+            <div className="absolute inset-0">
+              <img src={data.synopsisImage} alt="Scene" className="w-full h-full object-cover opacity-30" />
+              <div className="absolute inset-0" style={{ background: `linear-gradient(to right, ${colors.bg} 0%, ${colors.bg}99 50%, ${colors.bg} 100%)` }} />
+            </div>
+          )}
+          <div className="relative z-10 p-8 space-y-6">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-1 h-8 rounded-full" style={{ backgroundColor: colors.primary }} />
+              <h2 className="text-2xl font-bold" style={{ color: colors.text }}>The Story</h2>
+            </div>
+            {data.synopsis && (
+              <div className="space-y-2">
+                <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: colors.accent }}>Synopsis</h3>
+                <p className="text-base leading-relaxed" style={{ color: colors.muted }}>{data.synopsis}</p>
+              </div>
+            )}
+            {data.directorVision && (
+              <div className="p-6 rounded-lg border-l-4" style={{ backgroundColor: `${colors.primary}11`, borderColor: colors.primary }}>
+                <h3 className="text-sm font-semibold uppercase tracking-wider mb-2" style={{ color: colors.accent }}>Director's Vision</h3>
+                <p className="text-base italic leading-relaxed" style={{ color: colors.text }}>"{data.directorVision}"</p>
+              </div>
+            )}
           </div>
-          {data.synopsis && (
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: colors.accent }}>Synopsis</h3>
-              <p className="text-base leading-relaxed" style={{ color: colors.muted }}>{data.synopsis}</p>
-            </div>
-          )}
-          {data.directorVision && (
-            <div className="p-6 rounded-lg border-l-4" style={{ backgroundColor: `${colors.primary}11`, borderColor: colors.primary }}>
-              <h3 className="text-sm font-semibold uppercase tracking-wider mb-2" style={{ color: colors.accent }}>Director's Vision</h3>
-              <p className="text-base italic leading-relaxed" style={{ color: colors.text }}>"{data.directorVision}"</p>
-            </div>
-          )}
         </div>
       )}
 
       <Separator style={{ backgroundColor: `${colors.primary}33` }} />
 
-      {/* Characters */}
+      {/* Characters with Portraits */}
       {data.characters.length > 0 && (
         <div className="p-8" style={{ backgroundColor: colors.bg }}>
           <div className="flex items-center gap-3 mb-6">
@@ -125,12 +133,29 @@ const PitchDeckPreview = ({ data }: PitchDeckPreviewProps) => {
             {data.characters.map((char, i) => (
               <Card key={i} className="overflow-hidden border-0" style={{ backgroundColor: `${colors.primary}11` }}>
                 <div className="h-2" style={{ background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})` }} />
-                <div className="p-4 space-y-2">
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-bold" style={{ color: colors.text }}>{char.name || "Unnamed"}</h4>
-                    <Badge variant="secondary" className="text-xs capitalize" style={{ backgroundColor: `${colors.accent}22`, color: colors.accent }}>{char.role}</Badge>
+                <div className="p-4">
+                  {/* Character Portrait */}
+                  {(char.aiPortrait || char.referencePhoto) && (
+                    <div className="mb-4 aspect-[3/4] max-w-[120px] mx-auto rounded-lg overflow-hidden border-2" style={{ borderColor: char.aiPortrait ? colors.accent : colors.primary }}>
+                      <img 
+                        src={char.aiPortrait || char.referencePhoto} 
+                        alt={char.name} 
+                        className="w-full h-full object-cover" 
+                      />
+                      {char.aiPortrait && (
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-1">
+                          <Sparkles className="w-3 h-3 text-amber-400" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <div className="space-y-2 text-center">
+                    <div className="flex items-center justify-center gap-2">
+                      <h4 className="font-bold" style={{ color: colors.text }}>{char.name || "Unnamed"}</h4>
+                      <Badge variant="secondary" className="text-xs capitalize" style={{ backgroundColor: `${colors.accent}22`, color: colors.accent }}>{char.role}</Badge>
+                    </div>
+                    {char.description && <p className="text-sm leading-relaxed text-left" style={{ color: colors.muted }}>{char.description}</p>}
                   </div>
-                  {char.description && <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{char.description}</p>}
                 </div>
               </Card>
             ))}
