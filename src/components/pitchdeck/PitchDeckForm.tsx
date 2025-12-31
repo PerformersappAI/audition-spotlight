@@ -17,6 +17,8 @@ interface PitchDeckFormProps {
   onStepChange: (step: number) => void;
 }
 
+import PosterGenerator from "./PosterGenerator";
+
 const steps = [
   { id: 0, title: "Project Basics", icon: "🎬" },
   { id: 1, title: "Story & Synopsis", icon: "📖" },

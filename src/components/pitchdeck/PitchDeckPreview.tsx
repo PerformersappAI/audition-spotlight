@@ -1,6 +1,9 @@
 import { Badge } from "@/components/ui/badge";
-import { Film, Users, Eye, DollarSign, Calendar, MapPin, Mail, Phone, Globe } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
+import { templates, type PitchTemplate } from "./TemplateSelector";
+import { Mail, Phone, Globe, Users, Target, Film, Clapperboard } from "lucide-react";
 
 interface PitchDeckPreviewProps {
   data: PitchDeckData;
@@ -14,350 +17,175 @@ const projectTypeLabels: Record<string, string> = {
   web_series: "Web Series",
 };
 
-const budgetLabels: Record<string, string> = {
-  micro: "Micro Budget (<$50K)",
-  low: "Low Budget ($50K - $500K)",
-  mid: "Mid Budget ($500K - $5M)",
-  high: "High Budget ($5M+)",
+const getTemplateColors = (templateId: PitchTemplate | "") => {
+  const defaultColors = {
+    primary: "#F59E0B",
+    secondary: "#EA580C",
+    accent: "#FCD34D",
+    bg: "#18181B",
+    text: "#FFFFFF",
+    muted: "#A1A1AA"
+  };
+  if (!templateId) return defaultColors;
+  const template = templates.find(t => t.id === templateId);
+  if (!template) return defaultColors;
+  const isDark = template.colors.bg.startsWith("#0") || template.colors.bg.startsWith("#1") || template.colors.bg === "#0A0A0A";
+  return { ...template.colors, text: isDark ? "#FFFFFF" : "#1F2937", muted: isDark ? "#A1A1AA" : "#6B7280" };
 };
 
 const PitchDeckPreview = ({ data }: PitchDeckPreviewProps) => {
-  return (
-    <div className="p-6 space-y-8 bg-gradient-to-b from-background to-muted/20">
-      {/* Cover Page */}
-      <div className="text-center py-12 border-b border-amber-500/20">
-        <div className="inline-flex items-center gap-2 mb-4">
-          <Film className="h-8 w-8 text-amber-500" />
-          <span className="text-amber-500 text-sm font-medium uppercase tracking-wider">
-            Pitch Deck
-          </span>
+  const colors = getTemplateColors(data.selectedTemplate);
+  const hasContent = data.projectTitle || data.logline || data.synopsis || data.characters.length > 0 || data.posterImage;
+
+  if (!hasContent) {
+    return (
+      <div className="h-full flex items-center justify-center p-8 text-center">
+        <div className="space-y-4">
+          <div className="w-20 h-20 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center">
+            <Clapperboard className="w-10 h-10 text-amber-500" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-foreground">Your Pitch Deck Preview</h3>
+            <p className="text-sm text-muted-foreground mt-1">Start filling in the form to see your pitch deck come to life</p>
+          </div>
         </div>
-        
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent">
-          {data.projectTitle || "Your Project Title"}
-        </h1>
-        
-        {data.projectType && (
-          <Badge variant="outline" className="mb-4 border-amber-500/50 text-amber-400">
-            {projectTypeLabels[data.projectType]}
-          </Badge>
-        )}
-
-        {data.genre.length > 0 && (
-          <div className="flex justify-center gap-2 flex-wrap mb-6">
-            {data.genre.map((g) => (
-              <Badge key={g} className="bg-amber-500/20 text-amber-300">
-                {g}
-              </Badge>
-            ))}
-          </div>
-        )}
-
-        {data.logline && (
-          <p className="text-xl italic text-muted-foreground max-w-2xl mx-auto">
-            "{data.logline}"
-          </p>
-        )}
-
-        {data.targetRating && (
-          <div className="mt-4">
-            <Badge variant="secondary">Rated {data.targetRating}</Badge>
-          </div>
-        )}
       </div>
+    );
+  }
 
-      {/* Synopsis Section */}
-      {(data.synopsis || data.directorVision) && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            <Film className="h-6 w-6" />
-            The Story
-          </h2>
-          
-          {data.synopsis && (
-            <div className="bg-card/50 rounded-lg p-4 border border-border">
-              <h3 className="font-semibold mb-2">Synopsis</h3>
-              <p className="text-muted-foreground whitespace-pre-wrap">{data.synopsis}</p>
-            </div>
-          )}
-
-          {data.directorVision && (
-            <div className="bg-card/50 rounded-lg p-4 border border-amber-500/20">
-              <h3 className="font-semibold mb-2">Director's Vision</h3>
-              <p className="text-muted-foreground italic">{data.directorVision}</p>
-            </div>
-          )}
-
-          {data.toneMood && (
-            <div>
-              <span className="font-semibold">Tone: </span>
-              <span className="text-muted-foreground">{data.toneMood}</span>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Characters Section */}
-      {data.characters.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            <Users className="h-6 w-6" />
-            Characters
-          </h2>
-          
-          <div className="grid gap-4">
-            {data.characters.map((char, index) => (
-              <div key={index} className="bg-card/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 mb-2">
-                  <h3 className="font-bold text-lg">{char.name || "Unnamed Character"}</h3>
-                  <Badge variant="outline" className="capitalize">
-                    {char.role}
-                  </Badge>
-                </div>
-                <p className="text-muted-foreground">{char.description || "No description yet"}</p>
-              </div>
-            ))}
+  return (
+    <div className="min-h-full">
+      {/* Cover Page */}
+      <div className="relative min-h-[500px] overflow-hidden" style={{ backgroundColor: colors.bg }}>
+        {data.posterImage ? (
+          <div className="absolute inset-0">
+            <img src={data.posterImage} alt="Movie poster" className="w-full h-full object-cover" />
+            <div className="absolute inset-0" style={{ background: `linear-gradient(to bottom, transparent 0%, ${colors.bg}ee 60%, ${colors.bg} 100%)` }} />
           </div>
-        </section>
-      )}
-
-      {/* Visual Style / Moodboard */}
-      {(data.visualStyle || data.moodboardImages.length > 0) && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            🎨 Visual Style
-          </h2>
-          
-          {data.visualStyle && (
-            <p className="text-muted-foreground">{data.visualStyle}</p>
+        ) : (
+          <div className="absolute inset-0" style={{ background: `linear-gradient(135deg, ${colors.primary}33 0%, ${colors.secondary}33 50%, ${colors.bg} 100%)` }} />
+        )}
+        <div className="relative z-10 p-8 flex flex-col justify-end min-h-[500px]">
+          {data.projectType && (
+            <Badge className="w-fit mb-4 text-xs font-medium" style={{ backgroundColor: colors.primary, color: "#FFFFFF" }}>
+              {projectTypeLabels[data.projectType] || data.projectType}
+            </Badge>
           )}
-
-          {data.moodboardImages.filter(Boolean).length > 0 && (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-              {data.moodboardImages.filter(Boolean).map((img, index) => (
-                <div key={index} className="aspect-video bg-muted rounded-lg overflow-hidden">
-                  <img
-                    src={img}
-                    alt={`Moodboard ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).style.display = "none";
-                    }}
-                  />
-                </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight" style={{ color: colors.text }}>
+            {data.projectTitle || "Untitled Project"}
+          </h1>
+          {data.genre.length > 0 && (
+            <div className="flex flex-wrap gap-2 mb-4">
+              {data.genre.map((g) => (
+                <Badge key={g} variant="outline" className="text-xs" style={{ borderColor: colors.accent, color: colors.accent }}>{g}</Badge>
               ))}
             </div>
           )}
-        </section>
+          {data.logline && <p className="text-lg italic max-w-xl leading-relaxed" style={{ color: colors.muted }}>"{data.logline}"</p>}
+          {data.targetRating && (
+            <div className="mt-6 inline-flex items-center gap-2 text-sm" style={{ color: colors.muted }}>
+              <span className="px-2 py-1 border rounded text-xs font-bold" style={{ borderColor: colors.muted }}>{data.targetRating}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Synopsis */}
+      {(data.synopsis || data.directorVision) && (
+        <div className="p-8 space-y-6" style={{ backgroundColor: colors.bg }}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 rounded-full" style={{ backgroundColor: colors.primary }} />
+            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>The Story</h2>
+          </div>
+          {data.synopsis && (
+            <div className="space-y-2">
+              <h3 className="text-sm font-semibold uppercase tracking-wider" style={{ color: colors.accent }}>Synopsis</h3>
+              <p className="text-base leading-relaxed" style={{ color: colors.muted }}>{data.synopsis}</p>
+            </div>
+          )}
+          {data.directorVision && (
+            <div className="p-6 rounded-lg border-l-4" style={{ backgroundColor: `${colors.primary}11`, borderColor: colors.primary }}>
+              <h3 className="text-sm font-semibold uppercase tracking-wider mb-2" style={{ color: colors.accent }}>Director's Vision</h3>
+              <p className="text-base italic leading-relaxed" style={{ color: colors.text }}>"{data.directorVision}"</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      <Separator style={{ backgroundColor: `${colors.primary}33` }} />
+
+      {/* Characters */}
+      {data.characters.length > 0 && (
+        <div className="p-8" style={{ backgroundColor: colors.bg }}>
+          <div className="flex items-center gap-3 mb-6">
+            <Users className="w-6 h-6" style={{ color: colors.primary }} />
+            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>Characters</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.characters.map((char, i) => (
+              <Card key={i} className="overflow-hidden border-0" style={{ backgroundColor: `${colors.primary}11` }}>
+                <div className="h-2" style={{ background: `linear-gradient(90deg, ${colors.primary}, ${colors.secondary})` }} />
+                <div className="p-4 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-bold" style={{ color: colors.text }}>{char.name || "Unnamed"}</h4>
+                    <Badge variant="secondary" className="text-xs capitalize" style={{ backgroundColor: `${colors.accent}22`, color: colors.accent }}>{char.role}</Badge>
+                  </div>
+                  {char.description && <p className="text-sm leading-relaxed" style={{ color: colors.muted }}>{char.description}</p>}
+                </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Visual Style */}
+      {data.visualStyle && (
+        <div className="p-8" style={{ backgroundColor: colors.bg }}>
+          <div className="flex items-center gap-3 mb-6">
+            <Film className="w-6 h-6" style={{ color: colors.primary }} />
+            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>Visual Style</h2>
+          </div>
+          <p className="text-base leading-relaxed" style={{ color: colors.muted }}>{data.visualStyle}</p>
+        </div>
       )}
 
       {/* Comparables */}
       {data.comparables.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            🎯 Comparable Projects
-          </h2>
-          
-          <div className="grid gap-3">
-            {data.comparables.map((comp, index) => (
-              <div key={index} className="bg-card/50 rounded-lg p-4 border border-border flex items-start gap-4">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-bold">{comp.title}</h3>
-                    {comp.year && <span className="text-muted-foreground">({comp.year})</span>}
-                  </div>
-                  <p className="text-muted-foreground text-sm mt-1">{comp.whySimilar}</p>
+        <div className="p-8" style={{ backgroundColor: colors.bg }}>
+          <div className="flex items-center gap-3 mb-6">
+            <Target className="w-6 h-6" style={{ color: colors.primary }} />
+            <h2 className="text-2xl font-bold" style={{ color: colors.text }}>Comparable Projects</h2>
+          </div>
+          <div className="space-y-4">
+            {data.comparables.map((comp, i) => (
+              <div key={i} className="p-4 rounded-lg" style={{ backgroundColor: `${colors.secondary}11` }}>
+                <div className="flex items-baseline gap-2 mb-2">
+                  <h4 className="font-bold" style={{ color: colors.text }}>{comp.title}</h4>
+                  {comp.year && <span className="text-sm" style={{ color: colors.muted }}>({comp.year})</span>}
                 </div>
+                {comp.whySimilar && <p className="text-sm" style={{ color: colors.muted }}>{comp.whySimilar}</p>}
               </div>
             ))}
           </div>
-        </section>
+        </div>
       )}
 
-      {/* Target Audience */}
-      {(data.primaryDemographic || data.marketAnalysis) && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            <Eye className="h-6 w-6" />
-            Target Audience
-          </h2>
-          
-          {data.primaryDemographic && (
-            <div>
-              <span className="font-semibold">Primary: </span>
-              <span className="text-muted-foreground">{data.primaryDemographic}</span>
-            </div>
-          )}
-
-          {data.secondaryAudience && (
-            <div>
-              <span className="font-semibold">Secondary: </span>
-              <span className="text-muted-foreground">{data.secondaryAudience}</span>
-            </div>
-          )}
-
-          {data.marketAnalysis && (
-            <div className="bg-card/50 rounded-lg p-4 border border-border">
-              <h3 className="font-semibold mb-2">Market Analysis</h3>
-              <p className="text-muted-foreground whitespace-pre-wrap">{data.marketAnalysis}</p>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Production Details */}
-      {(data.budgetRange || data.shootingLocations || data.timeline) && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            <DollarSign className="h-6 w-6" />
-            Production
-          </h2>
-          
-          <div className="grid gap-3 md:grid-cols-2">
-            {data.budgetRange && (
-              <div className="bg-card/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                  <DollarSign className="h-4 w-4" />
-                  <span className="text-sm">Budget</span>
-                </div>
-                <p className="font-semibold">{budgetLabels[data.budgetRange]}</p>
-              </div>
-            )}
-
-            {data.shootingLocations && (
-              <div className="bg-card/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm">Locations</span>
-                </div>
-                <p className="font-semibold">{data.shootingLocations}</p>
-              </div>
-            )}
-          </div>
-
-          {data.timeline && (
-            <div className="bg-card/50 rounded-lg p-4 border border-border">
-              <div className="flex items-center gap-2 text-muted-foreground mb-2">
-                <Calendar className="h-4 w-4" />
-                <span className="text-sm">Timeline</span>
-              </div>
-              <p className="whitespace-pre-wrap">{data.timeline}</p>
-            </div>
-          )}
-
-          {data.unionStatus && (
-            <Badge variant="outline">
-              {data.unionStatus === "sag" ? "SAG-AFTRA" : data.unionStatus === "non_union" ? "Non-Union" : "TBD"}
-            </Badge>
-          )}
-        </section>
-      )}
-
-      {/* Team */}
-      {data.teamMembers.length > 0 && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            🎭 Key Team
-          </h2>
-          
-          <div className="grid gap-3">
-            {data.teamMembers.map((member, index) => (
-              <div key={index} className="bg-card/50 rounded-lg p-4 border border-border">
-                <div className="flex items-center gap-2 mb-1">
-                  <h3 className="font-bold">{member.name}</h3>
-                  <span className="text-muted-foreground">—</span>
-                  <span className="text-amber-400">{member.role}</span>
-                </div>
-                <p className="text-muted-foreground text-sm">{member.credits}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* Distribution */}
-      {(data.targetPlatforms.length > 0 || data.distributionPlan) && (
-        <section className="space-y-4">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            📺 Distribution
-          </h2>
-          
-          {data.targetPlatforms.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {data.targetPlatforms.map((platform) => (
-                <Badge key={platform} variant="outline" className="border-amber-500/50">
-                  {platform}
-                </Badge>
-              ))}
-            </div>
-          )}
-
-          {data.marketingHighlights && (
-            <div className="bg-card/50 rounded-lg p-4 border border-border">
-              <h3 className="font-semibold mb-2">Marketing Highlights</h3>
-              <p className="text-muted-foreground">{data.marketingHighlights}</p>
-            </div>
-          )}
-
-          {data.distributionPlan && (
-            <div className="bg-card/50 rounded-lg p-4 border border-border">
-              <h3 className="font-semibold mb-2">Distribution Strategy</h3>
-              <p className="text-muted-foreground whitespace-pre-wrap">{data.distributionPlan}</p>
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Contact / CTA */}
+      {/* Contact */}
       {(data.contactName || data.contactEmail || data.investmentAsk) && (
-        <section className="space-y-4 border-t border-amber-500/20 pt-8">
-          <h2 className="text-2xl font-bold flex items-center gap-2 text-amber-400">
-            📞 Contact
-          </h2>
-          
+        <div className="p-8" style={{ background: `linear-gradient(135deg, ${colors.primary}22 0%, ${colors.secondary}22 100%)`, backgroundColor: colors.bg }}>
+          <h2 className="text-2xl font-bold mb-6" style={{ color: colors.text }}>Let's Connect</h2>
           {data.investmentAsk && (
-            <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/10 rounded-lg p-6 border border-amber-500/20">
-              <h3 className="font-semibold mb-2 text-lg">What We're Seeking</h3>
-              <p className="text-muted-foreground">{data.investmentAsk}</p>
-            </div>
+            <Card className="p-6 mb-6 border-2" style={{ borderColor: colors.accent, backgroundColor: `${colors.bg}dd` }}>
+              <h3 className="text-sm font-bold uppercase tracking-wider mb-2" style={{ color: colors.accent }}>What We're Seeking</h3>
+              <p style={{ color: colors.text }}>{data.investmentAsk}</p>
+            </Card>
           )}
-
-          <div className="bg-card/50 rounded-lg p-6 border border-border">
-            {data.contactName && (
-              <p className="font-bold text-xl mb-4">{data.contactName}</p>
-            )}
-            
-            <div className="space-y-2">
-              {data.contactEmail && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Mail className="h-4 w-4" />
-                  <span>{data.contactEmail}</span>
-                </div>
-              )}
-              
-              {data.contactPhone && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Phone className="h-4 w-4" />
-                  <span>{data.contactPhone}</span>
-                </div>
-              )}
-              
-              {data.website && (
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Globe className="h-4 w-4" />
-                  <span>{data.website}</span>
-                </div>
-              )}
-            </div>
+          {data.contactName && <h3 className="text-xl font-bold mb-4" style={{ color: colors.text }}>{data.contactName}</h3>}
+          <div className="space-y-2">
+            {data.contactEmail && <div className="flex items-center gap-3" style={{ color: colors.muted }}><Mail className="w-4 h-4" style={{ color: colors.accent }} /><span>{data.contactEmail}</span></div>}
+            {data.contactPhone && <div className="flex items-center gap-3" style={{ color: colors.muted }}><Phone className="w-4 h-4" style={{ color: colors.accent }} /><span>{data.contactPhone}</span></div>}
+            {data.website && <div className="flex items-center gap-3" style={{ color: colors.muted }}><Globe className="w-4 h-4" style={{ color: colors.accent }} /><span>{data.website}</span></div>}
           </div>
-        </section>
-      )}
-
-      {/* Empty State */}
-      {!data.projectTitle && !data.logline && !data.synopsis && data.characters.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground">
-          <Film className="h-16 w-16 mx-auto mb-4 opacity-20" />
-          <p>Start filling out your pitch deck to see the preview here</p>
         </div>
       )}
     </div>
