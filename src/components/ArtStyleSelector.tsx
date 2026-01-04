@@ -102,6 +102,13 @@ export const artStyles: ArtStyle[] = [
     thumbnail: styleGraphicNovel
   },
   {
+    id: 'camera-diagram',
+    name: 'Camera Diagrams',
+    description: 'Shot planning visuals',
+    promptModifier: 'technical cinematography diagram, clean line art illustration showing camera positions and shot framing, educational storyboard style, top-down and side-view camera setup diagrams, simple black and white line drawing, film school instructional diagram, labeled camera angles, showing both camera placement and resulting shot, minimalist technical illustration',
+    thumbnail: null
+  },
+  {
     id: 'custom',
     name: 'Custom Style',
     description: 'Define your own style',
