@@ -8,16 +8,16 @@ export default function PreProductionPhase() {
   const tools = [
     {
       name: "Script Analysis",
-      description: "AI-powered script analysis for character development and emotional beats",
+      description: "Smart script analysis for character development and emotional beats",
       icon: Sparkles,
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/script-analysis"
     },
     {
       name: "Storyboarding",
-      description: "Create visual storyboards with AI-generated shot breakdowns and frames",
+      description: "Create visual storyboards with automated shot breakdowns and frames",
       icon: Video,
-      badge: "Visual AI",
+      badge: "Visual",
       route: "/storyboarding"
     },
     {

@@ -84,7 +84,7 @@ const PosterGenerator = ({
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div>
-          <Label className="text-base font-semibold">AI Movie Poster</Label>
+          <Label className="text-base font-semibold">Movie Poster Generator</Label>
           <p className="text-sm text-muted-foreground">
             Generate a cinematic poster for your pitch deck cover
           </p>
@@ -183,7 +183,7 @@ const PosterGenerator = ({
             <div>
               <p className="font-medium">No poster generated yet</p>
               <p className="text-sm text-muted-foreground">
-                Click "Generate Poster" to create an AI movie poster
+                Click "Generate Poster" to create a movie poster
               </p>
             </div>
             {!projectTitle && (

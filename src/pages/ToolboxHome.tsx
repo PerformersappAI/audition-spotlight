@@ -33,29 +33,29 @@ export default function ToolboxHome() {
   const [modules] = useState<Module[]>([
     {
       id: "pitch_deck_maker",
-      name: "AI Pitch Deck Maker",
-      description: "Create professional Film & TV pitch decks with AI-powered content generation",
+      name: "Pitch Deck Maker",
+      description: "Create professional Film & TV pitch decks with smart content generation",
       icon: Presentation,
       status: "active",
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/pitch-deck"
     },
     {
       id: "script_analysis",
       name: "Script Analysis",
-      description: "AI-powered script analysis for character development and emotional beats",
+      description: "Smart script analysis for character development and emotional beats",
       icon: Sparkles,
       status: "active",
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/script-analysis"
     },
     {
       id: "storyboarding",
       name: "Storyboarding",
-      description: "Create visual storyboards with AI-generated shot breakdowns and frames",
+      description: "Create visual storyboards with automated shot breakdowns and frames",
       icon: Video,
       status: "active",
-      badge: "Visual AI",
+      badge: "Visual",
       route: "/storyboarding"
     },
     {
@@ -64,7 +64,7 @@ export default function ToolboxHome() {
       description: "Create professional production call sheets with OCR upload support",
       icon: FileText,
       status: "active",
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/call-sheet"
     },
     {
@@ -133,22 +133,23 @@ export default function ToolboxHome() {
     {
       id: "contract_assistant",
       name: "SAG-AFTRA Contract Assistant",
-      description: "AI-powered guidance for union contracts and becoming a signatory producer",
+      description: "Smart guidance for union contracts and becoming a signatory producer",
       icon: Scale,
       status: "active",
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/contract-assistant"
     }
   ]);
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
-      case "AI Enhanced": return "default";
+      case "Smart Tool": return "default";
       case "Oprime.Vetted": return "secondary";
       case "Premium": return "outline";
       case "Community": return "secondary";
       case "Human Support": return "outline";
       case "Core Tool": return "default";
       case "Productivity": return "secondary";
+      case "Visual": return "default";
       default: return "default";
     }
   };
@@ -288,9 +289,9 @@ export default function ToolboxHome() {
             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
               <Sparkles className="h-8 w-8 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold mb-2">AI-Powered Analysis</h3>
+            <h3 className="text-xl font-semibold mb-2">Smart Analysis</h3>
             <p className="text-muted-foreground">
-              Get insights on scenes, characters, and distribution strategies powered by advanced AI
+              Get insights on scenes, characters, and distribution strategies using advanced technology
             </p>
           </div>
           <div className="text-center">
