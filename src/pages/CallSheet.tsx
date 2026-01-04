@@ -313,7 +313,7 @@ const CallSheet = () => {
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Call Sheet Generator
             </h1>
-            <p className="text-muted-foreground mt-2">Create professional production call sheets with AI-powered OCR</p>
+            <p className="text-muted-foreground mt-2">Create professional production call sheets with smart OCR</p>
           </div>
           <Film className="h-12 w-12 text-primary" />
         </div>

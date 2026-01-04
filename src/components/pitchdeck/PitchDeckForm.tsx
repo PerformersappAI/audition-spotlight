@@ -345,7 +345,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                 ) : (
                   <Sparkles className="h-4 w-4 mr-2" />
                 )}
-                Generate with AI
+                Generate
               </Button>
             </div>
 
@@ -517,7 +517,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
             <div className="flex justify-between items-center">
               <div>
                 <Label>Main Characters</Label>
-                <p className="text-xs text-muted-foreground">Upload actor photos and generate AI character portraits</p>
+                <p className="text-xs text-muted-foreground">Upload actor photos and generate character portraits</p>
               </div>
               <Button variant="outline" size="sm" onClick={addCharacter}>
                 <Plus className="h-4 w-4 mr-1" /> Add Character
@@ -670,7 +670,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                           ) : (
                             <>
                               <Sparkles className="h-6 w-6 text-amber-500 mb-1" />
-                              <span className="text-xs text-amber-500">Generate AI</span>
+                              <span className="text-xs text-amber-500">Generate</span>
                             </>
                           )}
                         </div>
@@ -691,7 +691,7 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
                       ) : (
                         <Sparkles className="h-4 w-4 mr-2" />
                       )}
-                      Generate AI Character Portrait
+                      Generate Character Portrait
                     </Button>
                   )}
                 </div>
@@ -703,11 +703,11 @@ const PitchDeckForm = ({ data, onChange, currentStep, onStepChange, onComplete }
       case 3:
         return (
           <div className="space-y-6">
-            {/* AI Poster Generator */}
+            {/* Poster Generator */}
             <div className="p-4 rounded-lg bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20">
               <h4 className="font-semibold text-foreground mb-2 flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-amber-500" />
-                AI Movie Poster
+                Movie Poster
               </h4>
               <p className="text-xs text-muted-foreground mb-4">
                 Generate a cinematic poster for your project's cover page

@@ -67,8 +67,8 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                   <Film className="h-6 w-6 text-primary-foreground" />
                 </div>
                 <div>
-                  <h1 className="text-xl font-bold text-foreground">MyFilmmakerAI</h1>
-                  <p className="text-sm text-muted-foreground">AI-Powered Film Production Tools</p>
+                  <h1 className="text-xl font-bold text-foreground">FilmMakerGenius</h1>
+                  <p className="text-sm text-muted-foreground">Professional Film Production Tools</p>
                 </div>
               </Link>
             </div>
@@ -108,9 +108,9 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
-                        <Link to="/scene-analysis" className="flex items-center gap-2 w-full cursor-pointer">
+                <Link to="/scene-analysis" className="flex items-center gap-2 w-full cursor-pointer">
                           <Brain className="h-4 w-4" />
-                          AI Scene Analysis
+                          Scene Analysis
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
@@ -228,7 +228,7 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
       <footer className="border-t border-border bg-muted/30 py-8">
         <div className="container mx-auto px-4">
           <div className="text-center text-muted-foreground">
-            <p>&copy; 2024 MyFilmmakerAI. AI-Powered Film Production Tools.</p>
+            <p>&copy; 2024 FilmMakerGenius. Professional Film Production Tools.</p>
           </div>
         </div>
       </footer>

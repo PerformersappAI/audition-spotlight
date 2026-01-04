@@ -418,7 +418,7 @@ const SceneAnalysis = () => {
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-2">
                 <Brain className="h-8 w-8" />
-                AI Scene Analysis
+                Scene Analysis
               </h1>
               <p className="text-muted-foreground">Analyze scripts for casting, direction, and production insights</p>
             </div>
