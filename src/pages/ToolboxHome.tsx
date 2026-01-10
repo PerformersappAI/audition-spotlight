@@ -12,8 +12,8 @@ import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
-import heroDecorLeft from "@/assets/hero-decor-left.png";
-import heroDecorRight from "@/assets/hero-decor-right.png";
+import heroCornerLeft from "@/assets/hero-corner-left.png";
+import heroCornerRight from "@/assets/hero-corner-right.png";
 import { 
   Video, 
   Users, 
@@ -233,17 +233,17 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* TOP BANNER HEADER - with side graphics */}
       <div className="bg-[#0E0F12] relative overflow-hidden">
-        {/* Left decorative graphic - contained to banner */}
+        {/* Left corner decorative graphic */}
         <img 
-          src={heroDecorLeft} 
+          src={heroCornerLeft} 
           alt="" 
-          className="absolute left-0 top-0 h-full w-32 lg:w-48 object-cover object-right opacity-30 pointer-events-none hidden md:block"
+          className="absolute left-0 top-0 w-48 lg:w-64 h-auto opacity-50 pointer-events-none hidden md:block"
         />
-        {/* Right decorative graphic - contained to banner */}
+        {/* Right corner decorative graphic */}
         <img 
-          src={heroDecorRight} 
+          src={heroCornerRight} 
           alt="" 
-          className="absolute right-0 top-0 h-full w-32 lg:w-48 object-cover object-left opacity-30 pointer-events-none hidden md:block"
+          className="absolute right-0 top-0 w-48 lg:w-64 h-auto opacity-50 pointer-events-none hidden md:block scale-x-[-1]"
         />
 
         <div className="container mx-auto px-6 py-10 relative z-10">
