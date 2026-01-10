@@ -266,7 +266,7 @@ export default function ToolboxHome() {
           {/* Header - Stylized title */}
           <div className="text-center">
             <h1 
-              className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4"
+              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.7) 50%, hsl(var(--primary)) 100%)',
