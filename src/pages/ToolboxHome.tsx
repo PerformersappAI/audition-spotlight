@@ -232,20 +232,20 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* UNIFIED DARK SECTION with extended banner background */}
       <div className="relative bg-[#0E0F12]">
-        {/* Banner background with film reels - extends down and fades out smoothly */}
+        {/* Banner background with film reels - fades out earlier as you scroll down */}
         <div 
           className="absolute inset-x-0 top-0 pointer-events-none"
           style={{ 
-            height: '1200px'
+            height: '800px'
           }}
         >
           <div 
-            className="w-full h-full bg-contain bg-top bg-no-repeat opacity-50"
+            className="w-full h-full bg-contain bg-top bg-no-repeat opacity-40"
             style={{ 
               backgroundImage: `url(${heroBannerBg})`,
               backgroundSize: '100% auto',
-              maskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 80%)',
-              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 80%)'
+              maskImage: 'linear-gradient(to bottom, black 0%, black 15%, rgba(0,0,0,0.3) 40%, transparent 65%)',
+              WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 15%, rgba(0,0,0,0.3) 40%, transparent 65%)'
             }}
           />
         </div>
@@ -253,10 +253,10 @@ export default function ToolboxHome() {
         <div 
           className="absolute inset-x-0 top-0 pointer-events-none"
           style={{ 
-            height: '1200px',
-            background: 'linear-gradient(to right, rgba(14,15,18,0.4) 0%, rgba(14,15,18,0.7) 30%, rgba(14,15,18,0.7) 70%, rgba(14,15,18,0.4) 100%)',
-            maskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 80%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 30%, transparent 80%)'
+            height: '800px',
+            background: 'linear-gradient(to right, rgba(14,15,18,0.5) 0%, rgba(14,15,18,0.75) 30%, rgba(14,15,18,0.75) 70%, rgba(14,15,18,0.5) 100%)',
+            maskImage: 'linear-gradient(to bottom, black 0%, black 15%, rgba(0,0,0,0.3) 40%, transparent 65%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 15%, rgba(0,0,0,0.3) 40%, transparent 65%)'
           }}
         />
 
