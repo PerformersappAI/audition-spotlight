@@ -174,6 +174,7 @@ export default function ToolboxHome() {
       route: "/contract-assistant"
     }
   ]);
+
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
       case "Smart Tool": return "default";
@@ -189,203 +190,239 @@ export default function ToolboxHome() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-6 py-8">
-        {/* Header */}
-        <div className="text-center mb-8">
-          {/* Logo bookends with title */}
-          <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
-            {/* Left logo - flat side faces right toward text */}
-            <img 
-              src={filmmakerGeniusLogo} 
-              alt="" 
-              className="h-12 md:h-20 w-auto -rotate-90"
-            />
+    <div className="min-h-screen">
+      {/* DARK HERO SECTION */}
+      <div className="bg-[#0E0F12]">
+        <div className="container mx-auto px-6 py-12">
+          {/* Header */}
+          <div className="text-center mb-10">
+            {/* Logo bookends with title */}
+            <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
+              {/* Left logo - flat side faces right toward text */}
+              <img 
+                src={filmmakerGeniusLogo} 
+                alt="" 
+                className="h-12 md:h-20 w-auto -rotate-90"
+              />
+              
+              {/* Title */}
+              <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Filmmaker Genius
+              </h1>
+              
+              {/* Right logo - flat side faces left toward text */}
+              <img 
+                src={filmmakerGeniusLogo} 
+                alt="Filmmaker Genius Logo" 
+                className="h-12 md:h-20 w-auto rotate-90"
+              />
+            </div>
             
-            {/* Title */}
-            <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-              Filmmaker Genius
-            </h1>
-            
-            {/* Right logo - flat side faces left toward text */}
-            <img 
-              src={filmmakerGeniusLogo} 
-              alt="Filmmaker Genius Logo" 
-              className="h-12 md:h-20 w-auto rotate-90"
-            />
+            <p className="text-xl md:text-2xl text-gray-400 mb-8 italic">
+              Where Genius Meets the Silver Screen
+            </p>
           </div>
-          
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 italic">
-            Where Genius Meets the Silver Screen
-          </p>
 
-          {/* Admin-managed YouTube Video */}
-          {embedUrl && (
-            <div className="flex justify-center mb-8">
-              <div className="w-full max-w-2xl aspect-video rounded-lg overflow-hidden border bg-muted shadow-md">
-                <iframe
-                  src={embedUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Filmmaker Genius Introduction"
-                />
+          {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
+            {/* Left side - CTA Text */}
+            <div className="flex-1 text-center lg:text-left">
+              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
+                Need help with the process of filmmaking?
+              </h2>
+              <p className="text-lg md:text-xl text-gray-400 mb-6">
+                From start to distribution, click the boxes below to guide you through every step of your filmmaking journey.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
+                <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-2 text-sm">
+                  Pre-Production
+                </Badge>
+                <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 px-4 py-2 text-sm">
+                  Production
+                </Badge>
+                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 px-4 py-2 text-sm">
+                  Post-Production
+                </Badge>
               </div>
             </div>
-          )}
 
-          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
-            Need help with the process of filmmaking from start to distribution, click these boxes.
-          </p>
+            {/* Right side - Smaller Video */}
+            {embedUrl && (
+              <div className="flex-shrink-0 w-full lg:w-auto">
+                <div className="w-full max-w-sm aspect-video rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-2xl">
+                  <iframe
+                    src={embedUrl}
+                    className="w-full h-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title="Filmmaker Genius Introduction"
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Filmmaking Journey Phases - UNCHANGED */}
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pb-12">
+            <Link to="/toolbox/pre-production">
+              <Card className="h-48 bg-gradient-to-br from-blue-400 to-blue-500 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
+                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-3">Pre Production</h3>
+                  <p className="text-white/90 text-base">Screenwriting, Storyboarding, etc.</p>
+                </CardContent>
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="text-[180px] font-bold text-white">1</span>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/toolbox/production">
+              <Card className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
+                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-3">Production</h3>
+                  <p className="text-white/90 text-base">iPhone or Cannon, Hollywood Cinematography</p>
+                </CardContent>
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="text-[180px] font-bold text-white">2</span>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/toolbox/post-production">
+              <Card className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
+                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-3">Post Production</h3>
+                  <p className="text-white/90 text-base">Editing</p>
+                </CardContent>
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="text-[180px] font-bold text-white">3</span>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/toolbox/film-release">
+              <Card className="h-48 bg-gradient-to-br from-blue-600 to-blue-700 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
+                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-3">Film Release</h3>
+                  <p className="text-white/90 text-base">Marketing, Film Festival</p>
+                </CardContent>
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="text-[180px] font-bold text-white">4</span>
+                </div>
+              </Card>
+            </Link>
+            <Link to="/toolbox/distribution">
+              <Card className="h-48 bg-gradient-to-br from-blue-700 to-blue-900 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
+                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
+                  <h3 className="text-2xl font-bold text-white mb-3">Distribution</h3>
+                  <p className="text-white/90 text-base">Monetization</p>
+                </CardContent>
+                <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                  <span className="text-[180px] font-bold text-white">5</span>
+                </div>
+              </Card>
+            </Link>
+          </div>
         </div>
+      </div>
 
-        {/* Filmmaking Journey Phases */}
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-12">
-          <Link to="/toolbox/pre-production">
-            <Card className="h-48 bg-gradient-to-br from-blue-400 to-blue-500 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3">Pre Production</h3>
-                <p className="text-white/90 text-base">Screenwriting, Storyboarding, etc.</p>
-              </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <span className="text-[180px] font-bold text-white">1</span>
-              </div>
-            </Card>
-          </Link>
-          <Link to="/toolbox/production">
-            <Card className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3">Production</h3>
-                <p className="text-white/90 text-base">iPhone or Cannon, Hollywood Cinematography</p>
-              </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <span className="text-[180px] font-bold text-white">2</span>
-              </div>
-            </Card>
-          </Link>
-          <Link to="/toolbox/post-production">
-            <Card className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3">Post Production</h3>
-                <p className="text-white/90 text-base">Editing</p>
-              </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <span className="text-[180px] font-bold text-white">3</span>
-              </div>
-            </Card>
-          </Link>
-          <Link to="/toolbox/film-release">
-            <Card className="h-48 bg-gradient-to-br from-blue-600 to-blue-700 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3">Film Release</h3>
-                <p className="text-white/90 text-base">Marketing, Film Festival</p>
-              </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <span className="text-[180px] font-bold text-white">4</span>
-              </div>
-            </Card>
-          </Link>
-          <Link to="/toolbox/distribution">
-            <Card className="h-48 bg-gradient-to-br from-blue-700 to-blue-900 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-              <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                <h3 className="text-2xl font-bold text-white mb-3">Distribution</h3>
-                <p className="text-white/90 text-base">Monetization</p>
-              </CardContent>
-              <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                <span className="text-[180px] font-bold text-white">5</span>
-              </div>
-            </Card>
-          </Link>
-        </div>
+      {/* WHITE SECTION - Tools and Features */}
+      <div className="bg-white">
+        <div className="container mx-auto px-6 py-16">
+          {/* Divider Text */}
+          <div className="text-center mb-12">
+            <p className="text-xl md:text-2xl font-medium text-gray-600 max-w-2xl mx-auto mb-4">
+              Or just click on the tool that you need to help you with your filmmaking
+            </p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+              Filmmaker Toolbox
+            </h2>
+          </div>
 
-        {/* Divider Text */}
-        <div className="text-center my-12 py-8">
-          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto mb-6">
-            Or just click on the tool that you need to help you with your filmmaking
-          </p>
-          <h2 className="text-3xl md:text-4xl font-bold text-primary">
-            Filmmaker Toolbox
-          </h2>
-        </div>
-
-        {/* Modules Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {modules.map((module) => {
-            const Icon = module.icon;
-            return (
-              <Card key={module.id} className="group hover:shadow-lg transition-all duration-200 cursor-pointer">
-                <CardHeader>
-                  <div className="flex items-start justify-between">
-                    <Icon className="h-8 w-8 text-primary group-hover:scale-110 transition-transform" />
-                    <Badge variant={getBadgeVariant(module.badge)}>
-                      {module.badge}
-                    </Badge>
-                  </div>
-                  <CardTitle className="text-xl">{module.name}</CardTitle>
-                  <CardDescription>{module.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {module.externalUrl ? (
-                    <a 
-                      href={module.externalUrl} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block"
-                    >
+          {/* Modules Grid - Light Theme */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {modules.map((module) => {
+              const Icon = module.icon;
+              return (
+                <Card 
+                  key={module.id} 
+                  className="group bg-white border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+                >
+                  <CardHeader>
+                    <div className="flex items-start justify-between">
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                        <Icon className="h-6 w-6 text-gray-700 group-hover:text-primary transition-colors" />
+                      </div>
+                      <Badge 
+                        variant={getBadgeVariant(module.badge)}
+                        className="bg-gray-100 text-gray-700 border-gray-200"
+                      >
+                        {module.badge}
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-xl text-gray-900">{module.name}</CardTitle>
+                    <CardDescription className="text-gray-600">{module.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    {module.externalUrl ? (
+                      <a 
+                        href={module.externalUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block"
+                      >
+                        <Button 
+                          variant="ghost" 
+                          className="w-full justify-between text-gray-700 hover:bg-primary hover:text-white"
+                        >
+                          Visit Academy
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </a>
+                    ) : (
                       <Button 
                         variant="ghost" 
-                        className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
+                        className="w-full justify-between text-gray-700 hover:bg-primary hover:text-white"
+                        asChild
                       >
-                        Visit Academy
-                        <ExternalLink className="h-4 w-4" />
+                        <Link to={module.route || "#"}>
+                          {module.status === "protected" ? "Access Library" : "Open Tool"}
+                          <ChevronRight className="h-4 w-4" />
+                        </Link>
                       </Button>
-                    </a>
-                  ) : (
-                    <Button 
-                      variant="ghost" 
-                      className="w-full justify-between group-hover:bg-primary group-hover:text-primary-foreground"
-                      asChild
-                    >
-                      <Link to={module.route || "#"}>
-                        {module.status === "protected" ? "Access Library" : "Open Tool"}
-                        <ChevronRight className="h-4 w-4" />
-                      </Link>
-                    </Button>
-                  )}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
 
-        {/* Features Overview */}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="h-8 w-8 text-primary" />
+          {/* Features Overview - Light Theme */}
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Sparkles className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Smart Analysis</h3>
+              <p className="text-gray-600">
+                Get insights on scenes, characters, and distribution strategies using advanced technology
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Smart Analysis</h3>
-            <p className="text-muted-foreground">
-              Get insights on scenes, characters, and distribution strategies using advanced technology
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Trophy className="h-8 w-8 text-primary" />
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Trophy className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Curated Resources</h3>
+              <p className="text-gray-600">
+                Access vetted festivals, essential documents, and industry connections
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Curated Resources</h3>
-            <p className="text-muted-foreground">
-              Access vetted festivals, essential documents, and industry connections
-            </p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-              <MessageCircle className="h-8 w-8 text-primary" />
+            <div className="text-center">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MessageCircle className="h-8 w-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-semibold mb-2 text-gray-900">Expert Guidance</h3>
+              <p className="text-gray-600">
+                Direct access to our producer desk for personalized consulting and support
+              </p>
             </div>
-            <h3 className="text-xl font-semibold mb-2">Expert Guidance</h3>
-            <p className="text-muted-foreground">
-              Direct access to our producer desk for personalized consulting and support
-            </p>
           </div>
         </div>
       </div>
