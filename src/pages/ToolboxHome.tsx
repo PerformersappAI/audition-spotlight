@@ -232,11 +232,13 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* TOP BANNER HEADER - with integrated film graphics */}
       <div className="relative overflow-hidden">
-        {/* Banner background with film elements on edges */}
+        {/* Banner background with film elements on edges - faded */}
         <div 
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0 bg-cover bg-center opacity-40"
           style={{ backgroundImage: `url(${heroBannerBg})` }}
         />
+        {/* Dark overlay for center focus */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0E0F12]/60 via-[#0E0F12]/90 to-[#0E0F12]/60" />
 
         <div className="container mx-auto px-6 py-10 relative z-10">
           {/* Header - Big title with logo bookends */}
@@ -387,8 +389,10 @@ export default function ToolboxHome() {
                   <p className="text-gray-400 mb-4">
                     Character development, emotional beats, and scene breakdowns.
                   </p>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Learn more
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary/20 hover:bg-primary/30 border border-primary/40 rounded-full text-sm font-medium text-primary transition-all group-hover:scale-105">
+                    <Sparkles className="h-4 w-4" />
+                    Let's Go
+                    <ArrowRight className="h-4 w-4" />
                   </span>
                 </div>
                 {/* Colorful image section */}
@@ -414,8 +418,10 @@ export default function ToolboxHome() {
                   <p className="text-gray-400 mb-4">
                     Smart content generation and poster creation.
                   </p>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Get started
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/40 rounded-full text-sm font-medium text-purple-400 transition-all group-hover:scale-105">
+                    <Presentation className="h-4 w-4" />
+                    Create
+                    <ChevronRight className="h-4 w-4" />
                   </span>
                 </div>
                 {/* Colorful image section */}
@@ -441,8 +447,10 @@ export default function ToolboxHome() {
                   <p className="text-gray-400 mb-4">
                     Create storyboards with automated frames and export options.
                   </p>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Learn more
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 rounded-full text-sm font-medium text-orange-400 transition-all group-hover:scale-105">
+                    <Film className="h-4 w-4" />
+                    Visualize
+                    <ChevronRight className="h-4 w-4" />
                   </span>
                 </div>
                 {/* Colorful image section */}
@@ -464,8 +472,9 @@ export default function ToolboxHome() {
                   <h3 className="text-xl font-bold text-white mb-1">
                     Professional call sheets.
                   </h3>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Get started
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-teal-500/20 hover:bg-teal-500/30 border border-teal-500/40 rounded-full text-xs font-medium text-teal-400 transition-all group-hover:scale-105">
+                    <Clapperboard className="h-3 w-3" />
+                    Build
                   </span>
                 </div>
                 <div className="flex-1 min-h-[140px] relative overflow-hidden">
@@ -485,8 +494,9 @@ export default function ToolboxHome() {
                   <h3 className="text-xl font-bold text-white mb-1">
                     Post casting calls.
                   </h3>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Get started
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 rounded-full text-xs font-medium text-orange-400 transition-all group-hover:scale-105">
+                    <Megaphone className="h-3 w-3" />
+                    Post
                   </span>
                 </div>
                 <div className="flex-1 min-h-[140px] relative overflow-hidden">
@@ -507,8 +517,9 @@ export default function ToolboxHome() {
                   <h3 className="text-xl font-bold text-white mb-1">
                     Find your crew.
                   </h3>
-                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
-                    Get started
+                  <span className="inline-flex items-center gap-2 px-3 py-1.5 bg-indigo-500/20 hover:bg-indigo-500/30 border border-indigo-500/40 rounded-full text-xs font-medium text-indigo-400 transition-all group-hover:scale-105">
+                    <UserPlus className="h-3 w-3" />
+                    Hire
                   </span>
                 </div>
                 <div className="flex-1 min-h-[140px] relative overflow-hidden">
