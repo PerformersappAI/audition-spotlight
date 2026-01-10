@@ -11,6 +11,7 @@ import toolStoryboard from "@/assets/tool-storyboard.jpg";
 import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
+import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
 import { 
   Video, 
   Users, 
@@ -363,14 +364,23 @@ export default function ToolboxHome() {
       {/* BLACK SECTION - Adobe Style Tools */}
       <div className="bg-black">
         <div className="container mx-auto px-6 py-16">
-          {/* Divider Text */}
-          <div className="text-center mb-12">
-            <p className="text-xl md:text-2xl font-medium text-gray-400 max-w-2xl mx-auto mb-4">
-              Or just click on the tool that you need
-            </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">
-              Filmmaker Toolbox
-            </h2>
+          {/* Toolbox Header Card - with dramatic image */}
+          <div className="relative rounded-2xl overflow-hidden mb-10">
+            <img 
+              src={toolboxHeaderBg} 
+              alt="" 
+              className="w-full h-48 md:h-64 object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/60 to-transparent flex items-center">
+              <div className="p-8 md:p-12">
+                <p className="text-lg md:text-xl font-medium text-gray-300 mb-2">
+                  Or just click on the tool that you need
+                </p>
+                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white">
+                  Filmmaker Toolbox
+                </h2>
+              </div>
+            </div>
           </div>
 
           {/* Adobe-Style Bento Grid */}
@@ -457,22 +467,19 @@ export default function ToolboxHome() {
               </div>
             </Link>
 
-            {/* Call Sheet - Dark card with image */}
-            <Link to="/call-sheet" className="group">
+            {/* Row: Call Sheet + Auditions side by side */}
+            <Link to="/call-sheet" className="lg:col-span-1 group">
               <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
                 <div className="p-5 pb-3">
                   <p className="text-xs font-semibold text-teal-400 uppercase tracking-wide mb-2">Call Sheet Generator</p>
                   <h3 className="text-xl font-bold text-white mb-1">
                     Professional call sheets.
                   </h3>
-                  <p className="text-gray-400 text-sm mb-2">
-                    OCR upload support for quick setup.
-                  </p>
                   <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
                     Get started
                   </span>
                 </div>
-                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                <div className="flex-1 min-h-[140px] relative overflow-hidden">
                   <img 
                     src={toolCallSheet} 
                     alt="Call Sheet Tool" 
@@ -482,22 +489,18 @@ export default function ToolboxHome() {
               </div>
             </Link>
 
-            {/* Create Auditions - Dark card with image */}
-            <Link to="/create-audition" className="group">
+            <Link to="/create-audition" className="lg:col-span-1 group">
               <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
                 <div className="p-5 pb-3">
                   <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide mb-2">Create Auditions</p>
                   <h3 className="text-xl font-bold text-white mb-1">
                     Post casting calls.
                   </h3>
-                  <p className="text-gray-400 text-sm mb-2">
-                    Manage audition opportunities.
-                  </p>
                   <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
                     Get started
                   </span>
                 </div>
-                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                <div className="flex-1 min-h-[140px] relative overflow-hidden">
                   <img 
                     src={toolAuditions} 
                     alt="Auditions Tool" 
@@ -507,22 +510,19 @@ export default function ToolboxHome() {
               </div>
             </Link>
 
-            {/* Crew Hire - Dark card with image */}
-            <Link to="/crew-hire" className="group">
+            {/* Crew Hire - spans width */}
+            <Link to="/crew-hire" className="lg:col-span-1 group">
               <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
                 <div className="p-5 pb-3">
                   <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-2">Crew Hire</p>
                   <h3 className="text-xl font-bold text-white mb-1">
                     Find your crew.
                   </h3>
-                  <p className="text-gray-400 text-sm mb-2">
-                    Post crew calls for your production.
-                  </p>
                   <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
                     Get started
                   </span>
                 </div>
-                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                <div className="flex-1 min-h-[140px] relative overflow-hidden">
                   <img 
                     src={toolCrewHire} 
                     alt="Crew Hire Tool" 
@@ -531,46 +531,36 @@ export default function ToolboxHome() {
                 </div>
               </div>
             </Link>
+          </div>
 
-            {/* More Tools - Dark themed to match */}
-            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
-              <h3 className="text-lg font-bold text-white mb-4">More Tools</h3>
-              <div className="space-y-3">
-                <Link to="/festival-finder" className="flex items-center gap-3 text-gray-300 hover:text-teal-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
-                    <MapPin className="h-4 w-4 text-teal-400" />
-                  </div>
-                  <span className="text-sm">Film Festivals</span>
+          {/* More Tools - Horizontal Bar */}
+          <div className="mt-8 bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h3 className="text-lg font-semibold text-white">More Tools</h3>
+              <div className="flex flex-wrap items-center gap-3 md:gap-6">
+                <Link to="/festival-finder" className="flex items-center gap-2 text-gray-300 hover:text-teal-400 transition-colors">
+                  <MapPin className="h-4 w-4 text-teal-400" />
+                  <span className="text-sm">Festivals</span>
                 </Link>
-                <Link to="/library" className="flex items-center gap-3 text-gray-300 hover:text-purple-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                    <FileText className="h-4 w-4 text-purple-400" />
-                  </div>
-                  <span className="text-sm">Docs Library</span>
+                <Link to="/library" className="flex items-center gap-2 text-gray-300 hover:text-purple-400 transition-colors">
+                  <FileText className="h-4 w-4 text-purple-400" />
+                  <span className="text-sm">Docs</span>
                 </Link>
-                <Link to="/consulting" className="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                    <MessageCircle className="h-4 w-4 text-blue-400" />
-                  </div>
+                <Link to="/consulting" className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-colors">
+                  <MessageCircle className="h-4 w-4 text-blue-400" />
                   <span className="text-sm">Concierge</span>
                 </Link>
-                <Link to="/calendar" className="flex items-center gap-3 text-gray-300 hover:text-amber-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
-                    <Calendar className="h-4 w-4 text-amber-400" />
-                  </div>
-                  <span className="text-sm">Production Calendar</span>
+                <Link to="/calendar" className="flex items-center gap-2 text-gray-300 hover:text-amber-400 transition-colors">
+                  <Calendar className="h-4 w-4 text-amber-400" />
+                  <span className="text-sm">Calendar</span>
                 </Link>
-                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-gray-300 hover:text-rose-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center">
-                    <GraduationCap className="h-4 w-4 text-rose-400" />
-                  </div>
-                  <span className="text-sm">Feifer Film Academy</span>
+                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-rose-400 transition-colors">
+                  <GraduationCap className="h-4 w-4 text-rose-400" />
+                  <span className="text-sm">Academy</span>
                 </a>
-                <Link to="/contract-assistant" className="flex items-center gap-3 text-gray-300 hover:text-emerald-400 transition-colors group">
-                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
-                    <Scale className="h-4 w-4 text-emerald-400" />
-                  </div>
-                  <span className="text-sm">Contract Assistant</span>
+                <Link to="/contract-assistant" className="flex items-center gap-2 text-gray-300 hover:text-emerald-400 transition-colors">
+                  <Scale className="h-4 w-4 text-emerald-400" />
+                  <span className="text-sm">Contracts</span>
                 </Link>
               </div>
             </div>
