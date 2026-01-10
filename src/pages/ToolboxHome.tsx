@@ -5,6 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
+import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
+import toolPitchDeck from "@/assets/tool-pitch-deck.jpg";
+import toolStoryboard from "@/assets/tool-storyboard.jpg";
 import { 
   Video, 
   Users, 
@@ -22,7 +25,8 @@ import {
   Film,
   Calendar,
   Megaphone,
-  UserPlus
+  UserPlus,
+  ArrowRight
 } from "lucide-react";
 
 interface Module {
@@ -353,217 +357,172 @@ export default function ToolboxHome() {
         </div>
       </div>
 
-      {/* LIGHT GRAY SECTION - Tools and Features */}
-      <div className="bg-gray-100">
+      {/* BLACK SECTION - Adobe Style Tools */}
+      <div className="bg-black">
         <div className="container mx-auto px-6 py-16">
           {/* Divider Text */}
           <div className="text-center mb-12">
-            <p className="text-xl md:text-2xl font-medium text-gray-600 max-w-2xl mx-auto mb-4">
-              Or just click on the tool that you need to help you with your filmmaking
+            <p className="text-xl md:text-2xl font-medium text-gray-400 max-w-2xl mx-auto mb-4">
+              Or just click on the tool that you need
             </p>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
+            <h2 className="text-3xl md:text-4xl font-bold text-white">
               Filmmaker Toolbox
             </h2>
           </div>
 
-          {/* Bento Grid - Adobe Style with varied sizes and black/gray cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[120px]">
+          {/* Adobe-Style Bento Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             
-            {/* Script Analysis - LARGEST (3 cols, 3 rows) - Black card */}
-            <Link to="/script-analysis" className="col-span-2 lg:col-span-3 row-span-3">
-              <div className="h-full bg-gradient-to-br from-gray-900 to-black rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col overflow-hidden relative">
-                <Badge className="w-fit mb-3 bg-white/10 text-white border-0 backdrop-blur-sm">Smart Tool</Badge>
-                <h3 className="text-3xl font-bold text-white mb-2">Script Analysis</h3>
-                <p className="text-gray-400 text-sm mb-4">Smart script analysis for character development and emotional beats</p>
-                <div className="flex-1 bg-gradient-to-br from-primary/20 to-primary/40 rounded-xl flex items-center justify-center group-hover:from-primary/30 group-hover:to-primary/50 transition-all">
-                  <Sparkles className="h-20 w-20 text-primary group-hover:text-primary/90 transition-colors" />
+            {/* Script Analysis - Large white card with product image */}
+            <Link to="/script-analysis" className="lg:col-span-2 group">
+              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Script Analysis</p>
+                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
+                  Analyze your screenplay.
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Character development, emotional beats, and scene breakdowns in one place.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-6">
+                  Learn more
+                </button>
+                <div className="relative rounded-xl overflow-hidden">
+                  <img 
+                    src={toolScriptAnalysis} 
+                    alt="Script Analysis Tool" 
+                    className="w-full h-auto object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
               </div>
             </Link>
 
-            {/* Pitch Deck - Tall & Narrow (1.5 cols, 4 rows) - Dark gray card */}
-            <Link to="/pitch-deck" className="col-span-2 lg:col-span-2 row-span-4">
-              <div className="h-full bg-gradient-to-b from-gray-800 to-gray-900 rounded-2xl p-5 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col">
-                <Badge className="w-fit mb-3 bg-blue-500/20 text-blue-400 border-0">Smart Tool</Badge>
-                <h3 className="text-xl font-bold text-white mb-2">Pitch Deck Maker</h3>
-                <p className="text-gray-400 text-sm mb-4">Create professional Film & TV pitch decks</p>
-                <div className="flex-1 bg-gradient-to-br from-blue-500/15 to-blue-600/30 rounded-xl flex items-center justify-center group-hover:from-blue-500/25 group-hover:to-blue-600/40 transition-all">
-                  <Presentation className="h-16 w-16 text-blue-400 group-hover:text-blue-300 transition-colors" />
+            {/* Pitch Deck - Tall white card with image */}
+            <Link to="/pitch-deck" className="row-span-2 group">
+              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden flex flex-col">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Pitch Deck Maker</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Professional pitch decks.
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Create with smart content generation and poster creation.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-6 w-fit">
+                  Learn more
+                </button>
+                <div className="flex-1 relative rounded-xl overflow-hidden min-h-[300px]">
+                  <img 
+                    src={toolPitchDeck} 
+                    alt="Pitch Deck Maker" 
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
               </div>
             </Link>
 
-            {/* Storyboarding - Wide (1 col, 2 rows) - Gray card */}
-            <Link to="/storyboarding" className="col-span-1 row-span-2 hidden lg:block">
-              <div className="h-full bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col">
-                <Badge className="w-fit mb-2 bg-purple-500/20 text-purple-400 border-0 text-xs">Visual</Badge>
-                <h3 className="text-lg font-bold text-white mb-1">Storyboarding</h3>
-                <div className="flex-1 bg-gradient-to-br from-purple-500/15 to-purple-600/30 rounded-lg flex items-center justify-center group-hover:from-purple-500/25 group-hover:to-purple-600/40 transition-all mt-2">
-                  <Film className="h-10 w-10 text-purple-400 group-hover:text-purple-300 transition-colors" />
+            {/* Storyboarding - White card with storyboard image */}
+            <Link to="/storyboarding" className="lg:col-span-2 group">
+              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden">
+                <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-3">Storyboarding</p>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                  Visual shot breakdowns.
+                </h3>
+                <p className="text-gray-600 mb-4">
+                  Create storyboards with automated frames and export options.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-4">
+                  Learn more
+                </button>
+                <div className="relative rounded-xl overflow-hidden">
+                  <img 
+                    src={toolStoryboard} 
+                    alt="Storyboarding Tool" 
+                    className="w-full h-auto object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                  />
                 </div>
               </div>
             </Link>
 
-            {/* Storyboarding Mobile - Shows on smaller screens */}
-            <Link to="/storyboarding" className="col-span-2 row-span-2 lg:hidden">
-              <div className="h-full bg-gradient-to-br from-gray-700 to-gray-800 rounded-2xl p-5 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex flex-col">
-                <Badge className="w-fit mb-2 bg-purple-500/20 text-purple-400 border-0">Visual</Badge>
-                <h3 className="text-xl font-bold text-white mb-1">Storyboarding</h3>
-                <p className="text-gray-400 text-sm mb-2">Visual storyboards with shot breakdowns</p>
-                <div className="flex-1 bg-gradient-to-br from-purple-500/15 to-purple-600/30 rounded-xl flex items-center justify-center group-hover:from-purple-500/25 group-hover:to-purple-600/40 transition-all">
-                  <Film className="h-12 w-12 text-purple-400 group-hover:text-purple-300 transition-colors" />
-                </div>
+            {/* Call Sheet - Dark card */}
+            <Link to="/call-sheet" className="group">
+              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
+                <p className="text-xs font-semibold text-teal-400 uppercase tracking-wide mb-3">Call Sheet Generator</p>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Professional call sheets.
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Create production call sheets with OCR upload support for quick setup.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-teal-400 transition-colors">
+                  Get started <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </Link>
 
-            {/* Call Sheet Generator - Medium (2 cols, 2 rows) - White card with teal accent */}
-            <Link to="/call-sheet" className="col-span-2 row-span-2">
-              <div className="h-full bg-white rounded-2xl p-5 shadow-xl hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
-                <Badge className="w-fit mb-2 bg-teal-500/10 text-teal-600 border-0">Smart Tool</Badge>
-                <h3 className="text-xl font-bold text-gray-900 mb-1">Call Sheet Generator</h3>
-                <p className="text-gray-600 text-sm mb-2">Professional call sheets with OCR</p>
-                <div className="flex-1 bg-gradient-to-br from-teal-500/15 to-teal-600/30 rounded-xl flex items-center justify-center group-hover:from-teal-500/25 group-hover:to-teal-600/40 transition-all">
-                  <Clapperboard className="h-12 w-12 text-teal-600 group-hover:text-teal-500 transition-colors" />
-                </div>
+            {/* Create Auditions - Dark card */}
+            <Link to="/create-audition" className="group">
+              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
+                <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide mb-3">Create Auditions</p>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Post casting calls.
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Create and manage audition opportunities for your projects.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-orange-400 transition-colors">
+                  Get started <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </Link>
 
-            {/* Create Auditions - Wide horizontal (3 cols, 1 row) - Black card */}
-            <Link to="/create-audition" className="col-span-2 lg:col-span-3 row-span-1">
-              <div className="h-full bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-orange-500/20 to-orange-600/40 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-orange-500/30 group-hover:to-orange-600/50 transition-all">
-                  <Megaphone className="h-8 w-8 text-orange-400 group-hover:text-orange-300 transition-colors" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Badge className="w-fit mb-1 bg-orange-500/20 text-orange-400 border-0 text-xs">Core Tool</Badge>
-                  <h3 className="text-lg font-bold text-white">Create Auditions</h3>
-                  <p className="text-gray-400 text-sm truncate">Create and manage audition opportunities</p>
-                </div>
-                <ChevronRight className="h-6 w-6 text-gray-500 group-hover:text-orange-400 transition-colors flex-shrink-0" />
+            {/* Crew Hire - Dark card */}
+            <Link to="/crew-hire" className="group">
+              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
+                <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-3">Crew Hire</p>
+                <h3 className="text-2xl font-bold text-white mb-2">
+                  Find your crew.
+                </h3>
+                <p className="text-gray-400 mb-6">
+                  Post crew calls to find talented crew members for your production.
+                </p>
+                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-indigo-400 transition-colors">
+                  Get started <ArrowRight className="h-4 w-4" />
+                </button>
               </div>
             </Link>
 
-            {/* Crew Hire - Horizontal (3 cols, 1 row) - Gray card */}
-            <Link to="/crew-hire" className="col-span-2 lg:col-span-3 row-span-1">
-              <div className="h-full bg-gradient-to-r from-gray-700 to-gray-600 rounded-2xl p-4 shadow-xl hover:shadow-2xl transition-all duration-300 group cursor-pointer flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-500/20 to-indigo-600/40 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-indigo-500/30 group-hover:to-indigo-600/50 transition-all">
-                  <UserPlus className="h-8 w-8 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <Badge className="w-fit mb-1 bg-indigo-500/20 text-indigo-400 border-0 text-xs">Hire Crew</Badge>
-                  <h3 className="text-lg font-bold text-white">Crew Hire</h3>
-                  <p className="text-gray-300 text-sm truncate">Find talented crew members for your production</p>
-                </div>
-                <ChevronRight className="h-6 w-6 text-gray-400 group-hover:text-indigo-400 transition-colors flex-shrink-0" />
+            {/* Light gray card with links - like Adobe's Creative Cloud card */}
+            <div className="bg-gray-100 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-gray-900 mb-4">More Tools</h3>
+              <div className="space-y-3">
+                <Link to="/festival-finder" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <MapPin className="h-4 w-4" />
+                  <span className="text-sm">Film Festivals in Your Area</span>
+                </Link>
+                <Link to="/library" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <FileText className="h-4 w-4" />
+                  <span className="text-sm">Docs Library</span>
+                </Link>
+                <Link to="/consulting" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <MessageCircle className="h-4 w-4" />
+                  <span className="text-sm">Concierge / Consulting</span>
+                </Link>
+                <Link to="/calendar" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <Calendar className="h-4 w-4" />
+                  <span className="text-sm">Production Calendar</span>
+                </Link>
               </div>
-            </Link>
-
-            {/* Secondary tools - varied compact cards */}
-            <Link to="/festival-finder" className="col-span-2 lg:col-span-2 row-span-1">
-              <div className="h-full bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 group cursor-pointer flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-500/15 to-red-600/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MapPin className="h-6 w-6 text-red-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-gray-900">Film Festivals</h3>
-                  <p className="text-xs text-gray-500 truncate">Find festivals by ZIP code</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-red-500 transition-colors" />
+              
+              <h3 className="text-xl font-bold text-gray-900 mt-6 mb-4">Resources</h3>
+              <div className="space-y-3">
+                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <GraduationCap className="h-4 w-4" />
+                  <span className="text-sm">Feifer Film Academy</span>
+                </a>
+                <Link to="/contract-assistant" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
+                  <Scale className="h-4 w-4" />
+                  <span className="text-sm">SAG-AFTRA Contract Assistant</span>
+                </Link>
               </div>
-            </Link>
-
-            <Link to="/library" className="col-span-2 lg:col-span-2 row-span-1">
-              <div className="h-full bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-amber-500/20 to-amber-600/40 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <FileText className="h-6 w-6 text-amber-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-white">Docs Library</h3>
-                  <p className="text-xs text-gray-400 truncate">Forms, templates & checklists</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-gray-500 group-hover:text-amber-400 transition-colors" />
-              </div>
-            </Link>
-
-            <Link to="/consulting" className="col-span-2 lg:col-span-2 row-span-1">
-              <div className="h-full bg-white rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 group cursor-pointer flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-pink-500/15 to-pink-600/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <MessageCircle className="h-6 w-6 text-pink-500" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-gray-900">Concierge</h3>
-                  <p className="text-xs text-gray-500 truncate">Producer desk access</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-pink-500 transition-colors" />
-              </div>
-            </Link>
-
-            <Link to="/calendar" className="col-span-2 lg:col-span-2 row-span-1">
-              <div className="h-full bg-gradient-to-r from-gray-900 to-gray-800 rounded-xl p-4 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-green-500/20 to-green-600/40 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Calendar className="h-6 w-6 text-green-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-sm font-bold text-white">Production Calendar</h3>
-                  <p className="text-xs text-gray-400 truncate">Schedule shoots & milestones</p>
-                </div>
-                <ChevronRight className="h-4 w-4 text-gray-500 group-hover:text-green-400 transition-colors" />
-              </div>
-            </Link>
-
-            <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="col-span-2 lg:col-span-1 row-span-1">
-              <div className="h-full bg-white rounded-xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-200 group cursor-pointer flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-yellow-500/15 to-yellow-600/30 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <GraduationCap className="h-5 w-5 text-yellow-600" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-xs font-bold text-gray-900 truncate">Film Academy</h3>
-                </div>
-                <ExternalLink className="h-3 w-3 text-gray-400 flex-shrink-0" />
-              </div>
-            </a>
-
-            <Link to="/contract-assistant" className="col-span-2 lg:col-span-1 row-span-1">
-              <div className="h-full bg-gradient-to-r from-gray-800 to-gray-700 rounded-xl p-3 shadow-lg hover:shadow-xl transition-all duration-300 group cursor-pointer flex items-center gap-2">
-                <div className="w-10 h-10 bg-gradient-to-br from-cyan-500/20 to-cyan-600/40 rounded-lg flex items-center justify-center flex-shrink-0">
-                  <Scale className="h-5 w-5 text-cyan-400" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-xs font-bold text-white truncate">Contracts</h3>
-                </div>
-                <ChevronRight className="h-3 w-3 text-gray-500 flex-shrink-0" />
-              </div>
-            </Link>
-          </div>
-
-          {/* Features Overview - Light Theme */}
-          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Sparkles className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Smart Analysis</h3>
-              <p className="text-gray-600">
-                Get insights on scenes, characters, and distribution strategies using advanced technology
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Trophy className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Curated Resources</h3>
-              <p className="text-gray-600">
-                Access vetted festivals, essential documents, and industry connections
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <MessageCircle className="h-8 w-8 text-primary" />
-              </div>
-              <h3 className="text-xl font-semibold mb-2 text-gray-900">Expert Guidance</h3>
-              <p className="text-gray-600">
-                Direct access to our producer desk for personalized consulting and support
-              </p>
             </div>
           </div>
         </div>
