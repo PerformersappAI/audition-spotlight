@@ -12,7 +12,8 @@ import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
-import heroBannerBg from "@/assets/hero-banner-bg.png";
+import heroCornerLeft from "@/assets/hero-corner-left.png";
+import heroCornerRight from "@/assets/hero-corner-right.png";
 import { 
   Video, 
   Users, 
@@ -232,24 +233,36 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* UNIFIED DARK SECTION with extended banner background */}
       <div className="relative bg-[#0E0F12]">
-        {/* Banner background that extends down and fades out gradually */}
+        {/* Left corner decoration - film reel extending down and fading out */}
         <div 
-          className="absolute inset-x-0 top-0 h-[900px] md:h-[1000px] bg-cover bg-top pointer-events-none"
+          className="absolute left-0 top-0 w-48 lg:w-72 h-[900px] md:h-[1000px] pointer-events-none"
           style={{ 
-            backgroundImage: `url(${heroBannerBg})`,
-            opacity: 0.6,
-            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)'
+            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
           }}
-        />
-        {/* Dark overlay for center focus - also fades out */}
+        >
+          <img 
+            src={heroCornerLeft} 
+            alt="" 
+            className="w-full h-auto opacity-50"
+          />
+        </div>
+        
+        {/* Right corner decoration - film equipment extending down and fading out */}
         <div 
-          className="absolute inset-x-0 top-0 h-[900px] md:h-[1000px] bg-gradient-to-r from-[#0E0F12]/40 via-[#0E0F12]/70 to-[#0E0F12]/40 pointer-events-none"
+          className="absolute right-0 top-0 w-48 lg:w-72 h-[900px] md:h-[1000px] pointer-events-none"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)'
+            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
           }}
-        />
+        >
+          <img 
+            src={heroCornerRight} 
+            alt="" 
+            className="w-full h-auto opacity-50 scale-x-[-1]"
+          />
+        </div>
+
 
         {/* TOP BANNER HEADER */}
         <div className="container mx-auto px-6 py-10 relative z-10">
