@@ -534,33 +534,45 @@ export default function ToolboxHome() {
           </div>
 
           {/* More Tools - Horizontal Bar */}
-          <div className="mt-8 bg-gray-900/50 rounded-2xl p-6 border border-gray-800">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <h3 className="text-lg font-semibold text-white">More Tools</h3>
-              <div className="flex flex-wrap items-center gap-3 md:gap-6">
-                <Link to="/festival-finder" className="flex items-center gap-2 text-gray-300 hover:text-teal-400 transition-colors">
-                  <MapPin className="h-4 w-4 text-teal-400" />
-                  <span className="text-sm">Festivals</span>
+          <div className="mt-8 bg-gray-900 rounded-2xl p-8 border border-gray-800">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <h3 className="text-xl font-bold text-white whitespace-nowrap">More Tools</h3>
+              <div className="flex flex-wrap items-center gap-4 md:gap-8">
+                <Link to="/festival-finder" className="flex items-center gap-3 text-gray-200 hover:text-teal-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center">
+                    <MapPin className="h-5 w-5 text-teal-400" />
+                  </div>
+                  <span className="text-base font-medium">Festivals</span>
                 </Link>
-                <Link to="/library" className="flex items-center gap-2 text-gray-300 hover:text-purple-400 transition-colors">
-                  <FileText className="h-4 w-4 text-purple-400" />
-                  <span className="text-sm">Docs</span>
+                <Link to="/library" className="flex items-center gap-3 text-gray-200 hover:text-purple-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                    <FileText className="h-5 w-5 text-purple-400" />
+                  </div>
+                  <span className="text-base font-medium">Docs</span>
                 </Link>
-                <Link to="/consulting" className="flex items-center gap-2 text-gray-300 hover:text-blue-400 transition-colors">
-                  <MessageCircle className="h-4 w-4 text-blue-400" />
-                  <span className="text-sm">Concierge</span>
+                <Link to="/consulting" className="flex items-center gap-3 text-gray-200 hover:text-blue-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
+                    <MessageCircle className="h-5 w-5 text-blue-400" />
+                  </div>
+                  <span className="text-base font-medium">Concierge</span>
                 </Link>
-                <Link to="/calendar" className="flex items-center gap-2 text-gray-300 hover:text-amber-400 transition-colors">
-                  <Calendar className="h-4 w-4 text-amber-400" />
-                  <span className="text-sm">Calendar</span>
+                <Link to="/calendar" className="flex items-center gap-3 text-gray-200 hover:text-amber-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">
+                    <Calendar className="h-5 w-5 text-amber-400" />
+                  </div>
+                  <span className="text-base font-medium">Calendar</span>
                 </Link>
-                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-300 hover:text-rose-400 transition-colors">
-                  <GraduationCap className="h-4 w-4 text-rose-400" />
-                  <span className="text-sm">Academy</span>
+                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-gray-200 hover:text-rose-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center">
+                    <GraduationCap className="h-5 w-5 text-rose-400" />
+                  </div>
+                  <span className="text-base font-medium">Academy</span>
                 </a>
-                <Link to="/contract-assistant" className="flex items-center gap-2 text-gray-300 hover:text-emerald-400 transition-colors">
-                  <Scale className="h-4 w-4 text-emerald-400" />
-                  <span className="text-sm">Contracts</span>
+                <Link to="/contract-assistant" className="flex items-center gap-3 text-gray-200 hover:text-emerald-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center">
+                    <Scale className="h-5 w-5 text-emerald-400" />
+                  </div>
+                  <span className="text-base font-medium">Contracts</span>
                 </Link>
               </div>
             </div>
