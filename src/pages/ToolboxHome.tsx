@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import { 
   Video, 
   Users, 
@@ -192,9 +193,28 @@ export default function ToolboxHome() {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Filmmaker Genius
-          </h1>
+          {/* Logo bookends with title */}
+          <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
+            {/* Left logo - mirrored horizontally */}
+            <img 
+              src={filmmakerGeniusLogo} 
+              alt="" 
+              className="h-12 md:h-20 w-auto transform -scale-x-100"
+            />
+            
+            {/* Title */}
+            <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+              Filmmaker Genius
+            </h1>
+            
+            {/* Right logo - normal orientation */}
+            <img 
+              src={filmmakerGeniusLogo} 
+              alt="Filmmaker Genius Logo" 
+              className="h-12 md:h-20 w-auto"
+            />
+          </div>
+          
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 italic">
             Where Genius Meets the Silver Screen
           </p>
