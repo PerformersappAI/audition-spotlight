@@ -232,21 +232,21 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* UNIFIED DARK SECTION with extended banner background */}
       <div className="relative bg-[#0E0F12]">
-        {/* Banner background that extends down and fades out */}
+        {/* Banner background that extends down and fades out gradually */}
         <div 
-          className="absolute inset-x-0 top-0 h-[700px] md:h-[800px] bg-cover bg-top opacity-40 pointer-events-none"
+          className="absolute inset-x-0 top-0 h-[900px] md:h-[1000px] bg-cover bg-top opacity-50 pointer-events-none"
           style={{ 
             backgroundImage: `url(${heroBannerBg})`,
-            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)'
           }}
         />
         {/* Dark overlay for center focus - also fades out */}
         <div 
-          className="absolute inset-x-0 top-0 h-[700px] md:h-[800px] bg-gradient-to-r from-[#0E0F12]/60 via-[#0E0F12]/90 to-[#0E0F12]/60 pointer-events-none"
+          className="absolute inset-x-0 top-0 h-[900px] md:h-[1000px] bg-gradient-to-r from-[#0E0F12]/50 via-[#0E0F12]/80 to-[#0E0F12]/50 pointer-events-none"
           style={{ 
-            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+            maskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 50%, transparent 100%)'
           }}
         />
 
