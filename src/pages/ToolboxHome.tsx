@@ -269,12 +269,13 @@ export default function ToolboxHome() {
               className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.7) 50%, hsl(var(--primary)) 100%)',
+                background: 'linear-gradient(180deg, #E8E8E8 0%, #FFFFFF 15%, #A8A8A8 30%, #D4D4D4 45%, #888888 60%, #C0C0C0 75%, #E0E0E0 90%, #B0B0B0 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: '0 0 80px hsl(var(--primary)/0.3)',
-                letterSpacing: '-0.02em'
+                textShadow: '0 2px 4px rgba(0,0,0,0.5), 0 0 40px rgba(255,255,255,0.1)',
+                letterSpacing: '-0.02em',
+                filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.8))'
               }}
             >
               Filmmaker Genius
