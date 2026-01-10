@@ -18,8 +18,8 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Don't show layout on auth pages or homepage for non-logged-in users
-  const hideLayout = location.pathname === '/auth' || location.pathname === '/admin-login' || (!user && location.pathname === '/');
+  // Don't show layout on auth pages or homepage (homepage has its own nav)
+  const hideLayout = location.pathname === '/auth' || location.pathname === '/admin-login' || location.pathname === '/';
 
   if (hideLayout) {
     return <>{children}</>;

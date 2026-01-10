@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useCredits } from "@/hooks/useCredits";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
 import toolPitchDeck from "@/assets/tool-pitch-deck.jpg";
@@ -41,7 +42,8 @@ import {
   Calendar,
   Megaphone,
   UserPlus,
-  ArrowRight
+  ArrowRight,
+  Zap
 } from "lucide-react";
 
 interface Module {
@@ -59,6 +61,7 @@ interface Module {
 
 export default function ToolboxHome() {
   const { user, userProfile, signOut } = useAuth();
+  const { credits } = useCredits();
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -452,29 +455,37 @@ export default function ToolboxHome() {
             
             {/* Login/User section */}
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger className="flex items-center gap-2 ml-4">
-                  <div className="w-10 h-10 rounded-full bg-gray-700 border-2 border-amber-500 flex items-center justify-center overflow-hidden">
-                    <User className="h-5 w-5 text-gray-300" />
-                  </div>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
-                  <div className="px-3 py-2 border-b border-gray-700">
-                    <div className="text-sm font-medium text-white">{userProfile?.first_name || 'User'}</div>
-                    <div className="text-xs text-gray-400">{user.email}</div>
-                  </div>
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard" className="cursor-pointer text-gray-200 hover:text-white">Dashboard</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/training/my-learning" className="cursor-pointer text-gray-200 hover:text-white">My Learning</Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-gray-700" />
-                  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-400 hover:text-red-300">
-                    Sign out
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <div className="flex items-center gap-3 ml-4">
+                {/* Credits Display */}
+                <Link to="/membership" className="flex items-center gap-1.5 text-amber-500 hover:text-amber-400 transition-colors">
+                  <Zap className="h-4 w-4" />
+                  <span className="font-medium">{credits?.available_credits || 0} Credits</span>
+                </Link>
+                
+                <DropdownMenu>
+                  <DropdownMenuTrigger className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-gray-700 border-2 border-amber-500 flex items-center justify-center overflow-hidden">
+                      <User className="h-5 w-5 text-gray-300" />
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
+                    <div className="px-3 py-2 border-b border-gray-700">
+                      <div className="text-sm font-medium text-white">{userProfile?.first_name || 'User'}</div>
+                      <div className="text-xs text-gray-400">{user.email}</div>
+                    </div>
+                    <DropdownMenuItem asChild>
+                      <Link to="/dashboard" className="cursor-pointer text-gray-200 hover:text-white">Dashboard</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/training/my-learning" className="cursor-pointer text-gray-200 hover:text-white">My Learning</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator className="bg-gray-700" />
+                    <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-400 hover:text-red-300">
+                      Sign out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : (
               <Link to="/auth">
                 <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold ml-4">
