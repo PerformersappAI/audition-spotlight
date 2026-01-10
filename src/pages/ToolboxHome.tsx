@@ -263,23 +263,22 @@ export default function ToolboxHome() {
 
         {/* TOP BANNER HEADER */}
         <div className="container mx-auto px-6 py-10 relative z-10">
-          {/* Header - Big title with logo bookends */}
+          {/* Header - Stylized title */}
           <div className="text-center">
-            <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
-              <img 
-                src={filmmakerGeniusLogo} 
-                alt="" 
-                className="h-12 md:h-20 w-auto -rotate-90"
-              />
-              <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Filmmaker Genius
-              </h1>
-              <img 
-                src={filmmakerGeniusLogo} 
-                alt="Filmmaker Genius Logo" 
-                className="h-12 md:h-20 w-auto rotate-90"
-              />
-            </div>
+            <h1 
+              className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight mb-4"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary)/0.7) 50%, hsl(var(--primary)) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                textShadow: '0 0 80px hsl(var(--primary)/0.3)',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Filmmaker Genius
+            </h1>
             <p className="text-xl md:text-2xl text-gray-400 italic">
               Where Genius Meets the Silver Screen
             </p>
