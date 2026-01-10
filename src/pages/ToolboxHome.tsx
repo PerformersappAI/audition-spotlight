@@ -266,7 +266,7 @@ export default function ToolboxHome() {
           {/* Header - Stylized title */}
           <div className="text-center">
             <h1 
-              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
+              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 relative inline-block"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
@@ -277,6 +277,42 @@ export default function ToolboxHome() {
               }}
             >
               Filmmaker Genius
+              {/* Lens flare on the S */}
+              <span 
+                className="absolute pointer-events-none"
+                style={{
+                  right: '0.5%',
+                  top: '15%',
+                  width: '20px',
+                  height: '20px',
+                  background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, transparent 60%)',
+                  filter: 'blur(1px)',
+                }}
+              />
+              {/* Horizontal flare streak */}
+              <span 
+                className="absolute pointer-events-none"
+                style={{
+                  right: '-1%',
+                  top: '22%',
+                  width: '40px',
+                  height: '4px',
+                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.6) 70%, transparent 100%)',
+                  filter: 'blur(1px)',
+                }}
+              />
+              {/* Vertical flare streak */}
+              <span 
+                className="absolute pointer-events-none"
+                style={{
+                  right: '1.8%',
+                  top: '5%',
+                  width: '3px',
+                  height: '35px',
+                  background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.5) 70%, transparent 100%)',
+                  filter: 'blur(1px)',
+                }}
+              />
             </h1>
             <p className="text-xl md:text-2xl text-gray-400 italic">
               Where Genius Meets the Silver Screen
