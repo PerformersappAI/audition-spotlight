@@ -266,7 +266,7 @@ export default function ToolboxHome() {
           {/* Header - Stylized title */}
           <div className="text-center">
             <h1 
-              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4 relative inline-block"
+              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
               style={{
                 fontFamily: "'Playfair Display', serif",
                 background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
@@ -277,30 +277,6 @@ export default function ToolboxHome() {
               }}
             >
               Filmmaker Genius
-              {/* Starburst at tip of S */}
-              <svg 
-                className="absolute pointer-events-none"
-                style={{
-                  right: '-2%',
-                  top: '-8%',
-                  width: '24px',
-                  height: '24px',
-                }}
-                viewBox="0 0 24 24"
-              >
-                {/* Center glow */}
-                <circle cx="12" cy="12" r="2" fill="white" opacity="0.9" />
-                {/* Thin rays */}
-                <line x1="12" y1="0" x2="12" y2="6" stroke="white" strokeWidth="0.5" opacity="0.8" />
-                <line x1="12" y1="18" x2="12" y2="24" stroke="white" strokeWidth="0.5" opacity="0.8" />
-                <line x1="0" y1="12" x2="6" y2="12" stroke="white" strokeWidth="0.5" opacity="0.8" />
-                <line x1="18" y1="12" x2="24" y2="12" stroke="white" strokeWidth="0.5" opacity="0.8" />
-                {/* Diagonal rays */}
-                <line x1="3" y1="3" x2="7" y2="7" stroke="white" strokeWidth="0.3" opacity="0.6" />
-                <line x1="17" y1="17" x2="21" y2="21" stroke="white" strokeWidth="0.3" opacity="0.6" />
-                <line x1="21" y1="3" x2="17" y2="7" stroke="white" strokeWidth="0.3" opacity="0.6" />
-                <line x1="3" y1="21" x2="7" y2="17" stroke="white" strokeWidth="0.3" opacity="0.6" />
-              </svg>
             </h1>
             <p className="text-xl md:text-2xl text-gray-400 italic">
               Where Genius Meets the Silver Screen
