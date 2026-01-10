@@ -353,8 +353,8 @@ export default function ToolboxHome() {
         </div>
       </div>
 
-      {/* WHITE SECTION - Tools and Features */}
-      <div className="bg-white">
+      {/* LIGHT GRAY SECTION - Tools and Features */}
+      <div className="bg-gray-100">
         <div className="container mx-auto px-6 py-16">
           {/* Divider Text */}
           <div className="text-center mb-12">
@@ -370,69 +370,69 @@ export default function ToolboxHome() {
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[140px]">
             {/* Script Analysis - Large */}
             <Link to="/script-analysis" className="col-span-2 row-span-2">
-              <div className="h-full bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer flex flex-col">
+              <div className="h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
                 <Badge className="w-fit mb-3 bg-primary/10 text-primary border-0">Smart Tool</Badge>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Script Analysis</h3>
                 <p className="text-gray-600 text-sm mb-4">Smart script analysis for character development and emotional beats</p>
-                <div className="flex-1 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex items-center justify-center group-hover:from-primary/10 group-hover:to-primary/20 transition-all">
-                  <Sparkles className="h-16 w-16 text-primary/50 group-hover:text-primary/70 transition-colors" />
+                <div className="flex-1 bg-gradient-to-br from-primary/10 to-primary/20 rounded-xl flex items-center justify-center group-hover:from-primary/15 group-hover:to-primary/30 transition-all">
+                  <Sparkles className="h-16 w-16 text-primary/60 group-hover:text-primary transition-colors" />
                 </div>
               </div>
             </Link>
 
             {/* Pitch Deck - Large */}
             <Link to="/pitch-deck" className="col-span-2 row-span-2">
-              <div className="h-full bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-blue-100 group cursor-pointer flex flex-col">
+              <div className="h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
                 <Badge className="w-fit mb-3 bg-blue-500/10 text-blue-600 border-0">Smart Tool</Badge>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Pitch Deck Maker</h3>
                 <p className="text-gray-600 text-sm mb-4">Create professional Film & TV pitch decks with smart content generation</p>
-                <div className="flex-1 bg-gradient-to-br from-blue-500/5 to-blue-500/10 rounded-xl flex items-center justify-center group-hover:from-blue-500/10 group-hover:to-blue-500/20 transition-all">
-                  <Presentation className="h-16 w-16 text-blue-500/50 group-hover:text-blue-500/70 transition-colors" />
+                <div className="flex-1 bg-gradient-to-br from-blue-500/10 to-blue-500/20 rounded-xl flex items-center justify-center group-hover:from-blue-500/15 group-hover:to-blue-500/30 transition-all">
+                  <Presentation className="h-16 w-16 text-blue-500/60 group-hover:text-blue-500 transition-colors" />
                 </div>
               </div>
             </Link>
 
             {/* Storyboarding - Tall */}
             <Link to="/storyboarding" className="col-span-2 row-span-3">
-              <div className="h-full bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-purple-100 group cursor-pointer flex flex-col">
+              <div className="h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
                 <Badge className="w-fit mb-3 bg-purple-500/10 text-purple-600 border-0">Visual</Badge>
                 <h3 className="text-2xl font-bold text-gray-900 mb-2">Storyboarding</h3>
                 <p className="text-gray-600 text-sm mb-4">Create visual storyboards with automated shot breakdowns and frames</p>
-                <div className="flex-1 bg-gradient-to-br from-purple-500/5 to-purple-500/10 rounded-xl flex items-center justify-center group-hover:from-purple-500/10 group-hover:to-purple-500/20 transition-all">
-                  <Film className="h-20 w-20 text-purple-500/50 group-hover:text-purple-500/70 transition-colors" />
+                <div className="flex-1 bg-gradient-to-br from-purple-500/10 to-purple-500/20 rounded-xl flex items-center justify-center group-hover:from-purple-500/15 group-hover:to-purple-500/30 transition-all">
+                  <Film className="h-20 w-20 text-purple-500/60 group-hover:text-purple-500 transition-colors" />
                 </div>
               </div>
             </Link>
 
             {/* Call Sheet Generator */}
             <Link to="/call-sheet" className="col-span-2 row-span-2">
-              <div className="h-full bg-gradient-to-br from-teal-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-teal-100 group cursor-pointer flex flex-col">
+              <div className="h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
                 <Badge className="w-fit mb-3 bg-teal-500/10 text-teal-600 border-0">Smart Tool</Badge>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Call Sheet Generator</h3>
                 <p className="text-gray-600 text-sm mb-3">Professional production call sheets with OCR support</p>
-                <div className="flex-1 bg-gradient-to-br from-teal-500/5 to-teal-500/10 rounded-xl flex items-center justify-center group-hover:from-teal-500/10 group-hover:to-teal-500/20 transition-all">
-                  <Clapperboard className="h-12 w-12 text-teal-500/50 group-hover:text-teal-500/70 transition-colors" />
+                <div className="flex-1 bg-gradient-to-br from-teal-500/10 to-teal-500/20 rounded-xl flex items-center justify-center group-hover:from-teal-500/15 group-hover:to-teal-500/30 transition-all">
+                  <Clapperboard className="h-12 w-12 text-teal-500/60 group-hover:text-teal-500 transition-colors" />
                 </div>
               </div>
             </Link>
 
             {/* Create Auditions */}
             <Link to="/create-audition" className="col-span-2 row-span-2">
-              <div className="h-full bg-gradient-to-br from-orange-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-orange-100 group cursor-pointer flex flex-col">
+              <div className="h-full bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex flex-col">
                 <Badge className="w-fit mb-3 bg-orange-500/10 text-orange-600 border-0">Core Tool</Badge>
                 <h3 className="text-xl font-bold text-gray-900 mb-2">Create Auditions</h3>
                 <p className="text-gray-600 text-sm mb-3">Create and manage audition opportunities</p>
-                <div className="flex-1 bg-gradient-to-br from-orange-500/5 to-orange-500/10 rounded-xl flex items-center justify-center group-hover:from-orange-500/10 group-hover:to-orange-500/20 transition-all">
-                  <Megaphone className="h-12 w-12 text-orange-500/50 group-hover:text-orange-500/70 transition-colors" />
+                <div className="flex-1 bg-gradient-to-br from-orange-500/10 to-orange-500/20 rounded-xl flex items-center justify-center group-hover:from-orange-500/15 group-hover:to-orange-500/30 transition-all">
+                  <Megaphone className="h-12 w-12 text-orange-500/60 group-hover:text-orange-500 transition-colors" />
                 </div>
               </div>
             </Link>
 
             {/* Crew Hire */}
             <Link to="/crew-hire" className="col-span-2 row-span-1">
-              <div className="h-full bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-4 hover:shadow-xl transition-all duration-300 border border-indigo-100 group cursor-pointer flex items-center gap-4">
-                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500/10 to-indigo-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-indigo-500/20 group-hover:to-indigo-500/30 transition-all">
-                  <UserPlus className="h-7 w-7 text-indigo-500/70 group-hover:text-indigo-600 transition-colors" />
+              <div className="h-full bg-white rounded-2xl p-4 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-200 group cursor-pointer flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500/15 to-indigo-500/25 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-indigo-500/25 group-hover:to-indigo-500/40 transition-all">
+                  <UserPlus className="h-7 w-7 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className="text-lg font-bold text-gray-900">Crew Hire</h3>
@@ -446,7 +446,7 @@ export default function ToolboxHome() {
             {secondaryModules.map((module) => {
               const Icon = module.icon;
               const content = (
-                <div className="h-full bg-white/80 rounded-xl p-4 hover:shadow-lg transition-all duration-300 border border-gray-100 group cursor-pointer flex items-center gap-3">
+                <div className="h-full bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 group cursor-pointer flex items-center gap-3">
                   <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-all">
                     <Icon className="h-5 w-5 text-gray-600 group-hover:text-primary transition-colors" />
                   </div>
