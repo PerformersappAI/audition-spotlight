@@ -373,70 +373,82 @@ export default function ToolboxHome() {
           {/* Adobe-Style Bento Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             
-            {/* Script Analysis - Large white card with product image */}
+            {/* Script Analysis - Large card with black top, colorful bottom */}
             <Link to="/script-analysis" className="lg:col-span-2 group">
-              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Script Analysis</p>
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2">
-                  Analyze your screenplay.
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Character development, emotional beats, and scene breakdowns in one place.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-6">
-                  Learn more
-                </button>
-                <div className="relative rounded-xl overflow-hidden">
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                {/* Black text section */}
+                <div className="p-6 pb-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Script Analysis</p>
+                  <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                    Analyze your screenplay.
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Character development, emotional beats, and scene breakdowns.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Learn more
+                  </span>
+                </div>
+                {/* Colorful image section */}
+                <div className="flex-1 min-h-[200px] relative overflow-hidden">
                   <img 
                     src={toolScriptAnalysis} 
                     alt="Script Analysis Tool" 
-                    className="w-full h-auto object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
             </Link>
 
-            {/* Pitch Deck - Tall white card with image */}
+            {/* Pitch Deck - Tall card with black top, colorful bottom */}
             <Link to="/pitch-deck" className="row-span-2 group">
-              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden flex flex-col">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Pitch Deck Maker</p>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Professional pitch decks.
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Create with smart content generation and poster creation.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-6 w-fit">
-                  Learn more
-                </button>
-                <div className="flex-1 relative rounded-xl overflow-hidden min-h-[300px]">
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                {/* Black text section */}
+                <div className="p-6 pb-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Pitch Deck Maker</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Create professional pitch decks.
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Smart content generation and poster creation.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Get started
+                  </span>
+                </div>
+                {/* Colorful image section */}
+                <div className="flex-1 min-h-[300px] relative overflow-hidden">
                   <img 
                     src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
-                    className="w-full h-full object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
             </Link>
 
-            {/* Storyboarding - White card with storyboard image */}
+            {/* Storyboarding - Card with black top, colorful bottom */}
             <Link to="/storyboarding" className="lg:col-span-2 group">
-              <div className="h-full bg-white rounded-2xl p-6 hover:shadow-2xl transition-all duration-300 cursor-pointer overflow-hidden">
-                <p className="text-xs font-semibold text-purple-600 uppercase tracking-wide mb-3">Storyboarding</p>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                  Visual shot breakdowns.
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Create storyboards with automated frames and export options.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-gray-900 border border-gray-900 rounded-full px-5 py-2 hover:bg-gray-900 hover:text-white transition-colors mb-4">
-                  Learn more
-                </button>
-                <div className="relative rounded-xl overflow-hidden">
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                {/* Black text section */}
+                <div className="p-6 pb-4">
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Storyboarding</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">
+                    Visual shot breakdowns.
+                  </h3>
+                  <p className="text-gray-400 mb-4">
+                    Create storyboards with automated frames and export options.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Learn more
+                  </span>
+                </div>
+                {/* Colorful image section */}
+                <div className="flex-1 min-h-[180px] relative overflow-hidden">
                   <img 
                     src={toolStoryboard} 
                     alt="Storyboarding Tool" 
-                    className="w-full h-auto object-cover rounded-xl group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
