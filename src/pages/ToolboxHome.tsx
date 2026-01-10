@@ -230,37 +230,34 @@ export default function ToolboxHome() {
   return (
     <div className="min-h-screen">
       {/* DARK HERO SECTION */}
-      <div className="bg-[#0E0F12]">
-        <div className="container mx-auto px-6 py-12">
-          {/* Header */}
-          <div className="text-center mb-10">
-            {/* Logo bookends with title */}
-            <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
-              {/* Left logo - flat side faces right toward text */}
+      <div className="bg-[#0E0F12] relative overflow-hidden">
+        {/* Subtle top banner - Adobe style */}
+        <div className="w-full bg-gradient-to-r from-transparent via-gray-800/30 to-transparent py-4 border-b border-gray-800/50">
+          <div className="container mx-auto px-6">
+            <div className="flex items-center justify-center gap-4">
               <img 
                 src={filmmakerGeniusLogo} 
                 alt="" 
-                className="h-12 md:h-20 w-auto -rotate-90"
+                className="h-8 md:h-10 w-auto opacity-80"
               />
-              
-              {/* Title */}
-              <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Filmmaker Genius
-              </h1>
-              
-              {/* Right logo - flat side faces left toward text */}
+              <div className="text-center">
+                <h1 className="text-xl md:text-2xl font-bold text-white/90 tracking-wide">
+                  Filmmaker Genius
+                </h1>
+                <p className="text-xs md:text-sm text-gray-400 italic">
+                  Where Genius Meets the Silver Screen
+                </p>
+              </div>
               <img 
                 src={filmmakerGeniusLogo} 
-                alt="Filmmaker Genius Logo" 
-                className="h-12 md:h-20 w-auto rotate-90"
+                alt="" 
+                className="h-8 md:h-10 w-auto opacity-80"
               />
             </div>
-            
-            <p className="text-xl md:text-2xl text-gray-400 mb-8 italic">
-              Where Genius Meets the Silver Screen
-            </p>
           </div>
+        </div>
 
+        <div className="container mx-auto px-6 py-12">
           {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
             {/* Left side - CTA Text */}
@@ -300,10 +297,10 @@ export default function ToolboxHome() {
             )}
           </div>
 
-          {/* Filmmaking Journey Phases - Numbers with text overlay */}
+          {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
             <Link to="/toolbox/pre-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">1</span>
+              <span className="text-[120px] md:text-[160px] font-black text-blue-500/50 leading-none select-none group-hover:text-blue-400/70 transition-colors">1</span>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Pre Production</h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Screenwriting, Storyboarding</p>
@@ -311,7 +308,7 @@ export default function ToolboxHome() {
             </Link>
             
             <Link to="/toolbox/production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">2</span>
+              <span className="text-[120px] md:text-[160px] font-black text-teal-500/50 leading-none select-none group-hover:text-teal-400/70 transition-colors">2</span>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Production</h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Cinematography</p>
@@ -319,7 +316,7 @@ export default function ToolboxHome() {
             </Link>
             
             <Link to="/toolbox/post-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">3</span>
+              <span className="text-[120px] md:text-[160px] font-black text-purple-500/50 leading-none select-none group-hover:text-purple-400/70 transition-colors">3</span>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Post Production</h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Editing</p>
@@ -327,7 +324,7 @@ export default function ToolboxHome() {
             </Link>
             
             <Link to="/toolbox/film-release" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">4</span>
+              <span className="text-[120px] md:text-[160px] font-black text-amber-500/50 leading-none select-none group-hover:text-amber-400/70 transition-colors">4</span>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Film Release</h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Marketing, Festivals</p>
@@ -335,7 +332,7 @@ export default function ToolboxHome() {
             </Link>
             
             <Link to="/toolbox/distribution" className="col-span-2 md:col-span-1 group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">5</span>
+              <span className="text-[120px] md:text-[160px] font-black text-rose-500/50 leading-none select-none group-hover:text-rose-400/70 transition-colors">5</span>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Distribution</h3>
                 <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Monetization</p>
