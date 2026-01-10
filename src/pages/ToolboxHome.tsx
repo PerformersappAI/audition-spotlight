@@ -381,10 +381,11 @@ export default function ToolboxHome() {
         </div>
       </div>
 
-      {/* Navigation Bar - Dark with gold accents */}
-      <div className="bg-[#1a1a1a] border-y border-gray-800">
+      {/* BLACK SECTION - Adobe Style Tools */}
+      <div className="bg-black">
         <div className="container mx-auto px-6">
-          <nav className="flex items-center justify-center py-4 gap-8 flex-wrap">
+          {/* Navigation Bar - integrated into black section */}
+          <nav className="flex items-center justify-center py-6 gap-8 flex-wrap">
             <Link
               to="/"
               className="text-amber-500 hover:text-amber-400 font-medium transition-colors"
@@ -483,11 +484,8 @@ export default function ToolboxHome() {
             )}
           </nav>
         </div>
-      </div>
-
-      {/* BLACK SECTION - Adobe Style Tools */}
-      <div className="bg-black">
-        <div className="container mx-auto px-6 py-16">
+        
+        <div className="container mx-auto px-6 pb-16">
           {/* Toolbox Header Card - with dramatic image */}
           <div className="relative rounded-2xl overflow-hidden mb-10">
             <img 
