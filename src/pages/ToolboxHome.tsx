@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Video, 
   Users, 
@@ -30,6 +31,38 @@ interface Module {
 }
 
 export default function ToolboxHome() {
+  const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchYoutubeUrl = async () => {
+      const { data } = await supabase
+        .from('homepage_settings')
+        .select('setting_value')
+        .eq('setting_key', 'homepage_youtube_url')
+        .maybeSingle();
+      
+      if (data?.setting_value) {
+        setYoutubeUrl(data.setting_value);
+      }
+    };
+    fetchYoutubeUrl();
+  }, []);
+
+  // Extract YouTube embed URL
+  const getYoutubeEmbedUrl = (url: string) => {
+    const patterns = [
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/,
+      /^([a-zA-Z0-9_-]{11})$/
+    ];
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    return null;
+  };
+
+  const embedUrl = youtubeUrl ? getYoutubeEmbedUrl(youtubeUrl) : null;
+
   const [modules] = useState<Module[]>([
     {
       id: "pitch_deck_maker",
@@ -162,6 +195,22 @@ export default function ToolboxHome() {
           <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
             Filmmaker Toolbox
           </h1>
+
+          {/* Admin-managed YouTube Video */}
+          {embedUrl && (
+            <div className="flex justify-center mb-8">
+              <div className="w-full max-w-sm rounded-lg overflow-hidden border bg-muted shadow-md" style={{ height: '120px' }}>
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Filmmaker Toolbox Introduction"
+                />
+              </div>
+            </div>
+          )}
+
           <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
             Need help with the process of filmmaking from start to distribution, click these boxes.
           </p>

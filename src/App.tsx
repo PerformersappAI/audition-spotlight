@@ -37,6 +37,7 @@ import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
 import ToolboxHome from "./pages/ToolboxHome";
+import AdminHomepageSettings from "./pages/AdminHomepageSettings";
 import PreProductionPhase from "./pages/PreProductionPhase";
 import ProductionPhase from "./pages/ProductionPhase";
 import PostProductionPhase from "./pages/PostProductionPhase";
@@ -96,6 +97,7 @@ const AppContent = () => (
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
+      <Route path="/admin/homepage" element={<AdminHomepageSettings />} />
       <Route path="/toolbox" element={<ToolboxHome />} />
       <Route path="/toolbox/pre-production" element={<PreProductionPhase />} />
       <Route path="/toolbox/production" element={<ProductionPhase />} />
