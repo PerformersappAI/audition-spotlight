@@ -195,11 +195,11 @@ export default function ToolboxHome() {
         <div className="text-center mb-8">
           {/* Logo bookends with title */}
           <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
-            {/* Left logo - rotated so flat side faces right toward text */}
+            {/* Left logo - flat side faces right toward text */}
             <img 
               src={filmmakerGeniusLogo} 
               alt="" 
-              className="h-12 md:h-20 w-auto rotate-90"
+              className="h-12 md:h-20 w-auto -rotate-90"
             />
             
             {/* Title */}
@@ -207,11 +207,11 @@ export default function ToolboxHome() {
               Filmmaker Genius
             </h1>
             
-            {/* Right logo - rotated so flat side faces left toward text */}
+            {/* Right logo - flat side faces left toward text */}
             <img 
               src={filmmakerGeniusLogo} 
               alt="Filmmaker Genius Logo" 
-              className="h-12 md:h-20 w-auto -rotate-90"
+              className="h-12 md:h-20 w-auto rotate-90"
             />
           </div>
           
