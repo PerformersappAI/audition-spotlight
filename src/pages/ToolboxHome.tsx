@@ -230,16 +230,27 @@ export default function ToolboxHome() {
 
   return (
     <div className="min-h-screen">
-      {/* TOP BANNER HEADER - with integrated film graphics */}
-      <div className="relative overflow-hidden">
-        {/* Banner background with film elements on edges - faded */}
+      {/* UNIFIED DARK SECTION with extended banner background */}
+      <div className="relative bg-[#0E0F12]">
+        {/* Banner background that extends down and fades out */}
         <div 
-          className="absolute inset-0 bg-cover bg-center opacity-40"
-          style={{ backgroundImage: `url(${heroBannerBg})` }}
+          className="absolute inset-x-0 top-0 h-[700px] md:h-[800px] bg-cover bg-top opacity-40 pointer-events-none"
+          style={{ 
+            backgroundImage: `url(${heroBannerBg})`,
+            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+          }}
         />
-        {/* Dark overlay for center focus */}
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0E0F12]/60 via-[#0E0F12]/90 to-[#0E0F12]/60" />
+        {/* Dark overlay for center focus - also fades out */}
+        <div 
+          className="absolute inset-x-0 top-0 h-[700px] md:h-[800px] bg-gradient-to-r from-[#0E0F12]/60 via-[#0E0F12]/90 to-[#0E0F12]/60 pointer-events-none"
+          style={{ 
+            maskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to bottom, black 0%, black 40%, transparent 100%)'
+          }}
+        />
 
+        {/* TOP BANNER HEADER */}
         <div className="container mx-auto px-6 py-10 relative z-10">
           {/* Header - Big title with logo bookends */}
           <div className="text-center">
@@ -263,11 +274,9 @@ export default function ToolboxHome() {
             </p>
           </div>
         </div>
-      </div>
 
-      {/* DARK HERO CONTENT SECTION - below banner */}
-      <div className="bg-[#0E0F12]">
-        <div className="container mx-auto px-6 py-10">
+        {/* HERO CONTENT SECTION - content flows over fading background */}
+        <div className="container mx-auto px-6 py-10 relative z-10">
           {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
             {/* Left side - CTA Text */}
