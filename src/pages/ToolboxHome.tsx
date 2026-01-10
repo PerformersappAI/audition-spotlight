@@ -277,42 +277,30 @@ export default function ToolboxHome() {
               }}
             >
               Filmmaker Genius
-              {/* Lens flare on the S */}
-              <span 
+              {/* Starburst at tip of S */}
+              <svg 
                 className="absolute pointer-events-none"
                 style={{
-                  right: '0.5%',
-                  top: '15%',
-                  width: '20px',
-                  height: '20px',
-                  background: 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.4) 20%, transparent 60%)',
-                  filter: 'blur(1px)',
+                  right: '-2%',
+                  top: '-8%',
+                  width: '24px',
+                  height: '24px',
                 }}
-              />
-              {/* Horizontal flare streak */}
-              <span 
-                className="absolute pointer-events-none"
-                style={{
-                  right: '-1%',
-                  top: '22%',
-                  width: '40px',
-                  height: '4px',
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.6) 30%, rgba(255,255,255,0.8) 50%, rgba(255,255,255,0.6) 70%, transparent 100%)',
-                  filter: 'blur(1px)',
-                }}
-              />
-              {/* Vertical flare streak */}
-              <span 
-                className="absolute pointer-events-none"
-                style={{
-                  right: '1.8%',
-                  top: '5%',
-                  width: '3px',
-                  height: '35px',
-                  background: 'linear-gradient(180deg, transparent 0%, rgba(255,255,255,0.5) 30%, rgba(255,255,255,0.7) 50%, rgba(255,255,255,0.5) 70%, transparent 100%)',
-                  filter: 'blur(1px)',
-                }}
-              />
+                viewBox="0 0 24 24"
+              >
+                {/* Center glow */}
+                <circle cx="12" cy="12" r="2" fill="white" opacity="0.9" />
+                {/* Thin rays */}
+                <line x1="12" y1="0" x2="12" y2="6" stroke="white" strokeWidth="0.5" opacity="0.8" />
+                <line x1="12" y1="18" x2="12" y2="24" stroke="white" strokeWidth="0.5" opacity="0.8" />
+                <line x1="0" y1="12" x2="6" y2="12" stroke="white" strokeWidth="0.5" opacity="0.8" />
+                <line x1="18" y1="12" x2="24" y2="12" stroke="white" strokeWidth="0.5" opacity="0.8" />
+                {/* Diagonal rays */}
+                <line x1="3" y1="3" x2="7" y2="7" stroke="white" strokeWidth="0.3" opacity="0.6" />
+                <line x1="17" y1="17" x2="21" y2="21" stroke="white" strokeWidth="0.3" opacity="0.6" />
+                <line x1="21" y1="3" x2="17" y2="7" stroke="white" strokeWidth="0.3" opacity="0.6" />
+                <line x1="3" y1="21" x2="7" y2="17" stroke="white" strokeWidth="0.3" opacity="0.6" />
+              </svg>
             </h1>
             <p className="text-xl md:text-2xl text-gray-400 italic">
               Where Genius Meets the Silver Screen
