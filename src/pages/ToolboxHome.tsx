@@ -17,7 +17,12 @@ import {
   GraduationCap,
   Scale,
   ExternalLink,
-  Presentation
+  Presentation,
+  Clapperboard,
+  Film,
+  Calendar,
+  Megaphone,
+  UserPlus
 } from "lucide-react";
 
 interface Module {
@@ -29,6 +34,8 @@ interface Module {
   badge: string;
   route?: string;
   externalUrl?: string;
+  priority?: boolean;
+  size?: "large" | "tall" | "small";
 }
 
 export default function ToolboxHome() {
@@ -64,16 +71,8 @@ export default function ToolboxHome() {
 
   const embedUrl = youtubeUrl ? getYoutubeEmbedUrl(youtubeUrl) : null;
 
-  const [modules] = useState<Module[]>([
-    {
-      id: "pitch_deck_maker",
-      name: "Pitch Deck Maker",
-      description: "Create professional Film & TV pitch decks with smart content generation",
-      icon: Presentation,
-      status: "active",
-      badge: "Smart Tool",
-      route: "/pitch-deck"
-    },
+  // Priority tools - displayed as large cards
+  const priorityModules: Module[] = [
     {
       id: "script_analysis",
       name: "Script Analysis",
@@ -81,99 +80,130 @@ export default function ToolboxHome() {
       icon: Sparkles,
       status: "active",
       badge: "Smart Tool",
-      route: "/script-analysis"
+      route: "/script-analysis",
+      priority: true,
+      size: "large"
+    },
+    {
+      id: "pitch_deck_maker",
+      name: "Pitch Deck Maker",
+      description: "Create professional Film & TV pitch decks with smart content generation",
+      icon: Presentation,
+      status: "active",
+      badge: "Smart Tool",
+      route: "/pitch-deck",
+      priority: true,
+      size: "large"
     },
     {
       id: "storyboarding",
       name: "Storyboarding",
       description: "Create visual storyboards with automated shot breakdowns and frames",
-      icon: Video,
+      icon: Film,
       status: "active",
       badge: "Visual",
-      route: "/storyboarding"
+      route: "/storyboarding",
+      priority: true,
+      size: "tall"
     },
     {
       id: "call_sheet",
       name: "Call Sheet Generator",
       description: "Create professional production call sheets with OCR upload support",
-      icon: FileText,
+      icon: Clapperboard,
       status: "active",
       badge: "Smart Tool",
-      route: "/call-sheet"
+      route: "/call-sheet",
+      priority: true,
+      size: "large"
     },
     {
       id: "create_auditions",
       name: "Create Auditions",
       description: "Create and manage audition opportunities for your projects",
-      icon: Users,
+      icon: Megaphone,
       status: "active",
       badge: "Core Tool",
-      route: "/create-audition"
+      route: "/create-audition",
+      priority: true,
+      size: "large"
     },
     {
       id: "crew_hire",
       name: "Crew Hire",
       description: "Post crew calls to find talented crew members for your production",
-      icon: Users,
+      icon: UserPlus,
       status: "active",
       badge: "Hire Crew",
-      route: "/crew-hire"
-    },
+      route: "/crew-hire",
+      priority: true,
+      size: "large"
+    }
+  ];
+
+  // Secondary tools - displayed as smaller cards
+  const secondaryModules: Module[] = [
     {
       id: "festival_finder",
-      name: "Film Festivals in Your Area",
-      description: "Find Film Festivals in and around your area to attend or submit your Film. Enter your ZIP code and we'll give you a list.",
+      name: "Film Festivals",
+      description: "Find festivals in your area by ZIP code",
       icon: MapPin,
       status: "active",
-      badge: "Location Based",
-      route: "/festival-finder"
+      badge: "Location",
+      route: "/festival-finder",
+      size: "small"
     },
     {
       id: "docs_library",
       name: "Docs Library",
-      description: "Essential forms, templates, and deliverables checklists",
+      description: "Forms, templates, and checklists",
       icon: FileText,
       status: "protected",
       badge: "Premium",
-      route: "/library"
+      route: "/library",
+      size: "small"
     },
     {
       id: "concierge",
-      name: "Concierge / Consulting",
-      description: "Direct access to our producer desk for guidance",
+      name: "Concierge",
+      description: "Direct producer desk access",
       icon: MessageCircle,
       status: "active",
-      badge: "Human Support",
-      route: "/consulting"
+      badge: "Support",
+      route: "/consulting",
+      size: "small"
     },
     {
       id: "calendar",
       name: "Production Calendar",
-      description: "Schedule shoots, meetings, and production milestones",
-      icon: MapPin,
+      description: "Schedule shoots and milestones",
+      icon: Calendar,
       status: "active",
       badge: "Productivity",
-      route: "/calendar"
+      route: "/calendar",
+      size: "small"
     },
     {
       id: "training_academy",
-      name: "Michael Feifer Film Academy",
-      description: "Learn from Feifer Film Academy with professional courses and certifications",
+      name: "Feifer Film Academy",
+      description: "Professional courses",
       icon: GraduationCap,
       status: "active",
       badge: "External",
-      externalUrl: "https://feiferfilmacademy.com"
+      externalUrl: "https://feiferfilmacademy.com",
+      size: "small"
     },
     {
       id: "contract_assistant",
-      name: "SAG-AFTRA Contract Assistant",
-      description: "Smart guidance for union contracts and becoming a signatory producer",
+      name: "Contract Assistant",
+      description: "SAG-AFTRA guidance",
       icon: Scale,
       status: "active",
       badge: "Smart Tool",
-      route: "/contract-assistant"
+      route: "/contract-assistant",
+      size: "small"
     }
-  ]);
+  ];
 
   const getBadgeVariant = (badge: string) => {
     switch (badge) {
@@ -336,60 +366,120 @@ export default function ToolboxHome() {
             </h2>
           </div>
 
-          {/* Modules Grid - Light Theme */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {modules.map((module) => {
+          {/* Bento Grid - Adobe Style */}
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 auto-rows-[140px]">
+            {/* Script Analysis - Large */}
+            <Link to="/script-analysis" className="col-span-2 row-span-2">
+              <div className="h-full bg-gradient-to-br from-gray-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-gray-100 group cursor-pointer flex flex-col">
+                <Badge className="w-fit mb-3 bg-primary/10 text-primary border-0">Smart Tool</Badge>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Script Analysis</h3>
+                <p className="text-gray-600 text-sm mb-4">Smart script analysis for character development and emotional beats</p>
+                <div className="flex-1 bg-gradient-to-br from-primary/5 to-primary/10 rounded-xl flex items-center justify-center group-hover:from-primary/10 group-hover:to-primary/20 transition-all">
+                  <Sparkles className="h-16 w-16 text-primary/50 group-hover:text-primary/70 transition-colors" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Pitch Deck - Large */}
+            <Link to="/pitch-deck" className="col-span-2 row-span-2">
+              <div className="h-full bg-gradient-to-br from-blue-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-blue-100 group cursor-pointer flex flex-col">
+                <Badge className="w-fit mb-3 bg-blue-500/10 text-blue-600 border-0">Smart Tool</Badge>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Pitch Deck Maker</h3>
+                <p className="text-gray-600 text-sm mb-4">Create professional Film & TV pitch decks with smart content generation</p>
+                <div className="flex-1 bg-gradient-to-br from-blue-500/5 to-blue-500/10 rounded-xl flex items-center justify-center group-hover:from-blue-500/10 group-hover:to-blue-500/20 transition-all">
+                  <Presentation className="h-16 w-16 text-blue-500/50 group-hover:text-blue-500/70 transition-colors" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Storyboarding - Tall */}
+            <Link to="/storyboarding" className="col-span-2 row-span-3">
+              <div className="h-full bg-gradient-to-br from-purple-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-purple-100 group cursor-pointer flex flex-col">
+                <Badge className="w-fit mb-3 bg-purple-500/10 text-purple-600 border-0">Visual</Badge>
+                <h3 className="text-2xl font-bold text-gray-900 mb-2">Storyboarding</h3>
+                <p className="text-gray-600 text-sm mb-4">Create visual storyboards with automated shot breakdowns and frames</p>
+                <div className="flex-1 bg-gradient-to-br from-purple-500/5 to-purple-500/10 rounded-xl flex items-center justify-center group-hover:from-purple-500/10 group-hover:to-purple-500/20 transition-all">
+                  <Film className="h-20 w-20 text-purple-500/50 group-hover:text-purple-500/70 transition-colors" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Call Sheet Generator */}
+            <Link to="/call-sheet" className="col-span-2 row-span-2">
+              <div className="h-full bg-gradient-to-br from-teal-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-teal-100 group cursor-pointer flex flex-col">
+                <Badge className="w-fit mb-3 bg-teal-500/10 text-teal-600 border-0">Smart Tool</Badge>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Call Sheet Generator</h3>
+                <p className="text-gray-600 text-sm mb-3">Professional production call sheets with OCR support</p>
+                <div className="flex-1 bg-gradient-to-br from-teal-500/5 to-teal-500/10 rounded-xl flex items-center justify-center group-hover:from-teal-500/10 group-hover:to-teal-500/20 transition-all">
+                  <Clapperboard className="h-12 w-12 text-teal-500/50 group-hover:text-teal-500/70 transition-colors" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Create Auditions */}
+            <Link to="/create-audition" className="col-span-2 row-span-2">
+              <div className="h-full bg-gradient-to-br from-orange-50 to-white rounded-2xl p-6 hover:shadow-xl transition-all duration-300 border border-orange-100 group cursor-pointer flex flex-col">
+                <Badge className="w-fit mb-3 bg-orange-500/10 text-orange-600 border-0">Core Tool</Badge>
+                <h3 className="text-xl font-bold text-gray-900 mb-2">Create Auditions</h3>
+                <p className="text-gray-600 text-sm mb-3">Create and manage audition opportunities</p>
+                <div className="flex-1 bg-gradient-to-br from-orange-500/5 to-orange-500/10 rounded-xl flex items-center justify-center group-hover:from-orange-500/10 group-hover:to-orange-500/20 transition-all">
+                  <Megaphone className="h-12 w-12 text-orange-500/50 group-hover:text-orange-500/70 transition-colors" />
+                </div>
+              </div>
+            </Link>
+
+            {/* Crew Hire */}
+            <Link to="/crew-hire" className="col-span-2 row-span-1">
+              <div className="h-full bg-gradient-to-br from-indigo-50 to-white rounded-2xl p-4 hover:shadow-xl transition-all duration-300 border border-indigo-100 group cursor-pointer flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-indigo-500/10 to-indigo-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:from-indigo-500/20 group-hover:to-indigo-500/30 transition-all">
+                  <UserPlus className="h-7 w-7 text-indigo-500/70 group-hover:text-indigo-600 transition-colors" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-bold text-gray-900">Crew Hire</h3>
+                  <p className="text-gray-600 text-sm truncate">Find talented crew members</p>
+                </div>
+                <ChevronRight className="h-5 w-5 text-gray-400 group-hover:text-indigo-500 transition-colors flex-shrink-0" />
+              </div>
+            </Link>
+
+            {/* Secondary tools - compact cards */}
+            {secondaryModules.map((module) => {
               const Icon = module.icon;
-              return (
-                <Card 
-                  key={module.id} 
-                  className="group bg-white border border-gray-200 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-200 cursor-pointer"
+              const content = (
+                <div className="h-full bg-white/80 rounded-xl p-4 hover:shadow-lg transition-all duration-300 border border-gray-100 group cursor-pointer flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-primary/10 transition-all">
+                    <Icon className="h-5 w-5 text-gray-600 group-hover:text-primary transition-colors" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <h3 className="text-sm font-semibold text-gray-900 truncate">{module.name}</h3>
+                    <p className="text-xs text-gray-500 truncate">{module.description}</p>
+                  </div>
+                  {module.externalUrl ? (
+                    <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4 text-gray-400 group-hover:text-primary transition-colors flex-shrink-0" />
+                  )}
+                </div>
+              );
+
+              return module.externalUrl ? (
+                <a 
+                  key={module.id}
+                  href={module.externalUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="col-span-2 md:col-span-2 lg:col-span-2"
                 >
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                        <Icon className="h-6 w-6 text-gray-700 group-hover:text-primary transition-colors" />
-                      </div>
-                      <Badge 
-                        variant={getBadgeVariant(module.badge)}
-                        className="bg-gray-100 text-gray-700 border-gray-200"
-                      >
-                        {module.badge}
-                      </Badge>
-                    </div>
-                    <CardTitle className="text-xl text-gray-900">{module.name}</CardTitle>
-                    <CardDescription className="text-gray-600">{module.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    {module.externalUrl ? (
-                      <a 
-                        href={module.externalUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block"
-                      >
-                        <Button 
-                          variant="ghost" 
-                          className="w-full justify-between text-gray-700 hover:bg-primary hover:text-white"
-                        >
-                          Visit Academy
-                          <ExternalLink className="h-4 w-4" />
-                        </Button>
-                      </a>
-                    ) : (
-                      <Button 
-                        variant="ghost" 
-                        className="w-full justify-between text-gray-700 hover:bg-primary hover:text-white"
-                        asChild
-                      >
-                        <Link to={module.route || "#"}>
-                          {module.status === "protected" ? "Access Library" : "Open Tool"}
-                          <ChevronRight className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    )}
-                  </CardContent>
-                </Card>
+                  {content}
+                </a>
+              ) : (
+                <Link
+                  key={module.id}
+                  to={module.route || "#"}
+                  className="col-span-2 md:col-span-2 lg:col-span-2"
+                >
+                  {content}
+                </Link>
               );
             })}
           </div>
