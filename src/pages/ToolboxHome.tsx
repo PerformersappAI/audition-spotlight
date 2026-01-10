@@ -192,9 +192,12 @@ export default function ToolboxHome() {
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            Filmmaker Toolbox
+          <h1 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+            Filmmaker Genius
           </h1>
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 italic">
+            Where Genius Meets the Silver Screen
+          </p>
 
           {/* Admin-managed YouTube Video */}
           {embedUrl && (
@@ -205,7 +208,7 @@ export default function ToolboxHome() {
                   className="w-full h-full"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
-                  title="Filmmaker Toolbox Introduction"
+                  title="Filmmaker Genius Introduction"
                 />
               </div>
             </div>
@@ -277,9 +280,12 @@ export default function ToolboxHome() {
 
         {/* Divider Text */}
         <div className="text-center my-12 py-8">
-          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto">
+          <p className="text-2xl md:text-3xl font-semibold text-foreground max-w-2xl mx-auto mb-6">
             Or just click on the tool that you need to help you with your filmmaking
           </p>
+          <h2 className="text-3xl md:text-4xl font-bold text-primary">
+            Filmmaker Toolbox
+          </h2>
         </div>
 
         {/* Modules Grid */}
