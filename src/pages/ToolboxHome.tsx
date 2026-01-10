@@ -300,62 +300,46 @@ export default function ToolboxHome() {
             )}
           </div>
 
-          {/* Filmmaking Journey Phases - UNCHANGED */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 pb-12">
-            <Link to="/toolbox/pre-production">
-              <Card className="h-48 bg-gradient-to-br from-blue-400 to-blue-500 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                  <h3 className="text-2xl font-bold text-white mb-3">Pre Production</h3>
-                  <p className="text-white/90 text-base">Screenwriting, Storyboarding, etc.</p>
-                </CardContent>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                  <span className="text-[180px] font-bold text-white">1</span>
-                </div>
-              </Card>
+          {/* Filmmaking Journey Phases - Numbers with text overlay */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
+            <Link to="/toolbox/pre-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">1</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Pre Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Screenwriting, Storyboarding</p>
+              </div>
             </Link>
-            <Link to="/toolbox/production">
-              <Card className="h-48 bg-gradient-to-br from-teal-500 to-teal-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                  <h3 className="text-2xl font-bold text-white mb-3">Production</h3>
-                  <p className="text-white/90 text-base">iPhone or Cannon, Hollywood Cinematography</p>
-                </CardContent>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                  <span className="text-[180px] font-bold text-white">2</span>
-                </div>
-              </Card>
+            
+            <Link to="/toolbox/production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">2</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Cinematography</p>
+              </div>
             </Link>
-            <Link to="/toolbox/post-production">
-              <Card className="h-48 bg-gradient-to-br from-purple-500 to-purple-600 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                  <h3 className="text-2xl font-bold text-white mb-3">Post Production</h3>
-                  <p className="text-white/90 text-base">Editing</p>
-                </CardContent>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                  <span className="text-[180px] font-bold text-white">3</span>
-                </div>
-              </Card>
+            
+            <Link to="/toolbox/post-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">3</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Post Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Editing</p>
+              </div>
             </Link>
-            <Link to="/toolbox/film-release">
-              <Card className="h-48 bg-gradient-to-br from-blue-600 to-blue-700 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                  <h3 className="text-2xl font-bold text-white mb-3">Film Release</h3>
-                  <p className="text-white/90 text-base">Marketing, Film Festival</p>
-                </CardContent>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                  <span className="text-[180px] font-bold text-white">4</span>
-                </div>
-              </Card>
+            
+            <Link to="/toolbox/film-release" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">4</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Film Release</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Marketing, Festivals</p>
+              </div>
             </Link>
-            <Link to="/toolbox/distribution">
-              <Card className="h-48 bg-gradient-to-br from-blue-700 to-blue-900 border-none hover:scale-105 transition-all duration-200 cursor-pointer relative overflow-hidden">
-                <CardContent className="h-full flex flex-col items-center justify-center text-center p-6 relative z-10">
-                  <h3 className="text-2xl font-bold text-white mb-3">Distribution</h3>
-                  <p className="text-white/90 text-base">Monetization</p>
-                </CardContent>
-                <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                  <span className="text-[180px] font-bold text-white">5</span>
-                </div>
-              </Card>
+            
+            <Link to="/toolbox/distribution" className="col-span-2 md:col-span-1 group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-gray-700/40 leading-none select-none group-hover:text-gray-600/50 transition-colors">5</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Distribution</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Monetization</p>
+              </div>
             </Link>
           </div>
         </div>
