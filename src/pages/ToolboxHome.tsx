@@ -269,7 +269,7 @@ export default function ToolboxHome() {
               className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
               style={{
                 fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #6B7280 60%, #9CA3AF 70%, #D1D5DB 85%, #9CA3AF 100%)',
+                background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
