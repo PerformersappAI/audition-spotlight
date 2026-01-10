@@ -8,6 +8,9 @@ import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
 import toolPitchDeck from "@/assets/tool-pitch-deck.jpg";
 import toolStoryboard from "@/assets/tool-storyboard.jpg";
+import toolCallSheet from "@/assets/tool-call-sheet.jpg";
+import toolAuditions from "@/assets/tool-auditions.jpg";
+import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import { 
   Video, 
   Users, 
@@ -454,85 +457,120 @@ export default function ToolboxHome() {
               </div>
             </Link>
 
-            {/* Call Sheet - Dark card */}
+            {/* Call Sheet - Dark card with image */}
             <Link to="/call-sheet" className="group">
-              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
-                <p className="text-xs font-semibold text-teal-400 uppercase tracking-wide mb-3">Call Sheet Generator</p>
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Professional call sheets.
-                </h3>
-                <p className="text-gray-400 mb-6">
-                  Create production call sheets with OCR upload support for quick setup.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-teal-400 transition-colors">
-                  Get started <ArrowRight className="h-4 w-4" />
-                </button>
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                <div className="p-5 pb-3">
+                  <p className="text-xs font-semibold text-teal-400 uppercase tracking-wide mb-2">Call Sheet Generator</p>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    Professional call sheets.
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-2">
+                    OCR upload support for quick setup.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Get started
+                  </span>
+                </div>
+                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                  <img 
+                    src={toolCallSheet} 
+                    alt="Call Sheet Tool" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
               </div>
             </Link>
 
-            {/* Create Auditions - Dark card */}
+            {/* Create Auditions - Dark card with image */}
             <Link to="/create-audition" className="group">
-              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
-                <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide mb-3">Create Auditions</p>
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Post casting calls.
-                </h3>
-                <p className="text-gray-400 mb-6">
-                  Create and manage audition opportunities for your projects.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-orange-400 transition-colors">
-                  Get started <ArrowRight className="h-4 w-4" />
-                </button>
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                <div className="p-5 pb-3">
+                  <p className="text-xs font-semibold text-orange-400 uppercase tracking-wide mb-2">Create Auditions</p>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    Post casting calls.
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-2">
+                    Manage audition opportunities.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Get started
+                  </span>
+                </div>
+                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                  <img 
+                    src={toolAuditions} 
+                    alt="Auditions Tool" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
               </div>
             </Link>
 
-            {/* Crew Hire - Dark card */}
+            {/* Crew Hire - Dark card with image */}
             <Link to="/crew-hire" className="group">
-              <div className="h-full bg-gray-900 rounded-2xl p-6 hover:bg-gray-800 transition-all duration-300 cursor-pointer">
-                <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-3">Crew Hire</p>
-                <h3 className="text-2xl font-bold text-white mb-2">
-                  Find your crew.
-                </h3>
-                <p className="text-gray-400 mb-6">
-                  Post crew calls to find talented crew members for your production.
-                </p>
-                <button className="inline-flex items-center gap-2 text-sm font-medium text-white hover:text-indigo-400 transition-colors">
-                  Get started <ArrowRight className="h-4 w-4" />
-                </button>
+              <div className="h-full bg-gray-900 rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 cursor-pointer flex flex-col">
+                <div className="p-5 pb-3">
+                  <p className="text-xs font-semibold text-indigo-400 uppercase tracking-wide mb-2">Crew Hire</p>
+                  <h3 className="text-xl font-bold text-white mb-1">
+                    Find your crew.
+                  </h3>
+                  <p className="text-gray-400 text-sm mb-2">
+                    Post crew calls for your production.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-sm font-medium text-white underline">
+                    Get started
+                  </span>
+                </div>
+                <div className="flex-1 min-h-[120px] relative overflow-hidden">
+                  <img 
+                    src={toolCrewHire} 
+                    alt="Crew Hire Tool" 
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
               </div>
             </Link>
 
-            {/* Light gray card with links - like Adobe's Creative Cloud card */}
-            <div className="bg-gray-100 rounded-2xl p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">More Tools</h3>
+            {/* More Tools - Dark themed to match */}
+            <div className="bg-gray-900 rounded-2xl p-6 border border-gray-800">
+              <h3 className="text-lg font-bold text-white mb-4">More Tools</h3>
               <div className="space-y-3">
-                <Link to="/festival-finder" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <MapPin className="h-4 w-4" />
-                  <span className="text-sm">Film Festivals in Your Area</span>
+                <Link to="/festival-finder" className="flex items-center gap-3 text-gray-300 hover:text-teal-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-teal-500/20 flex items-center justify-center">
+                    <MapPin className="h-4 w-4 text-teal-400" />
+                  </div>
+                  <span className="text-sm">Film Festivals</span>
                 </Link>
-                <Link to="/library" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <FileText className="h-4 w-4" />
+                <Link to="/library" className="flex items-center gap-3 text-gray-300 hover:text-purple-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                    <FileText className="h-4 w-4 text-purple-400" />
+                  </div>
                   <span className="text-sm">Docs Library</span>
                 </Link>
-                <Link to="/consulting" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <MessageCircle className="h-4 w-4" />
-                  <span className="text-sm">Concierge / Consulting</span>
+                <Link to="/consulting" className="flex items-center gap-3 text-gray-300 hover:text-blue-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                    <MessageCircle className="h-4 w-4 text-blue-400" />
+                  </div>
+                  <span className="text-sm">Concierge</span>
                 </Link>
-                <Link to="/calendar" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <Calendar className="h-4 w-4" />
+                <Link to="/calendar" className="flex items-center gap-3 text-gray-300 hover:text-amber-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                    <Calendar className="h-4 w-4 text-amber-400" />
+                  </div>
                   <span className="text-sm">Production Calendar</span>
                 </Link>
-              </div>
-              
-              <h3 className="text-xl font-bold text-gray-900 mt-6 mb-4">Resources</h3>
-              <div className="space-y-3">
-                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <GraduationCap className="h-4 w-4" />
+                <a href="https://feiferfilmacademy.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-gray-300 hover:text-rose-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-rose-500/20 flex items-center justify-center">
+                    <GraduationCap className="h-4 w-4 text-rose-400" />
+                  </div>
                   <span className="text-sm">Feifer Film Academy</span>
                 </a>
-                <Link to="/contract-assistant" className="flex items-center gap-2 text-gray-700 hover:text-primary transition-colors">
-                  <Scale className="h-4 w-4" />
-                  <span className="text-sm">SAG-AFTRA Contract Assistant</span>
+                <Link to="/contract-assistant" className="flex items-center gap-3 text-gray-300 hover:text-emerald-400 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                    <Scale className="h-4 w-4 text-emerald-400" />
+                  </div>
+                  <span className="text-sm">Contract Assistant</span>
                 </Link>
               </div>
             </div>
