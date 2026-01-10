@@ -12,6 +12,8 @@ import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
+import heroDecorLeft from "@/assets/hero-decor-left.png";
+import heroDecorRight from "@/assets/hero-decor-right.png";
 import { 
   Video, 
   Users, 
@@ -231,33 +233,41 @@ export default function ToolboxHome() {
     <div className="min-h-screen">
       {/* DARK HERO SECTION */}
       <div className="bg-[#0E0F12] relative overflow-hidden">
-        {/* Subtle top banner - Adobe style */}
-        <div className="w-full bg-gradient-to-r from-transparent via-gray-800/30 to-transparent py-4 border-b border-gray-800/50">
-          <div className="container mx-auto px-6">
-            <div className="flex items-center justify-center gap-4">
+        {/* Left decorative graphic */}
+        <img 
+          src={heroDecorLeft} 
+          alt="" 
+          className="absolute left-0 top-0 h-full w-auto opacity-40 pointer-events-none hidden lg:block"
+        />
+        {/* Right decorative graphic */}
+        <img 
+          src={heroDecorRight} 
+          alt="" 
+          className="absolute right-0 top-0 h-full w-auto opacity-40 pointer-events-none hidden lg:block"
+        />
+
+        <div className="container mx-auto px-6 py-12 relative z-10">
+          {/* Header - Big title with logo bookends */}
+          <div className="text-center mb-10">
+            <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
               <img 
                 src={filmmakerGeniusLogo} 
                 alt="" 
-                className="h-8 md:h-10 w-auto opacity-80"
+                className="h-12 md:h-20 w-auto -rotate-90"
               />
-              <div className="text-center">
-                <h1 className="text-xl md:text-2xl font-bold text-white/90 tracking-wide">
-                  Filmmaker Genius
-                </h1>
-                <p className="text-xs md:text-sm text-gray-400 italic">
-                  Where Genius Meets the Silver Screen
-                </p>
-              </div>
+              <h1 className="text-3xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Filmmaker Genius
+              </h1>
               <img 
                 src={filmmakerGeniusLogo} 
-                alt="" 
-                className="h-8 md:h-10 w-auto opacity-80"
+                alt="Filmmaker Genius Logo" 
+                className="h-12 md:h-20 w-auto rotate-90"
               />
             </div>
+            <p className="text-xl md:text-2xl text-gray-400 mb-8 italic">
+              Where Genius Meets the Silver Screen
+            </p>
           </div>
-        </div>
-
-        <div className="container mx-auto px-6 py-12">
           {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
             {/* Left side - CTA Text */}
