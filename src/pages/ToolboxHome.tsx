@@ -2,8 +2,16 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
 import toolPitchDeck from "@/assets/tool-pitch-deck.jpg";
@@ -16,12 +24,14 @@ import heroBannerBg from "@/assets/hero-banner-bg.png";
 import { 
   Video, 
   Users, 
+  User,
   MapPin, 
   Trophy, 
   FileText, 
   MessageCircle, 
   Sparkles,
   ChevronRight,
+  ChevronDown,
   GraduationCap,
   Scale,
   ExternalLink,
@@ -48,6 +58,7 @@ interface Module {
 }
 
 export default function ToolboxHome() {
+  const { user, userProfile, signOut } = useAuth();
   const [youtubeUrl, setYoutubeUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -367,6 +378,110 @@ export default function ToolboxHome() {
               </div>
             </Link>
           </div>
+        </div>
+      </div>
+
+      {/* Navigation Bar - Dark with gold accents */}
+      <div className="bg-[#1a1a1a] border-y border-gray-800">
+        <div className="container mx-auto px-6">
+          <nav className="flex items-center justify-center py-4 gap-8 flex-wrap">
+            <Link
+              to="/"
+              className="text-amber-500 hover:text-amber-400 font-medium transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              to="/membership"
+              className="text-amber-500 hover:text-amber-400 font-medium transition-colors"
+            >
+              Membership
+            </Link>
+            <Link
+              to="/consulting"
+              className="text-gray-300 hover:text-white font-medium transition-colors"
+            >
+              Contact
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 text-gray-300 hover:text-white font-medium transition-colors">
+                About
+                <ChevronDown className="h-4 w-4" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center" className="bg-gray-900 border-gray-700">
+                <DropdownMenuItem asChild>
+                  <Link to="/festivals" className="flex items-center gap-2 cursor-pointer text-gray-200 hover:text-white">
+                    <Trophy className="h-4 w-4" />
+                    Film Festivals
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/library" className="flex items-center gap-2 cursor-pointer text-gray-200 hover:text-white">
+                    <FileText className="h-4 w-4" />
+                    Document Library
+                  </Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            <Link
+              to="/toolbox"
+              className="text-amber-500 hover:text-amber-400 font-bold transition-colors"
+            >
+              Filmmaker Toolbox
+            </Link>
+            {userProfile?.role === 'admin' && (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-1 text-gray-300 hover:text-white font-medium transition-colors">
+                  Admin
+                  <ChevronDown className="h-4 w-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="bg-gray-900 border-gray-700">
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin" className="cursor-pointer text-gray-200 hover:text-white">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/users" className="cursor-pointer text-gray-200 hover:text-white">Users</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/admin/auditions" className="cursor-pointer text-gray-200 hover:text-white">Auditions</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+            
+            {/* Login/User section */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger className="flex items-center gap-2 ml-4">
+                  <div className="w-10 h-10 rounded-full bg-gray-700 border-2 border-amber-500 flex items-center justify-center overflow-hidden">
+                    <User className="h-5 w-5 text-gray-300" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-gray-900 border-gray-700">
+                  <div className="px-3 py-2 border-b border-gray-700">
+                    <div className="text-sm font-medium text-white">{userProfile?.first_name || 'User'}</div>
+                    <div className="text-xs text-gray-400">{user.email}</div>
+                  </div>
+                  <DropdownMenuItem asChild>
+                    <Link to="/dashboard" className="cursor-pointer text-gray-200 hover:text-white">Dashboard</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/training/my-learning" className="cursor-pointer text-gray-200 hover:text-white">My Learning</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-gray-700" />
+                  <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-400 hover:text-red-300">
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link to="/auth">
+                <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold ml-4">
+                  Sign In
+                </Button>
+              </Link>
+            )}
+          </nav>
         </div>
       </div>
 
