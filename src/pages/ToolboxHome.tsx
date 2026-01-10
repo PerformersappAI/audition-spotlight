@@ -12,8 +12,7 @@ import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
-import heroCornerLeft from "@/assets/hero-corner-left.png";
-import heroCornerRight from "@/assets/hero-corner-right.png";
+import heroBannerBg from "@/assets/hero-banner-bg.png";
 import { 
   Video, 
   Users, 
@@ -231,19 +230,12 @@ export default function ToolboxHome() {
 
   return (
     <div className="min-h-screen">
-      {/* TOP BANNER HEADER - with side graphics */}
-      <div className="bg-[#0E0F12] relative overflow-hidden">
-        {/* Left corner decorative graphic */}
-        <img 
-          src={heroCornerLeft} 
-          alt="" 
-          className="absolute left-0 top-0 w-48 lg:w-64 h-auto opacity-50 pointer-events-none hidden md:block"
-        />
-        {/* Right corner decorative graphic */}
-        <img 
-          src={heroCornerRight} 
-          alt="" 
-          className="absolute right-0 top-0 w-48 lg:w-64 h-auto opacity-50 pointer-events-none hidden md:block scale-x-[-1]"
+      {/* TOP BANNER HEADER - with integrated film graphics */}
+      <div className="relative overflow-hidden">
+        {/* Banner background with film elements on edges */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${heroBannerBg})` }}
         />
 
         <div className="container mx-auto px-6 py-10 relative z-10">
