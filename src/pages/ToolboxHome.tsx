@@ -51,7 +51,7 @@ export default function ToolboxHome() {
   // Extract YouTube embed URL
   const getYoutubeEmbedUrl = (url: string) => {
     const patterns = [
-      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\s]+)/,
+      /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/live\/)([^&?\s]+)/,
       /^([a-zA-Z0-9_-]{11})$/
     ];
     for (const pattern of patterns) {
