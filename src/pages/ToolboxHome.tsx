@@ -231,24 +231,24 @@ export default function ToolboxHome() {
 
   return (
     <div className="min-h-screen">
-      {/* DARK HERO SECTION */}
+      {/* TOP BANNER HEADER - with side graphics */}
       <div className="bg-[#0E0F12] relative overflow-hidden">
-        {/* Left decorative graphic */}
+        {/* Left decorative graphic - contained to banner */}
         <img 
           src={heroDecorLeft} 
           alt="" 
-          className="absolute left-0 top-0 h-full w-auto opacity-40 pointer-events-none hidden lg:block"
+          className="absolute left-0 top-0 h-full w-32 lg:w-48 object-cover object-right opacity-30 pointer-events-none hidden md:block"
         />
-        {/* Right decorative graphic */}
+        {/* Right decorative graphic - contained to banner */}
         <img 
           src={heroDecorRight} 
           alt="" 
-          className="absolute right-0 top-0 h-full w-auto opacity-40 pointer-events-none hidden lg:block"
+          className="absolute right-0 top-0 h-full w-32 lg:w-48 object-cover object-left opacity-30 pointer-events-none hidden md:block"
         />
 
-        <div className="container mx-auto px-6 py-12 relative z-10">
+        <div className="container mx-auto px-6 py-10 relative z-10">
           {/* Header - Big title with logo bookends */}
-          <div className="text-center mb-10">
+          <div className="text-center">
             <div className="flex items-center justify-center gap-3 md:gap-6 mb-4">
               <img 
                 src={filmmakerGeniusLogo} 
@@ -264,10 +264,16 @@ export default function ToolboxHome() {
                 className="h-12 md:h-20 w-auto rotate-90"
               />
             </div>
-            <p className="text-xl md:text-2xl text-gray-400 mb-8 italic">
+            <p className="text-xl md:text-2xl text-gray-400 italic">
               Where Genius Meets the Silver Screen
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* DARK HERO CONTENT SECTION - below banner */}
+      <div className="bg-[#0E0F12]">
+        <div className="container mx-auto px-6 py-10">
           {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
           <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
             {/* Left side - CTA Text */}
