@@ -199,7 +199,7 @@ export default function ToolboxHome() {
           {/* Admin-managed YouTube Video */}
           {embedUrl && (
             <div className="flex justify-center mb-8">
-              <div className="w-full max-w-sm rounded-lg overflow-hidden border bg-muted shadow-md" style={{ height: '120px' }}>
+              <div className="w-full max-w-2xl aspect-video rounded-lg overflow-hidden border bg-muted shadow-md">
                 <iframe
                   src={embedUrl}
                   className="w-full h-full"
