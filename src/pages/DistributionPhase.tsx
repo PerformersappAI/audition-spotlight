@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, ChevronRight, Trophy } from "lucide-react";
+import { MessageCircle, ChevronRight } from "lucide-react";
 
 export default function DistributionPhase() {
   const tools = [
@@ -12,13 +12,6 @@ export default function DistributionPhase() {
       icon: MessageCircle,
       badge: "Human Support",
       route: "/consulting"
-    },
-    {
-      name: "Festival Submitter",
-      description: "Continue festival circuit for distribution opportunities",
-      icon: Trophy,
-      badge: "AI Enhanced",
-      route: "/submit"
     }
   ];
 

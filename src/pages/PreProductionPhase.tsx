@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Video, ChevronRight, FileText } from "lucide-react";
+import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale } from "lucide-react";
 
 export default function PreProductionPhase() {
   const tools = [
@@ -19,6 +19,20 @@ export default function PreProductionPhase() {
       icon: Video,
       badge: "Visual",
       route: "/storyboarding"
+    },
+    {
+      name: "Pitch Deck Maker",
+      description: "Create professional Film & TV pitch decks with smart content generation",
+      icon: Presentation,
+      badge: "Smart Tool",
+      route: "/pitch-deck"
+    },
+    {
+      name: "Contract Assistant",
+      description: "SAG-AFTRA contract guidance and union information",
+      icon: Scale,
+      badge: "Smart Tool",
+      route: "/contract-assistant"
     },
     {
       name: "Docs Library",

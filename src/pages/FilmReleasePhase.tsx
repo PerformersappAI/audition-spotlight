@@ -2,23 +2,23 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Trophy, ChevronRight, MessageCircle } from "lucide-react";
+import { MapPin, ChevronRight, MessageCircle, Presentation } from "lucide-react";
 
 export default function FilmReleasePhase() {
   const tools = [
     {
-      name: "Festival Submitter",
-      description: "Submit your projects to film festivals with AI-powered recommendations",
-      icon: Trophy,
-      badge: "AI Enhanced",
-      route: "/submit"
+      name: "Film Festivals",
+      description: "Find festivals in your area by ZIP code",
+      icon: MapPin,
+      badge: "Location",
+      route: "/festival-finder"
     },
     {
-      name: "Browse Festivals and Submit",
-      description: "Browse 2,000+ festivals worldwide and submit directly",
-      icon: Trophy,
-      badge: "AI Enhanced",
-      route: "/festivals"
+      name: "Pitch Deck Maker",
+      description: "Create marketing materials for festival submissions",
+      icon: Presentation,
+      badge: "Smart Tool",
+      route: "/pitch-deck"
     },
     {
       name: "Concierge / Consulting",
