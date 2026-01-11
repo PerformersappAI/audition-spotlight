@@ -2,23 +2,23 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Video, ChevronRight, MessageCircle } from "lucide-react";
+import { FileText, ChevronRight, MessageCircle } from "lucide-react";
 
 export default function PostProductionPhase() {
   const tools = [
+    {
+      name: "Docs Library",
+      description: "Deliverables checklists and post-production forms",
+      icon: FileText,
+      badge: "Premium",
+      route: "/library"
+    },
     {
       name: "Concierge / Consulting",
       description: "Get expert guidance on editing and post-production workflows",
       icon: MessageCircle,
       badge: "Human Support",
       route: "/consulting"
-    },
-    {
-      name: "Storyboarding",
-      description: "Review and refine your visual story structure",
-      icon: Video,
-      badge: "Visual AI",
-      route: "/storyboarding"
     }
   ];
 

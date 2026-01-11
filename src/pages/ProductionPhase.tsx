@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MapPin, ChevronRight, MessageCircle, FileText } from "lucide-react";
+import { Users, MapPin, ChevronRight, MessageCircle, FileText, Briefcase } from "lucide-react";
 
 export default function ProductionPhase() {
   const tools = [
@@ -10,7 +10,7 @@ export default function ProductionPhase() {
       name: "Call Sheet Generator",
       description: "Create professional production call sheets with OCR upload support",
       icon: FileText,
-      badge: "AI Enhanced",
+      badge: "Smart Tool",
       route: "/call-sheet"
     },
     {
@@ -21,11 +21,11 @@ export default function ProductionPhase() {
       route: "/create-audition"
     },
     {
-      name: "Cast and Crew Board",
-      description: "Find and connect with talented cast and crew members",
-      icon: Users,
-      badge: "Community",
-      route: "/crew"
+      name: "Crew Hire",
+      description: "Post crew calls to find talented crew members for your production",
+      icon: Briefcase,
+      badge: "Hire Crew",
+      route: "/crew-hire"
     },
     {
       name: "Production Calendar",
