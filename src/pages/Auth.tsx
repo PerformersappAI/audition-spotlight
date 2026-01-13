@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Film, Users, Crown, Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -20,7 +21,12 @@ const Auth = () => {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn: authSignIn } = useAuth();
+
+  const signIn = async (email: string, password: string) => {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    return { data, error };
+  };
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -68,7 +74,7 @@ const Auth = () => {
     }
 
     setLoading(true);
-    const { error } = await signIn(email, password);
+    const { error, data } = await signIn(email, password);
 
     if (error) {
       toast({
@@ -76,8 +82,35 @@ const Auth = () => {
         title: "Sign In Error",
         description: error.message
       });
+      setLoading(false);
+      return;
+    }
+
+    // Check if user has credits
+    const userId = data?.user?.id;
+    if (userId) {
+      const { data: credits } = await supabase
+        .from('user_credits')
+        .select('available_credits')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      const { data: usage } = await supabase
+        .from('user_usage')
+        .select('credits_remaining')
+        .eq('user_id', userId)
+        .maybeSingle();
+
+      const hasCredits = (credits?.available_credits || 0) > 0 || 
+                         (usage?.credits_remaining || 0) > 0;
+
+      if (!hasCredits) {
+        navigate('/membership');
+      } else {
+        navigate('/');
+      }
     } else {
-      navigate("/");
+      navigate('/');
     }
     setLoading(false);
   };

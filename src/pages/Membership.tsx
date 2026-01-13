@@ -93,12 +93,25 @@ const Membership = () => {
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">
-            Choose Your Plan
-          </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Unlock powerful filmmaking tools with our flexible pricing options
-          </p>
+          {user && !loading && (credits?.available_credits || 0) === 0 && !subscription ? (
+            <>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">
+                Welcome to Filmmaker Genius!
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Choose a plan to get started and unlock powerful filmmaking tools
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">
+                Choose Your Plan
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Unlock powerful filmmaking tools with our flexible pricing options
+              </p>
+            </>
+          )}
           
           {user && !loading && (
             <div className="mt-6 inline-flex items-center gap-3 bg-accent/50 px-6 py-3 rounded-full">
