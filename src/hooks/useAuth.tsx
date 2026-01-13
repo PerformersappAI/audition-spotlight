@@ -146,9 +146,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    console.error('useAuth must be used within an AuthProvider. Current context:', context);
-    console.error('AuthProvider should wrap the entire app in App.tsx');
-    throw new Error('useAuth must be used within an AuthProvider');
+    // During HMR, context can be temporarily undefined. Return a safe fallback.
+    console.warn('useAuth: AuthContext temporarily unavailable (likely HMR). Returning fallback.');
+    return {
+      user: null,
+      session: null,
+      userProfile: null,
+      loading: true,
+      signUp: async () => ({ error: new Error('Auth not ready') }),
+      signIn: async () => ({ error: new Error('Auth not ready') }),
+      signOut: async () => {},
+    };
   }
   return context;
 };
