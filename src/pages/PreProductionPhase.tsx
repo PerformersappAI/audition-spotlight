@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale } from "lucide-react";
+import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale, Users } from "lucide-react";
 
 export default function PreProductionPhase() {
   const tools = [
@@ -26,6 +26,13 @@ export default function PreProductionPhase() {
       icon: Presentation,
       badge: "Smart Tool",
       route: "/pitch-deck"
+    },
+    {
+      name: "Auditions",
+      description: "Create and manage audition opportunities for your projects",
+      icon: Users,
+      badge: "Core Tool",
+      route: "/auditions"
     },
     {
       name: "Contract Assistant",
