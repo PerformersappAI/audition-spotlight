@@ -674,6 +674,50 @@ export type Database = {
         }
         Relationships: []
       }
+      cancellation_feedback: {
+        Row: {
+          additional_feedback: string | null
+          created_at: string
+          credits_remaining: number | null
+          id: string
+          plan_name: string | null
+          reason_code: string
+          subscription_id: string | null
+          user_email: string | null
+          user_id: string
+        }
+        Insert: {
+          additional_feedback?: string | null
+          created_at?: string
+          credits_remaining?: number | null
+          id?: string
+          plan_name?: string | null
+          reason_code: string
+          subscription_id?: string | null
+          user_email?: string | null
+          user_id: string
+        }
+        Update: {
+          additional_feedback?: string | null
+          created_at?: string
+          credits_remaining?: number | null
+          id?: string
+          plan_name?: string | null
+          reason_code?: string
+          subscription_id?: string | null
+          user_email?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cancellation_feedback_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "user_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_discussions: {
         Row: {
           content: string
@@ -1230,6 +1274,48 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          created_at: string
+          currency: string
+          description: string | null
+          features: Json | null
+          id: string
+          limits: Json
+          name: string
+          paypal_plan_id: string | null
+          price: number
+          stripe_price_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          limits?: Json
+          name: string
+          paypal_plan_id?: string | null
+          price?: number
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string
+          description?: string | null
+          features?: Json | null
+          id?: string
+          limits?: Json
+          name?: string
+          paypal_plan_id?: string | null
+          price?: number
+          stripe_price_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_certifications: {
         Row: {
           certificate_number: string | null
@@ -1426,10 +1512,18 @@ export type Database = {
           current_period_end: string | null
           current_period_start: string | null
           id: string
+          is_trial: boolean | null
+          next_billing_date: string | null
+          plan_id: string | null
           plan_type: string
+          purchased_at: string | null
+          signup_source: string | null
           status: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
+          subscription_started_at: string | null
+          trial_ends_at: string | null
+          trial_started_at: string | null
           updated_at: string | null
           user_id: string
         }
@@ -1439,10 +1533,18 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string | null
           id?: string
+          is_trial?: boolean | null
+          next_billing_date?: string | null
+          plan_id?: string | null
           plan_type: string
+          purchased_at?: string | null
+          signup_source?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_started_at?: string | null
+          trial_ends_at?: string | null
+          trial_started_at?: string | null
           updated_at?: string | null
           user_id: string
         }
@@ -1452,20 +1554,98 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string | null
           id?: string
+          is_trial?: boolean | null
+          next_billing_date?: string | null
+          plan_id?: string | null
           plan_type?: string
+          purchased_at?: string | null
+          signup_source?: string | null
           status?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
+          subscription_started_at?: string | null
+          trial_ends_at?: string | null
+          trial_started_at?: string | null
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_usage: {
+        Row: {
+          ai_messages_used: number
+          created_at: string
+          credit_calculation_version: number | null
+          credits_remaining: number
+          credits_total: number
+          detailed_usage_log: Json | null
+          id: string
+          script_analyses_used: number
+          subscription_id: string
+          updated_at: string
+          user_id: string
+          video_verifications_used: number
+        }
+        Insert: {
+          ai_messages_used?: number
+          created_at?: string
+          credit_calculation_version?: number | null
+          credits_remaining?: number
+          credits_total?: number
+          detailed_usage_log?: Json | null
+          id?: string
+          script_analyses_used?: number
+          subscription_id: string
+          updated_at?: string
+          user_id: string
+          video_verifications_used?: number
+        }
+        Update: {
+          ai_messages_used?: number
+          created_at?: string
+          credit_calculation_version?: number | null
+          credits_remaining?: number
+          credits_total?: number
+          detailed_usage_log?: Json | null
+          id?: string
+          script_analyses_used?: number
+          subscription_id?: string
+          updated_at?: string
+          user_id?: string
+          video_verifications_used?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_usage_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "user_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      get_user_subscription_status: {
+        Args: { _user_id: string }
+        Returns: {
+          credits: number
+          current_period_end: string
+          has_active_subscription: boolean
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1475,6 +1655,16 @@ export type Database = {
       }
       increment_discussion_views: {
         Args: { discussion_id: string }
+        Returns: undefined
+      }
+      log_credit_usage: {
+        Args: {
+          p_credit_cost: number
+          p_feature_type: string
+          p_metadata?: Json
+          p_subscription_id: string
+          p_user_id: string
+        }
         Returns: undefined
       }
     }
