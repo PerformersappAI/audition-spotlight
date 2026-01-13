@@ -92,7 +92,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               {!user && (
                 <div className="flex items-center space-x-2">
                   <Button variant="ghost" asChild>
-                    <Link to="/auth">Sign In</Link>
+                    <Link to="/auth">Sign In / Sign Up</Link>
                   </Button>
                   <Button variant="gold" asChild>
                     <Link to="/auth">Get Started</Link>
