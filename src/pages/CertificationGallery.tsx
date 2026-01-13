@@ -31,7 +31,7 @@ export default function CertificationGallery() {
           Access your earned certificates and showcase your achievements
         </p>
         <Button asChild>
-          <Link to="/auth">Sign In</Link>
+          <Link to="/auth">Sign In / Sign Up</Link>
         </Button>
       </div>
     );

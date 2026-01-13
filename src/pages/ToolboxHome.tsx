@@ -489,7 +489,7 @@ export default function ToolboxHome() {
             ) : (
               <Link to="/auth">
                 <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold ml-4">
-                  Sign In
+                  Sign In / Sign Up
                 </Button>
               </Link>
             )}

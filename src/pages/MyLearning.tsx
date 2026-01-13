@@ -25,7 +25,7 @@ export default function MyLearning() {
           Track your courses, progress, and certifications
         </p>
         <Button asChild>
-          <Link to="/auth">Sign In</Link>
+          <Link to="/auth">Sign In / Sign Up</Link>
         </Button>
       </div>
     );
