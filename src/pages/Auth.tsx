@@ -7,9 +7,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { Film, Users, Crown, Eye, EyeOff } from "lucide-react";
+import { Film, Users, Crown, Eye, EyeOff, Mail, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -20,6 +21,9 @@ const Auth = () => {
   const [role, setRole] = useState<"filmmaker" | "film_festival">("filmmaker");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [showResendSection, setShowResendSection] = useState(false);
   
   const { signUp, signIn: authSignIn } = useAuth();
 
@@ -115,6 +119,42 @@ const Auth = () => {
     setLoading(false);
   };
 
+  const handleResendVerification = async () => {
+    if (!resendEmail) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter your email address"
+      });
+      return;
+    }
+
+    setResendLoading(true);
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email: resendEmail,
+      options: {
+        emailRedirectTo: window.location.origin
+      }
+    });
+
+    if (error) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message
+      });
+    } else {
+      toast({
+        title: "Email Sent!",
+        description: "Please check your inbox for the verification email"
+      });
+      setResendEmail("");
+      setShowResendSection(false);
+    }
+    setResendLoading(false);
+  };
+
   const getRoleIcon = (roleType: string) => {
     switch (roleType) {
       case "filmmaker":
@@ -191,6 +231,50 @@ const Auth = () => {
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
+
+                <Collapsible open={showResendSection} onOpenChange={setShowResendSection}>
+                  <CollapsibleTrigger asChild>
+                    <Button variant="link" className="w-full text-sm text-muted-foreground hover:text-foreground">
+                      <Mail className="h-4 w-4 mr-2" />
+                      Didn't receive verification email?
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="space-y-3 pt-2">
+                    <div className="p-4 rounded-lg border bg-muted/50 space-y-3">
+                      <p className="text-sm text-muted-foreground">
+                        Enter your email address and we'll send you a new verification link.
+                      </p>
+                      <div className="space-y-2">
+                        <Label htmlFor="resend-email">Email Address</Label>
+                        <Input
+                          id="resend-email"
+                          type="email"
+                          value={resendEmail}
+                          onChange={(e) => setResendEmail(e.target.value)}
+                          placeholder="Enter your email"
+                        />
+                      </div>
+                      <Button 
+                        onClick={handleResendVerification} 
+                        disabled={resendLoading}
+                        variant="secondary"
+                        className="w-full"
+                      >
+                        {resendLoading ? (
+                          <>
+                            <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+                            Sending...
+                          </>
+                        ) : (
+                          <>
+                            <Mail className="h-4 w-4 mr-2" />
+                            Resend Verification Email
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               </TabsContent>
 
               <TabsContent value="signup" className="space-y-4">
