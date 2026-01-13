@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Users, MapPin, ChevronRight, MessageCircle, FileText, Briefcase } from "lucide-react";
+import { MapPin, ChevronRight, MessageCircle, FileText, Briefcase } from "lucide-react";
 
 export default function ProductionPhase() {
   const tools = [
@@ -12,13 +12,6 @@ export default function ProductionPhase() {
       icon: FileText,
       badge: "Smart Tool",
       route: "/call-sheet"
-    },
-    {
-      name: "Create Auditions",
-      description: "Create and manage audition opportunities for your projects",
-      icon: Users,
-      badge: "Core Tool",
-      route: "/create-audition"
     },
     {
       name: "Crew Hire",
