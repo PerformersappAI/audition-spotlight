@@ -4,18 +4,64 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, Edit, Trash2, UserCheck, UserX } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { Search, Pencil, Trash2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
+interface UserProfile {
+  id: string;
+  user_id: string;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  company_name: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  phone: string | null;
+  role: 'filmmaker' | 'film_festival' | 'admin';
+  created_at: string;
+}
+
+interface EditFormData {
+  first_name: string;
+  last_name: string;
+  company_name: string;
+  bio: string;
+  location: string;
+  website: string;
+  phone: string;
+}
+
 const AdminUsers = () => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const { toast } = useToast();
+
+  // Edit dialog state
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+  const [editFormData, setEditFormData] = useState<EditFormData>({
+    first_name: '',
+    last_name: '',
+    company_name: '',
+    bio: '',
+    location: '',
+    website: '',
+    phone: '',
+  });
+  const [isSaving, setIsSaving] = useState(false);
+
+  // Delete dialog state
+  const [deletingUser, setDeletingUser] = useState<UserProfile | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -66,6 +112,110 @@ const AdminUsers = () => {
         title: "Error",
         description: "Failed to update user role"
       });
+    }
+  };
+
+  // Edit user functions
+  const openEditDialog = (user: UserProfile) => {
+    setEditingUser(user);
+    setEditFormData({
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      company_name: user.company_name || '',
+      bio: user.bio || '',
+      location: user.location || '',
+      website: user.website || '',
+      phone: user.phone || '',
+    });
+  };
+
+  const handleEditInputChange = (field: keyof EditFormData, value: string) => {
+    setEditFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const saveUserProfile = async () => {
+    if (!editingUser) return;
+
+    setIsSaving(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({
+          first_name: editFormData.first_name || null,
+          last_name: editFormData.last_name || null,
+          company_name: editFormData.company_name || null,
+          bio: editFormData.bio || null,
+          location: editFormData.location || null,
+          website: editFormData.website || null,
+          phone: editFormData.phone || null,
+        })
+        .eq('user_id', editingUser.user_id);
+
+      if (error) throw error;
+
+      // Update local state
+      setUsers(users.map(user => 
+        user.user_id === editingUser.user_id 
+          ? { 
+              ...user, 
+              first_name: editFormData.first_name || null,
+              last_name: editFormData.last_name || null,
+              company_name: editFormData.company_name || null,
+              bio: editFormData.bio || null,
+              location: editFormData.location || null,
+              website: editFormData.website || null,
+              phone: editFormData.phone || null,
+            } 
+          : user
+      ));
+
+      toast({
+        title: "Success",
+        description: "User profile updated successfully"
+      });
+      setEditingUser(null);
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to update user profile"
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Delete user functions
+  const deleteUser = async () => {
+    if (!deletingUser) return;
+
+    setIsDeleting(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('user_id', deletingUser.user_id);
+
+      if (error) throw error;
+
+      // Remove from local state
+      setUsers(users.filter(user => user.user_id !== deletingUser.user_id));
+
+      toast({
+        title: "Success",
+        description: "User profile deleted successfully"
+      });
+      setDeletingUser(null);
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to delete user profile"
+      });
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -203,12 +353,12 @@ const AdminUsers = () => {
                         <TableCell>{user.company_name || '-'}</TableCell>
                         <TableCell>{formatDate(user.created_at)}</TableCell>
                         <TableCell>
-                          <div className="flex gap-2">
+                          <div className="flex gap-2 items-center">
                             <Select
                               value={user.role}
                               onValueChange={(newRole) => updateUserRole(user.user_id, newRole as 'admin' | 'filmmaker' | 'film_festival')}
                             >
-                              <SelectTrigger className="w-32">
+                              <SelectTrigger className="w-28">
                                 <SelectValue />
                               </SelectTrigger>
                               <SelectContent>
@@ -217,6 +367,23 @@ const AdminUsers = () => {
                                 <SelectItem value="admin">Admin</SelectItem>
                               </SelectContent>
                             </Select>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => openEditDialog(user)}
+                              title="Edit user"
+                            >
+                              <Pencil className="h-4 w-4" />
+                            </Button>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => setDeletingUser(user)}
+                              title="Delete user"
+                              className="text-destructive hover:text-destructive"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -228,6 +395,115 @@ const AdminUsers = () => {
           </CardContent>
         </Card>
       </div>
+
+      {/* Edit User Dialog */}
+      <Dialog open={!!editingUser} onOpenChange={(open) => !open && setEditingUser(null)}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit User Profile</DialogTitle>
+            <DialogDescription>
+              Update profile information for {editingUser?.email}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="first_name">First Name</Label>
+                <Input
+                  id="first_name"
+                  value={editFormData.first_name}
+                  onChange={(e) => handleEditInputChange('first_name', e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="last_name">Last Name</Label>
+                <Input
+                  id="last_name"
+                  value={editFormData.last_name}
+                  onChange={(e) => handleEditInputChange('last_name', e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="company_name">Company Name</Label>
+              <Input
+                id="company_name"
+                value={editFormData.company_name}
+                onChange={(e) => handleEditInputChange('company_name', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
+                value={editFormData.location}
+                onChange={(e) => handleEditInputChange('location', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="phone">Phone</Label>
+              <Input
+                id="phone"
+                value={editFormData.phone}
+                onChange={(e) => handleEditInputChange('phone', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
+                value={editFormData.website}
+                onChange={(e) => handleEditInputChange('website', e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
+                value={editFormData.bio}
+                onChange={(e) => handleEditInputChange('bio', e.target.value)}
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEditingUser(null)}>
+              Cancel
+            </Button>
+            <Button onClick={saveUserProfile} disabled={isSaving}>
+              {isSaving ? 'Saving...' : 'Save Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Confirmation Dialog */}
+      <AlertDialog open={!!deletingUser} onOpenChange={(open) => !open && setDeletingUser(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete User Profile</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2">
+              <p>
+                Are you sure you want to delete the profile for{' '}
+                <strong>{deletingUser?.first_name} {deletingUser?.last_name}</strong> ({deletingUser?.email})?
+              </p>
+              <p className="text-warning font-medium">
+                ⚠️ Note: This will delete the user's profile and app data only. The authentication account will remain and must be deleted separately from the Supabase dashboard.
+              </p>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={deleteUser}
+              disabled={isDeleting}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? 'Deleting...' : 'Delete Profile'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </AdminLayout>
   );
 };
