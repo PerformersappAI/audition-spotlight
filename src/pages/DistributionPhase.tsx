@@ -2,10 +2,17 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, ChevronRight } from "lucide-react";
+import { MessageCircle, ChevronRight, FileText } from "lucide-react";
 
 export default function DistributionPhase() {
   const tools = [
+    {
+      name: "Docs Library",
+      description: "Distribution agreements, licensing templates, and sales documentation",
+      icon: FileText,
+      badge: "Premium",
+      route: "/docs-library"
+    },
     {
       name: "Concierge / Consulting",
       description: "Get expert guidance on distribution and monetization strategies",
