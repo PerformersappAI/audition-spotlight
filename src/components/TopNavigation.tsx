@@ -238,7 +238,7 @@ export const TopNavigation = () => {
       {/* Auth Button (only show if not logged in) */}
       {!user && (
         <Button asChild className="bg-gold text-foreground hover:bg-gold/90">
-          <Link to="/auth">Sign In</Link>
+          <Link to="/auth">Sign In / Sign Up</Link>
         </Button>
       )}
     </nav>
