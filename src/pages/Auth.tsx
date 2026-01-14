@@ -170,36 +170,37 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-6">
+      <div className="w-full max-w-2xl space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold">Cast</h1>
-          <p className="text-muted-foreground mt-2">Connect filmmakers, actors, and festivals</p>
+          <h1 className="text-5xl font-bold">Cast</h1>
+          <p className="text-muted-foreground mt-3 text-lg">Connect filmmakers, actors, and festivals</p>
         </div>
 
-        <Card>
+        <Card className="p-4">
           <CardHeader>
-            <CardTitle>Welcome</CardTitle>
+            <CardTitle className="text-2xl">Welcome</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 h-12 text-lg">
+                <TabsTrigger value="signin" className="text-lg">Sign In</TabsTrigger>
+                <TabsTrigger value="signup" className="text-lg">Sign Up</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="signin" className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="signin-email">Email</Label>
+              <TabsContent value="signin" className="space-y-6 pt-4">
+                <div className="space-y-3">
+                  <Label htmlFor="signin-email" className="text-lg">Email</Label>
                   <Input
                     id="signin-email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
+                    className="h-14 text-lg px-4"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="signin-password">Password</Label>
+                <div className="space-y-3">
+                  <Label htmlFor="signin-password" className="text-lg">Password</Label>
                   <div className="relative">
                     <Input
                       id="signin-password"
@@ -207,19 +208,19 @@ const Auth = () => {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="Enter your password"
-                      className="pr-10"
+                      className="pr-12 h-14 text-lg px-4"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="icon"
-                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      className="absolute right-0 top-0 h-full px-4 hover:bg-transparent"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
-                        <EyeOff className="h-4 w-4 text-muted-foreground" />
+                        <EyeOff className="h-5 w-5 text-muted-foreground" />
                       ) : (
-                        <Eye className="h-4 w-4 text-muted-foreground" />
+                        <Eye className="h-5 w-5 text-muted-foreground" />
                       )}
                     </Button>
                   </div>
@@ -227,7 +228,7 @@ const Auth = () => {
                 <Button 
                   onClick={handleSignIn} 
                   disabled={loading} 
-                  className="w-full"
+                  className="w-full h-14 text-xl font-bold"
                 >
                   {loading ? "Signing In..." : "Sign In"}
                 </Button>
