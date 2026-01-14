@@ -57,6 +57,7 @@ import CertificationGallery from "./pages/CertificationGallery";
 import VerifyCertificate from "./pages/VerifyCertificate";
 import MyLearning from "./pages/MyLearning";
 import ContractAssistant from "./pages/ContractAssistant";
+import FundingStrategy from "./pages/FundingStrategy";
 
 const queryClient = new QueryClient();
 
@@ -114,6 +115,7 @@ const AppContent = () => (
           <Route path="/training/certifications" element={<CertificationGallery />} />
           <Route path="/verify-certificate/:certificateNumber" element={<VerifyCertificate />} />
           <Route path="/contract-assistant" element={<ContractAssistant />} />
+          <Route path="/funding-strategy" element={<FundingStrategy />} />
           <Route path="/pitch-deck" element={<PitchDeckMaker />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />

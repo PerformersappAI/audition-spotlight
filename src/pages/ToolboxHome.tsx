@@ -43,7 +43,8 @@ import {
   Megaphone,
   UserPlus,
   ArrowRight,
-  Zap
+  Zap,
+  DollarSign
 } from "lucide-react";
 
 interface Module {
@@ -715,6 +716,12 @@ export default function ToolboxHome() {
                     <Scale className="h-5 w-5 text-emerald-400" />
                   </div>
                   <span className="text-base font-medium">Contracts</span>
+                </Link>
+                <Link to="/funding-strategy" className="flex items-center gap-3 text-gray-200 hover:text-green-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-green-500/20 flex items-center justify-center">
+                    <DollarSign className="h-5 w-5 text-green-400" />
+                  </div>
+                  <span className="text-base font-medium">Funding</span>
                 </Link>
               </div>
             </div>
