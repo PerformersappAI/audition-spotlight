@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale, Users } from "lucide-react";
+import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale, Users, DollarSign } from "lucide-react";
 
 export default function PreProductionPhase() {
   const tools = [
@@ -47,6 +47,13 @@ export default function PreProductionPhase() {
       icon: FileText,
       badge: "Premium",
       route: "/library"
+    },
+    {
+      name: "Funding Strategy",
+      description: "Create funding briefs for investors and grant applications",
+      icon: DollarSign,
+      badge: "Smart Tool",
+      route: "/funding-strategy"
     }
   ];
 
