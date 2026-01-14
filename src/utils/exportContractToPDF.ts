@@ -11,6 +11,7 @@ interface ContractData {
   creditTitle: string;
   creditPlacement: string;
   producerSignatory: string;
+  companyLogo?: string;
 }
 
 const formatDate = (dateString: string): string => {
@@ -38,6 +39,19 @@ export const exportContractToPDF = (data: ContractData, printOnly: boolean = fal
   const margin = 25;
   const contentWidth = pageWidth - (margin * 2);
   let yPosition = margin;
+
+  // Add company logo if provided
+  if (data.companyLogo) {
+    try {
+      const logoWidth = 50;
+      const logoHeight = 15;
+      const logoX = (pageWidth - logoWidth) / 2;
+      doc.addImage(data.companyLogo, 'AUTO', logoX, yPosition, logoWidth, logoHeight);
+      yPosition += logoHeight + 8;
+    } catch (error) {
+      console.error('Error adding logo to PDF:', error);
+    }
+  }
 
   const addText = (text: string, fontSize: number, isBold: boolean = false, align: 'left' | 'center' = 'left') => {
     doc.setFontSize(fontSize);
