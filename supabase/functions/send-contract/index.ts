@@ -19,6 +19,7 @@ interface ContractData {
   creditTitle: string;
   creditPlacement: string;
   producerSignatory: string;
+  companyLogo?: string;
 }
 
 interface EmailRecipient {
@@ -56,6 +57,11 @@ const generateEmailHTML = (data: ContractData, personalNote?: string): string =>
       <div style="max-width: 700px; margin: 0 auto; padding: 20px;">
         <!-- Header -->
         <div style="background-color: #1e293b; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+          ${data.companyLogo ? `
+            <div style="margin-bottom: 16px;">
+              <img src="${data.companyLogo}" alt="Company Logo" style="max-width: 200px; max-height: 60px; object-fit: contain;" />
+            </div>
+          ` : ''}
           <h1 style="color: #ffffff; margin: 0; font-size: 24px;">Film Investment Agreement</h1>
           <p style="color: #94a3b8; margin: 8px 0 0 0; font-size: 14px;">
             For your review and signature
@@ -157,7 +163,7 @@ const handler = async (req: Request): Promise<Response> => {
       const html = generateEmailHTML(contractData, recipient.note);
       
       return resend.emails.send({
-        from: "Filmmaker Genius <onboarding@resend.dev>",
+        from: "Filmmaker Genius <noreply@filmmakergenius.com>",
         to: [recipient.email.trim()],
         subject: `Film Investment Agreement - ${contractData.filmTitle || "For Review"}`,
         html,

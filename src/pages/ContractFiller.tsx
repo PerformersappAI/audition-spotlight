@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Download, Mail, FileText, AlertTriangle, Printer } from "lucide-react";
+import { ArrowLeft, Download, Mail, FileText, AlertTriangle, Printer, Upload, X, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -23,6 +23,7 @@ interface ContractData {
   creditTitle: string;
   creditPlacement: string;
   producerSignatory: string;
+  companyLogo?: string;
 }
 
 interface EmailRecipient {
@@ -48,6 +49,38 @@ export default function ContractFiller() {
     { email: "", note: "" }
   ]);
   const [isSending, setIsSending] = useState(false);
+  const [companyLogo, setCompanyLogo] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please upload an image file (PNG, JPG, etc.)");
+      return;
+    }
+
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Logo file must be less than 2MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setCompanyLogo(base64);
+      toast.success("Logo uploaded successfully!");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeLogo = () => {
+    setCompanyLogo(null);
+    if (logoInputRef.current) {
+      logoInputRef.current.value = "";
+    }
+  };
 
   const handleInputChange = (field: keyof ContractData, value: string) => {
     setContractData(prev => ({ ...prev, [field]: value }));
@@ -76,7 +109,7 @@ export default function ContractFiller() {
       toast.error("Please fill in at least the Film Title, Producer Name, and Investor Name");
       return;
     }
-    exportContractToPDF(contractData);
+    exportContractToPDF({ ...contractData, companyLogo: companyLogo || undefined });
     toast.success("Contract PDF downloaded successfully!");
   };
 
@@ -85,7 +118,7 @@ export default function ContractFiller() {
       toast.error("Please fill in at least the Film Title, Producer Name, and Investor Name");
       return;
     }
-    exportContractToPDF(contractData, true);
+    exportContractToPDF({ ...contractData, companyLogo: companyLogo || undefined }, true);
   };
 
   const handleSendEmail = async () => {
@@ -107,7 +140,7 @@ export default function ContractFiller() {
       const { data, error } = await supabase.functions.invoke('send-contract', {
         body: {
           recipients: validRecipients,
-          contractData,
+          contractData: { ...contractData, companyLogo: companyLogo || undefined },
         }
       });
 
@@ -171,6 +204,55 @@ export default function ContractFiller() {
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Form Section */}
           <div className="space-y-6">
+            {/* Company Logo Upload */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Image className="w-5 h-5" />
+                  Company Logo
+                </CardTitle>
+                <CardDescription>Upload your company logo to appear at the top of the contract (Recommended: 200×60px, PNG or JPG)</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <input
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/jpg"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                  id="logo-upload"
+                />
+                
+                {companyLogo ? (
+                  <div className="flex items-center gap-4">
+                    <div className="border rounded-lg p-4 bg-white">
+                      <img 
+                        src={companyLogo} 
+                        alt="Company Logo" 
+                        className="max-w-[200px] max-h-[60px] object-contain"
+                      />
+                    </div>
+                    <Button variant="outline" size="sm" onClick={removeLogo}>
+                      <X className="w-4 h-4 mr-2" />
+                      Remove
+                    </Button>
+                  </div>
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    onClick={() => logoInputRef.current?.click()}
+                    className="w-full h-24 border-dashed"
+                  >
+                    <div className="flex flex-col items-center gap-2">
+                      <Upload className="w-6 h-6" />
+                      <span>Click to upload logo</span>
+                      <span className="text-xs text-muted-foreground">PNG or JPG, max 2MB</span>
+                    </div>
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle>Contract Details</CardTitle>
