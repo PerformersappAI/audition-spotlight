@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale, Users, DollarSign } from "lucide-react";
+import { Sparkles, Video, ChevronRight, FileText, Presentation, Scale, Users, DollarSign, FileSignature } from "lucide-react";
 
 export default function PreProductionPhase() {
   const tools = [
@@ -54,6 +54,13 @@ export default function PreProductionPhase() {
       icon: DollarSign,
       badge: "Smart Tool",
       route: "/funding-strategy"
+    },
+    {
+      name: "Investment Contract",
+      description: "Fill out and send investment agreement templates to investors",
+      icon: FileSignature,
+      badge: "Template",
+      route: "/contract-filler"
     }
   ];
 
