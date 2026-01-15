@@ -21,7 +21,7 @@ interface DistributionData {
   genres: string[];
   toneKeywords: string[];
   comps: { title: string; year: string; why: string }[];
-  credits: { personName: string; role: string; characterName: string; notableCredits: string }[];
+  credits: { personName: string; role: string; characterName: string; notableCredits: string; imdbUrl: string }[];
   
   // Platforms
   platformsSelected: string[];
@@ -318,17 +318,19 @@ export const exportDistributionReadinessToPDF = (data: DistributionData): void =
       c.role || '',
       c.personName || '',
       c.characterName || '',
-      c.notableCredits || ''
+      c.notableCredits || '',
+      c.imdbUrl || ''
     ]);
     
     (doc as any).autoTable({
       startY: yPosition,
-      head: [['Role', 'Name', 'Character', 'Notable Credits']],
+      head: [['Role', 'Name', 'Character', 'Notable Credits', 'IMDb']],
       body: creditData,
       margin: { left: margin, right: margin },
-      styles: { fontSize: 9 },
+      styles: { fontSize: 8 },
       headStyles: { fillColor: [31, 41, 55] },
-      theme: 'grid'
+      theme: 'grid',
+      columnStyles: { 4: { cellWidth: 45 } }
     });
     
     yPosition = (doc as any).lastAutoTable.finalY + 10;
