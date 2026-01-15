@@ -34,6 +34,45 @@ const QUICK_QUESTIONS: QuickQuestion[] = [
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/distribution-assistant`;
 
+// Lightweight markdown formatter for chat responses
+function formatMarkdown(text: string): string {
+  if (!text) return "";
+  
+  let html = text
+    // Escape HTML first
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    // Headers (### Header)
+    .replace(/^### (.+)$/gm, '<h4 class="font-semibold text-base mt-3 mb-1">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 class="font-semibold text-lg mt-3 mb-1">$1</h3>')
+    .replace(/^# (.+)$/gm, '<h2 class="font-bold text-xl mt-4 mb-2">$1</h2>')
+    // Bold (**text**)
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+    // Italic (*text*)
+    .replace(/(?<!\*)\*([^*]+)\*(?!\*)/g, '<em>$1</em>')
+    // Bullet points (- item or * item at start of line)
+    .replace(/^[\-\*] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>')
+    // Numbered lists (1. item)
+    .replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>')
+    // Wrap consecutive list items
+    .replace(/(<li class="ml-4 list-disc">.*<\/li>\n?)+/g, '<ul class="my-2 space-y-1">$&</ul>')
+    .replace(/(<li class="ml-4 list-decimal">.*<\/li>\n?)+/g, '<ol class="my-2 space-y-1">$&</ol>')
+    // Inline code (`code`)
+    .replace(/`([^`]+)`/g, '<code class="bg-background/50 px-1 py-0.5 rounded text-xs">$1</code>')
+    // Paragraphs (double newlines)
+    .replace(/\n\n+/g, '</p><p class="mb-2">')
+    // Single newlines within paragraphs
+    .replace(/\n/g, '<br/>');
+  
+  // Wrap in paragraph if not starting with a block element
+  if (!html.startsWith('<h') && !html.startsWith('<ul') && !html.startsWith('<ol')) {
+    html = '<p class="mb-2">' + html + '</p>';
+  }
+  
+  return html;
+}
+
 export function DistributionChatAssistant({ context }: DistributionChatAssistantProps) {
   const [isOpen, setIsOpen] = useState(true);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -180,7 +219,7 @@ export function DistributionChatAssistant({ context }: DistributionChatAssistant
 
           {/* Messages */}
           {messages.length > 0 && (
-            <ScrollArea className="h-[250px] px-4" ref={scrollRef}>
+            <ScrollArea className="h-[300px] px-4" ref={scrollRef}>
               <div className="space-y-3 pb-3">
                 {messages.map((msg, i) => (
                   <div
@@ -188,12 +227,21 @@ export function DistributionChatAssistant({ context }: DistributionChatAssistant
                     className={`text-sm rounded-lg p-3 ${
                       msg.role === "user"
                         ? "bg-primary text-primary-foreground ml-6"
-                        : "bg-muted mr-6"
+                        : "bg-muted mr-4 prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground"
                     }`}
                   >
-                    {msg.content || (isLoading && i === messages.length - 1 && (
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                    ))}
+                    {msg.role === "user" ? (
+                      msg.content
+                    ) : msg.content ? (
+                      <div 
+                        dangerouslySetInnerHTML={{ __html: formatMarkdown(msg.content) }}
+                        className="[&>p]:mb-2 [&>p:last-child]:mb-0 [&>h4]:text-foreground [&>h3]:text-foreground [&>h2]:text-foreground [&>ul]:my-2 [&>ol]:my-2 leading-relaxed"
+                      />
+                    ) : (
+                      isLoading && i === messages.length - 1 && (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      )
+                    )}
                   </div>
                 ))}
               </div>
