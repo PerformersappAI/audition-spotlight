@@ -27,12 +27,18 @@ import {
   Video,
   CircleCheck,
   Clock,
-  AlertCircle
+  AlertCircle,
+  Download,
+  Send,
+  ImageIcon,
+  Loader2,
+  X
 } from "lucide-react";
 import { toast } from "sonner";
 import { DistributionGlossary } from "@/components/distribution/DistributionGlossary";
 import { DistributionChatAssistant } from "@/components/distribution/DistributionChatAssistant";
-
+import { exportDistributionReadinessToPDF } from "@/utils/exportDistributionReadinessToPDF";
+import { supabase } from "@/integrations/supabase/client";
 // Platform options
 const PLATFORMS = [
   { id: "netflix", label: "Netflix (SVOD)" },
@@ -121,7 +127,48 @@ interface FormData {
   // Step 10 - Review
   confirmAccuracy: boolean;
   generateOutputs: string[];
+  
+  // Branding & Email
+  companyLogo: string | null;
+  emailRecipients: string;
 }
+
+// Dropdown options for technical specs
+const MASTER_FORMAT_OPTIONS = [
+  { value: "prores_422", label: "ProRes 422" },
+  { value: "prores_422_hq", label: "ProRes 422 HQ" },
+  { value: "prores_4444", label: "ProRes 4444" },
+  { value: "prores_raw", label: "ProRes RAW" },
+  { value: "dnxhd", label: "DNxHD" },
+  { value: "dnxhr", label: "DNxHR" },
+  { value: "h264", label: "H.264" },
+  { value: "h265_hevc", label: "H.265/HEVC" },
+  { value: "imf", label: "IMF Package" },
+  { value: "dcp", label: "DCP" },
+  { value: "other", label: "Other" }
+];
+
+const MASTER_RESOLUTION_OPTIONS = [
+  { value: "1920x1080", label: "1920x1080 (HD)" },
+  { value: "2048x1080", label: "2048x1080 (2K DCI)" },
+  { value: "3840x2160", label: "3840x2160 (4K UHD)" },
+  { value: "4096x2160", label: "4096x2160 (4K DCI)" },
+  { value: "7680x4320", label: "7680x4320 (8K UHD)" },
+  { value: "other", label: "Other" }
+];
+
+const FRAME_RATE_OPTIONS = [
+  { value: "23.976", label: "23.976 fps (Film NTSC)" },
+  { value: "24", label: "24 fps (True Film)" },
+  { value: "25", label: "25 fps (PAL)" },
+  { value: "29.97", label: "29.97 fps (NTSC)" },
+  { value: "30", label: "30 fps" },
+  { value: "48", label: "48 fps" },
+  { value: "50", label: "50 fps" },
+  { value: "59.94", label: "59.94 fps" },
+  { value: "60", label: "60 fps" },
+  { value: "other", label: "Other" }
+];
 
 const initialFormData: FormData = {
   projectTitle: "",
@@ -166,7 +213,9 @@ const initialFormData: FormData = {
   knownTechIssues: [],
   platformForms: {},
   confirmAccuracy: false,
-  generateOutputs: ["readiness_score", "missing_items_list", "platform_checklists"]
+  generateOutputs: ["readiness_score", "missing_items_list", "platform_checklists"],
+  companyLogo: null,
+  emailRecipients: ""
 };
 
 // Score calculation functions
@@ -444,11 +493,122 @@ export default function DistributionReadiness() {
               </CardContent>
             </Card>
 
+            {/* Email Section */}
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Send className="h-5 w-5" />
+                  Share Report
+                </CardTitle>
+                <CardDescription>Email the report to your team members</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="emailRecipients">Email Recipients</Label>
+                  <Input
+                    id="emailRecipients"
+                    value={formData.emailRecipients}
+                    onChange={(e) => updateFormData({ emailRecipients: e.target.value })}
+                    placeholder="email@example.com, another@example.com"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">Separate multiple emails with commas</p>
+                </div>
+                <Button
+                  onClick={async () => {
+                    const emails = formData.emailRecipients.split(',').map(e => e.trim()).filter(Boolean);
+                    if (emails.length === 0) {
+                      toast.error("Please enter at least one email address");
+                      return;
+                    }
+                    try {
+                      const { data, error } = await supabase.functions.invoke('send-distribution-report', {
+                        body: {
+                          recipients: emails,
+                          projectTitle: formData.projectTitle,
+                          finalScore,
+                          readinessBand: readiness.band,
+                          businessScore,
+                          legalScore,
+                          technicalScore,
+                          companyLogoUrl: formData.companyLogo
+                        }
+                      });
+                      if (error) throw error;
+                      toast.success(`Report sent to ${emails.length} recipient(s)`);
+                    } catch (err) {
+                      console.error('Email error:', err);
+                      toast.error("Failed to send email. Please try again.");
+                    }
+                  }}
+                  className="w-full"
+                  disabled={!formData.emailRecipients.trim()}
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Send Report via Email
+                </Button>
+              </CardContent>
+            </Card>
+
             <div className="flex justify-center gap-4">
               <Button variant="outline" onClick={() => setShowResults(false)}>
                 Edit Assessment
               </Button>
-              <Button onClick={() => toast.success("PDF export coming soon!")}>
+              <Button 
+                onClick={() => {
+                  // Get label for format/resolution/framerate
+                  const getFormatLabel = (value: string) => MASTER_FORMAT_OPTIONS.find(o => o.value === value)?.label || value;
+                  const getResLabel = (value: string) => MASTER_RESOLUTION_OPTIONS.find(o => o.value === value)?.label || value;
+                  const getFpsLabel = (value: string) => FRAME_RATE_OPTIONS.find(o => o.value === value)?.label || value;
+
+                  exportDistributionReadinessToPDF({
+                    projectTitle: formData.projectTitle,
+                    projectType: formData.projectType,
+                    budgetTier: formData.budgetTier,
+                    runtimeMinutes: formData.runtimeMinutes,
+                    languagePrimary: formData.languagePrimary,
+                    logline: formData.logline,
+                    synopsisShort: formData.synopsisShort,
+                    genres: formData.genres,
+                    toneKeywords: formData.toneKeywords,
+                    comps: formData.comps,
+                    credits: formData.credits,
+                    platformsSelected: formData.platformsSelected,
+                    platformForms: formData.platformForms,
+                    distributionGoal: formData.distributionGoal,
+                    rightsOfferType: formData.rightsOfferType,
+                    territories: formData.territories,
+                    termMonths: formData.termMonths,
+                    chainOfTitleStatus: formData.chainOfTitleStatus,
+                    musicClearanceStatus: formData.musicClearanceStatus,
+                    releasesStatus: formData.releasesStatus,
+                    eAndOStatus: formData.eAndOStatus,
+                    knownClearanceRisks: formData.knownClearanceRisks,
+                    masterAvailable: formData.masterAvailable,
+                    masterFormat: getFormatLabel(formData.masterFormat),
+                    masterResolution: getResLabel(formData.masterResolution),
+                    masterFrameRate: getFpsLabel(formData.masterFrameRate),
+                    audioDeliverables: formData.audioDeliverables,
+                    captionsAvailable: formData.captionsAvailable,
+                    subtitleLanguages: formData.subtitleLanguages,
+                    textlessElements: formData.textlessElements,
+                    mAndETrack: formData.mAndETrack,
+                    qcDone: formData.qcDone,
+                    trailerFile: formData.trailerFile,
+                    posterFile: formData.posterFile,
+                    keyArtFile: formData.keyArtFile,
+                    pressKitUrl: formData.pressKitUrl,
+                    businessScore,
+                    legalScore,
+                    technicalScore,
+                    finalScore,
+                    readinessBand: readiness.band,
+                    hardStops,
+                    companyLogo: formData.companyLogo || undefined
+                  });
+                  toast.success("PDF Report Downloaded!");
+                }}
+              >
+                <Download className="h-4 w-4 mr-2" />
                 Export PDF Report
               </Button>
             </div>
@@ -1119,33 +1279,45 @@ export default function DistributionReadiness() {
                       </div>
                       
                       <div>
-                        <Label htmlFor="masterFormat">Master Format</Label>
-                        <Input
-                          id="masterFormat"
-                          value={formData.masterFormat}
-                          onChange={(e) => updateFormData({ masterFormat: e.target.value })}
-                          placeholder="ProRes 422 HQ, DNxHR, IMF..."
-                        />
+                        <Label>Master Format</Label>
+                        <Select value={formData.masterFormat} onValueChange={(v) => updateFormData({ masterFormat: v })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select format" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MASTER_FORMAT_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div>
-                        <Label htmlFor="masterResolution">Master Resolution</Label>
-                        <Input
-                          id="masterResolution"
-                          value={formData.masterResolution}
-                          onChange={(e) => updateFormData({ masterResolution: e.target.value })}
-                          placeholder="1920x1080 or 3840x2160"
-                        />
+                        <Label>Master Resolution</Label>
+                        <Select value={formData.masterResolution} onValueChange={(v) => updateFormData({ masterResolution: v })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select resolution" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {MASTER_RESOLUTION_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       
                       <div>
-                        <Label htmlFor="frameRate">Frame Rate</Label>
-                        <Input
-                          id="frameRate"
-                          value={formData.masterFrameRate}
-                          onChange={(e) => updateFormData({ masterFrameRate: e.target.value })}
-                          placeholder="23.976, 24, 25..."
-                        />
+                        <Label>Frame Rate</Label>
+                        <Select value={formData.masterFrameRate} onValueChange={(v) => updateFormData({ masterFrameRate: v })}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select frame rate" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {FRAME_RATE_OPTIONS.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                     
@@ -1353,6 +1525,49 @@ export default function DistributionReadiness() {
                   </div>
                   
                   <div className="space-y-4">
+                    {/* Logo Upload */}
+                    <Card className="border-dashed">
+                      <CardContent className="pt-4">
+                        <h3 className="font-medium mb-3 flex items-center gap-2">
+                          <ImageIcon className="h-4 w-4" />
+                          Company Logo (Optional)
+                        </h3>
+                        <p className="text-sm text-muted-foreground mb-3">Add your company logo to the PDF report header</p>
+                        
+                        {formData.companyLogo ? (
+                          <div className="flex items-center gap-4">
+                            <img src={formData.companyLogo} alt="Logo" className="h-12 max-w-[150px] object-contain" />
+                            <Button variant="ghost" size="sm" onClick={() => updateFormData({ companyLogo: null })}>
+                              <X className="h-4 w-4 mr-1" /> Remove
+                            </Button>
+                          </div>
+                        ) : (
+                          <div className="border-2 border-dashed rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              id="logo-upload"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) {
+                                  const reader = new FileReader();
+                                  reader.onload = (ev) => {
+                                    updateFormData({ companyLogo: ev.target?.result as string });
+                                  };
+                                  reader.readAsDataURL(file);
+                                }
+                              }}
+                            />
+                            <label htmlFor="logo-upload" className="cursor-pointer">
+                              <Upload className="h-6 w-6 mx-auto text-muted-foreground mb-2" />
+                              <span className="text-sm text-muted-foreground">Upload logo (landscape, ~200x60px)</span>
+                            </label>
+                          </div>
+                        )}
+                      </CardContent>
+                    </Card>
+
                     <Card className="bg-muted/50">
                       <CardContent className="pt-4">
                         <h3 className="font-medium mb-3">Summary</h3>
