@@ -87,8 +87,8 @@ interface FormData {
   toneKeywords: string[];
   comps: { title: string; year: string; why: string }[];
   
-  // Step 4 - Credits
-  credits: { personName: string; role: string; characterName: string; notableCredits: string }[];
+// Step 4 - Credits
+  credits: { personName: string; role: string; characterName: string; notableCredits: string; imdbUrl: string }[];
   
   // Step 5 - Trailer
   trailerFile: File | null;
@@ -301,6 +301,10 @@ export default function DistributionReadiness() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<FormData>(initialFormData);
   const [showResults, setShowResults] = useState(false);
+  
+  // Raw string state for comma-separated inputs (parsed onBlur)
+  const [genresInput, setGenresInput] = useState(formData.genres.join(', '));
+  const [toneKeywordsInput, setToneKeywordsInput] = useState(formData.toneKeywords.join(', '));
 
   const updateFormData = (updates: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...updates }));
@@ -899,8 +903,9 @@ export default function DistributionReadiness() {
                       <Label htmlFor="genres">Genres * (comma separated)</Label>
                       <Input
                         id="genres"
-                        value={formData.genres.join(', ')}
-                        onChange={(e) => updateFormData({ genres: e.target.value.split(',').map(g => g.trim()).filter(Boolean) })}
+                        value={genresInput}
+                        onChange={(e) => setGenresInput(e.target.value)}
+                        onBlur={() => updateFormData({ genres: genresInput.split(',').map(g => g.trim()).filter(Boolean) })}
                         placeholder="Drama, Thriller, Mystery..."
                       />
                     </div>
@@ -909,8 +914,9 @@ export default function DistributionReadiness() {
                       <Label htmlFor="toneKeywords">Tone Keywords (comma separated)</Label>
                       <Input
                         id="toneKeywords"
-                        value={formData.toneKeywords.join(', ')}
-                        onChange={(e) => updateFormData({ toneKeywords: e.target.value.split(',').map(t => t.trim()).filter(Boolean) })}
+                        value={toneKeywordsInput}
+                        onChange={(e) => setToneKeywordsInput(e.target.value)}
+                        onBlur={() => updateFormData({ toneKeywords: toneKeywordsInput.split(',').map(t => t.trim()).filter(Boolean) })}
                         placeholder="gritty, darkly comic, suspenseful..."
                       />
                     </div>
@@ -993,6 +999,17 @@ export default function DistributionReadiness() {
                             }}
                           />
                         </div>
+                        <div>
+                          <Input
+                            placeholder="IMDb URL (e.g., imdb.com/name/nm...)"
+                            value={credit.imdbUrl || ''}
+                            onChange={(e) => {
+                              const newCredits = [...formData.credits];
+                              newCredits[index].imdbUrl = e.target.value;
+                              updateFormData({ credits: newCredits });
+                            }}
+                          />
+                        </div>
                       </div>
                     ))}
                     
@@ -1000,7 +1017,7 @@ export default function DistributionReadiness() {
                       variant="outline"
                       onClick={() => {
                         updateFormData({
-                          credits: [...formData.credits, { personName: '', role: '', characterName: '', notableCredits: '' }]
+                          credits: [...formData.credits, { personName: '', role: '', characterName: '', notableCredits: '', imdbUrl: '' }]
                         });
                       }}
                     >
