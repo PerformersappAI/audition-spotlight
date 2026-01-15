@@ -311,17 +311,6 @@ export default function ToolboxHome() {
               <p className="text-lg md:text-xl text-gray-400 mb-6">
                 From start to distribution, click the boxes below to guide you through every step of your filmmaking journey.
               </p>
-              <div className="flex flex-wrap gap-3 justify-center lg:justify-start">
-                <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-2 text-sm">
-                  Pre-Production
-                </Badge>
-                <Badge className="bg-teal-500/20 text-teal-400 border-teal-500/30 px-4 py-2 text-sm">
-                  Production
-                </Badge>
-                <Badge className="bg-purple-500/20 text-purple-400 border-purple-500/30 px-4 py-2 text-sm">
-                  Post-Production
-                </Badge>
-              </div>
             </div>
 
             {/* Right side - Smaller Video */}
