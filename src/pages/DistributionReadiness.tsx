@@ -861,8 +861,18 @@ export default function DistributionReadiness() {
                   </div>
                   
                   <div className="space-y-4">
-                    <div className="border-2 border-dashed rounded-lg p-8 text-center">
-                      <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
+                    <div 
+                      className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                        formData.trailerFile 
+                          ? "border-green-500 bg-green-500/10" 
+                          : "border-muted-foreground/25 hover:border-muted-foreground/50"
+                      }`}
+                    >
+                      {formData.trailerFile ? (
+                        <CheckCircle2 className="h-10 w-10 mx-auto text-green-500 mb-4" />
+                      ) : (
+                        <Upload className="h-10 w-10 mx-auto text-muted-foreground mb-4" />
+                      )}
                       <input
                         type="file"
                         accept=".mp4,.mov,.m4v"
@@ -876,12 +886,40 @@ export default function DistributionReadiness() {
                           }
                         }}
                       />
-                      <label htmlFor="trailer-upload" className="cursor-pointer">
-                        <div className="text-lg font-medium mb-1">
-                          {formData.trailerFile ? formData.trailerFile.name : "Drop your trailer here or click to browse"}
+                      
+                      {formData.trailerFile ? (
+                        <div className="space-y-3">
+                          <div className="text-lg font-medium text-green-500">
+                            ✓ Trailer Selected
+                          </div>
+                          <div className="text-sm font-medium">
+                            {formData.trailerFile.name}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {(formData.trailerFile.size / (1024 * 1024)).toFixed(1)} MB • {formData.trailerFile.name.split('.').pop()?.toUpperCase()}
+                          </div>
+                          <div className="flex items-center justify-center gap-3 pt-2">
+                            <label htmlFor="trailer-upload" className="cursor-pointer">
+                              <span className="text-sm text-primary hover:underline">Replace</span>
+                            </label>
+                            <span className="text-muted-foreground">•</span>
+                            <button
+                              type="button"
+                              onClick={() => updateFormData({ trailerFile: null })}
+                              className="text-sm text-destructive hover:underline"
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground">MP4, MOV, or M4V (max 5 minutes)</p>
-                      </label>
+                      ) : (
+                        <label htmlFor="trailer-upload" className="cursor-pointer">
+                          <div className="text-lg font-medium mb-1">
+                            Drop your trailer here or click to browse
+                          </div>
+                          <p className="text-sm text-muted-foreground">MP4, MOV, or M4V (max 5 minutes)</p>
+                        </label>
+                      )}
                     </div>
                     
                     <div>
