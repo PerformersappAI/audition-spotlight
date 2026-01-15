@@ -302,33 +302,20 @@ export default function ToolboxHome() {
 
         {/* HERO CONTENT SECTION - content flows over fading background */}
         <div className="container mx-auto px-6 py-10 relative z-10">
-          {/* Asymmetric Layout: CTA Text Left, Video Right (Adobe-style) */}
-          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12 mb-12">
-            {/* Left side - CTA Text */}
-            <div className="flex-1 text-center lg:text-left">
-              <h2 className="text-2xl md:text-4xl font-bold text-white mb-4">
-                Need help with the process of filmmaking?
-              </h2>
-              <p className="text-lg md:text-xl text-gray-400 mb-6">
-                From start to distribution, click the boxes below to guide you through every step of your filmmaking journey.
-              </p>
-            </div>
-
-            {/* Right side - Smaller Video */}
-            {embedUrl && (
-              <div className="flex-shrink-0 w-full lg:w-auto">
-                <div className="w-full max-w-sm aspect-video rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-2xl">
-                  <iframe
-                    src={embedUrl}
-                    className="w-full h-full"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    title="Filmmaker Genius Introduction"
-                  />
-                </div>
+          {/* Video Section - Centered */}
+          {embedUrl && (
+            <div className="flex justify-center mb-12">
+              <div className="w-full max-w-sm aspect-video rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-2xl">
+                <iframe
+                  src={embedUrl}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  title="Filmmaker Genius Introduction"
+                />
               </div>
-            )}
-          </div>
+            </div>
+          )}
 
           {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
