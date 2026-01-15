@@ -30,6 +30,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import { toast } from "sonner";
+import { DistributionGlossary } from "@/components/distribution/DistributionGlossary";
 
 // Platform options
 const PLATFORMS = [
@@ -1382,7 +1383,7 @@ export default function DistributionReadiness() {
             </CardContent>
           </Card>
 
-          {/* Live Score Panel */}
+          {/* Sidebar: Live Score Panel + Glossary */}
           <div className="space-y-4">
             <Card className="sticky top-6">
               <CardHeader className="pb-3">
@@ -1436,6 +1437,9 @@ export default function DistributionReadiness() {
                 )}
               </CardContent>
             </Card>
+            
+            {/* Distribution Terms Glossary */}
+            <DistributionGlossary />
           </div>
         </div>
       </div>
