@@ -44,7 +44,8 @@ import {
   UserPlus,
   ArrowRight,
   Zap,
-  DollarSign
+  DollarSign,
+  ClipboardCheck
 } from "lucide-react";
 
 interface Module {
@@ -711,6 +712,12 @@ export default function ToolboxHome() {
                     <DollarSign className="h-5 w-5 text-green-400" />
                   </div>
                   <span className="text-base font-medium">Funding</span>
+                </Link>
+                <Link to="/distribution-readiness" className="flex items-center gap-3 text-gray-200 hover:text-cyan-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                    <ClipboardCheck className="h-5 w-5 text-cyan-400" />
+                  </div>
+                  <span className="text-base font-medium">Distribution</span>
                 </Link>
               </div>
             </div>

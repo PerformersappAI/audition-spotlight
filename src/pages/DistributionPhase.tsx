@@ -2,16 +2,23 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageCircle, ChevronRight, FileText } from "lucide-react";
+import { MessageCircle, ChevronRight, FileText, ClipboardCheck } from "lucide-react";
 
 export default function DistributionPhase() {
   const tools = [
+    {
+      name: "Distribution Readiness",
+      description: "Assess your project's readiness for distribution with platform-specific deliverables checklists and readiness scoring",
+      icon: ClipboardCheck,
+      badge: "Smart Tool",
+      route: "/distribution-readiness"
+    },
     {
       name: "Docs Library",
       description: "Distribution agreements, licensing templates, and sales documentation",
       icon: FileText,
       badge: "Premium",
-      route: "/docs-library"
+      route: "/library"
     },
     {
       name: "Concierge / Consulting",
