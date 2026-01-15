@@ -102,14 +102,15 @@ const getScoreColor = (score: number): [number, number, number] => {
 };
 
 export const exportDistributionReadinessToPDF = (data: DistributionData): void => {
-  const doc = new jsPDF({
-    orientation: 'portrait',
-    unit: 'mm',
-    format: 'letter'
-  });
+  try {
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'letter'
+    });
 
-  const pageWidth = doc.internal.pageSize.getWidth();
-  const pageHeight = doc.internal.pageSize.getHeight();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
   const contentWidth = pageWidth - (margin * 2);
   let yPosition = margin;
@@ -605,9 +606,13 @@ export const exportDistributionReadinessToPDF = (data: DistributionData): void =
     addFooter(i, totalPages);
   }
 
-  // Save
-  const fileName = `Distribution_Readiness_${data.projectTitle?.replace(/[^a-zA-Z0-9]/g, '_') || 'Report'}_${new Date().toISOString().split('T')[0]}.pdf`;
-  doc.save(fileName);
+    // Save
+    const fileName = `Distribution_Readiness_${data.projectTitle?.replace(/[^a-zA-Z0-9]/g, '_') || 'Report'}_${new Date().toISOString().split('T')[0]}.pdf`;
+    doc.save(fileName);
+  } catch (error) {
+    console.error('PDF generation error:', error);
+    throw new Error('Failed to generate PDF report');
+  }
 };
 
 export const generateDistributionPDFBlob = async (data: DistributionData): Promise<Blob> => {
