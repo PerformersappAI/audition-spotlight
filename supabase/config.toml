@@ -96,3 +96,6 @@ verify_jwt = false
 
 [functions.generate-scene-image]
 verify_jwt = false
+
+[functions.distribution-assistant]
+verify_jwt = false
