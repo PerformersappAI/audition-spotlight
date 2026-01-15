@@ -513,9 +513,20 @@ export default function DistributionReadiness() {
         {/* Live Score Panel */}
         <div className="grid lg:grid-cols-[1fr,300px] gap-6">
           {/* Main Form Area */}
-          <Card>
-            <CardContent className="pt-6">
-              {/* Step 1: Project Setup */}
+          <div className="space-y-4">
+            {/* AI Chat Assistant - Integrated at top of form area */}
+            <DistributionChatAssistant 
+              context={{
+                projectTitle: formData.projectTitle,
+                projectType: formData.projectType,
+                budgetTier: formData.budgetTier,
+                currentStep
+              }}
+            />
+            
+            <Card>
+              <CardContent className="pt-6">
+                {/* Step 1: Project Setup */}
               {currentStep === 1 && (
                 <div className="space-y-6">
                   <div>
@@ -1383,6 +1394,7 @@ export default function DistributionReadiness() {
               </div>
             </CardContent>
           </Card>
+          </div>
 
           {/* Sidebar: Live Score Panel + Glossary */}
           <div className="space-y-4">
@@ -1438,16 +1450,6 @@ export default function DistributionReadiness() {
                 )}
               </CardContent>
             </Card>
-            
-            {/* Distribution Chat Assistant */}
-            <DistributionChatAssistant 
-              context={{
-                projectTitle: formData.projectTitle,
-                projectType: formData.projectType,
-                budgetTier: formData.budgetTier,
-                currentStep
-              }}
-            />
 
             {/* Distribution Terms Glossary */}
             <DistributionGlossary />
