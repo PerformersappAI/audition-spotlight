@@ -277,82 +277,9 @@ export default function ToolboxHome() {
         />
 
 
-        {/* TOP BANNER HEADER */}
-        <div className="container mx-auto px-6 py-10 relative z-10">
-          {/* Header - Stylized title */}
-          <div className="text-center">
-            <h1 
-              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              Filmmaker Genius
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-400 italic">
-              Where Genius Meets the Silver Screen
-            </p>
-          </div>
-        </div>
-
-        {/* HERO CONTENT SECTION - content flows over fading background */}
-        <div className="container mx-auto px-6 py-10 relative z-10">
-
-          {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
-            <Link to="/toolbox/pre-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-blue-500/50 leading-none select-none group-hover:text-blue-400/70 transition-colors">1</span>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Pre Production</h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Screenwriting, Storyboarding</p>
-              </div>
-            </Link>
-            
-            <Link to="/toolbox/production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-teal-500/50 leading-none select-none group-hover:text-teal-400/70 transition-colors">2</span>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Production</h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Cinematography</p>
-              </div>
-            </Link>
-            
-            <Link to="/toolbox/post-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-purple-500/50 leading-none select-none group-hover:text-purple-400/70 transition-colors">3</span>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Post Production</h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Editing</p>
-              </div>
-            </Link>
-            
-            <Link to="/toolbox/film-release" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-amber-500/50 leading-none select-none group-hover:text-amber-400/70 transition-colors">4</span>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Film Release</h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Marketing, Festivals</p>
-              </div>
-            </Link>
-            
-            <Link to="/toolbox/distribution" className="col-span-2 md:col-span-1 group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
-              <span className="text-[120px] md:text-[160px] font-black text-rose-500/50 leading-none select-none group-hover:text-rose-400/70 transition-colors">5</span>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Distribution</h3>
-                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Monetization</p>
-              </div>
-            </Link>
-          </div>
-        </div>
-      </div>
-
-      {/* BLACK SECTION - Adobe Style Tools */}
-      <div className="bg-black">
-        <div className="container mx-auto px-6">
-          {/* Navigation Bar - integrated into black section */}
-          <nav className="flex items-center justify-center py-6 gap-8 flex-wrap">
+        {/* TOP NAVIGATION BAR */}
+        <div className="container mx-auto px-6 pt-6 relative z-10">
+          <nav className="flex items-center justify-center py-4 gap-8 flex-wrap">
             <Link
               to="/"
               className="text-amber-500 hover:text-amber-400 font-medium transition-colors"
@@ -459,6 +386,80 @@ export default function ToolboxHome() {
             )}
           </nav>
         </div>
+
+        {/* TITLE SECTION - with space below nav */}
+        <div className="container mx-auto px-6 py-8 relative z-10">
+          {/* Header - Stylized title */}
+          <div className="text-center">
+            <h1 
+              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
+              style={{
+                fontFamily: "'Playfair Display', serif",
+                background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                letterSpacing: '-0.02em'
+              }}
+            >
+              Filmmaker Genius
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-400 italic">
+              Where Genius Meets the Silver Screen
+            </p>
+          </div>
+        </div>
+
+        {/* HERO CONTENT SECTION - content flows over fading background */}
+        <div className="container mx-auto px-6 py-10 relative z-10">
+
+          {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
+            <Link to="/toolbox/pre-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-blue-500/50 leading-none select-none group-hover:text-blue-400/70 transition-colors">1</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Pre Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Screenwriting, Storyboarding</p>
+              </div>
+            </Link>
+            
+            <Link to="/toolbox/production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-teal-500/50 leading-none select-none group-hover:text-teal-400/70 transition-colors">2</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Cinematography</p>
+              </div>
+            </Link>
+            
+            <Link to="/toolbox/post-production" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-purple-500/50 leading-none select-none group-hover:text-purple-400/70 transition-colors">3</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Post Production</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Editing</p>
+              </div>
+            </Link>
+            
+            <Link to="/toolbox/film-release" className="group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-amber-500/50 leading-none select-none group-hover:text-amber-400/70 transition-colors">4</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Film Release</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Marketing, Festivals</p>
+              </div>
+            </Link>
+            
+            <Link to="/toolbox/distribution" className="col-span-2 md:col-span-1 group relative flex flex-col items-center justify-center text-center hover:scale-105 transition-transform duration-200">
+              <span className="text-[120px] md:text-[160px] font-black text-rose-500/50 leading-none select-none group-hover:text-rose-400/70 transition-colors">5</span>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <h3 className="text-lg md:text-xl font-bold text-gray-200 group-hover:text-white transition-colors">Distribution</h3>
+                <p className="text-gray-400 text-xs md:text-sm mt-1 group-hover:text-gray-300 transition-colors">Monetization</p>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* BLACK SECTION - Adobe Style Tools */}
+      <div className="bg-black">
         
         <div className="container mx-auto px-6 pb-16">
           {/* Toolbox Header Card - with dramatic image */}
