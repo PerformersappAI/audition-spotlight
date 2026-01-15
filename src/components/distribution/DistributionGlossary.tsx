@@ -66,7 +66,7 @@ const GLOSSARY_TERMS: GlossaryTerm[] = [
 ];
 
 export function DistributionGlossary() {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true); // Start expanded for visibility
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredTerms = GLOSSARY_TERMS.filter(
@@ -86,12 +86,17 @@ export function DistributionGlossary() {
   const categoryOrder = ["Distribution Models", "Technical", "Legal", "Business", "Roles"];
 
   return (
-    <div className="bg-surface border border-border rounded-lg overflow-hidden">
+    <div className="bg-amber-500/5 border-2 border-amber-500/30 rounded-lg overflow-hidden">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger className="w-full flex items-center justify-between p-4 hover:bg-surface/80 transition-colors">
+        <CollapsibleTrigger className="w-full flex items-center justify-between p-4 hover:bg-amber-500/10 transition-colors">
           <div className="flex items-center gap-2">
-            <BookOpen className="h-5 w-5 text-primary" />
-            <span className="font-semibold text-foreground">Distribution Terms</span>
+            <div className="p-1.5 bg-amber-500/20 rounded-lg">
+              <BookOpen className="h-5 w-5 text-amber-500" />
+            </div>
+            <div className="text-left">
+              <span className="font-semibold text-foreground block">Distribution Terms</span>
+              <span className="text-xs text-muted-foreground">40+ definitions</span>
+            </div>
           </div>
           <ChevronDown 
             className={`h-5 w-5 text-muted-foreground transition-transform duration-200 ${

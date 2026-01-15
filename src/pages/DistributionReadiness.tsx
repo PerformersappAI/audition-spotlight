@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { DistributionGlossary } from "@/components/distribution/DistributionGlossary";
+import { DistributionChatAssistant } from "@/components/distribution/DistributionChatAssistant";
 
 // Platform options
 const PLATFORMS = [
@@ -1438,6 +1439,16 @@ export default function DistributionReadiness() {
               </CardContent>
             </Card>
             
+            {/* Distribution Chat Assistant */}
+            <DistributionChatAssistant 
+              context={{
+                projectTitle: formData.projectTitle,
+                projectType: formData.projectType,
+                budgetTier: formData.budgetTier,
+                currentStep
+              }}
+            />
+
             {/* Distribution Terms Glossary */}
             <DistributionGlossary />
           </div>
