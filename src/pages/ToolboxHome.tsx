@@ -302,20 +302,6 @@ export default function ToolboxHome() {
 
         {/* HERO CONTENT SECTION - content flows over fading background */}
         <div className="container mx-auto px-6 py-10 relative z-10">
-          {/* Video Section - Centered */}
-          {embedUrl && (
-            <div className="flex justify-center mb-12">
-              <div className="w-full max-w-sm aspect-video rounded-lg overflow-hidden border border-gray-700 bg-gray-900 shadow-2xl">
-                <iframe
-                  src={embedUrl}
-                  className="w-full h-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  title="Filmmaker Genius Introduction"
-                />
-              </div>
-            </div>
-          )}
 
           {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
