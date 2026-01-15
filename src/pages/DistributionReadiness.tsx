@@ -539,9 +539,14 @@ export default function DistributionReadiness() {
                       });
                       if (error) throw error;
                       toast.success(`Report sent to ${emails.length} recipient(s)`);
-                    } catch (err) {
+                    } catch (err: any) {
                       console.error('Email error:', err);
-                      toast.error("Failed to send email. Please try again.");
+                      const errorMessage = err?.message || String(err);
+                      if (errorMessage.includes("invalid") || errorMessage.includes("401") || errorMessage.includes("API key")) {
+                        toast.error("Email service configuration error. Please contact support.");
+                      } else {
+                        toast.error("Failed to send email. Please check your email addresses and try again.");
+                      }
                     }
                   }}
                   className="w-full"
@@ -559,57 +564,62 @@ export default function DistributionReadiness() {
               </Button>
               <Button 
                 onClick={() => {
-                  // Get label for format/resolution/framerate
-                  const getFormatLabel = (value: string) => MASTER_FORMAT_OPTIONS.find(o => o.value === value)?.label || value;
-                  const getResLabel = (value: string) => MASTER_RESOLUTION_OPTIONS.find(o => o.value === value)?.label || value;
-                  const getFpsLabel = (value: string) => FRAME_RATE_OPTIONS.find(o => o.value === value)?.label || value;
+                  try {
+                    // Get label for format/resolution/framerate
+                    const getFormatLabel = (value: string) => MASTER_FORMAT_OPTIONS.find(o => o.value === value)?.label || value;
+                    const getResLabel = (value: string) => MASTER_RESOLUTION_OPTIONS.find(o => o.value === value)?.label || value;
+                    const getFpsLabel = (value: string) => FRAME_RATE_OPTIONS.find(o => o.value === value)?.label || value;
 
-                  exportDistributionReadinessToPDF({
-                    projectTitle: formData.projectTitle,
-                    projectType: formData.projectType,
-                    budgetTier: formData.budgetTier,
-                    runtimeMinutes: formData.runtimeMinutes,
-                    languagePrimary: formData.languagePrimary,
-                    logline: formData.logline,
-                    synopsisShort: formData.synopsisShort,
-                    genres: formData.genres,
-                    toneKeywords: formData.toneKeywords,
-                    comps: formData.comps,
-                    credits: formData.credits,
-                    platformsSelected: formData.platformsSelected,
-                    platformForms: formData.platformForms,
-                    distributionGoal: formData.distributionGoal,
-                    rightsOfferType: formData.rightsOfferType,
-                    territories: formData.territories,
-                    termMonths: formData.termMonths,
-                    chainOfTitleStatus: formData.chainOfTitleStatus,
-                    musicClearanceStatus: formData.musicClearanceStatus,
-                    releasesStatus: formData.releasesStatus,
-                    eAndOStatus: formData.eAndOStatus,
-                    knownClearanceRisks: formData.knownClearanceRisks,
-                    masterAvailable: formData.masterAvailable,
-                    masterFormat: getFormatLabel(formData.masterFormat),
-                    masterResolution: getResLabel(formData.masterResolution),
-                    masterFrameRate: getFpsLabel(formData.masterFrameRate),
-                    audioDeliverables: formData.audioDeliverables,
-                    captionsAvailable: formData.captionsAvailable,
-                    subtitleLanguages: formData.subtitleLanguages,
-                    textlessElements: formData.textlessElements,
-                    mAndETrack: formData.mAndETrack,
-                    qcDone: formData.qcDone,
-                    trailerFile: formData.trailerFile,
-                    posterFile: formData.posterFile,
-                    keyArtFile: formData.keyArtFile,
-                    pressKitUrl: formData.pressKitUrl,
-                    businessScore,
-                    legalScore,
-                    technicalScore,
-                    finalScore,
-                    readinessBand: readiness.band,
-                    hardStops,
-                    companyLogo: formData.companyLogo || undefined
-                  });
-                  toast.success("PDF Report Downloaded!");
+                    exportDistributionReadinessToPDF({
+                      projectTitle: formData.projectTitle,
+                      projectType: formData.projectType,
+                      budgetTier: formData.budgetTier,
+                      runtimeMinutes: formData.runtimeMinutes,
+                      languagePrimary: formData.languagePrimary,
+                      logline: formData.logline,
+                      synopsisShort: formData.synopsisShort,
+                      genres: formData.genres,
+                      toneKeywords: formData.toneKeywords,
+                      comps: formData.comps,
+                      credits: formData.credits,
+                      platformsSelected: formData.platformsSelected,
+                      platformForms: formData.platformForms,
+                      distributionGoal: formData.distributionGoal,
+                      rightsOfferType: formData.rightsOfferType,
+                      territories: formData.territories,
+                      termMonths: formData.termMonths,
+                      chainOfTitleStatus: formData.chainOfTitleStatus,
+                      musicClearanceStatus: formData.musicClearanceStatus,
+                      releasesStatus: formData.releasesStatus,
+                      eAndOStatus: formData.eAndOStatus,
+                      knownClearanceRisks: formData.knownClearanceRisks,
+                      masterAvailable: formData.masterAvailable,
+                      masterFormat: getFormatLabel(formData.masterFormat),
+                      masterResolution: getResLabel(formData.masterResolution),
+                      masterFrameRate: getFpsLabel(formData.masterFrameRate),
+                      audioDeliverables: formData.audioDeliverables,
+                      captionsAvailable: formData.captionsAvailable,
+                      subtitleLanguages: formData.subtitleLanguages,
+                      textlessElements: formData.textlessElements,
+                      mAndETrack: formData.mAndETrack,
+                      qcDone: formData.qcDone,
+                      trailerFile: formData.trailerFile,
+                      posterFile: formData.posterFile,
+                      keyArtFile: formData.keyArtFile,
+                      pressKitUrl: formData.pressKitUrl,
+                      businessScore,
+                      legalScore,
+                      technicalScore,
+                      finalScore,
+                      readinessBand: readiness.band,
+                      hardStops,
+                      companyLogo: formData.companyLogo || undefined
+                    });
+                    toast.success("PDF Report Downloaded!");
+                  } catch (error) {
+                    console.error("PDF export failed:", error);
+                    toast.error("Failed to generate PDF. Please try again.");
+                  }
                 }}
               >
                 <Download className="h-4 w-4 mr-2" />
