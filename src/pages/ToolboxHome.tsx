@@ -503,7 +503,7 @@ export default function ToolboxHome() {
                   </span>
                 </div>
                 {/* Colorful image section */}
-                <div className="flex-1 min-h-[200px] relative overflow-hidden">
+                <div className="flex-1 min-h-[140px] relative overflow-hidden">
                   <img 
                     src={toolScriptAnalysis} 
                     alt="Script Analysis Tool" 
@@ -532,7 +532,7 @@ export default function ToolboxHome() {
                   </span>
                 </div>
                 {/* Colorful image section */}
-                <div className="flex-1 min-h-[300px] relative overflow-hidden bg-gray-900 flex items-center justify-center p-4">
+                <div className="flex-1 min-h-[400px] relative overflow-hidden bg-gray-900 flex items-center justify-center p-4">
                   <img 
                     src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
@@ -584,7 +584,7 @@ export default function ToolboxHome() {
                     Build
                   </span>
                 </div>
-                <div className="flex-1 min-h-[140px] relative overflow-hidden">
+                <div className="flex-1 min-h-[100px] relative overflow-hidden">
                   <img 
                     src={toolCallSheet} 
                     alt="Call Sheet Tool" 
@@ -606,7 +606,7 @@ export default function ToolboxHome() {
                     Post
                   </span>
                 </div>
-                <div className="flex-1 min-h-[140px] relative overflow-hidden">
+                <div className="flex-1 min-h-[100px] relative overflow-hidden">
                   <img 
                     src={toolAuditions} 
                     alt="Auditions Tool" 
