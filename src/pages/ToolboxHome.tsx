@@ -536,7 +536,7 @@ export default function ToolboxHome() {
                   <img 
                     src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
