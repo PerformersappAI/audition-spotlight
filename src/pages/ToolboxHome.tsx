@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
-import toolPitchDeck from "@/assets/tool-pitch-deck.png";
+import toolPitchDeck from "@/assets/tool-pitch-deck-new.png";
 import toolStoryboard from "@/assets/tool-storyboard.jpg";
 import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
