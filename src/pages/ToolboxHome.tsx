@@ -15,7 +15,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
-import toolPitchDeck from "@/assets/tool-pitch-deck-new.png";
+import toolPitchDeck from "@/assets/tool-pitch-deck-new.jpg";
 import toolStoryboard from "@/assets/tool-storyboard.jpg";
 import toolCallSheet from "@/assets/tool-call-sheet.jpg";
 import toolAuditions from "@/assets/tool-auditions.jpg";
@@ -534,7 +534,7 @@ export default function ToolboxHome() {
                 {/* Colorful image section */}
                 <div className="flex-1 min-h-[462px] relative overflow-hidden bg-gray-900">
                   <img 
-                    src={toolScriptAnalysis} 
+                    src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
