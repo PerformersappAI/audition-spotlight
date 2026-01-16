@@ -532,11 +532,11 @@ export default function ToolboxHome() {
                   </span>
                 </div>
                 {/* Colorful image section */}
-                <div className="flex-1 min-h-[300px] relative overflow-hidden bg-gray-900 flex items-center justify-center">
+                <div className="flex-1 min-h-[300px] relative overflow-hidden bg-gray-900 flex items-center justify-center p-4">
                   <img 
                     src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
-                    className="w-[75%] h-[75%] object-contain group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               </div>
