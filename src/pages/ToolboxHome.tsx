@@ -14,7 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useCredits } from "@/hooks/useCredits";
 import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
-import toolScriptAnalysis from "@/assets/tool-script-analysis.jpg";
+import toolScriptAnalysis from "@/assets/tool-script-analysis-new.jpg";
 import toolPitchDeck from "@/assets/tool-pitch-deck-new.jpg";
 import toolStoryboard from "@/assets/tool-storyboard.jpg";
 import toolCallSheet from "@/assets/tool-call-sheet.jpg";
