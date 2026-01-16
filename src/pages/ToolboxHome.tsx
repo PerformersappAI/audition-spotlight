@@ -491,7 +491,7 @@ export default function ToolboxHome() {
                 <div className="p-6 pb-4">
                   <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">Script Analysis</p>
                   <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                    Analyze your screenplay.
+                    Analyze your Scenes.
                   </h3>
                   <p className="text-gray-400 mb-4">
                     Character development, emotional beats, and scene breakdowns.
