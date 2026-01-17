@@ -17,7 +17,7 @@ import filmmakerGeniusLogo from "@/assets/filmmaker-genius-logo.png";
 import toolScriptAnalysis from "@/assets/tool-script-analysis-new.jpg";
 import toolPitchDeck from "@/assets/tool-pitch-deck-new.png";
 import toolStoryboard from "@/assets/tool-storyboard.jpg";
-import toolCallSheet from "@/assets/tool-call-sheet.jpg";
+import toolCallSheet from "@/assets/tool-call-sheet-new.png";
 import toolAuditions from "@/assets/tool-auditions.jpg";
 import toolCrewHire from "@/assets/tool-crew-hire.jpg";
 import toolboxHeaderBg from "@/assets/toolbox-header-bg.jpg";
