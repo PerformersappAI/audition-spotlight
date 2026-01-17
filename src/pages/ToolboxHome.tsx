@@ -537,7 +537,7 @@ export default function ToolboxHome() {
                     src={toolPitchDeck} 
                     alt="Pitch Deck Maker" 
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    style={{ objectPosition: '35% 15%' }}
+                    style={{ objectPosition: '30% 15%' }}
                   />
                 </div>
               </div>
