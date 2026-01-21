@@ -180,19 +180,34 @@ const PitchDeckMaker = () => {
   };
 
   const handleSaveDraft = () => {
-    localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
-    toast.success("Draft saved locally");
+    try {
+      localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
+      toast.success("Draft saved locally");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+        toast.error(
+          "Draft too large to save locally (images exceed browser limit). Export to PDF to save your work.",
+          { duration: 6000 }
+        );
+      } else {
+        toast.error("Failed to save draft");
+      }
+    }
   };
 
   const handleComplete = () => {
-    // Save draft first
-    localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
+    // Try to save draft, but don't block completion if it fails
+    try {
+      localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
+    } catch (error) {
+      console.warn("Could not save draft to localStorage:", error);
+    }
     
     // Show success with options
     toast.success(
       <div className="space-y-2">
         <p className="font-semibold">Pitch Deck Complete! 🎬</p>
-        <p className="text-sm">Your deck is ready. Export to PDF or continue editing.</p>
+        <p className="text-sm">Your deck is ready. Export to PDF to save your work.</p>
       </div>,
       {
         duration: 5000,
