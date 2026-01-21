@@ -1,19 +1,47 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Check, Sparkles, Zap, Crown, CreditCard } from 'lucide-react';
+import { Check, Sparkles, Zap, Crown, CreditCard, Loader2, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
+import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 
 const Membership = () => {
   const navigate = useNavigate();
-  const { user, userProfile } = useAuth();
-  const { credits, subscription, loading } = useCredits();
+  const [searchParams] = useSearchParams();
+  const { user } = useAuth();
+  const { credits, subscription, loading, fetchSubscription, fetchCredits } = useCredits();
   const [selectedCreditPack, setSelectedCreditPack] = useState<string>('');
+  const [subscribingPlan, setSubscribingPlan] = useState<string | null>(null);
+  const [purchasingCredits, setPurchasingCredits] = useState(false);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  // Handle success/cancel URL params
+  useEffect(() => {
+    const success = searchParams.get('success');
+    const canceled = searchParams.get('canceled');
+    const creditsPurchased = searchParams.get('credits_purchased');
+
+    if (success === 'true') {
+      if (creditsPurchased) {
+        toast.success(`Successfully purchased ${creditsPurchased} credits!`);
+      } else {
+        toast.success('Subscription activated successfully!');
+      }
+      // Refresh subscription and credits data
+      fetchSubscription();
+      fetchCredits();
+      // Clean up URL
+      navigate('/membership', { replace: true });
+    } else if (canceled === 'true') {
+      toast.info('Payment was canceled');
+      navigate('/membership', { replace: true });
+    }
+  }, [searchParams, navigate, fetchSubscription, fetchCredits]);
 
   const creditPacks = [
     { amount: 10, price: 5.00, pricePerCredit: 0.50 },
@@ -57,19 +85,39 @@ const Membership = () => {
     }
   ];
 
-  const handleSubscribe = (planId: string) => {
+  const handleSubscribe = async (planId: string) => {
     if (!user) {
       toast.error('Please sign in to subscribe');
       navigate('/auth');
       return;
     }
 
-    // TODO: Integrate with Stripe when ready
-    toast.info('Subscription feature coming soon! Stripe integration pending.');
-    console.log('Subscribe to:', planId);
+    setSubscribingPlan(planId);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { planType: planId }
+      });
+
+      if (error) {
+        console.error('Checkout error:', error);
+        toast.error('Failed to start checkout. Please try again.');
+        return;
+      }
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        toast.error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setSubscribingPlan(null);
+    }
   };
 
-  const handlePurchaseCredits = () => {
+  const handlePurchaseCredits = async () => {
     if (!user) {
       toast.error('Please sign in to purchase credits');
       navigate('/auth');
@@ -81,9 +129,59 @@ const Membership = () => {
       return;
     }
 
-    // TODO: Integrate with Stripe when ready
-    toast.info('Credit purchase coming soon! Stripe integration pending.');
-    console.log('Purchase credits:', selectedCreditPack);
+    setPurchasingCredits(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-credit-purchase', {
+        body: { creditAmount: selectedCreditPack }
+      });
+
+      if (error) {
+        console.error('Credit purchase error:', error);
+        toast.error('Failed to start checkout. Please try again.');
+        return;
+      }
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        toast.error('Failed to create checkout session');
+      }
+    } catch (error) {
+      console.error('Error creating credit purchase:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setPurchasingCredits(false);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    if (!user) {
+      toast.error('Please sign in first');
+      navigate('/auth');
+      return;
+    }
+
+    setOpeningPortal(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('customer-portal');
+
+      if (error) {
+        console.error('Portal error:', error);
+        toast.error('Failed to open subscription management. Please try again.');
+        return;
+      }
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+      } else {
+        toast.error('Failed to create portal session');
+      }
+    } catch (error) {
+      console.error('Error opening portal:', error);
+      toast.error('An error occurred. Please try again.');
+    } finally {
+      setOpeningPortal(false);
+    }
   };
 
   const selectedPack = creditPacks.find(pack => pack.amount.toString() === selectedCreditPack);
@@ -124,7 +222,7 @@ const Membership = () => {
         </div>
 
         {/* Current Subscription Status */}
-        {user && subscription && (
+        {user && subscription && subscription.status === 'active' && (
           <Card className="mb-8 border-gold/50 bg-gradient-to-r from-gold/10 to-gold-light/10">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
@@ -135,6 +233,25 @@ const Membership = () => {
                 Status: {subscription.status} | Renews: {subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : 'N/A'}
               </CardDescription>
             </CardHeader>
+            <CardFooter>
+              <Button 
+                variant="outline" 
+                onClick={handleManageSubscription}
+                disabled={openingPortal}
+              >
+                {openingPortal ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Opening...
+                  </>
+                ) : (
+                  <>
+                    <Settings className="mr-2 h-4 w-4" />
+                    Manage Subscription
+                  </>
+                )}
+              </Button>
+            </CardFooter>
           </Card>
         )}
 
@@ -142,7 +259,8 @@ const Membership = () => {
         <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
           {subscriptionPlans.map((plan) => {
             const Icon = plan.icon;
-            const isCurrentPlan = subscription?.plan_type === plan.id;
+            const isCurrentPlan = subscription?.plan_type === plan.id && subscription?.status === 'active';
+            const isSubscribing = subscribingPlan === plan.id;
             
             return (
               <Card 
@@ -154,6 +272,12 @@ const Membership = () => {
                 {plan.popular && (
                   <div className="absolute top-0 right-0 bg-gradient-to-r from-gold to-gold-light text-gold-foreground px-4 py-1 text-sm font-semibold rounded-bl-lg">
                     Most Popular
+                  </div>
+                )}
+                
+                {isCurrentPlan && (
+                  <div className="absolute top-0 left-0 bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold rounded-br-lg">
+                    Your Plan
                   </div>
                 )}
                 
@@ -190,9 +314,18 @@ const Membership = () => {
                     variant={plan.popular ? 'default' : 'outline'}
                     size="lg"
                     onClick={() => handleSubscribe(plan.id)}
-                    disabled={isCurrentPlan}
+                    disabled={isCurrentPlan || isSubscribing}
                   >
-                    {isCurrentPlan ? 'Current Plan' : `Subscribe to ${plan.name}`}
+                    {isSubscribing ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : isCurrentPlan ? (
+                      'Current Plan'
+                    ) : (
+                      `Subscribe to ${plan.name}`
+                    )}
                   </Button>
                 </CardFooter>
               </Card>
@@ -257,9 +390,16 @@ const Membership = () => {
                 className="w-full"
                 size="lg"
                 onClick={handlePurchaseCredits}
-                disabled={!selectedCreditPack}
+                disabled={!selectedCreditPack || purchasingCredits}
               >
-                Purchase Credits
+                {purchasingCredits ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  'Purchase Credits'
+                )}
               </Button>
             </CardFooter>
           </Card>
