@@ -59,6 +59,27 @@ const Auth = () => {
         description: error.message
       });
     } else {
+      // Send welcome email
+      try {
+        const { data: { publicUrl } } = supabase.storage.from('certificates').getPublicUrl('');
+        const supabaseUrl = publicUrl.replace('/storage/v1/object/public/certificates/', '');
+        
+        await fetch(`${supabaseUrl}/functions/v1/send-welcome-email`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            firstName
+          })
+        });
+        console.log('Welcome email triggered');
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't block signup if welcome email fails
+      }
+      
       toast({
         title: "Success!",
         description: "Please check your email to confirm your account"
