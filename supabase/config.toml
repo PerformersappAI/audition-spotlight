@@ -24,8 +24,8 @@ file_size_limit = "50MiB"
 
 [auth]
 enabled = true
-site_url = "http://localhost:3000"
-additional_redirect_urls = ["https://localhost:3000"]
+site_url = "https://audition-spotlight.lovable.app"
+additional_redirect_urls = ["https://audition-spotlight.lovable.app", "https://audition-spotlight.lovable.app/auth", "http://localhost:3000"]
 jwt_expiry = 3600
 enable_signup = true
 
