@@ -1,157 +1,129 @@
 
-# Call Sheet PDF Redesign - Industry Standard Format
+# Film Funding Strategy AI Chat Assistant
 
 ## Overview
-Transform the Call Sheet PDF export to match the professional industry-standard format shown in the reference image. This involves a complete restructure of the PDF layout with new sections, different table structures, and additional data fields.
+Add a context-aware AI chat assistant to the Film Funding Strategy tool that helps filmmakers with funding-related questions. The assistant will follow the established patterns from the Distribution Assistant, providing streaming responses and contextual help based on the user's current form data.
 
-## Key Layout Changes
+## Components to Create
 
-### 1. Header Section (Three-Column Layout)
-**Left Column:**
-- Director/Writer
-- Exec Producer(s)
+### 1. Edge Function: `supabase/functions/funding-assistant/index.ts`
+A new Supabase Edge Function that provides expert guidance on film funding strategies.
 
-**Center Column:**
-- Large "PRODUCTION" title (project name)
-- "CALLSHEET: SHOOT DAY" subtitle
-- "DATE" with formatted date
+**System Prompt Knowledge Areas:**
+- Grant writing tips and grant databases
+- Crowdfunding strategies (Seed&Spark, Kickstarter, Indiegogo best practices)
+- Tax incentive programs by state/country
+- Private investor pitching and equity structures
+- Pre-sales and gap financing for larger budgets
+- Film finance structures (recoupment waterfalls, investor ROI)
+- Budget breakdown best practices
+- Pitch deck essentials for investors
+- Sample recoupment scenarios
 
-**Right Column:**
-- LX Precall time
-- Unit Call time (large/bold)
-- Breakfast at Base time
-- Lunch time
-- Est. Wrap time
+**Features:**
+- Accepts user messages and project context (title, budget range, timeline, selected sources)
+- Uses Lovable AI gateway with `google/gemini-3-flash-preview` model
+- Streams responses for real-time feedback
+- Handles rate limiting (429) and credit exhaustion (402) errors
 
-### 2. Key Personnel Section (Two-Column with Mobile/Off Set)
-A table showing key crew with columns:
-- Role name | Mobile phone | Off Set designation
-- Rows: Director, Production Manager, 1st AD, Camera, Production Assistant/Runner, Production Trainee
+### 2. Frontend Component: `src/components/funding/FundingChatAssistant.tsx`
+A reusable chat component modeled after `DistributionChatAssistant`.
 
-### 3. Weather/Schedule Info Row
-Single row with:
-- Weather (temp + conditions)
-- Sunrise/Sunset times
-- Current Schedule reference
-- Current Script reference
+**Features:**
+- Collapsible chat window with emerald/green theme to match the page
+- Quick question buttons for common funding topics:
+  - "Help with grant writing"
+  - "Crowdfunding tips"
+  - "Pitch to investors"
+  - "Explain recoupment"
+- Streaming markdown rendering
+- Project context awareness (budget, timeline, funding sources)
+- Proper error handling with toast notifications
 
-### 4. Location Row
-- Location name with address
-- Unit Base with address
+### 3. Integration into FundingStrategy.tsx
+Add the chat assistant component to the page layout, positioned above the main form card.
 
-### 5. Day Schedule Table (New Structure)
-Header: "DAY X - DATE"
+## Technical Implementation
 
-Columns: Location | Scene | Int/Ext | Synopsis | Day/Night | Est. Start | Cast | Notes
-
-**Key Feature:** Break rows (Short Break, Lunch, Dinner) integrated inline in the schedule
-
-### 6. Artiste/Cast Table (New Structure)
-Columns: ID | Artiste | Character | SWF | P/UP | M-UP | Cost | Travel | On Set
-- 7 numbered rows for principal cast
-
-### 7. Supporting Artists Section
-Header: "SUPPORTING ARTISTS (TOTAL = X)"
-Columns: (description area) | Call | Make Up | Costume | Travel | On Set
-
-### 8. Requirements Section
-Header: "REQUIREMENTS"
-Rows for: Art Department, Props
-
-## Data Model Updates Required
-
-New fields to add to `CallSheetData` interface:
-- `lx_precall_time` - Lighting precall time
-- `unit_call_time` - Main unit call time
-- `est_wrap_time` - Estimated wrap (already exists as wrap_time)
-- `current_schedule` - Current schedule reference
-- `current_script` - Current script reference
-- `unit_base` - Unit base location
-- `unit_base_address` - Unit base address
-
-New fields for `CallSheetCast` interface:
-- `swf` - Start/Work/Finish code
-- `makeup_time` - Makeup call time
-- `costume_time` - Costume time
-- `travel_time` - Travel time
-- `on_set_time` - On set time
-
-New fields for `CallSheetScene` interface:
-- `start_time` - Estimated start time
-- `int_ext` - Interior/Exterior designation (separate from day_night)
-
-New interface `CallSheetBreak`:
-- `type` - "short_break" | "lunch" | "dinner"
-- `after_scene_index` - Position in schedule
-
-New interface `CallSheetRequirement`:
-- `department` - "Art Department" | "Props" | etc.
-- `notes` - Requirement details
-
-## Implementation Plan
-
-### Phase 1: Update Data Interfaces
-1. Modify `useCallSheets.ts` to add new fields to interfaces
-2. Update database schema (migrations) to support new columns
-
-### Phase 2: Update Form UI
-1. Add new input fields to `CallSheet.tsx` for:
-   - LX Precall, Unit Call times
-   - Current Schedule/Script references
-   - Unit Base location
-   - Cast makeup/costume/travel/on set times
-   - Break scheduling
-   - Requirements section
-
-### Phase 3: Redesign PDF Export
-Complete rewrite of `exportCallSheetToPDF.ts`:
-
-1. **Header construction** - Three-column layout using manual positioning
-2. **Personnel table** - Grid theme with mobile/off set columns
-3. **Info/Location rows** - Compact single-line tables
-4. **Schedule table** - Scene list with inline break rows
-5. **Cast table** - Horizontal layout with all time columns
-6. **Supporting Artists** - Summary table with totals
-7. **Requirements** - Department requirement rows
-
-### Technical Approach for PDF
-```
-- Use jsPDF manual text positioning for header layout
-- Use autoTable with custom column widths to match reference
-- Insert break rows manually between scenes
-- Calculate cast totals for supporting artists section
-- Grid theme with thin black borders throughout
-- Gray header bars for section titles
+### Edge Function Structure
+```text
+supabase/functions/funding-assistant/
+  └── index.ts
 ```
 
-## Files to Modify
+Key implementation details:
+- CORS headers for browser access
+- System prompt with comprehensive funding knowledge
+- Context injection from form data
+- Streaming SSE response passthrough
+- Error handling for 429/402/500 responses
 
-1. **`src/hooks/useCallSheets.ts`**
-   - Add new interface fields
-   - Update sanitization functions
+### Frontend Component Structure
+```text
+src/components/funding/
+  └── FundingChatAssistant.tsx
+```
 
-2. **`src/pages/CallSheet.tsx`**
-   - Add form inputs for new fields
-   - Add Requirements tab
-   - Add break scheduling UI
+Props interface:
+- `context.projectTitle` - Current project name
+- `context.budgetRange` - Selected budget tier
+- `context.timeline` - Production timeline
+- `context.selectedSources` - Array of selected funding source IDs
+- `context.currentStep` - Current wizard step (1-5)
 
-3. **`src/utils/exportCallSheetToPDF.ts`**
-   - Complete redesign of PDF generation
-   - New header layout function
-   - New table structures matching reference
-   - Inline break row insertion
+### Config Update
+Add to `supabase/config.toml`:
+```text
+[functions.funding-assistant]
+verify_jwt = false
+```
 
-4. **Database Migration** (new file)
-   - Add columns for new fields to call_sheets table
-   - Add columns for new fields to call_sheet_cast table
-   - Create call_sheet_requirements table
+## Files to Create/Modify
 
-## Visual Matching Details
+| File | Action | Description |
+|------|--------|-------------|
+| `supabase/functions/funding-assistant/index.ts` | Create | Edge function with funding expertise |
+| `src/components/funding/FundingChatAssistant.tsx` | Create | Chat UI component |
+| `src/pages/FundingStrategy.tsx` | Modify | Import and render the assistant |
+| `supabase/config.toml` | Modify | Register the new edge function |
 
-- All tables use **grid theme** with visible borders
-- Section headers have **light gray background bars**
-- Production name is **large and bold**, centered
-- Call times on right side, with Unit Call being **largest/boldest**
-- Empty rows in cast/supporting sections for manual filling
-- "Day X of Y" format in schedule header
-- Page maintains single-page density when possible
+## UI Placement
+The chat assistant will be placed between the progress steps and the main form card:
+
+```text
+┌─────────────────────────────────────────────────┐
+│ Header (Film Funding Strategy)                  │
+├─────────────────────────────────────────────────┤
+│ Progress Steps (1-5)                            │
+│ Progress Bar                                    │
+├─────────────────────────────────────────────────┤
+│ ┌─────────────────────────────────────────────┐ │
+│ │ 💬 Funding Assistant (collapsible)          │ │
+│ │ Quick: [Grant writing] [Crowdfunding] ...   │ │
+│ │ ─────────────────────────────────────────── │ │
+│ │ Chat messages area                          │ │
+│ │ ─────────────────────────────────────────── │ │
+│ │ [Type your question...        ] [Send]      │ │
+│ └─────────────────────────────────────────────┘ │
+├─────────────────────────────────────────────────┤
+│ Main Form Card (Project Basics / Budget / etc)  │
+├─────────────────────────────────────────────────┤
+│ Navigation (Back / Next)                        │
+└─────────────────────────────────────────────────┘
+```
+
+## Quick Questions
+
+| Label | Full Question |
+|-------|---------------|
+| Help with grants | What grants are available for independent films? How do I write a strong grant application? |
+| Crowdfunding tips | What makes a successful film crowdfunding campaign? What platforms work best? |
+| Pitch to investors | How do I pitch my film to private investors? What do they look for? |
+| Explain recoupment | How does recoupment work in film financing? Can you show a sample waterfall? |
+
+## Context-Aware Responses
+The assistant will receive and use the current form state:
+- If budget is "micro", focus on grants and crowdfunding
+- If budget is "high", discuss presales and gap financing
+- Reference selected funding sources in responses
+- Adjust advice based on production timeline
