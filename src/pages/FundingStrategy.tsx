@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { exportFundingStrategyToPDF, type FundingStrategyData } from "@/utils/exportFundingStrategyToPDF";
+import { FundingChatAssistant } from "@/components/funding/FundingChatAssistant";
 
 const STEPS = [
   { id: 1, title: "Project Basics", icon: FileText },
@@ -206,6 +207,19 @@ export default function FundingStrategy() {
             })}
           </div>
           <Progress value={progress} className="h-2" />
+        </div>
+
+        {/* AI Chat Assistant */}
+        <div className="mb-6">
+          <FundingChatAssistant 
+            context={{
+              projectTitle: data.projectTitle,
+              budgetRange: data.budgetRange,
+              timeline: data.timeline,
+              selectedSources: data.selectedSources,
+              currentStep,
+            }}
+          />
         </div>
 
         {/* Step Content */}
