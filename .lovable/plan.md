@@ -125,10 +125,11 @@ Core TTS generation function:
 Input: { characterName, voiceId, dialogueText, projectId, segmentIndex }
 Output: { audioUrl, duration, segmentId }
 
-- Calls ElevenLabs TTS API with voice settings
+- Calls Murf.ai TTS API (POST https://api.murf.ai/v1/speech/generate)
+- Uses GEN2 model for highest quality
 - Stores audio in Supabase Storage
 - Updates project generation progress
-- Handles request stitching for long dialogues
+- Supports pitch/rate adjustments per character
 - Error handling for rate limits
 ```
 
@@ -253,40 +254,49 @@ Output: { checkoutUrl }
 
 ---
 
-## ElevenLabs Voice Library
+## Murf.ai Voice Library
 
-### Pre-configured Voices (No user setup needed)
+### Pre-configured Voices (120+ voices available)
 
-| Voice Name | Voice ID | Best For |
-|------------|----------|----------|
-| Roger | CwhRBWXzGAHq8TQ4Fs17 | Mature male lead |
-| Sarah | EXAVITQu4vr4xnSDxMaL | Professional female |
-| Laura | FGY2WhTYpPnrIDTdsKH5 | Young female |
-| Charlie | IKne3meq5aSn9XLyUdCD | Casual male |
-| George | JBFqnCBsd6RMkjVDRZzb | British male |
-| Callum | N2lVS1w4EtoT3dr4eOWO | Scottish accent |
-| River | SAz9YHcvj6GT2YYXdXww | Neutral narrator |
-| Liam | TX3LPaxmHKxFdv7VOQHJ | Young male |
-| Alice | Xb7hH8MSUJpSbSDYk0k2 | Warm female |
-| Matilda | XrExE9yKIg1WjnnlVkGX | Expressive female |
-| Will | bIHbv24MWmeRgasZH58o | Deep male |
-| Jessica | cgSgspJ2msm6clMCkdW9 | Clear female |
-| Eric | cjVigY5qzO86Huf0OWal | Confident male |
-| Chris | iP95p4xoKVk53GoZ742B | Friendly male |
-| Brian | nPczCjzI2devNBz1zQrb | Authoritative narrator |
-| Daniel | onwK4e9ZLuTAKqWW03F9 | Versatile male |
-| Lily | pFZP5JQG7iQjIQuC4Bku | Soft female |
-| Bill | pqHfZKP75CvOlQylNhV4 | Narrative voice |
+**API Endpoint**: `https://api.murf.ai/v1/speech/generate`
+**Authentication**: `api-key` header with MURF_API_KEY
+
+| Voice Name | Voice ID | Style/Best For |
+|------------|----------|----------------|
+| Natalie | en-US-natalie | Promo, Narration, Newscast |
+| Terrell | en-US-terrell | Inspirational, Narration |
+| Miles | en-US-miles | Conversational, Sports |
+| Julia | en-US-julia | Corporate, E-Learning |
+| Marcus | en-US-marcus | Documentary, Podcast |
+| Theo | en-UK-theo | British Professional |
+| Evelyn | en-UK-evelyn | British Warm Female |
+| Sofia | en-US-sofia | Young Female Lead |
+| James | en-US-james | Mature Male Lead |
+| Ava | en-US-ava | Friendly Female |
+| Noah | en-US-noah | Casual Male |
+| Emma | en-US-emma | Expressive Female |
+| Liam | en-US-liam | Young Male |
+| Olivia | en-US-olivia | Clear Female Narrator |
+| Ethan | en-US-ethan | Confident Male |
+| Isabella | en-US-isabella | Soft Female |
+| Mason | en-US-mason | Deep Male Voice |
+| Charlotte | en-US-charlotte | Warm Narrator |
+
+### Murf.ai API Features
+- **Model Version**: Use `GEN2` for highest quality
+- **Output Formats**: MP3, WAV, FLAC, OGG, PCM
+- **Pitch/Rate**: Adjustable (-50 to +50)
+- **encodeAsBase64**: Get audio directly in response
+- **Audio URLs**: Valid for 72 hours
 
 ---
 
 ## Cost Structure
 
-### ElevenLabs API Costs
-- TTS: ~$0.30 per 1,000 characters (at Scale tier)
-- Average screenplay: 150,000 characters ≈ $45
-- Music generation: ~$0.05 per track
-- SFX generation: ~$0.02 per effect
+### Murf.ai API Costs
+- TTS: Usage-based pricing (check current Murf.ai rates)
+- GEN2 model provides studio-quality output
+- Character-based billing similar to other TTS providers
 
 ### Suggested Pricing
 | Tier | Price | Includes |
@@ -388,10 +398,8 @@ Output: { checkoutUrl }
 
 ## Secrets Required
 
-| Secret | Purpose |
-|--------|---------|
-| ELEVENLABS_API_KEY | TTS, Music, SFX generation |
-| STRIPE_SECRET_KEY | Already configured |
-
-**Note**: ElevenLabs connector is available in the workspace - will need to be linked to the project.
+| Secret | Purpose | Status |
+|--------|---------|--------|
+| MURF_API_KEY | TTS generation via Murf.ai | ✅ Configured |
+| STRIPE_SECRET_KEY | Payment processing | ✅ Already configured |
 
