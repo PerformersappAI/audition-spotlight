@@ -36,6 +36,13 @@ export interface CallSheetData {
   sunset_time?: string;
   dawn_time?: string;
   twilight_time?: string;
+  // New fields for industry-standard format
+  lx_precall_time?: string;
+  unit_call_time?: string;
+  current_schedule?: string;
+  current_script?: string;
+  unit_base?: string;
+  unit_base_address?: string;
 }
 
 export interface CallSheetScene {
@@ -47,6 +54,9 @@ export interface CallSheetScene {
   cast_ids?: string[];
   notes?: string;
   location?: string;
+  // New fields
+  start_time?: string;
+  int_ext?: string;
 }
 
 export interface CallSheetCast {
@@ -59,6 +69,12 @@ export interface CallSheetCast {
   call_time?: string;
   set_ready_time?: string;
   special_instructions?: string;
+  // New fields for industry-standard format
+  swf?: string;
+  makeup_time?: string;
+  costume_time?: string;
+  travel_time?: string;
+  on_set_time?: string;
 }
 
 export interface CallSheetCrew {
@@ -67,6 +83,8 @@ export interface CallSheetCrew {
   title: string;
   name: string;
   call_time?: string;
+  phone?: string;
+  off_set?: string;
 }
 
 export interface CallSheetBackground {
@@ -74,6 +92,22 @@ export interface CallSheetBackground {
   quantity?: number;
   description: string;
   call_time?: string;
+  notes?: string;
+  makeup_time?: string;
+  costume_time?: string;
+  travel_time?: string;
+  on_set_time?: string;
+}
+
+export interface CallSheetBreak {
+  id?: string;
+  break_type: 'short_break' | 'lunch' | 'dinner';
+  after_scene_index: number;
+}
+
+export interface CallSheetRequirement {
+  id?: string;
+  department: string;
   notes?: string;
 }
 
@@ -180,7 +214,9 @@ export const useCallSheets = () => {
     scenes: CallSheetScene[],
     cast: CallSheetCast[],
     crew: CallSheetCrew[],
-    background: CallSheetBackground[]
+    background: CallSheetBackground[],
+    breaks: CallSheetBreak[] = [],
+    requirements: CallSheetRequirement[] = []
   ) => {
     try {
       console.log('🚀 Starting call sheet save...', { callSheetData, scenesCount: scenes.length, castCount: cast.length });
@@ -233,6 +269,12 @@ export const useCallSheets = () => {
           sunset_time: sanitizedCallSheet.sunset_time,
           dawn_time: sanitizedCallSheet.dawn_time,
           twilight_time: sanitizedCallSheet.twilight_time,
+          lx_precall_time: sanitizedCallSheet.lx_precall_time,
+          unit_call_time: sanitizedCallSheet.unit_call_time,
+          current_schedule: sanitizedCallSheet.current_schedule,
+          current_script: sanitizedCallSheet.current_script,
+          unit_base: sanitizedCallSheet.unit_base,
+          unit_base_address: sanitizedCallSheet.unit_base_address,
           user_id: user.id,
         })
         .select()
@@ -251,7 +293,15 @@ export const useCallSheets = () => {
       if (scenes.length > 0) {
         console.log(`📋 Inserting ${scenes.length} scenes...`);
         const scenesWithId = scenes.map((scene, index) => ({
-          ...scene,
+          scene_number: scene.scene_number || '',
+          pages: scene.pages,
+          set_description: scene.set_description || '',
+          day_night: scene.day_night,
+          cast_ids: scene.cast_ids,
+          notes: scene.notes,
+          location: scene.location,
+          start_time: scene.start_time,
+          int_ext: scene.int_ext,
           call_sheet_id: callSheetId,
           order_index: index,
         }));
@@ -279,6 +329,11 @@ export const useCallSheets = () => {
           set_ready_time: member.set_ready_time,
           special_instructions: member.special_instructions,
           cast_id: member.cast_id,
+          swf: member.swf,
+          makeup_time: member.makeup_time,
+          costume_time: member.costume_time,
+          travel_time: member.travel_time,
+          on_set_time: member.on_set_time,
           call_sheet_id: callSheetId,
           order_index: index,
         }));
@@ -337,6 +392,47 @@ export const useCallSheets = () => {
           throw backgroundError;
         }
         console.log('✅ Background inserted');
+      }
+
+      // Insert breaks
+      if (breaks.length > 0) {
+        console.log(`⏸️ Inserting ${breaks.length} breaks...`);
+        const breaksWithId = breaks.map(item => ({
+          break_type: item.break_type,
+          after_scene_index: item.after_scene_index,
+          call_sheet_id: callSheetId,
+        }));
+
+        const { error: breaksError } = await supabase
+          .from('call_sheet_breaks')
+          .insert(breaksWithId);
+
+        if (breaksError) {
+          console.error('❌ Breaks insert error:', breaksError);
+          throw breaksError;
+        }
+        console.log('✅ Breaks inserted');
+      }
+
+      // Insert requirements
+      if (requirements.length > 0) {
+        console.log(`📋 Inserting ${requirements.length} requirements...`);
+        const reqWithId = requirements.map((item, index) => ({
+          department: item.department,
+          notes: item.notes,
+          order_index: index,
+          call_sheet_id: callSheetId,
+        }));
+
+        const { error: reqError } = await supabase
+          .from('call_sheet_requirements')
+          .insert(reqWithId);
+
+        if (reqError) {
+          console.error('❌ Requirements insert error:', reqError);
+          throw reqError;
+        }
+        console.log('✅ Requirements inserted');
       }
 
       console.log('🎉 Call sheet saved successfully! ID:', callSheetId);
