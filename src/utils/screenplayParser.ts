@@ -1,6 +1,6 @@
 // Screenplay Parser - Supports FDX (Final Draft) and Fountain formats
 
-interface ParsedScreenplay {
+export interface ParsedScreenplay {
   title: string;
   author?: string;
   scenes: ParsedScene[];

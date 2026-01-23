@@ -60,6 +60,7 @@ import ContractAssistant from "./pages/ContractAssistant";
 import FundingStrategy from "./pages/FundingStrategy";
 import ContractFiller from "./pages/ContractFiller";
 import DistributionReadiness from "./pages/DistributionReadiness";
+import TableRead from "./pages/TableRead";
 
 const queryClient = new QueryClient();
 
@@ -121,6 +122,7 @@ const AppContent = () => (
           <Route path="/contract-filler" element={<ContractFiller />} />
           <Route path="/pitch-deck" element={<PitchDeckMaker />} />
           <Route path="/distribution-readiness" element={<DistributionReadiness />} />
+          <Route path="/table-read" element={<TableRead />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
