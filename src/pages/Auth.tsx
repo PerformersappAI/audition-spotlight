@@ -41,14 +41,59 @@ const Auth = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  // Check for password recovery token in URL
+  // Check for password recovery token in URL - handles both hash and query params
   useEffect(() => {
-    const hashParams = new URLSearchParams(window.location.hash.substring(1));
-    const type = hashParams.get('type');
-    if (type === 'recovery') {
-      setShowPasswordReset(true);
-    }
-  }, []);
+    const checkForRecoveryToken = async () => {
+      // Log the full URL for debugging
+      console.log('Auth page loaded with URL:', window.location.href);
+      console.log('Hash:', window.location.hash);
+      console.log('Search:', window.location.search);
+      
+      // Check hash params (Supabase PKCE flow)
+      const hashParams = new URLSearchParams(window.location.hash.substring(1));
+      const hashType = hashParams.get('type');
+      const hashError = hashParams.get('error');
+      const hashErrorDescription = hashParams.get('error_description');
+      
+      // Check query params (alternative Supabase flow)
+      const queryParams = new URLSearchParams(window.location.search);
+      const queryType = queryParams.get('type');
+      const queryError = queryParams.get('error');
+      
+      console.log('Hash type:', hashType, 'Query type:', queryType);
+      console.log('Hash error:', hashError, hashErrorDescription);
+      
+      // Show error if token is expired or invalid
+      if (hashError || queryError) {
+        toast({
+          variant: "destructive",
+          title: "Reset Link Error",
+          description: hashErrorDescription || "This password reset link has expired or is invalid. Please request a new one."
+        });
+        return;
+      }
+      
+      // Check for recovery type in either location
+      if (hashType === 'recovery' || queryType === 'recovery') {
+        console.log('Recovery token detected, showing password reset form');
+        setShowPasswordReset(true);
+        return;
+      }
+      
+      // Also listen for auth state changes - Supabase might set session from token
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+        console.log('Auth state change:', event, session?.user?.email);
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('PASSWORD_RECOVERY event received');
+          setShowPasswordReset(true);
+        }
+      });
+      
+      return () => subscription.unsubscribe();
+    };
+    
+    checkForRecoveryToken();
+  }, [toast]);
 
   const handleSignUp = async () => {
     if (!email || !password || !firstName || !lastName) {
