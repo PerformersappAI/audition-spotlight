@@ -150,11 +150,6 @@ const AdminLogin = () => {
                 required
                 disabled={isLoading}
               />
-              {email === 'salframondi@gmail.com' && (
-                <p className="text-xs text-muted-foreground mt-1">
-                  Admin account detected. Try password: EnricoVader$
-                </p>
-              )}
             </div>
             
             <div className="space-y-2">
@@ -200,10 +195,7 @@ const AdminLogin = () => {
                   <strong>Troubleshooting:</strong><br />
                   • Make sure email and password are exactly correct<br />
                   • Password is case-sensitive<br />
-                  • For Sal: try "EnricoVader$" exactly<br />
-                  • Check for extra spaces<br />
-                  <br />
-                  <strong>Password has been reset!</strong> Try logging in again with "EnricoVader$"
+                  • Check for extra spaces
                 </p>
               </div>
             )}
