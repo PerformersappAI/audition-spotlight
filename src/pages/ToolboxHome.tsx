@@ -45,7 +45,8 @@ import {
   ArrowRight,
   Zap,
   DollarSign,
-  ClipboardCheck
+  ClipboardCheck,
+  Headphones
 } from "lucide-react";
 
 interface Module {
@@ -693,6 +694,12 @@ export default function ToolboxHome() {
                     <ClipboardCheck className="h-5 w-5 text-cyan-400" />
                   </div>
                   <span className="text-base font-medium">Distribution</span>
+                </Link>
+                <Link to="/table-read" className="flex items-center gap-3 text-gray-200 hover:text-pink-400 transition-colors">
+                  <div className="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
+                    <Headphones className="h-5 w-5 text-pink-400" />
+                  </div>
+                  <span className="text-base font-medium">Table Read</span>
                 </Link>
               </div>
             </div>
