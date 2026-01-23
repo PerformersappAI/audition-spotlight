@@ -1,6 +1,7 @@
 import { useAuth } from './useAuth';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { supabase } from '@/integrations/supabase/client';
 
 export const useAdminAuth = (redirectOnFail = true) => {
   const { user, userProfile, loading } = useAuth();
@@ -9,21 +10,34 @@ export const useAdminAuth = (redirectOnFail = true) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('useAdminAuth: State change', { loading, user: !!user, userProfile, redirectOnFail });
-    
-    if (!loading) {
-      const adminStatus = userProfile?.role === 'admin';
-      console.log('useAdminAuth: Admin status check', { adminStatus, role: userProfile?.role });
+    const checkAdminRole = async () => {
+      console.log('useAdminAuth: State change', { loading, user: !!user, redirectOnFail });
       
-      setIsAdmin(adminStatus);
-      setIsChecking(false);
+      if (!loading && user) {
+        // Check the user_roles table using the has_role function
+        const { data, error } = await supabase.rpc('has_role', {
+          _user_id: user.id,
+          _role: 'admin'
+        });
+        
+        console.log('useAdminAuth: Admin role check result', { data, error });
+        
+        const adminStatus = data === true;
+        setIsAdmin(adminStatus);
+        setIsChecking(false);
 
-      if (redirectOnFail && !adminStatus && user) {
-        console.log('useAdminAuth: Redirecting non-admin user to home');
-        navigate('/', { replace: true });
+        if (redirectOnFail && !adminStatus) {
+          console.log('useAdminAuth: Redirecting non-admin user to home');
+          navigate('/', { replace: true });
+        }
+      } else if (!loading && !user) {
+        setIsAdmin(false);
+        setIsChecking(false);
       }
-    }
-  }, [user, userProfile, loading, navigate, redirectOnFail]);
+    };
+
+    checkAdminRole();
+  }, [user, loading, navigate, redirectOnFail]);
 
   return {
     isAdmin,
