@@ -74,34 +74,34 @@ const Auth = () => {
         title: "Sign Up Error",
         description: error.message
       });
-    } else {
-      // Send welcome email
-      try {
-        const { data: { publicUrl } } = supabase.storage.from('certificates').getPublicUrl('');
-        const supabaseUrl = publicUrl.replace('/storage/v1/object/public/certificates/', '');
-        
-        await fetch(`${supabaseUrl}/functions/v1/send-welcome-email`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email,
-            firstName
-          })
-        });
-        console.log('Welcome email triggered');
-      } catch (emailError) {
-        console.error('Failed to send welcome email:', emailError);
-        // Don't block signup if welcome email fails
-      }
-      
-      toast({
-        title: "Success!",
-        description: "Please check your email to confirm your account"
-      });
+      setLoading(false);
+      return;
     }
-    setLoading(false);
+
+    // Send welcome email in background (don't wait)
+    supabase.functions.invoke('send-welcome-email', {
+      body: { email, firstName }
+    }).catch(emailError => console.error('Failed to send welcome email:', emailError));
+
+    // Try auto-login (works when email confirmation is disabled in Supabase)
+    const { error: signInError } = await signIn(email, password);
+    
+    if (signInError) {
+      // Email confirmation is still required - show helpful message
+      toast({
+        title: "Account created!",
+        description: "Please check your email to confirm your account, then sign in."
+      });
+      setLoading(false);
+    } else {
+      // Success! Auto-logged in
+      toast({
+        title: "Welcome to Filmmaker Genius!",
+        description: "Your account is ready. Let's get started!"
+      });
+      navigate("/membership");
+      setLoading(false);
+    }
   };
 
   const handleSignIn = async () => {
