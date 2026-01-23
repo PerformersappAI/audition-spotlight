@@ -195,7 +195,7 @@ const PitchDeckMaker = () => {
     }
   };
 
-  const handleComplete = () => {
+  const handleComplete = async () => {
     // Try to save draft, but don't block completion if it fails
     try {
       localStorage.setItem("pitchDeckDraft", JSON.stringify(pitchData));
@@ -203,20 +203,17 @@ const PitchDeckMaker = () => {
       console.warn("Could not save draft to localStorage:", error);
     }
     
-    // Show success with options
+    // Show success message
     toast.success(
       <div className="space-y-2">
         <p className="font-semibold">Pitch Deck Complete! 🎬</p>
-        <p className="text-sm">Your deck is ready. Export to PDF to save your work.</p>
+        <p className="text-sm">Your deck is ready. Exporting PDF now...</p>
       </div>,
-      {
-        duration: 5000,
-        action: {
-          label: "Export PDF",
-          onClick: handleExportPDF,
-        },
-      }
+      { duration: 3000 }
     );
+    
+    // Automatically trigger PDF export
+    await handleExportPDF();
   };
 
   // Template selection screen
