@@ -425,6 +425,38 @@ export type Database = {
           },
         ]
       }
+      call_sheet_breaks: {
+        Row: {
+          after_scene_index: number
+          break_type: string
+          call_sheet_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          after_scene_index: number
+          break_type: string
+          call_sheet_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          after_scene_index?: number
+          break_type?: string
+          call_sheet_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_breaks_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       call_sheet_cast: {
         Row: {
           actor_name: string
@@ -432,12 +464,17 @@ export type Database = {
           call_time: string | null
           cast_id: string | null
           character_name: string
+          costume_time: string | null
           id: string
+          makeup_time: string | null
+          on_set_time: string | null
           order_index: number | null
           pickup_time: string | null
           set_ready_time: string | null
           special_instructions: string | null
           status: string | null
+          swf: string | null
+          travel_time: string | null
         }
         Insert: {
           actor_name: string
@@ -445,12 +482,17 @@ export type Database = {
           call_time?: string | null
           cast_id?: string | null
           character_name: string
+          costume_time?: string | null
           id?: string
+          makeup_time?: string | null
+          on_set_time?: string | null
           order_index?: number | null
           pickup_time?: string | null
           set_ready_time?: string | null
           special_instructions?: string | null
           status?: string | null
+          swf?: string | null
+          travel_time?: string | null
         }
         Update: {
           actor_name?: string
@@ -458,12 +500,17 @@ export type Database = {
           call_time?: string | null
           cast_id?: string | null
           character_name?: string
+          costume_time?: string | null
           id?: string
+          makeup_time?: string | null
+          on_set_time?: string | null
           order_index?: number | null
           pickup_time?: string | null
           set_ready_time?: string | null
           special_instructions?: string | null
           status?: string | null
+          swf?: string | null
+          travel_time?: string | null
         }
         Relationships: [
           {
@@ -513,42 +560,83 @@ export type Database = {
           },
         ]
       }
+      call_sheet_requirements: {
+        Row: {
+          call_sheet_id: string
+          created_at: string
+          department: string
+          id: string
+          notes: string | null
+          order_index: number | null
+        }
+        Insert: {
+          call_sheet_id: string
+          created_at?: string
+          department: string
+          id?: string
+          notes?: string | null
+          order_index?: number | null
+        }
+        Update: {
+          call_sheet_id?: string
+          created_at?: string
+          department?: string
+          id?: string
+          notes?: string | null
+          order_index?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "call_sheet_requirements_call_sheet_id_fkey"
+            columns: ["call_sheet_id"]
+            isOneToOne: false
+            referencedRelation: "call_sheets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       call_sheet_scenes: {
         Row: {
           call_sheet_id: string
           cast_ids: string[] | null
           day_night: string | null
           id: string
+          int_ext: string | null
           location: string | null
           notes: string | null
           order_index: number | null
           pages: string | null
           scene_number: string
           set_description: string
+          start_time: string | null
         }
         Insert: {
           call_sheet_id: string
           cast_ids?: string[] | null
           day_night?: string | null
           id?: string
+          int_ext?: string | null
           location?: string | null
           notes?: string | null
           order_index?: number | null
           pages?: string | null
           scene_number: string
           set_description: string
+          start_time?: string | null
         }
         Update: {
           call_sheet_id?: string
           cast_ids?: string[] | null
           day_night?: string | null
           id?: string
+          int_ext?: string | null
           location?: string | null
           notes?: string | null
           order_index?: number | null
           pages?: string | null
           scene_number?: string
           set_description?: string
+          start_time?: string | null
         }
         Relationships: [
           {
@@ -567,6 +655,8 @@ export type Database = {
           courtesy_breakfast_time: string | null
           created_at: string
           crew_parking: string | null
+          current_schedule: string | null
+          current_script: string | null
           dawn_time: string | null
           day_number: string | null
           director: string | null
@@ -579,6 +669,7 @@ export type Database = {
           location_address: string | null
           low_temp: string | null
           lunch_time: string | null
+          lx_precall_time: string | null
           nearest_hospital: string | null
           producers: string[] | null
           production_company: string
@@ -592,6 +683,9 @@ export type Database = {
           sunrise_time: string | null
           sunset_time: string | null
           twilight_time: string | null
+          unit_base: string | null
+          unit_base_address: string | null
+          unit_call_time: string | null
           updated_at: string
           upm: string | null
           user_id: string
@@ -604,6 +698,8 @@ export type Database = {
           courtesy_breakfast_time?: string | null
           created_at?: string
           crew_parking?: string | null
+          current_schedule?: string | null
+          current_script?: string | null
           dawn_time?: string | null
           day_number?: string | null
           director?: string | null
@@ -616,6 +712,7 @@ export type Database = {
           location_address?: string | null
           low_temp?: string | null
           lunch_time?: string | null
+          lx_precall_time?: string | null
           nearest_hospital?: string | null
           producers?: string[] | null
           production_company: string
@@ -629,6 +726,9 @@ export type Database = {
           sunrise_time?: string | null
           sunset_time?: string | null
           twilight_time?: string | null
+          unit_base?: string | null
+          unit_base_address?: string | null
+          unit_call_time?: string | null
           updated_at?: string
           upm?: string | null
           user_id: string
@@ -641,6 +741,8 @@ export type Database = {
           courtesy_breakfast_time?: string | null
           created_at?: string
           crew_parking?: string | null
+          current_schedule?: string | null
+          current_script?: string | null
           dawn_time?: string | null
           day_number?: string | null
           director?: string | null
@@ -653,6 +755,7 @@ export type Database = {
           location_address?: string | null
           low_temp?: string | null
           lunch_time?: string | null
+          lx_precall_time?: string | null
           nearest_hospital?: string | null
           producers?: string[] | null
           production_company?: string
@@ -666,6 +769,9 @@ export type Database = {
           sunrise_time?: string | null
           sunset_time?: string | null
           twilight_time?: string | null
+          unit_base?: string | null
+          unit_base_address?: string | null
+          unit_call_time?: string | null
           updated_at?: string
           upm?: string | null
           user_id?: string

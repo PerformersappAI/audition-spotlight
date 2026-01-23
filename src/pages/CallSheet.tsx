@@ -6,13 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, Download, Film, Save, Edit } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, Download, Film, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground } from "@/hooks/useCallSheets";
+import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement } from "@/hooks/useCallSheets";
 import { exportCallSheetToPDF } from "@/utils/exportCallSheetToPDF";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const CallSheet = () => {
   const navigate = useNavigate();
@@ -40,9 +41,11 @@ const CallSheet = () => {
     shooting_call: "",
     lunch_time: "",
     courtesy_breakfast_time: "",
+    wrap_time: "",
     director: "",
     line_producer: "",
     upm: "",
+    associate_director: "",
     shooting_location: "",
     location_address: "",
     crew_parking: "",
@@ -56,6 +59,13 @@ const CallSheet = () => {
     sunset_time: "",
     executive_producers: [],
     producers: [],
+    // New fields
+    lx_precall_time: "",
+    unit_call_time: "",
+    current_schedule: "",
+    current_script: "",
+    unit_base: "",
+    unit_base_address: "",
   });
 
   const [scenes, setScenes] = useState<CallSheetScene[]>([{
@@ -66,6 +76,8 @@ const CallSheet = () => {
     cast_ids: [],
     notes: "",
     location: "",
+    start_time: "",
+    int_ext: "",
   }]);
 
   const [cast, setCast] = useState<CallSheetCast[]>([{
@@ -77,6 +89,11 @@ const CallSheet = () => {
     call_time: "",
     set_ready_time: "",
     special_instructions: "",
+    swf: "",
+    makeup_time: "",
+    costume_time: "",
+    travel_time: "",
+    on_set_time: "",
   }]);
 
   const [crew, setCrew] = useState<CallSheetCrew[]>([{
@@ -84,6 +101,8 @@ const CallSheet = () => {
     title: "",
     name: "",
     call_time: "",
+    phone: "",
+    off_set: "",
   }]);
 
   const [background, setBackground] = useState<CallSheetBackground[]>([{
@@ -91,7 +110,14 @@ const CallSheet = () => {
     description: "",
     call_time: "",
     notes: "",
+    makeup_time: "",
+    costume_time: "",
+    travel_time: "",
+    on_set_time: "",
   }]);
+
+  const [breaks, setBreaks] = useState<CallSheetBreak[]>([]);
+  const [requirements, setRequirements] = useState<CallSheetRequirement[]>([]);
 
 
   const updateField = (field: keyof CallSheetData, value: any) => {
@@ -107,6 +133,8 @@ const CallSheet = () => {
       cast_ids: [],
       notes: "",
       location: "",
+      start_time: "",
+      int_ext: "",
     }]);
   };
 
@@ -130,6 +158,11 @@ const CallSheet = () => {
       call_time: "",
       set_ready_time: "",
       special_instructions: "",
+      swf: "",
+      makeup_time: "",
+      costume_time: "",
+      travel_time: "",
+      on_set_time: "",
     }]);
   };
 
@@ -149,6 +182,8 @@ const CallSheet = () => {
       title: "",
       name: "",
       call_time: "",
+      phone: "",
+      off_set: "",
     }]);
   };
 
@@ -160,6 +195,33 @@ const CallSheet = () => {
     const updated = [...crew];
     updated[index] = { ...updated[index], [field]: value };
     setCrew(updated);
+  };
+
+  const addBackground = () => {
+    setBackground([...background, {
+      quantity: undefined,
+      description: "",
+      call_time: "",
+      notes: "",
+      makeup_time: "",
+      costume_time: "",
+      travel_time: "",
+      on_set_time: "",
+    }]);
+  };
+
+  const addRequirement = () => {
+    setRequirements([...requirements, { department: "", notes: "" }]);
+  };
+
+  const removeRequirement = (index: number) => {
+    setRequirements(requirements.filter((_, i) => i !== index));
+  };
+
+  const updateRequirement = (index: number, field: keyof CallSheetRequirement, value: string) => {
+    const updated = [...requirements];
+    updated[index] = { ...updated[index], [field]: value };
+    setRequirements(updated);
   };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -278,10 +340,12 @@ const CallSheet = () => {
         scenesCount: scenes.length, 
         castCount: cast.length,
         crewCount: crew.length,
-        backgroundCount: background.length
+        backgroundCount: background.length,
+        breaksCount: breaks.length,
+        requirementsCount: requirements.length
       });
       
-      await saveCallSheet(formData, scenes, cast, crew, background);
+      await saveCallSheet(formData, scenes, cast, crew, background, breaks, requirements);
       
       console.log('✅ Save successful, navigating to dashboard...');
       toast({
@@ -302,7 +366,7 @@ const CallSheet = () => {
   };
 
   const handleDownloadPDF = () => {
-    exportCallSheetToPDF(formData, scenes, cast, crew, background);
+    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements);
   };
 
   return (
@@ -410,32 +474,40 @@ const CallSheet = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-5 gap-4">
                     <div className="space-y-2">
-                      <Label>General Crew Call</Label>
-                      <Input type="time" value={formData.general_crew_call} onChange={(e) => updateField("general_crew_call", e.target.value)} />
+                      <Label>LX Precall</Label>
+                      <Input type="time" value={formData.lx_precall_time} onChange={(e) => updateField("lx_precall_time", e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Shooting Call</Label>
-                      <Input type="time" value={formData.shooting_call} onChange={(e) => updateField("shooting_call", e.target.value)} />
+                      <Label>Unit Call</Label>
+                      <Input type="time" value={formData.unit_call_time} onChange={(e) => updateField("unit_call_time", e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Lunch Time</Label>
+                      <Label>Breakfast</Label>
+                      <Input type="time" value={formData.courtesy_breakfast_time} onChange={(e) => updateField("courtesy_breakfast_time", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Lunch</Label>
                       <Input type="time" value={formData.lunch_time} onChange={(e) => updateField("lunch_time", e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Courtesy Breakfast</Label>
-                      <Input type="time" value={formData.courtesy_breakfast_time} onChange={(e) => updateField("courtesy_breakfast_time", e.target.value)} />
+                      <Label>Est. Wrap</Label>
+                      <Input type="time" value={formData.wrap_time} onChange={(e) => updateField("wrap_time", e.target.value)} />
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-4 gap-4">
                     <div className="space-y-2">
                       <Label>Director</Label>
                       <Input value={formData.director} onChange={(e) => updateField("director", e.target.value)} />
                     </div>
                     <div className="space-y-2">
-                      <Label>Line Producer</Label>
+                      <Label>1st AD</Label>
+                      <Input value={formData.associate_director} onChange={(e) => updateField("associate_director", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Line Producer/PM</Label>
                       <Input value={formData.line_producer} onChange={(e) => updateField("line_producer", e.target.value)} />
                     </div>
                     <div className="space-y-2">
@@ -452,6 +524,17 @@ const CallSheet = () => {
                   <div className="space-y-2">
                     <Label>Location Address</Label>
                     <Textarea rows={2} value={formData.location_address} onChange={(e) => updateField("location_address", e.target.value)} />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Unit Base</Label>
+                      <Input value={formData.unit_base} onChange={(e) => updateField("unit_base", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Unit Base Address</Label>
+                      <Input value={formData.unit_base_address} onChange={(e) => updateField("unit_base_address", e.target.value)} />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">

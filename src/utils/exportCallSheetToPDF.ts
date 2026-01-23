@@ -1,16 +1,30 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew, CallSheetBackground } from '@/hooks/useCallSheets';
+import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew, CallSheetBackground, CallSheetBreak, CallSheetRequirement } from '@/hooks/useCallSheets';
+
+// Helper to format time for display
+const formatTime = (time: string | undefined): string => {
+  if (!time) return '';
+  // If already formatted (e.g., "07:00 AM"), return as is
+  if (time.includes('AM') || time.includes('PM')) return time;
+  // Convert HH:MM to 12-hour format
+  const [hours, minutes] = time.split(':');
+  const h = parseInt(hours);
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${minutes} ${ampm}`;
+};
 
 // Helper to draw section header with background
 const drawSectionHeader = (doc: jsPDF, text: string, yPosition: number, pageWidth: number): number => {
-  // Draw light gray background bar
-  doc.setFillColor(230, 230, 230);
+  doc.setFillColor(200, 200, 200);
   doc.rect(14, yPosition - 5, pageWidth - 28, 8, 'F');
+  doc.setDrawColor(0, 0, 0);
+  doc.setLineWidth(0.3);
+  doc.rect(14, yPosition - 5, pageWidth - 28, 8);
   
-  // Draw section title
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
+  doc.setFontSize(10);
   doc.setTextColor(0, 0, 0);
   doc.text(text, 16, yPosition);
   
@@ -22,340 +36,383 @@ export const exportCallSheetToPDF = (
   scenes: CallSheetScene[],
   cast: CallSheetCast[],
   crew: CallSheetCrew[],
-  background: CallSheetBackground[]
+  background: CallSheetBackground[],
+  breaks: CallSheetBreak[] = [],
+  requirements: CallSheetRequirement[] = []
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
-  let yPosition = 15;
+  const margin = 14;
+  const contentWidth = pageWidth - (margin * 2);
+  let yPosition = 12;
 
-  // Header - Title
-  doc.setFontSize(22);
+  // ===== THREE-COLUMN HEADER =====
+  const leftColWidth = 55;
+  const centerColWidth = 80;
+  const rightColWidth = 47;
+  
+  // Left Column - Director/Writer, Exec Producer(s)
   doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
   doc.setTextColor(0, 0, 0);
-  doc.text('CALL SHEET', pageWidth / 2, yPosition, { align: 'center' });
   
-  yPosition += 10;
-  doc.setFontSize(14);
-  doc.text(callSheet.project_name.toUpperCase(), pageWidth / 2, yPosition, { align: 'center' });
-  
-  yPosition += 7;
-  doc.setFontSize(10);
-  doc.setFont('helvetica', 'normal');
-  doc.text(callSheet.production_company, pageWidth / 2, yPosition, { align: 'center' });
-  
-  yPosition += 10;
-  
-  // Date and Day Number in a bordered box
-  const dateText = new Date(callSheet.shoot_date).toLocaleDateString('en-US', { 
-    weekday: 'long', 
-    year: 'numeric', 
-    month: 'long', 
-    day: 'numeric' 
-  });
-  
-  // Parse day_number for "Day X of Y" format
-  let dayDisplay = '';
-  if (callSheet.day_number) {
-    // Check if already in "Day X of Y" format
-    if (callSheet.day_number.toLowerCase().includes('of')) {
-      dayDisplay = callSheet.day_number;
-    } else if (callSheet.total_days) {
-      dayDisplay = `Day ${callSheet.day_number} of ${callSheet.total_days}`;
-    } else {
-      dayDisplay = `Day ${callSheet.day_number}`;
-    }
+  let leftY = yPosition;
+  if (callSheet.director) {
+    doc.text('Director:', margin, leftY);
+    doc.setFont('helvetica', 'normal');
+    doc.text(callSheet.director, margin + 18, leftY);
+    leftY += 5;
   }
-  
-  // Draw date box
-  doc.setDrawColor(0, 0, 0);
-  doc.setLineWidth(0.5);
-  doc.rect(14, yPosition - 4, pageWidth - 28, dayDisplay ? 14 : 10);
   
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(11);
-  doc.text(dateText, pageWidth / 2, yPosition + 2, { align: 'center' });
-  
-  if (dayDisplay) {
-    yPosition += 6;
-    doc.setFontSize(10);
-    doc.text(dayDisplay, pageWidth / 2, yPosition + 2, { align: 'center' });
-    yPosition += 12;
-  } else {
-    yPosition += 10;
+  if (callSheet.executive_producers && callSheet.executive_producers.length > 0) {
+    doc.text('Exec Producer(s):', margin, leftY);
+    doc.setFont('helvetica', 'normal');
+    const epText = callSheet.executive_producers.join(', ');
+    const epLines = doc.splitTextToSize(epText, leftColWidth - 2);
+    doc.text(epLines, margin, leftY + 4);
+    leftY += 4 + (epLines.length * 4);
   }
-
-  yPosition += 6;
-
-  // Call Times Section
-  yPosition = drawSectionHeader(doc, 'CALL TIMES', yPosition, pageWidth);
-
-  const callTimesData = [
-    ['General Crew Call', callSheet.general_crew_call || 'TBD', 'Shooting Call', callSheet.shooting_call || 'TBD'],
-    ['Courtesy Breakfast', callSheet.courtesy_breakfast_time || 'N/A', 'Lunch', callSheet.lunch_time || 'TBD'],
-    ['Wrap (Est.)', callSheet.wrap_time || 'TBD', '', ''],
+  
+  // Center Column - PRODUCTION title, CALLSHEET subtitle, DATE
+  const centerX = margin + leftColWidth;
+  
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(16);
+  doc.text(callSheet.project_name.toUpperCase(), centerX + centerColWidth/2, yPosition, { align: 'center' });
+  
+  doc.setFontSize(11);
+  const dayNum = callSheet.day_number ? ` DAY ${callSheet.day_number}` : '';
+  doc.text(`CALLSHEET:${dayNum}`, centerX + centerColWidth/2, yPosition + 7, { align: 'center' });
+  
+  doc.setFontSize(10);
+  const dateText = new Date(callSheet.shoot_date).toLocaleDateString('en-GB', { 
+    weekday: 'long', 
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).toUpperCase();
+  doc.text(dateText, centerX + centerColWidth/2, yPosition + 13, { align: 'center' });
+  
+  // Right Column - Call Times
+  const rightX = margin + leftColWidth + centerColWidth;
+  let rightY = yPosition;
+  
+  doc.setFontSize(7);
+  doc.setFont('helvetica', 'normal');
+  
+  if (callSheet.lx_precall_time) {
+    doc.text(`LX Precall: ${formatTime(callSheet.lx_precall_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  
+  // Unit Call - Large and Bold
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  const unitCallTime = callSheet.unit_call_time || callSheet.general_crew_call || 'TBD';
+  doc.text(`Unit Call: ${formatTime(unitCallTime)}`, rightX, rightY + 2);
+  rightY += 8;
+  
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7);
+  
+  if (callSheet.courtesy_breakfast_time) {
+    doc.text(`Breakfast at Base: ${formatTime(callSheet.courtesy_breakfast_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  
+  if (callSheet.lunch_time) {
+    doc.text(`Lunch: ${formatTime(callSheet.lunch_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  
+  const wrapTime = callSheet.wrap_time || 'TBD';
+  doc.text(`Est. Wrap: ${formatTime(wrapTime)}`, rightX, rightY);
+  
+  yPosition = Math.max(leftY, rightY, yPosition + 18) + 4;
+  
+  // Draw horizontal line under header
+  doc.setLineWidth(0.5);
+  doc.line(margin, yPosition, pageWidth - margin, yPosition);
+  yPosition += 4;
+  
+  // ===== KEY PERSONNEL TABLE =====
+  yPosition = drawSectionHeader(doc, 'KEY PERSONNEL', yPosition, pageWidth);
+  
+  const keyPersonnel = [
+    { role: 'Director', name: callSheet.director || '', phone: '', offSet: '' },
+    { role: 'Production Manager', name: callSheet.line_producer || '', phone: '', offSet: '' },
+    { role: '1st AD', name: callSheet.associate_director || '', phone: '', offSet: '' },
+    { role: 'UPM', name: callSheet.upm || '', phone: '', offSet: '' },
   ];
+  
+  // Add crew members who might be key personnel
+  const keyCrewRoles = ['Camera', 'DOP', 'Director of Photography', 'Production Coordinator', '2nd AD'];
+  crew.forEach(member => {
+    if (keyCrewRoles.some(role => member.title.toLowerCase().includes(role.toLowerCase()))) {
+      keyPersonnel.push({ role: member.title, name: member.name, phone: member.phone || '', offSet: member.off_set || '' });
+    }
+  });
 
   autoTable(doc, {
     startY: yPosition,
-    head: [],
-    body: callTimesData,
+    head: [['Role', 'Name', 'Mobile', 'Off Set']],
+    body: keyPersonnel.slice(0, 8).map(p => [p.role, p.name, p.phone, p.offSet]),
     theme: 'grid',
-    styles: { fontSize: 9, cellPadding: 3, lineColor: [0, 0, 0], lineWidth: 0.1 },
+    styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 8 },
     columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 40, fillColor: [245, 245, 245] },
-      1: { cellWidth: 35 },
-      2: { fontStyle: 'bold', cellWidth: 40, fillColor: [245, 245, 245] },
-      3: { cellWidth: 35 },
+      0: { cellWidth: 40 },
+      1: { cellWidth: 55 },
+      2: { cellWidth: 40 },
+      3: { cellWidth: 47 },
     },
   });
-
-  yPosition = (doc as any).lastAutoTable.finalY + 8;
-
-  // Key Personnel Section
-  if (callSheet.director || callSheet.line_producer || callSheet.upm || callSheet.associate_director) {
-    yPosition = drawSectionHeader(doc, 'KEY PERSONNEL', yPosition, pageWidth);
-
-    const personnelData: string[][] = [];
-    
-    // Row 1: Director and Associate Director
-    const row1 = ['Director', callSheet.director || '', 'Associate Director', callSheet.associate_director || ''];
-    personnelData.push(row1);
-    
-    // Row 2: Line Producer and UPM
-    const row2 = ['Line Producer', callSheet.line_producer || '', 'UPM', callSheet.upm || ''];
-    personnelData.push(row2);
-    
-    // Executive Producers
-    if (callSheet.executive_producers && callSheet.executive_producers.length > 0) {
-      personnelData.push(['Executive Producers', callSheet.executive_producers.join(', '), '', '']);
-    }
-    
-    // Producers
-    if (callSheet.producers && callSheet.producers.length > 0) {
-      personnelData.push(['Producers', callSheet.producers.join(', '), '', '']);
-    }
-
-    autoTable(doc, {
-      startY: yPosition,
-      body: personnelData,
-      theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 3, lineColor: [0, 0, 0], lineWidth: 0.1 },
-      columnStyles: {
-        0: { fontStyle: 'bold', cellWidth: 40, fillColor: [245, 245, 245] },
-        1: { cellWidth: 55 },
-        2: { fontStyle: 'bold', cellWidth: 40, fillColor: [245, 245, 245] },
-        3: { cellWidth: 50 },
-      },
-    });
-
-    yPosition = (doc as any).lastAutoTable.finalY + 8;
-  }
-
-  // Location & Weather Section
-  yPosition = drawSectionHeader(doc, 'LOCATION & WEATHER', yPosition, pageWidth);
-
-  const locationData: string[][] = [];
   
-  // Location info
-  if (callSheet.shooting_location) {
-    locationData.push(['Location', callSheet.shooting_location, '', '']);
-  }
-  if (callSheet.location_address) {
-    locationData.push(['Address', callSheet.location_address, '', '']);
-  }
+  yPosition = (doc as any).lastAutoTable.finalY + 4;
   
-  // Basecamp and Parking
-  locationData.push([
-    'Basecamp', callSheet.basecamp || 'TBD',
-    'Crew Parking', callSheet.crew_parking || 'TBD'
-  ]);
-  
-  // Hospital info
-  if (callSheet.nearest_hospital) {
-    locationData.push([
-      'Nearest Hospital', callSheet.nearest_hospital,
-      'Hospital Address', callSheet.hospital_address || ''
-    ]);
-  }
-  
-  // Weather and Sun Times
-  const weatherInfo = callSheet.weather_description 
-    ? `${callSheet.weather_description}${callSheet.high_temp ? ` | High: ${callSheet.high_temp}` : ''}${callSheet.low_temp ? ` | Low: ${callSheet.low_temp}` : ''}`
-    : 'TBD';
-  
-  const sunTimes = [
+  // ===== WEATHER & SCHEDULE INFO ROW =====
+  const weatherTemp = callSheet.high_temp ? `${callSheet.high_temp}°C` : '';
+  const weatherInfo = [weatherTemp, callSheet.weather_description].filter(Boolean).join(' ');
+  const sunInfo = [
     callSheet.sunrise_time ? `Sunrise: ${callSheet.sunrise_time}` : '',
     callSheet.sunset_time ? `Sunset: ${callSheet.sunset_time}` : ''
-  ].filter(Boolean).join(' | ') || '';
+  ].filter(Boolean).join(' / ');
   
-  locationData.push(['Weather', weatherInfo, 'Sun Times', sunTimes]);
+  autoTable(doc, {
+    startY: yPosition,
+    body: [[
+      `Weather: ${weatherInfo || 'TBD'}`,
+      sunInfo || 'Sun times TBD',
+      `Schedule: ${callSheet.current_schedule || callSheet.schedule_color || 'White'}`,
+      `Script: ${callSheet.current_script || callSheet.script_color || 'White'}`
+    ]],
+    theme: 'grid',
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    columnStyles: {
+      0: { cellWidth: 50 },
+      1: { cellWidth: 50 },
+      2: { cellWidth: 42 },
+      3: { cellWidth: 40 },
+    },
+  });
+  
+  yPosition = (doc as any).lastAutoTable.finalY + 2;
+  
+  // ===== LOCATION ROW =====
+  const locationInfo = callSheet.shooting_location 
+    ? `${callSheet.shooting_location}${callSheet.location_address ? ' - ' + callSheet.location_address : ''}`
+    : 'TBD';
+  const unitBaseInfo = callSheet.unit_base 
+    ? `${callSheet.unit_base}${callSheet.unit_base_address ? ' - ' + callSheet.unit_base_address : ''}`
+    : callSheet.basecamp || 'TBD';
+  
+  autoTable(doc, {
+    startY: yPosition,
+    body: [[
+      `Location: ${locationInfo}`,
+      `Unit Base: ${unitBaseInfo}`
+    ]],
+    theme: 'grid',
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    columnStyles: {
+      0: { cellWidth: 96 },
+      1: { cellWidth: 86 },
+    },
+  });
+  
+  yPosition = (doc as any).lastAutoTable.finalY + 4;
+  
+  // ===== DAY SCHEDULE TABLE =====
+  const dayHeader = callSheet.day_number 
+    ? `DAY ${callSheet.day_number} - ${dateText}` 
+    : dateText;
+  yPosition = drawSectionHeader(doc, dayHeader, yPosition, pageWidth);
+  
+  // Build schedule data with breaks inserted
+  const scheduleData: (string | { content: string; styles?: any })[][] = [];
+  
+  scenes.forEach((scene, index) => {
+    scheduleData.push([
+      scene.location || '',
+      scene.scene_number,
+      scene.int_ext || (scene.day_night?.includes('INT') ? 'INT' : scene.day_night?.includes('EXT') ? 'EXT' : ''),
+      scene.set_description,
+      scene.day_night?.replace('INT', '').replace('EXT', '').trim() || '',
+      scene.start_time ? formatTime(scene.start_time) : '',
+      scene.cast_ids?.join(', ') || '',
+      scene.notes || ''
+    ]);
+    
+    // Check if there's a break after this scene
+    const breakAfter = breaks.find(b => b.after_scene_index === index);
+    if (breakAfter) {
+      const breakLabel = breakAfter.break_type === 'short_break' ? 'SHORT BREAK' 
+        : breakAfter.break_type === 'lunch' ? 'LUNCH' 
+        : 'DINNER';
+      scheduleData.push([
+        { content: breakLabel, styles: { fontStyle: 'bold', fillColor: [230, 230, 230] } },
+        '', '', '', '', '', '', ''
+      ]);
+    }
+  });
 
   autoTable(doc, {
     startY: yPosition,
-    body: locationData,
+    head: [['Location', 'Scene', 'Int/Ext', 'Synopsis', 'Day/Night', 'Est. Start', 'Cast', 'Notes']],
+    body: scheduleData.length > 0 ? scheduleData : [['', '', '', 'No scenes scheduled', '', '', '', '']],
     theme: 'grid',
-    styles: { fontSize: 9, cellPadding: 3, lineColor: [0, 0, 0], lineWidth: 0.1 },
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
     columnStyles: {
-      0: { fontStyle: 'bold', cellWidth: 35, fillColor: [245, 245, 245] },
-      1: { cellWidth: 60 },
-      2: { fontStyle: 'bold', cellWidth: 35, fillColor: [245, 245, 245] },
-      3: { cellWidth: 55 },
+      0: { cellWidth: 28 },
+      1: { cellWidth: 16 },
+      2: { cellWidth: 16 },
+      3: { cellWidth: 45 },
+      4: { cellWidth: 18 },
+      5: { cellWidth: 20 },
+      6: { cellWidth: 20 },
+      7: { cellWidth: 19 },
     },
   });
+  
+  yPosition = (doc as any).lastAutoTable.finalY + 4;
+  
+  // ===== ARTISTE / CAST TABLE =====
+  yPosition = drawSectionHeader(doc, 'ARTISTE', yPosition, pageWidth);
+  
+  const castData = cast.map((member, idx) => [
+    (idx + 1).toString(),
+    member.actor_name,
+    member.character_name,
+    member.swf || member.status || '',
+    member.pickup_time ? formatTime(member.pickup_time) : '',
+    member.makeup_time ? formatTime(member.makeup_time) : '',
+    member.costume_time ? formatTime(member.costume_time) : '',
+    member.travel_time ? formatTime(member.travel_time) : '',
+    member.on_set_time ? formatTime(member.on_set_time) : (member.call_time ? formatTime(member.call_time) : ''),
+  ]);
+  
+  // Add empty rows to reach minimum of 7 rows
+  while (castData.length < 7) {
+    castData.push([String(castData.length + 1), '', '', '', '', '', '', '', '']);
+  }
 
-  yPosition = (doc as any).lastAutoTable.finalY + 10;
-
-  // Scenes Section
-  if (scenes.length > 0) {
-    if (yPosition > 220) {
-      doc.addPage();
-      yPosition = 15;
-    }
-
-    yPosition = drawSectionHeader(doc, 'SCENES', yPosition, pageWidth);
-
-    const scenesData = scenes.map(scene => [
-      scene.scene_number,
-      scene.pages || '',
-      scene.set_description,
-      scene.day_night || '',
-      scene.location || '',
-      scene.cast_ids?.join(', ') || '',
-      scene.notes || '',
+  autoTable(doc, {
+    startY: yPosition,
+    head: [['ID', 'Artiste', 'Character', 'SWF', 'P/UP', 'M-UP', 'Cost', 'Travel', 'On Set']],
+    body: castData,
+    theme: 'grid',
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: 12 },
+      1: { cellWidth: 32 },
+      2: { cellWidth: 32 },
+      3: { cellWidth: 18 },
+      4: { cellWidth: 18 },
+      5: { cellWidth: 18 },
+      6: { cellWidth: 18 },
+      7: { cellWidth: 18 },
+      8: { cellWidth: 18 },
+    },
+  });
+  
+  yPosition = (doc as any).lastAutoTable.finalY + 4;
+  
+  // ===== SUPPORTING ARTISTS SECTION =====
+  if (background.length > 0) {
+    const totalBG = background.reduce((sum, b) => sum + (b.quantity || 1), 0);
+    yPosition = drawSectionHeader(doc, `SUPPORTING ARTISTS (TOTAL = ${totalBG})`, yPosition, pageWidth);
+    
+    const bgData = background.map(item => [
+      `${item.quantity || 1}x ${item.description}`,
+      item.call_time ? formatTime(item.call_time) : '',
+      item.makeup_time ? formatTime(item.makeup_time) : '',
+      item.costume_time ? formatTime(item.costume_time) : '',
+      item.travel_time ? formatTime(item.travel_time) : '',
+      item.on_set_time ? formatTime(item.on_set_time) : '',
     ]);
 
     autoTable(doc, {
       startY: yPosition,
-      head: [['Scene', 'Pages', 'Set & Description', 'D/N', 'Location', 'Cast', 'Notes']],
-      body: scenesData,
+      head: [['Description', 'Call', 'Make Up', 'Costume', 'Travel', 'On Set']],
+      body: bgData,
       theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold' },
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
       columnStyles: {
-        0: { cellWidth: 18 },
-        1: { cellWidth: 15 },
-        2: { cellWidth: 45 },
-        3: { cellWidth: 12 },
-        4: { cellWidth: 35 },
-        5: { cellWidth: 25 },
-        6: { cellWidth: 35 },
+        0: { cellWidth: 72 },
+        1: { cellWidth: 22 },
+        2: { cellWidth: 22 },
+        3: { cellWidth: 22 },
+        4: { cellWidth: 22 },
+        5: { cellWidth: 22 },
       },
     });
-
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
   }
-
-  // Cast Section
-  if (cast.length > 0) {
-    if (yPosition > 220) {
-      doc.addPage();
-      yPosition = 15;
-    }
-
-    yPosition = drawSectionHeader(doc, 'CAST', yPosition, pageWidth);
-
-    const castData = cast.map(member => [
-      member.cast_id || '',
-      member.character_name,
-      member.actor_name,
-      member.status || '',
-      member.pickup_time || '',
-      member.call_time || '',
-      member.set_ready_time || '',
-      member.special_instructions || '',
-    ]);
+  
+  // ===== REQUIREMENTS SECTION =====
+  if (requirements.length > 0) {
+    yPosition = drawSectionHeader(doc, 'REQUIREMENTS', yPosition, pageWidth);
+    
+    const reqData = requirements.map(r => [r.department, r.notes || '']);
 
     autoTable(doc, {
       startY: yPosition,
-      head: [['#', 'Character', 'Actor', 'Status', 'Pickup', 'Call', 'Set Ready', 'Notes']],
-      body: castData,
+      body: reqData,
       theme: 'grid',
-      styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold' },
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
       columnStyles: {
-        0: { cellWidth: 12 },
-        1: { cellWidth: 30 },
-        2: { cellWidth: 30 },
-        3: { cellWidth: 18 },
-        4: { cellWidth: 20 },
-        5: { cellWidth: 20 },
-        6: { cellWidth: 22 },
-        7: { cellWidth: 33 },
+        0: { cellWidth: 40, fontStyle: 'bold', fillColor: [245, 245, 245] },
+        1: { cellWidth: 142 },
       },
     });
-
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
+    
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
   }
-
-  // Crew Section (new page for cleaner layout)
+  
+  // ===== CREW SECTION (New Page) =====
   if (crew.length > 0) {
     doc.addPage();
     yPosition = 15;
-
+    
     yPosition = drawSectionHeader(doc, 'CREW', yPosition, pageWidth);
-
+    
     // Group crew by department
-    const crewByDept: { [key: string]: typeof crew } = {};
+    const departments: { [key: string]: typeof crew } = {};
     crew.forEach(member => {
-      if (!crewByDept[member.department]) {
-        crewByDept[member.department] = [];
-      }
-      crewByDept[member.department].push(member);
+      const dept = member.department || 'General';
+      if (!departments[dept]) departments[dept] = [];
+      departments[dept].push(member);
     });
-
-    const crewData = crew.map(member => [
-      member.department,
-      member.title,
-      member.name,
-      member.call_time || '',
-    ]);
+    
+    const crewData: string[][] = [];
+    Object.entries(departments).forEach(([dept, members]) => {
+      members.forEach((member, idx) => {
+        crewData.push([
+          idx === 0 ? dept : '',
+          member.title,
+          member.name,
+          member.call_time ? formatTime(member.call_time) : ''
+        ]);
+      });
+    });
 
     autoTable(doc, {
       startY: yPosition,
       head: [['Department', 'Title', 'Name', 'Call Time']],
       body: crewData,
       theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 3, lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold' },
+      styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 8 },
       columnStyles: {
-        0: { cellWidth: 45, fillColor: [250, 250, 250] },
+        0: { cellWidth: 40, fontStyle: 'bold', fillColor: [250, 250, 250] },
         1: { cellWidth: 50 },
         2: { cellWidth: 55 },
-        3: { cellWidth: 35 },
-      },
-    });
-
-    yPosition = (doc as any).lastAutoTable.finalY + 10;
-  }
-
-  // Background Actors Section
-  if (background.length > 0) {
-    if (yPosition > 220 || crew.length === 0) {
-      doc.addPage();
-      yPosition = 15;
-    }
-
-    yPosition = drawSectionHeader(doc, 'BACKGROUND / EXTRAS', yPosition, pageWidth);
-
-    const backgroundData = background.map(item => [
-      item.quantity?.toString() || '',
-      item.description,
-      item.call_time || '',
-      item.notes || '',
-    ]);
-
-    autoTable(doc, {
-      startY: yPosition,
-      head: [['Qty', 'Description', 'Call Time', 'Notes']],
-      body: backgroundData,
-      theme: 'grid',
-      styles: { fontSize: 9, cellPadding: 3, lineColor: [0, 0, 0], lineWidth: 0.1 },
-      headStyles: { fillColor: [200, 200, 200], textColor: [0, 0, 0], fontStyle: 'bold' },
-      columnStyles: {
-        0: { cellWidth: 20 },
-        1: { cellWidth: 75 },
-        2: { cellWidth: 30 },
-        3: { cellWidth: 60 },
+        3: { cellWidth: 37 },
       },
     });
   }
@@ -364,12 +421,12 @@ export const exportCallSheetToPDF = (
   const pageCount = doc.internal.pages.length - 1;
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
-    doc.setFontSize(8);
+    doc.setFontSize(7);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(100, 100, 100);
-    doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.height - 10, { align: 'center' });
+    doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.height - 8, { align: 'center' });
     doc.setFont('helvetica', 'bold');
-    doc.text('SAFETY FIRST | NO FORCED CALLS | NO SMOKING ON SET', pageWidth / 2, doc.internal.pageSize.height - 6, { align: 'center' });
+    doc.text('SAFETY FIRST | NO FORCED CALLS | NO SMOKING ON SET', pageWidth / 2, doc.internal.pageSize.height - 4, { align: 'center' });
   }
 
   // Save the PDF
