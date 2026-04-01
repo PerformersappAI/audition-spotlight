@@ -61,6 +61,9 @@ import FundingStrategy from "./pages/FundingStrategy";
 import ContractFiller from "./pages/ContractFiller";
 import DistributionReadiness from "./pages/DistributionReadiness";
 import TableRead from "./pages/TableRead";
+import VideoEvaluation from "./pages/VideoEvaluation";
+import ActorDashboard from "./pages/ActorDashboard";
+import Social from "./pages/Social";
 
 const queryClient = new QueryClient();
 
