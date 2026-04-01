@@ -180,7 +180,7 @@ serve(async (req) => {
 
     console.log('Video processing completed, generating analysis...');
 
-    // Generate analysis using Gemini 2.0 Flash Exp
+    // Generate analysis using Gemini 2.5 Flash
     const analysisPrompt = evaluationType === 'script_based' 
       ? `Analyze this acting performance video. The actor is performing a scene from a script. Provide detailed feedback on:
 
