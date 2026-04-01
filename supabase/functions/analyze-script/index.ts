@@ -561,28 +561,26 @@ SCENE ANALYSIS INSTRUCTIONS:
 
 Make your analysis deeply personal to this scene - reference specific lines, actions, and moments.`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o',
+        model: 'google/gemini-3-flash-preview',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: userPrompt }
         ],
         max_tokens: 3000,
-        response_format: { type: "json_object" }
       })
     });
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('OpenAI API error:', response.status, errorText);
+      console.error('AI gateway error:', response.status, errorText);
       
-      // Handle specific OpenAI API errors more gracefully
       if (response.status === 503) {
         return new Response(JSON.stringify({ 
           error: 'AI service is temporarily overloaded. Please try analyzing again in a few moments.',
@@ -604,15 +602,26 @@ Make your analysis deeply personal to this scene - reference specific lines, act
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
+
+      if (response.status === 402) {
+        return new Response(JSON.stringify({ 
+          error: 'Credits exhausted. Please add more credits.',
+          success: false,
+          retryable: false
+        }), {
+          status: 402,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       
-      throw new Error(`OpenAI API error: ${response.status} - ${errorText}`);
+      throw new Error(`AI gateway error: ${response.status} - ${errorText}`);
     }
 
     const data = await response.json();
     
     if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      console.error('Unexpected OpenAI response format:', data);
-      throw new Error('No content returned from OpenAI API');
+      console.error('Unexpected AI response format:', data);
+      throw new Error('No content returned from AI');
     }
 
     // Helper function to extract actual character names from script

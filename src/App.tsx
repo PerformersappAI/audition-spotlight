@@ -126,6 +126,9 @@ const AppContent = () => (
           <Route path="/pitch-deck" element={<PitchDeckMaker />} />
           <Route path="/distribution-readiness" element={<DistributionReadiness />} />
           <Route path="/table-read" element={<TableRead />} />
+          <Route path="/video-evaluation" element={<VideoEvaluation />} />
+          <Route path="/actor-dashboard" element={<ActorDashboard />} />
+          <Route path="/social" element={<Social />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
