@@ -365,10 +365,10 @@ serve(async (req) => {
       );
     }
 
-    if (!OPENAI_API_KEY) {
-      console.error('OPENAI_API_KEY not found in environment variables');
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY not found in environment variables');
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
+        JSON.stringify({ error: 'AI service not configured' }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
       );
     }
