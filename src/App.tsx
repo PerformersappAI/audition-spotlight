@@ -61,6 +61,9 @@ import FundingStrategy from "./pages/FundingStrategy";
 import ContractFiller from "./pages/ContractFiller";
 import DistributionReadiness from "./pages/DistributionReadiness";
 import TableRead from "./pages/TableRead";
+import VideoEvaluation from "./pages/VideoEvaluation";
+import { ActorDashboard } from "./pages/ActorDashboard";
+import Social from "./pages/Social";
 
 const queryClient = new QueryClient();
 
@@ -123,6 +126,9 @@ const AppContent = () => (
           <Route path="/pitch-deck" element={<PitchDeckMaker />} />
           <Route path="/distribution-readiness" element={<DistributionReadiness />} />
           <Route path="/table-read" element={<TableRead />} />
+          <Route path="/video-evaluation" element={<VideoEvaluation />} />
+          <Route path="/actor-dashboard" element={<ActorDashboard />} />
+          <Route path="/social" element={<Social />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>

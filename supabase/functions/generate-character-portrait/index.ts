@@ -86,7 +86,7 @@ Important: Transform this person into the character ${characterName} while maint
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.5-flash-image-preview",
+        model: "google/gemini-3.1-flash-image-preview",
         messages,
         modalities: ["image", "text"],
       }),

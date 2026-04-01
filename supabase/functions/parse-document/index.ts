@@ -6,71 +6,61 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
-
-// Cache for discovered models (1 hour TTL)
-const modelCache = {
-  models: [] as string[],
-  lastFetch: 0,
-  ttl: 60 * 60 * 1000, // 1 hour
-};
-
-// Fallback models in order of preference
-const FALLBACK_MODELS = [
-  'gemini-2.0-flash-exp',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro'
-];
-
-async function discoverAvailableModels(): Promise<string[]> {
-  // Check cache first
-  const now = Date.now();
-  if (modelCache.models.length > 0 && (now - modelCache.lastFetch) < modelCache.ttl) {
-    console.log('Using cached models:', modelCache.models);
-    return modelCache.models;
+serve(async (req) => {
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
   }
+
+  console.log('Parse-document function called');
 
   try {
-    console.log('Discovering available Gemini models...');
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${GEMINI_API_KEY}`);
+    const { fileData, fileName, mimeType, idempotencyKey } = await req.json();
     
-    if (!response.ok) {
-      console.warn(`Model discovery failed: ${response.status}, falling back to predefined models`);
-      return FALLBACK_MODELS;
+    console.log(`Processing request - File: ${fileName}, Idempotency Key: ${idempotencyKey || 'none'}`);
+    console.log(`Processing file: ${fileName} (${mimeType})`);
+
+    if (!fileData) {
+      console.error('No file data provided');
+      return new Response(
+        JSON.stringify({ error: 'No file data provided' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
+      );
     }
 
-    const data = await response.json();
-    const availableModels = data.models
-      ?.filter((model: any) => 
-        model.name?.includes('gemini') && 
-        model.supportedGenerationMethods?.includes('generateContent')
-      )
-      .map((model: any) => model.name.replace('models/', ''))
-      .sort((a: string, b: string) => {
-        // Prioritize newer models
-        if (a.includes('2.0')) return -1;
-        if (b.includes('2.0')) return 1;
-        if (a.includes('1.5')) return -1;
-        if (b.includes('1.5')) return 1;
-        return 0;
-      }) || [];
-
-    if (availableModels.length > 0) {
-      modelCache.models = availableModels;
-      modelCache.lastFetch = now;
-      console.log('Discovered models:', availableModels);
-      return availableModels;
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY not found');
+      return new Response(
+        JSON.stringify({ error: 'AI service not configured' }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
+      );
     }
-  } catch (error) {
-    console.warn('Model discovery error:', error);
-  }
 
-  console.log('Using fallback models:', FALLBACK_MODELS);
-  return FALLBACK_MODELS;
-}
+    // Validate file type
+    const supportedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
+    const isPDF = mimeType === 'application/pdf';
+    const isImage = ['image/png', 'image/jpeg', 'image/jpg'].includes(mimeType);
+    
+    if (!supportedTypes.includes(mimeType)) {
+      console.error('Unsupported file type:', mimeType);
+      return new Response(JSON.stringify({ 
+        error: "Unsupported file type. Supported types: PDF, PNG, JPEG",
+        success: false 
+      }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
 
-async function processWithGemini(base64Data: string, modelName: string): Promise<any> {
-  const prompt = `You are a comprehensive document OCR system. Extract ALL text content from this document with COMPLETE accuracy.
+    if (isPDF || isImage) {
+      try {
+        console.log(`Processing ${isPDF ? 'PDF' : 'image'} with Lovable AI...`);
+        
+        // Convert data to base64 data URL
+        const base64Data = fileData.startsWith('data:') ? fileData : `data:${mimeType};base64,${fileData}`;
+
+        const prompt = isPDF
+          ? `You are a comprehensive document OCR system. Extract ALL text content from this document with COMPLETE accuracy.
 
 CRITICAL INSTRUCTIONS - Extract EVERYTHING:
 1. Transcribe EVERY word, number, symbol, and text element visible
@@ -93,39 +83,8 @@ For call sheets specifically, ensure you extract:
 - All timing information (call times, meals, wrap)
 - Weather, location addresses, contact numbers
 
-Return the complete extracted text exactly as it appears. Include EVERY field and EVERY section.`;
-
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: prompt },
-            {
-              inline_data: {
-                mime_type: "application/pdf",
-                data: base64Data
-              }
-            }
-          ]
-        }
-      ],
-      generationConfig: {
-        maxOutputTokens: 32000,
-        temperature: 0.1
-      }
-    })
-  });
-
-  return response;
-}
-
-async function processImageWithGemini(base64Data: string, modelName: string, mimeType: string): Promise<any> {
-  const prompt = `Extract all readable text from this image using OCR.
+Return the complete extracted text exactly as it appears. Include EVERY field and EVERY section.`
+          : `Extract all readable text from this image using OCR.
 
 Instructions:
 1. Accurately transcribe all visible text
@@ -137,163 +96,55 @@ Instructions:
 
 Return only the extracted text without any commentary.`;
 
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GEMINI_API_KEY}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      contents: [
-        {
-          parts: [
-            { text: prompt },
-            {
-              inline_data: {
-                mime_type: mimeType,
-                data: base64Data
+        const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            model: 'google/gemini-2.5-flash',
+            messages: [
+              {
+                role: 'user',
+                content: [
+                  { type: 'text', text: prompt },
+                  { type: 'image_url', image_url: { url: base64Data } }
+                ]
               }
-            }
-          ]
-        }
-      ],
-      generationConfig: {
-        maxOutputTokens: 32000,
-        temperature: 0.1
-      }
-    })
-  });
+            ],
+            max_tokens: 32000,
+            temperature: 0.1
+          })
+        });
 
-  return response;
-}
-
-serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  console.log('Parse-document function called');
-
-  try {
-    const { fileData, fileName, mimeType, idempotencyKey } = await req.json();
-    
-    // Log the request with idempotency key for debugging
-    console.log(`Processing request - File: ${fileName}, Idempotency Key: ${idempotencyKey || 'none'}`);
-
-    console.log(`Processing file: ${fileName} (${mimeType})`);
-
-    if (!fileData) {
-      console.error('No file data provided');
-      return new Response(
-        JSON.stringify({ error: 'No file data provided' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 400 }
-      );
-    }
-
-    if (!GEMINI_API_KEY) {
-      console.error('GEMINI_API_KEY not found in environment variables');
-      return new Response(
-        JSON.stringify({ error: 'Gemini API key not configured' }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-      );
-    }
-
-    // Validate file type - support PDF and images
-    const supportedTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/jpg'];
-    const isPDF = mimeType === 'application/pdf';
-    const isImage = ['image/png', 'image/jpeg', 'image/jpg'].includes(mimeType);
-    
-    if (!supportedTypes.includes(mimeType)) {
-      console.error('Unsupported file type:', mimeType);
-      return new Response(JSON.stringify({ 
-        error: "Unsupported file type. Supported types: PDF, PNG, JPEG",
-        success: false 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
-    if (isPDF || isImage) {
-      try {
-        console.log(`Processing ${isPDF ? 'PDF' : 'image'} with Gemini...`);
-        
-        // Convert data to base64 if not already
-        const base64Data = fileData.startsWith('data:') ? fileData.split(',')[1] : fileData;
-        
-        // Discover available models
-        const availableModels = await discoverAvailableModels();
-        
-        let lastError: { model: string; status?: number; error: any } | null = null;
-        let successfulModel = null;
-        
-        // Try each available model until one works
-        for (const modelName of availableModels) {
-          try {
-            console.log(`Attempting ${isPDF ? 'PDF' : 'image'} processing with model: ${modelName}`);
-            
-            const response = isPDF 
-              ? await processWithGemini(base64Data, modelName)
-              : await processImageWithGemini(base64Data, modelName, mimeType);
-            
-            console.log(`${modelName} response status: ${response.status}`);
-
-            if (response.ok) {
-              const result = await response.json();
-              
-              if (result.candidates?.[0]?.content?.parts?.[0]?.text) {
-                successfulModel = modelName;
-                console.log(`✅ Successfully processed ${isPDF ? 'PDF' : 'image'} with model: ${modelName}`);
-                
-                const extractedText = result.candidates[0].content.parts[0].text;
-                
-                return new Response(JSON.stringify({ 
-                  success: true, 
-                  text: extractedText.trim(),
-                  type: "document",
-                  confidence: 0.95,
-                  modelUsed: modelName
-                }), {
-                  headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                });
-              } else {
-                console.warn(`Model ${modelName} returned empty content, trying next model...`);
-                continue;
-              }
-            } else {
-              const errorText = await response.text();
-              lastError = { model: modelName, status: response.status, error: errorText };
-              console.warn(`Model ${modelName} failed with status ${response.status}: ${errorText}`);
-              
-              // Handle specific errors that shouldn't retry other models
-              if (response.status === 400 && errorText.includes('API key')) {
-                console.error('API key issue detected, stopping model attempts');
-                return new Response(JSON.stringify({ 
-                  error: 'API key expired or invalid. Please update your Gemini API key.',
-                  success: false,
-                  retryable: false
-                }), {
-                  status: 401,
-                  headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                });
-              }
-              
-              continue; // Try next model
-            }
-          } catch (modelError) {
-            console.warn(`Error with model ${modelName}:`, modelError);
-            lastError = { model: modelName, error: modelError };
-            continue; // Try next model
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('AI gateway error:', response.status, errorText);
+          
+          if (response.status === 429) {
+            return new Response(JSON.stringify({ 
+              error: 'Rate limit exceeded. Please try again later.',
+              success: false,
+              retryable: true
+            }), {
+              status: 429,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
           }
-        }
-        
-        // If we get here, all models failed
-        console.error('All models failed. Last error:', lastError);
-        
-        // Handle specific error types
-        if (lastError?.status === 503) {
+          if (response.status === 402) {
+            return new Response(JSON.stringify({ 
+              error: 'Credits exhausted. Please add more credits.',
+              success: false,
+              retryable: false
+            }), {
+              status: 402,
+              headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+          }
+          
           return new Response(JSON.stringify({ 
-            error: 'Gemini service is temporarily overloaded. Please try again in a few moments.',
+            error: `AI service error: ${response.status}`,
             success: false,
             retryable: true
           }), {
@@ -301,37 +152,38 @@ serve(async (req) => {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-        
-        if (lastError?.status === 429) {
+
+        const result = await response.json();
+        const extractedText = result.choices?.[0]?.message?.content;
+
+        if (!extractedText) {
+          console.error('No content in AI response');
           return new Response(JSON.stringify({ 
-            error: 'Rate limit exceeded. Please try again later.',
+            error: 'Failed to extract text from document',
             success: false,
             retryable: true
           }), {
-            status: 429,
+            status: 503,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
-        
-        // Create error message safely
-        const errorMessage = lastError ? 
-          (typeof lastError.error === 'string' ? lastError.error : 
-           lastError.error instanceof Error ? lastError.error.message : 
-           'Unknown error') : 'Unknown error';
+
+        console.log(`✅ Successfully processed ${isPDF ? 'PDF' : 'image'}`);
         
         return new Response(JSON.stringify({ 
-          error: `${isPDF ? 'PDF' : 'Image'} processing failed with all available models. Last error: ${errorMessage}`,
-          success: false,
-          retryable: true,
-          modelsAttempted: availableModels
+          success: true, 
+          text: extractedText.trim(),
+          type: "document",
+          confidence: 0.95,
+          modelUsed: 'google/gemini-2.5-flash'
         }), {
-          status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
-      } catch (geminiError) {
-        console.error('Gemini processing error:', geminiError);
+
+      } catch (processingError) {
+        console.error('Processing error:', processingError);
         return new Response(JSON.stringify({ 
-          error: `Failed to parse ${isPDF ? 'PDF' : 'image'} with Gemini: ` + (geminiError instanceof Error ? geminiError.message : String(geminiError)),
+          error: `Failed to parse ${isPDF ? 'PDF' : 'image'}: ` + (processingError instanceof Error ? processingError.message : String(processingError)),
           success: false
         }), {
           status: 500,
