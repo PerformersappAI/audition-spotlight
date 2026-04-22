@@ -103,7 +103,7 @@ Return only the extracted text without any commentary.`;
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            model: 'google/gemini-2.5-flash',
+            model: 'google/gemini-3-flash-preview',
             messages: [
               {
                 role: 'user',
@@ -175,7 +175,7 @@ Return only the extracted text without any commentary.`;
           text: extractedText.trim(),
           type: "document",
           confidence: 0.95,
-          modelUsed: 'google/gemini-2.5-flash'
+          modelUsed: 'google/gemini-3-flash-preview'
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
