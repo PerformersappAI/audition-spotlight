@@ -21,6 +21,7 @@ import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
 import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
+import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -122,6 +123,10 @@ const Storyboarding = () => {
   const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
   const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
   const [frameStyles, setFrameStyles] = useState<Map<number, string>>(new Map());
+
+  // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
+  const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
+  const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -283,6 +288,7 @@ const Storyboarding = () => {
     }
   };
 
+  // Step 1: Extract scenes from script (cheap, text-only). User then picks which to storyboard.
   const createStoryboard = async () => {
     if (!currentProject.scriptText.trim()) {
       toast({
@@ -302,18 +308,92 @@ const Storyboarding = () => {
       return;
     }
 
+    setIsExtractingScenes(true);
+    setExtractedScenes(null);
+
+    try {
+      toast({
+        title: "Reading Script",
+        description: "Identifying scenes so you can pick which ones to storyboard...",
+      });
+
+      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+        body: { scriptText: currentProject.scriptText }
+      });
+
+      if (error) {
+        console.error('extract-scenes error:', error);
+        toast({
+          variant: "destructive",
+          title: "Couldn't read scenes",
+          description: error.message || "Try again or paste a longer script.",
+        });
+        return;
+      }
+
+      if (!data?.scenes || !Array.isArray(data.scenes) || data.scenes.length === 0) {
+        toast({
+          variant: "destructive",
+          title: "No scenes found",
+          description: "Couldn't detect scenes in this script. Try adding scene headings (INT./EXT.).",
+        });
+        return;
+      }
+
+      setExtractedScenes(data.scenes as Scene[]);
+      toast({
+        title: `Found ${data.scenes.length} scene${data.scenes.length === 1 ? "" : "s"}`,
+        description: "Pick which scenes to include in the storyboard.",
+      });
+    } catch (err) {
+      console.error('Error extracting scenes:', err);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to read scenes. Please try again.",
+      });
+    } finally {
+      setIsExtractingScenes(false);
+    }
+  };
+
+  // Step 2: After user selects scenes, build the shot list ONLY for those scenes (no images yet).
+  const handleScenesConfirmed = async (selectedScenes: Scene[]) => {
+    if (!userProfile?.user_id) return;
+    if (selectedScenes.length === 0) return;
+
     setIsProcessingScript(true);
     setProcessingElapsedTime(0);
 
     try {
-      const shots = await generateShotBreakdown(
-        currentProject.scriptText,
-        currentProject.genre,
-        currentProject.tone
+      // Concatenate just the selected scene text for analyze-shots
+      const focusedScript = selectedScenes
+        .map(s => `${s.heading}\n\n${s.text}`)
+        .join("\n\n---\n\n");
+
+      // Sum user-approved shot counts as the target total
+      const targetShotCount = selectedScenes.reduce(
+        (sum, s) => sum + (s.estimatedShots || 4),
+        0
       );
-      
+
+      // Reuse existing AI shot generator with focused input + explicit count
+      const { data, error } = await supabase.functions.invoke('analyze-shots', {
+        body: {
+          scriptText: focusedScript,
+          genre: currentProject.genre,
+          tone: currentProject.tone,
+          shotCount: Math.max(2, Math.min(40, targetShotCount)),
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.shots) throw new Error('Invalid response from analyze-shots');
+
+      const shots = data.shots;
+
       const savedProject = await saveProject(
-        currentProject.scriptText,
+        focusedScript,
         currentProject.genre,
         currentProject.tone,
         shots,
@@ -322,7 +402,6 @@ const Storyboarding = () => {
       );
 
       if (savedProject) {
-        // Map database project to local interface
         const localProject: StoryboardProjectLocal = {
           id: savedProject.id,
           scriptText: savedProject.script_text,
@@ -334,17 +413,27 @@ const Storyboarding = () => {
           createdAt: new Date(savedProject.created_at)
         };
         setSelectedProject(localProject);
+        setExtractedScenes(null); // exit scene selector
         toast({
-          title: "Shot Breakdown Complete",
-          description: "Your script has been broken down into shots and saved. Generate visual storyboard frames now!"
+          title: "Shot List Ready",
+          description: `${shots.length} shots created from ${selectedScenes.length} scene${selectedScenes.length === 1 ? "" : "s"}. Review and edit before generating images.`,
         });
       }
     } catch (error) {
-      console.error('Error creating storyboard:', error);
+      console.error('Error building shot list:', error);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to build shot list. Please try again.",
+      });
     } finally {
       setIsProcessingScript(false);
       setProcessingElapsedTime(0);
     }
+  };
+
+  const cancelSceneSelection = () => {
+    setExtractedScenes(null);
   };
 
   // Quick storyboard generation using simplified API
@@ -1478,14 +1567,19 @@ const Storyboarding = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Button 
                       onClick={createStoryboard} 
-                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes}
                       size="lg"
                       variant="default"
                     >
-                      {isProcessingScript ? (
+                      {isExtractingScenes ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating Breakdown...
+                          Reading Scenes...
+                        </>
+                      ) : isProcessingScript ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Building Shot List...
                         </>
                       ) : (
                         <>
@@ -1497,7 +1591,7 @@ const Storyboarding = () => {
 
                     <Button 
                       onClick={createQuickStoryboard} 
-                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes}
                       size="lg"
                       variant="secondary"
                     >
@@ -1516,8 +1610,8 @@ const Storyboarding = () => {
                   </div>
                   
                   <div className="text-xs text-muted-foreground text-center space-y-1">
-                    <p><strong>Detailed Breakdown:</strong> Creates shot analysis first, then generate visuals individually</p>
-                    <p><strong>Quick Storyboard:</strong> Generates complete storyboard with sketch-style frames instantly</p>
+                    <p><strong>Detailed Breakdown:</strong> Pick scenes → review shot list → generate frames (recommended, lowest cost)</p>
+                    <p><strong>Quick Storyboard:</strong> Skips scene selection — generates all frames immediately (higher cost)</p>
                   </div>
                 </CardContent>
               </Card>
@@ -1639,8 +1733,20 @@ const Storyboarding = () => {
             </div>
           </div>
 
+          {/* Scene Selector — Option A: cost gate before shot breakdown */}
+          {extractedScenes && extractedScenes.length > 0 && (
+            <div className="mt-8">
+              <SceneSelector
+                scenes={extractedScenes}
+                onConfirm={handleScenesConfirmed}
+                onCancel={cancelSceneSelection}
+                isProcessing={isProcessingScript}
+              />
+            </div>
+          )}
+
           {/* Shot Breakdown and Storyboard Section */}
-          {selectedProject && (
+          {selectedProject && !extractedScenes && (
             <div className="mt-8 space-y-6">
               {/* Shot Breakdown */}
               <Card className="border-2 border-primary/20 shadow-lg">
