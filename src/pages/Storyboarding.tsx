@@ -1733,8 +1733,20 @@ const Storyboarding = () => {
             </div>
           </div>
 
+          {/* Scene Selector — Option A: cost gate before shot breakdown */}
+          {extractedScenes && extractedScenes.length > 0 && (
+            <div className="mt-8">
+              <SceneSelector
+                scenes={extractedScenes}
+                onConfirm={handleScenesConfirmed}
+                onCancel={cancelSceneSelection}
+                isProcessing={isProcessingScript}
+              />
+            </div>
+          )}
+
           {/* Shot Breakdown and Storyboard Section */}
-          {selectedProject && (
+          {selectedProject && !extractedScenes && (
             <div className="mt-8 space-y-6">
               {/* Shot Breakdown */}
               <Card className="border-2 border-primary/20 shadow-lg">
