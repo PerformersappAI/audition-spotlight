@@ -1567,14 +1567,19 @@ const Storyboarding = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Button 
                       onClick={createStoryboard} 
-                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes}
                       size="lg"
                       variant="default"
                     >
-                      {isProcessingScript ? (
+                      {isExtractingScenes ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Creating Breakdown...
+                          Reading Scenes...
+                        </>
+                      ) : isProcessingScript ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Building Shot List...
                         </>
                       ) : (
                         <>
@@ -1586,7 +1591,7 @@ const Storyboarding = () => {
 
                     <Button 
                       onClick={createQuickStoryboard} 
-                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard}
+                      disabled={isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes}
                       size="lg"
                       variant="secondary"
                     >
@@ -1605,8 +1610,8 @@ const Storyboarding = () => {
                   </div>
                   
                   <div className="text-xs text-muted-foreground text-center space-y-1">
-                    <p><strong>Detailed Breakdown:</strong> Creates shot analysis first, then generate visuals individually</p>
-                    <p><strong>Quick Storyboard:</strong> Generates complete storyboard with sketch-style frames instantly</p>
+                    <p><strong>Detailed Breakdown:</strong> Pick scenes → review shot list → generate frames (recommended, lowest cost)</p>
+                    <p><strong>Quick Storyboard:</strong> Skips scene selection — generates all frames immediately (higher cost)</p>
                   </div>
                 </CardContent>
               </Card>
