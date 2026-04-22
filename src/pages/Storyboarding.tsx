@@ -21,6 +21,7 @@ import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
 import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
+import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -122,6 +123,10 @@ const Storyboarding = () => {
   const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
   const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
   const [frameStyles, setFrameStyles] = useState<Map<number, string>>(new Map());
+
+  // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
+  const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
+  const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
