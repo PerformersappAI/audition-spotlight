@@ -342,15 +342,15 @@ const PitchDeckMaker = () => {
                     type="button"
                     onClick={handleGenerateLogline}
                     disabled={isGeneratingLogline}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
-                    style={{ borderColor: "rgba(245,166,35,0.3)" }}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
+                    style={{ borderColor: "#f5a623", height: "28px" }}
                   >
                     {isGeneratingLogline ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <Sparkles className="h-3 w-3" />
                     )}
-                    Generate
+                    ✦ Generate
                   </button>
                 </Field>
 
