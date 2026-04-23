@@ -1,59 +1,88 @@
 
 
-## Storyboard Image Model — Current Status & Options
+# Storyboarding — Detailed Breakdown Flow Polish
 
-### What you have right now
+Build on the existing scene-selector + shot-list foundation. Add a clear 3-step flow, richer per-shot fields, credit confirmation, and a downloadable shot list. Quick Storyboard remains untouched.
 
-All 5 storyboard-related edge functions use **`google/gemini-3.1-flash-image-preview`** (a.k.a. **Nano Banana 2**) via the Lovable AI Gateway:
+## Step Indicator (top of Detailed Breakdown only)
 
-- `generate-storyboard`
-- `generate-storyboard-simple`
-- `generate-single-frame`
-- `generate-scene-image`
-- `inpaint-frame`
+```text
+[1 Select Scenes] ─── [2 Review Shot List] ─── [3 Generate]
+```
 
-This is **the latest and best** image model currently available through Lovable AI Gateway (as of today). It's Google's newest, supports multimodal reference images for character/style consistency (which your tool relies on per your memory), and handles inpainting.
+State derived from existing flags: `extractedScenes` set → step 1; `selectedProject` with shots & no images → step 2; images generating/present → step 3. Hidden when no script in progress.
 
-### Your question: switch to ChatGPT's image model?
+## Step 1 — Scene Selector (enhance existing `SceneSelector.tsx`)
 
-OpenAI's image model is **`gpt-image-1`** (the engine behind ChatGPT's image creation). Honest comparison for your use case:
+Already implemented. Small additions only:
+- Tip line under header: "Selecting fewer scenes = fewer credits used."
+- Show "X of Y scenes selected" counter (already present — keep).
+- Default selection switches from "all" to "all" still, but Min 1 required (already enforced).
+- Auto-save the selected scene-number set to `localStorage` keyed by script hash so navigating away preserves it.
 
-| Factor | Nano Banana 2 (current) | gpt-image-1 |
-|---|---|---|
-| Quality | Excellent, photoreal + stylized | Excellent, slightly stronger at text-in-image |
-| **Character consistency across frames** | **Strong** (multimodal reference input) | Weaker without fine-tuning |
-| **Inpainting / frame editing** | Supported | Supported (mask-based) |
-| Cost per image | ~$0.039 | ~$0.04–0.19 (tiered by quality) |
-| Available in Lovable Gateway | ✅ Yes | ❌ No — would need direct OpenAI key |
+## Step 2 — Shot List Review (enhance existing shot-list editor in `Storyboarding.tsx`)
 
-**Verdict on switching to OpenAI**: Not recommended. You'd lose character consistency (the thing that makes a storyboard hang together), pay more, and have to manage a second API key. Nano Banana 2 is genuinely the right tool for storyboards.
+The existing inline shot editor already lets users edit description, camera angle, characters, etc. Add two structured dropdowns and a credit estimator above it.
 
-### Your question: open-source / cheaper alternative?
+Per-shot row gains:
+- **Shot Type** dropdown — Wide, Medium, Close-Up, Over-the-Shoulder, POV, Two-Shot, Insert. Maps to `shot.shotType`.
+- **Camera Movement** dropdown — Static, Pan, Tilt, Dolly In, Dolly Out, Handheld, Crane. New field `shot.cameraMovement`.
+- Action Summary capped at 120 chars with live counter.
+- Location field pre-filled from the originating scene.
 
-Three real options ranked by realism for your stack:
+Above the list:
+- "Step 2: Review Shot List" heading
+- Live credit estimator: `shots.length × CREDITS_PER_FRAME` (read from existing credit constant). Updates as shots are added/removed.
+- "← Back to Scene Selector" returns user to step 1 with prior selection intact.
+- "Approve & Generate Storyboard →" replaces current generate trigger.
+- "Download Shot List (PDF)" button — exports current shot list (scene #, location, action, shot type, camera movement, dialogue) using existing `jspdf` already imported.
 
-1. **Stable Diffusion XL / SDXL Turbo via Replicate** — ~$0.003–0.01/image (5–10× cheaper). Open weights. Tradeoff: weaker character consistency, no native multimodal reference, would need ControlNet + IP-Adapter setup to come close to what you have today. Significant rebuild.
+Mobile: shot rows stack vertically (already responsive — verify and tighten).
 
-2. **FLUX.1 [schnell] via Replicate or fal.ai** — ~$0.003/image. Best open-source quality right now, near-Gemini realism. Same consistency limitation. Moderate rebuild.
+Auto-save: debounced write of edited shots to the existing `storyboard_projects` row via `updateProject` so edits survive navigation.
 
-3. **Self-host SDXL on your Hostinger VPS (187.77.199.100)** — Effectively $0/image after setup. Requires GPU VPS upgrade (Hostinger's cheapest GPU plan is ~$50–80/mo), Dockerized ComfyUI or Automatic1111, and you'd be the sysadmin. **Only worth it if you're generating 5,000+ images/month.**
+## Step 3 — Generation Gate
 
-### My recommendation (no code changes needed today)
+Clicking "Approve & Generate":
+1. Opens an `AlertDialog`: "This will use **N credits** to generate **N frames**. Continue?" with Cancel / Generate buttons.
+2. On confirm, calls existing image-generation path. Per-frame prompts now include `shotType`, `cameraMovement`, `location`, and `action` so the visual matches the approved shot list.
 
-**Stay on Nano Banana 2.** It's the latest, it's already wired up correctly, and switching would degrade the storyboard's signature feature (consistent characters across frames).
+No image calls fire before this confirmation.
 
-**Where to actually save money** (the real cost lever, per our earlier conversation):
+## Preserved (no changes)
 
-- **Workflow optimization** — scene selector + shot list approval before any images render. That cuts 60–80% of wasted generations. Bigger savings than any model swap.
-- **Bypass Lovable Gateway markup** — call Google Gemini directly with your own `GOOGLE_API_KEY` for the same Nano Banana 2 model. Saves ~20–30% per image. Requires reformatting the API calls (different request/response shape than the OpenAI-compatible gateway).
+- Quick Storyboard button + `generate-storyboard-simple` flow
+- Art style picker, custom style prompt, style reference image upload
+- Aspect ratio selector
+- Character definitions manager
+- Per-frame edit / regenerate / inpaint after generation
 
-### What I propose as the next concrete step
+## Out of Scope (deferred)
 
-Pick one:
+The user's "five suggestions" list — character extraction, saved templates, named projects panel, etc. — are explicitly future work. Only #1 (credit estimator dialog) and #2 (shot list PDF) are included in this pass because they're cheap and directly tied to the gate.
 
-- **Option A (recommended):** Build the **scene selector + shot list approval** workflow on top of the existing storyboard tool. Preserves all your current features (frame editing, manual control). Biggest cost cut.
-- **Option B:** Migrate the 5 storyboard edge functions to **call Google Gemini directly** (bypass Lovable Gateway). Same model, ~25% cheaper per image. Requires rewriting request/response handling in each function.
-- **Option C:** Do both — A first, then B.
+## Technical Details
 
-No code changes will be made until you pick a direction.
+**Files touched:**
+- `src/pages/Storyboarding.tsx` — add `StepIndicator` render, dropdowns in shot editor, credit dialog, PDF button, `cameraMovement` state, debounced auto-save, pass new fields to image-gen body.
+- `src/components/storyboard/SceneSelector.tsx` — add tip line, localStorage persistence of selection.
+- `src/components/storyboard/StepIndicator.tsx` — new tiny component (3 pills, current step highlighted).
+- `src/components/storyboard/ShotListPDF.ts` — new util wrapping `jsPDF` to render the shot list table.
+- `src/components/storyboard/ShotEditor.tsx` *(if not already extracted)* — otherwise edit the inline editor block in `Storyboarding.tsx`.
+
+**Data shape addition:**
+```ts
+interface Shot {
+  // existing fields…
+  shotType?: "Wide" | "Medium" | "Close-Up" | "Over-the-Shoulder" | "POV" | "Two-Shot" | "Insert";
+  cameraMovement?: "Static" | "Pan" | "Tilt" | "Dolly In" | "Dolly Out" | "Handheld" | "Crane";
+}
+```
+No DB migration needed — `shots` is `jsonb` on `storyboard_projects`.
+
+**Image-gen prompt change:** prepend `"[${shotType}, ${cameraMovement}] at ${location}. ${action}. "` to the existing description sent to `generate-single-frame` / `generate-storyboard`. Backwards-safe — fields default to empty strings if missing.
+
+**Credit estimator source:** reuse existing `useCredits` hook to read `CREDITS_PER_FRAME` (or hardcoded fallback if not exposed) — TBD on first read of the hook during implementation.
+
+**Auto-save:** `useEffect` watching `selectedProject.shots`, debounced 800ms, calls `updateProject(id, { shots })`.
 
