@@ -121,6 +121,8 @@ const PitchDeckMaker = () => {
   const [data, setData] = useState<PitchDeckData>(initialData);
   const [currentStep, setCurrentStep] = useState(0);
   const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
+  const [exportFormats, setExportFormats] = useState<string[]>(["pdf"]);
+  const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
 
   // Load draft
   useEffect(() => {
