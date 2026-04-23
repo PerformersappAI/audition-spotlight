@@ -15,7 +15,7 @@ import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
-  const { projects: storyboardProjects, deleteProject: deleteStoryboardProject } = useStoryboardProjects();
+  const { projects: storyboardProjects, loading: storyboardsLoading, deleteProject: deleteStoryboardProject, renameProject: renameStoryboardProject } = useStoryboardProjects();
   const [projects, setProjects] = useState([]);
   const [festivals, setFestivals] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -390,8 +390,13 @@ const Dashboard = () => {
               </div>
               <RecentProjectsGrid
                 projects={storyboardProjects}
+                totalCount={storyboardProjects.length}
+                limit={6}
+                loading={storyboardsLoading}
                 onOpen={() => navigate('/storyboarding')}
                 onDelete={(id) => deleteStoryboardProject(id)}
+                onRename={(id, newTitle) => renameStoryboardProject(id, newTitle)}
+                onViewAll={() => navigate('/storyboarding')}
                 emptyHint="No storyboards yet — head to the Storyboarding tool to create one."
               />
             </TabsContent>
