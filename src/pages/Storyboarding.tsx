@@ -1874,6 +1874,71 @@ const Storyboarding = () => {
           {/* Shot Breakdown and Storyboard Section */}
           {selectedProject && !extractedScenes && (
             <div className="mt-4 space-y-6">
+              {/* Editable Project Title (top of project viewer) */}
+              <Card className="border-primary/20">
+                <CardContent className="p-4 flex items-center gap-3 flex-wrap">
+                  <FileText className="h-5 w-5 text-primary shrink-0" />
+                  {isEditingTitle ? (
+                    <Input
+                      autoFocus
+                      value={titleDraft}
+                      onChange={(e) => setTitleDraft(e.target.value)}
+                      onBlur={async () => {
+                        setIsEditingTitle(false);
+                        const next = titleDraft.trim();
+                        if (!selectedProject.id || selectedProject.id.startsWith('quick-')) return;
+                        if (!next || next === (selectedProject.projectTitle || '')) return;
+                        await renameProject(selectedProject.id, next);
+                        setSelectedProject(prev => prev ? { ...prev, projectTitle: next } : prev);
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
+                        if (e.key === 'Escape') {
+                          setTitleDraft(selectedProject.projectTitle || '');
+                          setIsEditingTitle(false);
+                        }
+                      }}
+                      className="flex-1 min-w-[200px] text-lg font-semibold"
+                      placeholder="Untitled storyboard"
+                    />
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setTitleDraft(selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '') || '');
+                        setIsEditingTitle(true);
+                      }}
+                      className="flex-1 min-w-[200px] text-left text-lg font-semibold hover:text-primary transition-colors flex items-center gap-2 group"
+                    >
+                      <span className="truncate">
+                        {selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '') || 'Untitled storyboard'}
+                      </span>
+                      <Pencil className="h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                    </button>
+                  )}
+                  <Badge variant="outline" className="text-xs">
+                    {selectedProject.shots?.length ?? 0} shot{(selectedProject.shots?.length ?? 0) === 1 ? '' : 's'}
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              {/* Project tabs: Shot list / Cast */}
+              <Tabs defaultValue="shots" className="w-full">
+                <TabsList>
+                  <TabsTrigger value="shots">
+                    <Camera className="h-4 w-4 mr-1.5" />
+                    Shot List
+                  </TabsTrigger>
+                  <TabsTrigger value="cast">
+                    <UserCircle2 className="h-4 w-4 mr-1.5" />
+                    Cast {selectedProject.cast?.length ? `(${selectedProject.cast.length})` : ''}
+                  </TabsTrigger>
+                </TabsList>
+                <TabsContent value="cast" className="mt-4">
+                  <CastTab cast={selectedProject.cast || []} />
+                </TabsContent>
+                <TabsContent value="shots" className="mt-4 space-y-6">
+
               {/* Step 2 Banner: review shot list + live credit estimator */}
               {(!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData)) && (
                 <Card
