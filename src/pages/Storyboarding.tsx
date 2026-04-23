@@ -2622,31 +2622,90 @@ const Storyboarding = () => {
         </div>
       </div>
 
-      {/* Step 3 — Credit confirmation gate before generation */}
+      {/* Step 3 — Credit confirmation gate before generation
+          On mobile (<sm), renders as a bottom sheet via positional classes. */}
       <AlertDialog open={showGenerateConfirm} onOpenChange={setShowGenerateConfirm}>
-        <AlertDialogContent>
+        <AlertDialogContent
+          className="sm:max-w-md max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-t-2xl max-sm:rounded-b-none max-sm:w-full max-sm:max-w-full"
+        >
           <AlertDialogHeader>
-            <AlertDialogTitle>Generate {totalShotsForGen} storyboard frame{totalShotsForGen === 1 ? '' : 's'}?</AlertDialogTitle>
+            <AlertDialogTitle>Ready to Generate?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will use <span className="font-semibold text-foreground">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
-              {credits && (
-                <> · You currently have <span className="font-semibold text-foreground">{availableCredits}</span></>
-              )}.
-              {insufficientCredits && (
-                <span className="block mt-2 text-destructive">
-                  You don't have enough credits. Add more before generating.
-                </span>
-              )}
+              Review the details below before we use your credits.
             </AlertDialogDescription>
           </AlertDialogHeader>
+
+          <div className="space-y-3 text-sm">
+            <div className="grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted/40 border border-border/50">
+              <div>
+                <div className="text-xs text-muted-foreground">Frames to generate</div>
+                <div className="font-semibold text-foreground">{totalShotsForGen}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Estimated cost</div>
+                <div className="font-semibold text-foreground">
+                  {estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Your balance</div>
+                <div className="font-semibold text-foreground">{availableCredits}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Remaining after</div>
+                <div
+                  className={`font-semibold ${
+                    insufficientCredits
+                      ? 'text-destructive'
+                      : lowBalanceWarning
+                      ? 'text-yellow-500'
+                      : 'text-foreground'
+                  }`}
+                >
+                  {remainingAfter}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Style</div>
+                <div className="font-semibold text-foreground truncate">{selectedArtStyleName}</div>
+              </div>
+              <div>
+                <div className="text-xs text-muted-foreground">Aspect ratio</div>
+                <div className="font-semibold text-foreground">{currentProject.aspectRatio}</div>
+              </div>
+            </div>
+
+            {hasStyleRef && (
+              <p className="text-xs text-muted-foreground italic">
+                Style reference image active — adds 1 credit per frame.
+              </p>
+            )}
+
+            {insufficientCredits && (
+              <div className="p-3 rounded-md bg-destructive/10 border border-destructive/30 flex flex-wrap items-center justify-between gap-2">
+                <span className="text-xs text-destructive font-medium">
+                  Need {creditsShort} more credit{creditsShort === 1 ? '' : 's'} to generate.
+                </span>
+                <Button size="sm" variant="destructive" onClick={() => { setShowGenerateConfirm(false); navigate('/membership'); }}>
+                  Get Credits →
+                </Button>
+              </div>
+            )}
+
+            {lowBalanceWarning && !insufficientCredits && (
+              <p className="text-xs text-yellow-500">Running low on credits.</p>
+            )}
+          </div>
+
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleApproveAndGenerate} disabled={insufficientCredits}>
-              Generate
+              Confirm & Generate →
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
     </div>
   );
 };
