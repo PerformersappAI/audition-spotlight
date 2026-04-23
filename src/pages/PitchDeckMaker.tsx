@@ -242,31 +242,30 @@ const PitchDeckMaker = () => {
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 w-full" style={{ backgroundColor: "#12121a" }}>
+        <div className="w-full" style={{ height: "3px", backgroundColor: "#12121a" }}>
           <div
             className="h-full transition-all duration-500"
             style={{
               width: `${progressPct}%`,
               backgroundColor: "#f5a623",
-              boxShadow: "0 0 12px rgba(245,166,35,0.5)",
+              boxShadow: "0 0 12px rgba(245,166,35,0.6)",
             }}
           />
         </div>
 
-        {/* Step pips */}
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-3 overflow-x-auto">
+        {/* Step tabs */}
+        <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 py-3 overflow-x-auto">
           {STEPS.map((s, i) => {
             const active = i === currentStep;
-            const done = i < currentStep;
             return (
               <div
                 key={s.num}
-                className="flex items-center gap-2 text-xs whitespace-nowrap"
+                className="flex items-center gap-2 text-xs whitespace-nowrap transition"
                 style={{
-                  color: active ? "#f5a623" : done ? "#a1a1aa" : "#52525b",
+                  color: active ? "#f5a623" : "#52525b",
                 }}
               >
-                <span className="font-mono">{s.num}</span>
+                <span className="font-mono font-semibold">{s.num}</span>
                 <span className={active ? "font-medium" : ""}>{s.label}</span>
               </div>
             );
