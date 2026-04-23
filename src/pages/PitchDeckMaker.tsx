@@ -456,9 +456,25 @@ const PitchDeckMaker = () => {
               </div>
 
               <div
-                className="rounded-xl border overflow-hidden"
-                style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
+                className="relative flex flex-col rounded-xl border overflow-hidden"
+                style={{
+                  backgroundColor: "#0d0d18",
+                  borderColor: "#22222e",
+                  minHeight: "calc(100vh - 220px)",
+                }}
               >
+                {/* Film grain overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0 z-10 mix-blend-overlay"
+                  style={{
+                    opacity: 0.12,
+                    backgroundImage:
+                      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+                    backgroundSize: "200px 200px",
+                  }}
+                  aria-hidden="true"
+                />
+
                 {/* Poster area */}
                 <div
                   className="relative aspect-[16/10] w-full"
@@ -503,7 +519,7 @@ const PitchDeckMaker = () => {
                 </div>
 
                 {/* Body */}
-                <div className="p-8">
+                <div className="flex-1 p-8">
                   <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
                     Logline
                   </p>
@@ -536,10 +552,6 @@ const PitchDeckMaker = () => {
                   )}
                 </div>
               </div>
-
-              <p className="mt-4 text-center text-xs text-zinc-600">
-                Page 1 of your pitch deck
-              </p>
             </div>
           </section>
         </div>
