@@ -6,8 +6,20 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Film, Play, Pause, Download, Loader2, GripVertical, Image as ImageIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Film, Play, Pause, Download, Loader2, GripVertical, Image as ImageIcon, Share2, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 // gif.js ships with a worker file we point to via a CDN URL — keeps bundling simple.
 // gif.js has no types — silence the missing-module error.
@@ -26,6 +38,10 @@ interface AnimaticTabProps {
   frames: AnimaticFrameInput[];
   aspectRatio?: string; // e.g. "16:9", "9:16", "1:1"
   projectTitle?: string;
+  projectId?: string;
+  existingAnimaticUrl?: string | null;
+  isPaidUser?: boolean;
+  onAnimaticSaved?: (url: string) => void;
 }
 
 interface TimelineFrame extends AnimaticFrameInput {
@@ -59,7 +75,8 @@ const formatDuration = (seconds: number) => {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 };
 
-export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabProps) => {
+export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAnimaticUrl, isPaidUser = false, onAnimaticSaved }: AnimaticTabProps) => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewRafRef = useRef<number | null>(null);
