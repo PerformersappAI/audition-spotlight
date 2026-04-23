@@ -390,7 +390,7 @@ const PitchDeckPreview = () => {
     );
   }
 
-  const coverBg = `linear-gradient(135deg, ${template.colors[0]} 0%, ${template.colors[1]} 100%)`;
+  const coverBg = `linear-gradient(135deg, ${template.from} 0%, ${template.to} 100%)`;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: BG }}>
@@ -563,7 +563,7 @@ const PitchDeckPreview = () => {
                   style={{
                     height: "8px",
                     width: "200px",
-                    background: `linear-gradient(90deg, ${template.colors[0]}, ${template.colors[1]})`,
+                    background: `linear-gradient(90deg, ${template.from}, ${template.to})`,
                     borderRadius: "4px",
                     marginBottom: "24px",
                   }}
