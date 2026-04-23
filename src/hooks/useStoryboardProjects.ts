@@ -15,6 +15,7 @@ export interface CastMember {
   name: string;
   description: string;
   appears_in_scenes: number[];
+  reference_image_url?: string;
 }
 
 export interface Shot {
