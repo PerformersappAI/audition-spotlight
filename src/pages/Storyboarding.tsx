@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,12 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
+import { useCredits } from "@/hooks/useCredits";
 import { useNavigate } from 'react-router-dom';
 import { ToolPageRecommendations } from "@/components/training/ToolPageRecommendations";
 import jsPDF from 'jspdf';
@@ -22,6 +27,12 @@ import { CharacterDefinitionManager, CharacterDefinition } from "@/components/Ch
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
+import { StepIndicator, type StoryboardStep } from "@/components/storyboard/StepIndicator";
+import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
+
+const CREDITS_PER_FRAME = 1;
+const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
+const CAMERA_MOVEMENTS = ["Static", "Pan", "Tilt", "Dolly In", "Dolly Out", "Handheld", "Crane"];
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
@@ -128,6 +139,10 @@ const Storyboarding = () => {
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
+  // Credit gate dialog state (Step 3 confirmation)
+  const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
+  const { credits } = useCredits();
+
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
     "Sci-Fi", "Fantasy", "Mystery", "Documentary", "Musical"
@@ -164,6 +179,75 @@ const Storyboarding = () => {
     
     return () => clearInterval(interval);
   }, [generatingStoryboard]);
+
+  // Compute step for indicator (only shown when a Detailed Breakdown flow is in progress)
+  const detailedFlowActive =
+    isExtractingScenes || !!extractedScenes || (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
+
+  const currentStep: StoryboardStep = (() => {
+    if (extractedScenes && !selectedProject) return 1;
+    if (selectedProject && (!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData))) return 2;
+    return 3;
+  })();
+
+  // Auto-save shot edits (debounced) so navigating away preserves them
+  useEffect(() => {
+    if (!selectedProject?.id || !selectedProject.shots) return;
+    if (selectedProject.id.startsWith('quick-')) return; // skip in-memory quick storyboards
+    const handle = setTimeout(() => {
+      updateProject(selectedProject.id, { shots: selectedProject.shots as any });
+    }, 800);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(selectedProject?.shots), selectedProject?.id]);
+
+  const totalShotsForGen = selectedProject?.shots?.length ?? 0;
+  const estimatedCredits = totalShotsForGen * CREDITS_PER_FRAME;
+  const availableCredits = credits?.available_credits ?? 0;
+  const insufficientCredits = availableCredits < estimatedCredits;
+
+  const handleApproveAndGenerate = () => {
+    setShowGenerateConfirm(false);
+    if (!selectedProject?.storyboard || selectedProject.storyboard.length === 0) {
+      // Initialize frames first, then generate all
+      initializeStoryboard().then(() => {
+        setTimeout(() => generateAllFrames(), 300);
+      });
+    } else {
+      generateAllFrames();
+    }
+  };
+
+  const handleBackToSceneSelector = async () => {
+    if (!selectedProject) return;
+    // Re-extract scenes from the original script so user can re-pick
+    setIsExtractingScenes(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+        body: { scriptText: selectedProject.scriptText }
+      });
+      if (error) throw error;
+      if (data?.scenes?.length) {
+        setExtractedScenes(data.scenes as Scene[]);
+        setSelectedProject(null);
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ variant: "destructive", title: "Couldn't reload scenes", description: "Please try again." });
+    } finally {
+      setIsExtractingScenes(false);
+    }
+  };
+
+  const handleDownloadShotListPDF = () => {
+    if (!selectedProject?.shots?.length) return;
+    exportShotListPDF(selectedProject.shots as any, {
+      title: `${selectedProject.genre || 'Storyboard'} Shot List`,
+      genre: selectedProject.genre,
+      tone: selectedProject.tone,
+    });
+    toast({ title: "Shot list exported", description: "PDF downloaded." });
+  };
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -1733,31 +1817,82 @@ const Storyboarding = () => {
             </div>
           </div>
 
+          {/* Step Indicator (Detailed Breakdown flow only) */}
+          {detailedFlowActive && (
+            <div className="mt-8">
+              <StepIndicator currentStep={currentStep} />
+            </div>
+          )}
+
           {/* Scene Selector — Option A: cost gate before shot breakdown */}
           {extractedScenes && extractedScenes.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-4">
               <SceneSelector
                 scenes={extractedScenes}
                 onConfirm={handleScenesConfirmed}
                 onCancel={cancelSceneSelection}
-                isProcessing={isProcessingScript}
+                isProcessing={isProcessingScript || isExtractingScenes}
               />
             </div>
           )}
 
           {/* Shot Breakdown and Storyboard Section */}
           {selectedProject && !extractedScenes && (
-            <div className="mt-8 space-y-6">
+            <div className="mt-4 space-y-6">
+              {/* Step 2 Banner: review shot list + credit estimator */}
+              {(!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData)) && (
+                <Card className="border border-primary/30 bg-primary/5">
+                  <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex-1 min-w-[220px]">
+                      <h3 className="font-semibold text-sm flex items-center gap-2">
+                        <Camera className="h-4 w-4 text-primary" />
+                        Step 2: Review Shot List
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Edit any shot below, then approve to generate frames.
+                        {' '}<span className="font-medium text-foreground">{totalShotsForGen}</span> shots
+                        {' '}≈ <span className="font-medium text-primary">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
+                        {credits && (
+                          <> · You have <span className="font-medium text-foreground">{availableCredits}</span></>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" onClick={handleBackToSceneSelector} disabled={isExtractingScenes}>
+                        {isExtractingScenes ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
+                        Back to Scenes
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Shot List PDF
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setShowGenerateConfirm(true)}
+                        disabled={totalShotsForGen === 0 || isGenerating}
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        Approve & Generate →
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Shot Breakdown */}
               <Card className="border-2 border-primary/20 shadow-lg">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <CardTitle className="flex items-center gap-2">
                       <Camera className="h-5 w-5" />
                       Shot Breakdown
                     </CardTitle>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Shot List PDF
+                      </Button>
+                      <Button
                         onClick={initializeStoryboard}
                         disabled={selectedProject.storyboard && selectedProject.storyboard.length > 0}
                         variant="outline"
@@ -1767,7 +1902,7 @@ const Storyboarding = () => {
                         Initialize Frames
                       </Button>
                       {selectedProject.storyboard && selectedProject.storyboard.length > 0 && (
-                        <Button 
+                        <Button
                           onClick={generateAllFrames}
                           disabled={isGenerating}
                           variant="default"
@@ -1946,32 +2081,63 @@ const Storyboarding = () => {
                               </div>
                             )}
 
-                            {/* Shot Type & Camera Angle */}
-                            <div className="grid grid-cols-2 gap-2">
+                            {/* Shot Type & Camera Movement */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               <div>
                                 <h4 className="font-medium text-sm mb-1">Shot Type</h4>
                                 {editingShot === shot.shotNumber ? (
-                                  <Input
-                                    value={editValues.shotType || shot.shotType || shot.cameraAngle}
-                                    onChange={(e) => setEditValues(prev => ({ ...prev, shotType: e.target.value }))}
-                                    className="text-sm"
-                                  />
+                                  <Select
+                                    value={editValues.shotType || shot.shotType || ""}
+                                    onValueChange={(v) => setEditValues(prev => ({ ...prev, shotType: v }))}
+                                  >
+                                    <SelectTrigger className="text-sm h-9">
+                                      <SelectValue placeholder="Select..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {SHOT_TYPES.map(t => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 ) : (
                                   <p className="text-sm text-muted-foreground">{shot.shotType || shot.cameraAngle}</p>
                                 )}
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                                <h4 className="font-medium text-sm mb-1">Camera Movement</h4>
                                 {editingShot === shot.shotNumber ? (
-                                  <Input
-                                    value={editValues.cameraAngle || shot.cameraAngle}
-                                    onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                    className="text-sm"
-                                  />
+                                  <Select
+                                    value={(editValues as any).cameraMovement || (shot as any).cameraMovement || "Static"}
+                                    onValueChange={(v) => setEditValues(prev => ({ ...(prev as any), cameraMovement: v }))}
+                                  >
+                                    <SelectTrigger className="text-sm h-9">
+                                      <SelectValue placeholder="Select..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {CAMERA_MOVEMENTS.map(t => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 ) : (
-                                  <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                                  <p className="text-sm text-muted-foreground">{(shot as any).cameraMovement || "Static"}</p>
                                 )}
                               </div>
+                            </div>
+
+                            {/* Camera Angle (free-text, secondary) */}
+                            <div>
+                              <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                              {editingShot === shot.shotNumber ? (
+                                <Input
+                                  value={editValues.cameraAngle || shot.cameraAngle}
+                                  onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                  className="text-sm"
+                                  placeholder="e.g., Eye level, Low angle"
+                                />
+                              ) : (
+                                <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                              )}
                             </div>
 
                             {/* Lighting */}
@@ -2381,6 +2547,32 @@ const Storyboarding = () => {
           )}
         </div>
       </div>
+
+      {/* Step 3 — Credit confirmation gate before generation */}
+      <AlertDialog open={showGenerateConfirm} onOpenChange={setShowGenerateConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate {totalShotsForGen} storyboard frame{totalShotsForGen === 1 ? '' : 's'}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will use <span className="font-semibold text-foreground">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
+              {credits && (
+                <> · You currently have <span className="font-semibold text-foreground">{availableCredits}</span></>
+              )}.
+              {insufficientCredits && (
+                <span className="block mt-2 text-destructive">
+                  You don't have enough credits. Add more before generating.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleApproveAndGenerate} disabled={insufficientCredits}>
+              Generate
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
