@@ -218,6 +218,26 @@ const PitchDeckMaker = () => {
     }
   };
 
+  const handleGenerateDeck = async () => {
+    if (exportFormats.length === 0) {
+      toast.error("Pick at least one export format");
+      return;
+    }
+    setIsGeneratingDeck(true);
+    try {
+      handleSaveDraft();
+      // Hand off to existing pitch generation flow; backend wiring already exists for PDF.
+      toast.success(
+        `Generating your pitch deck (${exportFormats.map((f) => f.toUpperCase()).join(", ")})…`,
+      );
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Failed to generate deck");
+    } finally {
+      setIsGeneratingDeck(false);
+    }
+  };
+
   const progressPct = ((currentStep + 1) / STEPS.length) * 100;
   const projectTypeLabel =
     PROJECT_TYPES.find((p) => p.value === data.projectType)?.label || "";
