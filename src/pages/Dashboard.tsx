@@ -369,6 +369,33 @@ const Dashboard = () => {
               </Card>
             </TabsContent>
           )}
+
+          {/* Storyboards Tab - Filmmaker Only */}
+          {userProfile?.role === 'filmmaker' && (
+            <TabsContent value="storyboards" className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Clapperboard className="h-5 w-5" />
+                    Saved Storyboards
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your generated storyboard projects
+                  </p>
+                </div>
+                <Button onClick={() => navigate('/storyboarding')} size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Storyboard
+                </Button>
+              </div>
+              <RecentProjectsGrid
+                projects={storyboardProjects}
+                onOpen={() => navigate('/storyboarding')}
+                onDelete={(id) => deleteStoryboardProject(id)}
+                emptyHint="No storyboards yet — head to the Storyboarding tool to create one."
+              />
+            </TabsContent>
+          )}
           
           <TabsContent value="callsheets" className="space-y-4">
             {callSheets.length === 0 ? (
