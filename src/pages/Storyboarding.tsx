@@ -139,6 +139,10 @@ const Storyboarding = () => {
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
+  // Credit gate dialog state (Step 3 confirmation)
+  const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
+  const { credits } = useCredits();
+
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
     "Sci-Fi", "Fantasy", "Mystery", "Documentary", "Musical"
