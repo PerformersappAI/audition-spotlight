@@ -442,23 +442,43 @@ const PitchDeckMaker = () => {
                   </div>
                 </Field>
               </div>
+              )}
 
-              {/* Next button */}
-              <button
-                onClick={handleNext}
-                disabled={!canAdvance}
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
-                style={{
-                  backgroundColor: "#f5a623",
-                  color: "#0a0a0f",
-                  boxShadow: canAdvance
-                    ? "0 0 24px rgba(245,166,35,0.3)"
-                    : "none",
-                }}
-              >
-                Next: Story
-                <ChevronRight className="h-4 w-4" />
-              </button>
+              {currentStep === 1 && (
+                <Step2Story data={data} update={update} />
+              )}
+
+              {/* Nav buttons */}
+              <div className="mt-8 flex items-center gap-3">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleBack}
+                    className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-[#f5a623] hover:text-white"
+                    style={{ borderColor: "#22222e", backgroundColor: "#1a1a26" }}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back
+                  </button>
+                )}
+                <button
+                  onClick={handleNext}
+                  disabled={currentStep === 0 && !canAdvance}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
+                  style={{
+                    backgroundColor: "#f5a623",
+                    color: "#0a0a0f",
+                    boxShadow:
+                      currentStep === 0 && !canAdvance
+                        ? "none"
+                        : "0 0 24px rgba(245,166,35,0.3)",
+                  }}
+                >
+                  {currentStep < STEPS.length - 1
+                    ? `Next: ${STEPS[currentStep + 1].label}`
+                    : "Finish"}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </section>
 
