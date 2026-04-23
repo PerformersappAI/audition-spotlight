@@ -2181,7 +2181,7 @@ const Storyboarding = () => {
                     projectTitle={selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '')}
                     projectId={selectedProject.id && !selectedProject.id.startsWith('quick-') ? selectedProject.id : undefined}
                     existingAnimaticUrl={(selectedProject as any).animaticUrl ?? null}
-                    isPaidUser={credits > 0}
+                    isPaidUser={(credits?.available_credits ?? 0) > 0}
                     onAnimaticSaved={async (url) => {
                       await deductCredits(2, 'Animatic GIF export');
                       setSelectedProject(prev => prev ? ({ ...prev, animaticUrl: url } as any) : prev);
