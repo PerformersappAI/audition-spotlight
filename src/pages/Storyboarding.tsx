@@ -10,7 +10,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins, Pencil, UserCircle2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +30,8 @@ import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUplo
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
 import { StepIndicator, type StoryboardStep } from "@/components/storyboard/StepIndicator";
 import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
+import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
+import { CastTab, type CastMember } from "@/components/storyboard/CastTab";
 
 const CREDITS_PER_FRAME = 1;
 const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
@@ -88,15 +91,18 @@ interface StoryboardProjectLocal {
   shots: Shot[];
   storyboard?: StoryboardFrame[];
   createdAt: Date;
+  projectTitle?: string;
+  cast?: CastMember[];
 }
 
 const Storyboarding = () => {
   const { userProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { projects, loading, saveProject, updateProject, deleteProject, refetch } = useStoryboardProjects();
+  const { projects, loading, saveProject, updateProject, renameProject, deleteProject, refetch } = useStoryboardProjects();
   const [currentProject, setCurrentProject] = useState({
     scriptText: "",
+    scriptFileName: "" as string,
     genre: "",
     tone: "",
     artStyle: "comic",
@@ -137,7 +143,12 @@ const Storyboarding = () => {
 
   // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
+  const [extractedCast, setExtractedCast] = useState<CastMember[]>([]);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
+
+  // Editable project title state for the Step 3 viewer
+  const [titleDraft, setTitleDraft] = useState<string>("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // Credit gate dialog state (Step 3 confirmation)
   const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
@@ -236,6 +247,7 @@ const Storyboarding = () => {
       if (error) throw error;
       if (data?.scenes?.length) {
         setExtractedScenes(data.scenes as Scene[]);
+        if (Array.isArray(data.cast)) setExtractedCast(data.cast as CastMember[]);
         setSelectedProject(null);
       }
     } catch (err) {
@@ -248,10 +260,27 @@ const Storyboarding = () => {
 
   const handleDownloadShotListPDF = () => {
     if (!selectedProject?.shots?.length) return;
-    exportShotListPDF(selectedProject.shots as any, {
-      title: `${selectedProject.genre || 'Storyboard'} Shot List`,
+    const projectTitle =
+      selectedProject.projectTitle ||
+      currentProject.scriptFileName?.replace(/\.[^.]+$/, "") ||
+      `${selectedProject.genre || 'Storyboard'} Shot List`;
+    // Enrich shots with scene metadata pulled from extractedScenes when available
+    const sceneByNum = new Map<number, Scene>();
+    (extractedScenes || []).forEach(s => sceneByNum.set(s.sceneNumber, s));
+    const enrichedShots = selectedProject.shots.map((s: any) => {
+      const scene = s.sceneNumber ? sceneByNum.get(s.sceneNumber) : undefined;
+      return {
+        ...s,
+        intExt: s.intExt || scene?.intExt,
+        dayNight: s.dayNight || scene?.dayNight,
+        location: s.location || scene?.location,
+      };
+    });
+    exportShotListPDF(enrichedShots as any, {
+      projectTitle,
       genre: selectedProject.genre,
       tone: selectedProject.tone,
+      sceneCount: extractedScenes?.length,
     });
     toast({ title: "Shot list exported", description: "PDF downloaded." });
   };
@@ -259,6 +288,9 @@ const Storyboarding = () => {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Capture filename so we can use it as default project title
+    setCurrentProject(prev => ({ ...prev, scriptFileName: file.name }));
 
     await processFile(
       file,
@@ -432,6 +464,7 @@ const Storyboarding = () => {
       }
 
       setExtractedScenes(data.scenes as Scene[]);
+      if (Array.isArray(data.cast)) setExtractedCast(data.cast as CastMember[]);
       toast({
         title: `Found ${data.scenes.length} scene${data.scenes.length === 1 ? "" : "s"}`,
         description: "Pick which scenes to include in the storyboard.",
@@ -483,13 +516,24 @@ const Storyboarding = () => {
 
       const shots = data.shots;
 
+      const defaultTitle =
+        currentProject.scriptFileName?.replace(/\.[^.]+$/, "") ||
+        `${currentProject.genre || 'Storyboard'} – ${new Date().toLocaleDateString()}`;
+
       const savedProject = await saveProject(
         focusedScript,
         currentProject.genre,
         currentProject.tone,
         shots,
         currentProject.characterDefinitions,
-        currentProject.styleReferencePrompt
+        currentProject.styleReferencePrompt,
+        {
+          project_title: defaultTitle,
+          art_style: currentProject.artStyle,
+          aspect_ratio: currentProject.aspectRatio,
+          scene_count: selectedScenes.length,
+          cast_data: extractedCast,
+        }
       );
 
       if (savedProject) {
@@ -501,9 +545,12 @@ const Storyboarding = () => {
           characterCount: savedProject.character_count,
           shots: savedProject.shots || [],
           storyboard: savedProject.storyboard_frames || undefined,
-          createdAt: new Date(savedProject.created_at)
+          createdAt: new Date(savedProject.created_at),
+          projectTitle: savedProject.project_title || defaultTitle,
+          cast: savedProject.cast_data || extractedCast,
         };
         setSelectedProject(localProject);
+        setTitleDraft(localProject.projectTitle || "");
         setExtractedScenes(null); // exit scene selector
         toast({
           title: "Shot List Ready",
@@ -1281,6 +1328,20 @@ const Storyboarding = () => {
       await refetch();
       const refreshedProject = projects.find(p => p.id === selectedProject.id);
       if (refreshedProject) {
+        // Persist completion metadata: thumbnail (first frame), counts, complete flag
+        const frames = (refreshedProject.storyboard_frames || []) as StoryboardFrame[];
+        const firstFrameImg = frames.find(f => f.imageData)?.imageData;
+        const generatedCount = frames.filter(f => f.imageData).length;
+        const allDone = generatedCount > 0 && generatedCount === (refreshedProject.shots?.length || 0);
+
+        if (allDone) {
+          await updateProject(selectedProject.id, {
+            is_complete: true,
+            thumbnail_url: firstFrameImg,
+            frame_count: generatedCount,
+          } as any);
+        }
+
         setSelectedProject({
           id: refreshedProject.id,
           scriptText: refreshedProject.script_text,
@@ -1289,7 +1350,9 @@ const Storyboarding = () => {
           characterCount: refreshedProject.character_count,
           shots: refreshedProject.shots || [],
           storyboard: refreshedProject.storyboard_frames || undefined,
-          createdAt: new Date(refreshedProject.created_at)
+          createdAt: new Date(refreshedProject.created_at),
+          projectTitle: refreshedProject.project_title || undefined,
+          cast: refreshedProject.cast_data || [],
         });
         console.log("All frames generated, state refreshed from database");
       }
@@ -1754,65 +1817,30 @@ const Storyboarding = () => {
                   <CardTitle className="text-base">Recent Projects</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {projects.length === 0 ? (
-                    <p className="text-muted-foreground text-center py-6 text-sm">
-                      No storyboard projects yet. Upload a script to get started!
-                    </p>
-                  ) : (
-                    <div className="space-y-2">
-                      {projects.slice(0, 5).map((project) => (
-                        <div
-                          key={project.id}
-                          className={`relative p-2.5 rounded-lg border cursor-pointer transition-colors ${
-                            selectedProject?.id === project.id 
-                              ? 'border-primary bg-primary/5' 
-                              : 'border-border hover:border-primary/50'
-                          }`}
-                          onClick={() => setSelectedProject({
-                            id: project.id,
-                            scriptText: project.script_text,
-                            genre: project.genre || "",
-                            tone: project.tone || "",
-                            characterCount: project.character_count,
-                            shots: project.shots || [],
-                            storyboard: project.storyboard_frames || undefined,
-                            createdAt: new Date(project.created_at)
-                          })}
-                        >
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="absolute top-1 right-1 h-6 w-6 hover:bg-destructive/10 hover:text-destructive"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (confirm('Delete this project? This cannot be undone.')) {
-                                deleteProject(project.id);
-                                if (selectedProject?.id === project.id) {
-                                  setSelectedProject(null);
-                                }
-                              }
-                            }}
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                          
-                          <div className="pr-6">
-                            <div className="flex items-center justify-between mb-1">
-                              <span className="font-medium text-xs truncate flex-1">
-                                {project.genre || "No Genre"} • {new Date(project.created_at).toLocaleDateString()}
-                              </span>
-                              <Badge variant="outline" className="text-[10px] px-1.5 py-0 ml-2">
-                                {project.shots?.length || 0}
-                              </Badge>
-                            </div>
-                            <p className="text-[11px] text-muted-foreground line-clamp-1">
-                              {project.script_text.substring(0, 80)}...
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <RecentProjectsGrid
+                    projects={projects.slice(0, 6)}
+                    selectedId={selectedProject?.id}
+                    compact
+                    onOpen={(p) => {
+                      setSelectedProject({
+                        id: p.id,
+                        scriptText: p.script_text,
+                        genre: p.genre || "",
+                        tone: p.tone || "",
+                        characterCount: p.character_count,
+                        shots: (p.shots as any) || [],
+                        storyboard: (p.storyboard_frames as any) || undefined,
+                        createdAt: new Date(p.created_at),
+                        projectTitle: p.project_title || undefined,
+                        cast: p.cast_data || [],
+                      });
+                      setTitleDraft(p.project_title || "");
+                    }}
+                    onDelete={(id) => {
+                      deleteProject(id);
+                      if (selectedProject?.id === id) setSelectedProject(null);
+                    }}
+                  />
                 </CardContent>
               </Card>
 

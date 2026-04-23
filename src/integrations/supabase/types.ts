@@ -1355,46 +1355,67 @@ export type Database = {
       }
       storyboard_projects: {
         Row: {
+          art_style: string | null
+          aspect_ratio: string | null
+          cast_data: Json | null
           character_count: number | null
           character_definitions: Json | null
           created_at: string
+          frame_count: number | null
           genre: string | null
           id: string
           is_complete: boolean | null
+          project_title: string | null
+          scene_count: number | null
           script_text: string
           shots: Json | null
           storyboard_frames: Json | null
           style_reference_prompt: string | null
+          thumbnail_url: string | null
           tone: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          art_style?: string | null
+          aspect_ratio?: string | null
+          cast_data?: Json | null
           character_count?: number | null
           character_definitions?: Json | null
           created_at?: string
+          frame_count?: number | null
           genre?: string | null
           id?: string
           is_complete?: boolean | null
+          project_title?: string | null
+          scene_count?: number | null
           script_text: string
           shots?: Json | null
           storyboard_frames?: Json | null
           style_reference_prompt?: string | null
+          thumbnail_url?: string | null
           tone?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          art_style?: string | null
+          aspect_ratio?: string | null
+          cast_data?: Json | null
           character_count?: number | null
           character_definitions?: Json | null
           created_at?: string
+          frame_count?: number | null
           genre?: string | null
           id?: string
           is_complete?: boolean | null
+          project_title?: string | null
+          scene_count?: number | null
           script_text?: string
           shots?: Json | null
           storyboard_frames?: Json | null
           style_reference_prompt?: string | null
+          thumbnail_url?: string | null
           tone?: string | null
           updated_at?: string
           user_id?: string | null

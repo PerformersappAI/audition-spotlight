@@ -23,13 +23,18 @@ interface Scene {
   text: string;
 }
 
+interface CastMember {
+  name: string;
+  description: string;
+  appears_in_scenes: number[];
+}
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Auth check
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(
@@ -66,11 +71,11 @@ serve(async (req) => {
 
     console.log(`extract-scenes: user=${user.id}, script length=${scriptText.length}`);
 
-    const systemPrompt = `You are a script supervisor. Split a screenplay into discrete scenes for storyboarding triage. Be precise. Return ONLY valid JSON, no markdown, no code fences.`;
+    const systemPrompt = `You are a script supervisor. Split a screenplay into discrete scenes for storyboarding triage AND extract the cast list. Be precise. Return ONLY valid JSON, no markdown, no code fences.`;
 
-    const userPrompt = `Split this screenplay into scenes. A scene = one continuous location/time block, typically starting with INT./EXT. or a clear location change.
+    const userPrompt = `Split this screenplay into scenes AND extract the cast.
 
-For each scene return:
+SCENES — for each scene return:
 - sceneNumber (1-indexed)
 - heading: short slugline (e.g., "INT. KITCHEN - NIGHT")
 - summary: 1-2 sentence description of what happens
@@ -80,6 +85,11 @@ For each scene return:
 - characters: array of character names appearing
 - estimatedShots: integer 2-12, your estimate of how many storyboard frames this scene needs
 - text: the verbatim portion of the script that belongs to this scene
+
+CAST — for each unique speaking character return:
+- name: character name as it appears in the script (typically uppercase, e.g., "HARRY")
+- description: ONE concise line covering apparent age, gender, clothing, and notable physical features inferred from the script. ~12-20 words. If the script gives no detail, infer plausibly from context.
+- appears_in_scenes: array of sceneNumbers where the character speaks or is named in action
 
 If the script has no formal scene headings, infer logical scene breaks from location/time/action shifts.
 
@@ -99,6 +109,13 @@ Return ONLY this JSON shape:
       "characters": ["..."],
       "estimatedShots": 4,
       "text": "..."
+    }
+  ],
+  "cast": [
+    {
+      "name": "HARRY",
+      "description": "Late-20s man, dark hair, casual nightclub attire, athletic build",
+      "appears_in_scenes": [1, 3, 5]
     }
   ]
 }`;
@@ -147,7 +164,7 @@ Return ONLY this JSON shape:
     if (content.endsWith('```')) content = content.slice(0, -3);
     content = content.trim();
 
-    let parsed: { scenes: Scene[] };
+    let parsed: { scenes: Scene[]; cast?: CastMember[] };
     try {
       parsed = JSON.parse(content);
     } catch (err) {
@@ -172,10 +189,22 @@ Return ONLY this JSON shape:
       text: s.text || '',
     }));
 
-    console.log(`extract-scenes: returned ${scenes.length} scenes`);
+    const cast = Array.isArray(parsed.cast)
+      ? parsed.cast
+          .filter((c: any) => c && typeof c.name === 'string' && c.name.trim())
+          .map((c: any) => ({
+            name: String(c.name).trim(),
+            description: String(c.description || '').trim(),
+            appears_in_scenes: Array.isArray(c.appears_in_scenes)
+              ? c.appears_in_scenes.filter((n: any) => typeof n === 'number')
+              : [],
+          }))
+      : [];
+
+    console.log(`extract-scenes: returned ${scenes.length} scenes, ${cast.length} cast members`);
 
     return new Response(
-      JSON.stringify({ scenes }),
+      JSON.stringify({ scenes, cast }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
