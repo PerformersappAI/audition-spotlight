@@ -1817,31 +1817,82 @@ const Storyboarding = () => {
             </div>
           </div>
 
+          {/* Step Indicator (Detailed Breakdown flow only) */}
+          {detailedFlowActive && (
+            <div className="mt-8">
+              <StepIndicator currentStep={currentStep} />
+            </div>
+          )}
+
           {/* Scene Selector — Option A: cost gate before shot breakdown */}
           {extractedScenes && extractedScenes.length > 0 && (
-            <div className="mt-8">
+            <div className="mt-4">
               <SceneSelector
                 scenes={extractedScenes}
                 onConfirm={handleScenesConfirmed}
                 onCancel={cancelSceneSelection}
-                isProcessing={isProcessingScript}
+                isProcessing={isProcessingScript || isExtractingScenes}
               />
             </div>
           )}
 
           {/* Shot Breakdown and Storyboard Section */}
           {selectedProject && !extractedScenes && (
-            <div className="mt-8 space-y-6">
+            <div className="mt-4 space-y-6">
+              {/* Step 2 Banner: review shot list + credit estimator */}
+              {(!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData)) && (
+                <Card className="border border-primary/30 bg-primary/5">
+                  <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
+                    <div className="flex-1 min-w-[220px]">
+                      <h3 className="font-semibold text-sm flex items-center gap-2">
+                        <Camera className="h-4 w-4 text-primary" />
+                        Step 2: Review Shot List
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Edit any shot below, then approve to generate frames.
+                        {' '}<span className="font-medium text-foreground">{totalShotsForGen}</span> shots
+                        {' '}≈ <span className="font-medium text-primary">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
+                        {credits && (
+                          <> · You have <span className="font-medium text-foreground">{availableCredits}</span></>
+                        )}
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <Button variant="outline" size="sm" onClick={handleBackToSceneSelector} disabled={isExtractingScenes}>
+                        {isExtractingScenes ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
+                        Back to Scenes
+                      </Button>
+                      <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Shot List PDF
+                      </Button>
+                      <Button
+                        size="sm"
+                        onClick={() => setShowGenerateConfirm(true)}
+                        disabled={totalShotsForGen === 0 || isGenerating}
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        Approve & Generate →
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+
               {/* Shot Breakdown */}
               <Card className="border-2 border-primary/20 shadow-lg">
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
                     <CardTitle className="flex items-center gap-2">
                       <Camera className="h-5 w-5" />
                       Shot Breakdown
                     </CardTitle>
                     <div className="flex gap-2">
-                      <Button 
+                      <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
+                        <Download className="mr-2 h-4 w-4" />
+                        Shot List PDF
+                      </Button>
+                      <Button
                         onClick={initializeStoryboard}
                         disabled={selectedProject.storyboard && selectedProject.storyboard.length > 0}
                         variant="outline"
@@ -1851,7 +1902,7 @@ const Storyboarding = () => {
                         Initialize Frames
                       </Button>
                       {selectedProject.storyboard && selectedProject.storyboard.length > 0 && (
-                        <Button 
+                        <Button
                           onClick={generateAllFrames}
                           disabled={isGenerating}
                           variant="default"
