@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -6,12 +6,17 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus } from "lucide-react";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
+} from "@/components/ui/alert-dialog";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
+import { useCredits } from "@/hooks/useCredits";
 import { useNavigate } from 'react-router-dom';
 import { ToolPageRecommendations } from "@/components/training/ToolPageRecommendations";
 import jsPDF from 'jspdf';
@@ -22,6 +27,12 @@ import { CharacterDefinitionManager, CharacterDefinition } from "@/components/Ch
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
+import { StepIndicator, type StoryboardStep } from "@/components/storyboard/StepIndicator";
+import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
+
+const CREDITS_PER_FRAME = 1;
+const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
+const CAMERA_MOVEMENTS = ["Static", "Pan", "Tilt", "Dolly In", "Dolly Out", "Handheld", "Crane"];
 // Document parsing functionality
 const extractTextFromPDF = async (arrayBuffer: ArrayBuffer): Promise<string> => {
   try {
