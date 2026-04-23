@@ -10,7 +10,8 @@ import { Film, Play, Pause, Download, Loader2, GripVertical, Image as ImageIcon 
 import { useToast } from "@/hooks/use-toast";
 
 // gif.js ships with a worker file we point to via a CDN URL — keeps bundling simple.
-// @ts-expect-error — gif.js has no types
+// gif.js has no types — silence the missing-module error.
+// @ts-ignore
 import GIF from "gif.js";
 const GIF_WORKER_URL = "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js";
 

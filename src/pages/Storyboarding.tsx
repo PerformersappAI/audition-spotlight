@@ -32,6 +32,7 @@ import { StepIndicator, type StoryboardStep } from "@/components/storyboard/Step
 import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
 import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
 import { CastTab, type CastMember } from "@/components/storyboard/CastTab";
+import { AnimaticTab } from "@/components/storyboard/AnimaticTab";
 
 const CREDITS_PER_FRAME = 1;
 const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
@@ -2153,6 +2154,10 @@ const Storyboarding = () => {
                     <UserCircle2 className="h-4 w-4 mr-1.5" />
                     Cast {selectedProject.cast?.length ? `(${selectedProject.cast.length})` : ''}
                   </TabsTrigger>
+                  <TabsTrigger value="animatic">
+                    <Film className="h-4 w-4 mr-1.5" />
+                    Animatic
+                  </TabsTrigger>
                 </TabsList>
                 <TabsContent value="cast" className="mt-4">
                   <CastTab
@@ -2162,6 +2167,18 @@ const Storyboarding = () => {
                     generatingNames={generatingCastNames}
                     isBulkGenerating={isBulkCastGenerating}
                     framesUsageByName={framesUsageByName}
+                  />
+                </TabsContent>
+                <TabsContent value="animatic" className="mt-4">
+                  <AnimaticTab
+                    frames={(selectedProject.storyboard || []).map((f: any) => ({
+                      shotNumber: f.shotNumber,
+                      imageData: f.imageData,
+                      description: f.description,
+                      sceneHeading: f.sceneHeading || f.location || f.description,
+                    }))}
+                    aspectRatio={selectedProject.aspectRatio}
+                    projectTitle={selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '')}
                   />
                 </TabsContent>
                 <TabsContent value="shots" className="mt-4 space-y-6">
