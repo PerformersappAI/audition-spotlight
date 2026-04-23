@@ -65,6 +65,7 @@ import VideoEvaluation from "./pages/VideoEvaluation";
 import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
 import AnimaticView from "./pages/AnimaticView";
+import StoryboardingPricing from "./pages/StoryboardingPricing";
 
 const queryClient = new QueryClient();
 
@@ -86,6 +87,7 @@ const AppContent = () => (
       <Route path="/scene-analysis" element={<SceneAnalysis />} />
       <Route path="/script-analysis" element={<ScriptAnalysis />} />
       <Route path="/storyboarding" element={<Storyboarding />} />
+      <Route path="/storyboarding/pricing" element={<StoryboardingPricing />} />
       <Route path="/call-sheet" element={<CallSheet />} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
