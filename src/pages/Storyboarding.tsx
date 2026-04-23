@@ -31,6 +31,7 @@ import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector
 import { StepIndicator, type StoryboardStep } from "@/components/storyboard/StepIndicator";
 import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
 import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
+import { UpgradeBanner } from "@/components/storyboard/UpgradeBanner";
 import { CastTab, type CastMember } from "@/components/storyboard/CastTab";
 import { AnimaticTab } from "@/components/storyboard/AnimaticTab";
 
@@ -2018,6 +2019,11 @@ const Storyboarding = () => {
           {/* Step Indicator (Detailed Breakdown flow only) */}
           {detailedFlowActive && (
             <div className="mt-8">
+              <UpgradeBanner
+                message="Unlock unlimited projects, GIF export, character consistency, and shot list PDF on Creator — $19/mo."
+                ctaLabel="See plans"
+                className="mb-4"
+              />
               <StepIndicator currentStep={currentStep} />
             </div>
           )}
