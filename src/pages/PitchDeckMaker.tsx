@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "l
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
+import Step3CharactersVisuals, { STYLE_TEMPLATES, type VisualCharacter } from "@/components/pitchdeck/Step3CharactersVisuals";
 import Step4MarketTeam, { type TeamMember } from "@/components/pitchdeck/Step4MarketTeam";
 
 // ============================================================================
@@ -472,18 +473,7 @@ const PitchDeckMaker = () => {
               )}
 
               {currentStep === 2 && (
-                <div className="py-2">
-                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
-                    03 — CHARACTERS & VISUALS
-                  </p>
-                  <h2 className="mt-1 text-xl font-semibold text-white">
-                    Coming together
-                  </h2>
-                  <p className="mt-2 text-sm text-zinc-500">
-                    This step is being finalized. Continue to Market & Team to
-                    keep building your deck.
-                  </p>
-                </div>
+                <Step3CharactersVisuals data={data} update={update} />
               )}
 
               {currentStep === 3 && (
@@ -742,12 +732,93 @@ const PitchDeckMaker = () => {
                   </div>
                 )}
 
-                {/* Body — Step 3 (placeholder) */}
+                {/* Body — Step 3 */}
                 {currentStep === 2 && (
-                  <div className="flex-1 p-8">
-                    <p className="text-sm text-zinc-500">
-                      Continue to <span className="text-[#f5a623]">Market &amp; Team</span> to complete your deck.
-                    </p>
+                  <div className="flex-1 p-8 space-y-6">
+                    {(() => {
+                      const tpl = STYLE_TEMPLATES.find((t) => t.id === data.selectedTemplate);
+                      return tpl ? (
+                        <div>
+                          <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                            Visual Template
+                          </p>
+                          <div className="mt-2 flex items-center gap-3">
+                            <div
+                              className="h-3 w-32 rounded-full"
+                              style={{
+                                background: `linear-gradient(90deg, ${tpl.from} 0%, ${tpl.to} 100%)`,
+                                boxShadow: `0 0 18px ${tpl.to}55`,
+                              }}
+                            />
+                            <span className="text-xs font-medium text-zinc-300">
+                              {tpl.label}
+                            </span>
+                          </div>
+                        </div>
+                      ) : null;
+                    })()}
+
+                    {data.visualStyle && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Visual Style
+                        </p>
+                        <p className="mt-2 text-sm italic leading-relaxed text-zinc-300 line-clamp-4">
+                          {data.visualStyle}
+                        </p>
+                      </div>
+                    )}
+
+                    {(data.characters as VisualCharacter[] | undefined)?.length ? (
+                      <div className="border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Characters
+                        </p>
+                        <ul className="mt-3 space-y-2">
+                          {(data.characters as VisualCharacter[]).map((c, i) => (
+                            <li
+                              key={i}
+                              className="border-l-2 pl-3"
+                              style={{ borderColor: "#f5a623" }}
+                            >
+                              <div className="flex items-baseline gap-2">
+                                <span className="text-sm font-semibold text-white">
+                                  {c.name || (
+                                    <span className="text-zinc-700 font-normal">Unnamed</span>
+                                  )}
+                                </span>
+                                {c.role && (
+                                  <span className="text-xs text-zinc-400">— {c.role}</span>
+                                )}
+                              </div>
+                              {c.description && (
+                                <p className="mt-0.5 text-xs text-zinc-500">{c.description}</p>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+
+                    {data.posterImage && (
+                      <div className="border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Poster
+                        </p>
+                        <img
+                          src={data.posterImage}
+                          alt="Poster preview"
+                          className="mt-2 max-h-64 rounded-md border"
+                          style={{ borderColor: "#22222e" }}
+                        />
+                      </div>
+                    )}
+
+                    {!data.selectedTemplate && !data.visualStyle && !data.posterImage && !((data.characters as any[])?.length) && (
+                      <p className="text-sm text-zinc-600">
+                        Pick a template or add a character to see your visual identity here.
+                      </p>
+                    )}
                   </div>
                 )}
 
