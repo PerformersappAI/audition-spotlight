@@ -2144,6 +2144,27 @@ const Storyboarding = () => {
                            </div>
                           </CardHeader>
                            <CardContent className="space-y-3">
+                             {/* Characters in this scene — read-only chips from extracted cast */}
+                             {shot.characters && shot.characters.length > 0 && (
+                               <div className="flex flex-wrap items-center gap-1.5 -mt-1">
+                                 <span className="text-[10px] uppercase tracking-wide text-muted-foreground">In scene:</span>
+                                 {shot.characters.map((c, i) => {
+                                   const known = (selectedProject.cast || []).find(
+                                     (m) => m.name.toLowerCase() === String(c).toLowerCase()
+                                   );
+                                   return (
+                                     <Badge
+                                       key={`${shot.shotNumber}-char-${i}`}
+                                       variant={known ? "default" : "outline"}
+                                       className="text-[10px] px-1.5 py-0"
+                                       title={known?.description || undefined}
+                                     >
+                                       {c}
+                                     </Badge>
+                                   );
+                                 })}
+                               </div>
+                             )}
                              {/* AI Prompt Section - Shows FIRST when editing */}
                              {editingShot === shot.shotNumber && (
                                <>
