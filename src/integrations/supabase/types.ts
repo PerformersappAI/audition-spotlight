@@ -1355,6 +1355,7 @@ export type Database = {
       }
       storyboard_projects: {
         Row: {
+          animatic_url: string | null
           art_style: string | null
           aspect_ratio: string | null
           cast_data: Json | null
@@ -1377,6 +1378,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          animatic_url?: string | null
           art_style?: string | null
           aspect_ratio?: string | null
           cast_data?: Json | null
@@ -1399,6 +1401,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          animatic_url?: string | null
           art_style?: string | null
           aspect_ratio?: string | null
           cast_data?: Json | null

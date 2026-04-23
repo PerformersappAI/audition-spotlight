@@ -6,8 +6,20 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
-import { Film, Play, Pause, Download, Loader2, GripVertical, Image as ImageIcon } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Film, Play, Pause, Download, Loader2, GripVertical, Image as ImageIcon, Share2, Lock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 // gif.js ships with a worker file we point to via a CDN URL — keeps bundling simple.
 // gif.js has no types — silence the missing-module error.
@@ -26,6 +38,10 @@ interface AnimaticTabProps {
   frames: AnimaticFrameInput[];
   aspectRatio?: string; // e.g. "16:9", "9:16", "1:1"
   projectTitle?: string;
+  projectId?: string;
+  existingAnimaticUrl?: string | null;
+  isPaidUser?: boolean;
+  onAnimaticSaved?: (url: string) => void;
 }
 
 interface TimelineFrame extends AnimaticFrameInput {
@@ -59,7 +75,8 @@ const formatDuration = (seconds: number) => {
   return m > 0 ? `${m}m ${s}s` : `${s}s`;
 };
 
-export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabProps) => {
+export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAnimaticUrl, isPaidUser = false, onAnimaticSaved }: AnimaticTabProps) => {
+  const { user } = useAuth();
   const { toast } = useToast();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const previewRafRef = useRef<number | null>(null);
@@ -78,6 +95,12 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabPr
 
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [animaticUrl, setAnimaticUrl] = useState<string | null>(existingAnimaticUrl ?? null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  useEffect(() => {
+    setAnimaticUrl(existingAnimaticUrl ?? null);
+  }, [existingAnimaticUrl]);
 
   // Initialize timeline whenever the source frames change.
   useEffect(() => {
@@ -240,7 +263,8 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabPr
       const stepMs = 100; // 10fps for GIF — keeps file size sane
       let totalSec = 0;
 
-      for (let i = 0; i < timeline.length; i++) {
+      const maxFrames = Math.min(timeline.length, 30);
+      for (let i = 0; i < maxFrames; i++) {
         const tf = timeline[i];
         if (totalSec >= 15) break; // 15s GIF cap
         const img = await loadImage(tf.imageData!);
@@ -274,16 +298,38 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabPr
         setExportProgress(70 + Math.round(p * 30));
       });
 
-      gif.on("finished", (blob: Blob) => {
+      gif.on("finished", async (blob: Blob) => {
         const url = URL.createObjectURL(blob);
+        const safeTitle = (projectTitle || "animatic").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
         const a = document.createElement("a");
         a.href = url;
-        const safeTitle = (projectTitle || "animatic").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
         a.download = `${safeTitle}_animatic.gif`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        // Upload to Supabase storage so it can power the public share link.
+        if (user?.id && projectId) {
+          try {
+            const path = `${user.id}/${projectId}-${Date.now()}.gif`;
+            const { error: upErr } = await supabase.storage
+              .from("storyboard-animatics")
+              .upload(path, blob, { contentType: "image/gif", upsert: true });
+            if (upErr) throw upErr;
+            const { data: pub } = supabase.storage.from("storyboard-animatics").getPublicUrl(path);
+            const publicUrl = pub.publicUrl;
+            await supabase
+              .from("storyboard_projects")
+              .update({ animatic_url: publicUrl } as any)
+              .eq("id", projectId);
+            setAnimaticUrl(publicUrl);
+            onAnimaticSaved?.(publicUrl);
+          } catch (e) {
+            console.warn("Animatic upload failed (download still succeeded)", e);
+          }
+        }
+
         setIsExporting(false);
         setExportProgress(0);
         toast({ title: "GIF ready", description: "Your animatic was downloaded." });
@@ -487,23 +533,75 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabPr
                 Export Animatic
               </h3>
               <p className="text-xs text-muted-foreground">
-                GIF export runs in your browser · max 15s · 10fps · MP4 coming soon.
+                GIF export runs in your browser · max 15s · 10fps · 30 frames max
               </p>
-            </div>
-            <Button onClick={handleExportGIF} disabled={isExporting || timeline.length === 0}>
-              {isExporting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Exporting… {exportProgress}%
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export as GIF
-                </>
+              {timeline.length > 30 && (
+                <p className="text-xs text-destructive mt-1">
+                  GIF export is limited to the first 30 frames. For longer projects, trim the timeline.
+                </p>
               )}
-            </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {isPaidUser ? (
+                <Button
+                  onClick={() => setConfirmOpen(true)}
+                  disabled={isExporting || timeline.length === 0}
+                >
+                  {isExporting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Exporting… {exportProgress}%
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export as GIF (2 credits)
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <Button variant="outline" disabled title="GIF export available on Creator plan and above">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Export as GIF (Creator+)
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                disabled
+                title="MP4 export coming soon — upgrade to Pro when available"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Export as MP4 (soon)
+              </Button>
+
+              {animaticUrl && projectId && (
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    const link = `${window.location.origin}/animatic/${projectId}`;
+                    try {
+                      await navigator.clipboard.writeText(link);
+                      toast({ title: "Share link copied", description: link });
+                    } catch {
+                      toast({ title: "Share link", description: link });
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Copy Share Link
+                </Button>
+              )}
+            </div>
           </div>
+          {animaticUrl && (
+            <div className="text-xs text-muted-foreground">
+              ▶ Animatic ready ·{" "}
+              <a href={animaticUrl} target="_blank" rel="noreferrer" className="text-primary underline">
+                view saved GIF
+              </a>
+            </div>
+          )}
           {isExporting && (
             <div className="w-full h-1.5 bg-muted rounded overflow-hidden">
               <div
@@ -514,6 +612,28 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle }: AnimaticTabPr
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Export animatic as GIF?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will use 2 credits. The GIF will download and a public share link will be saved to this project.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConfirmOpen(false);
+                handleExportGIF();
+              }}
+            >
+              Export
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <canvas ref={canvasRef} className="hidden" />
     </div>

@@ -2179,6 +2179,13 @@ const Storyboarding = () => {
                     }))}
                     aspectRatio={(selectedProject as any).aspectRatio}
                     projectTitle={selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '')}
+                    projectId={selectedProject.id && !selectedProject.id.startsWith('quick-') ? selectedProject.id : undefined}
+                    existingAnimaticUrl={(selectedProject as any).animaticUrl ?? null}
+                    isPaidUser={(credits?.available_credits ?? 0) > 0}
+                    onAnimaticSaved={async (url) => {
+                      await deductCredits(2, 'Animatic GIF export');
+                      setSelectedProject(prev => prev ? ({ ...prev, animaticUrl: url } as any) : prev);
+                    }}
                   />
                 </TabsContent>
                 <TabsContent value="shots" className="mt-4 space-y-6">

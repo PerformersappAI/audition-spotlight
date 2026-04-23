@@ -64,6 +64,7 @@ import TableRead from "./pages/TableRead";
 import VideoEvaluation from "./pages/VideoEvaluation";
 import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
+import AnimaticView from "./pages/AnimaticView";
 
 const queryClient = new QueryClient();
 
@@ -129,6 +130,7 @@ const AppContent = () => (
           <Route path="/video-evaluation" element={<VideoEvaluation />} />
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
           <Route path="/social" element={<Social />} />
+          <Route path="/animatic/:projectId" element={<AnimaticView />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>

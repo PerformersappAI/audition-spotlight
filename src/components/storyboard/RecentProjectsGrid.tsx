@@ -166,6 +166,11 @@ export const RecentProjectsGrid = ({
                       Complete
                     </Badge>
                   )}
+                  {(p as any).animatic_url && (
+                    <Badge className="absolute bottom-2 left-2 bg-primary/90 text-primary-foreground">
+                      ▶ Animatic ready
+                    </Badge>
+                  )}
                 </div>
               </button>
 

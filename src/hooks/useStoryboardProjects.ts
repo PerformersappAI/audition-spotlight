@@ -67,6 +67,7 @@ export interface StoryboardProject {
   scene_count?: number | null;
   frame_count?: number | null;
   cast_data?: CastMember[];
+  animatic_url?: string | null;
 }
 
 type DbStoryboardProject = Database['public']['Tables']['storyboard_projects']['Row'];
@@ -96,6 +97,7 @@ const mapRow = (row: any): StoryboardProject => ({
   scene_count: row.scene_count ?? 0,
   frame_count: row.frame_count ?? 0,
   cast_data: Array.isArray(row.cast_data) ? (row.cast_data as unknown as CastMember[]) : [],
+  animatic_url: row.animatic_url ?? null,
 });
 
 export const useStoryboardProjects = () => {
@@ -218,6 +220,7 @@ export const useStoryboardProjects = () => {
       if (updates.scene_count !== undefined) dbUpdates.scene_count = updates.scene_count;
       if (updates.frame_count !== undefined) dbUpdates.frame_count = updates.frame_count;
       if (updates.cast_data !== undefined) dbUpdates.cast_data = updates.cast_data as any;
+      if ((updates as any).animatic_url !== undefined) dbUpdates.animatic_url = (updates as any).animatic_url;
 
       const { data, error } = await supabase
         .from('storyboard_projects')
