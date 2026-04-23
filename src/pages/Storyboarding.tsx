@@ -202,9 +202,16 @@ const Storyboarding = () => {
   }, [JSON.stringify(selectedProject?.shots), selectedProject?.id]);
 
   const totalShotsForGen = selectedProject?.shots?.length ?? 0;
-  const estimatedCredits = totalShotsForGen * CREDITS_PER_FRAME;
+  const hasStyleRef = !!currentProject.styleReferenceImage;
+  const creditsPerFrame = CREDITS_PER_FRAME + (hasStyleRef ? 1 : 0);
+  const estimatedCredits = totalShotsForGen * creditsPerFrame;
   const availableCredits = credits?.available_credits ?? 0;
-  const insufficientCredits = availableCredits < estimatedCredits;
+  const remainingAfter = availableCredits - estimatedCredits;
+  const insufficientCredits = remainingAfter < 0;
+  const lowBalanceWarning = !insufficientCredits && remainingAfter < 5;
+  const creditsShort = insufficientCredits ? Math.abs(remainingAfter) : 0;
+  const selectedArtStyleName =
+    artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle;
 
   const handleApproveAndGenerate = () => {
     setShowGenerateConfirm(false);
