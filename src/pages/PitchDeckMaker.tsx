@@ -367,8 +367,10 @@ const PitchDeckMaker = () => {
                           className="rounded-full border px-3 py-1 text-xs transition"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
-                            borderColor: on ? "#f5a623" : "#1a1a26",
-                            color: on ? "#0a0a0f" : "#a1a1aa",
+                            borderColor: on ? "#f5a623" : "#2a2a36",
+                            color: on ? "#000000" : "#a1a1aa",
+                            fontWeight: on ? 600 : 400,
+                            boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none",
                           }}
                         >
                           {g}
