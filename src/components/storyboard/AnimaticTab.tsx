@@ -95,6 +95,12 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
 
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [animaticUrl, setAnimaticUrl] = useState<string | null>(existingAnimaticUrl ?? null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  useEffect(() => {
+    setAnimaticUrl(existingAnimaticUrl ?? null);
+  }, [existingAnimaticUrl]);
 
   // Initialize timeline whenever the source frames change.
   useEffect(() => {
