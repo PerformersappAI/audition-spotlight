@@ -9,8 +9,12 @@ const corsHeaders = {
 
 // Stripe price IDs for subscription plans
 const PRICE_IDS = {
-  basic: "price_1SqO1pC3S0CSSOB1n4OuEQDt", // $19.99/month - 50 credits
-  pro: "price_1SqO2nC3S0CSSOB1aHEwmdqz", // $24.99/month - 100 credits
+  basic: "price_1SqO1pC3S0CSSOB1n4OuEQDt", // $19.99/month - 50 credits (legacy)
+  pro: "price_1SqO2nC3S0CSSOB1aHEwmdqz", // $24.99/month - 100 credits (legacy)
+  creator_monthly: "price_1TPDuQC3S0CSSOB1p5pdW7mF", // $19/month - Storyboard Creator
+  creator_yearly: "price_1TPDumC3S0CSSOB1TncjLQWX", // $180/year - Storyboard Creator
+  pro_monthly: "price_1TPDvfC3S0CSSOB1q8Bc7Uig", // $49/month - Storyboard Pro
+  pro_yearly: "price_1TPDw8C3S0CSSOB15pJtwoL2", // $468/year - Storyboard Pro
 };
 
 const logStep = (step: string, details?: any) => {
@@ -33,7 +37,7 @@ serve(async (req) => {
 
     const { planType } = await req.json();
     if (!planType || !PRICE_IDS[planType as keyof typeof PRICE_IDS]) {
-      throw new Error("Invalid plan type. Must be 'basic' or 'pro'");
+      throw new Error("Invalid plan type");
     }
     logStep("Plan type received", { planType });
 
@@ -71,8 +75,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${origin}/membership?success=true`,
-      cancel_url: `${origin}/membership?canceled=true`,
+      success_url: `${origin}/storyboarding/pricing?success=true`,
+      cancel_url: `${origin}/storyboarding/pricing?canceled=true`,
       metadata: {
         user_id: user.id,
         plan_type: planType,
