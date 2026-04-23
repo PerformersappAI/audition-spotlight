@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone, FileText, Briefcase, Star } from "lucide-react";
+import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone, FileText, Briefcase, Star, Clapperboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { GlobalLayout } from "@/components/GlobalLayout";
+import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
+import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
 
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
