@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Save, Sparkles, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
 
 // ============================================================================
 // Types
