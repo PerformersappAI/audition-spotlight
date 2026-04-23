@@ -10,7 +10,8 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins, Pencil, UserCircle2 } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -29,6 +30,8 @@ import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUplo
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
 import { StepIndicator, type StoryboardStep } from "@/components/storyboard/StepIndicator";
 import { exportShotListPDF } from "@/components/storyboard/ShotListPDF";
+import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
+import { CastTab, type CastMember } from "@/components/storyboard/CastTab";
 
 const CREDITS_PER_FRAME = 1;
 const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
@@ -88,15 +91,18 @@ interface StoryboardProjectLocal {
   shots: Shot[];
   storyboard?: StoryboardFrame[];
   createdAt: Date;
+  projectTitle?: string;
+  cast?: CastMember[];
 }
 
 const Storyboarding = () => {
   const { userProfile } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { projects, loading, saveProject, updateProject, deleteProject, refetch } = useStoryboardProjects();
+  const { projects, loading, saveProject, updateProject, renameProject, deleteProject, refetch } = useStoryboardProjects();
   const [currentProject, setCurrentProject] = useState({
     scriptText: "",
+    scriptFileName: "" as string,
     genre: "",
     tone: "",
     artStyle: "comic",
@@ -137,7 +143,12 @@ const Storyboarding = () => {
 
   // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
+  const [extractedCast, setExtractedCast] = useState<CastMember[]>([]);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
+
+  // Editable project title state for the Step 3 viewer
+  const [titleDraft, setTitleDraft] = useState<string>("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // Credit gate dialog state (Step 3 confirmation)
   const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
