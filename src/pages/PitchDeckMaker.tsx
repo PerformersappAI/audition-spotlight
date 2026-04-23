@@ -242,31 +242,30 @@ const PitchDeckMaker = () => {
         </div>
 
         {/* Progress bar */}
-        <div className="h-1 w-full" style={{ backgroundColor: "#12121a" }}>
+        <div className="w-full" style={{ height: "3px", backgroundColor: "#12121a" }}>
           <div
             className="h-full transition-all duration-500"
             style={{
               width: `${progressPct}%`,
               backgroundColor: "#f5a623",
-              boxShadow: "0 0 12px rgba(245,166,35,0.5)",
+              boxShadow: "0 0 12px rgba(245,166,35,0.6)",
             }}
           />
         </div>
 
-        {/* Step pips */}
-        <div className="mx-auto flex max-w-7xl items-center gap-6 px-6 py-3 overflow-x-auto">
+        {/* Step tabs */}
+        <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 py-3 overflow-x-auto">
           {STEPS.map((s, i) => {
             const active = i === currentStep;
-            const done = i < currentStep;
             return (
               <div
                 key={s.num}
-                className="flex items-center gap-2 text-xs whitespace-nowrap"
+                className="flex items-center gap-2 text-xs whitespace-nowrap transition"
                 style={{
-                  color: active ? "#f5a623" : done ? "#a1a1aa" : "#52525b",
+                  color: active ? "#f5a623" : "#52525b",
                 }}
               >
-                <span className="font-mono">{s.num}</span>
+                <span className="font-mono font-semibold">{s.num}</span>
                 <span className={active ? "font-medium" : ""}>{s.label}</span>
               </div>
             );
@@ -343,15 +342,15 @@ const PitchDeckMaker = () => {
                     type="button"
                     onClick={handleGenerateLogline}
                     disabled={isGeneratingLogline}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-md border px-2.5 py-1 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
-                    style={{ borderColor: "rgba(245,166,35,0.3)" }}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
+                    style={{ borderColor: "#f5a623", height: "28px" }}
                   >
                     {isGeneratingLogline ? (
                       <Loader2 className="h-3 w-3 animate-spin" />
                     ) : (
                       <Sparkles className="h-3 w-3" />
                     )}
-                    Generate
+                    ✦ Generate
                   </button>
                 </Field>
 
@@ -368,8 +367,10 @@ const PitchDeckMaker = () => {
                           className="rounded-full border px-3 py-1 text-xs transition"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
-                            borderColor: on ? "#f5a623" : "#1a1a26",
-                            color: on ? "#0a0a0f" : "#a1a1aa",
+                            borderColor: on ? "#f5a623" : "#2a2a36",
+                            color: on ? "#000000" : "#a1a1aa",
+                            fontWeight: on ? 600 : 400,
+                            boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none",
                           }}
                         >
                           {g}
@@ -411,8 +412,10 @@ const PitchDeckMaker = () => {
                           className="rounded-full border px-3 py-1 text-xs transition"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
-                            borderColor: on ? "#f5a623" : "#1a1a26",
-                            color: on ? "#0a0a0f" : "#a1a1aa",
+                            borderColor: on ? "#f5a623" : "#2a2a36",
+                            color: on ? "#000000" : "#a1a1aa",
+                            fontWeight: on ? 600 : 400,
+                            boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none",
                           }}
                         >
                           {p}
@@ -453,9 +456,25 @@ const PitchDeckMaker = () => {
               </div>
 
               <div
-                className="rounded-xl border overflow-hidden"
-                style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
+                className="relative flex flex-col rounded-xl border overflow-hidden"
+                style={{
+                  backgroundColor: "#0d0d18",
+                  borderColor: "#22222e",
+                  minHeight: "calc(100vh - 220px)",
+                }}
               >
+                {/* Film grain overlay */}
+                <div
+                  className="pointer-events-none absolute inset-0 z-10 mix-blend-overlay"
+                  style={{
+                    opacity: 0.12,
+                    backgroundImage:
+                      "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+                    backgroundSize: "200px 200px",
+                  }}
+                  aria-hidden="true"
+                />
+
                 {/* Poster area */}
                 <div
                   className="relative aspect-[16/10] w-full"
@@ -500,7 +519,7 @@ const PitchDeckMaker = () => {
                 </div>
 
                 {/* Body */}
-                <div className="p-8">
+                <div className="flex-1 p-8">
                   <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
                     Logline
                   </p>
@@ -533,10 +552,6 @@ const PitchDeckMaker = () => {
                   )}
                 </div>
               </div>
-
-              <p className="mt-4 text-center text-xs text-zinc-600">
-                Page 1 of your pitch deck
-              </p>
             </div>
           </section>
         </div>
