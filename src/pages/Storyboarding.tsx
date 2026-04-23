@@ -2022,7 +2022,7 @@ const Storyboarding = () => {
           )}
 
           {/* Scene Selector — Option A: cost gate before shot breakdown */}
-          {extractedScenes && extractedScenes.length > 0 && (
+          {extractedScenes && extractedScenes.length > 0 && !castReviewActive && (
             <div className="mt-4">
               <SceneSelector
                 scenes={extractedScenes}
@@ -2030,6 +2030,64 @@ const Storyboarding = () => {
                 onCancel={cancelSceneSelection}
                 isProcessing={isProcessingScript || isExtractingScenes}
               />
+            </div>
+          )}
+
+          {/* Step 1.5 — Optional Cast Review gate */}
+          {castReviewActive && (
+            <div className="mt-4">
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <UserCircle2 className="h-5 w-5 text-primary" />
+                    Review Your Cast
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Generate reference images now to keep characters looking the same across every frame. Optional — you can always do this later.
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                    <div>
+                      <span className="font-medium text-foreground">{extractedCast.length}</span>{" "}
+                      character{extractedCast.length === 1 ? "" : "s"} found ·{" "}
+                      <span className="font-medium text-foreground">
+                        {extractedCast.filter(c => !c.reference_image_url).length}
+                      </span>{" "}
+                      missing references
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Estimated total: {extractedCast.filter(c => !c.reference_image_url).length} credit
+                      {extractedCast.filter(c => !c.reference_image_url).length === 1 ? "" : "s"}
+                    </div>
+                  </div>
+
+                  <CastTab
+                    cast={extractedCast}
+                    onGenerateReference={generateCastReferenceImage}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                  />
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
+                    <Button variant="ghost" size="sm" onClick={skipCastReview} disabled={isProcessingScript}>
+                      Skip this step →
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={cancelSceneSelection} disabled={isProcessingScript}>
+                        ← Back
+                      </Button>
+                      <Button size="sm" onClick={proceedToShotList} disabled={isProcessingScript}>
+                        {isProcessingScript ? (
+                          <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                        ) : null}
+                        Continue to Shot List →
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
@@ -2097,7 +2155,14 @@ const Storyboarding = () => {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="cast" className="mt-4">
-                  <CastTab cast={selectedProject.cast || []} />
+                  <CastTab
+                    cast={selectedProject.cast || []}
+                    onGenerateReference={generateCastReferenceImage}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                    framesUsageByName={framesUsageByName}
+                  />
                 </TabsContent>
                 <TabsContent value="shots" className="mt-4 space-y-6">
 
@@ -2920,10 +2985,15 @@ const Storyboarding = () => {
                 <div className="font-semibold text-foreground">{totalShotsForGen}</div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Estimated cost</div>
+                <div className="text-xs text-muted-foreground">Frames cost</div>
                 <div className="font-semibold text-foreground">
-                  {estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}
+                  {frameCreditsTotal} credit{frameCreditsTotal === 1 ? '' : 's'}
                 </div>
+                {missingCastRefCount > 0 && (
+                  <div className="text-[10px] text-muted-foreground mt-0.5">
+                    + {missingCastRefCount} optional cast ref{missingCastRefCount === 1 ? '' : 's'}
+                  </div>
+                )}
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Your balance</div>
