@@ -295,17 +295,21 @@ const PitchDeckMaker = () => {
               className="rounded-xl border p-6"
               style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
             >
-              <div className="mb-6">
-                <p className="font-mono text-xs tracking-widest text-[#f5a623]">
-                  01 — THE PITCH
-                </p>
-                <h2 className="mt-1 text-xl font-semibold text-white">
-                  Set the foundation
-                </h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  These core details shape every page of your deck.
-                </p>
-              </div>
+              {currentStep === 0 && (
+                <div className="mb-6">
+                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                    01 — THE PITCH
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold text-white">
+                    Set the foundation
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-500">
+                    These core details shape every page of your deck.
+                  </p>
+                </div>
+              )}
+
+              {currentStep === 0 && (
 
               <div className="space-y-5">
                 {/* Project Title */}
