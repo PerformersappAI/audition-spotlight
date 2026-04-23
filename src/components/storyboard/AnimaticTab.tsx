@@ -263,7 +263,8 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
       const stepMs = 100; // 10fps for GIF — keeps file size sane
       let totalSec = 0;
 
-      for (let i = 0; i < timeline.length; i++) {
+      const maxFrames = Math.min(timeline.length, 30);
+      for (let i = 0; i < maxFrames; i++) {
         const tf = timeline[i];
         if (totalSec >= 15) break; // 15s GIF cap
         const img = await loadImage(tf.imageData!);
@@ -535,7 +536,7 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
                 GIF export runs in your browser · max 15s · 10fps · 30 frames max
               </p>
               {timeline.length > 30 && (
-                <p className="text-xs text-amber-500 mt-1">
+                <p className="text-xs text-destructive mt-1">
                   GIF export is limited to the first 30 frames. For longer projects, trim the timeline.
                 </p>
               )}
