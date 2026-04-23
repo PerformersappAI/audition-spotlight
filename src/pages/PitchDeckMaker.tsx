@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -119,6 +119,7 @@ const STEPS = [
 // ============================================================================
 
 const PitchDeckMaker = () => {
+  const navigate = useNavigate();
   const [data, setData] = useState<PitchDeckData>(initialData);
   const [currentStep, setCurrentStep] = useState(0);
   const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
@@ -227,10 +228,8 @@ const PitchDeckMaker = () => {
     setIsGeneratingDeck(true);
     try {
       handleSaveDraft();
-      // Hand off to existing pitch generation flow; backend wiring already exists for PDF.
-      toast.success(
-        `Generating your pitch deck (${exportFormats.map((f) => f.toUpperCase()).join(", ")})…`,
-      );
+      toast.success("Opening your pitch deck preview…");
+      navigate("/pitch-deck/preview");
     } catch (e: any) {
       console.error(e);
       toast.error(e?.message || "Failed to generate deck");

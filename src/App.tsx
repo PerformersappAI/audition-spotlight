@@ -1,6 +1,7 @@
 import { Toaster } from "@/components/ui/toaster";
 import FestivalFinder from "./pages/FestivalFinder";
 import PitchDeckMaker from "./pages/PitchDeckMaker";
+import PitchDeckPreview from "./pages/PitchDeckPreview";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -127,6 +128,7 @@ const AppContent = () => (
           <Route path="/funding-strategy" element={<FundingStrategy />} />
           <Route path="/contract-filler" element={<ContractFiller />} />
           <Route path="/pitch-deck" element={<PitchDeckMaker />} />
+          <Route path="/pitch-deck/preview" element={<PitchDeckPreview />} />
           <Route path="/distribution-readiness" element={<DistributionReadiness />} />
           <Route path="/table-read" element={<TableRead />} />
           <Route path="/video-evaluation" element={<VideoEvaluation />} />
