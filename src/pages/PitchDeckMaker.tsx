@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "l
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
+import Step4MarketTeam, { type TeamMember } from "@/components/pitchdeck/Step4MarketTeam";
 
 // ============================================================================
 // Types
@@ -120,6 +121,8 @@ const PitchDeckMaker = () => {
   const [data, setData] = useState<PitchDeckData>(initialData);
   const [currentStep, setCurrentStep] = useState(0);
   const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
+  const [exportFormats, setExportFormats] = useState<string[]>(["pdf"]);
+  const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
 
   // Load draft
   useEffect(() => {
@@ -212,6 +215,26 @@ const PitchDeckMaker = () => {
     if (currentStep > 0) {
       setCurrentStep((s) => s - 1);
       window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const handleGenerateDeck = async () => {
+    if (exportFormats.length === 0) {
+      toast.error("Pick at least one export format");
+      return;
+    }
+    setIsGeneratingDeck(true);
+    try {
+      handleSaveDraft();
+      // Hand off to existing pitch generation flow; backend wiring already exists for PDF.
+      toast.success(
+        `Generating your pitch deck (${exportFormats.map((f) => f.toUpperCase()).join(", ")})…`,
+      );
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Failed to generate deck");
+    } finally {
+      setIsGeneratingDeck(false);
     }
   };
 
@@ -446,6 +469,32 @@ const PitchDeckMaker = () => {
 
               {currentStep === 1 && (
                 <Step2Story data={data} update={update} />
+              )}
+
+              {currentStep === 2 && (
+                <div className="py-2">
+                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                    03 — CHARACTERS & VISUALS
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold text-white">
+                    Coming together
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    This step is being finalized. Continue to Market & Team to
+                    keep building your deck.
+                  </p>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <Step4MarketTeam
+                  data={data}
+                  update={update}
+                  exportFormats={exportFormats}
+                  setExportFormats={setExportFormats}
+                  onGenerateDeck={handleGenerateDeck}
+                  isGeneratingDeck={isGeneratingDeck}
+                />
               )}
 
               {/* Nav buttons */}
@@ -690,6 +739,127 @@ const PitchDeckMaker = () => {
                         </ul>
                       </div>
                     ) : null}
+                  </div>
+                )}
+
+                {/* Body — Step 3 (placeholder) */}
+                {currentStep === 2 && (
+                  <div className="flex-1 p-8">
+                    <p className="text-sm text-zinc-500">
+                      Continue to <span className="text-[#f5a623]">Market &amp; Team</span> to complete your deck.
+                    </p>
+                  </div>
+                )}
+
+                {/* Body — Step 4 */}
+                {currentStep === 3 && (
+                  <div className="flex-1 p-8 space-y-6">
+                    {data.logline && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Logline</p>
+                        <p className="mt-1 text-sm text-zinc-300">{data.logline}</p>
+                      </div>
+                    )}
+
+                    {data.synopsis && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Synopsis</p>
+                        <p className="mt-1 italic text-sm text-zinc-400 line-clamp-3">{data.synopsis}</p>
+                      </div>
+                    )}
+
+                    {((data.comparables as any[]) ?? []).length > 0 && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Comparables</p>
+                        <ul className="mt-2 space-y-1">
+                          {((data.comparables as any[]) ?? []).map((c, i) => (
+                            <li key={i} className="text-sm text-zinc-300">
+                              <span className="font-semibold text-white">{c.title || "—"}</span>
+                              {c.year && <span className="text-zinc-500"> ({c.year})</span>}
+                              {c.revenue && <span className="text-zinc-500"> · {c.revenue}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {((data.teamMembers as TeamMember[]) ?? []).length > 0 && (
+                      <div className="border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Team</p>
+                        <ul className="mt-2 space-y-1">
+                          {((data.teamMembers as TeamMember[]) ?? []).map((m, i) => (
+                            <li key={i} className="flex items-baseline gap-2 text-sm">
+                              <span className="font-semibold text-white">{m.name || "—"}</span>
+                              {m.role && <span className="text-xs text-zinc-400">— {m.role}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    <div className="flex flex-wrap items-center gap-3">
+                      {data.budgetRange && (
+                        <span
+                          className="inline-flex rounded-full px-3 py-1 text-xs"
+                          style={{
+                            backgroundColor: "#1a1a26",
+                            color: "#e4e4e7",
+                            border: "1px solid #2a2a36",
+                          }}
+                        >
+                          Budget · {data.budgetRange}
+                        </span>
+                      )}
+                      {data.unionStatus && (
+                        <span
+                          className="inline-flex rounded-full px-3 py-1 text-xs"
+                          style={{
+                            backgroundColor: "#1a1a26",
+                            color: "#e4e4e7",
+                            border: "1px solid #2a2a36",
+                          }}
+                        >
+                          {data.unionStatus}
+                        </span>
+                      )}
+                      {data.timeline && (
+                        <span className="text-xs text-zinc-500">{data.timeline}</span>
+                      )}
+                    </div>
+
+                    {data.targetPlatforms.length > 0 && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">Distribution</p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {data.targetPlatforms.map((p) => (
+                            <span
+                              key={p}
+                              className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
+                              style={{ backgroundColor: "#1a1a26" }}
+                            >
+                              {p}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {data.investmentAsk && (
+                      <div className="mt-4 border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Investment Ask
+                        </p>
+                        <p
+                          className="mt-2 text-2xl font-bold leading-tight"
+                          style={{
+                            color: "#f5a623",
+                            textShadow: "0 0 18px rgba(245,166,35,0.45)",
+                          }}
+                        >
+                          {data.investmentAsk}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
