@@ -4,6 +4,7 @@ import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "l
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
+import Step4MarketTeam, { type TeamMember } from "@/components/pitchdeck/Step4MarketTeam";
 
 // ============================================================================
 // Types
