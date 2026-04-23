@@ -5,14 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone, FileText, Briefcase, Star } from "lucide-react";
+import { Plus, Film, Calendar, Users, MapPin, Clock, Mail, Phone, FileText, Briefcase, Star, Clapperboard } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { GlobalLayout } from "@/components/GlobalLayout";
+import { useStoryboardProjects } from "@/hooks/useStoryboardProjects";
+import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
 
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
+  const { projects: storyboardProjects, deleteProject: deleteStoryboardProject } = useStoryboardProjects();
   const [projects, setProjects] = useState([]);
   const [festivals, setFestivals] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -195,7 +198,7 @@ const Dashboard = () => {
 
         {/* Content Tabs */}
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-5' : 'grid-cols-3'}`}>
+          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-6' : 'grid-cols-3'}`}>
             <TabsTrigger value="projects">
               {userProfile?.role === 'filmmaker' ? 'Projects' : 'My Festivals'}
             </TabsTrigger>
@@ -203,6 +206,7 @@ const Dashboard = () => {
               <>
                 <TabsTrigger value="auditions">Auditions</TabsTrigger>
                 <TabsTrigger value="crew">Crew</TabsTrigger>
+                <TabsTrigger value="storyboards">Storyboards</TabsTrigger>
               </>
             )}
             <TabsTrigger value="callsheets">Call Sheets</TabsTrigger>
@@ -363,6 +367,33 @@ const Dashboard = () => {
                   </div>
                 </CardContent>
               </Card>
+            </TabsContent>
+          )}
+
+          {/* Storyboards Tab - Filmmaker Only */}
+          {userProfile?.role === 'filmmaker' && (
+            <TabsContent value="storyboards" className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Clapperboard className="h-5 w-5" />
+                    Saved Storyboards
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Your generated storyboard projects
+                  </p>
+                </div>
+                <Button onClick={() => navigate('/storyboarding')} size="sm">
+                  <Plus className="h-4 w-4 mr-2" />
+                  New Storyboard
+                </Button>
+              </div>
+              <RecentProjectsGrid
+                projects={storyboardProjects}
+                onOpen={() => navigate('/storyboarding')}
+                onDelete={(id) => deleteStoryboardProject(id)}
+                emptyHint="No storyboards yet — head to the Storyboarding tool to create one."
+              />
             </TabsContent>
           )}
           
