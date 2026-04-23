@@ -146,13 +146,19 @@ const Storyboarding = () => {
   const [extractedCast, setExtractedCast] = useState<CastMember[]>([]);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
+  // Cast review gate (Step 1.5) — shown after user confirms scenes, before analyze-shots
+  const [pendingScenes, setPendingScenes] = useState<Scene[] | null>(null);
+  const [castReviewActive, setCastReviewActive] = useState(false);
+  const [generatingCastNames, setGeneratingCastNames] = useState<Set<string>>(new Set());
+  const [isBulkCastGenerating, setIsBulkCastGenerating] = useState(false);
+
   // Editable project title state for the Step 3 viewer
   const [titleDraft, setTitleDraft] = useState<string>("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // Credit gate dialog state (Step 3 confirmation)
   const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
-  const { credits } = useCredits();
+  const { credits, deductCredits } = useCredits();
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -193,10 +199,12 @@ const Storyboarding = () => {
 
   // Compute step for indicator (only shown when a Detailed Breakdown flow is in progress)
   const detailedFlowActive =
-    isExtractingScenes || !!extractedScenes || (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
+    isExtractingScenes || !!extractedScenes || castReviewActive ||
+    (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
 
   const currentStep: StoryboardStep = (() => {
-    if (extractedScenes && !selectedProject) return 1;
+    if (extractedScenes && !selectedProject && !castReviewActive) return 1;
+    if (castReviewActive) return 1.5;
     if (selectedProject && (!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData))) return 2;
     return 3;
   })();
@@ -215,7 +223,11 @@ const Storyboarding = () => {
   const totalShotsForGen = selectedProject?.shots?.length ?? 0;
   const hasStyleRef = !!currentProject.styleReferenceImage;
   const creditsPerFrame = CREDITS_PER_FRAME + (hasStyleRef ? 1 : 0);
-  const estimatedCredits = totalShotsForGen * creditsPerFrame;
+  const frameCreditsTotal = totalShotsForGen * creditsPerFrame;
+  const projectCast: CastMember[] = selectedProject?.cast || extractedCast;
+  const missingCastRefCount = projectCast.filter(c => !c.reference_image_url).length;
+  // Cast refs are optional and generated separately, so we only show as info, not added to required total
+  const estimatedCredits = frameCreditsTotal;
   const availableCredits = credits?.available_credits ?? 0;
   const remainingAfter = availableCredits - estimatedCredits;
   const insufficientCredits = remainingAfter < 0;
@@ -223,6 +235,14 @@ const Storyboarding = () => {
   const creditsShort = insufficientCredits ? Math.abs(remainingAfter) : 0;
   const selectedArtStyleName =
     artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle;
+
+  // Map of character name -> number of frames they appear in (for "Used in X frames" badge)
+  const framesUsageByName: Record<string, number> = {};
+  (selectedProject?.shots || []).forEach((s: any) => {
+    (s.characters || []).forEach((n: string) => {
+      framesUsageByName[n] = (framesUsageByName[n] || 0) + 1;
+    });
+  });
 
   const handleApproveAndGenerate = () => {
     setShowGenerateConfirm(false);
@@ -482,26 +502,33 @@ const Storyboarding = () => {
   };
 
   // Step 2: After user selects scenes, build the shot list ONLY for those scenes (no images yet).
-  const handleScenesConfirmed = async (selectedScenes: Scene[]) => {
+  const handleScenesConfirmed = (selectedScenes: Scene[]) => {
     if (!userProfile?.user_id) return;
     if (selectedScenes.length === 0) return;
+    // Stash selection and route through optional Cast Review gate (Step 1.5).
+    setPendingScenes(selectedScenes);
+    setCastReviewActive(true);
+  };
+
+  const proceedToShotList = async () => {
+    if (!userProfile?.user_id) return;
+    const selectedScenes = pendingScenes;
+    if (!selectedScenes || selectedScenes.length === 0) return;
 
     setIsProcessingScript(true);
     setProcessingElapsedTime(0);
+    setCastReviewActive(false);
 
     try {
-      // Concatenate just the selected scene text for analyze-shots
       const focusedScript = selectedScenes
         .map(s => `${s.heading}\n\n${s.text}`)
         .join("\n\n---\n\n");
 
-      // Sum user-approved shot counts as the target total
       const targetShotCount = selectedScenes.reduce(
         (sum, s) => sum + (s.estimatedShots || 4),
         0
       );
 
-      // Reuse existing AI shot generator with focused input + explicit count
       const { data, error } = await supabase.functions.invoke('analyze-shots', {
         body: {
           scriptText: focusedScript,
@@ -551,7 +578,8 @@ const Storyboarding = () => {
         };
         setSelectedProject(localProject);
         setTitleDraft(localProject.projectTitle || "");
-        setExtractedScenes(null); // exit scene selector
+        setExtractedScenes(null);
+        setPendingScenes(null);
         toast({
           title: "Shot List Ready",
           description: `${shots.length} shots created from ${selectedScenes.length} scene${selectedScenes.length === 1 ? "" : "s"}. Review and edit before generating images.`,
@@ -570,8 +598,113 @@ const Storyboarding = () => {
     }
   };
 
+  const skipCastReview = () => {
+    proceedToShotList();
+  };
+
+  // Persist updated cast back to Supabase (Step 1.5 OR Cast tab on Step 3 project)
+  const persistCast = async (nextCast: CastMember[]) => {
+    setExtractedCast(nextCast);
+    if (selectedProject?.id && !selectedProject.id.startsWith('quick-')) {
+      await updateProject(selectedProject.id, { cast_data: nextCast as any });
+      setSelectedProject(prev => prev ? { ...prev, cast: nextCast } : prev);
+    }
+  };
+
+  const generateCastReferenceImage = async (name: string) => {
+    const cast = selectedProject?.cast || extractedCast;
+    const member = cast.find(c => c.name === name);
+    if (!member) return;
+
+    if (!credits || credits.available_credits < 1) {
+      toast({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: "Reference images cost 1 credit each.",
+      });
+      return;
+    }
+
+    setGeneratingCastNames(prev => new Set(prev).add(name));
+    try {
+      const styleName =
+        artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle || 'cinematic';
+      const styleModifier =
+        artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
+
+      const prompt = `Full body character reference sheet, ${member.description || member.name}, neutral pose, front facing, plain white background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+
+      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+        body: {
+          characterName: member.name,
+          characterDescription: prompt,
+          characterRole: 'storyboard cast member',
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : undefined,
+          projectTitle: selectedProject?.projectTitle || currentProject.scriptFileName,
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.imageUrl) throw new Error('No image returned');
+
+      const ok = await deductCredits(1, `Cast reference: ${member.name}`);
+      if (!ok) {
+        toast({ variant: "destructive", title: "Credit deduction failed" });
+        return;
+      }
+
+      const nextCast = cast.map(c =>
+        c.name === name ? { ...c, reference_image_url: data.imageUrl } : c
+      );
+      await persistCast(nextCast);
+
+      toast({
+        title: "Reference image ready",
+        description: `${member.name}'s reference will now drive every frame they appear in.`,
+      });
+    } catch (err: any) {
+      console.error('Cast reference error:', err);
+      toast({
+        variant: "destructive",
+        title: "Couldn't generate reference",
+        description: err?.message || "Please try again.",
+      });
+    } finally {
+      setGeneratingCastNames(prev => {
+        const next = new Set(prev);
+        next.delete(name);
+        return next;
+      });
+    }
+  };
+
+  const generateAllMissingCastReferences = async () => {
+    const cast = selectedProject?.cast || extractedCast;
+    const missing = cast.filter(c => !c.reference_image_url);
+    if (missing.length === 0) return;
+    if (!credits || credits.available_credits < missing.length) {
+      toast({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: `You need ${missing.length} credits to generate ${missing.length} references.`,
+      });
+      return;
+    }
+    setIsBulkCastGenerating(true);
+    for (const member of missing) {
+      // eslint-disable-next-line no-await-in-loop
+      await generateCastReferenceImage(member.name);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(r => setTimeout(r, 500));
+    }
+    setIsBulkCastGenerating(false);
+  };
+
   const cancelSceneSelection = () => {
     setExtractedScenes(null);
+    setPendingScenes(null);
+    setCastReviewActive(false);
   };
 
   // Quick storyboard generation using simplified API
@@ -1164,7 +1297,8 @@ const Storyboarding = () => {
         ? currentProject.customStylePrompt 
         : (selectedArtStyle?.promptModifier || 'black and white storyboard frame, hand-drawn sketch');
 
-      // Build character descriptions for this shot
+      // Build character descriptions for this shot — merge author-defined characters AND extracted cast
+      const projectCastForFrame: CastMember[] = selectedProject.cast || [];
       const characterDescriptions = shot.characters
         .map(charName => {
           const def = currentProject.characterDefinitions.find(
@@ -1177,20 +1311,43 @@ const Storyboarding = () => {
             }
             return desc;
           }
+          // Fall back to extracted cast description for consistency
+          const castMember = projectCastForFrame.find(
+            c => c.name.toLowerCase() === charName.toLowerCase()
+          );
+          if (castMember) {
+            let desc = `Character: ${castMember.name} — ${castMember.description}. Maintain consistent appearance with established character design.`;
+            if (castMember.reference_image_url) {
+              desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
+            }
+            return desc;
+          }
           return null;
         })
         .filter(Boolean)
         .join('\n');
 
-      // Collect character image URLs
-      const characterImages = shot.characters
-        .map(charName => {
-          const def = currentProject.characterDefinitions.find(
-            c => c.name.toLowerCase() === charName.toLowerCase()
-          );
-          return def?.imageUrl ? { name: def.name, imageUrl: def.imageUrl } : null;
-        })
-        .filter(Boolean);
+      // Collect character image URLs (manual character defs first, then extracted cast refs)
+      const characterImagesMap = new Map<string, { name: string; imageUrl: string }>();
+      shot.characters.forEach(charName => {
+        const def = currentProject.characterDefinitions.find(
+          c => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (def?.imageUrl) {
+          characterImagesMap.set(def.name.toLowerCase(), { name: def.name, imageUrl: def.imageUrl });
+          return;
+        }
+        const castMember = projectCastForFrame.find(
+          c => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (castMember?.reference_image_url) {
+          characterImagesMap.set(castMember.name.toLowerCase(), {
+            name: castMember.name,
+            imageUrl: castMember.reference_image_url,
+          });
+        }
+      });
+      const characterImages = Array.from(characterImagesMap.values());
 
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
@@ -1865,7 +2022,7 @@ const Storyboarding = () => {
           )}
 
           {/* Scene Selector — Option A: cost gate before shot breakdown */}
-          {extractedScenes && extractedScenes.length > 0 && (
+          {extractedScenes && extractedScenes.length > 0 && !castReviewActive && (
             <div className="mt-4">
               <SceneSelector
                 scenes={extractedScenes}
@@ -1873,6 +2030,64 @@ const Storyboarding = () => {
                 onCancel={cancelSceneSelection}
                 isProcessing={isProcessingScript || isExtractingScenes}
               />
+            </div>
+          )}
+
+          {/* Step 1.5 — Optional Cast Review gate */}
+          {castReviewActive && (
+            <div className="mt-4">
+              <Card className="border-primary/30 bg-primary/5">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <UserCircle2 className="h-5 w-5 text-primary" />
+                    Review Your Cast
+                  </CardTitle>
+                  <p className="text-xs text-muted-foreground">
+                    Generate reference images now to keep characters looking the same across every frame. Optional — you can always do this later.
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex flex-wrap items-center justify-between gap-2 text-sm">
+                    <div>
+                      <span className="font-medium text-foreground">{extractedCast.length}</span>{" "}
+                      character{extractedCast.length === 1 ? "" : "s"} found ·{" "}
+                      <span className="font-medium text-foreground">
+                        {extractedCast.filter(c => !c.reference_image_url).length}
+                      </span>{" "}
+                      missing references
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Estimated total: {extractedCast.filter(c => !c.reference_image_url).length} credit
+                      {extractedCast.filter(c => !c.reference_image_url).length === 1 ? "" : "s"}
+                    </div>
+                  </div>
+
+                  <CastTab
+                    cast={extractedCast}
+                    onGenerateReference={generateCastReferenceImage}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                  />
+
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
+                    <Button variant="ghost" size="sm" onClick={skipCastReview} disabled={isProcessingScript}>
+                      Skip this step →
+                    </Button>
+                    <div className="flex gap-2">
+                      <Button variant="outline" size="sm" onClick={cancelSceneSelection} disabled={isProcessingScript}>
+                        ← Back
+                      </Button>
+                      <Button size="sm" onClick={proceedToShotList} disabled={isProcessingScript}>
+                        {isProcessingScript ? (
+                          <Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" />
+                        ) : null}
+                        Continue to Shot List →
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           )}
 
@@ -1940,7 +2155,14 @@ const Storyboarding = () => {
                   </TabsTrigger>
                 </TabsList>
                 <TabsContent value="cast" className="mt-4">
-                  <CastTab cast={selectedProject.cast || []} />
+                  <CastTab
+                    cast={selectedProject.cast || []}
+                    onGenerateReference={generateCastReferenceImage}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                    framesUsageByName={framesUsageByName}
+                  />
                 </TabsContent>
                 <TabsContent value="shots" className="mt-4 space-y-6">
 
@@ -2763,10 +2985,15 @@ const Storyboarding = () => {
                 <div className="font-semibold text-foreground">{totalShotsForGen}</div>
               </div>
               <div>
-                <div className="text-xs text-muted-foreground">Estimated cost</div>
+                <div className="text-xs text-muted-foreground">Frames cost</div>
                 <div className="font-semibold text-foreground">
-                  {estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}
+                  {frameCreditsTotal} credit{frameCreditsTotal === 1 ? '' : 's'}
                 </div>
+                {missingCastRefCount > 0 && (
+                  <div className="text-[10px] text-muted-foreground mt-0.5">
+                    + {missingCastRefCount} optional cast ref{missingCastRefCount === 1 ? '' : 's'}
+                  </div>
+                )}
               </div>
               <div>
                 <div className="text-xs text-muted-foreground">Your balance</div>
