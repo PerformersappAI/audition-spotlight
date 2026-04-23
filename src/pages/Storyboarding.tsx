@@ -2708,8 +2708,10 @@ const Storyboarding = () => {
                        })}
                       </div>
                   </CardContent>
-                </Card>
+                 </Card>
               )}
+                </TabsContent>
+              </Tabs>
             </div>
           )}
         </div>
