@@ -15,6 +15,7 @@ import { RecentProjectsGrid } from "@/components/storyboard/RecentProjectsGrid";
 const Dashboard = () => {
   const { user, userProfile } = useAuth();
   const navigate = useNavigate();
+  const { projects: storyboardProjects, deleteProject: deleteStoryboardProject } = useStoryboardProjects();
   const [projects, setProjects] = useState([]);
   const [festivals, setFestivals] = useState([]);
   const [applications, setApplications] = useState([]);
@@ -197,7 +198,7 @@ const Dashboard = () => {
 
         {/* Content Tabs */}
         <Tabs defaultValue="projects" className="w-full">
-          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-5' : 'grid-cols-3'}`}>
+          <TabsList className={`grid w-full ${userProfile?.role === 'filmmaker' ? 'grid-cols-6' : 'grid-cols-3'}`}>
             <TabsTrigger value="projects">
               {userProfile?.role === 'filmmaker' ? 'Projects' : 'My Festivals'}
             </TabsTrigger>
@@ -205,6 +206,7 @@ const Dashboard = () => {
               <>
                 <TabsTrigger value="auditions">Auditions</TabsTrigger>
                 <TabsTrigger value="crew">Crew</TabsTrigger>
+                <TabsTrigger value="storyboards">Storyboards</TabsTrigger>
               </>
             )}
             <TabsTrigger value="callsheets">Call Sheets</TabsTrigger>
