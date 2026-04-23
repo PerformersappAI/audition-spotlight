@@ -1846,45 +1846,112 @@ const Storyboarding = () => {
           {/* Shot Breakdown and Storyboard Section */}
           {selectedProject && !extractedScenes && (
             <div className="mt-4 space-y-6">
-              {/* Step 2 Banner: review shot list + credit estimator */}
+              {/* Step 2 Banner: review shot list + live credit estimator */}
               {(!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData)) && (
-                <Card className="border border-primary/30 bg-primary/5">
-                  <CardContent className="p-4 flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex-1 min-w-[220px]">
-                      <h3 className="font-semibold text-sm flex items-center gap-2">
-                        <Camera className="h-4 w-4 text-primary" />
-                        Step 2: Review Shot List
-                      </h3>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Edit any shot below, then approve to generate frames.
-                        {' '}<span className="font-medium text-foreground">{totalShotsForGen}</span> shots
-                        {' '}≈ <span className="font-medium text-primary">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
-                        {credits && (
-                          <> · You have <span className="font-medium text-foreground">{availableCredits}</span></>
+                <Card
+                  className={`border ${
+                    insufficientCredits
+                      ? 'border-destructive/50 bg-destructive/5'
+                      : lowBalanceWarning
+                      ? 'border-yellow-500/40 bg-yellow-500/5'
+                      : 'border-primary/30 bg-primary/5'
+                  }`}
+                >
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div className="flex-1 min-w-[220px]">
+                        <h3 className="font-semibold text-sm flex items-center gap-2">
+                          <Camera className="h-4 w-4 text-primary" />
+                          Step 2: Review Shot List
+                        </h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Edit any shot below, then approve to generate frames.
+                        </p>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        <Button variant="outline" size="sm" onClick={handleBackToSceneSelector} disabled={isExtractingScenes}>
+                          {isExtractingScenes ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
+                          Back to Scenes
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
+                          <Download className="h-4 w-4 mr-2" />
+                          Shot List PDF
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => setShowGenerateConfirm(true)}
+                          disabled={totalShotsForGen === 0 || isGenerating || insufficientCredits}
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          Approve & Generate →
+                        </Button>
+                      </div>
+                    </div>
+
+                    {/* Live credit estimator */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2 border-t border-border/50">
+                      <div>
+                        <div className="text-muted-foreground">Estimated</div>
+                        <div className="font-semibold text-foreground text-sm">
+                          {estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}
+                        </div>
+                        <div className="text-[10px] text-muted-foreground">
+                          {totalShotsForGen} × {creditsPerFrame}/frame
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-muted-foreground">Your balance</div>
+                        <div className="font-semibold text-foreground text-sm">{availableCredits}</div>
+                      </div>
+                      <div>
+                        <div className="text-muted-foreground">After generation</div>
+                        <div
+                          className={`font-semibold text-sm ${
+                            insufficientCredits
+                              ? 'text-destructive'
+                              : lowBalanceWarning
+                              ? 'text-yellow-500'
+                              : 'text-foreground'
+                          }`}
+                        >
+                          {remainingAfter}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-muted-foreground">Style</div>
+                        <div className="font-semibold text-foreground text-sm truncate">{selectedArtStyleName}</div>
+                        {hasStyleRef && (
+                          <div className="text-[10px] text-primary">+1 cr/frame (ref image)</div>
                         )}
+                      </div>
+                    </div>
+
+                    {hasStyleRef && (
+                      <p className="text-[11px] text-muted-foreground italic">
+                        Style reference adds 1 credit per frame for enhanced accuracy.
                       </p>
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      <Button variant="outline" size="sm" onClick={handleBackToSceneSelector} disabled={isExtractingScenes}>
-                        {isExtractingScenes ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ArrowLeft className="h-4 w-4 mr-2" />}
-                        Back to Scenes
-                      </Button>
-                      <Button variant="outline" size="sm" onClick={handleDownloadShotListPDF}>
-                        <Download className="h-4 w-4 mr-2" />
-                        Shot List PDF
-                      </Button>
-                      <Button
-                        size="sm"
-                        onClick={() => setShowGenerateConfirm(true)}
-                        disabled={totalShotsForGen === 0 || isGenerating}
-                      >
-                        <Camera className="h-4 w-4 mr-2" />
-                        Approve & Generate →
-                      </Button>
-                    </div>
+                    )}
+
+                    {insufficientCredits && (
+                      <div className="flex flex-wrap items-center justify-between gap-2 p-2 rounded-md bg-destructive/10 border border-destructive/30">
+                        <span className="text-xs text-destructive font-medium">
+                          Insufficient credits. You need {creditsShort} more credit{creditsShort === 1 ? '' : 's'}.
+                        </span>
+                        <Button size="sm" variant="destructive" onClick={() => navigate('/membership')}>
+                          Get Credits →
+                        </Button>
+                      </div>
+                    )}
+
+                    {lowBalanceWarning && !insufficientCredits && (
+                      <p className="text-[11px] text-yellow-500">
+                        Running low on credits — consider topping up after this generation.
+                      </p>
+                    )}
                   </CardContent>
                 </Card>
               )}
+
 
               {/* Shot Breakdown */}
               <Card className="border-2 border-primary/20 shadow-lg">
