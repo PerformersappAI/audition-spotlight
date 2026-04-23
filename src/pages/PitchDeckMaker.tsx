@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Save, Sparkles, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
 
 // ============================================================================
 // Types
@@ -117,7 +118,7 @@ const STEPS = [
 
 const PitchDeckMaker = () => {
   const [data, setData] = useState<PitchDeckData>(initialData);
-  const [currentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(0);
   const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
 
   // Load draft
@@ -194,12 +195,24 @@ const PitchDeckMaker = () => {
   const canAdvance = data.projectTitle.trim().length > 0 && data.projectType !== "";
 
   const handleNext = () => {
-    if (!canAdvance) {
+    if (currentStep === 0 && !canAdvance) {
       toast.error("Add a project title and project type to continue");
       return;
     }
-    handleSaveDraft();
-    toast.info("Step 2 coming soon");
+    if (currentStep < STEPS.length - 1) {
+      handleSaveDraft();
+      setCurrentStep((s) => s + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toast.info("Step " + (currentStep + 2) + " coming soon");
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep((s) => s - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const progressPct = ((currentStep + 1) / STEPS.length) * 100;
@@ -282,17 +295,21 @@ const PitchDeckMaker = () => {
               className="rounded-xl border p-6"
               style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
             >
-              <div className="mb-6">
-                <p className="font-mono text-xs tracking-widest text-[#f5a623]">
-                  01 — THE PITCH
-                </p>
-                <h2 className="mt-1 text-xl font-semibold text-white">
-                  Set the foundation
-                </h2>
-                <p className="mt-1 text-sm text-zinc-500">
-                  These core details shape every page of your deck.
-                </p>
-              </div>
+              {currentStep === 0 && (
+                <div className="mb-6">
+                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                    01 — THE PITCH
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold text-white">
+                    Set the foundation
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-500">
+                    These core details shape every page of your deck.
+                  </p>
+                </div>
+              )}
+
+              {currentStep === 0 && (
 
               <div className="space-y-5">
                 {/* Project Title */}
@@ -425,23 +442,43 @@ const PitchDeckMaker = () => {
                   </div>
                 </Field>
               </div>
+              )}
 
-              {/* Next button */}
-              <button
-                onClick={handleNext}
-                disabled={!canAdvance}
-                className="mt-8 flex w-full items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
-                style={{
-                  backgroundColor: "#f5a623",
-                  color: "#0a0a0f",
-                  boxShadow: canAdvance
-                    ? "0 0 24px rgba(245,166,35,0.3)"
-                    : "none",
-                }}
-              >
-                Next: Story
-                <ChevronRight className="h-4 w-4" />
-              </button>
+              {currentStep === 1 && (
+                <Step2Story data={data} update={update} />
+              )}
+
+              {/* Nav buttons */}
+              <div className="mt-8 flex items-center gap-3">
+                {currentStep > 0 && (
+                  <button
+                    onClick={handleBack}
+                    className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-[#f5a623] hover:text-white"
+                    style={{ borderColor: "#22222e", backgroundColor: "#1a1a26" }}
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                    Back
+                  </button>
+                )}
+                <button
+                  onClick={handleNext}
+                  disabled={currentStep === 0 && !canAdvance}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
+                  style={{
+                    backgroundColor: "#f5a623",
+                    color: "#0a0a0f",
+                    boxShadow:
+                      currentStep === 0 && !canAdvance
+                        ? "none"
+                        : "0 0 24px rgba(245,166,35,0.3)",
+                  }}
+                >
+                  {currentStep < STEPS.length - 1
+                    ? `Next: ${STEPS[currentStep + 1].label}`
+                    : "Finish"}
+                  <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           </section>
 
@@ -518,39 +555,143 @@ const PitchDeckMaker = () => {
                   </div>
                 </div>
 
-                {/* Body */}
-                <div className="flex-1 p-8">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-                    Logline
-                  </p>
-                  <p className="mt-2 text-base leading-relaxed text-zinc-200">
-                    {data.logline || (
-                      <span className="text-zinc-700">
-                        Your one-line story hook will appear here as you write
-                        it.
-                      </span>
-                    )}
-                  </p>
+                {/* Body — Step 1 */}
+                {currentStep === 0 && (
+                  <div className="flex-1 p-8">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                      Logline
+                    </p>
+                    <p className="mt-2 text-base leading-relaxed text-zinc-200">
+                      {data.logline || (
+                        <span className="text-zinc-700">
+                          Your one-line story hook will appear here as you write it.
+                        </span>
+                      )}
+                    </p>
 
-                  {data.targetPlatforms.length > 0 && (
-                    <div className="mt-6 border-t pt-6" style={{ borderColor: "#1a1a26" }}>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-                        Target Platforms
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {data.targetPlatforms.map((p) => (
-                          <span
-                            key={p}
-                            className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
-                            style={{ backgroundColor: "#1a1a26" }}
-                          >
-                            {p}
-                          </span>
-                        ))}
+                    {data.targetPlatforms.length > 0 && (
+                      <div className="mt-6 border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Target Platforms
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {data.targetPlatforms.map((p) => (
+                            <span
+                              key={p}
+                              className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
+                              style={{ backgroundColor: "#1a1a26" }}
+                            >
+                              {p}
+                            </span>
+                          ))}
+                        </div>
                       </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Body — Step 2 */}
+                {currentStep === 1 && (
+                  <div className="flex-1 p-8 space-y-6">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                        Synopsis
+                      </p>
+                      <p className="mt-2 italic text-base leading-relaxed text-zinc-300 relative">
+                        {data.synopsis ? (
+                          <>
+                            <span>
+                              {data.synopsis.length > 150
+                                ? data.synopsis.slice(0, 150)
+                                : data.synopsis}
+                            </span>
+                            {data.synopsis.length > 150 && (
+                              <span
+                                style={{
+                                  background:
+                                    "linear-gradient(to right, transparent, #0d0d18)",
+                                }}
+                                className="ml-0 inline-block w-12 h-5 align-middle"
+                              >
+                                …
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="not-italic text-zinc-700">
+                            Your synopsis preview will appear here.
+                          </span>
+                        )}
+                      </p>
                     </div>
-                  )}
-                </div>
+
+                    {data.toneMood && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Tone & Mood
+                        </p>
+                        <span
+                          className="mt-2 inline-block rounded-full px-3 py-1 text-xs"
+                          style={{
+                            backgroundColor: "#f5a623",
+                            color: "#000",
+                            fontWeight: 600,
+                            boxShadow: "0 0 12px rgba(245,166,35,0.35)",
+                          }}
+                        >
+                          {data.toneMood}
+                        </span>
+                      </div>
+                    )}
+
+                    {(data.themes ?? []).length > 0 && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Themes
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {(data.themes ?? []).map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
+                              style={{ backgroundColor: "#1a1a26" }}
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {(data.characters as CharacterEntry[] | undefined)?.length ? (
+                      <div className="border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Main Characters
+                        </p>
+                        <ul className="mt-3 space-y-2">
+                          {(data.characters as CharacterEntry[]).map((c, i) => (
+                            <li
+                              key={i}
+                              className="flex items-baseline gap-3 border-l-2 pl-3"
+                              style={{ borderColor: "#f5a623" }}
+                            >
+                              <span className="text-sm font-semibold text-white">
+                                {c.name || (
+                                  <span className="text-zinc-700 font-normal">
+                                    Unnamed
+                                  </span>
+                                )}
+                              </span>
+                              {c.role && (
+                                <span className="text-xs text-zinc-400">— {c.role}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
           </section>
