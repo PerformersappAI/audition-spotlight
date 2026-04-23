@@ -195,12 +195,24 @@ const PitchDeckMaker = () => {
   const canAdvance = data.projectTitle.trim().length > 0 && data.projectType !== "";
 
   const handleNext = () => {
-    if (!canAdvance) {
+    if (currentStep === 0 && !canAdvance) {
       toast.error("Add a project title and project type to continue");
       return;
     }
-    handleSaveDraft();
-    toast.info("Step 2 coming soon");
+    if (currentStep < STEPS.length - 1) {
+      handleSaveDraft();
+      setCurrentStep((s) => s + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toast.info("Step " + (currentStep + 2) + " coming soon");
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep((s) => s - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   const progressPct = ((currentStep + 1) / STEPS.length) * 100;
