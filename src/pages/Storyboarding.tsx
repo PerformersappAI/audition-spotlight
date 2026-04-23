@@ -1818,9 +1818,14 @@ const Storyboarding = () => {
                 </CardHeader>
                 <CardContent>
                   <RecentProjectsGrid
-                    projects={projects.slice(0, 6)}
+                    projects={projects}
+                    totalCount={projects.length}
+                    limit={6}
+                    loading={loading}
                     selectedId={selectedProject?.id}
                     compact
+                    onRename={(id, newTitle) => renameProject(id, newTitle)}
+                    onViewAll={() => navigate('/dashboard?tab=storyboards')}
                     onOpen={(p) => {
                       setSelectedProject({
                         id: p.id,
