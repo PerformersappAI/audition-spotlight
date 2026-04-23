@@ -490,26 +490,33 @@ const Storyboarding = () => {
   };
 
   // Step 2: After user selects scenes, build the shot list ONLY for those scenes (no images yet).
-  const handleScenesConfirmed = async (selectedScenes: Scene[]) => {
+  const handleScenesConfirmed = (selectedScenes: Scene[]) => {
     if (!userProfile?.user_id) return;
     if (selectedScenes.length === 0) return;
+    // Stash selection and route through optional Cast Review gate (Step 1.5).
+    setPendingScenes(selectedScenes);
+    setCastReviewActive(true);
+  };
+
+  const proceedToShotList = async () => {
+    if (!userProfile?.user_id) return;
+    const selectedScenes = pendingScenes;
+    if (!selectedScenes || selectedScenes.length === 0) return;
 
     setIsProcessingScript(true);
     setProcessingElapsedTime(0);
+    setCastReviewActive(false);
 
     try {
-      // Concatenate just the selected scene text for analyze-shots
       const focusedScript = selectedScenes
         .map(s => `${s.heading}\n\n${s.text}`)
         .join("\n\n---\n\n");
 
-      // Sum user-approved shot counts as the target total
       const targetShotCount = selectedScenes.reduce(
         (sum, s) => sum + (s.estimatedShots || 4),
         0
       );
 
-      // Reuse existing AI shot generator with focused input + explicit count
       const { data, error } = await supabase.functions.invoke('analyze-shots', {
         body: {
           scriptText: focusedScript,
@@ -559,7 +566,8 @@ const Storyboarding = () => {
         };
         setSelectedProject(localProject);
         setTitleDraft(localProject.projectTitle || "");
-        setExtractedScenes(null); // exit scene selector
+        setExtractedScenes(null);
+        setPendingScenes(null);
         toast({
           title: "Shot List Ready",
           description: `${shots.length} shots created from ${selectedScenes.length} scene${selectedScenes.length === 1 ? "" : "s"}. Review and edit before generating images.`,
@@ -578,8 +586,113 @@ const Storyboarding = () => {
     }
   };
 
+  const skipCastReview = () => {
+    proceedToShotList();
+  };
+
+  // Persist updated cast back to Supabase (Step 1.5 OR Cast tab on Step 3 project)
+  const persistCast = async (nextCast: CastMember[]) => {
+    setExtractedCast(nextCast);
+    if (selectedProject?.id && !selectedProject.id.startsWith('quick-')) {
+      await updateProject(selectedProject.id, { cast_data: nextCast as any });
+      setSelectedProject(prev => prev ? { ...prev, cast: nextCast } : prev);
+    }
+  };
+
+  const generateCastReferenceImage = async (name: string) => {
+    const cast = selectedProject?.cast || extractedCast;
+    const member = cast.find(c => c.name === name);
+    if (!member) return;
+
+    if (!credits || credits.available_credits < 1) {
+      toast({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: "Reference images cost 1 credit each.",
+      });
+      return;
+    }
+
+    setGeneratingCastNames(prev => new Set(prev).add(name));
+    try {
+      const styleName =
+        artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle || 'cinematic';
+      const styleModifier =
+        artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
+
+      const prompt = `Full body character reference sheet, ${member.description || member.name}, neutral pose, front facing, plain white background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+
+      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+        body: {
+          characterName: member.name,
+          characterDescription: prompt,
+          characterRole: 'storyboard cast member',
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : undefined,
+          projectTitle: selectedProject?.projectTitle || currentProject.scriptFileName,
+        }
+      });
+
+      if (error) throw error;
+      if (!data?.imageUrl) throw new Error('No image returned');
+
+      const ok = await deductCredits(1, `Cast reference: ${member.name}`);
+      if (!ok) {
+        toast({ variant: "destructive", title: "Credit deduction failed" });
+        return;
+      }
+
+      const nextCast = cast.map(c =>
+        c.name === name ? { ...c, reference_image_url: data.imageUrl } : c
+      );
+      await persistCast(nextCast);
+
+      toast({
+        title: "Reference image ready",
+        description: `${member.name}'s reference will now drive every frame they appear in.`,
+      });
+    } catch (err: any) {
+      console.error('Cast reference error:', err);
+      toast({
+        variant: "destructive",
+        title: "Couldn't generate reference",
+        description: err?.message || "Please try again.",
+      });
+    } finally {
+      setGeneratingCastNames(prev => {
+        const next = new Set(prev);
+        next.delete(name);
+        return next;
+      });
+    }
+  };
+
+  const generateAllMissingCastReferences = async () => {
+    const cast = selectedProject?.cast || extractedCast;
+    const missing = cast.filter(c => !c.reference_image_url);
+    if (missing.length === 0) return;
+    if (!credits || credits.available_credits < missing.length) {
+      toast({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: `You need ${missing.length} credits to generate ${missing.length} references.`,
+      });
+      return;
+    }
+    setIsBulkCastGenerating(true);
+    for (const member of missing) {
+      // eslint-disable-next-line no-await-in-loop
+      await generateCastReferenceImage(member.name);
+      // eslint-disable-next-line no-await-in-loop
+      await new Promise(r => setTimeout(r, 500));
+    }
+    setIsBulkCastGenerating(false);
+  };
+
   const cancelSceneSelection = () => {
     setExtractedScenes(null);
+    setPendingScenes(null);
+    setCastReviewActive(false);
   };
 
   // Quick storyboard generation using simplified API
