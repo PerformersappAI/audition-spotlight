@@ -2081,32 +2081,63 @@ const Storyboarding = () => {
                               </div>
                             )}
 
-                            {/* Shot Type & Camera Angle */}
-                            <div className="grid grid-cols-2 gap-2">
+                            {/* Shot Type & Camera Movement */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                               <div>
                                 <h4 className="font-medium text-sm mb-1">Shot Type</h4>
                                 {editingShot === shot.shotNumber ? (
-                                  <Input
-                                    value={editValues.shotType || shot.shotType || shot.cameraAngle}
-                                    onChange={(e) => setEditValues(prev => ({ ...prev, shotType: e.target.value }))}
-                                    className="text-sm"
-                                  />
+                                  <Select
+                                    value={editValues.shotType || shot.shotType || ""}
+                                    onValueChange={(v) => setEditValues(prev => ({ ...prev, shotType: v }))}
+                                  >
+                                    <SelectTrigger className="text-sm h-9">
+                                      <SelectValue placeholder="Select..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {SHOT_TYPES.map(t => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 ) : (
                                   <p className="text-sm text-muted-foreground">{shot.shotType || shot.cameraAngle}</p>
                                 )}
                               </div>
                               <div>
-                                <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                                <h4 className="font-medium text-sm mb-1">Camera Movement</h4>
                                 {editingShot === shot.shotNumber ? (
-                                  <Input
-                                    value={editValues.cameraAngle || shot.cameraAngle}
-                                    onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                    className="text-sm"
-                                  />
+                                  <Select
+                                    value={(editValues as any).cameraMovement || (shot as any).cameraMovement || "Static"}
+                                    onValueChange={(v) => setEditValues(prev => ({ ...(prev as any), cameraMovement: v }))}
+                                  >
+                                    <SelectTrigger className="text-sm h-9">
+                                      <SelectValue placeholder="Select..." />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      {CAMERA_MOVEMENTS.map(t => (
+                                        <SelectItem key={t} value={t}>{t}</SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
                                 ) : (
-                                  <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                                  <p className="text-sm text-muted-foreground">{(shot as any).cameraMovement || "Static"}</p>
                                 )}
                               </div>
+                            </div>
+
+                            {/* Camera Angle (free-text, secondary) */}
+                            <div>
+                              <h4 className="font-medium text-sm mb-1">Camera Angle</h4>
+                              {editingShot === shot.shotNumber ? (
+                                <Input
+                                  value={editValues.cameraAngle || shot.cameraAngle}
+                                  onChange={(e) => setEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                  className="text-sm"
+                                  placeholder="e.g., Eye level, Low angle"
+                                />
+                              ) : (
+                                <p className="text-sm text-muted-foreground">{shot.cameraAngle}</p>
+                              )}
                             </div>
 
                             {/* Lighting */}
