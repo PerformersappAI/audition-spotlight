@@ -146,13 +146,19 @@ const Storyboarding = () => {
   const [extractedCast, setExtractedCast] = useState<CastMember[]>([]);
   const [isExtractingScenes, setIsExtractingScenes] = useState(false);
 
+  // Cast review gate (Step 1.5) — shown after user confirms scenes, before analyze-shots
+  const [pendingScenes, setPendingScenes] = useState<Scene[] | null>(null);
+  const [castReviewActive, setCastReviewActive] = useState(false);
+  const [generatingCastNames, setGeneratingCastNames] = useState<Set<string>>(new Set());
+  const [isBulkCastGenerating, setIsBulkCastGenerating] = useState(false);
+
   // Editable project title state for the Step 3 viewer
   const [titleDraft, setTitleDraft] = useState<string>("");
   const [isEditingTitle, setIsEditingTitle] = useState(false);
 
   // Credit gate dialog state (Step 3 confirmation)
   const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
-  const { credits } = useCredits();
+  const { credits, deductCredits } = useCredits();
 
   const genres = [
     "Drama", "Comedy", "Action", "Thriller", "Horror", "Romance", 
@@ -193,10 +199,12 @@ const Storyboarding = () => {
 
   // Compute step for indicator (only shown when a Detailed Breakdown flow is in progress)
   const detailedFlowActive =
-    isExtractingScenes || !!extractedScenes || (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
+    isExtractingScenes || !!extractedScenes || castReviewActive ||
+    (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
 
   const currentStep: StoryboardStep = (() => {
-    if (extractedScenes && !selectedProject) return 1;
+    if (extractedScenes && !selectedProject && !castReviewActive) return 1;
+    if (castReviewActive) return 1.5;
     if (selectedProject && (!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData))) return 2;
     return 3;
   })();
