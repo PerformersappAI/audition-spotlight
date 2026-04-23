@@ -180,6 +180,75 @@ const Storyboarding = () => {
     return () => clearInterval(interval);
   }, [generatingStoryboard]);
 
+  // Compute step for indicator (only shown when a Detailed Breakdown flow is in progress)
+  const detailedFlowActive =
+    isExtractingScenes || !!extractedScenes || (!!selectedProject && (selectedProject.shots?.length ?? 0) > 0);
+
+  const currentStep: StoryboardStep = (() => {
+    if (extractedScenes && !selectedProject) return 1;
+    if (selectedProject && (!selectedProject.storyboard || selectedProject.storyboard.every(f => !f.imageData))) return 2;
+    return 3;
+  })();
+
+  // Auto-save shot edits (debounced) so navigating away preserves them
+  useEffect(() => {
+    if (!selectedProject?.id || !selectedProject.shots) return;
+    if (selectedProject.id.startsWith('quick-')) return; // skip in-memory quick storyboards
+    const handle = setTimeout(() => {
+      updateProject(selectedProject.id, { shots: selectedProject.shots as any });
+    }, 800);
+    return () => clearTimeout(handle);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [JSON.stringify(selectedProject?.shots), selectedProject?.id]);
+
+  const totalShotsForGen = selectedProject?.shots?.length ?? 0;
+  const estimatedCredits = totalShotsForGen * CREDITS_PER_FRAME;
+  const availableCredits = credits?.available_credits ?? 0;
+  const insufficientCredits = availableCredits < estimatedCredits;
+
+  const handleApproveAndGenerate = () => {
+    setShowGenerateConfirm(false);
+    if (!selectedProject?.storyboard || selectedProject.storyboard.length === 0) {
+      // Initialize frames first, then generate all
+      initializeStoryboard().then(() => {
+        setTimeout(() => generateAllFrames(), 300);
+      });
+    } else {
+      generateAllFrames();
+    }
+  };
+
+  const handleBackToSceneSelector = async () => {
+    if (!selectedProject) return;
+    // Re-extract scenes from the original script so user can re-pick
+    setIsExtractingScenes(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+        body: { scriptText: selectedProject.scriptText }
+      });
+      if (error) throw error;
+      if (data?.scenes?.length) {
+        setExtractedScenes(data.scenes as Scene[]);
+        setSelectedProject(null);
+      }
+    } catch (err) {
+      console.error(err);
+      toast({ variant: "destructive", title: "Couldn't reload scenes", description: "Please try again." });
+    } finally {
+      setIsExtractingScenes(false);
+    }
+  };
+
+  const handleDownloadShotListPDF = () => {
+    if (!selectedProject?.shots?.length) return;
+    exportShotListPDF(selectedProject.shots as any, {
+      title: `${selectedProject.genre || 'Storyboard'} Shot List`,
+      genre: selectedProject.genre,
+      tone: selectedProject.tone,
+    });
+    toast({ title: "Shot list exported", description: "PDF downloaded." });
+  };
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
