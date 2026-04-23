@@ -2547,6 +2547,32 @@ const Storyboarding = () => {
           )}
         </div>
       </div>
+
+      {/* Step 3 — Credit confirmation gate before generation */}
+      <AlertDialog open={showGenerateConfirm} onOpenChange={setShowGenerateConfirm}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Generate {totalShotsForGen} storyboard frame{totalShotsForGen === 1 ? '' : 's'}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will use <span className="font-semibold text-foreground">{estimatedCredits} credit{estimatedCredits === 1 ? '' : 's'}</span>
+              {credits && (
+                <> · You currently have <span className="font-semibold text-foreground">{availableCredits}</span></>
+              )}.
+              {insufficientCredits && (
+                <span className="block mt-2 text-destructive">
+                  You don't have enough credits. Add more before generating.
+                </span>
+              )}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={handleApproveAndGenerate} disabled={insufficientCredits}>
+              Generate
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
