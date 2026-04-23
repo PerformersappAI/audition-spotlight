@@ -223,7 +223,11 @@ const Storyboarding = () => {
   const totalShotsForGen = selectedProject?.shots?.length ?? 0;
   const hasStyleRef = !!currentProject.styleReferenceImage;
   const creditsPerFrame = CREDITS_PER_FRAME + (hasStyleRef ? 1 : 0);
-  const estimatedCredits = totalShotsForGen * creditsPerFrame;
+  const frameCreditsTotal = totalShotsForGen * creditsPerFrame;
+  const projectCast: CastMember[] = selectedProject?.cast || extractedCast;
+  const missingCastRefCount = projectCast.filter(c => !c.reference_image_url).length;
+  // Cast refs are optional and generated separately, so we only show as info, not added to required total
+  const estimatedCredits = frameCreditsTotal;
   const availableCredits = credits?.available_credits ?? 0;
   const remainingAfter = availableCredits - estimatedCredits;
   const insufficientCredits = remainingAfter < 0;
@@ -231,6 +235,14 @@ const Storyboarding = () => {
   const creditsShort = insufficientCredits ? Math.abs(remainingAfter) : 0;
   const selectedArtStyleName =
     artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle;
+
+  // Map of character name -> number of frames they appear in (for "Used in X frames" badge)
+  const framesUsageByName: Record<string, number> = {};
+  (selectedProject?.shots || []).forEach((s: any) => {
+    (s.characters || []).forEach((n: string) => {
+      framesUsageByName[n] = (framesUsageByName[n] || 0) + 1;
+    });
+  });
 
   const handleApproveAndGenerate = () => {
     setShowGenerateConfirm(false);
@@ -1285,7 +1297,8 @@ const Storyboarding = () => {
         ? currentProject.customStylePrompt 
         : (selectedArtStyle?.promptModifier || 'black and white storyboard frame, hand-drawn sketch');
 
-      // Build character descriptions for this shot
+      // Build character descriptions for this shot — merge author-defined characters AND extracted cast
+      const projectCastForFrame: CastMember[] = selectedProject.cast || [];
       const characterDescriptions = shot.characters
         .map(charName => {
           const def = currentProject.characterDefinitions.find(
@@ -1298,20 +1311,43 @@ const Storyboarding = () => {
             }
             return desc;
           }
+          // Fall back to extracted cast description for consistency
+          const castMember = projectCastForFrame.find(
+            c => c.name.toLowerCase() === charName.toLowerCase()
+          );
+          if (castMember) {
+            let desc = `Character: ${castMember.name} — ${castMember.description}. Maintain consistent appearance with established character design.`;
+            if (castMember.reference_image_url) {
+              desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
+            }
+            return desc;
+          }
           return null;
         })
         .filter(Boolean)
         .join('\n');
 
-      // Collect character image URLs
-      const characterImages = shot.characters
-        .map(charName => {
-          const def = currentProject.characterDefinitions.find(
-            c => c.name.toLowerCase() === charName.toLowerCase()
-          );
-          return def?.imageUrl ? { name: def.name, imageUrl: def.imageUrl } : null;
-        })
-        .filter(Boolean);
+      // Collect character image URLs (manual character defs first, then extracted cast refs)
+      const characterImagesMap = new Map<string, { name: string; imageUrl: string }>();
+      shot.characters.forEach(charName => {
+        const def = currentProject.characterDefinitions.find(
+          c => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (def?.imageUrl) {
+          characterImagesMap.set(def.name.toLowerCase(), { name: def.name, imageUrl: def.imageUrl });
+          return;
+        }
+        const castMember = projectCastForFrame.find(
+          c => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (castMember?.reference_image_url) {
+          characterImagesMap.set(castMember.name.toLowerCase(), {
+            name: castMember.name,
+            imageUrl: castMember.reference_image_url,
+          });
+        }
+      });
+      const characterImages = Array.from(characterImagesMap.values());
 
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
