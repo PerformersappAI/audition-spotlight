@@ -247,6 +247,7 @@ const Storyboarding = () => {
       if (error) throw error;
       if (data?.scenes?.length) {
         setExtractedScenes(data.scenes as Scene[]);
+        if (Array.isArray(data.cast)) setExtractedCast(data.cast as CastMember[]);
         setSelectedProject(null);
       }
     } catch (err) {
@@ -259,10 +260,27 @@ const Storyboarding = () => {
 
   const handleDownloadShotListPDF = () => {
     if (!selectedProject?.shots?.length) return;
-    exportShotListPDF(selectedProject.shots as any, {
-      title: `${selectedProject.genre || 'Storyboard'} Shot List`,
+    const projectTitle =
+      selectedProject.projectTitle ||
+      currentProject.scriptFileName?.replace(/\.[^.]+$/, "") ||
+      `${selectedProject.genre || 'Storyboard'} Shot List`;
+    // Enrich shots with scene metadata pulled from extractedScenes when available
+    const sceneByNum = new Map<number, Scene>();
+    (extractedScenes || []).forEach(s => sceneByNum.set(s.sceneNumber, s));
+    const enrichedShots = selectedProject.shots.map((s: any) => {
+      const scene = s.sceneNumber ? sceneByNum.get(s.sceneNumber) : undefined;
+      return {
+        ...s,
+        intExt: s.intExt || scene?.intExt,
+        dayNight: s.dayNight || scene?.dayNight,
+        location: s.location || scene?.location,
+      };
+    });
+    exportShotListPDF(enrichedShots as any, {
+      projectTitle,
       genre: selectedProject.genre,
       tone: selectedProject.tone,
+      sceneCount: extractedScenes?.length,
     });
     toast({ title: "Shot list exported", description: "PDF downloaded." });
   };
@@ -270,6 +288,9 @@ const Storyboarding = () => {
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
+
+    // Capture filename so we can use it as default project title
+    setCurrentProject(prev => ({ ...prev, scriptFileName: file.name }));
 
     await processFile(
       file,
