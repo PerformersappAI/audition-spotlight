@@ -471,6 +471,32 @@ const PitchDeckMaker = () => {
                 <Step2Story data={data} update={update} />
               )}
 
+              {currentStep === 2 && (
+                <div className="py-2">
+                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                    03 — CHARACTERS & VISUALS
+                  </p>
+                  <h2 className="mt-1 text-xl font-semibold text-white">
+                    Coming together
+                  </h2>
+                  <p className="mt-2 text-sm text-zinc-500">
+                    This step is being finalized. Continue to Market & Team to
+                    keep building your deck.
+                  </p>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <Step4MarketTeam
+                  data={data}
+                  update={update}
+                  exportFormats={exportFormats}
+                  setExportFormats={setExportFormats}
+                  onGenerateDeck={handleGenerateDeck}
+                  isGeneratingDeck={isGeneratingDeck}
+                />
+              )}
+
               {/* Nav buttons */}
               <div className="mt-8 flex items-center gap-3">
                 {currentStep > 0 && (
