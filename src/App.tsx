@@ -17,7 +17,7 @@ import AuditionDetail from "./pages/AuditionDetail";
 import UploadAuditions from "./pages/UploadAuditions";
 import SceneAnalysis from "./pages/SceneAnalysis";
 import ScriptAnalysis from "./pages/ScriptAnalysis";
-import Storyboarding from "./pages/Storyboarding";
+import StoryboardingRoute from "./pages/StoryboardingRoute";
 import CallSheet from "./pages/CallSheet";
 import CreateProject from "./pages/CreateProject";
 import CreateFestival from "./pages/CreateFestival";
@@ -86,7 +86,7 @@ const AppContent = () => (
       <Route path="/upload-auditions" element={<UploadAuditions />} />
       <Route path="/scene-analysis" element={<SceneAnalysis />} />
       <Route path="/script-analysis" element={<ScriptAnalysis />} />
-      <Route path="/storyboarding" element={<Storyboarding />} />
+      <Route path="/storyboarding" element={<StoryboardingRoute />} />
       <Route path="/storyboarding/pricing" element={<StoryboardingPricing />} />
       <Route path="/call-sheet" element={<CallSheet />} />
       <Route path="/create-project" element={<CreateProject />} />
