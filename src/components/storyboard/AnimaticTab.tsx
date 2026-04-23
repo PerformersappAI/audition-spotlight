@@ -297,16 +297,38 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
         setExportProgress(70 + Math.round(p * 30));
       });
 
-      gif.on("finished", (blob: Blob) => {
+      gif.on("finished", async (blob: Blob) => {
         const url = URL.createObjectURL(blob);
+        const safeTitle = (projectTitle || "animatic").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
         const a = document.createElement("a");
         a.href = url;
-        const safeTitle = (projectTitle || "animatic").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
         a.download = `${safeTitle}_animatic.gif`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
+
+        // Upload to Supabase storage so it can power the public share link.
+        if (user?.id && projectId) {
+          try {
+            const path = `${user.id}/${projectId}-${Date.now()}.gif`;
+            const { error: upErr } = await supabase.storage
+              .from("storyboard-animatics")
+              .upload(path, blob, { contentType: "image/gif", upsert: true });
+            if (upErr) throw upErr;
+            const { data: pub } = supabase.storage.from("storyboard-animatics").getPublicUrl(path);
+            const publicUrl = pub.publicUrl;
+            await supabase
+              .from("storyboard_projects")
+              .update({ animatic_url: publicUrl } as any)
+              .eq("id", projectId);
+            setAnimaticUrl(publicUrl);
+            onAnimaticSaved?.(publicUrl);
+          } catch (e) {
+            console.warn("Animatic upload failed (download still succeeded)", e);
+          }
+        }
+
         setIsExporting(false);
         setExportProgress(0);
         toast({ title: "GIF ready", description: "Your animatic was downloaded." });
