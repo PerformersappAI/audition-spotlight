@@ -164,6 +164,14 @@ serve(async (req) => {
       imagePrompt += `CHARACTER APPEARANCE: ${characterDescriptions}\n`;
     }
     
+    if (shot.cameraMovement && shot.cameraMovement !== 'Static') {
+      imagePrompt += `CAMERA MOVEMENT: ${shot.cameraMovement} (suggest motion through composition/blur where appropriate)\n`;
+    }
+
+    if (shot.action) {
+      imagePrompt += `ACTION: ${shot.action}\n`;
+    }
+
     if (shot.lighting) {
       imagePrompt += `LIGHTING: ${shot.lighting}\n`;
     }

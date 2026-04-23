@@ -1,11 +1,19 @@
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Camera, Loader2, Film, MapPin, Users, ArrowRight } from "lucide-react";
+import { Camera, Loader2, Film, MapPin, Users, ArrowRight, Sparkles } from "lucide-react";
+
+// Simple stable hash for keying localStorage by script content
+const hashScenes = (scenes: { sceneNumber: number; heading: string }[]) => {
+  const seed = scenes.map(s => `${s.sceneNumber}:${s.heading}`).join("|");
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) | 0;
+  return `storyboard_scene_sel_${h}`;
+};
 
 export interface Scene {
   sceneNumber: number;
@@ -27,10 +35,27 @@ interface SceneSelectorProps {
 }
 
 export const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }: SceneSelectorProps) => {
-  const [selectedNumbers, setSelectedNumbers] = useState<Set<number>>(
-    new Set(scenes.map(s => s.sceneNumber))
-  );
+  const storageKey = useMemo(() => hashScenes(scenes), [scenes]);
+
+  const [selectedNumbers, setSelectedNumbers] = useState<Set<number>>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        const arr = JSON.parse(saved) as number[];
+        const valid = arr.filter(n => scenes.some(s => s.sceneNumber === n));
+        if (valid.length > 0) return new Set(valid);
+      }
+    } catch {}
+    return new Set(scenes.map(s => s.sceneNumber));
+  });
   const [shotOverrides, setShotOverrides] = useState<Map<number, number>>(new Map());
+
+  // Persist selection on change
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(Array.from(selectedNumbers)));
+    } catch {}
+  }, [selectedNumbers, storageKey]);
 
   const toggle = (n: number) => {
     setSelectedNumbers(prev => {
@@ -88,6 +113,10 @@ export const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }: Sce
         <p className="text-sm text-muted-foreground mt-2">
           Pick the scenes that matter for your storyboard. Only selected scenes will be broken into shots — saves time and cost.
         </p>
+        <div className="flex items-center gap-2 mt-2 text-xs text-primary/80">
+          <Sparkles className="h-3 w-3" />
+          <span>Tip: Selecting fewer scenes = fewer credits used.</span>
+        </div>
       </CardHeader>
 
       <CardContent className="space-y-4">
