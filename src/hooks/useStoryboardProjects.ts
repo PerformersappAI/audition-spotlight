@@ -11,6 +11,12 @@ export interface CharacterDefinition {
   imageUrl?: string;
 }
 
+export interface CastMember {
+  name: string;
+  description: string;
+  appears_in_scenes: number[];
+}
+
 export interface Shot {
   shotNumber: number;
   description: string;
@@ -52,9 +58,44 @@ export interface StoryboardProject {
   updated_at: string;
   character_definitions?: CharacterDefinition[];
   style_reference_prompt?: string;
+  // New named-project metadata
+  project_title?: string | null;
+  thumbnail_url?: string | null;
+  art_style?: string | null;
+  aspect_ratio?: string | null;
+  scene_count?: number | null;
+  frame_count?: number | null;
+  cast_data?: CastMember[];
 }
 
 type DbStoryboardProject = Database['public']['Tables']['storyboard_projects']['Row'];
+
+const mapRow = (row: any): StoryboardProject => ({
+  id: row.id,
+  user_id: row.user_id,
+  script_text: row.script_text,
+  genre: row.genre,
+  tone: row.tone,
+  character_count: row.character_count,
+  shots: Array.isArray(row.shots) ? (row.shots as unknown as Shot[]) : null,
+  storyboard_frames: Array.isArray(row.storyboard_frames)
+    ? (row.storyboard_frames as unknown as StoryboardFrame[])
+    : null,
+  is_complete: row.is_complete,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+  character_definitions: Array.isArray(row.character_definitions)
+    ? (row.character_definitions as unknown as CharacterDefinition[])
+    : [],
+  style_reference_prompt: row.style_reference_prompt || '',
+  project_title: row.project_title ?? null,
+  thumbnail_url: row.thumbnail_url ?? null,
+  art_style: row.art_style ?? null,
+  aspect_ratio: row.aspect_ratio ?? null,
+  scene_count: row.scene_count ?? 0,
+  frame_count: row.frame_count ?? 0,
+  cast_data: Array.isArray(row.cast_data) ? (row.cast_data as unknown as CastMember[]) : [],
+});
 
 export const useStoryboardProjects = () => {
   const { userProfile } = useAuth();
@@ -71,7 +112,7 @@ export const useStoryboardProjects = () => {
       const { data, error } = await supabase
         .from('storyboard_projects')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching projects:', error);
@@ -79,23 +120,7 @@ export const useStoryboardProjects = () => {
         return;
       }
 
-      // Transform database rows to our interface
-      const transformedProjects: StoryboardProject[] = (data || []).map((row: DbStoryboardProject) => ({
-        id: row.id,
-        user_id: row.user_id,
-        script_text: row.script_text,
-        genre: row.genre,
-        tone: row.tone,
-        character_count: row.character_count,
-        shots: Array.isArray(row.shots) ? row.shots as unknown as Shot[] : null,
-        storyboard_frames: Array.isArray(row.storyboard_frames) ? row.storyboard_frames as unknown as StoryboardFrame[] : null,
-        is_complete: row.is_complete,
-        created_at: row.created_at,
-        updated_at: row.updated_at,
-        character_definitions: Array.isArray(row.character_definitions) ? row.character_definitions as unknown as CharacterDefinition[] : [],
-        style_reference_prompt: row.style_reference_prompt || ''
-      }));
-      setProjects(transformedProjects);
+      setProjects((data || []).map(mapRow));
     } catch (error) {
       console.error('Error fetching projects:', error);
       toast.error('Failed to load storyboard projects');
@@ -110,7 +135,14 @@ export const useStoryboardProjects = () => {
     tone: string,
     shots: Shot[],
     characterDefinitions?: CharacterDefinition[],
-    styleReferencePrompt?: string
+    styleReferencePrompt?: string,
+    extras?: {
+      project_title?: string;
+      art_style?: string;
+      aspect_ratio?: string;
+      scene_count?: number;
+      cast_data?: CastMember[];
+    }
   ): Promise<StoryboardProject | null> => {
     if (!userProfile?.user_id) {
       toast.error('Please log in to save projects');
@@ -119,21 +151,28 @@ export const useStoryboardProjects = () => {
 
     try {
       const characterCount = (scriptText.match(/^[A-Z][A-Z\s]+$/gm) || []).length;
-      
+
+      const insertPayload: any = {
+        user_id: userProfile.user_id,
+        script_text: scriptText,
+        genre,
+        tone,
+        character_count: characterCount,
+        shots: shots as any,
+        storyboard_frames: null,
+        is_complete: false,
+        character_definitions: (characterDefinitions as any) || [],
+        style_reference_prompt: styleReferencePrompt || '',
+      };
+      if (extras?.project_title) insertPayload.project_title = extras.project_title;
+      if (extras?.art_style) insertPayload.art_style = extras.art_style;
+      if (extras?.aspect_ratio) insertPayload.aspect_ratio = extras.aspect_ratio;
+      if (typeof extras?.scene_count === 'number') insertPayload.scene_count = extras.scene_count;
+      if (extras?.cast_data) insertPayload.cast_data = extras.cast_data as any;
+
       const { data, error } = await supabase
         .from('storyboard_projects')
-        .insert({
-          user_id: userProfile.user_id,
-          script_text: scriptText,
-          genre,
-          tone,
-          character_count: characterCount,
-          shots: shots as any,
-          storyboard_frames: null,
-          is_complete: false,
-          character_definitions: characterDefinitions as any || [],
-          style_reference_prompt: styleReferencePrompt || ''
-        })
+        .insert(insertPayload)
         .select()
         .single();
 
@@ -144,24 +183,10 @@ export const useStoryboardProjects = () => {
       }
 
       if (data) {
-        const transformedProject: StoryboardProject = {
-          id: data.id,
-          user_id: data.user_id,
-          script_text: data.script_text,
-          genre: data.genre,
-          tone: data.tone,
-          character_count: data.character_count,
-          shots: Array.isArray(data.shots) ? data.shots as unknown as Shot[] : null,
-          storyboard_frames: Array.isArray(data.storyboard_frames) ? data.storyboard_frames as unknown as StoryboardFrame[] : null,
-          is_complete: data.is_complete,
-          created_at: data.created_at,
-          updated_at: data.updated_at,
-          character_definitions: Array.isArray(data.character_definitions) ? data.character_definitions as unknown as CharacterDefinition[] : [],
-          style_reference_prompt: data.style_reference_prompt || ''
-        };
-        setProjects(prev => [transformedProject, ...prev]);
+        const transformed = mapRow(data);
+        setProjects((prev) => [transformed, ...prev]);
         toast.success('Project saved successfully');
-        return transformedProject;
+        return transformed;
       }
     } catch (error) {
       console.error('Error saving project:', error);
@@ -176,7 +201,6 @@ export const useStoryboardProjects = () => {
     updates: Partial<StoryboardProject>
   ): Promise<StoryboardProject | null> => {
     try {
-      // Transform our interface back to database format
       const dbUpdates: any = {};
       if (updates.shots) dbUpdates.shots = updates.shots as any;
       if (updates.storyboard_frames) dbUpdates.storyboard_frames = updates.storyboard_frames as any;
@@ -184,8 +208,16 @@ export const useStoryboardProjects = () => {
       if (updates.genre) dbUpdates.genre = updates.genre;
       if (updates.tone) dbUpdates.tone = updates.tone;
       if (updates.character_definitions) dbUpdates.character_definitions = updates.character_definitions as any;
-      if (updates.style_reference_prompt !== undefined) dbUpdates.style_reference_prompt = updates.style_reference_prompt;
-      
+      if (updates.style_reference_prompt !== undefined)
+        dbUpdates.style_reference_prompt = updates.style_reference_prompt;
+      if (updates.project_title !== undefined) dbUpdates.project_title = updates.project_title;
+      if (updates.thumbnail_url !== undefined) dbUpdates.thumbnail_url = updates.thumbnail_url;
+      if (updates.art_style !== undefined) dbUpdates.art_style = updates.art_style;
+      if (updates.aspect_ratio !== undefined) dbUpdates.aspect_ratio = updates.aspect_ratio;
+      if (updates.scene_count !== undefined) dbUpdates.scene_count = updates.scene_count;
+      if (updates.frame_count !== undefined) dbUpdates.frame_count = updates.frame_count;
+      if (updates.cast_data !== undefined) dbUpdates.cast_data = updates.cast_data as any;
+
       const { data, error } = await supabase
         .from('storyboard_projects')
         .update(dbUpdates)
@@ -200,23 +232,9 @@ export const useStoryboardProjects = () => {
       }
 
       if (data) {
-        const transformedProject: StoryboardProject = {
-          id: data.id,
-          user_id: data.user_id,
-          script_text: data.script_text,
-          genre: data.genre,
-          tone: data.tone,
-          character_count: data.character_count,
-          shots: Array.isArray(data.shots) ? data.shots as unknown as Shot[] : null,
-          storyboard_frames: Array.isArray(data.storyboard_frames) ? data.storyboard_frames as unknown as StoryboardFrame[] : null,
-          is_complete: data.is_complete,
-          created_at: data.created_at,
-          updated_at: data.updated_at,
-          character_definitions: Array.isArray(data.character_definitions) ? data.character_definitions as unknown as CharacterDefinition[] : [],
-          style_reference_prompt: data.style_reference_prompt || ''
-        };
-        setProjects(prev => prev.map(p => p.id === id ? transformedProject : p));
-        return transformedProject;
+        const transformed = mapRow(data);
+        setProjects((prev) => prev.map((p) => (p.id === id ? transformed : p)));
+        return transformed;
       }
     } catch (error) {
       console.error('Error updating project:', error);
@@ -226,12 +244,15 @@ export const useStoryboardProjects = () => {
     return null;
   };
 
+  const renameProject = async (id: string, newTitle: string) => {
+    const trimmed = newTitle.trim();
+    if (!trimmed) return null;
+    return updateProject(id, { project_title: trimmed });
+  };
+
   const deleteProject = async (id: string) => {
     try {
-      const { error } = await supabase
-        .from('storyboard_projects')
-        .delete()
-        .eq('id', id);
+      const { error } = await supabase.from('storyboard_projects').delete().eq('id', id);
 
       if (error) {
         console.error('Error deleting project:', error);
@@ -239,8 +260,8 @@ export const useStoryboardProjects = () => {
         return;
       }
 
-      setProjects(prev => prev.filter(project => project.id !== id));
-      toast.success('Project deleted successfully');
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+      toast.success('Project deleted');
     } catch (error) {
       console.error('Error deleting project:', error);
       toast.error('Failed to delete project');
@@ -256,7 +277,8 @@ export const useStoryboardProjects = () => {
     loading,
     saveProject,
     updateProject,
+    renameProject,
     deleteProject,
-    refetch: fetchProjects
+    refetch: fetchProjects,
   };
 };

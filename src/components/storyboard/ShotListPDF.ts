@@ -2,6 +2,9 @@ import jsPDF from "jspdf";
 
 interface ShotRow {
   shotNumber: number;
+  sceneNumber?: number;
+  intExt?: string;
+  dayNight?: string;
   location?: string;
   action?: string;
   description?: string;
@@ -15,122 +18,174 @@ interface ShotRow {
 
 interface Options {
   title?: string;
+  projectTitle?: string;
   genre?: string;
   tone?: string;
+  sceneCount?: number;
 }
 
+/**
+ * Branded, set-ready landscape shot list PDF.
+ * - Letter, landscape
+ * - Header: project title, generated date, branding, scene/frame totals
+ * - Columns: # | INT/EXT | Location | Time | Action | Shot Type | Camera Move
+ * - Alternating row shading, 11pt minimum text
+ * - Footer: page number + branding
+ */
 export function exportShotListPDF(shots: ShotRow[], options: Options = {}) {
-  const pdf = new jsPDF("portrait", "mm", "a4");
-  const pageWidth = pdf.internal.pageSize.width;
-  const pageHeight = pdf.internal.pageSize.height;
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "letter" });
+  const pageWidth = pdf.internal.pageSize.width;   // ~279.4
+  const pageHeight = pdf.internal.pageSize.height; // ~215.9
   const margin = 12;
+  const contentWidth = pageWidth - margin * 2;
+
+  const projectTitle = (options.projectTitle || options.title || "Shot List").trim();
+  const dateStr = new Date().toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
+  // ===== Header =====
   let y = margin;
 
-  // Header
+  pdf.setFont("helvetica", "bold");
   pdf.setFontSize(18);
-  pdf.setFont(undefined, "bold");
-  pdf.text(options.title || "Shot List", margin, y);
-  y += 7;
+  pdf.setTextColor(20, 20, 20);
+  pdf.text(projectTitle, margin, y + 2);
+
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.setTextColor(110, 110, 110);
+  pdf.text("FilmmakerGenius.com", pageWidth - margin, y, { align: "right" });
+  pdf.setFontSize(8);
+  pdf.text("Where Genius Meets the Silver Screen", pageWidth - margin, y + 4, { align: "right" });
+
+  y += 8;
 
   pdf.setFontSize(10);
-  pdf.setFont(undefined, "normal");
-  pdf.setTextColor(100, 100, 100);
-  const meta = [
-    options.genre && `Genre: ${options.genre}`,
-    options.tone && `Tone: ${options.tone}`,
-    `Shots: ${shots.length}`,
-    `Generated: ${new Date().toLocaleDateString()}`,
-  ]
-    .filter(Boolean)
-    .join("  •  ");
-  pdf.text(meta, margin, y);
-  y += 8;
-  pdf.setTextColor(0, 0, 0);
+  pdf.setTextColor(80, 80, 80);
+  const sceneCount = options.sceneCount ?? new Set(shots.map(s => s.sceneNumber).filter(Boolean)).size;
+  const metaParts = [
+    `Generated: ${dateStr}`,
+    sceneCount > 0 ? `Scenes: ${sceneCount}` : null,
+    `Frames: ${shots.length}`,
+    options.genre ? `Genre: ${options.genre}` : null,
+    options.tone ? `Tone: ${options.tone}` : null,
+  ].filter(Boolean);
+  pdf.text(metaParts.join("  •  "), margin, y + 2);
 
-  // Column layout
+  y += 6;
+  pdf.setDrawColor(200, 200, 200);
+  pdf.setLineWidth(0.3);
+  pdf.line(margin, y, pageWidth - margin, y);
+  y += 4;
+
+  // ===== Columns (landscape letter, ~255mm content width) =====
   const cols = [
-    { label: "#", width: 10 },
-    { label: "Location", width: 32 },
-    { label: "Action", width: 50 },
-    { label: "Shot Type", width: 28 },
-    { label: "Camera Move", width: 28 },
-    { label: "Dialogue", width: pageWidth - margin * 2 - 10 - 32 - 50 - 28 - 28 },
+    { label: "#",            width: 10 },
+    { label: "INT/EXT",      width: 18 },
+    { label: "Location",     width: 42 },
+    { label: "Time",         width: 16 },
+    { label: "Action",       width: 78 },
+    { label: "Shot Type",    width: 40 },
+    { label: "Camera Move",  width: 0 }, // fill remainder
   ];
+  const fixedWidth = cols.reduce((sum, c) => sum + c.width, 0);
+  cols[cols.length - 1].width = contentWidth - fixedWidth;
 
   const drawHeader = () => {
-    pdf.setFillColor(30, 30, 30);
-    pdf.rect(margin, y, pageWidth - margin * 2, 7, "F");
+    pdf.setFillColor(28, 28, 32);
+    pdf.rect(margin, y, contentWidth, 8, "F");
     pdf.setTextColor(255, 255, 255);
-    pdf.setFontSize(9);
-    pdf.setFont(undefined, "bold");
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
     let x = margin + 2;
-    cols.forEach((c) => {
-      pdf.text(c.label, x, y + 5);
+    cols.forEach(c => {
+      pdf.text(c.label, x, y + 5.5);
       x += c.width;
     });
-    y += 7;
-    pdf.setTextColor(0, 0, 0);
-    pdf.setFont(undefined, "normal");
+    y += 8;
+    pdf.setTextColor(30, 30, 30);
+    pdf.setFont("helvetica", "normal");
   };
 
   drawHeader();
 
-  pdf.setFontSize(8);
+  const FOOTER_RESERVE = 12;
+  pdf.setFontSize(11); // 11pt minimum, set-readable
+
   shots.forEach((shot, idx) => {
+    const action =
+      shot.action ||
+      shot.visualDescription ||
+      shot.description ||
+      "—";
+
     const row = [
-      String(shot.shotNumber),
+      String(shot.shotNumber ?? idx + 1),
+      (shot.intExt || "—").toUpperCase(),
       shot.location || "—",
-      shot.action || shot.visualDescription || shot.description || "—",
+      (shot.dayNight || "—").toUpperCase(),
+      action,
       shot.shotType || shot.cameraAngle || "—",
       shot.cameraMovement || "Static",
-      shot.dialogue && shot.dialogue !== "None" ? shot.dialogue : "—",
     ];
 
-    // Calculate row height based on tallest wrapped column
     const wrapped = row.map((text, i) =>
-      pdf.splitTextToSize(text, cols[i].width - 2)
+      pdf.splitTextToSize(text, cols[i].width - 3)
     );
-    const lineCount = Math.max(...wrapped.map((w) => w.length));
-    const rowHeight = Math.max(7, lineCount * 3.5 + 2);
+    const lineCount = Math.max(...wrapped.map(w => w.length));
+    const rowHeight = Math.max(8, lineCount * 4.6 + 2);
 
-    // New page if needed
-    if (y + rowHeight > pageHeight - margin) {
+    if (y + rowHeight > pageHeight - FOOTER_RESERVE) {
       pdf.addPage();
       y = margin;
       drawHeader();
     }
 
-    // Zebra stripe
     if (idx % 2 === 0) {
-      pdf.setFillColor(245, 245, 245);
-      pdf.rect(margin, y, pageWidth - margin * 2, rowHeight, "F");
+      pdf.setFillColor(245, 246, 248);
+      pdf.rect(margin, y, contentWidth, rowHeight, "F");
     }
 
     let x = margin + 2;
+    pdf.setTextColor(30, 30, 30);
     wrapped.forEach((lines, i) => {
-      pdf.text(lines, x, y + 4);
+      pdf.text(lines, x, y + 5);
       x += cols[i].width;
     });
 
     y += rowHeight;
   });
 
-  // Footer
-  const pages = pdf.getNumberOfPages();
-  for (let i = 1; i <= pages; i++) {
+  // ===== Footer on every page =====
+  const pageCount = pdf.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
     pdf.setPage(i);
-    pdf.setFontSize(7);
-    pdf.setTextColor(150, 150, 150);
+    pdf.setFontSize(8);
+    pdf.setTextColor(140, 140, 140);
+    pdf.setFont("helvetica", "normal");
     pdf.text(
-      `Page ${i} of ${pages} • Filmmaker Genius`,
-      pageWidth / 2,
+      "Generated by FilmmakerGenius.com",
+      margin,
+      pageHeight - 5
+    );
+    pdf.text(
+      `Page ${i} of ${pageCount}`,
+      pageWidth - margin,
       pageHeight - 5,
-      { align: "center" }
+      { align: "right" }
     );
   }
 
-  const safeName = (options.title || "shot-list")
+  // ===== Filename: [ScriptTitle]_ShotList_[Date].pdf =====
+  const safeTitle = projectTitle
+    .replace(/\.[^.]+$/, "")
     .replace(/[^a-z0-9]+/gi, "_")
-    .toLowerCase();
-  pdf.save(`${safeName}_${new Date().toISOString().split("T")[0]}.pdf`);
+    .replace(/^_+|_+$/g, "")
+    .slice(0, 60) || "ShotList";
+
+  const isoDate = new Date().toISOString().split("T")[0];
+  pdf.save(`${safeTitle}_ShotList_${isoDate}.pdf`);
 }
