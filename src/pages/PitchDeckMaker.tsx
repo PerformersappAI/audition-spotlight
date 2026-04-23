@@ -117,7 +117,7 @@ const STEPS = [
 
 const PitchDeckMaker = () => {
   const [data, setData] = useState<PitchDeckData>(initialData);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep] = useState(0);
   const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
 
   // Load draft
