@@ -10,7 +10,7 @@ import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
-import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins, Pencil, UserCircle2 } from "lucide-react";
+import { Video, Upload, Loader2, Camera, Clock, Users, Edit2, Save, X, Download, RefreshCw, BookOpen, AlertCircle, ArrowLeft, Shield, Sparkles, Wand2, Trash2, Plus, FileText, Coins, Pencil, UserCircle2, Film } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -2177,7 +2177,7 @@ const Storyboarding = () => {
                       description: f.description,
                       sceneHeading: f.sceneHeading || f.location || f.description,
                     }))}
-                    aspectRatio={selectedProject.aspectRatio}
+                    aspectRatio={(selectedProject as any).aspectRatio}
                     projectTitle={selectedProject.projectTitle || currentProject.scriptFileName?.replace(/\.[^.]+$/, '')}
                   />
                 </TabsContent>
