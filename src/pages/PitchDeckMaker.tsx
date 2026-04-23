@@ -555,39 +555,143 @@ const PitchDeckMaker = () => {
                   </div>
                 </div>
 
-                {/* Body */}
-                <div className="flex-1 p-8">
-                  <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-                    Logline
-                  </p>
-                  <p className="mt-2 text-base leading-relaxed text-zinc-200">
-                    {data.logline || (
-                      <span className="text-zinc-700">
-                        Your one-line story hook will appear here as you write
-                        it.
-                      </span>
-                    )}
-                  </p>
+                {/* Body — Step 1 */}
+                {currentStep === 0 && (
+                  <div className="flex-1 p-8">
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                      Logline
+                    </p>
+                    <p className="mt-2 text-base leading-relaxed text-zinc-200">
+                      {data.logline || (
+                        <span className="text-zinc-700">
+                          Your one-line story hook will appear here as you write it.
+                        </span>
+                      )}
+                    </p>
 
-                  {data.targetPlatforms.length > 0 && (
-                    <div className="mt-6 border-t pt-6" style={{ borderColor: "#1a1a26" }}>
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
-                        Target Platforms
-                      </p>
-                      <div className="mt-2 flex flex-wrap gap-2">
-                        {data.targetPlatforms.map((p) => (
-                          <span
-                            key={p}
-                            className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
-                            style={{ backgroundColor: "#1a1a26" }}
-                          >
-                            {p}
-                          </span>
-                        ))}
+                    {data.targetPlatforms.length > 0 && (
+                      <div className="mt-6 border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Target Platforms
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {data.targetPlatforms.map((p) => (
+                            <span
+                              key={p}
+                              className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
+                              style={{ backgroundColor: "#1a1a26" }}
+                            >
+                              {p}
+                            </span>
+                          ))}
+                        </div>
                       </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Body — Step 2 */}
+                {currentStep === 1 && (
+                  <div className="flex-1 p-8 space-y-6">
+                    <div>
+                      <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                        Synopsis
+                      </p>
+                      <p className="mt-2 italic text-base leading-relaxed text-zinc-300 relative">
+                        {data.synopsis ? (
+                          <>
+                            <span>
+                              {data.synopsis.length > 150
+                                ? data.synopsis.slice(0, 150)
+                                : data.synopsis}
+                            </span>
+                            {data.synopsis.length > 150 && (
+                              <span
+                                style={{
+                                  background:
+                                    "linear-gradient(to right, transparent, #0d0d18)",
+                                }}
+                                className="ml-0 inline-block w-12 h-5 align-middle"
+                              >
+                                …
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="not-italic text-zinc-700">
+                            Your synopsis preview will appear here.
+                          </span>
+                        )}
+                      </p>
                     </div>
-                  )}
-                </div>
+
+                    {data.toneMood && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Tone & Mood
+                        </p>
+                        <span
+                          className="mt-2 inline-block rounded-full px-3 py-1 text-xs"
+                          style={{
+                            backgroundColor: "#f5a623",
+                            color: "#000",
+                            fontWeight: 600,
+                            boxShadow: "0 0 12px rgba(245,166,35,0.35)",
+                          }}
+                        >
+                          {data.toneMood}
+                        </span>
+                      </div>
+                    )}
+
+                    {(data.themes ?? []).length > 0 && (
+                      <div>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Themes
+                        </p>
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {(data.themes ?? []).map((t) => (
+                            <span
+                              key={t}
+                              className="rounded-md px-2.5 py-1 text-xs text-zinc-300"
+                              style={{ backgroundColor: "#1a1a26" }}
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {(data.characters as CharacterEntry[] | undefined)?.length ? (
+                      <div className="border-t pt-6" style={{ borderColor: "#1a1a26" }}>
+                        <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-500">
+                          Main Characters
+                        </p>
+                        <ul className="mt-3 space-y-2">
+                          {(data.characters as CharacterEntry[]).map((c, i) => (
+                            <li
+                              key={i}
+                              className="flex items-baseline gap-3 border-l-2 pl-3"
+                              style={{ borderColor: "#f5a623" }}
+                            >
+                              <span className="text-sm font-semibold text-white">
+                                {c.name || (
+                                  <span className="text-zinc-700 font-normal">
+                                    Unnamed
+                                  </span>
+                                )}
+                              </span>
+                              {c.role && (
+                                <span className="text-xs text-zinc-400">— {c.role}</span>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : null}
+                  </div>
+                )}
               </div>
             </div>
           </section>
