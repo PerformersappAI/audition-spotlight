@@ -532,23 +532,75 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
                 Export Animatic
               </h3>
               <p className="text-xs text-muted-foreground">
-                GIF export runs in your browser · max 15s · 10fps · MP4 coming soon.
+                GIF export runs in your browser · max 15s · 10fps · 30 frames max
               </p>
-            </div>
-            <Button onClick={handleExportGIF} disabled={isExporting || timeline.length === 0}>
-              {isExporting ? (
-                <>
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                  Exporting… {exportProgress}%
-                </>
-              ) : (
-                <>
-                  <Download className="h-4 w-4 mr-2" />
-                  Export as GIF
-                </>
+              {timeline.length > 30 && (
+                <p className="text-xs text-amber-500 mt-1">
+                  GIF export is limited to the first 30 frames. For longer projects, trim the timeline.
+                </p>
               )}
-            </Button>
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              {isPaidUser ? (
+                <Button
+                  onClick={() => setConfirmOpen(true)}
+                  disabled={isExporting || timeline.length === 0}
+                >
+                  {isExporting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      Exporting… {exportProgress}%
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4 mr-2" />
+                      Export as GIF (2 credits)
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <Button variant="outline" disabled title="GIF export available on Creator plan and above">
+                  <Lock className="h-4 w-4 mr-2" />
+                  Export as GIF (Creator+)
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                disabled
+                title="MP4 export coming soon — upgrade to Pro when available"
+              >
+                <Lock className="h-4 w-4 mr-2" />
+                Export as MP4 (soon)
+              </Button>
+
+              {animaticUrl && projectId && (
+                <Button
+                  variant="secondary"
+                  onClick={async () => {
+                    const link = `${window.location.origin}/animatic/${projectId}`;
+                    try {
+                      await navigator.clipboard.writeText(link);
+                      toast({ title: "Share link copied", description: link });
+                    } catch {
+                      toast({ title: "Share link", description: link });
+                    }
+                  }}
+                >
+                  <Share2 className="h-4 w-4 mr-2" />
+                  Copy Share Link
+                </Button>
+              )}
+            </div>
           </div>
+          {animaticUrl && (
+            <div className="text-xs text-muted-foreground">
+              ▶ Animatic ready ·{" "}
+              <a href={animaticUrl} target="_blank" rel="noreferrer" className="text-primary underline">
+                view saved GIF
+              </a>
+            </div>
+          )}
           {isExporting && (
             <div className="w-full h-1.5 bg-muted rounded overflow-hidden">
               <div
@@ -559,6 +611,28 @@ export const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, exis
           )}
         </CardContent>
       </Card>
+
+      <AlertDialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Export animatic as GIF?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will use 2 credits. The GIF will download and a public share link will be saved to this project.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setConfirmOpen(false);
+                handleExportGIF();
+              }}
+            >
+              Export
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       <canvas ref={canvasRef} className="hidden" />
     </div>
