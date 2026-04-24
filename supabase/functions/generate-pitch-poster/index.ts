@@ -46,6 +46,7 @@ function buildPrompt(body: PosterRequest): string {
     templateMood ? `Mood and palette: ${templateMood}.` : "",
     visualStyle ? `Visual style direction: ${visualStyle}` : "",
     "Format: vertical 2:3 cinematic key art, professional theatrical poster composition, dramatic lighting, photoreal, highly detailed.",
+    "All people depicted must be ORIGINAL FICTIONAL CHARACTERS. Do NOT base any face, likeness, hairstyle, or styling on any real, famous, or recognizable person, actor, celebrity, athlete, politician, or public figure — living or deceased. Faces must be invented and not resemble anyone identifiable.",
     "Strict rules: NO text, NO title, NO tagline, NO credits block, NO logos, NO watermark of any kind. Pure visual artwork only.",
   ].filter(Boolean);
 
