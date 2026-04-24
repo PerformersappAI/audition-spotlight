@@ -720,13 +720,12 @@ const Storyboarding = () => {
       return;
     }
 
-    if (!currentProject.genre || !currentProject.tone) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Please select both genre and tone"
-      });
-      return;
+    // Genre and tone are optional — fall back to sensible defaults so generation always proceeds
+    if (!currentProject.genre) {
+      setCurrentProject((p: any) => ({ ...p, genre: "Drama" }));
+    }
+    if (!currentProject.tone) {
+      setCurrentProject((p: any) => ({ ...p, tone: "Cinematic" }));
     }
 
     setGeneratingStoryboard(true);
