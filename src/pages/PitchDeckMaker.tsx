@@ -114,10 +114,10 @@ const PLATFORMS = [
 ];
 
 const STEPS = [
-  { num: "01", label: "The Pitch" },
-  { num: "02", label: "Story" },
-  { num: "03", label: "Characters & Visuals" },
-  { num: "04", label: "Market & Team" },
+  { num: "01", label: "The Pitch", icon: Film, hint: "Foundation" },
+  { num: "02", label: "Story", icon: BookOpen, hint: "Heart of it" },
+  { num: "03", label: "Characters & Visuals", icon: Users, hint: "Look & feel" },
+  { num: "04", label: "Market & Team", icon: Briefcase, hint: "The business" },
 ];
 
 // ============================================================================
