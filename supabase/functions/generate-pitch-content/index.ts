@@ -6,7 +6,8 @@ const corsHeaders = {
 };
 
 interface GenerateRequest {
-  type: "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution";
+  type?: "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution";
+  field?: "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution";
   context: Record<string, unknown>;
 }
 
@@ -16,7 +17,10 @@ serve(async (req) => {
   }
 
   try {
-    const { type, context } = await req.json() as GenerateRequest;
+    const body = await req.json() as GenerateRequest;
+    // Accept either `type` or `field` from the client for backward compatibility.
+    const type = body.type ?? body.field;
+    const context = body.context ?? {};
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
