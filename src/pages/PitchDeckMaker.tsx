@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard, FilePlus2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
@@ -172,6 +172,29 @@ const PitchDeckMaker = () => {
     }
   };
 
+  const handleNewDeck = () => {
+    const hasContent =
+      data.projectTitle.trim().length > 0 ||
+      (data.logline ?? "").trim().length > 0 ||
+      (data.synopsis ?? "").trim().length > 0;
+    if (hasContent) {
+      const confirmed = window.confirm(
+        "Start a new pitch deck? This will clear the current draft. (Tip: hit Save Draft first if you want to keep it.)"
+      );
+      if (!confirmed) return;
+    }
+    try {
+      localStorage.removeItem("pitchDeckDraft");
+    } catch (e) {
+      console.error("Failed to clear draft:", e);
+    }
+    setData(initialData);
+    setCurrentStep(0);
+    setExportFormats(["pdf"]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast.success("Started a fresh pitch deck");
+  };
+
   const handleGenerateLogline = async () => {
     if (!data.projectTitle && !data.genre.length) {
       toast.error("Add a project title or genre first");
@@ -309,14 +332,31 @@ const PitchDeckMaker = () => {
               </p>
             </div>
           </div>
-          <button
-            onClick={handleSaveDraft}
-            className="group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm text-zinc-300 transition-all duration-200 hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white"
-            style={{ borderColor: "rgba(245,166,35,0.18)", backgroundColor: "rgba(18,18,26,0.6)" }}
-          >
-            <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
-            Save Draft
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleNewDeck}
+              className="group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-medium text-zinc-200 transition-all duration-200 hover:-translate-y-px hover:border-[#f5a623] hover:text-white"
+              style={{
+                borderColor: "rgba(245,166,35,0.35)",
+                background:
+                  "linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(245,166,35,0.04) 100%)",
+                boxShadow: "0 6px 18px -10px rgba(245,166,35,0.5)",
+              }}
+              title="Clear the current draft and start fresh"
+            >
+              <FilePlus2 className="h-4 w-4 text-[#f5a623] transition-transform group-hover:rotate-3 group-hover:scale-110" />
+              <span className="hidden sm:inline">New Pitch Deck</span>
+              <span className="sm:hidden">New</span>
+            </button>
+            <button
+              onClick={handleSaveDraft}
+              className="group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm text-zinc-300 transition-all duration-200 hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white"
+              style={{ borderColor: "rgba(245,166,35,0.18)", backgroundColor: "rgba(18,18,26,0.6)" }}
+            >
+              <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
+              <span className="hidden sm:inline">Save Draft</span>
+            </button>
+          </div>
         </div>
 
         {/* Progress bar */}
