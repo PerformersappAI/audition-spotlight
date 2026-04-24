@@ -451,7 +451,30 @@ const PitchDeckPreview = () => {
     );
   }
 
-  const coverBg = `linear-gradient(135deg, ${template.from} 0%, ${template.to} 100%)`;
+  // Cover hero image priority: uploaded poster > AI-generated story still > template gradient fallback
+  const heroImage = data.posterImage || data.synopsisImage || storyImage;
+  const coverGradient = `linear-gradient(135deg, ${template.from} 0%, ${template.to} 100%)`;
+
+  // Pull a compelling pull-quote from synopsis: longest single sentence, capped
+  const pullQuote = (() => {
+    const src = data.synopsis || "";
+    const sentences = src.match(/[^.!?]+[.!?]+/g)?.map((s) => s.trim()) || [];
+    if (!sentences.length) return null;
+    const sorted = [...sentences].sort((a, b) => Math.abs(120 - a.length) - Math.abs(120 - b.length));
+    const pick = sorted[0];
+    if (pick.length < 40 || pick.length > 220) return null;
+    return pick;
+  })();
+
+  // Genre-driven color treatment for comp cards without posters
+  const compTone = (i: number) => {
+    const tones = [
+      `linear-gradient(160deg, #2a1a0e 0%, #0a0a0f 100%)`,
+      `linear-gradient(160deg, #1a1820 0%, #0a0a0f 100%)`,
+      `linear-gradient(160deg, #261a14 0%, #0a0a0f 100%)`,
+    ];
+    return tones[i % tones.length];
+  };
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: BG }}>
