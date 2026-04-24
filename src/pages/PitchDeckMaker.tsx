@@ -58,6 +58,11 @@ export interface PitchDeckData {
   investmentAsk?: string;
   selectedTemplate?: string;
   meetingUrl?: string;
+
+  // Editorial craft fields (SBS / Haley framework)
+  northStar?: string;        // Why this story, why you, why now
+  worldSetting?: string;     // Why this story must be set here
+  episodes?: { title: string; logline: string }[]; // TV/mini-series only
 }
 
 const initialData: PitchDeckData = {
