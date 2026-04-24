@@ -7,12 +7,19 @@ import type { PitchDeckData } from "./PitchDeckMaker";
 import { STYLE_TEMPLATES } from "@/components/pitchdeck/Step3CharactersVisuals";
 
 // ---------- helpers ----------
-const ACCENT = "#f5a623";
+const ACCENT = "#d4a24c";        // muted Hollywood gold
+const ACCENT_BRIGHT = "#f1c878";  // highlight gold
 const BG = "#0a0a0f";
 const SURFACE = "#12121a";
 const CARD = "#1a1a26";
-const WHITE = "#f0f0f0";
-const MUTED = "#6b6b7a";
+const WHITE = "#f4ecd8";          // warm cream for editorial body
+const PURE_WHITE = "#ffffff";
+const MUTED = "#8a8a99";
+
+// Editorial typography stacks
+const SERIF = '"Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif';
+const SANS = '"Inter", -apple-system, "Segoe UI", Roboto, sans-serif';
+const MONO = "ui-monospace, SFMono-Regular, Menlo, monospace";
 
 const projectTypeLabels: Record<string, string> = {
   feature: "Feature Film",
