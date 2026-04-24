@@ -531,7 +531,34 @@ const PitchDeckPreview = () => {
           </Slide>
         )}
 
-        {/* 3. Director's Vision */}
+        {/* 2b. North Star */}
+        {data.northStar && (
+          <Slide id="slide-northstar">
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "1000px", margin: "0 auto" }}>
+              <SectionLabel>NORTH STAR</SectionLabel>
+              <p style={{ fontSize: "20px", color: WHITE, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                {data.northStar}
+              </p>
+            </div>
+          </Slide>
+        )}
+
+        {/* 2c. World / Setting */}
+        {data.worldSetting && (
+          <Slide id="slide-world">
+            <SectionLabel>THE WORLD</SectionLabel>
+            <div style={{ marginTop: "20px", maxWidth: "1000px" }}>
+              {splitIntoParagraphs(data.worldSetting).map((p, i) => (
+                <p key={i} style={{ fontSize: "16px", color: WHITE, lineHeight: 1.7, marginBottom: "16px", opacity: 0.92 }}>{p}</p>
+              ))}
+              {data.shootingLocations && (
+                <div style={{ marginTop: "24px" }}>
+                  <Pill solid={false}>{data.shootingLocations}</Pill>
+                </div>
+              )}
+            </div>
+          </Slide>
+        )}
         {data.directorVision && (
           <Slide id="slide-vision">
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", textAlign: "center" }}>
