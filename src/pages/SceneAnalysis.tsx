@@ -736,7 +736,7 @@ const SceneAnalysis = () => {
                               </div>
                               <div>
                                 <h4 className="font-medium text-sm mb-1">Visual Elements</h4>
-                                <p className="text-sm text-muted-foreground">{shot.visualElements}</p>
+                                <p className="text-sm text-muted-foreground">{Array.isArray(shot.visualElements) ? shot.visualElements.filter(Boolean).join(" · ") : shot.visualElements}</p>
                               </div>
                             </CardContent>
                           </Card>

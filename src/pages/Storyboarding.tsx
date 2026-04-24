@@ -2935,7 +2935,7 @@ const Storyboarding = () => {
                                        className="text-xs min-h-[40px]"
                                      />
                                    ) : (
-                                     <p className="text-xs text-muted-foreground">{shot.visualElements}</p>
+                                     <p className="text-xs text-muted-foreground">{Array.isArray(shot.visualElements) ? shot.visualElements.filter(Boolean).join(" · ") : shot.visualElements}</p>
                                    )}
                                  </div>
                                  {shot.scriptSegment && (

@@ -21,11 +21,11 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-// gif.js ships with a worker file we point to via a CDN URL — keeps bundling simple.
+// gif.js worker is bundled locally in /public to avoid cross-origin Worker construction errors.
 // gif.js has no types — silence the missing-module error.
 // @ts-ignore
 import GIF from "gif.js";
-const GIF_WORKER_URL = "https://cdn.jsdelivr.net/npm/gif.js@0.2.0/dist/gif.worker.js";
+const GIF_WORKER_URL = "/gif.worker.js";
 
 export interface AnimaticFrameInput {
   shotNumber: number;
