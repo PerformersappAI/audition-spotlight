@@ -22,6 +22,31 @@ const projectTypeLabels: Record<string, string> = {
   documentary: "Documentary",
 };
 
+// Format primary demographic strings: "Adult 2554" -> "Adults 25–54"
+function formatDemographic(input?: string): string {
+  if (!input) return "—";
+  let s = input.trim();
+  // "Adult 2554" or "Adults 2554" -> "Adults 25–54"
+  s = s.replace(/\b(Adult|Adults)\s+(\d{2})(\d{2})\b/gi, "Adults $2–$3");
+  // "25-54" -> "25–54" (en dash)
+  s = s.replace(/(\d{2})\s*-\s*(\d{2})/g, "$1–$2");
+  return s;
+}
+
+// Split a long string into 3-5 sentence paragraph chunks
+function splitIntoParagraphs(text: string, sentencesPerChunk = 4): string[] {
+  if (!text) return [];
+  // Respect existing line breaks first
+  const explicit = text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  if (explicit.length > 1) return explicit;
+  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g)?.map((s) => s.trim()) || [text];
+  const out: string[] = [];
+  for (let i = 0; i < sentences.length; i += sentencesPerChunk) {
+    out.push(sentences.slice(i, i + sentencesPerChunk).join(" "));
+  }
+  return out;
+}
+
 const SLIDE_W = 1280;
 const SLIDE_H = 720;
 

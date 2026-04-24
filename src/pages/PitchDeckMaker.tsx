@@ -57,6 +57,7 @@ export interface PitchDeckData {
   website?: string;
   investmentAsk?: string;
   selectedTemplate?: string;
+  meetingUrl?: string;
 }
 
 const initialData: PitchDeckData = {

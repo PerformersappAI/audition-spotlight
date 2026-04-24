@@ -46,12 +46,14 @@ Description: ${characterDescription || 'A compelling character'}
 Visual Style: ${styleGuide}
 
 Requirements:
-- Professional movie poster quality portrait
+- Professional movie poster quality portrait, head-and-shoulders or close-up cinematic framing
 - Dramatic cinematic lighting
 - Character should embody their role and personality
 - High-end film production aesthetic
 - 2:3 portrait aspect ratio
-- Moody, atmospheric background that suggests the film's genre`;
+- Moody, atmospheric background that suggests the film's genre
+
+CRITICAL: This must be an ORIGINAL FICTIONAL CHARACTER. The face, hair, build, and styling must NOT resemble any real, famous, or recognizable person, actor, celebrity, athlete, politician, or public figure — living or deceased. Invent the face. Do not copy or evoke any known likeness. No text, no title, no logos, no watermarks.`;
 
     console.log("Generating character portrait for:", characterName);
 

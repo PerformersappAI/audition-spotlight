@@ -9,11 +9,14 @@ export interface Comparable {
   year: string;
   revenue: string;
   why: string;
+  posterUrl?: string;
 }
 
 export interface TeamMember {
   name: string;
   role: string;
+  imdbUrl?: string;
+  credits?: string;
 }
 
 interface Step4Props {
@@ -135,6 +138,32 @@ const Step4MarketTeam = ({
     update("comparables", comparables.filter((_, idx) => idx !== i) as any);
   };
 
+  const fetchPosterForComp = async (i: number) => {
+    const c = comparables[i];
+    if (!c?.title?.trim()) return;
+    try {
+      const { data: result } = await supabase.functions.invoke("fetch-movie-poster", {
+        body: { title: c.title, year: c.year || undefined },
+      });
+      if (result?.posterUrl) {
+        update(
+          "comparables",
+          comparables.map((x, idx) =>
+            idx === i
+              ? {
+                  ...x,
+                  posterUrl: result.posterUrl,
+                  year: x.year || result.year || "",
+                }
+              : x,
+          ) as any,
+        );
+      }
+    } catch (e) {
+      console.error("Poster fetch failed:", e);
+    }
+  };
+
   const handleSuggestComps = async () => {
     if (!data.logline?.trim() && !data.synopsis?.trim()) {
       toast.error("Add a logline or synopsis first");
@@ -162,15 +191,30 @@ const Step4MarketTeam = ({
       // Try to parse comps if returned as array, otherwise fall back to dropping into 'why' of a new entry
       const content = result?.content;
       if (Array.isArray(content)) {
-        update(
-          "comparables",
-          content.slice(0, MAX_COMPS).map((c: any) => ({
-            title: c.title || "",
-            year: String(c.year || ""),
-            revenue: c.revenue || c.boxOffice || "",
-            why: c.why || c.reason || "",
-          })) as any,
+        const mapped = content.slice(0, MAX_COMPS).map((c: any) => ({
+          title: c.title || "",
+          year: String(c.year || ""),
+          revenue: c.revenue || c.boxOffice || "",
+          why: c.why || c.whySimilar || c.reason || "",
+        }));
+        // Fetch posters in parallel
+        const withPosters = await Promise.all(
+          mapped.map(async (c) => {
+            try {
+              const { data: pr } = await supabase.functions.invoke("fetch-movie-poster", {
+                body: { title: c.title, year: c.year || undefined },
+              });
+              return {
+                ...c,
+                posterUrl: pr?.posterUrl || undefined,
+                year: c.year || pr?.year || "",
+              };
+            } catch {
+              return c;
+            }
+          }),
         );
+        update("comparables", withPosters as any);
         toast.success("Comparables suggested");
       } else if (typeof content === "string" && content.trim()) {
         // Drop the suggestion into the first empty "why" field, or append a new entry
@@ -284,30 +328,54 @@ const Step4MarketTeam = ({
                 className="rounded-md border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-[2fr_70px_1fr]">
+                <div className="flex items-start gap-3">
+                  {/* Poster thumbnail */}
+                  <div
+                    className="flex h-[78px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded border bg-[#0d0d18] text-[10px] text-zinc-600"
+                    style={{ borderColor: "#22222e" }}
+                  >
+                    {c.posterUrl ? (
+                      <img src={c.posterUrl} alt={c.title} className="h-full w-full" style={{ objectFit: "cover" }} />
+                    ) : (
+                      <span>No poster</span>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-2">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-[2fr_70px_1fr]">
+                      <input
+                        type="text"
+                        value={c.title}
+                        onChange={(e) => updateComp(i, "title", e.target.value)}
+                        onBlur={() => fetchPosterForComp(i)}
+                        placeholder="Title (poster auto-fetches on blur)"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                      <input
+                        type="text"
+                        value={c.year}
+                        onChange={(e) => updateComp(i, "year", e.target.value)}
+                        onBlur={() => fetchPosterForComp(i)}
+                        placeholder="Year"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                      <input
+                        type="text"
+                        value={c.revenue}
+                        onChange={(e) => updateComp(i, "revenue", e.target.value)}
+                        placeholder="Box Office / Revenue"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                    </div>
                     <input
                       type="text"
-                      value={c.title}
-                      onChange={(e) => updateComp(i, "title", e.target.value)}
-                      placeholder="Title"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                    />
-                    <input
-                      type="text"
-                      value={c.year}
-                      onChange={(e) => updateComp(i, "year", e.target.value)}
-                      placeholder="Year"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                    />
-                    <input
-                      type="text"
-                      value={c.revenue}
-                      onChange={(e) => updateComp(i, "revenue", e.target.value)}
-                      placeholder="Box Office / Revenue"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      value={c.why}
+                      onChange={(e) => updateComp(i, "why", e.target.value)}
+                      placeholder="Why it compares (one line)"
+                      className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                     />
                   </div>
+
                   <button
                     type="button"
                     onClick={() => removeComp(i)}
@@ -317,13 +385,6 @@ const Step4MarketTeam = ({
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  value={c.why}
-                  onChange={(e) => updateComp(i, "why", e.target.value)}
-                  placeholder="Why it compares (one line)"
-                  className="mt-2 w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                />
               </div>
             ))}
             {comparables.length < MAX_COMPS && (
@@ -352,31 +413,47 @@ const Step4MarketTeam = ({
             {team.map((m, i) => (
               <div
                 key={i}
-                className="grid grid-cols-[1fr_1fr_auto] gap-2 rounded-md border p-2"
+                className="space-y-2 rounded-md border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
+                <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                  <input
+                    type="text"
+                    value={m.name}
+                    onChange={(e) => updateTeam(i, "name", e.target.value)}
+                    placeholder="Name"
+                    className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                  <input
+                    type="text"
+                    value={m.role}
+                    onChange={(e) => updateTeam(i, "role", e.target.value)}
+                    placeholder="Role / Title"
+                    className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeTeam(i)}
+                    className="flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white"
+                    aria-label="Remove team member"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
                 <input
-                  type="text"
-                  value={m.name}
-                  onChange={(e) => updateTeam(i, "name", e.target.value)}
-                  placeholder="Name"
-                  className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  type="url"
+                  value={m.imdbUrl ?? ""}
+                  onChange={(e) => updateTeam(i, "imdbUrl" as keyof TeamMember, e.target.value)}
+                  placeholder="IMDb URL (optional)"
+                  className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                 />
                 <input
                   type="text"
-                  value={m.role}
-                  onChange={(e) => updateTeam(i, "role", e.target.value)}
-                  placeholder="Role / Title"
-                  className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  value={m.credits ?? ""}
+                  onChange={(e) => updateTeam(i, "credits" as keyof TeamMember, e.target.value)}
+                  placeholder="Recent credits (e.g. The Northman, Foundation)"
+                  className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                 />
-                <button
-                  type="button"
-                  onClick={() => removeTeam(i)}
-                  className="flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white"
-                  aria-label="Remove team member"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
             ))}
             {team.length < MAX_TEAM && (
@@ -525,6 +602,19 @@ const Step4MarketTeam = ({
                 value={data.investmentAsk ?? ""}
                 onChange={(e) => update("investmentAsk", e.target.value)}
                 placeholder="e.g. Seeking $2M production financing"
+                className={inputClass}
+                style={inputStyle}
+              />
+            </Field>
+          </div>
+
+          <div className="mt-4">
+            <Field label="Meeting / Booking URL" hint="Used by the Ask slide CTA">
+              <input
+                type="url"
+                value={data.meetingUrl ?? ""}
+                onChange={(e) => update("meetingUrl", e.target.value)}
+                placeholder="e.g. https://calendly.com/yourname/intro"
                 className={inputClass}
                 style={inputStyle}
               />

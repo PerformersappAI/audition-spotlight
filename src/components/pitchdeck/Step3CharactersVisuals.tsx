@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, X, Sparkles, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, X, Sparkles, Loader2, Image as ImageIcon, User } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
@@ -8,6 +8,7 @@ export interface VisualCharacter {
   name: string;
   role: string;
   description: string;
+  portrait?: string;
 }
 
 export interface StyleTemplate {
@@ -39,6 +40,7 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
   const characters: VisualCharacter[] = (data.characters as VisualCharacter[]) || [];
   const [generatingStyle, setGeneratingStyle] = useState(false);
   const [generatingPoster, setGeneratingPoster] = useState(false);
+  const [generatingPortraitIdx, setGeneratingPortraitIdx] = useState<number | null>(null);
 
   const setCharacters = (next: VisualCharacter[]) =>
     update("characters", next as any);
@@ -59,6 +61,44 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
 
   const removeChar = (i: number) => {
     setCharacters(characters.filter((_, idx) => idx !== i));
+  };
+
+  const handleGeneratePortrait = async (i: number) => {
+    const c = characters[i];
+    if (!c?.name?.trim()) {
+      toast.error("Add a character name first");
+      return;
+    }
+    setGeneratingPortraitIdx(i);
+    try {
+      const { data: result, error } = await supabase.functions.invoke(
+        "generate-character-portrait",
+        {
+          body: {
+            characterName: c.name,
+            characterRole: c.role,
+            characterDescription: c.description,
+            styleDescription: data.visualStyle,
+            genre: data.genre,
+            projectTitle: data.projectTitle,
+          },
+        },
+      );
+      if (error) throw error;
+      const url = result?.imageUrl;
+      if (url) {
+        const next = [...characters];
+        next[i] = { ...next[i], portrait: url };
+        setCharacters(next);
+        toast.success(`Portrait generated for ${c.name}`);
+      } else {
+        toast.error("No portrait returned");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to generate portrait");
+    } finally {
+      setGeneratingPortraitIdx(null);
+    }
   };
 
   const handleGenerateStyle = async () => {
@@ -160,7 +200,23 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
                 className="rounded-lg border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="relative flex h-20 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+                    style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
+                  >
+                    {c.portrait ? (
+                      <img
+                        src={c.portrait}
+                        alt={c.name || "Character portrait"}
+                        className="h-full w-full"
+                        style={{ objectFit: "cover" }}
+                      />
+                    ) : (
+                      <User className="h-6 w-6 text-zinc-600" />
+                    )}
+                  </div>
+
                   <div className="flex-1 space-y-2">
                     <div className="grid grid-cols-2 gap-2">
                       <input
@@ -180,15 +236,30 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
                         style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
                       />
                     </div>
-                    <input
-                      type="text"
+                    <textarea
                       value={c.description}
                       onChange={(e) => updateChar(i, "description", e.target.value)}
-                      placeholder="One-line description"
-                      className="w-full rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
+                      placeholder="2–3 sentence description"
+                      rows={2}
+                      className="w-full resize-none rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
                       style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleGeneratePortrait(i)}
+                      disabled={generatingPortraitIdx === i}
+                      className="inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
+                      style={{ borderColor: "#f5a623", height: "26px" }}
+                    >
+                      {generatingPortraitIdx === i ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-3 w-3" />
+                      )}
+                      {c.portrait ? "Regenerate Portrait" : "Generate Portrait"}
+                    </button>
                   </div>
+
                   <button
                     type="button"
                     onClick={() => removeChar(i)}
