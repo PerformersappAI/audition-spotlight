@@ -189,8 +189,26 @@ Write professionally and strategically.
 Return ONLY the distribution strategy text.`;
         break;
 
+      case "visualStyle":
+        userPrompt = `Write a 120-180 word visual style description for a film pitch deck.
+
+Title: ${context.title || "Untitled"}
+Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
+Tone: ${context.tone || "Cinematic"}
+Logline: ${context.logline || "Not provided"}
+Template/Mood: ${context.template || "None"}
+
+Describe:
+- Color palette and lighting approach
+- Camera language (lensing, movement, framing)
+- Production design and texture
+- Two or three reference filmmakers or films for tonal anchor
+
+Write evocatively but professionally, in present tense. Return ONLY the description text.`;
+        break;
+
       default:
-        throw new Error(`Unknown generation type: ${type}`);
+        throw new Error(`Unknown generation type: ${body.type ?? body.field ?? "undefined"}`);
     }
 
     console.log(`Generating ${type} content for pitch deck...`);
