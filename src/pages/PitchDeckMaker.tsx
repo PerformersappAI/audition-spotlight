@@ -606,34 +606,42 @@ const PitchDeckMaker = () => {
               )}
 
               {/* Nav buttons */}
-              <div className="mt-8 flex items-center gap-3">
+              <div className="relative mt-8 flex items-center gap-3 border-t pt-6" style={{ borderColor: "rgba(245,166,35,0.1)" }}>
                 {currentStep > 0 && (
                   <button
                     onClick={handleBack}
-                    className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-[#f5a623] hover:text-white"
-                    style={{ borderColor: "#22222e", backgroundColor: "#1a1a26" }}
+                    className="group flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium text-zinc-300 transition-all duration-200 hover:-translate-y-px hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white"
+                    style={{ borderColor: "rgba(255,255,255,0.06)", backgroundColor: "rgba(26,26,38,0.6)" }}
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                     Back
                   </button>
                 )}
                 <button
                   onClick={handleNext}
                   disabled={currentStep === 0 && !canAdvance}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
+                  className="group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-lg py-3 text-sm font-semibold tracking-tight transition-all duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
                   style={{
-                    backgroundColor: "#f5a623",
+                    background:
+                      "linear-gradient(135deg, #ffd27a 0%, #f5a623 45%, #c8821a 100%)",
                     color: "#0a0a0f",
                     boxShadow:
                       currentStep === 0 && !canAdvance
                         ? "none"
-                        : "0 0 24px rgba(245,166,35,0.3)",
+                        : "0 12px 30px -10px rgba(245,166,35,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset, 0 1px 0 rgba(255,255,255,0.4) inset",
                   }}
                 >
-                  {currentStep < STEPS.length - 1
-                    ? `Next: ${STEPS[currentStep + 1].label}`
-                    : "Finish"}
-                  <ChevronRight className="h-4 w-4" />
+                  {/* Shimmer */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                  />
+                  <span className="relative">
+                    {currentStep < STEPS.length - 1
+                      ? `Next: ${STEPS[currentStep + 1].label}`
+                      : "Finish"}
+                  </span>
+                  <ChevronRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
