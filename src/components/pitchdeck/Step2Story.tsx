@@ -59,10 +59,15 @@ const GhostAIButton = ({
 const Step2Story = ({ data, update }: Step2Props) => {
   const [isExpandingSynopsis, setIsExpandingSynopsis] = useState(false);
   const [isGeneratingVision, setIsGeneratingVision] = useState(false);
+  const [isGeneratingNorthStar, setIsGeneratingNorthStar] = useState(false);
+  const [isGeneratingWorld, setIsGeneratingWorld] = useState(false);
+  const [isGeneratingEpisodes, setIsGeneratingEpisodes] = useState(false);
   const [themeInput, setThemeInput] = useState("");
 
   const themes = data.themes ?? [];
   const characters: CharacterEntry[] = (data.characters as CharacterEntry[]) ?? [];
+  const episodes = data.episodes ?? [];
+  const isSeries = data.projectType === "tv_series" || data.projectType === "mini_series";
 
   const callAI = async (
     field: string,
@@ -84,11 +89,12 @@ const Step2Story = ({ data, update }: Step2Props) => {
             synopsis: data.synopsis,
             toneMood: data.toneMood,
             themes: data.themes,
+            shootingLocations: data.shootingLocations,
           },
         },
       });
       if (error) throw error;
-      if (result?.content) {
+      if (result?.content !== undefined) {
         update(targetKey, result.content as any);
         toast.success(successMsg);
       }
@@ -114,6 +120,60 @@ const Step2Story = ({ data, update }: Step2Props) => {
       return;
     }
     callAI("directorVision", setIsGeneratingVision, "directorVision", "Vision generated");
+  };
+
+  const handleGenerateNorthStar = () => {
+    if (!data.logline?.trim() && !data.synopsis?.trim()) {
+      toast.error("Add a logline or synopsis first");
+      return;
+    }
+    callAI("northStar", setIsGeneratingNorthStar, "northStar", "North Star generated");
+  };
+
+  const handleGenerateWorld = () => {
+    if (!data.synopsis?.trim() && !data.logline?.trim()) {
+      toast.error("Add a synopsis or logline first");
+      return;
+    }
+    callAI("worldSetting", setIsGeneratingWorld, "worldSetting", "World statement generated");
+  };
+
+  const handleGenerateEpisodes = async () => {
+    if (!data.synopsis?.trim()) {
+      toast.error("Write a synopsis first so episodes can build on it");
+      return;
+    }
+    setIsGeneratingEpisodes(true);
+    try {
+      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+        body: {
+          field: "episodes",
+          context: {
+            projectTitle: data.projectTitle,
+            projectType: data.projectType,
+            genre: data.genre,
+            logline: data.logline,
+            synopsis: data.synopsis,
+            toneMood: data.toneMood,
+            episodeCount: episodes.length || 6,
+          },
+        },
+      });
+      if (error) throw error;
+      const arr = result?.episodes || result?.content;
+      if (Array.isArray(arr)) {
+        update("episodes", arr.map((e: any) => ({
+          title: String(e.title || ""),
+          logline: String(e.logline || e.summary || ""),
+        })) as any);
+        toast.success("Episodes generated");
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Failed to generate episodes");
+    } finally {
+      setIsGeneratingEpisodes(false);
+    }
   };
 
   const addTheme = () => {
@@ -209,6 +269,40 @@ const Step2Story = ({ data, update }: Step2Props) => {
           />
         </Field>
 
+        {/* North Star — Why this story, why you, why now */}
+        <Field label="North Star" hint="Why this story · Why you · Why now">
+          <textarea
+            value={data.northStar ?? ""}
+            onChange={(e) => update("northStar", e.target.value)}
+            placeholder="The single emotional truth at the heart of your project."
+            rows={3}
+            className="w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+            style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
+          />
+          <GhostAIButton
+            onClick={handleGenerateNorthStar}
+            loading={isGeneratingNorthStar}
+            label="Generate North Star"
+          />
+        </Field>
+
+        {/* World / Setting */}
+        <Field label="World & Setting" hint="The location is a character">
+          <textarea
+            value={data.worldSetting ?? ""}
+            onChange={(e) => update("worldSetting", e.target.value)}
+            placeholder="Why must this story be set HERE? What does the place do to your characters?"
+            rows={3}
+            className="w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+            style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
+          />
+          <GhostAIButton
+            onClick={handleGenerateWorld}
+            loading={isGeneratingWorld}
+            label="Generate World Statement"
+          />
+        </Field>
+
         {/* Tone & Mood */}
         <Field label="Tone & Mood">
           <input
@@ -220,6 +314,58 @@ const Step2Story = ({ data, update }: Step2Props) => {
             style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
           />
         </Field>
+
+        {/* Episodes — TV / mini-series only */}
+        {isSeries && (
+          <Field label="Episode Breakdown" hint={`${episodes.length} episode${episodes.length === 1 ? "" : "s"}`}>
+            <div className="space-y-2">
+              {episodes.map((ep, i) => (
+                <div key={i} className="rounded-md border p-2" style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-[#f5a623]">EP {String(i + 1).padStart(2, "0")}</span>
+                    <input
+                      type="text"
+                      value={ep.title}
+                      onChange={(e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, title: e.target.value } : x) as any)}
+                      placeholder="Episode title"
+                      className="flex-1 rounded bg-[#12121a] px-2 py-1 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => update("episodes", episodes.filter((_, idx) => idx !== i) as any)}
+                      className="text-zinc-500 hover:text-red-400"
+                      aria-label="Remove episode"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <textarea
+                    value={ep.logline}
+                    onChange={(e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, logline: e.target.value } : x) as any)}
+                    placeholder="Episode logline (2-3 sentences)"
+                    rows={2}
+                    className="mt-2 w-full resize-none rounded bg-[#12121a] px-2 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                </div>
+              ))}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => update("episodes", [...episodes, { title: "", logline: "" }] as any)}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md border border-dashed py-2 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]"
+                  style={{ borderColor: "#2a2a36" }}
+                >
+                  <Plus className="h-3.5 w-3.5" /> Add Episode
+                </button>
+                <GhostAIButton
+                  onClick={handleGenerateEpisodes}
+                  loading={isGeneratingEpisodes}
+                  label="Generate Breakdown"
+                />
+              </div>
+            </div>
+          </Field>
+        )}
 
         {/* Key Themes */}
         <Field label="Key Themes" hint={`${themes.length}/${MAX_THEMES}`}>

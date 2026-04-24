@@ -622,6 +622,39 @@ const Step4MarketTeam = ({
           </div>
         </div>
 
+        {/* PITCH HEALTH — derived from SBS Scripted essentials */}
+        {(() => {
+          const loglineWords = (data.logline || "").trim().split(/\s+/).filter(Boolean).length;
+          const chars = (data.characters as any[]) || [];
+          const charsWithGoals = chars.filter((c) => c?.externalGoal && c?.internalWound).length;
+          const compsWithPosters = comparables.filter((c) => c.title && c.posterUrl).length;
+          const checks: { ok: boolean; label: string; hint?: string }[] = [
+            { ok: !!data.logline && loglineWords > 0 && loglineWords <= 30, label: `Logline ≤ 30 words`, hint: data.logline ? `${loglineWords} words` : "missing" },
+            { ok: !!data.synopsis && data.synopsis.length > 200, label: "Synopsis with hook + inciting incident", hint: data.synopsis ? `${data.synopsis.length} chars` : "missing" },
+            { ok: !!data.northStar && data.northStar.length > 50, label: "North Star defined" },
+            { ok: chars.length > 0 && charsWithGoals === chars.length, label: "Every character has goal + wound", hint: `${charsWithGoals}/${chars.length}` },
+            { ok: compsWithPosters >= 2, label: "≥ 2 comparables with posters", hint: `${compsWithPosters} so far` },
+            { ok: !!data.toneMood && !!data.visualStyle, label: "Tone & visual style filled" },
+          ];
+          const passing = checks.filter((c) => c.ok).length;
+          return (
+            <div className="rounded-lg border p-4" style={{ borderColor: "#22222e", backgroundColor: "#0d0d18" }}>
+              <SectionHeader title="Pitch Health" subtitle={`${passing}/${checks.length} industry essentials covered`} />
+              <ul className="space-y-1.5">
+                {checks.map((c, i) => (
+                  <li key={i} className="flex items-start gap-2 text-xs">
+                    <span style={{ color: c.ok ? "#22c55e" : "#f5a623", marginTop: "1px" }}>{c.ok ? "●" : "○"}</span>
+                    <span style={{ color: c.ok ? "#a1a1aa" : "#e4e4e7" }}>
+                      {c.label}
+                      {c.hint && <span className="ml-1.5 text-zinc-600">— {c.hint}</span>}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })()}
+
         {/* EXPORT */}
         <div className="rounded-lg border p-4" style={{ borderColor: "#22222e", backgroundColor: "#0d0d18" }}>
           <SectionHeader title="Export Format" />

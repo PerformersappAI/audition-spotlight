@@ -5,7 +5,18 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-type GenerationType = "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution" | "visualStyle";
+type GenerationType =
+  | "logline"
+  | "synopsis"
+  | "vision"
+  | "character"
+  | "comps"
+  | "audience"
+  | "distribution"
+  | "visualStyle"
+  | "northStar"
+  | "worldSetting"
+  | "episodes";
 
 interface GenerateRequest {
   type?: string;
@@ -13,7 +24,6 @@ interface GenerateRequest {
   context: Record<string, any>;
 }
 
-// Map any client-side field name to the canonical generation type used in the switch below.
 const FIELD_ALIASES: Record<string, GenerationType> = {
   logline: "logline",
   synopsis: "synopsis",
@@ -31,7 +41,49 @@ const FIELD_ALIASES: Record<string, GenerationType> = {
   distributionstrategy: "distribution",
   visualstyle: "visualStyle",
   style: "visualStyle",
+  northstar: "northStar",
+  worldsetting: "worldSetting",
+  world: "worldSetting",
+  episodes: "episodes",
+  episodebreakdown: "episodes",
 };
+
+// Shared craft rules taught to the model on every call.
+// Distilled from SBS Scripted Pitch Deck Guide + Micah Haley's framework
+// + the canonical 10-slide pitch-deck taxonomy.
+const CRAFT_RULES = `You are a senior pitch-deck consultant for film and television.
+
+CRAFT PRINCIPLES (apply to everything you write):
+
+1. A pitch deck is a FINAL document, not a draft. Write like finished marketing copy
+   for a movie that already exists. No "could", "might", "perhaps".
+
+2. CARRY THE TONE OF THE GENRE. Comedy copy should be funny. Horror copy should evoke
+   dread. Action copy should have driving momentum. The prose IS the proof of concept.
+
+3. EVERY CHARACTER has an EXTERNAL goal (what they want) and an INTERNAL wound
+   (what's broken in them). They cannot resolve the external until the internal heals.
+   Reference: SBS Scripted Pitch Deck Guide.
+
+4. THE LOCATION IS A CHARACTER. Never set a story somewhere generic. The world
+   must be integral — the story could only happen here, now, to these people.
+
+5. STRONG HOOK + INCITING INCIDENT must land in the first paragraph of any synopsis.
+   Then: rising stakes, prickly problems, unexpected conflict, transformation.
+
+6. NORTH STAR: every project has one — the single emotional truth at its center.
+   Not a logline. The reason this story must be told.
+
+7. WRITE IN PARAGRAPHS OF 3–5 SENTENCES. Never one giant wall of text. Use
+   double-line-breaks between paragraphs.
+
+8. NEVER name real celebrities, real brands, or real franchises in invented copy.
+   Comparables are the exception — those are real titles by definition.
+
+9. PRESENT TENSE, third person for synopses. First person only for director's vision.
+
+10. NO MARKDOWN, NO HEADERS, NO BULLETS unless the schema explicitly asks for an array.
+    Just clean prose.`;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -44,7 +96,6 @@ serve(async (req) => {
     const type: GenerationType | undefined = FIELD_ALIASES[rawType];
     const ctx = body.context ?? {};
 
-    // Normalize common context aliases used across the pitch deck wizard.
     const context: Record<string, any> = {
       ...ctx,
       title: ctx.title ?? ctx.projectTitle,
@@ -55,156 +106,164 @@ serve(async (req) => {
     };
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    
-    if (!LOVABLE_API_KEY) {
-      throw new Error("LOVABLE_API_KEY is not configured");
-    }
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    let systemPrompt = "You are an expert Hollywood screenwriter and film producer with decades of experience creating successful pitch decks for major studios. Your writing is compelling, professional, and industry-standard.";
+    const systemPrompt = CRAFT_RULES;
     let userPrompt = "";
+
+    const projectShape = `Title: ${context.title || "Untitled"}
+Format: ${context.type || "film"}
+Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
+Tone: ${context.tone || "—"}
+Logline: ${context.logline || "—"}`;
 
     switch (type) {
       case "logline":
-        userPrompt = `Create a compelling logline (1-2 sentences) for a ${context.type || "film"} project.
-Title: ${context.title || "Untitled"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
+        userPrompt = `Write a single-sentence LOGLINE (max 30 words) for this project.
 
-The logline should hook the reader immediately, establish the protagonist, their goal, and the central conflict. Make it memorable and pitchable.
+${projectShape}
 
-Return ONLY the logline text, no quotes or explanations.`;
+Required structure: [PROTAGONIST] must [EXTERNAL GOAL] before/or [STAKES/OBSTACLE].
+The logline must hook in 5 seconds. No quotes around it. No "logline:" prefix.
+
+Return ONLY the logline sentence.`;
+        break;
+
+      case "northStar":
+        userPrompt = `Write the NORTH STAR statement for this project — the single emotional truth that justifies the entire show's existence.
+
+${projectShape}
+Synopsis: ${context.synopsis || "—"}
+
+Answer in 80–120 words covering: WHY this story, WHY now (cultural moment), and what is uniquely fresh about it. Write as the creator, with conviction. No marketing fluff. No "this story is about". Just say what the story SAYS.
+
+Return ONLY the north-star statement.`;
         break;
 
       case "synopsis":
-        userPrompt = `Expand the following logline into a compelling 300-400 word synopsis for a ${context.type || "film"} project.
+        userPrompt = `Write a 300–400 word SYNOPSIS for this project, in 3–4 paragraphs separated by blank lines.
 
-Title: ${context.title || "Untitled"}
-Logline: ${context.logline}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
+${projectShape}
 
-The synopsis should:
-- Hook the reader in the first paragraph
-- Introduce the main characters and their motivations
-- Describe the central conflict and rising action
-- Hint at the climax without giving everything away
-- Leave the reader wanting more
+Paragraph 1: HOOK + INCITING INCIDENT (introduce protagonist + the moment everything changes).
+Paragraph 2: Rising action + central conflict + the prickly problem the protagonist must solve.
+Paragraph 3: Stakes escalate, allies/antagonists clarify, the impossible choice approaches.
+Paragraph 4 (optional): A teaser of climax — never spoil the resolution.
 
-Write in present tense, third person. Be vivid and cinematic in your descriptions.
+Present tense, third person, cinematic verbs. Every paragraph must end with momentum that pulls the reader to the next.
 
-Return ONLY the synopsis text.`;
+Return ONLY the synopsis. Use double line breaks between paragraphs.`;
         break;
 
       case "vision":
-        userPrompt = `Write a compelling Director's Vision statement for this project.
+        userPrompt = `Write a 150–200 word DIRECTOR'S VISION statement in first person.
 
-Title: ${context.title || "Untitled"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
-Synopsis: ${context.synopsis}
+${projectShape}
+Synopsis: ${context.synopsis || "—"}
 
-The vision statement should:
-- Express the director's unique perspective on the material
-- Describe the visual and tonal approach
-- Reference specific filmmaking techniques or influences
-- Convey passion and commitment to the project
-- Be 150-200 words
+Cover, in 2–3 short paragraphs separated by blank lines:
+- The personal reason you must tell this story
+- The visual + tonal language (specific lensing, palette, pacing)
+- One or two filmmaker references as tonal anchor (real directors, not stars)
 
-Write in first person as if you are the director. Be authentic and passionate.
+Sound like a director who has already shot the film in their head.
 
-Return ONLY the vision statement text.`;
+Return ONLY the vision text. Use double line breaks between paragraphs.`;
+        break;
+
+      case "worldSetting":
+        userPrompt = `Write a 100–140 word WORLD / SETTING statement explaining why this story can ONLY happen in this place at this time.
+
+${projectShape}
+Synopsis: ${context.synopsis || "—"}
+Stated location: ${context.shootingLocations || "—"}
+
+The location must function as a character: its weather, economy, history or culture must press on the protagonist's wound. Do not describe scenery — describe pressure.
+
+Return ONLY the world statement. One or two short paragraphs.`;
         break;
 
       case "character":
-        userPrompt = `Write a compelling character description for a ${context.characterRole} character in this project.
+        userPrompt = `Write a character profile for this role.
 
 Character Name: ${context.characterName}
 Role Type: ${context.characterRole}
-Project Synopsis: ${context.synopsis || "Not provided"}
+Project Synopsis: ${context.synopsis || "—"}
+Tone: ${context.tone || "—"}
 
-The description should:
-- Capture the character's essence in 2-3 sentences
-- Describe their arc or transformation
-- Hint at their internal conflict
-- Make casting directors excited about the role
-
-Return ONLY the character description text (2-4 sentences).`;
+Return STRICT JSON in this exact shape (no prose, no fences):
+{
+  "description": "2-3 sentences capturing essence, voice, contradiction.",
+  "externalGoal": "One sentence: what they tangibly want in the world.",
+  "internalWound": "One sentence: the broken thing inside that blocks them."
+}`;
         break;
 
+      case "episodes": {
+        const count = Math.max(2, Math.min(12, Number(context.episodeCount) || 6));
+        userPrompt = `Write a ${count}-EPISODE breakdown for this series.
+
+${projectShape}
+Synopsis: ${context.synopsis || "—"}
+
+Each episode = a title (2–5 words, evocative, not generic) + a 2–3 sentence logline that escalates the season arc and ends on a hook into the next. Episode 1 = pilot/inciting event. Final episode = season climax.
+
+Return STRICT JSON array (no prose, no fences):
+[{"title": "...", "logline": "..."}, ...]`;
+        break;
+      }
+
       case "comps":
-        userPrompt = `Suggest 3-4 comparable films or TV shows for this project.
+        userPrompt = `Suggest 3 COMPARABLE titles (real released films or TV shows) that prove the market for this project.
 
-Title: ${context.title || "Untitled"}
-Type: ${context.type || "film"}
-Logline: ${context.logline || "Not provided"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
+${projectShape}
 
-For each comparable, explain WHY it's similar (tone, audience, theme, visual style, or success metrics).
+Pick comps that are recent (last 8 years preferred), critically successful OR commercially profitable, and TONALLY similar — not just same genre. Avoid mega-blockbusters that no indie can credibly compare to.
 
-Return a JSON array with this exact format:
+Return STRICT JSON array (no prose, no fences):
 [
-  {"title": "Film Title", "year": "2022", "whySimilar": "Explanation of similarity"},
-  {"title": "Film Title 2", "year": "2020", "whySimilar": "Explanation of similarity"}
-]
-
-Only return the JSON array, no other text.`;
+  {"title": "...", "year": "2022", "whySimilar": "1 sentence on tone/audience overlap"},
+  ...
+]`;
         break;
 
       case "audience":
-        userPrompt = `Write a market analysis for this project.
+        userPrompt = `Write a 150–200 word MARKET ANALYSIS in 2 paragraphs separated by a blank line.
 
-Title: ${context.title || "Untitled"}
-Type: ${context.type || "film"}
-Logline: ${context.logline || "Not provided"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
-Comparable Projects: ${JSON.stringify(context.comparables) || "None specified"}
+${projectShape}
+Comparables: ${JSON.stringify(context.comparables) || "—"}
 
-The analysis should:
-- Identify the primary and secondary target demographics
-- Reference relevant market trends
-- Cite comparable project performance if applicable
-- Identify the unique market position
-- Be 150-200 words
+Paragraph 1: Primary demographic with specifics (e.g. "Adults 25–54, urban, streaming-first") + secondary audience + why this audience is underserved RIGHT NOW.
+Paragraph 2: Market trend evidence (cite comp performance, platform appetite, cultural moment). End with a one-line market-position claim.
 
-Write professionally, as if for a studio presentation.
-
-Return ONLY the market analysis text.`;
+Return ONLY the analysis. Use a double line break between paragraphs.`;
         break;
 
       case "distribution":
-        userPrompt = `Write a distribution strategy for this project.
+        userPrompt = `Write a 150–200 word DISTRIBUTION STRATEGY in 2 paragraphs.
 
-Title: ${context.title || "Untitled"}
-Type: ${context.type || "film"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
-Budget Range: ${context.budgetRange || "Not specified"}
-Target Platforms: ${(context.targetPlatforms as string[])?.join(", ") || "Not specified"}
+${projectShape}
+Budget: ${context.budgetRange || "—"}
+Target Platforms: ${(context.targetPlatforms as string[])?.join(", ") || "—"}
 
-The strategy should:
-- Recommend a release approach (festival circuit, theatrical, streaming, hybrid)
-- Suggest timing and market windows
-- Identify potential distribution partners
-- Outline a high-level marketing approach
-- Be 150-200 words
+Paragraph 1: Release path (festival → theatrical / day-and-date / streaming-first / hybrid) with concrete window timing.
+Paragraph 2: Likely distribution partners (by tier, not by name promise) + a sharp 1-sentence marketing hook.
 
-Write professionally and strategically.
-
-Return ONLY the distribution strategy text.`;
+Return ONLY the strategy. Use a double line break between paragraphs.`;
         break;
 
       case "visualStyle":
-        userPrompt = `Write a 120-180 word visual style description for a film pitch deck.
+        userPrompt = `Write a 120–180 word VISUAL STYLE description in 2 short paragraphs.
 
-Title: ${context.title || "Untitled"}
-Genre: ${(context.genre as string[])?.join(", ") || "Drama"}
-Tone: ${context.tone || "Cinematic"}
-Logline: ${context.logline || "Not provided"}
-Template/Mood: ${context.template || "None"}
+${projectShape}
+Template/Mood: ${context.template || "—"}
 
-Describe:
-- Color palette and lighting approach
-- Camera language (lensing, movement, framing)
-- Production design and texture
-- Two or three reference filmmakers or films for tonal anchor
+Paragraph 1: Palette + lighting + camera language (lensing, movement, framing).
+Paragraph 2: Production design textures + 2 specific filmmaker/film references as tonal anchor.
 
-Write evocatively but professionally, in present tense. Return ONLY the description text.`;
+Present tense, evocative but professional. No "we will", say what it IS.
+
+Return ONLY the description. Double line break between paragraphs.`;
         break;
 
       default:
@@ -225,8 +284,8 @@ Write evocatively but professionally, in present tense. Return ONLY the descript
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        temperature: 0.7,
-        max_tokens: 1000,
+        temperature: 0.75,
+        max_tokens: 1400,
       }),
     });
 
@@ -250,25 +309,24 @@ Write evocatively but professionally, in present tense. Return ONLY the descript
 
     const result = await response.json();
     const content = result.choices?.[0]?.message?.content?.trim();
-
-    if (!content) {
-      throw new Error("No content generated");
-    }
+    if (!content) throw new Error("No content generated");
 
     console.log(`Successfully generated ${type} content`);
 
-    // For comps, parse the JSON and return both `content` (array) and `comparables` for compatibility.
-    if (type === "comps") {
+    // JSON-shaped responses
+    if (type === "comps" || type === "episodes" || type === "character") {
       try {
-        // Strip ```json fences if present.
         const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
-        const comparables = JSON.parse(cleaned);
+        const parsed = JSON.parse(cleaned);
+        const extra: Record<string, any> = {};
+        if (type === "comps") extra.comparables = parsed;
+        if (type === "episodes") extra.episodes = parsed;
         return new Response(
-          JSON.stringify({ content: comparables, comparables }),
+          JSON.stringify({ content: parsed, ...extra }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       } catch {
-        console.error("Failed to parse comps JSON:", content);
+        console.error(`Failed to parse ${type} JSON:`, content);
         return new Response(
           JSON.stringify({ content }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }

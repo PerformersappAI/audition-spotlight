@@ -531,7 +531,34 @@ const PitchDeckPreview = () => {
           </Slide>
         )}
 
-        {/* 3. Director's Vision */}
+        {/* 2b. North Star */}
+        {data.northStar && (
+          <Slide id="slide-northstar">
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "1000px", margin: "0 auto" }}>
+              <SectionLabel>NORTH STAR</SectionLabel>
+              <p style={{ fontSize: "20px", color: WHITE, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
+                {data.northStar}
+              </p>
+            </div>
+          </Slide>
+        )}
+
+        {/* 2c. World / Setting */}
+        {data.worldSetting && (
+          <Slide id="slide-world">
+            <SectionLabel>THE WORLD</SectionLabel>
+            <div style={{ marginTop: "20px", maxWidth: "1000px" }}>
+              {splitIntoParagraphs(data.worldSetting).map((p, i) => (
+                <p key={i} style={{ fontSize: "16px", color: WHITE, lineHeight: 1.7, marginBottom: "16px", opacity: 0.92 }}>{p}</p>
+              ))}
+              {data.shootingLocations && (
+                <div style={{ marginTop: "24px" }}>
+                  <Pill solid={false}>{data.shootingLocations}</Pill>
+                </div>
+              )}
+            </div>
+          </Slide>
+        )}
         {data.directorVision && (
           <Slide id="slide-vision">
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", textAlign: "center" }}>
@@ -559,18 +586,46 @@ const PitchDeckPreview = () => {
                   style={{
                     backgroundColor: CARD,
                     borderTop: `3px solid ${ACCENT}`,
-                    padding: "24px",
+                    padding: "20px",
                     borderRadius: "4px",
-                    minHeight: "240px",
+                    display: "flex",
+                    gap: "16px",
                   }}
                 >
-                  <div style={{ fontSize: "24px", fontWeight: 700, color: WHITE }}>{c.name || "Unnamed"}</div>
-                  <div style={{ fontSize: "13px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "6px" }}>
-                    {c.role}
+                  {c.portrait && (
+                    <img src={c.portrait} alt="" crossOrigin="anonymous" style={{ width: "90px", height: "120px", objectFit: "cover", borderRadius: "4px", flexShrink: 0 }} />
+                  )}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: "20px", fontWeight: 700, color: WHITE }}>{c.name || "Unnamed"}</div>
+                    <div style={{ fontSize: "11px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "4px" }}>
+                      {c.role}
+                    </div>
+                    {c.description && (
+                      <p style={{ fontSize: "12px", color: WHITE, lineHeight: 1.5, marginTop: "10px", opacity: 0.85 }}>{c.description}</p>
+                    )}
+                    {(c.externalGoal || c.internalWound) && (
+                      <div style={{ marginTop: "10px", borderTop: `1px solid ${BG}`, paddingTop: "8px", fontSize: "11px", lineHeight: 1.45 }}>
+                        {c.externalGoal && <div style={{ color: WHITE, opacity: 0.9 }}><span style={{ color: ACCENT, fontWeight: 600 }}>WANTS: </span>{c.externalGoal}</div>}
+                        {c.internalWound && <div style={{ color: WHITE, opacity: 0.9, marginTop: "4px" }}><span style={{ color: ACCENT, fontWeight: 600 }}>WOUND: </span>{c.internalWound}</div>}
+                      </div>
+                    )}
                   </div>
-                  <p style={{ fontSize: "14px", color: WHITE, lineHeight: 1.6, marginTop: "16px", opacity: 0.85 }}>
-                    {c.description}
-                  </p>
+                </div>
+              ))}
+            </div>
+          </Slide>
+        )}
+
+        {/* 4b. Episode Breakdown — TV / mini-series */}
+        {data.episodes && data.episodes.length > 0 && (
+          <Slide id="slide-episodes">
+            <SectionLabel>EPISODE BREAKDOWN</SectionLabel>
+            <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "12px", maxHeight: "560px", overflow: "hidden" }}>
+              {data.episodes.slice(0, 8).map((ep, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "70px 200px 1fr", gap: "20px", alignItems: "baseline", borderBottom: `1px solid ${CARD}`, paddingBottom: "10px" }}>
+                  <div style={{ fontSize: "12px", color: ACCENT, fontFamily: "ui-monospace, monospace", letterSpacing: "0.1em" }}>EP {String(i + 1).padStart(2, "0")}</div>
+                  <div style={{ fontSize: "16px", fontWeight: 700, color: WHITE }}>{ep.title || "—"}</div>
+                  <div style={{ fontSize: "13px", color: WHITE, opacity: 0.85, lineHeight: 1.5 }}>{ep.logline}</div>
                 </div>
               ))}
             </div>
