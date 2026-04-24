@@ -413,31 +413,47 @@ const Step4MarketTeam = ({
             {team.map((m, i) => (
               <div
                 key={i}
-                className="grid grid-cols-[1fr_1fr_auto] gap-2 rounded-md border p-2"
+                className="space-y-2 rounded-md border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
+                <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
+                  <input
+                    type="text"
+                    value={m.name}
+                    onChange={(e) => updateTeam(i, "name", e.target.value)}
+                    placeholder="Name"
+                    className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                  <input
+                    type="text"
+                    value={m.role}
+                    onChange={(e) => updateTeam(i, "role", e.target.value)}
+                    placeholder="Role / Title"
+                    className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeTeam(i)}
+                    className="flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white"
+                    aria-label="Remove team member"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
                 <input
-                  type="text"
-                  value={m.name}
-                  onChange={(e) => updateTeam(i, "name", e.target.value)}
-                  placeholder="Name"
-                  className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  type="url"
+                  value={m.imdbUrl ?? ""}
+                  onChange={(e) => updateTeam(i, "imdbUrl" as keyof TeamMember, e.target.value)}
+                  placeholder="IMDb URL (optional)"
+                  className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                 />
                 <input
                   type="text"
-                  value={m.role}
-                  onChange={(e) => updateTeam(i, "role", e.target.value)}
-                  placeholder="Role / Title"
-                  className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  value={m.credits ?? ""}
+                  onChange={(e) => updateTeam(i, "credits" as keyof TeamMember, e.target.value)}
+                  placeholder="Recent credits (e.g. The Northman, Foundation)"
+                  className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                 />
-                <button
-                  type="button"
-                  onClick={() => removeTeam(i)}
-                  className="flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white"
-                  aria-label="Remove team member"
-                >
-                  <X className="h-4 w-4" />
-                </button>
               </div>
             ))}
             {team.length < MAX_TEAM && (
