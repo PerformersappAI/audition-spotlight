@@ -1031,6 +1031,7 @@ const PitchDeckMaker = () => {
           </section>
         </div>
       </main>
+      </div>
     </div>
   );
 };
