@@ -9,11 +9,14 @@ export interface Comparable {
   year: string;
   revenue: string;
   why: string;
+  posterUrl?: string;
 }
 
 export interface TeamMember {
   name: string;
   role: string;
+  imdbUrl?: string;
+  credits?: string;
 }
 
 interface Step4Props {
