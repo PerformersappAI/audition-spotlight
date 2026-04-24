@@ -62,10 +62,12 @@ function Slide({
   id,
   children,
   background,
+  noPadding = false,
 }: {
   id: string;
   children: React.ReactNode;
   background?: string;
+  noPadding?: boolean;
 }) {
   return (
     <div className="flex justify-center">
@@ -78,16 +80,18 @@ function Slide({
           background: background || BG,
           color: WHITE,
           position: "relative",
-          fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+          fontFamily: SANS,
           overflow: "hidden",
-          borderLeft: `3px solid ${ACCENT}`,
           transform: "scale(var(--slide-scale, 1))",
           transformOrigin: "top center",
+          boxShadow: "0 30px 60px -20px rgba(0,0,0,0.6)",
         }}
       >
-        <div style={{ padding: "60px", height: "100%", boxSizing: "border-box" }}>
-          {children}
-        </div>
+        {noPadding ? children : (
+          <div style={{ padding: "72px", height: "100%", boxSizing: "border-box" }}>
+            {children}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -97,11 +101,33 @@ const SectionLabel = ({ children }: { children: React.ReactNode }) => (
   <div
     style={{
       color: ACCENT,
-      fontSize: "13px",
-      letterSpacing: "0.2em",
+      fontSize: "12px",
+      letterSpacing: "0.32em",
+      fontWeight: 700,
+      marginBottom: "20px",
+      fontFamily: SANS,
+      textTransform: "uppercase",
+    }}
+  >
+    {children}
+  </div>
+);
+
+// Tiny caption used in lookbook image plates: "TITLE — DIRECTOR — YEAR"
+const PlateCaption = ({ children }: { children: React.ReactNode }) => (
+  <div
+    style={{
+      position: "absolute",
+      left: "40px",
+      bottom: "32px",
+      color: PURE_WHITE,
+      fontSize: "11px",
+      letterSpacing: "0.28em",
+      fontFamily: SANS,
       fontWeight: 600,
-      marginBottom: "16px",
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+      textTransform: "uppercase",
+      textShadow: "0 2px 8px rgba(0,0,0,0.8)",
+      opacity: 0.92,
     }}
   >
     {children}
@@ -112,15 +138,18 @@ const Pill = ({ children, solid = true }: { children: React.ReactNode; solid?: b
   <span
     style={{
       display: "inline-block",
-      padding: "6px 14px",
-      borderRadius: "999px",
+      padding: "7px 16px",
+      borderRadius: "2px",
       backgroundColor: solid ? ACCENT : "transparent",
       border: solid ? "none" : `1px solid ${ACCENT}`,
-      color: solid ? "#000" : ACCENT,
-      fontSize: "13px",
-      fontWeight: 600,
+      color: solid ? "#0a0a0f" : ACCENT,
+      fontSize: "11px",
+      fontWeight: 700,
+      letterSpacing: "0.18em",
+      textTransform: "uppercase",
       marginRight: "8px",
       marginBottom: "8px",
+      fontFamily: SANS,
     }}
   >
     {children}
