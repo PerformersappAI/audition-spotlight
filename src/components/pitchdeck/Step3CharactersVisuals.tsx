@@ -8,6 +8,8 @@ export interface VisualCharacter {
   name: string;
   role: string;
   description: string;
+  externalGoal?: string;
+  internalWound?: string;
   portrait?: string;
 }
 
