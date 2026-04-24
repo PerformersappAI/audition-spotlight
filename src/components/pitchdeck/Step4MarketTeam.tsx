@@ -328,30 +328,54 @@ const Step4MarketTeam = ({
                 className="rounded-md border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
-                <div className="flex items-start justify-between gap-2">
-                  <div className="grid flex-1 grid-cols-2 gap-2 sm:grid-cols-[2fr_70px_1fr]">
+                <div className="flex items-start gap-3">
+                  {/* Poster thumbnail */}
+                  <div
+                    className="flex h-[78px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded border bg-[#0d0d18] text-[10px] text-zinc-600"
+                    style={{ borderColor: "#22222e" }}
+                  >
+                    {c.posterUrl ? (
+                      <img src={c.posterUrl} alt={c.title} className="h-full w-full" style={{ objectFit: "cover" }} />
+                    ) : (
+                      <span>No poster</span>
+                    )}
+                  </div>
+
+                  <div className="flex-1 space-y-2">
+                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-[2fr_70px_1fr]">
+                      <input
+                        type="text"
+                        value={c.title}
+                        onChange={(e) => updateComp(i, "title", e.target.value)}
+                        onBlur={() => fetchPosterForComp(i)}
+                        placeholder="Title (poster auto-fetches on blur)"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                      <input
+                        type="text"
+                        value={c.year}
+                        onChange={(e) => updateComp(i, "year", e.target.value)}
+                        onBlur={() => fetchPosterForComp(i)}
+                        placeholder="Year"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                      <input
+                        type="text"
+                        value={c.revenue}
+                        onChange={(e) => updateComp(i, "revenue", e.target.value)}
+                        placeholder="Box Office / Revenue"
+                        className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      />
+                    </div>
                     <input
                       type="text"
-                      value={c.title}
-                      onChange={(e) => updateComp(i, "title", e.target.value)}
-                      placeholder="Title"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                    />
-                    <input
-                      type="text"
-                      value={c.year}
-                      onChange={(e) => updateComp(i, "year", e.target.value)}
-                      placeholder="Year"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                    />
-                    <input
-                      type="text"
-                      value={c.revenue}
-                      onChange={(e) => updateComp(i, "revenue", e.target.value)}
-                      placeholder="Box Office / Revenue"
-                      className="rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      value={c.why}
+                      onChange={(e) => updateComp(i, "why", e.target.value)}
+                      placeholder="Why it compares (one line)"
+                      className="w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
                     />
                   </div>
+
                   <button
                     type="button"
                     onClick={() => removeComp(i)}
@@ -361,13 +385,6 @@ const Step4MarketTeam = ({
                     <X className="h-4 w-4" />
                   </button>
                 </div>
-                <input
-                  type="text"
-                  value={c.why}
-                  onChange={(e) => updateComp(i, "why", e.target.value)}
-                  placeholder="Why it compares (one line)"
-                  className="mt-2 w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
-                />
               </div>
             ))}
             {comparables.length < MAX_COMPS && (
