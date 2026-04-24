@@ -150,7 +150,7 @@ Visual Style Requirements:
   } catch (error) {
     console.error("Scene image generation error:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to generate scene image" }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Failed to generate scene image" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

@@ -204,7 +204,7 @@ REMEMBER: Each description should be precise enough that an AI image generator c
       parsed = JSON.parse(jsonContent);
     } catch (parseError) {
       console.error('JSON parse error. Content was:', content.substring(0, 500));
-      throw new Error(`Failed to parse AI response as JSON: ${parseError.message}`);
+      throw new Error(`Failed to parse AI response as JSON: ${parseError instanceof Error ? parseError.message : String(parseError)}`);
     }
 
     // Transform the AI response into the format expected by the frontend
