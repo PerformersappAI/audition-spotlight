@@ -607,6 +607,19 @@ const Step4MarketTeam = ({
               />
             </Field>
           </div>
+
+          <div className="mt-4">
+            <Field label="Meeting / Booking URL" hint="Used by the Ask slide CTA">
+              <input
+                type="url"
+                value={data.meetingUrl ?? ""}
+                onChange={(e) => update("meetingUrl", e.target.value)}
+                placeholder="e.g. https://calendly.com/yourname/intro"
+                className={inputClass}
+                style={inputStyle}
+              />
+            </Field>
+          </div>
         </div>
 
         {/* EXPORT */}
