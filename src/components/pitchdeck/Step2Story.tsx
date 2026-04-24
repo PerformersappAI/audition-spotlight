@@ -269,6 +269,40 @@ const Step2Story = ({ data, update }: Step2Props) => {
           />
         </Field>
 
+        {/* North Star — Why this story, why you, why now */}
+        <Field label="North Star" hint="Why this story · Why you · Why now">
+          <textarea
+            value={data.northStar ?? ""}
+            onChange={(e) => update("northStar", e.target.value)}
+            placeholder="The single emotional truth at the heart of your project."
+            rows={3}
+            className="w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+            style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
+          />
+          <GhostAIButton
+            onClick={handleGenerateNorthStar}
+            loading={isGeneratingNorthStar}
+            label="Generate North Star"
+          />
+        </Field>
+
+        {/* World / Setting */}
+        <Field label="World & Setting" hint="The location is a character">
+          <textarea
+            value={data.worldSetting ?? ""}
+            onChange={(e) => update("worldSetting", e.target.value)}
+            placeholder="Why must this story be set HERE? What does the place do to your characters?"
+            rows={3}
+            className="w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+            style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
+          />
+          <GhostAIButton
+            onClick={handleGenerateWorld}
+            loading={isGeneratingWorld}
+            label="Generate World Statement"
+          />
+        </Field>
+
         {/* Tone & Mood */}
         <Field label="Tone & Mood">
           <input
@@ -280,6 +314,58 @@ const Step2Story = ({ data, update }: Step2Props) => {
             style={{ backgroundColor: "#1a1a26", borderColor: "#1a1a26" }}
           />
         </Field>
+
+        {/* Episodes — TV / mini-series only */}
+        {isSeries && (
+          <Field label="Episode Breakdown" hint={`${episodes.length} episode${episodes.length === 1 ? "" : "s"}`}>
+            <div className="space-y-2">
+              {episodes.map((ep, i) => (
+                <div key={i} className="rounded-md border p-2" style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] text-[#f5a623]">EP {String(i + 1).padStart(2, "0")}</span>
+                    <input
+                      type="text"
+                      value={ep.title}
+                      onChange={(e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, title: e.target.value } : x) as any)}
+                      placeholder="Episode title"
+                      className="flex-1 rounded bg-[#12121a] px-2 py-1 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => update("episodes", episodes.filter((_, idx) => idx !== i) as any)}
+                      className="text-zinc-500 hover:text-red-400"
+                      aria-label="Remove episode"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  <textarea
+                    value={ep.logline}
+                    onChange={(e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, logline: e.target.value } : x) as any)}
+                    placeholder="Episode logline (2-3 sentences)"
+                    rows={2}
+                    className="mt-2 w-full resize-none rounded bg-[#12121a] px-2 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  />
+                </div>
+              ))}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => update("episodes", [...episodes, { title: "", logline: "" }] as any)}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-md border border-dashed py-2 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]"
+                  style={{ borderColor: "#2a2a36" }}
+                >
+                  <Plus className="h-3.5 w-3.5" /> Add Episode
+                </button>
+                <GhostAIButton
+                  onClick={handleGenerateEpisodes}
+                  loading={isGeneratingEpisodes}
+                  label="Generate Breakdown"
+                />
+              </div>
+            </div>
+          </Field>
+        )}
 
         {/* Key Themes */}
         <Field label="Key Themes" hint={`${themes.length}/${MAX_THEMES}`}>
