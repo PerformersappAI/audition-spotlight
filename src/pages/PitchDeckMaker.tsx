@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
@@ -114,10 +114,10 @@ const PLATFORMS = [
 ];
 
 const STEPS = [
-  { num: "01", label: "The Pitch" },
-  { num: "02", label: "Story" },
-  { num: "03", label: "Characters & Visuals" },
-  { num: "04", label: "Market & Team" },
+  { num: "01", label: "The Pitch", icon: Film, hint: "Foundation" },
+  { num: "02", label: "Story", icon: BookOpen, hint: "Heart of it" },
+  { num: "03", label: "Characters & Visuals", icon: Users, hint: "Look & feel" },
+  { num: "04", label: "Market & Team", icon: Briefcase, hint: "The business" },
 ];
 
 // ============================================================================
@@ -249,69 +249,157 @@ const PitchDeckMaker = () => {
     PROJECT_TYPES.find((p) => p.value === data.projectType)?.label || "";
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#0a0a0f" }}>
+    <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: "#08080d" }}>
+      {/* Cinematic ambient backdrop */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0"
+        style={{
+          background:
+            "radial-gradient(900px 500px at 12% -10%, rgba(245,166,35,0.14), transparent 60%), radial-gradient(700px 400px at 92% 8%, rgba(245,166,35,0.07), transparent 65%), radial-gradient(1200px 700px at 50% 110%, rgba(245,166,35,0.05), transparent 70%)",
+        }}
+      />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none fixed inset-0 z-0 opacity-[0.05] mix-blend-overlay"
+        style={{
+          backgroundImage:
+            "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>\")",
+          backgroundSize: "180px 180px",
+        }}
+      />
+
+      <div className="relative z-10">
       {/* Top bar */}
       <header
-        className="sticky top-0 z-20 border-b backdrop-blur-md"
-        style={{ backgroundColor: "rgba(10,10,15,0.85)", borderColor: "#1a1a26" }}
+        className="sticky top-0 z-20 border-b backdrop-blur-xl"
+        style={{
+          backgroundColor: "rgba(8,8,13,0.72)",
+          borderColor: "rgba(245,166,35,0.12)",
+          boxShadow: "0 1px 0 rgba(255,255,255,0.02), 0 12px 40px -20px rgba(0,0,0,0.8)",
+        }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-4">
             <Link
               to="/toolbox"
-              className="flex h-9 w-9 items-center justify-center rounded-md text-zinc-400 transition hover:bg-[#1a1a26] hover:text-white"
+              className="group flex h-10 w-10 items-center justify-center rounded-lg text-zinc-400 transition-all duration-200 hover:scale-105 hover:bg-[#1a1a26] hover:text-[#f5a623]"
               aria-label="Back to toolbox"
+              style={{ border: "1px solid rgba(245,166,35,0.08)" }}
             >
-              <ArrowLeft className="h-4 w-4" />
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
             </Link>
+            <div
+              className="flex h-10 w-10 items-center justify-center rounded-lg"
+              style={{
+                background: "linear-gradient(135deg, #f5a623 0%, #c8821a 100%)",
+                boxShadow: "0 8px 24px -8px rgba(245,166,35,0.6), inset 0 1px 0 rgba(255,255,255,0.25)",
+              }}
+            >
+              <Clapperboard className="h-5 w-5 text-black" />
+            </div>
             <div>
-              <h1 className="text-lg font-semibold tracking-tight text-white">
+              <h1 className="text-base font-semibold tracking-tight text-white">
                 Pitch Deck Maker
               </h1>
-              <p className="text-xs text-zinc-500">
-                Step {currentStep + 1} of {STEPS.length} · {STEPS[currentStep].label}
+              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-500">
+                <span className="text-[#f5a623]">Step {currentStep + 1}</span>
+                <span className="mx-1.5 text-zinc-700">/</span>
+                {STEPS.length} · {STEPS[currentStep].label}
               </p>
             </div>
           </div>
           <button
             onClick={handleSaveDraft}
-            className="inline-flex items-center gap-2 rounded-md border px-3 py-1.5 text-sm text-zinc-300 transition hover:border-[#f5a623] hover:text-white"
-            style={{ borderColor: "#1a1a26", backgroundColor: "#12121a" }}
+            className="group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm text-zinc-300 transition-all duration-200 hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white"
+            style={{ borderColor: "rgba(245,166,35,0.18)", backgroundColor: "rgba(18,18,26,0.6)" }}
           >
-            <Save className="h-4 w-4" />
+            <Save className="h-4 w-4 transition-transform group-hover:scale-110" />
             Save Draft
           </button>
         </div>
 
         {/* Progress bar */}
-        <div className="w-full" style={{ height: "3px", backgroundColor: "#12121a" }}>
+        <div className="relative w-full" style={{ height: "2px", backgroundColor: "rgba(255,255,255,0.04)" }}>
           <div
-            className="h-full transition-all duration-500"
+            className="h-full transition-all duration-700 ease-out"
             style={{
               width: `${progressPct}%`,
-              backgroundColor: "#f5a623",
-              boxShadow: "0 0 12px rgba(245,166,35,0.6)",
+              background: "linear-gradient(90deg, #c8821a 0%, #f5a623 50%, #ffd27a 100%)",
+              boxShadow: "0 0 16px rgba(245,166,35,0.7)",
             }}
           />
         </div>
 
         {/* Step tabs */}
-        <div className="mx-auto flex max-w-7xl items-center gap-8 px-6 py-3 overflow-x-auto">
-          {STEPS.map((s, i) => {
-            const active = i === currentStep;
-            return (
-              <div
-                key={s.num}
-                className="flex items-center gap-2 text-xs whitespace-nowrap transition"
-                style={{
-                  color: active ? "#f5a623" : "#52525b",
-                }}
-              >
-                <span className="font-mono font-semibold">{s.num}</span>
-                <span className={active ? "font-medium" : ""}>{s.label}</span>
-              </div>
-            );
-          })}
+        <div className="mx-auto max-w-7xl px-6 py-4">
+          <div className="flex items-center gap-2 overflow-x-auto md:gap-3">
+            {STEPS.map((s, i) => {
+              const Icon = s.icon;
+              const active = i === currentStep;
+              const completed = i < currentStep;
+              return (
+                <div key={s.num} className="flex flex-1 items-center gap-2 md:gap-3">
+                  <button
+                    type="button"
+                    onClick={() => completed && setCurrentStep(i)}
+                    disabled={!completed && !active}
+                    className="group flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all duration-200 disabled:cursor-default md:px-3"
+                    style={{
+                      backgroundColor: active
+                        ? "rgba(245,166,35,0.08)"
+                        : "transparent",
+                      border: active
+                        ? "1px solid rgba(245,166,35,0.35)"
+                        : "1px solid transparent",
+                      boxShadow: active ? "0 0 24px -10px rgba(245,166,35,0.6)" : "none",
+                    }}
+                  >
+                    <span
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-all duration-200"
+                      style={{
+                        background: active
+                          ? "linear-gradient(135deg, #f5a623 0%, #c8821a 100%)"
+                          : completed
+                          ? "rgba(245,166,35,0.15)"
+                          : "rgba(255,255,255,0.04)",
+                        color: active ? "#000" : completed ? "#f5a623" : "#52525b",
+                        boxShadow: active
+                          ? "0 4px 14px -4px rgba(245,166,35,0.55), inset 0 1px 0 rgba(255,255,255,0.3)"
+                          : "none",
+                      }}
+                    >
+                      {completed ? <Check className="h-3.5 w-3.5" /> : <Icon className="h-3.5 w-3.5" />}
+                    </span>
+                    <span className="min-w-0 text-left">
+                      <span
+                        className="block truncate text-xs font-medium md:text-[13px]"
+                        style={{ color: active ? "#fff" : completed ? "#d4d4d8" : "#71717a" }}
+                      >
+                        {s.label}
+                      </span>
+                      <span
+                        className="hidden font-mono text-[9px] uppercase tracking-[0.18em] md:block"
+                        style={{ color: active ? "#f5a623" : "#52525b" }}
+                      >
+                        {s.num} · {s.hint}
+                      </span>
+                    </span>
+                  </button>
+                  {i < STEPS.length - 1 && (
+                    <span
+                      className="hidden h-px flex-1 md:block"
+                      style={{
+                        background: completed
+                          ? "linear-gradient(90deg, rgba(245,166,35,0.4), rgba(245,166,35,0.05))"
+                          : "rgba(255,255,255,0.04)",
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </header>
 
@@ -321,18 +409,43 @@ const PitchDeckMaker = () => {
           {/* Left — Form (40%) */}
           <section className="lg:col-span-2">
             <div
-              className="rounded-xl border p-6"
-              style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
+              className="relative overflow-hidden rounded-2xl border p-7 backdrop-blur-sm"
+              style={{
+                background:
+                  "linear-gradient(160deg, rgba(24,24,34,0.95) 0%, rgba(14,14,22,0.95) 100%)",
+                borderColor: "rgba(245,166,35,0.14)",
+                boxShadow:
+                  "0 30px 80px -30px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 1px rgba(255,255,255,0.02) inset",
+              }}
             >
+              {/* Top accent line */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-px"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(245,166,35,0.6), transparent)",
+                }}
+              />
+              {/* Corner glow */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(245,166,35,0.18), transparent 70%)",
+                }}
+              />
+
               {currentStep === 0 && (
-                <div className="mb-6">
-                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                <div className="relative mb-7">
+                  <p className="font-mono text-[11px] tracking-[0.25em] text-[#f5a623]">
                     01 — THE PITCH
                   </p>
-                  <h2 className="mt-1 text-xl font-semibold text-white">
+                  <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
                     Set the foundation
                   </h2>
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1.5 text-sm text-zinc-500">
                     These core details shape every page of your deck.
                   </p>
                 </div>
@@ -410,7 +523,7 @@ const PitchDeckMaker = () => {
                           key={g}
                           type="button"
                           onClick={() => toggleInArray("genre", g)}
-                          className="rounded-full border px-3 py-1 text-xs transition"
+                          className="rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
                             borderColor: on ? "#f5a623" : "#2a2a36",
@@ -455,7 +568,7 @@ const PitchDeckMaker = () => {
                           key={p}
                           type="button"
                           onClick={() => toggleInArray("targetPlatforms", p)}
-                          className="rounded-full border px-3 py-1 text-xs transition"
+                          className="rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
                             borderColor: on ? "#f5a623" : "#2a2a36",
@@ -493,34 +606,42 @@ const PitchDeckMaker = () => {
               )}
 
               {/* Nav buttons */}
-              <div className="mt-8 flex items-center gap-3">
+              <div className="relative mt-8 flex items-center gap-3 border-t pt-6" style={{ borderColor: "rgba(245,166,35,0.1)" }}>
                 {currentStep > 0 && (
                   <button
                     onClick={handleBack}
-                    className="flex items-center justify-center gap-2 rounded-md border px-4 py-3 text-sm font-medium text-zinc-300 transition hover:border-[#f5a623] hover:text-white"
-                    style={{ borderColor: "#22222e", backgroundColor: "#1a1a26" }}
+                    className="group flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium text-zinc-300 transition-all duration-200 hover:-translate-y-px hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white"
+                    style={{ borderColor: "rgba(255,255,255,0.06)", backgroundColor: "rgba(26,26,38,0.6)" }}
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    <ChevronLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
                     Back
                   </button>
                 )}
                 <button
                   onClick={handleNext}
                   disabled={currentStep === 0 && !canAdvance}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-md py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40"
+                  className="group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-lg py-3 text-sm font-semibold tracking-tight transition-all duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0"
                   style={{
-                    backgroundColor: "#f5a623",
+                    background:
+                      "linear-gradient(135deg, #ffd27a 0%, #f5a623 45%, #c8821a 100%)",
                     color: "#0a0a0f",
                     boxShadow:
                       currentStep === 0 && !canAdvance
                         ? "none"
-                        : "0 0 24px rgba(245,166,35,0.3)",
+                        : "0 12px 30px -10px rgba(245,166,35,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset, 0 1px 0 rgba(255,255,255,0.4) inset",
                   }}
                 >
-                  {currentStep < STEPS.length - 1
-                    ? `Next: ${STEPS[currentStep + 1].label}`
-                    : "Finish"}
-                  <ChevronRight className="h-4 w-4" />
+                  {/* Shimmer */}
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                  />
+                  <span className="relative">
+                    {currentStep < STEPS.length - 1
+                      ? `Next: ${STEPS[currentStep + 1].label}`
+                      : "Finish"}
+                  </span>
+                  <ChevronRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </button>
               </div>
             </div>
@@ -530,18 +651,22 @@ const PitchDeckMaker = () => {
           <section className="lg:col-span-3">
             <div className="lg:sticky lg:top-32">
               <div className="mb-3 flex items-center justify-between">
-                <p className="text-xs uppercase tracking-widest text-zinc-500">
+                <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
+                  <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#f5a623] shadow-[0_0_8px_rgba(245,166,35,0.8)]" />
                   Live Preview
                 </p>
-                <span className="text-xs text-zinc-600">Updates as you type</span>
+                <span className="text-[11px] tracking-wide text-zinc-600">Updates as you type</span>
               </div>
 
               <div
-                className="relative flex flex-col rounded-xl border overflow-hidden"
+                className="relative flex flex-col overflow-hidden rounded-2xl border"
                 style={{
-                  backgroundColor: "#0d0d18",
-                  borderColor: "#22222e",
+                  background:
+                    "linear-gradient(180deg, #0d0d18 0%, #08080f 100%)",
+                  borderColor: "rgba(245,166,35,0.15)",
                   minHeight: "calc(100vh - 220px)",
+                  boxShadow:
+                    "0 40px 100px -40px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.02) inset",
                 }}
               >
                 {/* Film grain overlay */}
@@ -943,6 +1068,7 @@ const PitchDeckMaker = () => {
           </section>
         </div>
       </main>
+      </div>
     </div>
   );
 };
@@ -961,9 +1087,16 @@ const Field = ({
   children: React.ReactNode;
 }) => (
   <div>
-    <label className="mb-1.5 flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-zinc-400">
+    <label className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
       {label}
-      {required && <span className="text-[#f5a623]">*</span>}
+      {required && (
+        <span
+          className="text-[#f5a623]"
+          style={{ textShadow: "0 0 8px rgba(245,166,35,0.6)" }}
+        >
+          *
+        </span>
+      )}
     </label>
     {children}
   </div>
