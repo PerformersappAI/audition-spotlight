@@ -59,10 +59,15 @@ const GhostAIButton = ({
 const Step2Story = ({ data, update }: Step2Props) => {
   const [isExpandingSynopsis, setIsExpandingSynopsis] = useState(false);
   const [isGeneratingVision, setIsGeneratingVision] = useState(false);
+  const [isGeneratingNorthStar, setIsGeneratingNorthStar] = useState(false);
+  const [isGeneratingWorld, setIsGeneratingWorld] = useState(false);
+  const [isGeneratingEpisodes, setIsGeneratingEpisodes] = useState(false);
   const [themeInput, setThemeInput] = useState("");
 
   const themes = data.themes ?? [];
   const characters: CharacterEntry[] = (data.characters as CharacterEntry[]) ?? [];
+  const episodes = data.episodes ?? [];
+  const isSeries = data.projectType === "tv_series" || data.projectType === "mini_series";
 
   const callAI = async (
     field: string,
@@ -84,11 +89,12 @@ const Step2Story = ({ data, update }: Step2Props) => {
             synopsis: data.synopsis,
             toneMood: data.toneMood,
             themes: data.themes,
+            shootingLocations: data.shootingLocations,
           },
         },
       });
       if (error) throw error;
-      if (result?.content) {
+      if (result?.content !== undefined) {
         update(targetKey, result.content as any);
         toast.success(successMsg);
       }
@@ -114,6 +120,60 @@ const Step2Story = ({ data, update }: Step2Props) => {
       return;
     }
     callAI("directorVision", setIsGeneratingVision, "directorVision", "Vision generated");
+  };
+
+  const handleGenerateNorthStar = () => {
+    if (!data.logline?.trim() && !data.synopsis?.trim()) {
+      toast.error("Add a logline or synopsis first");
+      return;
+    }
+    callAI("northStar", setIsGeneratingNorthStar, "northStar", "North Star generated");
+  };
+
+  const handleGenerateWorld = () => {
+    if (!data.synopsis?.trim() && !data.logline?.trim()) {
+      toast.error("Add a synopsis or logline first");
+      return;
+    }
+    callAI("worldSetting", setIsGeneratingWorld, "worldSetting", "World statement generated");
+  };
+
+  const handleGenerateEpisodes = async () => {
+    if (!data.synopsis?.trim()) {
+      toast.error("Write a synopsis first so episodes can build on it");
+      return;
+    }
+    setIsGeneratingEpisodes(true);
+    try {
+      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+        body: {
+          field: "episodes",
+          context: {
+            projectTitle: data.projectTitle,
+            projectType: data.projectType,
+            genre: data.genre,
+            logline: data.logline,
+            synopsis: data.synopsis,
+            toneMood: data.toneMood,
+            episodeCount: episodes.length || 6,
+          },
+        },
+      });
+      if (error) throw error;
+      const arr = result?.episodes || result?.content;
+      if (Array.isArray(arr)) {
+        update("episodes", arr.map((e: any) => ({
+          title: String(e.title || ""),
+          logline: String(e.logline || e.summary || ""),
+        })) as any);
+        toast.success("Episodes generated");
+      }
+    } catch (e: any) {
+      console.error(e);
+      toast.error(e?.message || "Failed to generate episodes");
+    } finally {
+      setIsGeneratingEpisodes(false);
+    }
   };
 
   const addTheme = () => {
