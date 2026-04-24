@@ -257,12 +257,14 @@ Write evocatively but professionally, in present tense. Return ONLY the descript
 
     console.log(`Successfully generated ${type} content`);
 
-    // For comps, parse the JSON response
+    // For comps, parse the JSON and return both `content` (array) and `comparables` for compatibility.
     if (type === "comps") {
       try {
-        const comparables = JSON.parse(content);
+        // Strip ```json fences if present.
+        const cleaned = content.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "");
+        const comparables = JSON.parse(cleaned);
         return new Response(
-          JSON.stringify({ comparables }),
+          JSON.stringify({ content: comparables, comparables }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       } catch {
