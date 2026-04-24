@@ -138,6 +138,32 @@ const Step4MarketTeam = ({
     update("comparables", comparables.filter((_, idx) => idx !== i) as any);
   };
 
+  const fetchPosterForComp = async (i: number) => {
+    const c = comparables[i];
+    if (!c?.title?.trim()) return;
+    try {
+      const { data: result } = await supabase.functions.invoke("fetch-movie-poster", {
+        body: { title: c.title, year: c.year || undefined },
+      });
+      if (result?.posterUrl) {
+        update(
+          "comparables",
+          comparables.map((x, idx) =>
+            idx === i
+              ? {
+                  ...x,
+                  posterUrl: result.posterUrl,
+                  year: x.year || result.year || "",
+                }
+              : x,
+          ) as any,
+        );
+      }
+    } catch (e) {
+      console.error("Poster fetch failed:", e);
+    }
+  };
+
   const handleSuggestComps = async () => {
     if (!data.logline?.trim() && !data.synopsis?.trim()) {
       toast.error("Add a logline or synopsis first");
