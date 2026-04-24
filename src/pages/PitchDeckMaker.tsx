@@ -1087,9 +1087,16 @@ const Field = ({
   children: React.ReactNode;
 }) => (
   <div>
-    <label className="mb-1.5 flex items-center gap-1 text-xs font-medium uppercase tracking-wider text-zinc-400">
+    <label className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400">
       {label}
-      {required && <span className="text-[#f5a623]">*</span>}
+      {required && (
+        <span
+          className="text-[#f5a623]"
+          style={{ textShadow: "0 0 8px rgba(245,166,35,0.6)" }}
+        >
+          *
+        </span>
+      )}
     </label>
     {children}
   </div>
