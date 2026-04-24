@@ -191,15 +191,30 @@ const Step4MarketTeam = ({
       // Try to parse comps if returned as array, otherwise fall back to dropping into 'why' of a new entry
       const content = result?.content;
       if (Array.isArray(content)) {
-        update(
-          "comparables",
-          content.slice(0, MAX_COMPS).map((c: any) => ({
-            title: c.title || "",
-            year: String(c.year || ""),
-            revenue: c.revenue || c.boxOffice || "",
-            why: c.why || c.reason || "",
-          })) as any,
+        const mapped = content.slice(0, MAX_COMPS).map((c: any) => ({
+          title: c.title || "",
+          year: String(c.year || ""),
+          revenue: c.revenue || c.boxOffice || "",
+          why: c.why || c.whySimilar || c.reason || "",
+        }));
+        // Fetch posters in parallel
+        const withPosters = await Promise.all(
+          mapped.map(async (c) => {
+            try {
+              const { data: pr } = await supabase.functions.invoke("fetch-movie-poster", {
+                body: { title: c.title, year: c.year || undefined },
+              });
+              return {
+                ...c,
+                posterUrl: pr?.posterUrl || undefined,
+                year: c.year || pr?.year || "",
+              };
+            } catch {
+              return c;
+            }
+          }),
         );
+        update("comparables", withPosters as any);
         toast.success("Comparables suggested");
       } else if (typeof content === "string" && content.trim()) {
         // Drop the suggestion into the first empty "why" field, or append a new entry
