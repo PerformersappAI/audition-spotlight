@@ -1,45 +1,27 @@
+## Fix: Pitch Deck poster "Edge Function returned a non-2xx status code"
 
-
-## Fix three storyboard issues
-
-### 1. "Visual Elements" text running together (e.g. "overhead lightingCommanding")
-
-**Root cause:** In `supabase/functions/analyze-shots/index.ts` line 225, `visualElements` is built as a raw two-item array: `[shot.lighting, shot.emotionalTone]`. When React renders `{shot.visualElements}`, arrays are joined with **no separator**, mashing the two values together.
-
-**Fix:** Join the values with a clean separator on the server side so the stored value is a readable string.
-```ts
-visualElements: [shot.lighting, shot.emotionalTone].filter(Boolean).join(" · ")
+### Root cause
+`Step3CharactersVisuals.tsx` calls `generate-pitch-poster` with:
 ```
-Also harden the frontend in `Storyboarding.tsx` (line 2938) and `SceneAnalysis.tsx` (line 739) to gracefully handle either a string or a legacy array:
-```tsx
-{Array.isArray(shot.visualElements) ? shot.visualElements.filter(Boolean).join(" · ") : shot.visualElements}
+{ projectTitle, genre, logline, visualStyle, template }
 ```
-This fixes new generations and any legacy data already saved to projects.
+But `supabase/functions/generate-pitch-poster/index.ts` only reads `{ prompt }`. Since `prompt` is undefined, the function returns `400 "Prompt is required"` before any logs are written — which is exactly what the production logs show (no "Generating poster…" line ever appears).
 
-### 2. Animatic GIF Export error: "Failed to construct 'Worker'"
-
-**Root cause:** `src/components/storyboard/AnimaticTab.tsx` loads `gif.worker.js` from `https://cdn.jsdelivr.net/...`. Browsers block constructing a `Worker` from a cross-origin script URL, so on `filmmakergenius.com` it throws.
-
-**Fix:** Bundle the worker locally so it's same-origin.
-- Copy `gif.worker.js` (from the `gif.js` package) into `public/gif.worker.js`.
-- Change the constant to:
-  ```ts
-  const GIF_WORKER_URL = "/gif.worker.js";
-  ```
-- Wrap the `new GIF(...)` call in a try/catch with a friendly toast fallback in case the worker still fails to boot, instead of the current red overlay.
-
-### 3. "Edge function error" message
-
-The recent edge function logs (`generate-single-frame`, `analyze-shots`, `generate-character-portrait`) all show **successful runs** with normal `shutdown` events — no failures server-side. The error you're seeing is almost certainly the **GIF worker error from issue #2** surfacing as a generic toast. Once #2 is fixed, this should disappear.
-
-If a different edge function error pops up after the fix, the toast will now include the function name so we can pinpoint it.
+### Fix
+Update `supabase/functions/generate-pitch-poster/index.ts` to:
+1. Accept the structured fields the client actually sends (`projectTitle`, `genre`, `logline`, `visualStyle`, `template`) — and still accept a raw `prompt` as a fallback for backward compat.
+2. Build a high-quality movie-poster prompt server-side from those fields, e.g.:
+   - Title: <projectTitle>
+   - Genre(s): <genre joined>
+   - Logline: <logline>
+   - Visual style: <visualStyle>
+   - Template mood: <template id mapped to descriptor like "Thriller / Noir, high-contrast indigos and charcoal">
+   - Append fixed framing instructions: "vertical 2:3 movie poster, cinematic key art, dramatic lighting, no text, no logos, no watermark."
+3. Validate that at least `projectTitle` (or `prompt`) is present; otherwise return a clear 400 with a useful message that the client can surface in a toast.
+4. Keep the existing Lovable AI Gateway call (`google/gemini-3.1-flash-image-preview`, `modalities: ["image","text"]`) and the existing `imageUrl` extraction. Continue returning `{ imageUrl }` so the existing client code (`result?.imageUrl || result?.posterUrl || result?.url`) keeps working with no client changes.
+5. Surface 429/402 as today, plus return the AI gateway's error body text in the 500 case so future debugging is easier.
 
 ### Files changed
-- `supabase/functions/analyze-shots/index.ts` — join `visualElements` with " · "
-- `src/pages/Storyboarding.tsx` — defensive render for `visualElements`
-- `src/pages/SceneAnalysis.tsx` — defensive render for `visualElements`
-- `src/components/storyboard/AnimaticTab.tsx` — switch worker to local `/gif.worker.js`, add try/catch toast
-- `public/gif.worker.js` — new bundled worker file
+- `supabase/functions/generate-pitch-poster/index.ts` — accept structured fields, build prompt server-side, better error reporting.
 
-No wizard, routing, or other tool behavior changes.
-
+No client changes needed. No other tools touched.
