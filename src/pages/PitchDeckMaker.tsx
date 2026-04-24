@@ -409,18 +409,43 @@ const PitchDeckMaker = () => {
           {/* Left — Form (40%) */}
           <section className="lg:col-span-2">
             <div
-              className="rounded-xl border p-6"
-              style={{ backgroundColor: "#12121a", borderColor: "#1a1a26" }}
+              className="relative overflow-hidden rounded-2xl border p-7 backdrop-blur-sm"
+              style={{
+                background:
+                  "linear-gradient(160deg, rgba(24,24,34,0.95) 0%, rgba(14,14,22,0.95) 100%)",
+                borderColor: "rgba(245,166,35,0.14)",
+                boxShadow:
+                  "0 30px 80px -30px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 1px rgba(255,255,255,0.02) inset",
+              }}
             >
+              {/* Top accent line */}
+              <div
+                aria-hidden="true"
+                className="absolute inset-x-0 top-0 h-px"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, rgba(245,166,35,0.6), transparent)",
+                }}
+              />
+              {/* Corner glow */}
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full"
+                style={{
+                  background:
+                    "radial-gradient(circle, rgba(245,166,35,0.18), transparent 70%)",
+                }}
+              />
+
               {currentStep === 0 && (
-                <div className="mb-6">
-                  <p className="font-mono text-xs tracking-widest text-[#f5a623]">
+                <div className="relative mb-7">
+                  <p className="font-mono text-[11px] tracking-[0.25em] text-[#f5a623]">
                     01 — THE PITCH
                   </p>
-                  <h2 className="mt-1 text-xl font-semibold text-white">
+                  <h2 className="mt-2 text-2xl font-semibold tracking-tight text-white">
                     Set the foundation
                   </h2>
-                  <p className="mt-1 text-sm text-zinc-500">
+                  <p className="mt-1.5 text-sm text-zinc-500">
                     These core details shape every page of your deck.
                   </p>
                 </div>
