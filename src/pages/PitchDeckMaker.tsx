@@ -172,6 +172,29 @@ const PitchDeckMaker = () => {
     }
   };
 
+  const handleNewDeck = () => {
+    const hasContent =
+      data.projectTitle.trim().length > 0 ||
+      (data.logline ?? "").trim().length > 0 ||
+      (data.synopsis ?? "").trim().length > 0;
+    if (hasContent) {
+      const confirmed = window.confirm(
+        "Start a new pitch deck? This will clear the current draft. (Tip: hit Save Draft first if you want to keep it.)"
+      );
+      if (!confirmed) return;
+    }
+    try {
+      localStorage.removeItem("pitchDeckDraft");
+    } catch (e) {
+      console.error("Failed to clear draft:", e);
+    }
+    setData(initialData);
+    setCurrentStep(0);
+    setExportFormats(["pdf"]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast.success("Started a fresh pitch deck");
+  };
+
   const handleGenerateLogline = async () => {
     if (!data.projectTitle && !data.genre.length) {
       toast.error("Add a project title or genre first");
