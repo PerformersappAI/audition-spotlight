@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Plus, X, Sparkles, Loader2, Image as ImageIcon } from "lucide-react";
+import { Plus, X, Sparkles, Loader2, Image as ImageIcon, User } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import type { PitchDeckData } from "@/pages/PitchDeckMaker";
@@ -8,6 +8,7 @@ export interface VisualCharacter {
   name: string;
   role: string;
   description: string;
+  portrait?: string;
 }
 
 export interface StyleTemplate {
@@ -39,6 +40,7 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
   const characters: VisualCharacter[] = (data.characters as VisualCharacter[]) || [];
   const [generatingStyle, setGeneratingStyle] = useState(false);
   const [generatingPoster, setGeneratingPoster] = useState(false);
+  const [generatingPortraitIdx, setGeneratingPortraitIdx] = useState<number | null>(null);
 
   const setCharacters = (next: VisualCharacter[]) =>
     update("characters", next as any);
@@ -59,6 +61,44 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
 
   const removeChar = (i: number) => {
     setCharacters(characters.filter((_, idx) => idx !== i));
+  };
+
+  const handleGeneratePortrait = async (i: number) => {
+    const c = characters[i];
+    if (!c?.name?.trim()) {
+      toast.error("Add a character name first");
+      return;
+    }
+    setGeneratingPortraitIdx(i);
+    try {
+      const { data: result, error } = await supabase.functions.invoke(
+        "generate-character-portrait",
+        {
+          body: {
+            characterName: c.name,
+            characterRole: c.role,
+            characterDescription: c.description,
+            styleDescription: data.visualStyle,
+            genre: data.genre,
+            projectTitle: data.projectTitle,
+          },
+        },
+      );
+      if (error) throw error;
+      const url = result?.imageUrl;
+      if (url) {
+        const next = [...characters];
+        next[i] = { ...next[i], portrait: url };
+        setCharacters(next);
+        toast.success(`Portrait generated for ${c.name}`);
+      } else {
+        toast.error("No portrait returned");
+      }
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to generate portrait");
+    } finally {
+      setGeneratingPortraitIdx(null);
+    }
   };
 
   const handleGenerateStyle = async () => {
