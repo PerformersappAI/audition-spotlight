@@ -514,17 +514,91 @@ const PitchDeckPreview = () => {
 
       <div ref={containerRef} className="mx-auto max-w-[1320px] space-y-6 px-4 py-6">
         {/* 1. Cover */}
-        <Slide id="slide-cover" background={coverBg}>
-          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+        {/* ============ 1. COVER — full-bleed hero with bold title overlay ============ */}
+        <Slide
+          id="slide-cover"
+          noPadding
+          background={heroImage ? "#000" : coverGradient}
+        >
+          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+            {heroImage && (
+              <img
+                src={heroImage}
+                alt=""
+                crossOrigin="anonymous"
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  filter: "saturate(0.92) contrast(1.05)",
+                }}
+              />
+            )}
+            {/* Cinematic gradient overlay for legibility */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 38%, rgba(0,0,0,0.55) 72%, rgba(0,0,0,0.92) 100%)",
+              }}
+            />
+            {/* Top label bar */}
+            <div
+              style={{
+                position: "absolute",
+                top: "48px",
+                left: "72px",
+                right: "72px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                color: PURE_WHITE,
+                fontSize: "11px",
+                letterSpacing: "0.32em",
+                fontWeight: 600,
+                textTransform: "uppercase",
+              }}
+            >
+              <span style={{ opacity: 0.85 }}>A {projectTypeLabels[data.projectType] || "Film"} Pitch</span>
+              {data.targetRating && <span style={{ color: ACCENT_BRIGHT }}>Rated {data.targetRating}</span>}
+            </div>
+
+            {/* Bottom-anchored title block */}
+            <div
+              style={{
+                position: "absolute",
+                left: "72px",
+                right: "72px",
+                bottom: "72px",
+              }}
+            >
+              {data.genre?.length > 0 && (
+                <div
+                  style={{
+                    color: ACCENT_BRIGHT,
+                    fontSize: "13px",
+                    letterSpacing: "0.4em",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    marginBottom: "20px",
+                    fontFamily: SANS,
+                  }}
+                >
+                  {data.genre.slice(0, 3).join(" · ")}
+                </div>
+              )}
               <div
                 style={{
-                  fontSize: "64px",
-                  fontWeight: 800,
-                  color: "#fff",
-                  letterSpacing: "-0.02em",
-                  lineHeight: 1.05,
-                  textShadow: "0 4px 24px rgba(0,0,0,0.5)",
+                  fontFamily: SERIF,
+                  fontSize: "104px",
+                  fontWeight: 600,
+                  color: PURE_WHITE,
+                  letterSpacing: "-0.015em",
+                  lineHeight: 0.98,
+                  textShadow: "0 4px 32px rgba(0,0,0,0.7)",
                   maxWidth: "1100px",
                 }}
               >
@@ -533,275 +607,458 @@ const PitchDeckPreview = () => {
               {data.logline && (
                 <div
                   style={{
-                    marginTop: "24px",
-                    fontSize: "18px",
+                    marginTop: "28px",
+                    fontFamily: SERIF,
+                    fontSize: "22px",
                     fontStyle: "italic",
-                    color: ACCENT,
-                    maxWidth: "900px",
+                    color: WHITE,
+                    maxWidth: "880px",
+                    lineHeight: 1.4,
+                    textShadow: "0 2px 16px rgba(0,0,0,0.7)",
                   }}
                 >
-                  "{data.logline}"
+                  {data.logline}
                 </div>
               )}
-            </div>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
-              <div style={{ color: "rgba(255,255,255,0.85)", fontSize: "13px" }}>
-                {[projectTypeLabels[data.projectType] || data.projectType, data.targetRating].filter(Boolean).join(" · ")}
-              </div>
-              <div>
-                {(data.targetPlatforms || []).slice(0, 4).map((p) => (
-                  <Pill key={p}>{p}</Pill>
-                ))}
-              </div>
+              {(data.targetPlatforms?.length ?? 0) > 0 && (
+                <div style={{ marginTop: "32px" }}>
+                  {data.targetPlatforms!.slice(0, 4).map((p) => (
+                    <Pill key={p} solid={false}>
+                      {p}
+                    </Pill>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </Slide>
 
-        {/* 2. Story */}
+        {/* ============ 2. STORY — split spread, breathing chunks, pull quote ============ */}
         {data.synopsis && (
           <Slide id="slide-story">
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", height: "100%" }}>
-              <div>
-                <SectionLabel>THE STORY</SectionLabel>
-                <p style={{ fontSize: "15px", lineHeight: 1.7, color: WHITE }}>{data.synopsis}</p>
+            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "56px", height: "100%" }}>
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                <SectionLabel>The Story</SectionLabel>
+                <div style={{ maxHeight: "520px", overflow: "hidden" }}>
+                  {splitIntoParagraphs(data.synopsis, 3).slice(0, 3).map((p, i) => (
+                    <p
+                      key={i}
+                      style={{
+                        fontFamily: SERIF,
+                        fontSize: "19px",
+                        lineHeight: 1.65,
+                        color: WHITE,
+                        marginBottom: "20px",
+                        opacity: 0.95,
+                      }}
+                    >
+                      {p}
+                    </p>
+                  ))}
+                </div>
               </div>
-              <div
-                style={{
-                  backgroundColor: CARD,
-                  borderRadius: "8px",
-                  overflow: "hidden",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
+              <div style={{ position: "relative", overflow: "hidden", backgroundColor: SURFACE }}>
                 {storyImage ? (
-                  <img src={storyImage} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} crossOrigin="anonymous" />
+                  <>
+                    <img
+                      src={storyImage}
+                      alt=""
+                      style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.9) contrast(1.05)" }}
+                      crossOrigin="anonymous"
+                    />
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        background: "linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7) 100%)",
+                      }}
+                    />
+                    <PlateCaption>
+                      {data.projectTitle || "Untitled"} — Scene Reference
+                    </PlateCaption>
+                  </>
                 ) : generatingImage ? (
-                  <div style={{ color: MUTED, display: "flex", flexDirection: "column", alignItems: "center", gap: "12px" }}>
+                  <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: MUTED }}>
                     <Loader2 className="h-8 w-8 animate-spin" style={{ color: ACCENT }} />
-                    <span style={{ fontSize: "12px" }}>Generating cinematic still…</span>
+                    <span style={{ fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase" }}>Generating still…</span>
                   </div>
                 ) : (
-                  <Sparkles className="h-12 w-12" style={{ color: MUTED }} />
+                  <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <Sparkles className="h-12 w-12" style={{ color: MUTED }} />
+                  </div>
                 )}
               </div>
             </div>
           </Slide>
         )}
 
-        {/* 2b. North Star */}
-        {data.northStar && (
-          <Slide id="slide-northstar">
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "1000px", margin: "0 auto" }}>
-              <SectionLabel>NORTH STAR</SectionLabel>
-              <p style={{ fontSize: "20px", color: WHITE, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                {data.northStar}
+        {/* ============ 2a. PULL QUOTE — full-bleed cinematic ============ */}
+        {pullQuote && (
+          <Slide id="slide-pullquote" background={`linear-gradient(135deg, #0e0a08 0%, #1a120a 60%, #0a0a0f 100%)`}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "1000px", margin: "0 auto", textAlign: "center" }}>
+              <div style={{ fontFamily: SERIF, fontSize: "180px", color: ACCENT, opacity: 0.35, lineHeight: 0.6, marginBottom: "20px" }}>“</div>
+              <p
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "44px",
+                  fontStyle: "italic",
+                  fontWeight: 500,
+                  color: PURE_WHITE,
+                  lineHeight: 1.3,
+                  letterSpacing: "-0.005em",
+                }}
+              >
+                {pullQuote}
               </p>
+              <div style={{ marginTop: "44px", height: "1px", width: "80px", margin: "44px auto 16px", backgroundColor: ACCENT }} />
+              <div style={{ fontSize: "11px", letterSpacing: "0.32em", color: ACCENT, fontWeight: 700, textTransform: "uppercase" }}>
+                From the Synopsis
+              </div>
             </div>
           </Slide>
         )}
 
-        {/* 2c. World / Setting */}
+        {/* ============ 2b. NORTH STAR ============ */}
+        {data.northStar && (
+          <Slide id="slide-northstar">
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "980px", margin: "0 auto" }}>
+              <SectionLabel>North Star</SectionLabel>
+              <div style={{ maxHeight: "520px", overflow: "hidden" }}>
+                {splitIntoParagraphs(data.northStar, 3).slice(0, 3).map((p, i) => (
+                  <p key={i} style={{ fontFamily: SERIF, fontSize: "22px", color: WHITE, lineHeight: 1.55, marginBottom: "20px" }}>
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </Slide>
+        )}
+
+        {/* ============ 2c. THE WORLD ============ */}
         {data.worldSetting && (
           <Slide id="slide-world">
-            <SectionLabel>THE WORLD</SectionLabel>
+            <SectionLabel>The World</SectionLabel>
             <div style={{ marginTop: "20px", maxWidth: "1000px" }}>
-              {splitIntoParagraphs(data.worldSetting).map((p, i) => (
-                <p key={i} style={{ fontSize: "16px", color: WHITE, lineHeight: 1.7, marginBottom: "16px", opacity: 0.92 }}>{p}</p>
+              {splitIntoParagraphs(data.worldSetting, 3).slice(0, 3).map((p, i) => (
+                <p key={i} style={{ fontFamily: SERIF, fontSize: "19px", color: WHITE, lineHeight: 1.65, marginBottom: "20px", opacity: 0.95 }}>{p}</p>
               ))}
               {data.shootingLocations && (
-                <div style={{ marginTop: "24px" }}>
+                <div style={{ marginTop: "28px" }}>
                   <Pill solid={false}>{data.shootingLocations}</Pill>
                 </div>
               )}
             </div>
           </Slide>
         )}
+
+        {/* ============ 3. DIRECTOR'S VISION — pull quote treatment ============ */}
         {data.directorVision && (
           <Slide id="slide-vision">
             <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", textAlign: "center" }}>
-              <div style={{ fontSize: "120px", color: ACCENT, opacity: 0.3, lineHeight: 0.8, fontFamily: "Georgia, serif" }}>"</div>
-              <p style={{ fontSize: "22px", fontStyle: "italic", color: WHITE, maxWidth: "900px", lineHeight: 1.5, marginTop: "-20px" }}>
+              <div style={{ fontFamily: SERIF, fontSize: "160px", color: ACCENT, opacity: 0.3, lineHeight: 0.7, marginBottom: "8px" }}>“</div>
+              <p style={{ fontFamily: SERIF, fontSize: "32px", fontStyle: "italic", color: PURE_WHITE, maxWidth: "920px", lineHeight: 1.4, fontWeight: 500 }}>
                 {data.directorVision}
               </p>
+              <div style={{ marginTop: "40px", height: "1px", width: "60px", backgroundColor: ACCENT }} />
+              <div style={{ marginTop: "16px", fontSize: "11px", letterSpacing: "0.32em", color: ACCENT, fontWeight: 700, textTransform: "uppercase" }}>
+                Director's Vision
+              </div>
               {data.toneMood && (
-                <div style={{ marginTop: "32px" }}>
-                  <Pill>{data.toneMood}</Pill>
+                <div style={{ marginTop: "28px" }}>
+                  <Pill solid={false}>{data.toneMood}</Pill>
                 </div>
               )}
             </div>
           </Slide>
         )}
 
-        {/* 4. Characters */}
+        {/* ============ 4. CHARACTERS — portrait card grid ============ */}
         {data.characters && data.characters.length > 0 && (
           <Slide id="slide-characters">
-            <SectionLabel>CHARACTERS</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px", marginTop: "20px" }}>
-              {data.characters.slice(0, 4).map((c: any, i: number) => (
-                <div
-                  key={i}
-                  style={{
-                    backgroundColor: CARD,
-                    borderTop: `3px solid ${ACCENT}`,
-                    padding: "20px",
-                    borderRadius: "4px",
-                    display: "flex",
-                    gap: "16px",
-                  }}
-                >
-                  {c.portrait && (
-                    <img src={c.portrait} alt="" crossOrigin="anonymous" style={{ width: "90px", height: "120px", objectFit: "cover", borderRadius: "4px", flexShrink: 0 }} />
-                  )}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: "20px", fontWeight: 700, color: WHITE }}>{c.name || "Unnamed"}</div>
-                    <div style={{ fontSize: "11px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.1em", marginTop: "4px" }}>
-                      {c.role}
+            <SectionLabel>The Characters</SectionLabel>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: data.characters.length === 1 ? "1fr" : data.characters.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr 1fr",
+                gap: "20px",
+                marginTop: "24px",
+              }}
+            >
+              {data.characters.slice(0, 4).map((c: any, i: number) => {
+                const portraitSrc = c.portrait || c.aiPortrait || c.referencePhoto;
+                return (
+                  <div
+                    key={i}
+                    style={{
+                      backgroundColor: SURFACE,
+                      display: "flex",
+                      flexDirection: "column",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div style={{ position: "relative", width: "100%", aspectRatio: "3 / 4", backgroundColor: CARD, overflow: "hidden" }}>
+                      {portraitSrc ? (
+                        <img
+                          src={portraitSrc}
+                          alt=""
+                          crossOrigin="anonymous"
+                          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.92) contrast(1.05)" }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            background: `linear-gradient(160deg, ${CARD}, ${BG})`,
+                            color: ACCENT,
+                            fontFamily: SERIF,
+                            fontSize: "64px",
+                            fontWeight: 600,
+                            opacity: 0.55,
+                          }}
+                        >
+                          {(c.name || "?").charAt(0).toUpperCase()}
+                        </div>
+                      )}
                     </div>
-                    {c.description && (
-                      <p style={{ fontSize: "12px", color: WHITE, lineHeight: 1.5, marginTop: "10px", opacity: 0.85 }}>{c.description}</p>
-                    )}
-                    {(c.externalGoal || c.internalWound) && (
-                      <div style={{ marginTop: "10px", borderTop: `1px solid ${BG}`, paddingTop: "8px", fontSize: "11px", lineHeight: 1.45 }}>
-                        {c.externalGoal && <div style={{ color: WHITE, opacity: 0.9 }}><span style={{ color: ACCENT, fontWeight: 600 }}>WANTS: </span>{c.externalGoal}</div>}
-                        {c.internalWound && <div style={{ color: WHITE, opacity: 0.9, marginTop: "4px" }}><span style={{ color: ACCENT, fontWeight: 600 }}>WOUND: </span>{c.internalWound}</div>}
+                    <div style={{ padding: "18px 16px 20px" }}>
+                      <div style={{ fontFamily: SERIF, fontSize: "22px", fontWeight: 600, color: PURE_WHITE, lineHeight: 1.15 }}>
+                        {c.name || "Unnamed"}
                       </div>
-                    )}
+                      {c.role && (
+                        <div style={{ fontSize: "10px", color: ACCENT, textTransform: "uppercase", letterSpacing: "0.24em", marginTop: "6px", fontWeight: 700 }}>
+                          {c.role}
+                        </div>
+                      )}
+                      {c.description && (
+                        <p style={{ fontFamily: SERIF, fontSize: "13px", color: WHITE, lineHeight: 1.5, marginTop: "10px", opacity: 0.88 }}>
+                          {c.description.split(/(?<=[.!?])\s+/).slice(0, 2).join(" ")}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Slide>
         )}
 
-        {/* 4b. Episode Breakdown — TV / mini-series */}
+        {/* ============ 4b. EPISODE BREAKDOWN — TV / mini-series ============ */}
         {data.episodes && data.episodes.length > 0 && (
           <Slide id="slide-episodes">
-            <SectionLabel>EPISODE BREAKDOWN</SectionLabel>
-            <div style={{ marginTop: "20px", display: "flex", flexDirection: "column", gap: "12px", maxHeight: "560px", overflow: "hidden" }}>
+            <SectionLabel>Episode Breakdown</SectionLabel>
+            <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "14px", maxHeight: "540px", overflow: "hidden" }}>
               {data.episodes.slice(0, 8).map((ep, i) => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "70px 200px 1fr", gap: "20px", alignItems: "baseline", borderBottom: `1px solid ${CARD}`, paddingBottom: "10px" }}>
-                  <div style={{ fontSize: "12px", color: ACCENT, fontFamily: "ui-monospace, monospace", letterSpacing: "0.1em" }}>EP {String(i + 1).padStart(2, "0")}</div>
-                  <div style={{ fontSize: "16px", fontWeight: 700, color: WHITE }}>{ep.title || "—"}</div>
-                  <div style={{ fontSize: "13px", color: WHITE, opacity: 0.85, lineHeight: 1.5 }}>{ep.logline}</div>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "80px 240px 1fr", gap: "24px", alignItems: "baseline", borderBottom: `1px solid ${CARD}`, paddingBottom: "12px" }}>
+                  <div style={{ fontSize: "11px", color: ACCENT, fontFamily: MONO, letterSpacing: "0.2em", fontWeight: 700 }}>EP {String(i + 1).padStart(2, "0")}</div>
+                  <div style={{ fontFamily: SERIF, fontSize: "20px", fontWeight: 600, color: PURE_WHITE }}>{ep.title || "—"}</div>
+                  <div style={{ fontFamily: SERIF, fontSize: "15px", color: WHITE, opacity: 0.88, lineHeight: 1.55 }}>{ep.logline}</div>
                 </div>
               ))}
             </div>
           </Slide>
         )}
 
-        {/* 5. Visual Style */}
+        {/* ============ 5. VISUAL STYLE — full-bleed image with text panel ============ */}
         {(data.visualStyle || data.posterImage) && (
-          <Slide id="slide-style">
-            <div style={{ display: "grid", gridTemplateColumns: data.posterImage ? "1.2fr 1fr" : "1fr", gap: "40px", height: "100%" }}>
-              <div>
-                <SectionLabel>VISUAL STYLE</SectionLabel>
-                <div style={{ fontSize: "36px", fontWeight: 700, color: WHITE, marginBottom: "20px" }}>{template.label}</div>
+          <Slide id="slide-style" noPadding={!!data.posterImage}>
+            {data.posterImage ? (
+              <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                <img
+                  src={data.posterImage}
+                  alt=""
+                  crossOrigin="anonymous"
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.9) contrast(1.05)" }}
+                />
                 <div
                   style={{
-                    height: "8px",
-                    width: "200px",
-                    background: `linear-gradient(90deg, ${template.from}, ${template.to})`,
-                    borderRadius: "4px",
-                    marginBottom: "24px",
+                    position: "absolute",
+                    inset: 0,
+                    background: "linear-gradient(90deg, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.78) 38%, rgba(10,10,15,0.1) 70%, transparent 100%)",
                   }}
                 />
-                {data.visualStyle && (
-                  <p style={{ fontSize: "14px", color: WHITE, lineHeight: 1.7, opacity: 0.9 }}>{data.visualStyle}</p>
-                )}
-                {data.themes && data.themes.length > 0 && (
-                  <div style={{ marginTop: "24px" }}>
-                    {data.themes.map((t) => <Pill key={t}>{t}</Pill>)}
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "72px",
+                    top: "72px",
+                    bottom: "72px",
+                    width: "560px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <SectionLabel>Visual Language</SectionLabel>
+                  <div style={{ fontFamily: SERIF, fontSize: "52px", fontWeight: 600, color: PURE_WHITE, marginBottom: "20px", lineHeight: 1.05 }}>
+                    {template.label}
                   </div>
+                  <div
+                    style={{
+                      height: "2px",
+                      width: "80px",
+                      background: ACCENT,
+                      marginBottom: "28px",
+                    }}
+                  />
+                  {data.visualStyle && (
+                    <p style={{ fontFamily: SERIF, fontSize: "17px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>{data.visualStyle}</p>
+                  )}
+                  {data.themes && data.themes.length > 0 && (
+                    <div style={{ marginTop: "28px" }}>
+                      {data.themes.map((t) => <Pill key={t} solid={false}>{t}</Pill>)}
+                    </div>
+                  )}
+                </div>
+                <PlateCaption>
+                  {data.projectTitle || "Untitled"} — Key Art
+                </PlateCaption>
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "900px" }}>
+                <SectionLabel>Visual Language</SectionLabel>
+                <div style={{ fontFamily: SERIF, fontSize: "52px", fontWeight: 600, color: PURE_WHITE, marginBottom: "20px" }}>{template.label}</div>
+                <div style={{ height: "2px", width: "80px", background: ACCENT, marginBottom: "28px" }} />
+                {data.visualStyle && (
+                  <p style={{ fontFamily: SERIF, fontSize: "18px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>{data.visualStyle}</p>
                 )}
               </div>
-              {data.posterImage && (
-                <div style={{ overflow: "hidden", borderRadius: "8px", backgroundColor: CARD }}>
-                  <img src={data.posterImage} alt="" crossOrigin="anonymous" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                </div>
-              )}
-            </div>
+            )}
           </Slide>
         )}
 
-        {/* 6. Comparables */}
+        {/* ============ 6. COMPARABLES — poster card row ============ */}
         {data.comparables && data.comparables.length > 0 && (
           <Slide id="slide-comps">
-            <SectionLabel>COMPARABLES</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "20px", marginTop: "30px" }}>
-              {data.comparables.slice(0, 3).map((c: any, i: number) => (
-                <div key={i} style={{ backgroundColor: CARD, padding: "28px", borderRadius: "6px", minHeight: "380px" }}>
-                  <div style={{ fontSize: "22px", fontWeight: 700, color: WHITE }}>{c.title || "—"}</div>
-                  <div style={{ fontSize: "13px", color: ACCENT, marginTop: "8px", fontWeight: 600 }}>
-                    {[c.year, c.revenue || c.boxOffice].filter(Boolean).join(" · ")}
+            <SectionLabel>Comparable Titles</SectionLabel>
+            <div style={{ fontFamily: SERIF, fontSize: "16px", color: MUTED, marginTop: "-8px", marginBottom: "28px", fontStyle: "italic" }}>
+              Films that share our audience, tone, and market.
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "24px" }}>
+              {data.comparables.slice(0, 3).map((c: any, i: number) => {
+                const poster = c.poster || c.posterImage || c.posterUrl;
+                return (
+                  <div key={i} style={{ display: "flex", flexDirection: "column", overflow: "hidden", backgroundColor: SURFACE }}>
+                    {/* Poster zone */}
+                    <div style={{ position: "relative", width: "100%", aspectRatio: "2 / 3", overflow: "hidden", background: poster ? "#000" : compTone(i) }}>
+                      {poster ? (
+                        <img src={poster} alt="" crossOrigin="anonymous" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                      ) : (
+                        <div
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            padding: "20px",
+                            textAlign: "center",
+                          }}
+                        >
+                          <div style={{ fontFamily: SERIF, fontSize: "30px", fontWeight: 600, color: PURE_WHITE, lineHeight: 1.1, letterSpacing: "-0.01em" }}>
+                            {c.title || "Untitled"}
+                          </div>
+                          {c.year && (
+                            <div style={{ marginTop: "12px", fontSize: "11px", letterSpacing: "0.32em", color: ACCENT, fontWeight: 700 }}>
+                              {c.year}
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    {/* Caption */}
+                    <div style={{ padding: "16px 18px 20px" }}>
+                      <div style={{ fontFamily: SERIF, fontSize: "20px", fontWeight: 600, color: PURE_WHITE, lineHeight: 1.2 }}>
+                        {c.title || "—"}
+                      </div>
+                      <div style={{ fontSize: "10px", color: ACCENT, marginTop: "6px", fontWeight: 700, letterSpacing: "0.24em", textTransform: "uppercase" }}>
+                        {[c.year, c.revenue || c.boxOffice].filter(Boolean).join(" · ")}
+                      </div>
+                      {(c.whySimilar || c.whyItCompares) && (
+                        <p style={{ fontFamily: SERIF, fontSize: "12.5px", color: WHITE, opacity: 0.85, lineHeight: 1.55, marginTop: "12px" }}>
+                          {(c.whySimilar || c.whyItCompares).split(/(?<=[.!?])\s+/).slice(0, 2).join(" ")}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <p style={{ fontSize: "13px", color: WHITE, opacity: 0.8, lineHeight: 1.6, marginTop: "20px" }}>
-                    {c.whySimilar || c.whyItCompares || ""}
-                  </p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </Slide>
         )}
 
-        {/* 7. Market & Audience */}
+        {/* ============ 7. MARKET & AUDIENCE ============ */}
         {(data.primaryDemographic || data.distributionPlan) && (
           <Slide id="slide-market">
-            <SectionLabel>MARKET & AUDIENCE</SectionLabel>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", marginTop: "20px", height: "calc(100% - 60px)" }}>
+            <SectionLabel>Market & Audience</SectionLabel>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "56px", marginTop: "24px", height: "calc(100% - 80px)" }}>
               <div>
-                <div style={{ fontSize: "12px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.15em" }}>Primary Demographic</div>
-                <div style={{ fontSize: "20px", color: WHITE, marginTop: "12px", lineHeight: 1.5 }}>{data.primaryDemographic || "—"}</div>
-                <div style={{ fontSize: "12px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.15em", marginTop: "32px" }}>
-                  Target Platforms
+                <div style={{ fontSize: "11px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>Primary Demographic</div>
+                <div style={{ fontFamily: SERIF, fontSize: "32px", color: PURE_WHITE, marginTop: "14px", lineHeight: 1.25, fontWeight: 600 }}>
+                  {formatDemographic(data.primaryDemographic)}
                 </div>
-                <div style={{ marginTop: "12px" }}>
+                {data.secondaryAudience && (
+                  <>
+                    <div style={{ fontSize: "11px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700, marginTop: "32px" }}>Secondary</div>
+                    <div style={{ fontFamily: SERIF, fontSize: "20px", color: WHITE, marginTop: "10px", lineHeight: 1.4, opacity: 0.9 }}>{data.secondaryAudience}</div>
+                  </>
+                )}
+                <div style={{ fontSize: "11px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700, marginTop: "36px" }}>Target Platforms</div>
+                <div style={{ marginTop: "14px" }}>
                   {(data.targetPlatforms || []).map((p) => <Pill key={p}>{p}</Pill>)}
                 </div>
               </div>
               {data.distributionPlan && (
                 <div>
-                  <div style={{ fontSize: "12px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.15em" }}>Distribution Plan</div>
-                  <p style={{ fontSize: "14px", color: WHITE, lineHeight: 1.7, marginTop: "12px", opacity: 0.9 }}>
-                    {data.distributionPlan}
-                  </p>
+                  <div style={{ fontSize: "11px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>Distribution Plan</div>
+                  <div style={{ marginTop: "14px", maxHeight: "440px", overflow: "hidden" }}>
+                    {splitIntoParagraphs(data.distributionPlan, 3).slice(0, 3).map((p, i) => (
+                      <p key={i} style={{ fontFamily: SERIF, fontSize: "16px", color: WHITE, lineHeight: 1.65, opacity: 0.92, marginBottom: "16px" }}>{p}</p>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
           </Slide>
         )}
 
-        {/* 8. Team */}
+        {/* ============ 8. TEAM ============ */}
         {data.teamMembers && data.teamMembers.length > 0 && (
           <Slide id="slide-team">
-            <SectionLabel>THE TEAM</SectionLabel>
-            <div style={{ marginTop: "30px", display: "flex", flexDirection: "column", gap: "20px" }}>
+            <SectionLabel>The Team</SectionLabel>
+            <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "22px" }}>
               {data.teamMembers.slice(0, 5).map((m: any, i: number) => (
-                <div key={i} style={{ display: "flex", alignItems: "baseline", gap: "24px", borderBottom: `1px solid ${CARD}`, paddingBottom: "16px" }}>
-                  <div style={{ fontSize: "26px", fontWeight: 700, color: WHITE, minWidth: "300px" }}>{m.name || "—"}</div>
-                  <div style={{ fontSize: "16px", color: ACCENT, fontWeight: 500 }}>{m.role}</div>
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "44px 1fr 240px", alignItems: "baseline", gap: "24px", borderBottom: `1px solid ${CARD}`, paddingBottom: "18px" }}>
+                  <div style={{ fontFamily: MONO, fontSize: "11px", color: ACCENT, letterSpacing: "0.2em", fontWeight: 700 }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div style={{ fontFamily: SERIF, fontSize: "30px", fontWeight: 600, color: PURE_WHITE, lineHeight: 1.15 }}>{m.name || "—"}</div>
+                  <div style={{ fontSize: "12px", color: ACCENT, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", textAlign: "right" }}>{m.role}</div>
                 </div>
               ))}
             </div>
           </Slide>
         )}
 
-        {/* 9. Production */}
+        {/* ============ 9. PRODUCTION ============ */}
         {(data.budgetRange || data.shootingLocations || data.timeline || data.unionStatus) && (
           <Slide id="slide-production">
-            <SectionLabel>PRODUCTION</SectionLabel>
-            <div style={{ marginTop: "30px", display: "flex", flexDirection: "column", gap: "28px" }}>
+            <SectionLabel>Production</SectionLabel>
+            <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "26px" }}>
               {[
                 ["Budget Range", data.budgetRange],
                 ["Shoot Location", data.shootingLocations],
                 ["Union Status", data.unionStatus],
                 ["Timeline", data.timeline],
               ].filter((r) => r[1]).map((r) => (
-                <div key={r[0]} style={{ display: "grid", gridTemplateColumns: "240px 1fr", alignItems: "center", gap: "24px" }}>
-                  <div style={{ fontSize: "13px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.15em" }}>{r[0]}</div>
-                  <div style={{ fontSize: "22px", fontWeight: 600, color: WHITE }}>
-                    {r[0] === "Budget Range" ? <Pill>{r[1] as string}</Pill> : r[1]}
+                <div key={r[0]} style={{ display: "grid", gridTemplateColumns: "260px 1fr", alignItems: "center", gap: "24px", borderBottom: `1px solid ${CARD}`, paddingBottom: "20px" }}>
+                  <div style={{ fontSize: "11px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>{r[0]}</div>
+                  <div style={{ fontFamily: SERIF, fontSize: "26px", fontWeight: 600, color: PURE_WHITE }}>
+                    {r[1]}
                   </div>
                 </div>
               ))}
@@ -809,19 +1066,123 @@ const PitchDeckPreview = () => {
           </Slide>
         )}
 
-        {/* 10. The Ask */}
+        {/* ============ 10. THE ASK — context, not just a number ============ */}
         <Slide id="slide-ask">
-          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", height: "100%", textAlign: "center", position: "relative" }}>
-            <SectionLabel>THE ASK</SectionLabel>
-            <div style={{ fontSize: "48px", fontWeight: 800, color: ACCENT, maxWidth: "1000px", lineHeight: 1.2, marginTop: "20px" }}>
+          <div style={{ display: "flex", flexDirection: "column", height: "100%" }}>
+            <SectionLabel>The Ask</SectionLabel>
+            <div
+              style={{
+                fontFamily: SERIF,
+                fontSize: "64px",
+                fontWeight: 600,
+                color: ACCENT_BRIGHT,
+                lineHeight: 1.1,
+                marginTop: "12px",
+                letterSpacing: "-0.01em",
+                maxWidth: "1100px",
+              }}
+            >
               {data.investmentAsk || "Seeking production financing"}
             </div>
-            {(data.contactName || data.contactEmail || data.website) && (
-              <div style={{ marginTop: "40px", fontSize: "15px", color: WHITE, opacity: 0.85 }}>
-                {[data.contactName, data.contactEmail, data.website].filter(Boolean).join("  ·  ")}
+            <div
+              style={{
+                marginTop: "36px",
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr 1fr",
+                gap: "32px",
+                paddingTop: "32px",
+                borderTop: `1px solid ${CARD}`,
+              }}
+            >
+              <div>
+                <div style={{ fontSize: "10px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>Budget Tier</div>
+                <div style={{ fontFamily: SERIF, fontSize: "22px", color: PURE_WHITE, marginTop: "10px", fontWeight: 600 }}>
+                  {data.budgetRange || "To be confirmed"}
+                </div>
               </div>
+              <div>
+                <div style={{ fontSize: "10px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>Audience</div>
+                <div style={{ fontFamily: SERIF, fontSize: "22px", color: PURE_WHITE, marginTop: "10px", fontWeight: 600, lineHeight: 1.3 }}>
+                  {formatDemographic(data.primaryDemographic) || "Wide release"}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: "10px", color: MUTED, textTransform: "uppercase", letterSpacing: "0.28em", fontWeight: 700 }}>Distribution</div>
+                <div style={{ fontFamily: SERIF, fontSize: "18px", color: PURE_WHITE, marginTop: "10px", fontWeight: 500, lineHeight: 1.35 }}>
+                  {(data.targetPlatforms?.length ?? 0) > 0
+                    ? data.targetPlatforms!.slice(0, 3).join(" · ")
+                    : "Streaming + festival circuit"}
+                </div>
+              </div>
+            </div>
+            {data.marketingHighlights && (
+              <p style={{ fontFamily: SERIF, fontSize: "15px", color: WHITE, opacity: 0.85, lineHeight: 1.6, marginTop: "32px", maxWidth: "980px", fontStyle: "italic" }}>
+                {data.marketingHighlights.split(/(?<=[.!?])\s+/).slice(0, 2).join(" ")}
+              </p>
             )}
-            <div style={{ position: "absolute", bottom: 0, right: 0, fontSize: "11px", color: MUTED, letterSpacing: "0.1em" }}>
+          </div>
+        </Slide>
+
+        {/* ============ 11. CLOSING / END SLATE — cinematic image with contact ============ */}
+        <Slide id="slide-closing" noPadding background={heroImage ? "#000" : `linear-gradient(135deg, #0e0a08 0%, #0a0a0f 100%)`}>
+          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+            {heroImage && (
+              <img
+                src={heroImage}
+                alt=""
+                crossOrigin="anonymous"
+                style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.85) contrast(1.05) brightness(0.6)" }}
+              />
+            )}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(180deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.85) 100%)",
+              }}
+            />
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                textAlign: "center",
+                padding: "72px",
+              }}
+            >
+              <div style={{ fontSize: "11px", letterSpacing: "0.4em", color: ACCENT, fontWeight: 700, textTransform: "uppercase", marginBottom: "28px" }}>
+                Thank You
+              </div>
+              <div
+                style={{
+                  fontFamily: SERIF,
+                  fontSize: "72px",
+                  fontWeight: 600,
+                  color: PURE_WHITE,
+                  letterSpacing: "-0.015em",
+                  lineHeight: 1,
+                  textShadow: "0 4px 24px rgba(0,0,0,0.7)",
+                  maxWidth: "980px",
+                }}
+              >
+                {data.projectTitle || "Untitled"}
+              </div>
+              <div style={{ marginTop: "32px", height: "1px", width: "60px", backgroundColor: ACCENT }} />
+              {(data.contactName || data.contactEmail || data.contactPhone || data.website) && (
+                <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "8px", alignItems: "center" }}>
+                  {data.contactName && (
+                    <div style={{ fontFamily: SERIF, fontSize: "20px", color: PURE_WHITE, fontWeight: 500 }}>{data.contactName}</div>
+                  )}
+                  <div style={{ fontSize: "13px", color: WHITE, opacity: 0.85, letterSpacing: "0.08em" }}>
+                    {[data.contactEmail, data.contactPhone, data.website].filter(Boolean).join("  ·  ")}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ position: "absolute", bottom: "32px", right: "40px", fontSize: "10px", color: WHITE, opacity: 0.55, letterSpacing: "0.32em", fontWeight: 600 }}>
               FILMMAKER GENIUS
             </div>
           </div>
