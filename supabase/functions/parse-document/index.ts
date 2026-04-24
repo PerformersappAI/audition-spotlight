@@ -202,4 +202,9 @@ Return only the extracted text without any commentary.`;
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   }
+
+  return new Response(JSON.stringify({ error: 'Unsupported request' }), {
+    status: 400,
+    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+  });
 });

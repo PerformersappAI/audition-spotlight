@@ -133,7 +133,7 @@ Important: Transform this person into the character ${characterName} while maint
   } catch (error) {
     console.error("Character portrait generation error:", error);
     return new Response(
-      JSON.stringify({ error: error.message || "Failed to generate character portrait" }),
+      JSON.stringify({ error: error instanceof Error ? error.message : "Failed to generate character portrait" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
