@@ -222,7 +222,7 @@ REMEMBER: Each description should be precise enough that an AI image generator c
       dialogue: shot.dialogue,
       // Also include legacy fields for backward compatibility
       description: shot.action,
-      visualElements: [shot.lighting, shot.emotionalTone],
+      visualElements: [shot.lighting, shot.emotionalTone].filter(Boolean).join(" · "),
       sceneAction: shot.visualDescription
     }));
 
