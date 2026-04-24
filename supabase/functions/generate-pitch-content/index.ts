@@ -5,11 +5,33 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+type GenerationType = "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution" | "visualStyle";
+
 interface GenerateRequest {
-  type?: "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution";
-  field?: "logline" | "synopsis" | "vision" | "character" | "comps" | "audience" | "distribution";
-  context: Record<string, unknown>;
+  type?: string;
+  field?: string;
+  context: Record<string, any>;
 }
+
+// Map any client-side field name to the canonical generation type used in the switch below.
+const FIELD_ALIASES: Record<string, GenerationType> = {
+  logline: "logline",
+  synopsis: "synopsis",
+  vision: "vision",
+  directorvision: "vision",
+  character: "character",
+  characters: "character",
+  comps: "comps",
+  comparables: "comps",
+  audience: "audience",
+  market: "audience",
+  marketanalysis: "audience",
+  distribution: "distribution",
+  distributionplan: "distribution",
+  distributionstrategy: "distribution",
+  visualstyle: "visualStyle",
+  style: "visualStyle",
+};
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -18,9 +40,20 @@ serve(async (req) => {
 
   try {
     const body = await req.json() as GenerateRequest;
-    // Accept either `type` or `field` from the client for backward compatibility.
-    const type = body.type ?? body.field;
-    const context = body.context ?? {};
+    const rawType = (body.type ?? body.field ?? "").toString().toLowerCase().replace(/[_\s-]/g, "");
+    const type: GenerationType | undefined = FIELD_ALIASES[rawType];
+    const ctx = body.context ?? {};
+
+    // Normalize common context aliases used across the pitch deck wizard.
+    const context: Record<string, any> = {
+      ...ctx,
+      title: ctx.title ?? ctx.projectTitle,
+      type: ctx.type ?? ctx.projectType,
+      tone: ctx.tone ?? ctx.toneMood,
+      themes: ctx.themes,
+      template: ctx.template ?? ctx.selectedTemplate,
+    };
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
