@@ -241,11 +241,29 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
                     <textarea
                       value={c.description}
                       onChange={(e) => updateChar(i, "description", e.target.value)}
-                      placeholder="2–3 sentence description"
+                      placeholder="2–3 sentence description (essence, voice, contradiction)"
                       rows={2}
                       className="w-full resize-none rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
                       style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
                     />
+                    <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                      <input
+                        type="text"
+                        value={c.externalGoal ?? ""}
+                        onChange={(e) => updateChar(i, "externalGoal" as keyof VisualCharacter, e.target.value)}
+                        placeholder="External goal (what they want)"
+                        className="rounded-md border px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
+                        style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
+                      />
+                      <input
+                        type="text"
+                        value={c.internalWound ?? ""}
+                        onChange={(e) => updateChar(i, "internalWound" as keyof VisualCharacter, e.target.value)}
+                        placeholder="Internal wound (what blocks them)"
+                        className="rounded-md border px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
+                        style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
+                      />
+                    </div>
                     <button
                       type="button"
                       onClick={() => handleGeneratePortrait(i)}
