@@ -651,18 +651,22 @@ const PitchDeckMaker = () => {
           <section className="lg:col-span-3">
             <div className="lg:sticky lg:top-32">
               <div className="mb-3 flex items-center justify-between">
-                <p className="text-xs uppercase tracking-widest text-zinc-500">
+                <p className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500">
+                  <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#f5a623] shadow-[0_0_8px_rgba(245,166,35,0.8)]" />
                   Live Preview
                 </p>
-                <span className="text-xs text-zinc-600">Updates as you type</span>
+                <span className="text-[11px] tracking-wide text-zinc-600">Updates as you type</span>
               </div>
 
               <div
-                className="relative flex flex-col rounded-xl border overflow-hidden"
+                className="relative flex flex-col overflow-hidden rounded-2xl border"
                 style={{
-                  backgroundColor: "#0d0d18",
-                  borderColor: "#22222e",
+                  background:
+                    "linear-gradient(180deg, #0d0d18 0%, #08080f 100%)",
+                  borderColor: "rgba(245,166,35,0.15)",
                   minHeight: "calc(100vh - 220px)",
+                  boxShadow:
+                    "0 40px 100px -40px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.02) inset",
                 }}
               >
                 {/* Film grain overlay */}
