@@ -200,7 +200,23 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
                 className="rounded-lg border p-3"
                 style={{ backgroundColor: "#1a1a26", borderColor: "#22222e" }}
               >
-                <div className="flex items-start gap-2">
+                <div className="flex items-start gap-3">
+                  <div
+                    className="relative flex h-20 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border"
+                    style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
+                  >
+                    {c.portrait ? (
+                      <img
+                        src={c.portrait}
+                        alt={c.name || "Character portrait"}
+                        className="h-full w-full"
+                        style={{ objectFit: "cover" }}
+                      />
+                    ) : (
+                      <User className="h-6 w-6 text-zinc-600" />
+                    )}
+                  </div>
+
                   <div className="flex-1 space-y-2">
                     <div className="grid grid-cols-2 gap-2">
                       <input
@@ -220,15 +236,30 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
                         style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
                       />
                     </div>
-                    <input
-                      type="text"
+                    <textarea
                       value={c.description}
                       onChange={(e) => updateChar(i, "description", e.target.value)}
-                      placeholder="One-line description"
-                      className="w-full rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
+                      placeholder="2–3 sentence description"
+                      rows={2}
+                      className="w-full resize-none rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none"
                       style={{ backgroundColor: "#0d0d18", borderColor: "#22222e" }}
                     />
+                    <button
+                      type="button"
+                      onClick={() => handleGeneratePortrait(i)}
+                      disabled={generatingPortraitIdx === i}
+                      className="inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50"
+                      style={{ borderColor: "#f5a623", height: "26px" }}
+                    >
+                      {generatingPortraitIdx === i ? (
+                        <Loader2 className="h-3 w-3 animate-spin" />
+                      ) : (
+                        <Sparkles className="h-3 w-3" />
+                      )}
+                      {c.portrait ? "Regenerate Portrait" : "Generate Portrait"}
+                    </button>
                   </div>
+
                   <button
                     type="button"
                     onClick={() => removeChar(i)}
