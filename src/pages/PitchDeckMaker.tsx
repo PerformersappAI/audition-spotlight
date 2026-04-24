@@ -523,7 +523,7 @@ const PitchDeckMaker = () => {
                           key={g}
                           type="button"
                           onClick={() => toggleInArray("genre", g)}
-                          className="rounded-full border px-3 py-1 text-xs transition"
+                          className="rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
                             borderColor: on ? "#f5a623" : "#2a2a36",
@@ -568,7 +568,7 @@ const PitchDeckMaker = () => {
                           key={p}
                           type="button"
                           onClick={() => toggleInArray("targetPlatforms", p)}
-                          className="rounded-full border px-3 py-1 text-xs transition"
+                          className="rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px"
                           style={{
                             backgroundColor: on ? "#f5a623" : "#1a1a26",
                             borderColor: on ? "#f5a623" : "#2a2a36",
