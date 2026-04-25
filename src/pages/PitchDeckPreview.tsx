@@ -1049,7 +1049,7 @@ const PitchDeckPreview = () => {
         )}
 
         {/* ============ 6. COMPARABLES — poster card row ============ */}
-        {data.comparables && data.comparables.length > 0 && (
+        {data.comparables && data.comparables.some((c: any) => c?.title) && (
           <Slide id="slide-comps">
             <SectionLabel>Comparable Titles</SectionLabel>
             <div style={{ fontFamily: SERIF, fontSize: "16px", color: MUTED, marginTop: "-8px", marginBottom: "28px", fontStyle: "italic" }}>
