@@ -976,7 +976,7 @@ const PitchDeckPreview = () => {
         )}
 
         {/* ============ 4b. EPISODE BREAKDOWN — TV / mini-series ============ */}
-        {data.episodes && data.episodes.length > 0 && (
+        {data.episodes && data.episodes.some((e: any) => e?.title || e?.logline) && (
           <Slide id="slide-episodes">
             <SectionLabel>Episode Breakdown</SectionLabel>
             <div style={{ marginTop: "24px", display: "flex", flexDirection: "column", gap: "14px", maxHeight: "540px", overflow: "hidden" }}>
