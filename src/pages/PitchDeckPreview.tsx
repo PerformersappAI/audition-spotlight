@@ -852,15 +852,13 @@ const PitchDeckPreview = () => {
         {/* ============ 2b. NORTH STAR ============ */}
         {data.northStar && (
           <Slide id="slide-northstar">
-            <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "980px", margin: "0 auto" }}>
+            <div style={{ display: "flex", flexDirection: "column", justifyContent: "flex-start", height: "100%", maxWidth: "980px", margin: "0 auto", paddingTop: "32px" }}>
               <SectionLabel>North Star</SectionLabel>
-              <div style={{ maxHeight: "520px", overflow: "hidden" }}>
-                {splitIntoParagraphs(data.northStar, 3).slice(0, 3).map((p, i) => (
-                  <p key={i} style={{ fontFamily: SERIF, fontSize: "22px", color: WHITE, lineHeight: 1.55, marginBottom: "20px" }}>
-                    {p}
-                  </p>
-                ))}
-              </div>
+              {splitIntoParagraphs(truncateSentences(data.northStar, 110), 3).slice(0, 3).map((p, i) => (
+                <p key={i} style={{ fontFamily: SERIF, fontSize: "22px", color: WHITE, lineHeight: 1.55, marginBottom: "20px" }}>
+                  {p}
+                </p>
+              ))}
             </div>
           </Slide>
         )}
