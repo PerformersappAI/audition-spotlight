@@ -18,8 +18,12 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Don't show layout on auth pages or homepage (homepage has its own nav)
-  const hideLayout = location.pathname === '/auth' || location.pathname === '/admin-login' || location.pathname === '/';
+  // Don't show layout on auth pages, homepage, or toolbox (these have their own nav)
+  const hideLayout =
+    location.pathname === '/auth' ||
+    location.pathname === '/admin-login' ||
+    location.pathname === '/' ||
+    location.pathname === '/toolbox';
 
   if (hideLayout) {
     return <>{children}</>;
