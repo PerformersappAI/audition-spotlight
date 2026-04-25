@@ -931,7 +931,7 @@ const PitchDeckPreview = () => {
                           src={portraitSrc}
                           alt=""
                           crossOrigin="anonymous"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.92) contrast(1.05)" }}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center", filter: "saturate(0.92) contrast(1.05)" }}
                         />
                       ) : (
                         <div
