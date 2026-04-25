@@ -10,6 +10,36 @@ import {
   Upload, Film, Wand2, Download, Users, Palette, FileText,
   Share2, MessageSquare, ArrowRight, Check, Sparkles, Camera,
 } from "lucide-react";
+import testimonialDirector from "@/assets/testimonial-director-1.jpg";
+import testimonialActorFilmmaker from "@/assets/testimonial-actor-filmmaker.jpg";
+import testimonialFilmmaker from "@/assets/testimonial-filmmaker-portrait.jpg";
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "I storyboarded an entire short in an afternoon. My DP showed up to set already knowing every shot we needed.",
+    name: "Maya Ellis",
+    role: "Director / Filmmaker",
+    location: "Brooklyn, NY",
+    image: testimonialDirector,
+  },
+  {
+    quote:
+      "As an actor who also directs, this gave me a way to pitch my own project visually. Producers finally saw what I saw.",
+    name: "Daniel Reyes",
+    role: "Actor / Filmmaker",
+    location: "Los Angeles, CA",
+    image: testimonialActorFilmmaker,
+  },
+  {
+    quote:
+      "I've used storyboard artists for fifteen years. This is the first tool that actually keeps up with my rewrites.",
+    name: "Tom Whitaker",
+    role: "Independent Filmmaker",
+    location: "Austin, TX",
+    image: testimonialFilmmaker,
+  },
+];
 
 const FAQS = [
   {
@@ -341,14 +371,24 @@ export default function StoryboardingLanding({ isAuthenticated }: Props) {
             What Filmmakers Are Saying
           </h2>
           <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {[1, 2, 3].map((n) => (
-              <Card key={n} className="border-border/50 bg-card/50">
+            {TESTIMONIALS.map((t) => (
+              <Card key={t.name} className="overflow-hidden border-border/50 bg-card/50">
+                <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+                  <img
+                    src={t.image}
+                    alt={`${t.name}, ${t.role}`}
+                    loading="lazy"
+                    width={768}
+                    height={576}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
                 <CardContent className="p-6">
                   <MessageSquare className="mb-3 h-5 w-5 text-primary" />
-                  <p className="text-sm italic text-muted-foreground">[TESTIMONIAL {n}]</p>
+                  <p className="text-sm italic text-muted-foreground">"{t.quote}"</p>
                   <div className="mt-4">
-                    <div className="text-sm font-semibold">[Name]</div>
-                    <div className="text-xs text-muted-foreground">[Role] · [Location]</div>
+                    <div className="text-sm font-semibold">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.role} · {t.location}</div>
                   </div>
                 </CardContent>
               </Card>
