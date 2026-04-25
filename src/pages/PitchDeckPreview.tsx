@@ -756,57 +756,68 @@ const PitchDeckPreview = () => {
         {/* ============ 2. STORY — split spread, breathing chunks, pull quote ============ */}
         {data.synopsis && (
           <Slide id="slide-story">
-            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "56px", height: "100%" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: "56px", height: "100%", alignItems: "center" }}>
               <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                 <SectionLabel>The Story</SectionLabel>
-                <div style={{ maxHeight: "520px", overflow: "hidden" }}>
-                  {splitIntoParagraphs(data.synopsis, 3).slice(0, 3).map((p, i) => (
-                    <p
-                      key={i}
-                      style={{
-                        fontFamily: SERIF,
-                        fontSize: "19px",
-                        lineHeight: 1.65,
-                        color: WHITE,
-                        marginBottom: "20px",
-                        opacity: 0.95,
-                      }}
-                    >
-                      {p}
-                    </p>
-                  ))}
-                </div>
+                {/* Sentence-aware truncation: never cut mid-sentence */}
+                {splitIntoParagraphs(truncateSentences(data.synopsis, 110), 3).slice(0, 3).map((p, i) => (
+                  <p
+                    key={i}
+                    style={{
+                      fontFamily: SERIF,
+                      fontSize: "19px",
+                      lineHeight: 1.65,
+                      color: WHITE,
+                      marginBottom: "20px",
+                      opacity: 0.95,
+                    }}
+                  >
+                    {p}
+                  </p>
+                ))}
               </div>
-              <div style={{ position: "relative", overflow: "hidden", backgroundColor: SURFACE }}>
-                {storyImage ? (
-                  <>
-                    <img
-                      src={storyImage}
-                      alt=""
-                      style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.9) contrast(1.05)" }}
-                      crossOrigin="anonymous"
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7) 100%)",
-                      }}
-                    />
-                    <PlateCaption>
-                      {data.projectTitle || "Untitled"} — Scene Reference
-                    </PlateCaption>
-                  </>
-                ) : generatingImage ? (
-                  <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: MUTED }}>
-                    <Loader2 className="h-8 w-8 animate-spin" style={{ color: ACCENT }} />
-                    <span style={{ fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase" }}>Generating still…</span>
-                  </div>
-                ) : (
-                  <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <Sparkles className="h-12 w-12" style={{ color: MUTED }} />
-                  </div>
-                )}
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+                {/* Instagram-style square frame */}
+                <div
+                  style={{
+                    width: "min(100%, 520px)",
+                    aspectRatio: "1 / 1",
+                    position: "relative",
+                    overflow: "hidden",
+                    backgroundColor: SURFACE,
+                    boxShadow: "0 20px 50px -20px rgba(0,0,0,0.7)",
+                  }}
+                >
+                  {storyImage ? (
+                    <>
+                      <img
+                        src={storyImage}
+                        alt=""
+                        style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.9) contrast(1.05)" }}
+                        crossOrigin="anonymous"
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background: "linear-gradient(180deg, transparent 60%, rgba(0,0,0,0.7) 100%)",
+                        }}
+                      />
+                      <PlateCaption>
+                        {data.projectTitle || "Untitled"} — Scene Reference
+                      </PlateCaption>
+                    </>
+                  ) : generatingImage ? (
+                    <div style={{ height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "12px", color: MUTED }}>
+                      <Loader2 className="h-8 w-8 animate-spin" style={{ color: ACCENT }} />
+                      <span style={{ fontSize: "12px", letterSpacing: "0.2em", textTransform: "uppercase" }}>Generating still…</span>
+                    </div>
+                  ) : (
+                    <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <Sparkles className="h-12 w-12" style={{ color: MUTED }} />
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </Slide>
