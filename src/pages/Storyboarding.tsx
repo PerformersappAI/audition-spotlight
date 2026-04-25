@@ -2175,6 +2175,10 @@ const Storyboarding = () => {
                     cast={extractedCast}
                     onGenerateReference={generateCastReferenceImage}
                     onUploadReferencePhoto={uploadCastReferencePhoto}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                  />
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
                     <Button variant="ghost" size="sm" onClick={skipCastReview} disabled={isProcessingScript}>
