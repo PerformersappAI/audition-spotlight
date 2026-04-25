@@ -146,9 +146,15 @@ serve(async (req) => {
     // Get the visual description
     const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
     
-    // Build text prompt
-    let imagePrompt = `Generate a storyboard frame for film production.\n\n`;
-    imagePrompt += `ART STYLE: ${artStylePrompt}\n\n`;
+    // Build text prompt — single cinematic frame, NO text/captions/panels
+    let imagePrompt = `Generate ONE single cinematic storyboard frame for film pre-production.\n\n`;
+    imagePrompt += `STRICT OUTPUT RULES (must follow exactly):\n`;
+    imagePrompt += `- Output ONE single image (one camera setup, one frame). NEVER a comic-book layout, split panels, multi-panel grid, diptych, or collage.\n`;
+    imagePrompt += `- ABSOLUTELY NO text of any kind in the image: no titles, no captions, no subtitles, no character name labels, no "STORYBOARD FRAME" headers, no director's notes, no watermarks, no logos, no signatures, no scene numbers, no on-screen writing, no graffiti text, no signs with readable words.\n`;
+    imagePrompt += `- NO comic borders, NO black bars (unless the framing is a true letterbox cinematic 2.39:1 only when explicitly requested), NO speech bubbles, NO panel gutters.\n`;
+    imagePrompt += `- Treat this as a single cinematic still photograph / single illustration filling the entire frame edge-to-edge.\n\n`;
+    imagePrompt += `ART STYLE: ${artStylePrompt}\n`;
+    imagePrompt += `(Render the entire frame in this style consistently — do NOT mix styles within the image.)\n\n`;
     imagePrompt += `CAMERA FRAMING: ${framingPrompt}\n\n`;
     imagePrompt += `SCENE DESCRIPTION: ${visualDesc}\n`;
     
