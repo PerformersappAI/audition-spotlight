@@ -647,8 +647,17 @@ const Storyboarding = () => {
         }
       });
 
-      if (error) throw error;
-      if (!data?.imageUrl) throw new Error('No image returned');
+      if (error) {
+        // Try to surface the structured error from the edge function
+        const ctx: any = (error as any).context;
+        let parsed: any = null;
+        try {
+          if (ctx?.body) parsed = typeof ctx.body === 'string' ? JSON.parse(ctx.body) : ctx.body;
+        } catch {}
+        const msg = parsed?.error || (error as any)?.message || 'Image generation failed';
+        throw new Error(msg);
+      }
+      if (!data?.imageUrl) throw new Error(data?.error || 'No image returned');
 
       const ok = await deductCredits(1, `Cast reference: ${member.name}`);
       if (!ok) {
