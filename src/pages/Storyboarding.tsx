@@ -634,7 +634,7 @@ const Storyboarding = () => {
       const styleModifier =
         artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
 
-      const prompt = `Full body character reference sheet, ${member.description || member.name}, neutral pose, front facing, plain white background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+      const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${member.description || member.name}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
 
       const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
         body: {
@@ -647,8 +647,17 @@ const Storyboarding = () => {
         }
       });
 
-      if (error) throw error;
-      if (!data?.imageUrl) throw new Error('No image returned');
+      if (error) {
+        // Try to surface the structured error from the edge function
+        const ctx: any = (error as any).context;
+        let parsed: any = null;
+        try {
+          if (ctx?.body) parsed = typeof ctx.body === 'string' ? JSON.parse(ctx.body) : ctx.body;
+        } catch {}
+        const msg = parsed?.error || (error as any)?.message || 'Image generation failed';
+        throw new Error(msg);
+      }
+      if (!data?.imageUrl) throw new Error(data?.error || 'No image returned');
 
       const ok = await deductCredits(1, `Cast reference: ${member.name}`);
       if (!ok) {
@@ -700,7 +709,63 @@ const Storyboarding = () => {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(r => setTimeout(r, 500));
     }
-    setIsBulkCastGenerating(false);
+  };
+
+  // Upload a real cast member's photo, then use it as the face reference for the AI portrait
+  const uploadCastReferencePhoto = async (name: string, file: File) => {
+    const cast = selectedProject?.cast || extractedCast;
+    const member = cast.find(c => c.name === name);
+    if (!member) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ variant: "destructive", title: "File too large", description: "Please upload an image under 5MB." });
+      return;
+    }
+    if (!credits || credits.available_credits < 1) {
+      toast({ variant: "destructive", title: "Not enough credits", description: "Generating from a photo costs 1 credit." });
+      return;
+    }
+    setGeneratingCastNames(prev => new Set(prev).add(name));
+    try {
+      const ext = file.name.split('.').pop() || 'png';
+      const path = `cast-refs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('storyboard-characters').upload(path, file);
+      if (upErr) throw upErr;
+      const { data: { publicUrl } } = supabase.storage.from('storyboard-characters').getPublicUrl(path);
+
+      const styleName = artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle || 'cinematic';
+      const styleModifier = artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
+
+      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+        body: {
+          characterName: member.name,
+          characterDescription: `Three-quarter length portrait. ${member.description || member.name}.`,
+          characterRole: 'storyboard cast member',
+          referencePhotoUrl: publicUrl,
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : undefined,
+          projectTitle: selectedProject?.projectTitle || currentProject.scriptFileName,
+        }
+      });
+      if (error) {
+        const ctx: any = (error as any).context;
+        let parsed: any = null;
+        try { if (ctx?.body) parsed = typeof ctx.body === 'string' ? JSON.parse(ctx.body) : ctx.body; } catch {}
+        throw new Error(parsed?.error || (error as any)?.message || 'Image generation failed');
+      }
+      if (!data?.imageUrl) throw new Error(data?.error || 'No image returned');
+
+      const ok = await deductCredits(1, `Cast reference (photo): ${member.name}`);
+      if (!ok) { toast({ variant: "destructive", title: "Credit deduction failed" }); return; }
+
+      const nextCast = cast.map(c => c.name === name ? { ...c, reference_image_url: data.imageUrl } : c);
+      await persistCast(nextCast);
+      toast({ title: "Portrait ready", description: `${member.name}'s likeness is locked in from your photo.` });
+    } catch (err: any) {
+      console.error('Cast photo upload error:', err);
+      toast({ variant: "destructive", title: "Couldn't generate from photo", description: err?.message || "Please try again." });
+    } finally {
+      setGeneratingCastNames(prev => { const n = new Set(prev); n.delete(name); return n; });
+    }
   };
 
   const cancelSceneSelection = () => {
@@ -1162,7 +1227,45 @@ const Storyboarding = () => {
     }
   };
 
-  // This function is now replaced by generateSingleFrame - keeping for compatibility
+  const deleteShot = async (shotNumber: number) => {
+    if (!selectedProject) return;
+    const shots = selectedProject.shots || [];
+    if (shots.length <= 1) {
+      toast({ variant: "destructive", title: "Can't delete", description: "You need at least one shot." });
+      return;
+    }
+    const remaining = shots
+      .filter(s => s.shotNumber !== shotNumber)
+      .map((s, i) => ({ ...s, shotNumber: i + 1 }));
+    // Also drop any rendered frame for that shot
+    const remainingFrames = (selectedProject.storyboard || [])
+      .filter(f => f.shotNumber !== shotNumber)
+      .map((f, i) => ({ ...f, shotNumber: i + 1 }));
+    try {
+      const updated = await updateProject(selectedProject.id, {
+        shots: remaining,
+        storyboard_frames: remainingFrames,
+      });
+      if (updated) {
+        const localProject: StoryboardProjectLocal = {
+          id: updated.id,
+          scriptText: updated.script_text,
+          genre: updated.genre || "",
+          tone: updated.tone || "",
+          characterCount: updated.character_count,
+          shots: updated.shots || [],
+          storyboard: updated.storyboard_frames || undefined,
+          createdAt: new Date(updated.created_at),
+        };
+        setSelectedProject(localProject);
+        if (editingShot === shotNumber) setEditingShot(null);
+        toast({ title: "Shot deleted", description: `Shot ${shotNumber} removed and remaining shots renumbered.` });
+      }
+    } catch (e) {
+      console.error("Error deleting shot:", e);
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete shot" });
+    }
+  };
   const regenerateFrame = async (shotNumber: number) => {
     return generateSingleFrame(shotNumber);
   };
@@ -2071,6 +2174,7 @@ const Storyboarding = () => {
                   <CastTab
                     cast={extractedCast}
                     onGenerateReference={generateCastReferenceImage}
+                    onUploadReferencePhoto={uploadCastReferencePhoto}
                     onGenerateAllMissing={generateAllMissingCastReferences}
                     generatingNames={generatingCastNames}
                     isBulkGenerating={isBulkCastGenerating}
@@ -2168,6 +2272,7 @@ const Storyboarding = () => {
                   <CastTab
                     cast={selectedProject.cast || []}
                     onGenerateReference={generateCastReferenceImage}
+                    onUploadReferencePhoto={uploadCastReferencePhoto}
                     onGenerateAllMissing={generateAllMissingCastReferences}
                     generatingNames={generatingCastNames}
                     isBulkGenerating={isBulkCastGenerating}
@@ -2374,16 +2479,32 @@ const Storyboarding = () => {
                                      <X className="h-3 w-3" />
                                    </Button>
                                  </div>
-                               ) : (
-                                 <Button
-                                   size="sm"
-                                   variant="ghost"
-                                   onClick={() => startEditingShot(shot)}
-                                   className="h-6 w-6 p-0"
-                                 >
-                                   <Edit2 className="h-3 w-3" />
-                                 </Button>
-                               )}
+                                ) : (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => startEditingShot(shot)}
+                                      className="h-6 w-6 p-0"
+                                      title="Edit shot"
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => {
+                                        if (confirm(`Delete Shot ${shot.shotNumber}? This cannot be undone.`)) {
+                                          deleteShot(shot.shotNumber);
+                                        }
+                                      }}
+                                      className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                      title="Delete shot"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </>
+                                )}
                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                  <Clock className="h-3 w-3" />
                                  {editingShot === shot.shotNumber ? (
