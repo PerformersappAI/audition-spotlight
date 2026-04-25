@@ -997,10 +997,10 @@ const Storyboarding = () => {
             description: "Please wait a moment and try again.",
             variant: "destructive"
           });
-        } else if (error.message?.includes('credits') || error.message?.includes('402')) {
+        } else if (error.message?.includes('402') || error.message?.toLowerCase().includes('ai credits')) {
           toast({
-            title: "AI credits depleted",
-            description: "Please add credits in Settings → Workspace → Usage.",
+            title: "AI service temporarily unavailable",
+            description: "The AI image service has hit its workspace limit. This is not your account credits — please contact support so we can top up the AI balance.",
             variant: "destructive"
           });
         } else {
