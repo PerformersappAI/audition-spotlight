@@ -634,7 +634,7 @@ const Storyboarding = () => {
       const styleModifier =
         artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
 
-      const prompt = `Full body character reference sheet, ${member.description || member.name}, neutral pose, front facing, plain white background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+      const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${member.description || member.name}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
 
       const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
         body: {
