@@ -1171,7 +1171,45 @@ const Storyboarding = () => {
     }
   };
 
-  // This function is now replaced by generateSingleFrame - keeping for compatibility
+  const deleteShot = async (shotNumber: number) => {
+    if (!selectedProject) return;
+    const shots = selectedProject.shots || [];
+    if (shots.length <= 1) {
+      toast({ variant: "destructive", title: "Can't delete", description: "You need at least one shot." });
+      return;
+    }
+    const remaining = shots
+      .filter(s => s.shotNumber !== shotNumber)
+      .map((s, i) => ({ ...s, shotNumber: i + 1 }));
+    // Also drop any rendered frame for that shot
+    const remainingFrames = (selectedProject.storyboard || [])
+      .filter(f => f.shotNumber !== shotNumber)
+      .map((f, i) => ({ ...f, shotNumber: i + 1 }));
+    try {
+      const updated = await updateProject(selectedProject.id, {
+        shots: remaining,
+        storyboard_frames: remainingFrames,
+      });
+      if (updated) {
+        const localProject: StoryboardProjectLocal = {
+          id: updated.id,
+          scriptText: updated.script_text,
+          genre: updated.genre || "",
+          tone: updated.tone || "",
+          characterCount: updated.character_count,
+          shots: updated.shots || [],
+          storyboard: updated.storyboard_frames || undefined,
+          createdAt: new Date(updated.created_at),
+        };
+        setSelectedProject(localProject);
+        if (editingShot === shotNumber) setEditingShot(null);
+        toast({ title: "Shot deleted", description: `Shot ${shotNumber} removed and remaining shots renumbered.` });
+      }
+    } catch (e) {
+      console.error("Error deleting shot:", e);
+      toast({ variant: "destructive", title: "Error", description: "Failed to delete shot" });
+    }
+  };
   const regenerateFrame = async (shotNumber: number) => {
     return generateSingleFrame(shotNumber);
   };
