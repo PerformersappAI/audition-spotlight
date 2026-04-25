@@ -1110,7 +1110,7 @@ const PitchDeckPreview = () => {
         )}
 
         {/* ============ 7. MARKET & AUDIENCE ============ */}
-        {(data.primaryDemographic || data.distributionPlan) && (
+        {(data.primaryDemographic || data.secondaryAudience || (data.targetPlatforms?.length ?? 0) > 0 || data.distributionPlan) && (
           <Slide id="slide-market">
             <SectionLabel>Market & Audience</SectionLabel>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "56px", marginTop: "24px", height: "calc(100% - 80px)" }}>
