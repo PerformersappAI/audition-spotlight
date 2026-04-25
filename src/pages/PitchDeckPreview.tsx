@@ -843,7 +843,7 @@ const PitchDeckPreview = () => {
               </p>
               <div style={{ marginTop: "44px", height: "1px", width: "80px", margin: "44px auto 16px", backgroundColor: ACCENT }} />
               <div style={{ fontSize: "11px", letterSpacing: "0.32em", color: ACCENT, fontWeight: 700, textTransform: "uppercase" }}>
-                From the Synopsis
+                {(data.projectTitle || "Untitled")}
               </div>
             </div>
           </Slide>
