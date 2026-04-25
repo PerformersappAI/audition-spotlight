@@ -2174,10 +2174,7 @@ const Storyboarding = () => {
                   <CastTab
                     cast={extractedCast}
                     onGenerateReference={generateCastReferenceImage}
-                    onGenerateAllMissing={generateAllMissingCastReferences}
-                    generatingNames={generatingCastNames}
-                    isBulkGenerating={isBulkCastGenerating}
-                  />
+                    onUploadReferencePhoto={uploadCastReferencePhoto}
 
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border">
                     <Button variant="ghost" size="sm" onClick={skipCastReview} disabled={isProcessingScript}>
@@ -2271,10 +2268,7 @@ const Storyboarding = () => {
                   <CastTab
                     cast={selectedProject.cast || []}
                     onGenerateReference={generateCastReferenceImage}
-                    onGenerateAllMissing={generateAllMissingCastReferences}
-                    generatingNames={generatingCastNames}
-                    isBulkGenerating={isBulkCastGenerating}
-                    framesUsageByName={framesUsageByName}
+                    onUploadReferencePhoto={uploadCastReferencePhoto}
                   />
                 </TabsContent>
                 <TabsContent value="animatic" className="mt-4">
