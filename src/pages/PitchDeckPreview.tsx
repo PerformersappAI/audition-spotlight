@@ -40,6 +40,31 @@ function formatDemographic(input?: string): string {
   return s;
 }
 
+// Word-boundary clamp for display only (does not mutate stored data)
+function clampWords(s: string | undefined, n: number): string {
+  if (!s) return "";
+  const parts = s.trim().split(/\s+/);
+  if (parts.length <= n) return s.trim();
+  return parts.slice(0, n).join(" ").replace(/[,;:.!?-]+$/, "") + "…";
+}
+
+// Sentence-aware truncation by approximate word budget; never cuts mid-sentence
+function truncateSentences(s: string | undefined, maxWords: number): string {
+  if (!s) return "";
+  const sentences = s.match(/[^.!?]+[.!?]+(\s|$)/g)?.map((x) => x.trim()) || [s.trim()];
+  const out: string[] = [];
+  let count = 0;
+  for (const sent of sentences) {
+    const w = sent.split(/\s+/).length;
+    if (count + w > maxWords && out.length) break;
+    out.push(sent);
+    count += w;
+    if (count >= maxWords) break;
+  }
+  const result = out.join(" ");
+  return result.length < s.trim().length ? result + (result.endsWith(".") ? "" : "…") : result;
+}
+
 // Split a long string into 3-5 sentence paragraph chunks
 function splitIntoParagraphs(text: string, sentencesPerChunk = 4): string[] {
   if (!text) return [];

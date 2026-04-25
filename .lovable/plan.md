@@ -1,94 +1,62 @@
-## Goal
+Fix the visual bugs the user reported on the Pitch Deck Preview without changing data, AI logic, or exports. All edits in `src/pages/PitchDeckPreview.tsx`.
 
-Use the three uploaded references as the **editorial training ground** for the Pitch Deck Maker so every generated deck mirrors the structure, tone, and craftsmanship of professional industry decks (SBS Scripted, Micah Haley's "north star" framework, and the canonical 10-slide taxonomy).
+## Slide-by-slide fixes
 
-This is **not** a visual redesign — that was the previous pass. This pass upgrades **what the deck contains, in what order, and how the AI writes it.**
+**Page 1 — Cover**
+- Hero image is stretched: it's currently `object-fit: cover` but a portrait poster gets cropped weirdly when paired with a title on top. Switch behavior so when `data.posterImage` exists it renders as a contained portrait card on the right (max-height with `object-fit: contain`, dark backdrop), with the title block on the left — i.e. a proper "one-sheet" cover layout. When only a 16:9 AI still exists, keep the full-bleed cover.
+- Title + logline collision: add a real gap (margin-top: 36–40px on logline, larger line-height, and clamp the title to 2 lines).
+- Logline length: enforce a soft cap. Truncate the displayed logline at ~12 words with an ellipsis (display only — do not mutate stored data). Helper: `clampWords(str, 12)`.
 
----
+**Page 2 — Story**
+- Image stretched: the right column uses `object-fit: cover` inside a flex cell with no fixed aspect ratio, so a horizontal still gets squeezed into a tall column. Wrap the image in a square (1:1) frame centered in the cell — Instagram-style — with `object-fit: cover` on a real square box. Vertically center it.
+- Text cut off mid-sentence: replace the hard `maxHeight: 520px; overflow: hidden` clip with sentence-aware truncation. Compute how many sentences fit (target ~60 words / ~3 short paragraphs), append "…" cleanly. If synopsis exceeds the budget, cut at a sentence boundary, never mid-sentence.
 
-## What changes
+**Page 3 — Pull Quote**
+- Caption "From the Synopsis" → replace with the movie title in small caps: `{data.projectTitle?.toUpperCase()}` (fallback "Untitled").
 
-### 1. Canonical slide order (industry standard)
+**Page 6 — text cut off top and bottom (The World / North Star)**
+- Both `slide-northstar` and `slide-world` use `maxHeight: 520px; overflow: hidden` which clips mid-paragraph and, combined with vertical centering, can hide the top and bottom. Apply the same sentence-aware truncation used on Story, and remove vertical centering for World (already top-anchored — keep). For North Star, anchor content to the top with padding instead of centering when text exceeds one paragraph, so it never clips at the top.
 
-Reorder both the in-app preview and PDF export to follow the merged SBS + Haley + 10-slide structure:
+**Page 7 — Characters (poster cropping head off)**
+- Portrait cards use `aspect-ratio: 3/4` with `object-fit: cover`, which crops a tall poster from the center cutting off heads. Change to `object-fit: contain` against a dark `CARD` background with `object-position: top center` fallback for `cover`. Concretely: use `object-fit: contain` + neutral dark backdrop so the full portrait is visible (letterboxed), preserving the card frame.
 
-```text
-1.  Cover / Title  — Title, format (e.g. "8 x 30 min drama"), logline, poster
-2.  North Star     — Why this story, why now, what's unique (NEW)
-3.  Synopsis       — One-page series/film summary
-4.  Tone & Style   — Sensory + visual impression, genre cues
-5.  World / Setting — Location as character (NEW dedicated slide)
-6.  Characters     — Portraits + arcs (internal + external goal)
-7.  Visual Style / Moodboard
-8.  Episode Breakdown (TV only) OR Story Structure (Feature) (NEW)
-9.  Comparables    — Posters + "why similar"
-10. Target Audience + Market
-11. Team
-12. Production / Budget
-13. Distribution Strategy
-14. The Ask + Contact
+**Page 8 — Visual Style (stretched poster + leftover text box)**
+- Poster stretched: full-bleed `object-fit: cover` warps a portrait poster. Switch this slide's image treatment to a contained portrait on the right (matching the Cover one-sheet treatment), with the text panel on the left in its own column — no overlap.
+- "Random box of text" / overlap: the current layout positions the text panel absolutely over the image. Convert to a 2-column grid (text left, contained poster right) so nothing overlaps and no orphan caption appears. Drop the `PlateCaption` overlay on this slide.
+
+**Page 9 — Empty slide**
+- This is rendering a section whose data is empty (likely Comparables, Episodes, Production, or Market when only one field is present and the column ends up blank). Tighten all conditional renders so a slide only mounts when it has meaningful content:
+  - Comparables: require `comparables.length && comparables.some(c => c.title)`.
+  - Episodes: require `episodes.length && episodes.some(e => e.title || e.logline)`.
+  - Market: require `primaryDemographic || secondaryAudience || (targetPlatforms?.length) || distributionPlan`.
+  - Production: require at least one truthy row.
+  - Team: require `teamMembers.some(m => m.name || m.role)`.
+
+## Shared helpers to add
+
+```ts
+// Word-boundary clamp for display
+const clampWords = (s: string, n: number) =>
+  (s?.split(/\s+/) ?? []).length > n
+    ? s.split(/\s+/).slice(0, n).join(" ") + "…"
+    : s ?? "";
+
+// Sentence-aware truncation by approximate word budget
+const truncateSentences = (s: string, maxWords: number) => {
+  const sentences = s.match(/[^.!?]+[.!?]+/g) ?? [s];
+  const out: string[] = [];
+  let count = 0;
+  for (const sent of sentences) {
+    const w = sent.trim().split(/\s+/).length;
+    if (count + w > maxWords) break;
+    out.push(sent.trim());
+    count += w;
+  }
+  return out.length ? out.join(" ") : sentences[0]?.trim().slice(0, maxWords * 6) + "…";
+};
 ```
 
-### 2. New editor fields (Step 2 + Step 4)
-
-- **North Star** (Step 2): "Why are you the only person who can tell this story?" + "What's unique/fresh about it?"
-- **Character internal vs. external goal** (Step 3): split the existing description field — every character gets `externalGoal` and `internalWound` per SBS guidance ("they cannot achieve their external goal until their internal goal is resolved")
-- **Episode breakdown** (Step 2, conditional on `tv_series`/`mini_series`): per-episode logline list
-- **World/Setting** (Step 2): dedicated short prompt — "Why must this story be set here?"
-
-All new fields are optional so existing drafts keep working.
-
-### 3. AI prompt overhaul (`generate-pitch-content` edge function)
-
-Rewrite the system prompt to teach the model the SBS + Haley craft rules directly:
-
-- "A pitch deck is a FINAL document, not preliminary — write it like finished marketing copy"
-- "Carry the tone of the genre — comedy = funny copy, horror = evoke dread"
-- "Every character needs an internal wound + external goal; they cannot resolve the external until the internal heals"
-- "The location is a character — explain why this story can only happen here"
-- "North Star: why this story, why you, why now"
-- Output JSON now includes: `northStar`, `worldSetting`, `episodes[]`, `character.externalGoal`, `character.internalWound`
-
-### 4. Copy quality guardrails
-
-- Synopsis/vision/audience text: enforce **3–5 sentence paragraphs** at generation time (not just split at render) so the source data is clean
-- Logline: hard cap 30 words, single sentence, must include protagonist + want + obstacle
-- Format string auto-built from project type + episode count (e.g. "8 × 30 min drama") on cover slide
-- Section labels rendered consistently in small-caps gold across all slides
-
-### 5. New "Pitch Health" check (lightweight)
-
-Above the Generate button in Step 4, show a small checklist driven by the SBS essentials:
-
-- ✅/⚠️ Strong hook & inciting incident in synopsis
-- ✅/⚠️ Each character has goal + wound
-- ✅/⚠️ Logline ≤ 30 words
-- ✅/⚠️ At least 2 comparables with posters
-- ✅/⚠️ Tone & style filled
-
-Purely informational — never blocks generation.
-
----
-
-## Files touched
-
-- `src/pages/PitchDeckMaker.tsx` — extend `PitchDeckData` (northStar, worldSetting, episodes, character goals)
-- `src/components/pitchdeck/Step2Story.tsx` — add North Star + World + conditional episode list fields
-- `src/components/pitchdeck/Step3CharactersVisuals.tsx` — split character description into wound/goal
-- `src/components/pitchdeck/Step4MarketTeam.tsx` — add Pitch Health checklist panel
-- `src/pages/PitchDeckPreview.tsx` — add North Star, World, Episodes slides; reorder
-- `src/utils/exportPitchDeckToPDF.ts` — same new slides + reordering, consistent gold section labels
-- `supabase/functions/generate-pitch-content/index.ts` — rewrite system prompt with SBS/Haley rules; expand JSON schema
-
----
-
-## Out of scope (intentionally)
-
-- No new external API integrations
-- No re-skin of existing slides (the visual pass is already done)
-- No changes to poster/portrait generation (already updated for celebrity safety)
-- No changes to TMDB comparables fetcher
-
----
-
-Ready to implement on approval.
+## Out of scope
+- No changes to AI generation, data model, exports (PDF/PPTX), or the editor.
+- No new slide types added or removed.
+- No color/typography overhaul beyond what's needed to fix layout bugs.
