@@ -868,7 +868,7 @@ const PitchDeckPreview = () => {
           <Slide id="slide-world">
             <SectionLabel>The World</SectionLabel>
             <div style={{ marginTop: "20px", maxWidth: "1000px" }}>
-              {splitIntoParagraphs(data.worldSetting, 3).slice(0, 3).map((p, i) => (
+              {splitIntoParagraphs(truncateSentences(data.worldSetting, 110), 3).slice(0, 3).map((p, i) => (
                 <p key={i} style={{ fontFamily: SERIF, fontSize: "19px", color: WHITE, lineHeight: 1.65, marginBottom: "20px", opacity: 0.95 }}>{p}</p>
               ))}
               {data.shootingLocations && (
