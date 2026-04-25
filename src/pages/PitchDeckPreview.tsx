@@ -1145,7 +1145,7 @@ const PitchDeckPreview = () => {
         )}
 
         {/* ============ 8. TEAM ============ */}
-        {data.teamMembers && data.teamMembers.length > 0 && (
+        {data.teamMembers && data.teamMembers.some((m: any) => m?.name || m?.role) && (
           <Slide id="slide-team">
             <SectionLabel>The Team</SectionLabel>
             <div style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "22px" }}>
