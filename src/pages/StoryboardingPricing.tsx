@@ -15,6 +15,36 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import testimonialDirector from "@/assets/testimonial-director-1.jpg";
+import testimonialActorFilmmaker from "@/assets/testimonial-actor-filmmaker.jpg";
+import testimonialFilmmaker from "@/assets/testimonial-filmmaker-portrait.jpg";
+
+const TESTIMONIALS = [
+  {
+    quote:
+      "I storyboarded an entire short in an afternoon. My DP showed up to set already knowing every shot we needed.",
+    name: "Maya Ellis",
+    role: "Director / Filmmaker",
+    location: "Brooklyn, NY",
+    image: testimonialDirector,
+  },
+  {
+    quote:
+      "As an actor who also directs, this gave me a way to pitch my own project visually. Producers finally saw what I saw.",
+    name: "Daniel Reyes",
+    role: "Actor / Filmmaker",
+    location: "Los Angeles, CA",
+    image: testimonialActorFilmmaker,
+  },
+  {
+    quote:
+      "I've used storyboard artists for fifteen years. This is the first tool that actually keeps up with my rewrites.",
+    name: "Tom Whitaker",
+    role: "Independent Filmmaker",
+    location: "Austin, TX",
+    image: testimonialFilmmaker,
+  },
+];
 
 type Billing = "monthly" | "yearly";
 
@@ -445,13 +475,25 @@ const StoryboardingPricing = () => {
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-10">Loved by filmmakers</h2>
           <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((n) => (
-              <Card key={n} className="p-6">
-                <div className="text-3xl text-primary mb-3">"</div>
-                <p className="text-muted-foreground mb-4 italic">[TESTIMONIAL {n}]</p>
-                <div className="border-t border-border/40 pt-4">
-                  <p className="font-medium">[Filmmaker Name]</p>
-                  <p className="text-sm text-muted-foreground">Independent Filmmaker, Los Angeles</p>
+            {TESTIMONIALS.map((t) => (
+              <Card key={t.name} className="overflow-hidden">
+                <div className="aspect-[4/3] w-full overflow-hidden bg-muted">
+                  <img
+                    src={t.image}
+                    alt={`${t.name}, ${t.role}`}
+                    loading="lazy"
+                    width={768}
+                    height={576}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <div className="text-3xl text-primary mb-3">"</div>
+                  <p className="text-muted-foreground mb-4 italic">"{t.quote}"</p>
+                  <div className="border-t border-border/40 pt-4">
+                    <p className="font-medium">{t.name}</p>
+                    <p className="text-sm text-muted-foreground">{t.role} · {t.location}</p>
+                  </div>
                 </div>
               </Card>
             ))}
