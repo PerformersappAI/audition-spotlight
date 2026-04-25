@@ -539,124 +539,219 @@ const PitchDeckPreview = () => {
 
       <div ref={containerRef} className="mx-auto max-w-[1320px] space-y-6 px-4 py-6">
         {/* 1. Cover */}
-        {/* ============ 1. COVER — full-bleed hero with bold title overlay ============ */}
-        <Slide
-          id="slide-cover"
-          noPadding
-          background={heroImage ? "#000" : coverGradient}
-        >
-          <div style={{ position: "relative", width: "100%", height: "100%" }}>
-            {heroImage && (
-              <img
-                src={heroImage}
-                alt=""
-                crossOrigin="anonymous"
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                  filter: "saturate(0.92) contrast(1.05)",
-                }}
-              />
-            )}
-            {/* Cinematic gradient overlay for legibility */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 38%, rgba(0,0,0,0.55) 72%, rgba(0,0,0,0.92) 100%)",
-              }}
-            />
-            {/* Top label bar */}
-            <div
-              style={{
-                position: "absolute",
-                top: "48px",
-                left: "72px",
-                right: "72px",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                color: PURE_WHITE,
-                fontSize: "11px",
-                letterSpacing: "0.32em",
-                fontWeight: 600,
-                textTransform: "uppercase",
-              }}
+        {/* ============ 1. COVER — one-sheet (poster right) or full-bleed (AI still) ============ */}
+        {(() => {
+          // Treat user-uploaded poster as portrait one-sheet; AI 16:9 still as full-bleed.
+          const posterMode = !!data.posterImage;
+          const bleedImage = !posterMode ? (data.synopsisImage || storyImage) : null;
+          const displayLogline = clampWords(data.logline, 12);
+          return (
+            <Slide
+              id="slide-cover"
+              noPadding
+              background={posterMode ? "#0a0a0f" : (bleedImage ? "#000" : coverGradient)}
             >
-              <span style={{ opacity: 0.85 }}>A {projectTypeLabels[data.projectType] || "Film"} Pitch</span>
-              {data.targetRating && <span style={{ color: ACCENT_BRIGHT }}>Rated {data.targetRating}</span>}
-            </div>
-
-            {/* Bottom-anchored title block */}
-            <div
-              style={{
-                position: "absolute",
-                left: "72px",
-                right: "72px",
-                bottom: "72px",
-              }}
-            >
-              {data.genre?.length > 0 && (
+              <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                {bleedImage && (
+                  <img
+                    src={bleedImage}
+                    alt=""
+                    crossOrigin="anonymous"
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      filter: "saturate(0.92) contrast(1.05)",
+                    }}
+                  />
+                )}
+                {/* Cinematic gradient overlay for legibility (only when full-bleed) */}
+                {bleedImage && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      background:
+                        "linear-gradient(180deg, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 38%, rgba(0,0,0,0.55) 72%, rgba(0,0,0,0.92) 100%)",
+                    }}
+                  />
+                )}
+                {/* Top label bar */}
                 <div
                   style={{
-                    color: ACCENT_BRIGHT,
-                    fontSize: "13px",
-                    letterSpacing: "0.4em",
-                    fontWeight: 700,
+                    position: "absolute",
+                    top: "48px",
+                    left: "72px",
+                    right: "72px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    color: PURE_WHITE,
+                    fontSize: "11px",
+                    letterSpacing: "0.32em",
+                    fontWeight: 600,
                     textTransform: "uppercase",
-                    marginBottom: "20px",
-                    fontFamily: SANS,
+                    zIndex: 2,
                   }}
                 >
-                  {data.genre.slice(0, 3).join(" · ")}
+                  <span style={{ opacity: 0.85 }}>A {projectTypeLabels[data.projectType] || "Film"} Pitch</span>
+                  {data.targetRating && <span style={{ color: ACCENT_BRIGHT }}>Rated {data.targetRating}</span>}
                 </div>
-              )}
-              <div
-                style={{
-                  fontFamily: SERIF,
-                  fontSize: "104px",
-                  fontWeight: 600,
-                  color: PURE_WHITE,
-                  letterSpacing: "-0.015em",
-                  lineHeight: 0.98,
-                  textShadow: "0 4px 32px rgba(0,0,0,0.7)",
-                  maxWidth: "1100px",
-                }}
-              >
-                {data.projectTitle || "Untitled"}
+
+                {posterMode ? (
+                  // ---- One-sheet layout: text left, contained portrait poster right ----
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "grid",
+                      gridTemplateColumns: "1.05fr 1fr",
+                      gap: "56px",
+                      padding: "120px 72px 72px",
+                      alignItems: "center",
+                    }}
+                  >
+                    <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                      {data.genre?.length > 0 && (
+                        <div style={{ color: ACCENT_BRIGHT, fontSize: "12px", letterSpacing: "0.4em", fontWeight: 700, textTransform: "uppercase", marginBottom: "20px", fontFamily: SANS }}>
+                          {data.genre.slice(0, 3).join(" · ")}
+                        </div>
+                      )}
+                      <div
+                        style={{
+                          fontFamily: SERIF,
+                          fontSize: "84px",
+                          fontWeight: 600,
+                          color: PURE_WHITE,
+                          letterSpacing: "-0.015em",
+                          lineHeight: 1.0,
+                          display: "-webkit-box",
+                          WebkitLineClamp: 2,
+                          WebkitBoxOrient: "vertical",
+                          overflow: "hidden",
+                        }}
+                      >
+                        {data.projectTitle || "Untitled"}
+                      </div>
+                      {displayLogline && (
+                        <div
+                          style={{
+                            marginTop: "40px",
+                            fontFamily: SERIF,
+                            fontSize: "22px",
+                            fontStyle: "italic",
+                            color: WHITE,
+                            lineHeight: 1.45,
+                            opacity: 0.92,
+                          }}
+                        >
+                          {displayLogline}
+                        </div>
+                      )}
+                      {(data.targetPlatforms?.length ?? 0) > 0 && (
+                        <div style={{ marginTop: "36px" }}>
+                          {data.targetPlatforms!.slice(0, 4).map((p) => (
+                            <Pill key={p} solid={false}>{p}</Pill>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+                      <div
+                        style={{
+                          aspectRatio: "2 / 3",
+                          maxHeight: "100%",
+                          width: "auto",
+                          background: "#000",
+                          boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8)",
+                          overflow: "hidden",
+                        }}
+                      >
+                        <img
+                          src={data.posterImage!}
+                          alt=""
+                          crossOrigin="anonymous"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // ---- Full-bleed layout for 16:9 AI stills (or no image) ----
+                  <div
+                    style={{
+                      position: "absolute",
+                      left: "72px",
+                      right: "72px",
+                      bottom: "72px",
+                    }}
+                  >
+                    {data.genre?.length > 0 && (
+                      <div
+                        style={{
+                          color: ACCENT_BRIGHT,
+                          fontSize: "13px",
+                          letterSpacing: "0.4em",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          marginBottom: "20px",
+                          fontFamily: SANS,
+                        }}
+                      >
+                        {data.genre.slice(0, 3).join(" · ")}
+                      </div>
+                    )}
+                    <div
+                      style={{
+                        fontFamily: SERIF,
+                        fontSize: "104px",
+                        fontWeight: 600,
+                        color: PURE_WHITE,
+                        letterSpacing: "-0.015em",
+                        lineHeight: 0.98,
+                        textShadow: "0 4px 32px rgba(0,0,0,0.7)",
+                        maxWidth: "1100px",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {data.projectTitle || "Untitled"}
+                    </div>
+                    {displayLogline && (
+                      <div
+                        style={{
+                          marginTop: "40px",
+                          fontFamily: SERIF,
+                          fontSize: "22px",
+                          fontStyle: "italic",
+                          color: WHITE,
+                          maxWidth: "880px",
+                          lineHeight: 1.45,
+                          textShadow: "0 2px 16px rgba(0,0,0,0.7)",
+                        }}
+                      >
+                        {displayLogline}
+                      </div>
+                    )}
+                    {(data.targetPlatforms?.length ?? 0) > 0 && (
+                      <div style={{ marginTop: "32px" }}>
+                        {data.targetPlatforms!.slice(0, 4).map((p) => (
+                          <Pill key={p} solid={false}>
+                            {p}
+                          </Pill>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
-              {data.logline && (
-                <div
-                  style={{
-                    marginTop: "28px",
-                    fontFamily: SERIF,
-                    fontSize: "22px",
-                    fontStyle: "italic",
-                    color: WHITE,
-                    maxWidth: "880px",
-                    lineHeight: 1.4,
-                    textShadow: "0 2px 16px rgba(0,0,0,0.7)",
-                  }}
-                >
-                  {data.logline}
-                </div>
-              )}
-              {(data.targetPlatforms?.length ?? 0) > 0 && (
-                <div style={{ marginTop: "32px" }}>
-                  {data.targetPlatforms!.slice(0, 4).map((p) => (
-                    <Pill key={p} solid={false}>
-                      {p}
-                    </Pill>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        </Slide>
+            </Slide>
+          );
+        })()}
 
         {/* ============ 2. STORY — split spread, breathing chunks, pull quote ============ */}
         {data.synopsis && (
