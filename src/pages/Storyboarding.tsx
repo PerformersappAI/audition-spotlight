@@ -709,7 +709,63 @@ const Storyboarding = () => {
       // eslint-disable-next-line no-await-in-loop
       await new Promise(r => setTimeout(r, 500));
     }
-    setIsBulkCastGenerating(false);
+  };
+
+  // Upload a real cast member's photo, then use it as the face reference for the AI portrait
+  const uploadCastReferencePhoto = async (name: string, file: File) => {
+    const cast = selectedProject?.cast || extractedCast;
+    const member = cast.find(c => c.name === name);
+    if (!member) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast({ variant: "destructive", title: "File too large", description: "Please upload an image under 5MB." });
+      return;
+    }
+    if (!credits || credits.available_credits < 1) {
+      toast({ variant: "destructive", title: "Not enough credits", description: "Generating from a photo costs 1 credit." });
+      return;
+    }
+    setGeneratingCastNames(prev => new Set(prev).add(name));
+    try {
+      const ext = file.name.split('.').pop() || 'png';
+      const path = `cast-refs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from('storyboard-characters').upload(path, file);
+      if (upErr) throw upErr;
+      const { data: { publicUrl } } = supabase.storage.from('storyboard-characters').getPublicUrl(path);
+
+      const styleName = artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle || 'cinematic';
+      const styleModifier = artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
+
+      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+        body: {
+          characterName: member.name,
+          characterDescription: `Three-quarter length portrait. ${member.description || member.name}.`,
+          characterRole: 'storyboard cast member',
+          referencePhotoUrl: publicUrl,
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : undefined,
+          projectTitle: selectedProject?.projectTitle || currentProject.scriptFileName,
+        }
+      });
+      if (error) {
+        const ctx: any = (error as any).context;
+        let parsed: any = null;
+        try { if (ctx?.body) parsed = typeof ctx.body === 'string' ? JSON.parse(ctx.body) : ctx.body; } catch {}
+        throw new Error(parsed?.error || (error as any)?.message || 'Image generation failed');
+      }
+      if (!data?.imageUrl) throw new Error(data?.error || 'No image returned');
+
+      const ok = await deductCredits(1, `Cast reference (photo): ${member.name}`);
+      if (!ok) { toast({ variant: "destructive", title: "Credit deduction failed" }); return; }
+
+      const nextCast = cast.map(c => c.name === name ? { ...c, reference_image_url: data.imageUrl } : c);
+      await persistCast(nextCast);
+      toast({ title: "Portrait ready", description: `${member.name}'s likeness is locked in from your photo.` });
+    } catch (err: any) {
+      console.error('Cast photo upload error:', err);
+      toast({ variant: "destructive", title: "Couldn't generate from photo", description: err?.message || "Please try again." });
+    } finally {
+      setGeneratingCastNames(prev => { const n = new Set(prev); n.delete(name); return n; });
+    }
   };
 
   const cancelSceneSelection = () => {
