@@ -2271,8 +2271,13 @@ const Storyboarding = () => {
                 <TabsContent value="cast" className="mt-4">
                   <CastTab
                     cast={selectedProject.cast || []}
+                    cast={selectedProject.cast || []}
                     onGenerateReference={generateCastReferenceImage}
                     onUploadReferencePhoto={uploadCastReferencePhoto}
+                    onGenerateAllMissing={generateAllMissingCastReferences}
+                    generatingNames={generatingCastNames}
+                    isBulkGenerating={isBulkCastGenerating}
+                    framesUsageByName={framesUsageByName}
                   />
                 </TabsContent>
                 <TabsContent value="animatic" className="mt-4">
