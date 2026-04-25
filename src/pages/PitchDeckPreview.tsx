@@ -993,48 +993,19 @@ const PitchDeckPreview = () => {
 
         {/* ============ 5. VISUAL STYLE — full-bleed image with text panel ============ */}
         {(data.visualStyle || data.posterImage) && (
-          <Slide id="slide-style" noPadding={!!data.posterImage}>
+          <Slide id="slide-style">
             {data.posterImage ? (
-              <div style={{ position: "relative", width: "100%", height: "100%" }}>
-                <img
-                  src={data.posterImage}
-                  alt=""
-                  crossOrigin="anonymous"
-                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.9) contrast(1.05)" }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    inset: 0,
-                    background: "linear-gradient(90deg, rgba(10,10,15,0.92) 0%, rgba(10,10,15,0.78) 38%, rgba(10,10,15,0.1) 70%, transparent 100%)",
-                  }}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "72px",
-                    top: "72px",
-                    bottom: "72px",
-                    width: "560px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                  }}
-                >
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "56px", height: "100%", alignItems: "center" }}>
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
                   <SectionLabel>Visual Language</SectionLabel>
                   <div style={{ fontFamily: SERIF, fontSize: "52px", fontWeight: 600, color: PURE_WHITE, marginBottom: "20px", lineHeight: 1.05 }}>
                     {template.label}
                   </div>
-                  <div
-                    style={{
-                      height: "2px",
-                      width: "80px",
-                      background: ACCENT,
-                      marginBottom: "28px",
-                    }}
-                  />
+                  <div style={{ height: "2px", width: "80px", background: ACCENT, marginBottom: "28px" }} />
                   {data.visualStyle && (
-                    <p style={{ fontFamily: SERIF, fontSize: "17px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>{data.visualStyle}</p>
+                    <p style={{ fontFamily: SERIF, fontSize: "17px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>
+                      {truncateSentences(data.visualStyle, 90)}
+                    </p>
                   )}
                   {data.themes && data.themes.length > 0 && (
                     <div style={{ marginTop: "28px" }}>
@@ -1042,9 +1013,25 @@ const PitchDeckPreview = () => {
                     </div>
                   )}
                 </div>
-                <PlateCaption>
-                  {data.projectTitle || "Untitled"} — Key Art
-                </PlateCaption>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%" }}>
+                  <div
+                    style={{
+                      aspectRatio: "2 / 3",
+                      maxHeight: "100%",
+                      width: "auto",
+                      background: "#000",
+                      boxShadow: "0 30px 60px -20px rgba(0,0,0,0.8)",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <img
+                      src={data.posterImage}
+                      alt=""
+                      crossOrigin="anonymous"
+                      style={{ width: "100%", height: "100%", objectFit: "cover", filter: "saturate(0.92) contrast(1.05)" }}
+                    />
+                  </div>
+                </div>
               </div>
             ) : (
               <div style={{ display: "flex", flexDirection: "column", justifyContent: "center", height: "100%", maxWidth: "900px" }}>
@@ -1052,7 +1039,9 @@ const PitchDeckPreview = () => {
                 <div style={{ fontFamily: SERIF, fontSize: "52px", fontWeight: 600, color: PURE_WHITE, marginBottom: "20px" }}>{template.label}</div>
                 <div style={{ height: "2px", width: "80px", background: ACCENT, marginBottom: "28px" }} />
                 {data.visualStyle && (
-                  <p style={{ fontFamily: SERIF, fontSize: "18px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>{data.visualStyle}</p>
+                  <p style={{ fontFamily: SERIF, fontSize: "18px", color: WHITE, lineHeight: 1.7, opacity: 0.92 }}>
+                    {truncateSentences(data.visualStyle, 110)}
+                  </p>
                 )}
               </div>
             )}
