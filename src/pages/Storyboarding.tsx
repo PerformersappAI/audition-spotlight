@@ -2421,16 +2421,32 @@ const Storyboarding = () => {
                                      <X className="h-3 w-3" />
                                    </Button>
                                  </div>
-                               ) : (
-                                 <Button
-                                   size="sm"
-                                   variant="ghost"
-                                   onClick={() => startEditingShot(shot)}
-                                   className="h-6 w-6 p-0"
-                                 >
-                                   <Edit2 className="h-3 w-3" />
-                                 </Button>
-                               )}
+                                ) : (
+                                  <>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => startEditingShot(shot)}
+                                      className="h-6 w-6 p-0"
+                                      title="Edit shot"
+                                    >
+                                      <Edit2 className="h-3 w-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      onClick={() => {
+                                        if (confirm(`Delete Shot ${shot.shotNumber}? This cannot be undone.`)) {
+                                          deleteShot(shot.shotNumber);
+                                        }
+                                      }}
+                                      className="h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10"
+                                      title="Delete shot"
+                                    >
+                                      <Trash2 className="h-3 w-3" />
+                                    </Button>
+                                  </>
+                                )}
                                <div className="flex items-center gap-1 text-sm text-muted-foreground">
                                  <Clock className="h-3 w-3" />
                                  {editingShot === shot.shotNumber ? (
