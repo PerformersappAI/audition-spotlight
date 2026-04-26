@@ -142,6 +142,28 @@ const Storyboarding = () => {
   const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
   const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
   const [frameStyles, setFrameStyles] = useState<Map<number, string>>(new Map());
+  const [frameAngles, setFrameAngles] = useState<Map<number, string>>(new Map());
+
+  // Cinematic angle/shot presets shown as dropdown on each frame card
+  const cinematicAnglePresets = [
+    "Eye Level — Medium Shot",
+    "Close-Up",
+    "Extreme Close-Up",
+    "Medium Close-Up",
+    "Medium Shot",
+    "Medium Wide Shot",
+    "Wide Shot",
+    "Extreme Wide Shot / Establishing",
+    "Low Angle",
+    "High Angle",
+    "Bird's Eye / Top Down",
+    "Worm's Eye",
+    "Dutch Angle",
+    "Over-the-Shoulder",
+    "POV (Point of View)",
+    "Two-Shot",
+    "Insert Shot",
+  ];
 
   // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
@@ -1453,9 +1475,15 @@ const Storyboarding = () => {
       });
       const characterImages = Array.from(characterImagesMap.values());
 
+      // Apply per-frame cinematic angle override (if user picked one from the dropdown)
+      const angleOverride = frameAngles.get(shotNumber);
+      const shotForGen = angleOverride
+        ? { ...shot, cameraAngle: angleOverride, shotType: angleOverride }
+        : shot;
+
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
-          shot,
+          shot: shotForGen,
           artStyle: stylePrompt,
           aspectRatio: currentProject.aspectRatio || '16:9',
           characterDescriptions,
@@ -3035,18 +3063,50 @@ const Storyboarding = () => {
                                     <p className="text-xs text-muted-foreground">{shot.description}</p>
                                   )}
                                 </div>
-                                <div>
-                                  <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
-                                  {editingFrame === shot.shotNumber ? (
-                                    <Input
-                                      value={frameEditValues.cameraAngle || shot.cameraAngle}
-                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                      className="text-xs"
-                                    />
-                                  ) : (
-                                    <p className="text-xs text-muted-foreground">{shot.cameraAngle}</p>
-                                  )}
-                                </div>
+                                 <div>
+                                   <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
+                                   {editingFrame === shot.shotNumber ? (
+                                     <Input
+                                       value={frameEditValues.cameraAngle || shot.cameraAngle}
+                                       onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                       className="text-xs"
+                                     />
+                                   ) : (
+                                     <p className="text-xs text-muted-foreground">{shot.cameraAngle}</p>
+                                   )}
+                                 </div>
+                                 <div>
+                                   <h4 className="font-medium text-xs mb-1">Cinematic Angle Preset</h4>
+                                   <div className="flex items-center gap-1">
+                                     <Select
+                                       value={frameAngles.get(shot.shotNumber) || ""}
+                                       onValueChange={(value) => {
+                                         setFrameAngles(prev => new Map(prev).set(shot.shotNumber, value));
+                                       }}
+                                     >
+                                       <SelectTrigger className="h-7 text-xs flex-1">
+                                         <SelectValue placeholder="Override angle…" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                         {cinematicAnglePresets.map((preset) => (
+                                           <SelectItem key={preset} value={preset} className="text-xs">
+                                             {preset}
+                                           </SelectItem>
+                                         ))}
+                                       </SelectContent>
+                                     </Select>
+                                     <Button
+                                       size="sm"
+                                       variant="outline"
+                                       disabled={isGenerating || !frameAngles.get(shot.shotNumber)}
+                                       onClick={() => generateSingleFrame(shot.shotNumber)}
+                                       className="h-7 px-2 text-xs"
+                                       title="Regenerate with selected angle"
+                                     >
+                                       {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                                     </Button>
+                                   </div>
+                                 </div>
                                  <div>
                                    <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
                                    {editingFrame === shot.shotNumber ? (
