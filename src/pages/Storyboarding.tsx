@@ -24,7 +24,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
-import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
+import { CharacterDefinitionManager, CharacterDefinition, buildCharacterPromptDescription } from "@/components/CharacterDefinitionManager";
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
@@ -656,7 +656,15 @@ const Storyboarding = () => {
       const styleModifier =
         artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
 
-      const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${member.description || member.name}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+      // If the user has defined this character in CharacterDefinitions, fold in the structured appearance for variety
+      const matchingDef = currentProject.characterDefinitions.find(
+        d => d.name.toLowerCase() === member.name.toLowerCase()
+      );
+      const enrichedDesc = matchingDef
+        ? buildCharacterPromptDescription(matchingDef)
+        : (member.description || member.name);
+
+      const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${enrichedDesc}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
 
       const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
         body: {
@@ -1431,7 +1439,7 @@ const Storyboarding = () => {
             c => c.name.toLowerCase() === charName.toLowerCase()
           );
           if (def) {
-            let desc = `${def.name}: ${def.description}. ${def.traits}`;
+            let desc = `${def.name}: ${buildCharacterPromptDescription(def)}`;
             if (def.imageUrl) {
               desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
             }

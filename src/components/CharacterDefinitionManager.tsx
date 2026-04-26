@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Trash2, Users, Upload, X, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useState } from "react";
@@ -13,7 +14,48 @@ export interface CharacterDefinition {
   description: string;
   traits: string;
   imageUrl?: string;
+  // Structured appearance — drives variety so characters don't all look the same
+  gender?: string;       // e.g., "Male", "Female", "Non-binary"
+  ageRange?: string;     // e.g., "20s", "30s", "50s", "60+"
+  ethnicity?: string;    // e.g., "Black", "White", "Hispanic/Latino", "Asian", "Middle Eastern", "Indigenous", "Mixed"
+  hair?: string;         // e.g., "Long curly black", "Short buzz cut", "Bald", "Shoulder-length blonde"
+  build?: string;        // e.g., "Slim", "Athletic", "Heavyset", "Tall and lean"
+  distinctiveFeatures?: string; // e.g., "Beard, scar over left eye, wears glasses"
 }
+
+const GENDER_OPTIONS = ["Male", "Female", "Non-binary", "Other / Unspecified"];
+const AGE_OPTIONS = ["Child", "Teen", "20s", "30s", "40s", "50s", "60+", "Elderly"];
+const ETHNICITY_OPTIONS = [
+  "Black / African",
+  "White / Caucasian",
+  "Hispanic / Latino",
+  "East Asian",
+  "South Asian",
+  "Southeast Asian",
+  "Middle Eastern / North African",
+  "Indigenous / Native",
+  "Pacific Islander",
+  "Mixed / Multiracial",
+  "Other / Unspecified",
+];
+const BUILD_OPTIONS = ["Slim", "Average", "Athletic", "Muscular", "Heavyset", "Tall and lean", "Short and stocky"];
+
+// Build an enriched, generator-friendly description from structured fields + free text.
+// Used by portrait + frame generators so characters look visually distinct.
+export const buildCharacterPromptDescription = (c: CharacterDefinition): string => {
+  const parts: string[] = [];
+  const demo: string[] = [];
+  if (c.gender) demo.push(c.gender);
+  if (c.ageRange) demo.push(`${c.ageRange}`);
+  if (c.ethnicity) demo.push(c.ethnicity);
+  if (demo.length) parts.push(demo.join(", "));
+  if (c.build) parts.push(`${c.build} build`);
+  if (c.hair) parts.push(`hair: ${c.hair}`);
+  if (c.distinctiveFeatures) parts.push(`distinctive features: ${c.distinctiveFeatures}`);
+  if (c.description) parts.push(c.description);
+  if (c.traits) parts.push(c.traits);
+  return parts.filter(Boolean).join(". ");
+};
 
 interface CharacterDefinitionManagerProps {
   characters: CharacterDefinition[];
@@ -143,6 +185,65 @@ export const CharacterDefinitionManager = ({ characters, onChange, onSave, canSa
                 onChange={(e) => updateCharacter(index, "name", e.target.value)}
               />
             </div>
+
+            {/* Structured appearance — drives visual variety across characters */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Gender</Label>
+                <Select value={character.gender || ""} onValueChange={(v) => updateCharacter(index, "gender", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {GENDER_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Age Range</Label>
+                <Select value={character.ageRange || ""} onValueChange={(v) => updateCharacter(index, "ageRange", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {AGE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Ethnicity</Label>
+                <Select value={character.ethnicity || ""} onValueChange={(v) => updateCharacter(index, "ethnicity", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {ETHNICITY_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Build</Label>
+                <Select value={character.build || ""} onValueChange={(v) => updateCharacter(index, "build", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {BUILD_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label className="text-xs">Hair (color, length, style)</Label>
+                <Input
+                  placeholder="e.g., Long curly black, Short buzz cut, Bald, Shoulder-length blonde"
+                  value={character.hair || ""}
+                  onChange={(e) => updateCharacter(index, "hair", e.target.value)}
+                />
+              </div>
+              <div className="space-y-1 sm:col-span-3">
+                <Label className="text-xs">Distinctive Features</Label>
+                <Input
+                  placeholder="e.g., Beard, scar over left eye, glasses, tattoos, weathered face"
+                  value={character.distinctiveFeatures || ""}
+                  onChange={(e) => updateCharacter(index, "distinctiveFeatures", e.target.value)}
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground -mt-1">
+              These fields force visual variety so your characters don't all come out looking the same.
+            </p>
 
             <div className="space-y-2">
               <Label htmlFor={`char-desc-${index}`}>Physical Description</Label>
