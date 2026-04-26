@@ -24,7 +24,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { ArtStyleSelector, artStyles } from "@/components/ArtStyleSelector";
-import { CharacterDefinitionManager, CharacterDefinition } from "@/components/CharacterDefinitionManager";
+import { CharacterDefinitionManager, CharacterDefinition, buildCharacterPromptDescription } from "@/components/CharacterDefinitionManager";
 import { StyleReferenceInput } from "@/components/StyleReferenceInput";
 import { StyleReferenceUpload } from "@/components/storyboard/StyleReferenceUpload";
 import { SceneSelector, type Scene } from "@/components/storyboard/SceneSelector";
