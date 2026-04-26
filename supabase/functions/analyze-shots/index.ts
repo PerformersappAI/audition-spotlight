@@ -80,14 +80,20 @@ IMPORTANT: You must respond with ONLY valid JSON, no markdown formatting or code
 
     const userPrompt = `Break this script into exactly ${shotCount} storyboard shots. Each shot must be a specific camera setup that could be filmed.
 
+CRITICAL WRITING RULES:
+- Every text field below MUST be a COMPLETE SENTENCE (or more). No fragments like "Drinking water" or "Staring at stain". Use full sentences with subject + verb.
+- "visualDescription" must be at least 2 full sentences, rich with concrete visual detail drawn from the script (who, what, where, body language, environment, props, light direction).
+- "action" must be a complete sentence describing the single beat captured (e.g. "Sheriff Simmons slowly raises the tin cup to his lips while keeping his eyes locked on Tom across the table.").
+- Anchor every detail in the actual script — do NOT invent props, locations, or characters that aren't in the script.
+
 FOR EACH SHOT, PROVIDE:
 
-1. **visualDescription**: LITERAL description of what the camera captures. Be specific about:
+1. **visualDescription**: 2-4 sentences. LITERAL description of what the camera captures. Be specific about:
    - Subject position in frame (left/center/right, foreground/background)
-   - Distance from camera (in feet if helpful)
+   - Distance from camera
    - Exact action being captured
    - Background elements visible
-   Example: "Woman stands center frame, 4 feet from camera, hand on doorknob, looking back over left shoulder. Dimly lit hallway behind her."
+   Example: "Sheriff Simmons stands center frame, four feet from the camera, his weathered hand resting on the doorknob as he glances back over his left shoulder. The dimly lit hallway stretches behind him, lined with peeling wallpaper and a single flickering bulb."
 
 2. **characters**: Array of character names IN THIS FRAME ONLY
 
