@@ -3197,7 +3197,7 @@ const Storyboarding = () => {
                         const shot = selectedProject.shots.find(s => s.shotNumber === frame.shotNumber);
                         const description = shot?.visualDescription || shot?.description || frame.description || '';
                         const shotType = shot?.shotType || shot?.cameraAngle || '';
-                        const cameraMove = shot?.cameraMovement || '';
+                        const cameraMove = (shot as any)?.cameraMovement || '';
                         return (
                           <div
                             key={`gallery-${frame.shotNumber}`}
