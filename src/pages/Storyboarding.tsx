@@ -3172,12 +3172,83 @@ const Storyboarding = () => {
                          </Card>
                         );
                        })}
-                      </div>
+                       </div>
+                   </CardContent>
+                  </Card>
+               )}
+
+              {/* Frames Gallery — clean reference-style grid below the shot list */}
+              {selectedProject.storyboard && selectedProject.storyboard.some(f => f.imageData) && (
+                <Card className="border-2 border-primary/20 shadow-lg">
+                  <CardHeader>
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <CardTitle className="flex items-center gap-2">
+                        <Video className="h-5 w-5" />
+                        Frames Gallery
+                      </CardTitle>
+                      <p className="text-xs text-muted-foreground">
+                        {selectedProject.storyboard.filter(f => f.imageData).length} of {selectedProject.storyboard.length} frames generated
+                      </p>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {selectedProject.storyboard.map((frame) => {
+                        const shot = selectedProject.shots.find(s => s.shotNumber === frame.shotNumber);
+                        const description = shot?.visualDescription || shot?.description || frame.description || '';
+                        const shotType = shot?.shotType || shot?.cameraAngle || '';
+                        const cameraMove = shot?.cameraMovement || '';
+                        return (
+                          <div
+                            key={`gallery-${frame.shotNumber}`}
+                            className="rounded-lg border border-border bg-card overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow"
+                          >
+                            <div className="px-3 py-2 border-b border-border bg-muted/40">
+                              <p className="text-sm font-semibold text-foreground">Frame {frame.shotNumber}</p>
+                            </div>
+                            <div className="aspect-video bg-muted overflow-hidden">
+                              {frame.imageData ? (
+                                <img
+                                  src={frame.imageData}
+                                  alt={`Frame ${frame.shotNumber}`}
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+                                  Not generated
+                                </div>
+                              )}
+                            </div>
+                            <div className="p-3 space-y-2 flex-1">
+                              {description && (
+                                <p className="text-xs text-foreground leading-relaxed line-clamp-4">
+                                  {description}
+                                </p>
+                              )}
+                              <div className="flex flex-wrap gap-1 pt-1">
+                                {shotType && (
+                                  <Badge variant="secondary" className="text-[10px]">
+                                    <Camera className="h-3 w-3 mr-1" />
+                                    {shotType}
+                                  </Badge>
+                                )}
+                                {cameraMove && (
+                                  <Badge variant="outline" className="text-[10px]">
+                                    {cameraMove}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </CardContent>
-                 </Card>
+                </Card>
               )}
-                </TabsContent>
-              </Tabs>
+                 </TabsContent>
+               </Tabs>
             </div>
           )}
         </div>
