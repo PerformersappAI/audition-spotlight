@@ -1431,7 +1431,7 @@ const Storyboarding = () => {
             c => c.name.toLowerCase() === charName.toLowerCase()
           );
           if (def) {
-            let desc = `${def.name}: ${def.description}. ${def.traits}`;
+            let desc = `${def.name}: ${buildCharacterPromptDescription(def)}`;
             if (def.imageUrl) {
               desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
             }
