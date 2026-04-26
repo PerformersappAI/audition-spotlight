@@ -1475,9 +1475,15 @@ const Storyboarding = () => {
       });
       const characterImages = Array.from(characterImagesMap.values());
 
+      // Apply per-frame cinematic angle override (if user picked one from the dropdown)
+      const angleOverride = frameAngles.get(shotNumber);
+      const shotForGen = angleOverride
+        ? { ...shot, cameraAngle: angleOverride, shotType: angleOverride }
+        : shot;
+
       const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
         body: { 
-          shot,
+          shot: shotForGen,
           artStyle: stylePrompt,
           aspectRatio: currentProject.aspectRatio || '16:9',
           characterDescriptions,
