@@ -186,6 +186,65 @@ export const CharacterDefinitionManager = ({ characters, onChange, onSave, canSa
               />
             </div>
 
+            {/* Structured appearance — drives visual variety across characters */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="space-y-1">
+                <Label className="text-xs">Gender</Label>
+                <Select value={character.gender || ""} onValueChange={(v) => updateCharacter(index, "gender", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {GENDER_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Age Range</Label>
+                <Select value={character.ageRange || ""} onValueChange={(v) => updateCharacter(index, "ageRange", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {AGE_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Ethnicity</Label>
+                <Select value={character.ethnicity || ""} onValueChange={(v) => updateCharacter(index, "ethnicity", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {ETHNICITY_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Build</Label>
+                <Select value={character.build || ""} onValueChange={(v) => updateCharacter(index, "build", v)}>
+                  <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                  <SelectContent>
+                    {BUILD_OPTIONS.map(o => <SelectItem key={o} value={o}>{o}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1 sm:col-span-2">
+                <Label className="text-xs">Hair (color, length, style)</Label>
+                <Input
+                  placeholder="e.g., Long curly black, Short buzz cut, Bald, Shoulder-length blonde"
+                  value={character.hair || ""}
+                  onChange={(e) => updateCharacter(index, "hair", e.target.value)}
+                />
+              </div>
+              <div className="space-y-1 sm:col-span-3">
+                <Label className="text-xs">Distinctive Features</Label>
+                <Input
+                  placeholder="e.g., Beard, scar over left eye, glasses, tattoos, weathered face"
+                  value={character.distinctiveFeatures || ""}
+                  onChange={(e) => updateCharacter(index, "distinctiveFeatures", e.target.value)}
+                />
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground -mt-1">
+              These fields force visual variety so your characters don't all come out looking the same.
+            </p>
+
             <div className="space-y-2">
               <Label htmlFor={`char-desc-${index}`}>Physical Description</Label>
               <Textarea
