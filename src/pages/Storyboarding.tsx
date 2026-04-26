@@ -3063,18 +3063,50 @@ const Storyboarding = () => {
                                     <p className="text-xs text-muted-foreground">{shot.description}</p>
                                   )}
                                 </div>
-                                <div>
-                                  <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
-                                  {editingFrame === shot.shotNumber ? (
-                                    <Input
-                                      value={frameEditValues.cameraAngle || shot.cameraAngle}
-                                      onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
-                                      className="text-xs"
-                                    />
-                                  ) : (
-                                    <p className="text-xs text-muted-foreground">{shot.cameraAngle}</p>
-                                  )}
-                                </div>
+                                 <div>
+                                   <h4 className="font-medium text-xs mb-1">Camera Angle</h4>
+                                   {editingFrame === shot.shotNumber ? (
+                                     <Input
+                                       value={frameEditValues.cameraAngle || shot.cameraAngle}
+                                       onChange={(e) => setFrameEditValues(prev => ({ ...prev, cameraAngle: e.target.value }))}
+                                       className="text-xs"
+                                     />
+                                   ) : (
+                                     <p className="text-xs text-muted-foreground">{shot.cameraAngle}</p>
+                                   )}
+                                 </div>
+                                 <div>
+                                   <h4 className="font-medium text-xs mb-1">Cinematic Angle Preset</h4>
+                                   <div className="flex items-center gap-1">
+                                     <Select
+                                       value={frameAngles.get(shot.shotNumber) || ""}
+                                       onValueChange={(value) => {
+                                         setFrameAngles(prev => new Map(prev).set(shot.shotNumber, value));
+                                       }}
+                                     >
+                                       <SelectTrigger className="h-7 text-xs flex-1">
+                                         <SelectValue placeholder="Override angle…" />
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                         {cinematicAnglePresets.map((preset) => (
+                                           <SelectItem key={preset} value={preset} className="text-xs">
+                                             {preset}
+                                           </SelectItem>
+                                         ))}
+                                       </SelectContent>
+                                     </Select>
+                                     <Button
+                                       size="sm"
+                                       variant="outline"
+                                       disabled={isGenerating || !frameAngles.get(shot.shotNumber)}
+                                       onClick={() => generateSingleFrame(shot.shotNumber)}
+                                       className="h-7 px-2 text-xs"
+                                       title="Regenerate with selected angle"
+                                     >
+                                       {isGenerating ? <Loader2 className="h-3 w-3 animate-spin" /> : <RefreshCw className="h-3 w-3" />}
+                                     </Button>
+                                   </div>
+                                 </div>
                                  <div>
                                    <h4 className="font-medium text-xs mb-1">Visual Elements</h4>
                                    {editingFrame === shot.shotNumber ? (
