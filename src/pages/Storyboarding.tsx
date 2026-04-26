@@ -142,6 +142,28 @@ const Storyboarding = () => {
   const [aiPrompt, setAiPrompt] = useState<Map<number, string>>(new Map());
   const [isParsingPrompt, setIsParsingPrompt] = useState<Map<number, boolean>>(new Map());
   const [frameStyles, setFrameStyles] = useState<Map<number, string>>(new Map());
+  const [frameAngles, setFrameAngles] = useState<Map<number, string>>(new Map());
+
+  // Cinematic angle/shot presets shown as dropdown on each frame card
+  const cinematicAnglePresets = [
+    "Eye Level — Medium Shot",
+    "Close-Up",
+    "Extreme Close-Up",
+    "Medium Close-Up",
+    "Medium Shot",
+    "Medium Wide Shot",
+    "Wide Shot",
+    "Extreme Wide Shot / Establishing",
+    "Low Angle",
+    "High Angle",
+    "Bird's Eye / Top Down",
+    "Worm's Eye",
+    "Dutch Angle",
+    "Over-the-Shoulder",
+    "POV (Point of View)",
+    "Two-Shot",
+    "Insert Shot",
+  ];
 
   // Scene selection workflow state (Option A: cost-saving gate before shot breakdown)
   const [extractedScenes, setExtractedScenes] = useState<Scene[] | null>(null);
