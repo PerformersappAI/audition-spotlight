@@ -61,10 +61,9 @@ export async function parsePdfFile(file: File): Promise<ParsedTableRead> {
   // Use pdfjs-dist already in deps via other tools, fallback to FileReader text
   // Lightweight approach: read as text via pdfjs if available, else error gracefully.
   try {
-    // @ts-expect-error - pdfjs-dist may be installed transitively
-    const pdfjs = await import("pdfjs-dist/build/pdf");
-    // @ts-expect-error
-    const worker = await import("pdfjs-dist/build/pdf.worker.min?url");
+    // pdfjs-dist may be installed transitively
+    const pdfjs: any = await import(/* @vite-ignore */ "pdfjs-dist/build/pdf");
+    const worker: any = await import(/* @vite-ignore */ "pdfjs-dist/build/pdf.worker.min?url");
     pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
     const data = await file.arrayBuffer();
     const pdf = await pdfjs.getDocument({ data }).promise;

@@ -25,7 +25,7 @@ export function encodePcmToMp3(
   const end = encoder.flush();
   if (end.length > 0) mp3Data.push(end);
 
-  return new Blob(mp3Data, { type: "audio/mpeg" });
+  return new Blob(mp3Data as BlobPart[], { type: "audio/mpeg" });
 }
 
 // Concatenate Float32Arrays separated by silence gaps (in seconds).
