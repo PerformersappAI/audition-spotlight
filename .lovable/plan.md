@@ -1,62 +1,102 @@
-Fix the visual bugs the user reported on the Pitch Deck Preview without changing data, AI logic, or exports. All edits in `src/pages/PitchDeckPreview.tsx`.
+# Table Read — Browser TTS Audiobook (kokoro-js)
 
-## Slide-by-slide fixes
+Replace the current 5-step placeholder at `/table-read` with a fully working 4-step flow that uses **kokoro-js** in the browser (WASM, no API key) to generate a downloadable MP3 audiobook of a screenplay table read. Persist results in a new `table_reads` Supabase table.
 
-**Page 1 — Cover**
-- Hero image is stretched: it's currently `object-fit: cover` but a portrait poster gets cropped weirdly when paired with a title on top. Switch behavior so when `data.posterImage` exists it renders as a contained portrait card on the right (max-height with `object-fit: contain`, dark backdrop), with the title block on the left — i.e. a proper "one-sheet" cover layout. When only a 16:9 AI still exists, keep the full-bleed cover.
-- Title + logline collision: add a real gap (margin-top: 36–40px on logline, larger line-height, and clamp the title to 2 lines).
-- Logline length: enforce a soft cap. Truncate the displayed logline at ~12 words with an ellipsis (display only — do not mutate stored data). Helper: `clampWords(str, 12)`.
+## What gets built
 
-**Page 2 — Story**
-- Image stretched: the right column uses `object-fit: cover` inside a flex cell with no fixed aspect ratio, so a horizontal still gets squeezed into a tall column. Wrap the image in a square (1:1) frame centered in the cell — Instagram-style — with `object-fit: cover` on a real square box. Vertically center it.
-- Text cut off mid-sentence: replace the hard `maxHeight: 520px; overflow: hidden` clip with sentence-aware truncation. Compute how many sentences fit (target ~60 words / ~3 short paragraphs), append "…" cleanly. If synopsis exceeds the budget, cut at a sentence boundary, never mid-sentence.
+### 1. Database (migration)
+New table `public.table_reads`:
+- `id` uuid pk default `gen_random_uuid()`
+- `user_id` uuid not null (auth.uid())
+- `title` text not null
+- `audio_url` text (storage path in `table-reads` bucket)
+- `character_count` int default 0
+- `line_count` int default 0
+- `is_public` boolean default false
+- `created_at` timestamptz default now()
 
-**Page 3 — Pull Quote**
-- Caption "From the Synopsis" → replace with the movie title in small caps: `{data.projectTitle?.toUpperCase()}` (fallback "Untitled").
+RLS:
+- Owner: full CRUD on own rows
+- Public read when `is_public = true` (for share links)
 
-**Page 6 — text cut off top and bottom (The World / North Star)**
-- Both `slide-northstar` and `slide-world` use `maxHeight: 520px; overflow: hidden` which clips mid-paragraph and, combined with vertical centering, can hide the top and bottom. Apply the same sentence-aware truncation used on Story, and remove vertical centering for World (already top-anchored — keep). For North Star, anchor content to the top with padding instead of centering when text exceeds one paragraph, so it never clips at the top.
+Storage: new public bucket `table-reads` for MP3 files, with insert/update/delete policies scoped to `auth.uid()` folder prefix.
 
-**Page 7 — Characters (poster cropping head off)**
-- Portrait cards use `aspect-ratio: 3/4` with `object-fit: cover`, which crops a tall poster from the center cutting off heads. Change to `object-fit: contain` against a dark `CARD` background with `object-position: top center` fallback for `cover`. Concretely: use `object-fit: contain` + neutral dark backdrop so the full portrait is visible (letterboxed), preserving the card frame.
+### 2. Pages & components
 
-**Page 8 — Visual Style (stretched poster + leftover text box)**
-- Poster stretched: full-bleed `object-fit: cover` warps a portrait poster. Switch this slide's image treatment to a contained portrait on the right (matching the Cover one-sheet treatment), with the text panel on the left in its own column — no overlap.
-- "Random box of text" / overlap: the current layout positions the text panel absolutely over the image. Convert to a 2-column grid (text left, contained poster right) so nothing overlaps and no orphan caption appears. Drop the `PlateCaption` overlay on this slide.
+Replace `src/pages/TableRead.tsx` with a 4-step wizard (keeps current pink/dark theme):
 
-**Page 9 — Empty slide**
-- This is rendering a section whose data is empty (likely Comparables, Episodes, Production, or Market when only one field is present and the column ends up blank). Tighten all conditional renders so a slide only mounts when it has meaningful content:
-  - Comparables: require `comparables.length && comparables.some(c => c.title)`.
-  - Episodes: require `episodes.length && episodes.some(e => e.title || e.logline)`.
-  - Market: require `primaryDemographic || secondaryAudience || (targetPlatforms?.length) || distributionPlan`.
-  - Production: require at least one truthy row.
-  - Team: require `teamMembers.some(m => m.name || m.role)`.
-
-## Shared helpers to add
-
-```ts
-// Word-boundary clamp for display
-const clampWords = (s: string, n: number) =>
-  (s?.split(/\s+/) ?? []).length > n
-    ? s.split(/\s+/).slice(0, n).join(" ") + "…"
-    : s ?? "";
-
-// Sentence-aware truncation by approximate word budget
-const truncateSentences = (s: string, maxWords: number) => {
-  const sentences = s.match(/[^.!?]+[.!?]+/g) ?? [s];
-  const out: string[] = [];
-  let count = 0;
-  for (const sent of sentences) {
-    const w = sent.trim().split(/\s+/).length;
-    if (count + w > maxWords) break;
-    out.push(sent.trim());
-    count += w;
-  }
-  return out.length ? out.join(" ") : sentences[0]?.trim().slice(0, maxWords * 6) + "…";
-};
+```
+Upload → Cast → Generate → Player
 ```
 
+New components in `src/components/tableread/`:
+- `ScriptUploader.tsx` (already exists — extend to also accept `.txt`, `.docx`, and a "Paste text" textarea fallback)
+- `CastVoiceAssigner.tsx` — one card per character with voice `<Select>`. Voice options:
+  - American Female: `af_heart`, `af_bella`, `af_nicole`, `af_sarah`, `af_sky`
+  - American Male: `am_adam`, `am_michael`, `am_fenrir`, `am_liam`
+  - British Female: `bf_emma`, `bf_isabella`, `bf_alice`
+  - British Male: `bm_george`, `bm_lewis`, `bm_daniel`
+  - Auto-suggest based on character name heuristics; allow per-character preview ("Hello, I am NAME").
+- `GenerationProgress.tsx` — progress bar showing "Line X of Y", current character, current dialogue snippet, cancel button.
+- `AudioPlayer.tsx` — `<audio>` controls, Download MP3, Copy share link (only enabled when `is_public`), toggle public/private, save title.
+
+### 3. TTS pipeline (`src/lib/tableread/tts.ts`)
+
+- `bun add kokoro-js`
+- Load model once via `KokoroTTS.from_pretrained("onnx-community/Kokoro-82M-v1.0-ONNX", { dtype: "q8", device: "wasm" })` inside a Web Worker (`src/workers/kokoroWorker.ts`) so the UI stays responsive.
+- For each dialogue line in script order:
+  1. Worker calls `tts.generate(text, { voice })` → returns `RawAudio` (Float32 PCM @ 24kHz).
+  2. Push PCM into an array on the main thread.
+- After all lines: concatenate Float32Arrays with short silence gaps (~300ms) between lines and ~600ms between scenes.
+- Encode the merged PCM to MP3 in-browser using `@breezystack/lamejs` (`bun add @breezystack/lamejs`) at 96 kbps mono. Result is a `Blob`.
+- Upload the blob to Supabase storage (`table-reads/{user_id}/{id}.mp3`), insert a row in `table_reads`, then advance to Player.
+
+### 4. Parsing extension
+
+Extend `src/utils/screenplayParser.ts` to also support:
+- `.txt` plain text (treat as Fountain — already does)
+- `.docx` via `mammoth` (`bun add mammoth`) → extract raw text → run through Fountain parser
+- `.pdf` already supported through existing `parse-document` edge function pattern; reuse for PDF uploads
+- Pasted text: feed directly into `parseFountain`
+
+The dialogue list passed to TTS = `parsed.scenes.flatMap(s => s.dialogue.map(d => ({ character: d.character, text: d.text })))`.
+
+### 5. Navigation
+
+Add **Table Read** link in `src/components/TopNavigation.tsx` (under the "About" or as a new top-level item) and ensure it appears in `ToolboxHome.tsx` (already linked there — keep).
+
+## Technical details
+
+- **Why Worker**: kokoro-js model is ~80MB and inference is CPU-heavy; running on main thread freezes UI.
+- **Model caching**: Transformers.js (kokoro-js dependency) caches the model in IndexedDB after first load (~30s first time, instant after).
+- **Memory**: For long scripts we stream chunks from worker to main thread and free intermediate buffers; never hold all RawAudio objects at once — convert each to Int16 PCM and append to a growing buffer.
+- **MP3 encoder**: lamejs is pure JS, ~50KB, no WASM required. Mono 24kHz → 24kHz MP3 keeps file size small (~20KB/sec).
+- **Cancel**: Worker terminates on user cancel; partial buffer discarded.
+- **Share link**: `/table-read/shared/:id` (new sub-route) reads from `table_reads` where `is_public = true` and plays the audio.
+- **No external AI APIs** — kokoro-js + lamejs only, all client-side.
+
+## File summary
+
+Created:
+- `supabase/migrations/<ts>_table_reads.sql` (table + RLS + storage bucket + policies)
+- `src/components/tableread/CastVoiceAssigner.tsx`
+- `src/components/tableread/GenerationProgress.tsx`
+- `src/components/tableread/AudioPlayer.tsx`
+- `src/lib/tableread/tts.ts`
+- `src/lib/tableread/mp3Encoder.ts`
+- `src/workers/kokoroWorker.ts`
+- `src/pages/TableReadShared.tsx` (public share view)
+
+Edited:
+- `src/pages/TableRead.tsx` (4-step wizard, wires everything)
+- `src/components/tableread/ScriptUploader.tsx` (add paste, .txt, .docx, .pdf)
+- `src/utils/screenplayParser.ts` (docx/pdf hooks)
+- `src/App.tsx` (add `/table-read/shared/:id` route)
+- `src/components/TopNavigation.tsx` (add Table Read link)
+- `package.json` (kokoro-js, @breezystack/lamejs, mammoth)
+
 ## Out of scope
-- No changes to AI generation, data model, exports (PDF/PPTX), or the editor.
-- No new slide types added or removed.
-- No color/typography overhaul beyond what's needed to fix layout bugs.
+
+- Background music, sound effects, scene transitions audio
+- Multi-language voices (kokoro supports more, sticking to your list)
+- Re-generating individual lines after MP3 is built (would need re-encode)
