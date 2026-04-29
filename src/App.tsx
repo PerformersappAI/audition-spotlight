@@ -62,6 +62,7 @@ import FundingStrategy from "./pages/FundingStrategy";
 import ContractFiller from "./pages/ContractFiller";
 import DistributionReadiness from "./pages/DistributionReadiness";
 import TableRead from "./pages/TableRead";
+import TableReadShared from "./pages/TableReadShared";
 import VideoEvaluation from "./pages/VideoEvaluation";
 import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
@@ -131,6 +132,7 @@ const AppContent = () => (
           <Route path="/pitch-deck/preview" element={<PitchDeckPreview />} />
           <Route path="/distribution-readiness" element={<DistributionReadiness />} />
           <Route path="/table-read" element={<TableRead />} />
+          <Route path="/table-read/shared/:id" element={<TableReadShared />} />
           <Route path="/video-evaluation" element={<VideoEvaluation />} />
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
           <Route path="/social" element={<Social />} />
