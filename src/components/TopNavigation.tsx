@@ -152,6 +152,18 @@ export const TopNavigation = () => {
         Toolbox
       </Link>
 
+      {/* Table Read */}
+      <Link
+        to="/table-read"
+        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+          location.pathname.startsWith('/table-read')
+            ? 'bg-gold/10 text-gold'
+            : 'text-foreground hover:text-gold'
+        }`}
+      >
+        Table Read
+      </Link>
+
       {/* Admin Dropdown (only for admins) */}
       {userProfile?.role === 'admin' && (
         <DropdownMenu>
