@@ -1467,6 +1467,42 @@ export type Database = {
         }
         Relationships: []
       }
+      table_reads: {
+        Row: {
+          audio_url: string | null
+          character_count: number
+          created_at: string
+          id: string
+          is_public: boolean
+          line_count: number
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          audio_url?: string | null
+          character_count?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          line_count?: number
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          audio_url?: string | null
+          character_count?: number
+          created_at?: string
+          id?: string
+          is_public?: boolean
+          line_count?: number
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_certifications: {
         Row: {
           certificate_number: string | null
