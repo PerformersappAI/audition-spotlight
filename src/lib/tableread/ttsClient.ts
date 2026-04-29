@@ -68,7 +68,7 @@ export async function previewLine(text: string, voice: string): Promise<void> {
   const { pcm, sampleRate } = await generateLine(text, voice);
   const ctx = new AudioContext({ sampleRate });
   const buf = ctx.createBuffer(1, pcm.length, sampleRate);
-  buf.copyToChannel(pcm, 0);
+  buf.copyToChannel(pcm as unknown as Float32Array, 0);
   const src = ctx.createBufferSource();
   src.buffer = buf;
   src.connect(ctx.destination);
