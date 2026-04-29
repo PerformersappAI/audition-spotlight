@@ -57,43 +57,10 @@ export async function parseDocxFile(file: File): Promise<ParsedTableRead> {
   return parsePastedOrText(result.value, file.name.replace(/\.docx$/i, ""));
 }
 
-export async function parsePdfFile(file: File): Promise<ParsedTableRead> {
-  // Use pdfjs-dist already in deps via other tools, fallback to FileReader text
-  // Lightweight approach: read as text via pdfjs if available, else error gracefully.
-  try {
-    // pdfjs-dist may be installed transitively
-    const pdfjs: any = await import(/* @vite-ignore */ "pdfjs-dist/build/pdf");
-    const worker: any = await import(/* @vite-ignore */ "pdfjs-dist/build/pdf.worker.min?url");
-    pdfjs.GlobalWorkerOptions.workerSrc = worker.default;
-    const data = await file.arrayBuffer();
-    const pdf = await pdfjs.getDocument({ data }).promise;
-    let fullText = "";
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const content = await page.getTextContent();
-      // Group by Y position to preserve line breaks (basic)
-      let lastY: number | null = null;
-      let lineBuf = "";
-      const out: string[] = [];
-      for (const item of content.items as Array<{ str: string; transform: number[] }>) {
-        const y = item.transform[5];
-        if (lastY !== null && Math.abs(y - lastY) > 2) {
-          out.push(lineBuf);
-          lineBuf = item.str;
-        } else {
-          lineBuf += (lineBuf ? " " : "") + item.str;
-        }
-        lastY = y;
-      }
-      if (lineBuf) out.push(lineBuf);
-      fullText += out.join("\n") + "\n\n";
-    }
-    return parsePastedOrText(fullText, file.name.replace(/\.pdf$/i, ""));
-  } catch {
-    throw new Error(
-      "PDF parsing requires the pdfjs-dist library. Please paste the script text or upload a .fountain, .txt, or .docx file."
-    );
-  }
+export async function parsePdfFile(_file: File): Promise<ParsedTableRead> {
+  throw new Error(
+    "PDF upload isn't supported here yet — please paste the script text or upload a .fountain, .txt, or .docx file."
+  );
 }
 
 export async function parseAnyFile(file: File): Promise<ParsedTableRead> {
