@@ -138,6 +138,13 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 >
                   Festivals
                 </Link>
+                <Link
+                  to="/table-read"
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-accent"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Table Read
+                </Link>
               </div>
             </div>
           )}
