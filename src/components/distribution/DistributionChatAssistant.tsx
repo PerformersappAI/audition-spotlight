@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { toast } from "sonner";
+import DOMPurify from "dompurify";
 
 interface Message {
   role: "user" | "assistant";
@@ -70,7 +71,10 @@ function formatMarkdown(text: string): string {
     html = '<p class="mb-2">' + html + '</p>';
   }
   
-  return html;
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ['h2', 'h3', 'h4', 'p', 'strong', 'em', 'ul', 'ol', 'li', 'br', 'code'],
+    ALLOWED_ATTR: ['class'],
+  });
 }
 
 export function DistributionChatAssistant({ context }: DistributionChatAssistantProps) {
