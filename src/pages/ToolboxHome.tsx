@@ -389,20 +389,20 @@ export default function ToolboxHome() {
         </div>
 
         {/* TITLE SECTION - with space below nav */}
-        <div className="container mx-auto px-6 py-8 relative z-10">
+        <div className="container mx-auto px-6 pt-2 pb-2 relative z-10">
           {/* Header - Stylized title */}
           <div className="text-center flex justify-center">
             <h1 className="sr-only">Filmmaker Genius</h1>
             <img
               src={filmmakerGeniusLogo}
               alt="Filmmaker Genius"
-              className="h-48 md:h-80 lg:h-96 w-auto object-contain"
+              className="h-96 md:h-[40rem] lg:h-[48rem] w-auto object-contain"
             />
           </div>
         </div>
 
         {/* HERO CONTENT SECTION - content flows over fading background */}
-        <div className="container mx-auto px-6 py-10 relative z-10">
+        <div className="container mx-auto px-6 pt-2 pb-10 relative z-10">
 
           {/* Filmmaking Journey Phases - Colored Numbers with text overlay */}
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 pb-12">
