@@ -396,7 +396,7 @@ export default function ToolboxHome() {
             <img
               src={filmmakerGeniusLogo}
               alt="Filmmaker Genius"
-              className="h-24 md:h-40 lg:h-48 w-auto object-contain"
+              className="h-48 md:h-80 lg:h-96 w-auto object-contain"
             />
           </div>
         </div>
