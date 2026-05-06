@@ -391,23 +391,13 @@ export default function ToolboxHome() {
         {/* TITLE SECTION - with space below nav */}
         <div className="container mx-auto px-6 py-8 relative z-10">
           {/* Header - Stylized title */}
-          <div className="text-center">
-            <h1 
-              className="text-3xl md:text-6xl lg:text-7xl font-black tracking-tight mb-4"
-              style={{
-                fontFamily: "'Playfair Display', serif",
-                background: 'linear-gradient(180deg, #9CA3AF 0%, #D1D5DB 10%, #F9FAFB 25%, #E5E7EB 35%, #9CA3AF 50%, #A8956E 65%, #C9A962 75%, #D4AF37 85%, #B8860B 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                backgroundClip: 'text',
-                letterSpacing: '-0.02em'
-              }}
-            >
-              Filmmaker Genius
-            </h1>
-            <p className="text-xl md:text-2xl text-gray-400 italic">
-              Where Genius Meets the Silver Screen
-            </p>
+          <div className="text-center flex justify-center">
+            <h1 className="sr-only">Filmmaker Genius</h1>
+            <img
+              src={filmmakerGeniusLogo}
+              alt="Filmmaker Genius"
+              className="h-24 md:h-40 lg:h-48 w-auto object-contain"
+            />
           </div>
         </div>
 
