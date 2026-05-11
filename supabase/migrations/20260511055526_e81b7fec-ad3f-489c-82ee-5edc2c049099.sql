@@ -1,0 +1,2 @@
+UPDATE public.user_credits SET total_credits = total_credits + 50, updated_at = now() WHERE user_id = 'e4ab01d7-1207-4995-a2cc-79c4b63637e8';
+INSERT INTO public.credit_transactions (user_id, amount, transaction_type, description) VALUES ('e4ab01d7-1207-4995-a2cc-79c4b63637e8', 50, 'purchase', 'Admin grant: +50 credits');
