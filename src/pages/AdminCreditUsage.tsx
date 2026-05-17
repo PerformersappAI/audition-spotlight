@@ -57,26 +57,28 @@ const AdminCreditUsage = () => {
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data: txs } = await supabase
-        .from('credit_transactions')
-        .select('*')
-        .eq('transaction_type', 'usage')
-        .order('created_at', { ascending: false })
-        .limit(1000);
+      const [{ data: txs }, { data: allProfs }] = await Promise.all([
+        supabase
+          .from('credit_transactions')
+          .select('*')
+          .eq('transaction_type', 'usage')
+          .order('created_at', { ascending: false })
+          .limit(1000),
+        supabase
+          .from('profiles')
+          .select('user_id, email, first_name, last_name')
+          .order('email', { ascending: true }),
+      ]);
 
       const txList = (txs || []) as Tx[];
       setTransactions(txList);
 
-      const userIds = Array.from(new Set(txList.map((t) => t.user_id)));
-      if (userIds.length) {
-        const { data: profs } = await supabase
-          .from('profiles')
-          .select('user_id, email, first_name, last_name')
-          .in('user_id', userIds);
-        const map: Record<string, Profile> = {};
-        (profs || []).forEach((p: any) => { map[p.user_id] = p; });
-        setProfiles(map);
-      }
+      const profList = (allProfs || []) as Profile[];
+      setAllProfiles(profList);
+      const map: Record<string, Profile> = {};
+      profList.forEach((p) => { map[p.user_id] = p; });
+      setProfiles(map);
+
       setLoading(false);
     })();
   }, []);
