@@ -48,6 +48,7 @@ const AdminCreditUsage = () => {
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [search, setSearch] = useState('');
   const [selectedMonth, setSelectedMonth] = useState<string>(monthKey(new Date()));
+  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
 
   useEffect(() => {
     (async () => {
