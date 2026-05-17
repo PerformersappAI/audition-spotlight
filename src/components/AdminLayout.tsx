@@ -83,6 +83,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { path: '/admin/festivals', label: 'Festivals', icon: Trophy },
     { path: '/admin/applications', label: 'Applications', icon: FileText },
     { path: '/admin/credits', label: 'Credits', icon: DollarSign },
+    { path: '/admin/credit-usage', label: 'Credit Usage', icon: LineChart },
     { path: '/admin/courses', label: 'Courses', icon: GraduationCap },
     { path: '/admin/quizzes', label: 'Quizzes', icon: ClipboardList },
     { path: '/admin/quiz-analytics', label: 'Quiz Analytics', icon: LineChart },
