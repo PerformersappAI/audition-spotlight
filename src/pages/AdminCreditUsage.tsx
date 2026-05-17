@@ -263,8 +263,6 @@ const AdminCreditUsage = () => {
           </TabsContent>
         </Tabs>
       </div>
-        </Tabs>
-      </div>
 
       <Dialog open={!!selectedUser} onOpenChange={(o) => !o && setSelectedUser(null)}>
         <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
