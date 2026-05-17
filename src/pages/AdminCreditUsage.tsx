@@ -307,5 +307,3 @@ const AdminCreditUsage = () => {
 };
 
 export default AdminCreditUsage;
-
-export default AdminCreditUsage;
