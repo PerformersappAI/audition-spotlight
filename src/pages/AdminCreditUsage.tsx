@@ -8,8 +8,10 @@ import {
 } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, TrendingDown, Activity } from 'lucide-react';
+import { Search, TrendingDown, Activity, Eye } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Profile {
@@ -46,6 +48,7 @@ const AdminCreditUsage = () => {
   const [profiles, setProfiles] = useState<Record<string, Profile>>({});
   const [search, setSearch] = useState('');
   const [selectedMonth, setSelectedMonth] = useState<string>(monthKey(new Date()));
+  const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -188,15 +191,16 @@ const AdminCreditUsage = () => {
                       <TableHead className="text-right">Used all-time</TableHead>
                       <TableHead className="text-right">Events</TableHead>
                       <TableHead>Last used</TableHead>
+                      <TableHead className="text-right">Details</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loading ? (
-                      <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading…</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading…</TableCell></TableRow>
                     ) : filtered.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No usage yet</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No usage yet</TableCell></TableRow>
                     ) : filtered.map((u) => (
-                      <TableRow key={u.user_id}>
+                      <TableRow key={u.user_id} className="cursor-pointer" onClick={() => setSelectedUser(u)}>
                         <TableCell>
                           <div className="font-medium">{u.name}</div>
                           <div className="text-xs text-muted-foreground">{u.email}</div>
@@ -206,6 +210,11 @@ const AdminCreditUsage = () => {
                         <TableCell className="text-right">{u.tx_count}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {u.last_used ? format(new Date(u.last_used), 'MMM d, yyyy p') : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setSelectedUser(u); }}>
+                            <Eye className="w-4 h-4 mr-1" /> View
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -254,6 +263,45 @@ const AdminCreditUsage = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      <Dialog open={!!selectedUser} onOpenChange={(o) => !o && setSelectedUser(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>{selectedUser?.name} — Credit usage</DialogTitle>
+            <DialogDescription>{selectedUser?.email}</DialogDescription>
+          </DialogHeader>
+          {selectedUser && (
+            <>
+              <div className="grid grid-cols-4 gap-3 py-2">
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">This month</div><div className="text-xl font-semibold">{selectedUser.used_this_month}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">All time</div><div className="text-xl font-semibold">{selectedUser.used_all_time}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">Events</div><div className="text-xl font-semibold">{selectedUser.tx_count}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">Last used</div><div className="text-sm font-medium">{selectedUser.last_used ? format(new Date(selectedUser.last_used), 'MMM d, yyyy p') : '—'}</div></div>
+              </div>
+              <div className="overflow-auto flex-1 border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>When</TableHead>
+                      <TableHead>Feature</TableHead>
+                      <TableHead className="text-right">Credits</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {transactions.filter((t) => t.user_id === selectedUser.user_id).map((t) => (
+                      <TableRow key={t.id}>
+                        <TableCell className="text-sm">{format(new Date(t.created_at), 'MMM d, yyyy p')}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{t.description || '—'}</TableCell>
+                        <TableCell className="text-right"><Badge variant="secondary">{Math.abs(t.amount)}</Badge></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
