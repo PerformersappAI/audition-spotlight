@@ -10,8 +10,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { supabase } from '@/integrations/supabase/client';
-import { Search, TrendingDown, Activity, Eye } from 'lucide-react';
+import { Search, TrendingDown, Activity, Eye, UserSearch, ChevronsUpDown } from 'lucide-react';
 import { format } from 'date-fns';
 
 interface Profile {
@@ -49,30 +51,34 @@ const AdminCreditUsage = () => {
   const [search, setSearch] = useState('');
   const [selectedMonth, setSelectedMonth] = useState<string>(monthKey(new Date()));
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
+  const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
       setLoading(true);
-      const { data: txs } = await supabase
-        .from('credit_transactions')
-        .select('*')
-        .eq('transaction_type', 'usage')
-        .order('created_at', { ascending: false })
-        .limit(1000);
+      const [{ data: txs }, { data: allProfs }] = await Promise.all([
+        supabase
+          .from('credit_transactions')
+          .select('*')
+          .eq('transaction_type', 'usage')
+          .order('created_at', { ascending: false })
+          .limit(1000),
+        supabase
+          .from('profiles')
+          .select('user_id, email, first_name, last_name')
+          .order('email', { ascending: true }),
+      ]);
 
       const txList = (txs || []) as Tx[];
       setTransactions(txList);
 
-      const userIds = Array.from(new Set(txList.map((t) => t.user_id)));
-      if (userIds.length) {
-        const { data: profs } = await supabase
-          .from('profiles')
-          .select('user_id, email, first_name, last_name')
-          .in('user_id', userIds);
-        const map: Record<string, Profile> = {};
-        (profs || []).forEach((p: any) => { map[p.user_id] = p; });
-        setProfiles(map);
-      }
+      const profList = (allProfs || []) as Profile[];
+      setAllProfiles(profList);
+      const map: Record<string, Profile> = {};
+      profList.forEach((p) => { map[p.user_id] = p; });
+      setProfiles(map);
+
       setLoading(false);
     })();
   }, []);
@@ -128,6 +134,22 @@ const AdminCreditUsage = () => {
   const totalThisMonth = summaries.reduce((s, u) => s + u.used_this_month, 0);
   const activeUsers = summaries.filter((s) => s.used_this_month > 0).length;
 
+  const openUserProfile = (userId: string) => {
+    const existing = summaries.find((s) => s.user_id === userId);
+    if (existing) { setSelectedUser(existing); return; }
+    const p = profiles[userId] || allProfiles.find((x) => x.user_id === userId);
+    if (!p) return;
+    setSelectedUser({
+      user_id: userId,
+      email: p.email || 'Unknown',
+      name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || '—',
+      used_this_month: 0,
+      used_all_time: 0,
+      last_used: null,
+      tx_count: 0,
+    });
+  };
+
   return (
     <AdminLayout title="Credit Usage">
       <div className="space-y-6">
@@ -157,10 +179,46 @@ const AdminCreditUsage = () => {
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="min-w-[260px] justify-between">
+                <span className="flex items-center gap-2">
+                  <UserSearch className="w-4 h-4" />
+                  Find a user…
+                </span>
+                <ChevronsUpDown className="w-4 h-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-[320px]" align="start">
+              <Command>
+                <CommandInput placeholder="Search all users by email or name…" />
+                <CommandList>
+                  <CommandEmpty>No users found.</CommandEmpty>
+                  <CommandGroup>
+                    {allProfiles.map((p) => {
+                      const name = `${p.first_name || ''} ${p.last_name || ''}`.trim();
+                      return (
+                        <CommandItem
+                          key={p.user_id}
+                          value={`${p.email} ${name}`}
+                          onSelect={() => { openUserProfile(p.user_id); setPickerOpen(false); }}
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">{name || p.email}</span>
+                            <span className="text-xs text-muted-foreground">{p.email}</span>
+                          </div>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <div className="relative flex-1 min-w-[240px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by email or name"
+              placeholder="Filter table by email or name"
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
