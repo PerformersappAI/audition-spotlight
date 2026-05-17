@@ -51,6 +51,8 @@ const AdminCreditUsage = () => {
   const [search, setSearch] = useState('');
   const [selectedMonth, setSelectedMonth] = useState<string>(monthKey(new Date()));
   const [selectedUser, setSelectedUser] = useState<UserSummary | null>(null);
+  const [allProfiles, setAllProfiles] = useState<Profile[]>([]);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
