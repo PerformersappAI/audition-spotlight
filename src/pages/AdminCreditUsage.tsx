@@ -179,10 +179,46 @@ const AdminCreditUsage = () => {
         </div>
 
         <div className="flex flex-wrap gap-3 items-center">
+          <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="min-w-[260px] justify-between">
+                <span className="flex items-center gap-2">
+                  <UserSearch className="w-4 h-4" />
+                  Find a user…
+                </span>
+                <ChevronsUpDown className="w-4 h-4 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="p-0 w-[320px]" align="start">
+              <Command>
+                <CommandInput placeholder="Search all users by email or name…" />
+                <CommandList>
+                  <CommandEmpty>No users found.</CommandEmpty>
+                  <CommandGroup>
+                    {allProfiles.map((p) => {
+                      const name = `${p.first_name || ''} ${p.last_name || ''}`.trim();
+                      return (
+                        <CommandItem
+                          key={p.user_id}
+                          value={`${p.email} ${name}`}
+                          onSelect={() => { openUserProfile(p.user_id); setPickerOpen(false); }}
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">{name || p.email}</span>
+                            <span className="text-xs text-muted-foreground">{p.email}</span>
+                          </div>
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <div className="relative flex-1 min-w-[240px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
-              placeholder="Search by email or name"
+              placeholder="Filter table by email or name"
               className="pl-9"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
