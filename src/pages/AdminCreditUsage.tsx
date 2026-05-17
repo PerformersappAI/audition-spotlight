@@ -191,15 +191,16 @@ const AdminCreditUsage = () => {
                       <TableHead className="text-right">Used all-time</TableHead>
                       <TableHead className="text-right">Events</TableHead>
                       <TableHead>Last used</TableHead>
+                      <TableHead className="text-right">Details</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {loading ? (
-                      <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">Loading…</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">Loading…</TableCell></TableRow>
                     ) : filtered.length === 0 ? (
-                      <TableRow><TableCell colSpan={5} className="text-center py-8 text-muted-foreground">No usage yet</TableCell></TableRow>
+                      <TableRow><TableCell colSpan={6} className="text-center py-8 text-muted-foreground">No usage yet</TableCell></TableRow>
                     ) : filtered.map((u) => (
-                      <TableRow key={u.user_id}>
+                      <TableRow key={u.user_id} className="cursor-pointer" onClick={() => setSelectedUser(u)}>
                         <TableCell>
                           <div className="font-medium">{u.name}</div>
                           <div className="text-xs text-muted-foreground">{u.email}</div>
@@ -209,6 +210,11 @@ const AdminCreditUsage = () => {
                         <TableCell className="text-right">{u.tx_count}</TableCell>
                         <TableCell className="text-sm text-muted-foreground">
                           {u.last_used ? format(new Date(u.last_used), 'MMM d, yyyy p') : '—'}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setSelectedUser(u); }}>
+                            <Eye className="w-4 h-4 mr-1" /> View
+                          </Button>
                         </TableCell>
                       </TableRow>
                     ))}
