@@ -34,6 +34,7 @@ import AdminProjects from "./pages/AdminProjects";
 import AdminFestivals from "./pages/AdminFestivals";
 import AdminApplications from "./pages/AdminApplications";
 import AdminCredits from "./pages/AdminCredits";
+import AdminCreditUsage from "./pages/AdminCreditUsage";
 import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
