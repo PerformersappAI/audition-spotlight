@@ -107,6 +107,7 @@ const AppContent = () => (
       <Route path="/admin/festivals" element={<AdminFestivals />} />
       <Route path="/admin/applications" element={<AdminApplications />} />
       <Route path="/admin/credits" element={<AdminCredits />} />
+      <Route path="/admin/credit-usage" element={<AdminCreditUsage />} />
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
