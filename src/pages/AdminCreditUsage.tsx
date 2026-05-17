@@ -263,8 +263,51 @@ const AdminCreditUsage = () => {
           </TabsContent>
         </Tabs>
       </div>
+        </Tabs>
+      </div>
+
+      <Dialog open={!!selectedUser} onOpenChange={(o) => !o && setSelectedUser(null)}>
+        <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>{selectedUser?.name} — Credit usage</DialogTitle>
+            <DialogDescription>{selectedUser?.email}</DialogDescription>
+          </DialogHeader>
+          {selectedUser && (
+            <>
+              <div className="grid grid-cols-4 gap-3 py-2">
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">This month</div><div className="text-xl font-semibold">{selectedUser.used_this_month}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">All time</div><div className="text-xl font-semibold">{selectedUser.used_all_time}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">Events</div><div className="text-xl font-semibold">{selectedUser.tx_count}</div></div>
+                <div className="rounded-md border p-3"><div className="text-xs text-muted-foreground">Last used</div><div className="text-sm font-medium">{selectedUser.last_used ? format(new Date(selectedUser.last_used), 'MMM d, yyyy p') : '—'}</div></div>
+              </div>
+              <div className="overflow-auto flex-1 border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>When</TableHead>
+                      <TableHead>Feature</TableHead>
+                      <TableHead className="text-right">Credits</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {transactions.filter((t) => t.user_id === selectedUser.user_id).map((t) => (
+                      <TableRow key={t.id}>
+                        <TableCell className="text-sm">{format(new Date(t.created_at), 'MMM d, yyyy p')}</TableCell>
+                        <TableCell className="text-sm text-muted-foreground">{t.description || '—'}</TableCell>
+                        <TableCell className="text-right"><Badge variant="secondary">{Math.abs(t.amount)}</Badge></TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </AdminLayout>
   );
 };
+
+export default AdminCreditUsage;
 
 export default AdminCreditUsage;
