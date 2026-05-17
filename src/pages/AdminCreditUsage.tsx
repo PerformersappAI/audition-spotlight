@@ -134,6 +134,22 @@ const AdminCreditUsage = () => {
   const totalThisMonth = summaries.reduce((s, u) => s + u.used_this_month, 0);
   const activeUsers = summaries.filter((s) => s.used_this_month > 0).length;
 
+  const openUserProfile = (userId: string) => {
+    const existing = summaries.find((s) => s.user_id === userId);
+    if (existing) { setSelectedUser(existing); return; }
+    const p = profiles[userId] || allProfiles.find((x) => x.user_id === userId);
+    if (!p) return;
+    setSelectedUser({
+      user_id: userId,
+      email: p.email || 'Unknown',
+      name: `${p.first_name || ''} ${p.last_name || ''}`.trim() || '—',
+      used_this_month: 0,
+      used_all_time: 0,
+      last_used: null,
+      tx_count: 0,
+    });
+  };
+
   return (
     <AdminLayout title="Credit Usage">
       <div className="space-y-6">
