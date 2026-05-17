@@ -34,6 +34,7 @@ import AdminProjects from "./pages/AdminProjects";
 import AdminFestivals from "./pages/AdminFestivals";
 import AdminApplications from "./pages/AdminApplications";
 import AdminCredits from "./pages/AdminCredits";
+import AdminCreditUsage from "./pages/AdminCreditUsage";
 import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
@@ -106,6 +107,7 @@ const AppContent = () => (
       <Route path="/admin/festivals" element={<AdminFestivals />} />
       <Route path="/admin/applications" element={<AdminApplications />} />
       <Route path="/admin/credits" element={<AdminCredits />} />
+      <Route path="/admin/credit-usage" element={<AdminCreditUsage />} />
       <Route path="/admin/courses" element={<AdminCourses />} />
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
