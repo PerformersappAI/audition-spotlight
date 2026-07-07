@@ -141,6 +141,8 @@ const AppContent = () => (
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
           <Route path="/social" element={<Social />} />
           <Route path="/animatic/:projectId" element={<AnimaticView />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
