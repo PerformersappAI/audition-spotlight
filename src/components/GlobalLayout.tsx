@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { TopNavigation } from './TopNavigation';
 import { useState } from 'react';
+import fgLogo from "@/assets/filmmaker-genius-logo.png";
 
 interface GlobalLayoutProps {
   children: React.ReactNode;
@@ -33,20 +34,15 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-lg">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex items-center justify-between">
-            {/* Logo and Brand */}
-            <div className="flex items-center space-x-4">
-              <Link to={user ? '/toolbox' : '/'} className="flex items-center space-x-3">
-                <div className="bg-gradient-to-r from-gold to-gold-light p-2 rounded-lg">
-                  <Film className="h-6 w-6 text-gold-foreground" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-foreground">Filmmaker Genius</h1>
-                  <p className="text-sm text-muted-foreground">filmmakergenius.com</p>
-                </div>
+        <div className="container mx-auto px-4 py-3 min-h-24 flex items-center">
+          <div className="flex items-center justify-between w-full">
+            {/* Logo */}
+            <div className="flex items-center">
+              <Link to={user ? '/toolbox' : '/'} className="flex items-center">
+                <img src={fgLogo} alt="Filmmaker Genius" className="h-20 w-auto rounded-md" />
               </Link>
             </div>
+
             
             {/* Desktop Navigation */}
             <div className="flex items-center space-x-4">
@@ -159,6 +155,10 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
       {/* Footer */}
       <footer className="border-t border-border bg-muted/30 py-8 mt-auto">
         <div className="container mx-auto px-4">
+          <div className="flex items-center justify-center gap-2.5 mb-3">
+            <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
+            <span className="text-lg font-semibold text-foreground">Filmmaker Genius</span>
+          </div>
           <div className="text-center text-muted-foreground">
             <p>&copy; 2025 Filmmaker Genius. Where Genius Meets the Silver Screen.</p>
           </div>
