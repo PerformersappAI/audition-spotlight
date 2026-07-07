@@ -69,6 +69,8 @@ import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
 import AnimaticView from "./pages/AnimaticView";
 import StoryboardingPricing from "./pages/StoryboardingPricing";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
