@@ -94,75 +94,26 @@ const Index = () => {
           </div>
         )}
         <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-6">
-          <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
-            FilmMakerGenius
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
+            The Production OS for Indie Filmmakers
           </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-200 max-w-3xl mx-auto">
-            Connect Filmmakers, Crew, Festivals, and Actors In One Powerful Platform
+          <p className="text-lg md:text-2xl mb-10 text-gray-200 max-w-3xl mx-auto">
+            Upload your script and run the whole production in one place — AI table reads, storyboards, crew, contracts, and casting notices that flow straight to GotAuditions.
           </p>
           <div className="flex flex-col gap-6 justify-center items-center">
-          <div className="mb-8">
-            <Button 
-              size="lg" 
-              onClick={() => user ? navigate('/toolbox') : navigate('/membership')} 
-              variant="gold" 
-              className="text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
+            <Button
+              size="lg"
+              onClick={() => user ? navigate('/toolbox') : navigate('/membership')}
+              variant="gold"
+              className="text-2xl md:text-3xl px-16 py-8 h-auto shadow-glow hover:scale-105 transition-transform font-bold"
             >
-              Filmmaker Toolbox
+              Start Free
             </Button>
-            {!user && (
-              <p className="text-white/80 text-sm mt-3">
-                Sign up to access powerful filmmaking tools
-              </p>
-            )}
-          </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-3xl">
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <Button 
-                    variant="burgundy" 
-                    size="lg" 
-                    onClick={() => user ? navigate('/actor') : navigate('/auth')} 
-                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
-                  >
-                    <Users className="h-5 w-5 mr-2" />
-                    ACTORS
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
-                  <Link to="/auditions" className="text-white text-sm font-medium tracking-wide hover:text-destructive transition-colors">
-                    GET YOUR AUDITIONS
-                  </Link>
-                  <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
-                </div>
-              </div>
-              <div className="flex flex-col items-center gap-3 group">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-r from-red-700 to-red-900 rounded-lg blur-md opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                  <Button 
-                    variant="burgundy" 
-                    size="lg" 
-                    onClick={() => user ? navigate('/crew') : navigate('/auth')} 
-                    className="text-lg px-8 py-4 w-full relative z-10 border border-red-700/20"
-                  >
-                    <Clock className="h-5 w-5 mr-2" />
-                    CREW
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                  <p className="text-white text-sm font-medium tracking-wide">CREW JOBS</p>
-                  <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                </div>
-              </div>
-            </div>
-            
+
             {/* Opprime TV Logo */}
             <div className="mt-12 flex justify-center">
-              <img 
-                src={opprimeLogo} 
+              <img
+                src={opprimeLogo}
                 alt="Opprime TV - Of the artist, by the artist, for the artist"
                 className="h-16 md:h-20 object-contain opacity-90"
               />
