@@ -122,8 +122,36 @@ const Index = () => {
         </div>
       </div>
 
+      {/* How It Works */}
+      <section className="relative py-20 bg-background border-y border-border z-10">
+        <div className="container mx-auto px-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-14 text-foreground">
+            How It Works
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
+            {[
+              { n: '1', text: 'Upload your script.' },
+              { n: '2', text: 'Build your production: storyboard, AI table reads, crew, contracts, and casting.' },
+              { n: '3', text: 'Push casting notices straight to GotAuditions and get submissions back without leaving the system.' },
+            ].map((step) => (
+              <div key={step.n} className="text-center md:text-left">
+                <div
+                  className="text-7xl md:text-8xl font-bold leading-none mb-4"
+                  style={{ color: '#00d4aa' }}
+                >
+                  {step.n}
+                </div>
+                <p className="text-lg md:text-xl text-foreground/90 leading-snug">
+                  {step.text}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Mission Statement */}
-      <div className="relative -mt-32 pt-20 pb-16 bg-surface border-y border-border z-10">
+      <div className="relative py-16 bg-surface border-y border-border z-10">
         <div className="container mx-auto px-6">
           <div className="max-w-4xl mx-auto text-center">
             <div className="relative mb-8">
