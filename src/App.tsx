@@ -69,6 +69,8 @@ import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
 import AnimaticView from "./pages/AnimaticView";
 import StoryboardingPricing from "./pages/StoryboardingPricing";
+import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 
 const queryClient = new QueryClient();
 
@@ -139,6 +141,8 @@ const AppContent = () => (
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
           <Route path="/social" element={<Social />} />
           <Route path="/animatic/:projectId" element={<AnimaticView />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
