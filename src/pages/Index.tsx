@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { MapPin, Calendar, Users, Clock, Film, Trophy, Drama, Video, FileVideo } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import filmStudioBg from "@/assets/film-studio-bg.jpg";
@@ -67,6 +68,14 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Helmet>
+        <title>FilmmakerGenius — The Production OS for Indie Filmmakers</title>
+        <meta name="description" content="Run your whole indie film in one place: script upload, AI table reads, storyboards, crew, contracts, and casting that flows straight to GotAuditions. Free to start." />
+        <link rel="canonical" href="https://filmmakergenius.com/" />
+        <meta property="og:title" content="FilmmakerGenius — The Production OS for Indie Filmmakers" />
+        <meta property="og:description" content="Run your whole indie film in one place: script upload, AI table reads, storyboards, crew, contracts, and casting that flows straight to GotAuditions. Free to start." />
+        <meta property="og:url" content="https://filmmakergenius.com/" />
+      </Helmet>
       {/* Hero Section */}
       <div 
         className="relative h-[85vh] bg-cover bg-center bg-no-repeat flex items-center justify-center"
