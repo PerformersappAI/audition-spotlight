@@ -75,6 +75,27 @@ const Index = () => {
         <meta property="og:title" content="FilmmakerGenius — The Production OS for Indie Filmmakers" />
         <meta property="og:description" content="Run your whole indie film in one place: script upload, AI table reads, storyboards, crew, contracts, and casting that flows straight to GotAuditions. Free to start." />
         <meta property="og:url" content="https://filmmakergenius.com/" />
+        <script type="application/ld+json">{JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "name": "FilmmakerGenius",
+              "url": "https://filmmakergenius.com",
+              "description": "The production operating system for independent filmmakers.",
+              "logo": "https://filmmakergenius.com/og-image.jpg"
+            },
+            {
+              "@type": "WebApplication",
+              "name": "FilmmakerGenius",
+              "url": "https://filmmakergenius.com",
+              "applicationCategory": "Film production software",
+              "operatingSystem": "Web",
+              "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+              "publisher": { "@type": "Organization", "name": "FilmmakerGenius", "url": "https://filmmakergenius.com" }
+            }
+          ]
+        })}</script>
       </Helmet>
       {/* Hero Section */}
       <div 
