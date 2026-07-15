@@ -20,13 +20,6 @@ export default function FilmReleasePhase() {
       badge: "Smart Tool",
       route: "/pitch-deck"
     },
-    {
-      name: "Concierge / Consulting",
-      description: "Get expert advice on marketing and festival strategies",
-      icon: MessageCircle,
-      badge: "Human Support",
-      route: "/consulting"
-    }
   ];
 
   return (

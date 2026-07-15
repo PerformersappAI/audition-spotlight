@@ -20,13 +20,6 @@ export default function DistributionPhase() {
       badge: "Premium",
       route: "/library"
     },
-    {
-      name: "Concierge / Consulting",
-      description: "Get expert guidance on distribution and monetization strategies",
-      icon: MessageCircle,
-      badge: "Human Support",
-      route: "/consulting"
-    }
   ];
 
   return (

@@ -98,17 +98,6 @@ export const TopNavigation = () => {
         Membership
       </Link>
 
-      {/* Contact */}
-      <Link
-        to="/consulting"
-        className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-          location.pathname === '/consulting' 
-            ? 'bg-gold/10 text-gold' 
-            : 'text-foreground hover:text-gold'
-        }`}
-      >
-        Contact
-      </Link>
 
       {/* About Dropdown */}
       <DropdownMenu>
@@ -129,12 +118,6 @@ export const TopNavigation = () => {
             <Link to="/library" className="flex items-center gap-3 w-full cursor-pointer p-3">
               <FileText className="h-4 w-4" />
               <span>Document Library</span>
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem asChild>
-            <Link to="/training" className="flex items-center gap-3 w-full cursor-pointer p-3">
-              <GraduationCap className="h-4 w-4" />
-              <span>Training Academy</span>
             </Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -208,10 +191,6 @@ export const TopNavigation = () => {
         </DropdownMenu>
       )}
 
-      {/* Help */}
-      <Button variant="ghost" className="text-sm font-medium hover:text-gold" asChild>
-        <Link to="/consulting">Help</Link>
-      </Button>
 
       {/* User Profile (only show if logged in) */}
       {user && (
@@ -230,12 +209,6 @@ export const TopNavigation = () => {
               <Link to="/dashboard" className="flex items-center gap-3 w-full cursor-pointer p-3">
                 <BarChart3 className="h-4 w-4" />
                 <span>Dashboard</span>
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/training/my-learning" className="flex items-center gap-3 w-full cursor-pointer p-3">
-                <GraduationCap className="h-4 w-4" />
-                <span>My Learning</span>
               </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />

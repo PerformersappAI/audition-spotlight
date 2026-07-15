@@ -27,13 +27,6 @@ export default function ProductionPhase() {
       badge: "Productivity",
       route: "/calendar"
     },
-    {
-      name: "Concierge / Consulting",
-      description: "Direct access to our producer desk for guidance",
-      icon: MessageCircle,
-      badge: "Human Support",
-      route: "/consulting"
-    }
   ];
 
   return (
