@@ -58,6 +58,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/pricing" className={navLinkClass}>Pricing</Link>
+            <Link to="/blog" className={navLinkClass}>Blog</Link>
           </nav>
 
           {/* RIGHT: Actions */}
