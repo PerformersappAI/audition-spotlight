@@ -82,11 +82,17 @@ const HomeMarketing = () => {
 
   return (
     <div style={{ background: "#000" }} className="min-h-screen">
+      <Seo
+        title="Filmmaker Genius — AI Tools & Training for Indie Film"
+        description="AI tools and step-by-step training for indie filmmakers — script and scene analysis, storyboards, pitch decks, funding, distribution, and a full academy."
+        canonical="https://filmmakergenius.com/"
+        type="website"
+      />
       {/* HERO */}
       <section className="flex flex-col items-center" style={{ padding: "0 24px 44px" }}>
         <img
           src={fgLogo}
-          alt="Filmmaker Genius"
+          alt="Filmmaker Genius logo"
           decoding="async"
           className="h-auto"
           style={{ width: "88%", maxWidth: 580, marginTop: 40 }}
