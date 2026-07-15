@@ -22,11 +22,10 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Don't show layout on auth pages, homepage, or toolbox (these have their own nav)
+  // Don't show layout on auth pages (they have their own nav)
   const hideLayout =
     location.pathname === '/auth' ||
-    location.pathname === '/admin-login' ||
-    location.pathname === '/toolbox';
+    location.pathname === '/admin-login';
 
   if (hideLayout) {
     return <>{children}</>;
