@@ -124,10 +124,11 @@ export default function GreenLightEngine() {
           className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 18,
-            textAlign: "left",
+            gridTemplateColumns: "repeat(2, 320px)",
+            justifyContent: "center",
             alignItems: "start",
+            gap: 20,
+            textAlign: "left",
           }}
         >
           {TIERS.map((t) => (
