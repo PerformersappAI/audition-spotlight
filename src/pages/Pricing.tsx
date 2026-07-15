@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 
 const basicFeatures = [
@@ -44,8 +45,8 @@ const Pricing = () => {
   return (
     <div style={{ background: '#0a0a12', color: '#fff', minHeight: '100vh' }}>
       <Seo
-        title="Pricing — Filmmaker Genius Plans & Credits"
-        description="Simple pricing for indie filmmakers: Basic and Pro monthly plans with credits for AI script analysis, storyboards, scene breakdowns, and PDF exports."
+        title="Membership & Pricing — Filmmaker Genius"
+        description="Simple membership and pricing for indie filmmakers: Basic and Pro monthly plans with credits for AI script analysis, storyboards, scene breakdowns, and PDF exports."
         canonical="https://filmmakergenius.com/pricing"
       />
       <style>{`
@@ -60,7 +61,24 @@ const Pricing = () => {
         }
       `}</style>
 
-      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '72px 48px 80px' }}>
+      <div className="container mx-auto px-4" style={{ paddingTop: 18, paddingBottom: 0 }}>
+        <Link
+          to="/"
+          style={{
+            display: 'inline-block',
+            fontSize: 13,
+            color: '#9ab1c2',
+            textDecoration: 'none',
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = '#fff')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = '#9ab1c2')}
+        >
+          ← Back to Filmmaker Genius
+        </Link>
+      </div>
+
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 48px 80px' }}>
         {/* HERO */}
         <div style={{ textAlign: 'center', marginBottom: 56 }}>
           <h1 style={{ fontSize: '2.4em', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 14 }}>
@@ -232,10 +250,12 @@ const Pricing = () => {
                 <option>100 Credits</option>
                 <option>250 Credits</option>
               </select>
-              <button
-                type="button"
+              <a
+                href="/membership"
                 className="pr-btn-purchase"
                 style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
                   background: '#1a1a2e',
                   color: '#fff',
                   border: '1px solid #2e2e50',
@@ -244,12 +264,12 @@ const Pricing = () => {
                   fontWeight: 600,
                   fontFamily: 'inherit',
                   fontSize: '0.9em',
-                  cursor: 'pointer',
+                  textDecoration: 'none',
                   transition: 'background 0.15s',
                 }}
               >
                 Purchase Credits
-              </button>
+              </a>
             </div>
           </div>
         </div>
