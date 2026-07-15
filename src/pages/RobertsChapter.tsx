@@ -1,9 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { robertsChapters } from "@/data/robertsChapters";
 
 const RobertsChapter = () => {
   const { chapterId } = useParams<{ chapterId: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const chapter = chapterId ? robertsChapters[chapterId] : undefined;
 
   if (!chapter) {
@@ -34,7 +36,7 @@ const RobertsChapter = () => {
     );
   }
 
-  const { seoTitle, canonical, category, number, title, intro, bodyHtml, cta, prev, next } =
+  const { seoTitle, category, number, title, intro, bodyHtml, cta, prev, next } =
     chapter;
 
   return (

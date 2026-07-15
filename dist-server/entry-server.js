@@ -7176,14 +7176,14 @@ function RobertsFilmmaking() {
       {
         title: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
         description: "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release. By Will Roberts.",
-        canonical: "https://filmmakergenius.com/academy/how-to-make-a-movie",
+        canonical: "https://filmmakergenius.com/academy/roberts-filmmaking",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
             { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/how-to-make-a-movie" }
+            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" }
           ]
         }
       }
@@ -8347,6 +8347,8 @@ const robertsChapters = {
 };
 const RobertsChapter = () => {
   const { chapterId } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const chapter = chapterId ? robertsChapters[chapterId] : void 0;
   if (!chapter) {
     return /* @__PURE__ */ jsxs(
@@ -8377,7 +8379,7 @@ const RobertsChapter = () => {
       }
     );
   }
-  const { seoTitle, canonical, category, number, title, intro, bodyHtml, cta, prev, next } = chapter;
+  const { seoTitle, category, number, title, intro, bodyHtml, cta, prev, next } = chapter;
   return /* @__PURE__ */ jsxs(
     "div",
     {
@@ -8974,8 +8976,10 @@ const monetizationHubs = {
 };
 function MonetizationHub({ hubKey }) {
   const hub = monetizationHubs[hubKey];
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   if (!hub) return null;
-  const { accent, accentRgb, keyBg, keyBg2, canonical, title, sub, stats, whatIsHeading, whatIsBody, keyFactsHeading, keyFacts, sectionLabel, tiles: tiles2 } = hub;
+  const { accent, accentRgb, keyBg, keyBg2, title, sub, stats, whatIsHeading, whatIsBody, keyFactsHeading, keyFacts, sectionLabel, tiles: tiles2 } = hub;
   return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', system-ui, sans-serif" }, children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -9981,6 +9985,8 @@ function Card({ card, variant, statLayout }) {
 }
 function MonetizationSubPage({ group }) {
   const { slug } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const hub = groupHub[group];
   const entry = slug ? monetizationSub[`${group}/${slug}`] : void 0;
   if (!entry) {
@@ -10002,7 +10008,7 @@ function MonetizationSubPage({ group }) {
       {
         title: `${entry.title} — ${entry.groupTitle} | Filmmaker Genius Academy`,
         description: `${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300),
-        canonical: entry.canonical
+        canonical
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10124,7 +10130,7 @@ function GreenLightEngine() {
           {
             title: "Green Light Engine — Where to Place Your Indie Film",
             description: "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
-            canonical: "https://filmmakergenius.com/greenlight-engine",
+            canonical: "https://filmmakergenius.com/green-light-engine",
             jsonLd: {
               "@context": "https://schema.org",
               "@type": "BreadcrumbList",
@@ -10320,7 +10326,7 @@ function GleNiche() {
       {
         title: "Niche & Identity Streaming Platforms — Green Light Engine",
         description: "Find the right identity- and genre-driven streaming home for your indie film: Black cinema, LGBTQ+, horror, documentary, international, and shorts platforms.",
-        canonical: "https://filmmakergenius.com/greenlight-engine/niche",
+        canonical: "https://filmmakergenius.com/green-light-engine/niche",
         jsonLd: {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
@@ -10464,6 +10470,8 @@ const gleNiche = {
 };
 function GleNichePage() {
   const { slug } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = slug ? gleNiche[slug] : void 0;
   if (!data) {
     return /* @__PURE__ */ jsxs("div", { style: { background: "#14181c", minHeight: "60vh", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, -apple-system, sans-serif", padding: "80px 20px", textAlign: "center" }, children: [
@@ -10473,7 +10481,7 @@ function GleNichePage() {
     ] });
   }
   const accent = "#ff8000";
-  const { canonical, title, sub, platforms } = data;
+  const { title, sub, platforms } = data;
   return /* @__PURE__ */ jsxs("div", { style: { background: "#14181c", color: "#fff", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", minHeight: "100vh" }, children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -10603,6 +10611,8 @@ const gleTiers = {
 };
 function GleTier() {
   const { tier } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = tier ? gleTiers[tier] : void 0;
   if (!data) {
     return /* @__PURE__ */ jsxs("div", { style: { background: "#14181c", minHeight: "60vh", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, -apple-system, sans-serif", padding: "80px 20px", textAlign: "center" }, children: [
@@ -10611,7 +10621,7 @@ function GleTier() {
       /* @__PURE__ */ jsx(Link, { to: "/green-light-engine", style: { background: "#20272e", border: "1px solid #2c3440", color: "#fff", fontWeight: 700, fontSize: 14, borderRadius: 9, padding: "10px 16px", textDecoration: "none" }, children: "← Back to Green Light Engine" })
     ] });
   }
-  const { accent, canonical, label, title, sub, platforms } = data;
+  const { accent, label, title, sub, platforms } = data;
   return /* @__PURE__ */ jsxs("div", { style: { background: "#14181c", color: "#fff", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", minHeight: "100vh" }, children: [
     /* @__PURE__ */ jsx(
       Seo,

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { monetizationSub, SubPage, SubCard } from "@/data/monetizationSub";
 
@@ -47,6 +47,8 @@ function Card({ card, variant, statLayout }: { card: SubCard; variant: SubPage["
 
 export default function MonetizationSubPage({ group }: Props) {
   const { slug } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const hub = groupHub[group];
   const entry: SubPage | undefined = slug ? monetizationSub[`${group}/${slug}`] : undefined;
 
@@ -69,7 +71,7 @@ export default function MonetizationSubPage({ group }: Props) {
       <Seo
         title={`${entry.title} — ${entry.groupTitle} | Filmmaker Genius Academy`}
         description={`${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300)}
-        canonical={entry.canonical}
+        canonical={canonical}
       />
 
       <style>{`

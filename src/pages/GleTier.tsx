@@ -1,9 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { gleTiers } from "@/data/gleTiers";
 
 export default function GleTier() {
   const { tier } = useParams<{ tier: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = tier ? gleTiers[tier] : undefined;
 
   if (!data) {
@@ -16,7 +18,7 @@ export default function GleTier() {
     );
   }
 
-  const { accent, canonical, label, title, sub, platforms } = data;
+  const { accent, label, title, sub, platforms } = data;
 
   return (
     <div style={{ background: "#14181c", color: "#fff", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", minHeight: "100vh" }}>

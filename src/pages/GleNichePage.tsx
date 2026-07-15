@@ -1,9 +1,11 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { gleNiche } from "@/data/gleNiche";
 
 export default function GleNichePage() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = slug ? gleNiche[slug] : undefined;
 
   if (!data) {
@@ -17,7 +19,7 @@ export default function GleNichePage() {
   }
 
   const accent = "#ff8000";
-  const { canonical, title, sub, platforms } = data;
+  const { title, sub, platforms } = data;
 
   return (
     <div style={{ background: "#14181c", color: "#fff", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", minHeight: "100vh" }}>
