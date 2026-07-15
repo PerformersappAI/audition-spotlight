@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard, FilePlus2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import ToolTopBar from "@/components/ToolTopBar";
+import { Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard, FilePlus2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import Step2Story, { type CharacterEntry } from "@/components/pitchdeck/Step2Story";
@@ -273,6 +274,7 @@ const PitchDeckMaker = () => {
 
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: "#08080d" }}>
+      <ToolTopBar />
       {/* Cinematic ambient backdrop */}
       <div
         aria-hidden="true"
@@ -304,14 +306,6 @@ const PitchDeckMaker = () => {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <Link
-              to="/toolbox"
-              className="group flex h-10 w-10 items-center justify-center rounded-lg text-zinc-400 transition-all duration-200 hover:scale-105 hover:bg-[#1a1a26] hover:text-[#f5a623]"
-              aria-label="Back to toolbox"
-              style={{ border: "1px solid rgba(245,166,35,0.08)" }}
-            >
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-            </Link>
             <div
               className="flex h-10 w-10 items-center justify-center rounded-lg"
               style={{

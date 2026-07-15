@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -125,6 +126,7 @@ export default function DocsLibrary() {
   if (!hasAccess) {
     return (
       <div className="min-h-screen bg-background">
+        <ToolTopBar />
         <div className="container mx-auto px-6 py-8">
           <div className="text-center max-w-2xl mx-auto">
             <Lock className="h-16 w-16 mx-auto mb-6 text-muted-foreground" />
@@ -144,6 +146,7 @@ export default function DocsLibrary() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ToolTopBar />
       <div className="container mx-auto px-6 py-8">
         {/* Header */}
         <div className="text-center mb-8">

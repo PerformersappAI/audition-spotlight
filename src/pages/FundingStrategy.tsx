@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -143,6 +144,7 @@ export default function FundingStrategy() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ToolTopBar />
       {/* Header */}
       <div className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container max-w-5xl mx-auto px-4 py-4">

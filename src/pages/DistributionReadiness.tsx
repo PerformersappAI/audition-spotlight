@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -361,6 +362,7 @@ export default function DistributionReadiness() {
   if (showResults) {
     return (
       <div className="min-h-screen bg-background">
+        <ToolTopBar />
         <div className="container mx-auto px-6 py-8 max-w-5xl">
           <Link to="/distribution-readiness" onClick={() => setShowResults(false)} className="text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-2">
             <ArrowLeft className="h-4 w-4" />
@@ -634,13 +636,10 @@ export default function DistributionReadiness() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ToolTopBar />
       <div className="container mx-auto px-6 py-8 max-w-5xl">
         {/* Header */}
         <div className="mb-8">
-          <Link to="/toolbox/distribution" className="text-muted-foreground hover:text-foreground mb-4 inline-flex items-center gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to Distribution
-          </Link>
           <div className="flex items-start justify-between">
             <div>
               <h1 className="text-3xl font-bold mb-2">Distribution Readiness Assessment</h1>

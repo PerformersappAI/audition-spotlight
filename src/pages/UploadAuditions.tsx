@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,9 +101,11 @@ const UploadAuditions = () => {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
-        {/* Header */}
+    <div>
+      <ToolTopBar />
+      <div className="container mx-auto px-4 py-8">
+        <div className="space-y-6">
+          {/* Header */}
         <div className="text-center py-12 mb-8">
           <h1 className="text-5xl font-bold text-gold mb-4">Audition Management</h1>
           <p className="text-xl text-foreground/80">Upload, review, and manage actor submissions</p>
@@ -329,6 +332,7 @@ const UploadAuditions = () => {
           </Card>
         </div>
       </div>
+    </div>
     </div>
   );
 };

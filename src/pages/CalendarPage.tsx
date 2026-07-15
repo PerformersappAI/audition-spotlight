@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -219,7 +220,9 @@ const CalendarPage = () => {
   const eventDates = events.map(event => event.date);
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
+    <div>
+      <ToolTopBar />
+      <div className="container mx-auto py-6 space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
@@ -557,6 +560,7 @@ const CalendarPage = () => {
           </div>
         </div>
       </div>
+    </div>
   );
 };
 
