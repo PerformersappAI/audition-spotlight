@@ -94,7 +94,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
             ) : (
               <div className="hidden min-[600px]:flex items-center gap-5">
                 <Link
-                  to="/crew"
+                  to="/crew-hire"
                   className="px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors"
                   style={{ backgroundColor: VIOLET }}
                   onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = VIOLET_HOVER)}
@@ -178,7 +178,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               {!user && (
                 <div className="pt-3 mt-2 border-t border-white/10 flex flex-col gap-2">
                   <Link
-                    to="/crew"
+                    to="/crew-hire"
                     onClick={() => setMobileMenuOpen(false)}
                     className="px-4 py-2 rounded-md text-sm font-semibold text-white text-center"
                     style={{ backgroundColor: VIOLET }}
