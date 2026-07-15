@@ -5,7 +5,7 @@ import { monetizationHubs } from "../src/data/monetizationHubs.ts";
 import { monetizationSub } from "../src/data/monetizationSub.ts";
 import { allCourses } from "../src/data/courses/index.ts";
 
-const set = new Set<string>();
+const set = new Set();
 
 const staticRoutes = [
   "/",
