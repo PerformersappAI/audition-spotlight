@@ -4,6 +4,8 @@ import { gleNiche } from "@/data/gleNiche";
 
 export default function GleNichePage() {
   const { slug } = useParams<{ slug: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = slug ? gleNiche[slug] : undefined;
 
   if (!data) {
