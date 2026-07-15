@@ -10,10 +10,8 @@ export default function ToolTopBar() {
       }}
     >
       <div
+        className="container mx-auto px-4"
         style={{
-          maxWidth: 1120,
-          margin: "0 auto",
-          padding: "0 24px",
           height: 48,
           display: "flex",
           alignItems: "center",
