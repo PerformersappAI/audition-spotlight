@@ -71,6 +71,7 @@ import AnimaticView from "./pages/AnimaticView";
 import StoryboardingPricing from "./pages/StoryboardingPricing";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import HomeMarketing from "./pages/HomeMarketing";
 
 const queryClient = new QueryClient();
 
