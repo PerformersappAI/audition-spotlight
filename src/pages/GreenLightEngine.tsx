@@ -121,9 +121,10 @@ export default function GreenLightEngine() {
         </p>
 
         <div
+          className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 18,
             textAlign: "left",
           }}
@@ -207,6 +208,7 @@ export default function GreenLightEngine() {
 
       <style>{`
         .gle-tile:hover { border-color: #678 !important; }
+        @media (max-width: 640px) { .gle-grid-square { grid-template-columns: 1fr !important; } }
       `}</style>
     </div>
   );
