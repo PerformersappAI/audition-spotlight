@@ -53,7 +53,7 @@ const ToolCard = ({
           src={card.img}
           alt={`${card.title} tool screenshot`}
           width={800}
-          height={aspect === "tall" ? 1000 : aspect === "16/9" ? 450 : 500}
+          height={aspect === "tall" ? 1200 : 450}
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover"
