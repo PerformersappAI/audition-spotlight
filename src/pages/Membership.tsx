@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import Seo from '@/components/Seo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -188,6 +189,12 @@ const Membership = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <Seo
+        title="Filmmaker Genius Membership — Plans & Credits"
+        description="Choose a Filmmaker Genius membership: monthly plans and credit packs that unlock AI script analysis, storyboards, scene breakdowns, and PDF exports."
+        canonical="https://filmmakergenius.com/membership"
+        type="website"
+      />
       <div className="container mx-auto px-4 pt-4">
         <Link
           to="/"

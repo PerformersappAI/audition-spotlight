@@ -2829,6 +2829,57 @@ const GlobalLayout = ({ children }) => {
     )
   ] });
 };
+const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
+const SITE_NAME = "Filmmaker Genius";
+const BRAND_SUFFIX = " | Filmmaker Genius";
+const TITLE_MAX = 60;
+const DESC_MAX = 160;
+const DESC_SOFT = 157;
+function normalizeTitle(raw2) {
+  const t = (raw2 || "").trim();
+  if (!t) return t;
+  if (t.length > TITLE_MAX && t.endsWith(BRAND_SUFFIX)) {
+    const stripped = t.slice(0, -BRAND_SUFFIX.length).trim().replace(/[—\-|]\s*$/, "").trim();
+    if (stripped.length > 0) return stripped;
+  }
+  return t;
+}
+function clampDescription(raw2) {
+  const d = (raw2 || "").trim();
+  if (d.length <= DESC_MAX) return d;
+  const slice = d.slice(0, DESC_SOFT);
+  const lastSpace = slice.lastIndexOf(" ");
+  const cut = lastSpace > 40 ? slice.slice(0, lastSpace) : slice;
+  return cut.replace(/[\s.,;:!?—-]+$/, "") + "…";
+}
+function Seo({
+  title,
+  description,
+  canonical,
+  image = DEFAULT_IMAGE,
+  type = "article",
+  jsonLd
+}) {
+  const ldArray = jsonLd ? Array.isArray(jsonLd) ? jsonLd : [jsonLd] : [];
+  const finalTitle = normalizeTitle(title);
+  const finalDesc = clampDescription(description);
+  return /* @__PURE__ */ jsxs(Helmet, { children: [
+    /* @__PURE__ */ jsx("title", { children: finalTitle }),
+    /* @__PURE__ */ jsx("meta", { name: "description", content: finalDesc }),
+    /* @__PURE__ */ jsx("link", { rel: "canonical", href: canonical }),
+    /* @__PURE__ */ jsx("meta", { property: "og:title", content: finalTitle }),
+    /* @__PURE__ */ jsx("meta", { property: "og:description", content: finalDesc }),
+    /* @__PURE__ */ jsx("meta", { property: "og:url", content: canonical }),
+    /* @__PURE__ */ jsx("meta", { property: "og:type", content: type }),
+    /* @__PURE__ */ jsx("meta", { property: "og:site_name", content: SITE_NAME }),
+    /* @__PURE__ */ jsx("meta", { property: "og:image", content: image }),
+    /* @__PURE__ */ jsx("meta", { name: "twitter:card", content: "summary_large_image" }),
+    /* @__PURE__ */ jsx("meta", { name: "twitter:title", content: finalTitle }),
+    /* @__PURE__ */ jsx("meta", { name: "twitter:description", content: finalDesc }),
+    /* @__PURE__ */ jsx("meta", { name: "twitter:image", content: image }),
+    ldArray.map((obj, i) => /* @__PURE__ */ jsx("script", { type: "application/ld+json", children: JSON.stringify(obj) }, i))
+  ] });
+}
 const imgSceneAnalysis = "/assets/tool-script-analysis-new-BiY7WnKF.jpg";
 const imgStoryboard = "/assets/tool-storyboard-DJdyK2rH.jpg";
 const imgPitchDeck = "/assets/tool-pitch-deck-new-DOumyjBm.webp";
@@ -2863,7 +2914,7 @@ const ToolCard$1 = ({
           "img",
           {
             src: card.img,
-            alt: "",
+            alt: `${card.title} tool screenshot`,
             width: 800,
             height: aspect === "tall" ? 1e3 : aspect === "16/9" ? 450 : 500,
             loading: "lazy",
@@ -2894,12 +2945,21 @@ const HomeMarketing = () => {
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Filmmaker Genius — AI Tools & Training for Indie Film",
+        description: "AI tools and step-by-step training for indie filmmakers — script and scene analysis, storyboards, pitch decks, funding, distribution, and a full academy.",
+        canonical: "https://filmmakergenius.com/",
+        type: "website"
+      }
+    ),
     /* @__PURE__ */ jsxs("section", { className: "flex flex-col items-center", style: { padding: "0 24px 44px" }, children: [
       /* @__PURE__ */ jsx(
         "img",
         {
           src: fgLogo,
-          alt: "Filmmaker Genius",
+          alt: "Filmmaker Genius logo",
           decoding: "async",
           className: "h-auto",
           style: { width: "88%", maxWidth: 580, marginTop: 40 }
@@ -2937,34 +2997,6 @@ const HomeMarketing = () => {
     ] }) })
   ] });
 };
-const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
-const SITE_NAME = "Filmmaker Genius";
-function Seo({
-  title,
-  description,
-  canonical,
-  image = DEFAULT_IMAGE,
-  type = "article",
-  jsonLd
-}) {
-  const ldArray = jsonLd ? Array.isArray(jsonLd) ? jsonLd : [jsonLd] : [];
-  return /* @__PURE__ */ jsxs(Helmet, { children: [
-    /* @__PURE__ */ jsx("title", { children: title }),
-    /* @__PURE__ */ jsx("meta", { name: "description", content: description }),
-    /* @__PURE__ */ jsx("link", { rel: "canonical", href: canonical }),
-    /* @__PURE__ */ jsx("meta", { property: "og:title", content: title }),
-    /* @__PURE__ */ jsx("meta", { property: "og:description", content: description }),
-    /* @__PURE__ */ jsx("meta", { property: "og:url", content: canonical }),
-    /* @__PURE__ */ jsx("meta", { property: "og:type", content: type }),
-    /* @__PURE__ */ jsx("meta", { property: "og:site_name", content: SITE_NAME }),
-    /* @__PURE__ */ jsx("meta", { property: "og:image", content: image }),
-    /* @__PURE__ */ jsx("meta", { name: "twitter:card", content: "summary_large_image" }),
-    /* @__PURE__ */ jsx("meta", { name: "twitter:title", content: title }),
-    /* @__PURE__ */ jsx("meta", { name: "twitter:description", content: description }),
-    /* @__PURE__ */ jsx("meta", { name: "twitter:image", content: image }),
-    ldArray.map((obj, i) => /* @__PURE__ */ jsx("script", { type: "application/ld+json", children: JSON.stringify(obj) }, i))
-  ] });
-}
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
 const TEAL$6 = "#00d4aa";
@@ -5295,6 +5327,15 @@ function CrewHire() {
     }, 1e3);
   };
   return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Film Crew Jobs — Hire Crew & Find Work | Filmmaker Genius",
+        description: "Post film crew jobs or find paid work on indie productions. Connect with camera, sound, grip, and production crew on Filmmaker Genius.",
+        canonical: "https://filmmakergenius.com/crew-hire",
+        type: "website"
+      }
+    ),
     /* @__PURE__ */ jsx(ToolTopBar, {}),
     /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-6 py-8 max-w-4xl", children: [
       /* @__PURE__ */ jsxs("div", { className: "text-center mb-8", children: [
@@ -6002,6 +6043,15 @@ const Membership = () => {
   };
   const selectedPack = creditPacks.find((pack) => pack.amount.toString() === selectedCreditPack);
   return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Filmmaker Genius Membership — Plans & Credits",
+        description: "Choose a Filmmaker Genius membership: monthly plans and credit packs that unlock AI script analysis, storyboards, scene breakdowns, and PDF exports.",
+        canonical: "https://filmmakergenius.com/membership",
+        type: "website"
+      }
+    ),
     /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 pt-4", children: /* @__PURE__ */ jsx(
       Link,
       {

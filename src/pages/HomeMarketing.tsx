@@ -1,16 +1,11 @@
 import { Link } from "react-router-dom";
+import Seo from "@/components/Seo";
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
-// TODO: replace with real tool card image
 import imgSceneAnalysis from "@/assets/tool-script-analysis-new.jpg";
-// TODO: replace with real tool card image
 import imgStoryboard from "@/assets/tool-storyboard.jpg";
-// TODO: replace with real tool card image
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
-// TODO: replace with real tool card image
 import imgCallSheet from "@/assets/tool-call-sheet.jpg";
-// TODO: replace with real tool card image
 import imgAuditions from "@/assets/tool-auditions.jpg";
-// TODO: replace with real tool card image
 import imgCrewHire from "@/assets/tool-crew-hire.jpg";
 
 const TEAL = "#00d4aa";
@@ -56,7 +51,7 @@ const ToolCard = ({
       <div className="w-full overflow-hidden flex-1" style={ratioStyle}>
         <img
           src={card.img}
-          alt=""
+          alt={`${card.title} tool screenshot`}
           width={800}
           height={aspect === "tall" ? 1000 : aspect === "16/9" ? 450 : 500}
           loading="lazy"
@@ -87,11 +82,17 @@ const HomeMarketing = () => {
 
   return (
     <div style={{ background: "#000" }} className="min-h-screen">
+      <Seo
+        title="Filmmaker Genius — AI Tools & Training for Indie Film"
+        description="AI tools and step-by-step training for indie filmmakers — script and scene analysis, storyboards, pitch decks, funding, distribution, and a full academy."
+        canonical="https://filmmakergenius.com/"
+        type="website"
+      />
       {/* HERO */}
       <section className="flex flex-col items-center" style={{ padding: "0 24px 44px" }}>
         <img
           src={fgLogo}
-          alt="Filmmaker Genius"
+          alt="Filmmaker Genius logo"
           decoding="async"
           className="h-auto"
           style={{ width: "88%", maxWidth: 580, marginTop: 40 }}

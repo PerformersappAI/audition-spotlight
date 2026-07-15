@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Seo from "@/components/Seo";
 import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -240,8 +241,15 @@ export default function CrewHire() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title="Film Crew Jobs — Hire Crew & Find Work | Filmmaker Genius"
+        description="Post film crew jobs or find paid work on indie productions. Connect with camera, sound, grip, and production crew on Filmmaker Genius."
+        canonical="https://filmmakergenius.com/crew-hire"
+        type="website"
+      />
       <ToolTopBar />
       <div className="container mx-auto px-6 py-8 max-w-4xl">
+
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
