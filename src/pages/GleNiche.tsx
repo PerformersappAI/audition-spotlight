@@ -18,7 +18,7 @@ export default function GleNiche() {
       <Seo
         title="Niche & Identity Streaming Platforms — Green Light Engine"
         description="Find the right identity- and genre-driven streaming home for your indie film: Black cinema, LGBTQ+, horror, documentary, international, and shorts platforms."
-        canonical="https://filmmakergenius.com/greenlight-engine/niche"
+        canonical="https://filmmakergenius.com/green-light-engine/niche"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
