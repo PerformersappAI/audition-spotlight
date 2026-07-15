@@ -87,6 +87,23 @@ const HomeMarketing = () => {
         description="AI tools and step-by-step training for indie filmmakers — script and scene analysis, storyboards, pitch decks, funding, distribution, and a full academy."
         canonical="https://filmmakergenius.com/"
         type="website"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Filmmaker Genius",
+            url: "https://filmmakergenius.com/",
+            logo: "https://filmmakergenius.com/og-image.jpg",
+            description:
+              "AI tools and training for indie filmmakers — script analysis, storyboards, pitch decks, funding, distribution, and academy courses.",
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Filmmaker Genius",
+            url: "https://filmmakergenius.com/",
+          },
+        ]}
       />
       {/* HERO */}
       <section className="flex flex-col items-center" style={{ padding: "0 24px 44px" }}>

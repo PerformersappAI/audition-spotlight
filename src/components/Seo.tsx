@@ -11,18 +11,23 @@ interface SeoProps {
 
 const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
 const SITE_NAME = "Filmmaker Genius";
-const BRAND_SUFFIX = " | Filmmaker Genius";
+const BRAND_SUFFIXES = [
+  " | Filmmaker Genius",
+  " — Filmmaker Genius Academy",
+  " — Filmmaker Genius",
+];
 const TITLE_MAX = 60;
 const DESC_MAX = 160;
-const DESC_SOFT = 157;
+const DESC_SOFT = 148;
 
 function normalizeTitle(raw: string): string {
   const t = (raw || "").trim();
-  if (!t) return t;
-  // If the title only fits under 60 chars once we drop the brand suffix, drop it.
-  if (t.length > TITLE_MAX && t.endsWith(BRAND_SUFFIX)) {
-    const stripped = t.slice(0, -BRAND_SUFFIX.length).trim().replace(/[—\-|]\s*$/, "").trim();
-    if (stripped.length > 0) return stripped;
+  if (!t || t.length <= TITLE_MAX) return t;
+  for (const suffix of BRAND_SUFFIXES) {
+    if (t.endsWith(suffix)) {
+      const stripped = t.slice(0, -suffix.length).trim().replace(/[—\-|]\s*$/, "").trim();
+      if (stripped.length > 0) return stripped;
+    }
   }
   return t;
 }
