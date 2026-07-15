@@ -124,10 +124,10 @@ export default function GreenLightEngine() {
           className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 320px)",
+            gridTemplateColumns: "repeat(2, 260px)",
             justifyContent: "center",
             alignItems: "start",
-            gap: 20,
+            gap: 18,
             textAlign: "left",
           }}
         >
@@ -140,21 +140,20 @@ export default function GreenLightEngine() {
                 background: "#1c2228",
                 border: "1px solid #2c3440",
                 borderRadius: 14,
-                padding: "22px 20px",
+                padding: "20px 18px",
                 display: "block",
                 textDecoration: "none",
                 color: "inherit",
                 transition: "border-color 0.15s ease",
-                aspectRatio: "1 / 1",
               }}
             >
               <div
                 style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 12,
+                  width: 46,
+                  height: 46,
+                  borderRadius: 11,
                   background: t.tint,
-                  marginBottom: 18,
+                  marginBottom: 12,
                 }}
               />
               <div
@@ -169,14 +168,14 @@ export default function GreenLightEngine() {
               >
                 {t.label}
               </div>
-              <h2 style={{ fontSize: 19, margin: 0, marginBottom: 9 }}>{t.title}</h2>
+              <h2 style={{ fontSize: 16, margin: 0, marginBottom: 6 }}>{t.title}</h2>
               <p
                 style={{
                   color: "#9ab1c2",
-                  fontSize: 13.5,
-                  lineHeight: 1.6,
+                  fontSize: 12.5,
+                  lineHeight: 1.55,
                   margin: 0,
-                  marginBottom: 14,
+                  marginBottom: 10,
                 }}
               >
                 {t.desc}
@@ -184,10 +183,10 @@ export default function GreenLightEngine() {
               <p
                 style={{
                   color: "#678",
-                  fontSize: 12.5,
+                  fontSize: 12,
                   lineHeight: 1.5,
                   margin: 0,
-                  marginBottom: 16,
+                  marginBottom: 12,
                 }}
               >
                 Examples:{" "}
@@ -197,7 +196,7 @@ export default function GreenLightEngine() {
               </p>
               <div
                 style={{
-                  fontSize: 13.5,
+                  fontSize: 13,
                   fontWeight: 800,
                   color: t.linkColor,
                 }}
@@ -211,10 +210,7 @@ export default function GreenLightEngine() {
 
       <style>{`
         .gle-tile:hover { border-color: #678 !important; }
-        @media (max-width: 700px) {
-          .gle-grid-square { grid-template-columns: 1fr !important; }
-          .gle-tile { aspect-ratio: auto !important; }
-        }
+        @media (max-width: 620px) { .gle-grid-square { grid-template-columns: 1fr !important; justify-content: stretch !important; } }
       `}</style>
     </div>
   );
