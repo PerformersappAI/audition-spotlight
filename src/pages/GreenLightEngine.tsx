@@ -67,6 +67,15 @@ export default function GreenLightEngine() {
         title="Green Light Engine — Where to Place Your Indie Film"
         description="Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services."
         canonical="https://filmmakergenius.com/greenlight-engine"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+          ],
+        }}
       />
 
       <nav
