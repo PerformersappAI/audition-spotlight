@@ -47,6 +47,8 @@ function Card({ card, variant, statLayout }: { card: SubCard; variant: SubPage["
 
 export default function MonetizationSubPage({ group }: Props) {
   const { slug } = useParams();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const hub = groupHub[group];
   const entry: SubPage | undefined = slug ? monetizationSub[`${group}/${slug}`] : undefined;
 
