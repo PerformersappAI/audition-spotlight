@@ -28,17 +28,17 @@ const GROUPS: Group[] = [
     key: "Script & Story",
     label: "Script & Story",
     rows: [{ cols: 3, tools: [
-      { title: "Scene Analysis", to: "https://filmmakergenius.com/scene-analysis", theme: "teal" },
-      { title: "Storyboard Generator", to: "https://filmmakergenius.com/storyboarding", theme: "teal" },
-      { title: "Table Read", to: "https://filmmakergenius.com/table-read", theme: "teal" },
+      { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
+      { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
+      { title: "Table Read", to: "/table-read", theme: "teal" },
     ]}],
   },
   {
     key: "Funding & Pitch",
     label: "Funding & Pitch",
     rows: [{ cols: 2, tools: [
-      { title: "Funding Strategy", to: "https://filmmakergenius.com/funding-strategy", theme: "gold" },
-      { title: "Pitch Deck Maker", to: "https://filmmakergenius.com/pitch-deck", theme: "gold" },
+      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
+      { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" },
     ]}],
   },
   {
@@ -46,13 +46,13 @@ const GROUPS: Group[] = [
     label: "Production Office",
     rows: [
       { cols: 3, tools: [
-        { title: "Calendar", to: "https://filmmakergenius.com/calendar", theme: "violet" },
-        { title: "Call Sheet Generator", to: "https://filmmakergenius.com/call-sheet", theme: "violet" },
-        { title: "Project Intake Form", to: "https://filmmakergenius.com/submit", theme: "violet" },
+        { title: "Calendar", to: "/calendar", theme: "violet" },
+        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
+        { title: "Project Intake Form", to: "/submit", theme: "violet" },
       ]},
       { cols: 2, tools: [
-        { title: "Contract Assistant", to: "https://filmmakergenius.com/contract-assistant", theme: "violet" },
-        { title: "Document Library", to: "https://filmmakergenius.com/library", theme: "violet" },
+        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
+        { title: "Document Library", to: "/library", theme: "violet" },
       ]},
     ],
   },
@@ -60,15 +60,15 @@ const GROUPS: Group[] = [
     key: "Cast & Crew",
     label: "Cast & Crew",
     rows: [{ cols: 2, tools: [
-      { title: "Auditions", to: "https://filmmakergenius.com/upload-auditions", theme: "rose" },
-      { title: "Crew Hire", to: "https://filmmakergenius.com/crew-hire", theme: "rose" },
+      { title: "Auditions", to: "/upload-auditions", theme: "rose" },
+      { title: "Crew Hire", to: "/crew-hire", theme: "rose" },
     ]}],
   },
   {
     key: "Distribution",
     label: "Distribution",
     rows: [{ cols: 2, tools: [
-      { title: "Distribution Readiness Assessment", to: "https://filmmakergenius.com/distribution-readiness", theme: "emerald" },
+      { title: "Distribution Readiness Assessment", to: "/distribution-readiness", theme: "emerald" },
       { title: "Recut", to: "#", theme: "red", badge: "New · AI", special: true },
     ]}],
   },
@@ -158,7 +158,7 @@ export default function Toolbox() {
       <Seo
         title="Toolbox — Every Indie Film Tool in One Place | Filmmaker Genius"
         description="The Filmmaker Genius Toolbox: script analysis, storyboards, pitch decks, call sheets, casting, breakdowns, and distribution tools — grouped by production phase."
-        canonical="https://filmmakergenius.com/toolbox"
+        canonical="/toolbox"
       />
       <style>{`
         @keyframes recutPulse {
