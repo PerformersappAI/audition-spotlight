@@ -78,7 +78,7 @@ const queryClient = new QueryClient();
 const AppContent = () => (
   <GlobalLayout>
     <Routes>
-          <Route path="/" element={<ToolboxHome />} />
+          <Route path="/" element={<HomeMarketing />} />
           <Route path="/welcome" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
