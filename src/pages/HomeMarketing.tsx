@@ -1,16 +1,11 @@
 import { Link } from "react-router-dom";
+import Seo from "@/components/Seo";
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
-// TODO: replace with real tool card image
 import imgSceneAnalysis from "@/assets/tool-script-analysis-new.jpg";
-// TODO: replace with real tool card image
 import imgStoryboard from "@/assets/tool-storyboard.jpg";
-// TODO: replace with real tool card image
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
-// TODO: replace with real tool card image
 import imgCallSheet from "@/assets/tool-call-sheet.jpg";
-// TODO: replace with real tool card image
 import imgAuditions from "@/assets/tool-auditions.jpg";
-// TODO: replace with real tool card image
 import imgCrewHire from "@/assets/tool-crew-hire.jpg";
 
 const TEAL = "#00d4aa";
