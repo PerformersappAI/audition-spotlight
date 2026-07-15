@@ -51,7 +51,7 @@ const ToolCard = ({
       <div className="w-full overflow-hidden flex-1" style={ratioStyle}>
         <img
           src={card.img}
-          alt=""
+          alt={`${card.title} tool screenshot`}
           width={800}
           height={aspect === "tall" ? 1000 : aspect === "16/9" ? 450 : 500}
           loading="lazy"
