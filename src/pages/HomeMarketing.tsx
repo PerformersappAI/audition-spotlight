@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
-import imgSceneAnalysis from "@/assets/tool-script-analysis-new.jpg";
-import imgStoryboard from "@/assets/tool-storyboard.jpg";
+import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
+import imgStoryboard from "@/assets/tool-storyboard.webp";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
-import imgCallSheet from "@/assets/tool-call-sheet.jpg";
-import imgAuditions from "@/assets/tool-auditions.jpg";
-import imgCrewHire from "@/assets/tool-crew-hire.jpg";
+import imgCallSheet from "@/assets/tool-call-sheet.webp";
+import imgAuditions from "@/assets/tool-auditions.webp";
+import imgCrewHire from "@/assets/tool-crew-hire.webp";
 
 const TEAL = "#00d4aa";
 
