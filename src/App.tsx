@@ -45,6 +45,7 @@ import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
 import ToolboxHome from "./pages/ToolboxHome";
+import Toolbox from "./pages/Toolbox";
 import AdminHomepageSettings from "./pages/AdminHomepageSettings";
 import PreProductionPhase from "./pages/PreProductionPhase";
 import ProductionPhase from "./pages/ProductionPhase";
