@@ -10,6 +10,12 @@ import { AuthProvider } from "@/hooks/useAuth";
 import { GlobalLayout } from "@/components/GlobalLayout";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Pricing from "./pages/Pricing";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import CreateAudition from "./pages/CreateAudition";
@@ -173,6 +179,12 @@ const AppContent = () => (
           <Route path="/green-light-engine/:tier" element={<GleTier />} />
           <Route path="/academy/:courseSlug" element={<CoursePage />} />
           <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>

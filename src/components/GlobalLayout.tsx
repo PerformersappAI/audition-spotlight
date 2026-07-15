@@ -58,6 +58,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/pricing" className={navLinkClass}>Pricing</Link>
+            <Link to="/blog" className={navLinkClass}>Blog</Link>
           </nav>
 
           {/* RIGHT: Actions */}
@@ -159,6 +160,13 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               >
                 Pricing
               </Link>
+              <Link
+                to="/blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+              >
+                Blog
+              </Link>
               {user && (
                 <Link
                   to="/dashboard"
@@ -217,6 +225,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               { label: 'Membership', to: '/membership' },
               { label: 'Academy', to: '/academy' },
               { label: 'FAQ', to: '/faq' },
+              { label: 'Blog', to: '/blog' },
             ].map((l) => (
               <Link
                 key={l.to}
