@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { gleNiche } from "@/data/gleNiche";
 
