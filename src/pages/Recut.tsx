@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
 import Seo from "@/components/Seo";
 import { toast } from "sonner";
+import horizontalAsset from "@/assets/recut-horizontal.webp.asset.json";
+import verticalAsset from "@/assets/recut-vertical.webp.asset.json";
 
 const TEAL = "#00d4aa";
 
