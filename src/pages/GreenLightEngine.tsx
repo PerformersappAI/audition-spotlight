@@ -127,6 +127,7 @@ export default function GreenLightEngine() {
             gridTemplateColumns: "repeat(2, 1fr)",
             gap: 18,
             textAlign: "left",
+            alignItems: "start",
           }}
         >
           {TIERS.map((t) => (
