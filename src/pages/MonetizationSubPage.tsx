@@ -71,7 +71,7 @@ export default function MonetizationSubPage({ group }: Props) {
       <Seo
         title={`${entry.title} — ${entry.groupTitle} | Filmmaker Genius Academy`}
         description={`${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300)}
-        canonical={entry.canonical}
+        canonical={canonical}
       />
 
       <style>{`
