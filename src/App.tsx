@@ -72,6 +72,18 @@ import StoryboardingPricing from "./pages/StoryboardingPricing";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import HomeMarketing from "./pages/HomeMarketing";
+import Academy from "./pages/Academy";
+import EducationModules from "./pages/EducationModules";
+import CoursePage from "./pages/CoursePage";
+import CourseChapter from "./pages/CourseChapter";
+import RobertsFilmmaking from "./pages/RobertsFilmmaking";
+import RobertsChapter from "./pages/RobertsChapter";
+import GreenLightEngine from "./pages/GreenLightEngine";
+import GleTier from "./pages/GleTier";
+import GleNiche from "./pages/GleNiche";
+import GleNichePage from "./pages/GleNichePage";
+import MonetizationHub from "./pages/MonetizationHub";
+import MonetizationSubPage from "./pages/MonetizationSubPage";
 
 const queryClient = new QueryClient();
 
@@ -144,6 +156,23 @@ const AppContent = () => (
           <Route path="/animatic/:projectId" element={<AnimaticView />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/academy" element={<Academy />} />
+          <Route path="/academy/education" element={<EducationModules />} />
+          <Route path="/academy/education-modules" element={<EducationModules />} />
+          <Route path="/academy/roberts-filmmaking" element={<RobertsFilmmaking />} />
+          <Route path="/academy/roberts-filmmaking/:chapterId" element={<RobertsChapter />} />
+          <Route path="/academy/aggregators" element={<MonetizationHub hubKey="aggregators" />} />
+          <Route path="/academy/distributors" element={<MonetizationHub hubKey="distributors" />} />
+          <Route path="/academy/vod" element={<MonetizationHub hubKey="vod" />} />
+          <Route path="/academy/aggregators/:slug" element={<MonetizationSubPage group="aggregators" />} />
+          <Route path="/academy/distributors/:slug" element={<MonetizationSubPage group="distributors" />} />
+          <Route path="/academy/vod/:slug" element={<MonetizationSubPage group="vod" />} />
+          <Route path="/green-light-engine" element={<GreenLightEngine />} />
+          <Route path="/green-light-engine/niche" element={<GleNiche />} />
+          <Route path="/green-light-engine/niche/:slug" element={<GleNichePage />} />
+          <Route path="/green-light-engine/:tier" element={<GleTier />} />
+          <Route path="/academy/:courseSlug" element={<CoursePage />} />
+          <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
