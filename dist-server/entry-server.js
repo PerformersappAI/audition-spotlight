@@ -6758,7 +6758,15 @@ function Academy() {
       {
         title: "Academy — 62 Free Courses for Indie Filmmakers | Filmmaker Genius",
         description: "Filmmaker Genius Academy: 62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization.",
-        canonical: "https://filmmakergenius.com/academy"
+        canonical: "https://filmmakergenius.com/academy",
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" }
+          ]
+        }
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -7168,7 +7176,16 @@ function RobertsFilmmaking() {
       {
         title: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
         description: "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release. By Will Roberts.",
-        canonical: "https://filmmakergenius.com/academy/how-to-make-a-movie"
+        canonical: "https://filmmakergenius.com/academy/how-to-make-a-movie",
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/how-to-make-a-movie" }
+          ]
+        }
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10107,7 +10124,16 @@ function GreenLightEngine() {
           {
             title: "Green Light Engine — Where to Place Your Indie Film",
             description: "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
-            canonical: "https://filmmakergenius.com/greenlight-engine"
+            canonical: "https://filmmakergenius.com/greenlight-engine",
+            jsonLd: {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+                { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+                { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" }
+              ]
+            }
           }
         ),
         /* @__PURE__ */ jsxs(
@@ -10294,7 +10320,17 @@ function GleNiche() {
       {
         title: "Niche & Identity Streaming Platforms — Green Light Engine",
         description: "Find the right identity- and genre-driven streaming home for your indie film: Black cinema, LGBTQ+, horror, documentary, international, and shorts platforms.",
-        canonical: "https://filmmakergenius.com/greenlight-engine/niche"
+        canonical: "https://filmmakergenius.com/greenlight-engine/niche",
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            { "@type": "ListItem", position: 4, name: "Niche & Identity", item: "https://filmmakergenius.com/green-light-engine/niche" }
+          ]
+        }
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10444,7 +10480,18 @@ function GleNichePage() {
       {
         title: `${title} — Niche Streaming Platforms | Filmmaker Genius`,
         description: sub,
-        canonical
+        canonical,
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            { "@type": "ListItem", position: 4, name: "Niche & Identity", item: "https://filmmakergenius.com/green-light-engine/niche" },
+            { "@type": "ListItem", position: 5, name: title, item: canonical }
+          ]
+        }
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10571,7 +10618,17 @@ function GleTier() {
       {
         title: `${title} — Green Light Engine | Filmmaker Genius`,
         description: sub,
-        canonical
+        canonical,
+        jsonLd: {
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            { "@type": "ListItem", position: 4, name: title, item: canonical }
+          ]
+        }
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10748,8 +10805,8 @@ function CoursePage() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Academy", item: "https://filmmakergenius.com/academy" },
-              { "@type": "ListItem", position: 2, name: "Education Modules", item: "https://filmmakergenius.com/academy/education" },
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
               { "@type": "ListItem", position: 3, name: course.title, item: `https://filmmakergenius.com/academy/${course.slug}` }
             ]
           }
@@ -12206,8 +12263,8 @@ function CourseChapter() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Academy", item: "https://filmmakergenius.com/academy" },
-              { "@type": "ListItem", position: 2, name: "Education Modules", item: "https://filmmakergenius.com/academy/education" },
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
               { "@type": "ListItem", position: 3, name: course.title, item: `https://filmmakergenius.com/academy/${course.slug}` },
               { "@type": "ListItem", position: 4, name: chapter.title, item: `https://filmmakergenius.com/academy/${course.slug}/${chapter.slug}` }
             ]
