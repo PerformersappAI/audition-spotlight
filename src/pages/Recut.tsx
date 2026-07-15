@@ -16,22 +16,16 @@ function FilmFrame() {
         style={{
           width: 240,
           height: 135,
-          background:
-            "linear-gradient(135deg, rgba(0,212,170,0.10) 0%, rgba(20,24,28,0.9) 60%, rgba(10,10,18,1) 100%)",
           border: "1px solid rgba(0,212,170,0.35)",
           boxShadow: "0 0 40px -20px rgba(0,212,170,0.5)",
         }}
       >
-        <div className="absolute top-0 left-0 right-0 flex justify-between px-2 py-1 bg-black/60">
-          {dots.map((_, i) => (
-            <span key={`t${i}`} className="block w-2 h-2 rounded-sm bg-neutral-800" />
-          ))}
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-1 bg-black/60">
-          {dots.map((_, i) => (
-            <span key={`b${i}`} className="block w-2 h-2 rounded-sm bg-neutral-800" />
-          ))}
-        </div>
+        <img
+          src={horizontalAsset.url}
+          alt="Feature film frame"
+          className="absolute inset-0 w-full h-full"
+          style={{ objectFit: "cover" }}
+        />
       </div>
       <p className="text-xs uppercase tracking-widest text-neutral-400">
         Your feature · 16:9
