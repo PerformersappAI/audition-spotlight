@@ -134,7 +134,7 @@ const AppContent = () => (
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
       <Route path="/admin/homepage" element={<AdminHomepageSettings />} />
-      <Route path="/toolbox" element={<ToolboxHome />} />
+      <Route path="/toolbox" element={<Toolbox />} />
       <Route path="/toolbox/pre-production" element={<PreProductionPhase />} />
       <Route path="/toolbox/production" element={<ProductionPhase />} />
       <Route path="/toolbox/post-production" element={<PostProductionPhase />} />
