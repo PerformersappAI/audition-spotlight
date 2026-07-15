@@ -143,6 +143,7 @@ export default function GreenLightEngine() {
                 textDecoration: "none",
                 color: "inherit",
                 transition: "border-color 0.15s ease",
+                aspectRatio: "1 / 1",
               }}
             >
               <div
@@ -208,7 +209,10 @@ export default function GreenLightEngine() {
 
       <style>{`
         .gle-tile:hover { border-color: #678 !important; }
-        @media (max-width: 640px) { .gle-grid-square { grid-template-columns: 1fr !important; } }
+        @media (max-width: 640px) {
+          .gle-grid-square { grid-template-columns: 1fr !important; }
+          .gle-tile { aspect-ratio: auto !important; }
+        }
       `}</style>
     </div>
   );
