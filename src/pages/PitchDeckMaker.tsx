@@ -353,17 +353,6 @@ const PitchDeckMaker = () => {
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div className="relative w-full" style={{ height: "2px", backgroundColor: "rgba(255,255,255,0.04)" }}>
-          <div
-            className="h-full transition-all duration-700 ease-out"
-            style={{
-              width: `${progressPct}%`,
-              background: "linear-gradient(90deg, #c8821a 0%, #f5a623 50%, #ffd27a 100%)",
-              boxShadow: "0 0 16px rgba(245,166,35,0.7)",
-            }}
-          />
-        </div>
 
         {/* Step tabs */}
         <div className="mx-auto max-w-7xl px-6 py-4">
