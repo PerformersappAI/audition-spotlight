@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
 import Seo from "@/components/Seo";
 import { toast } from "sonner";
+import horizontalAsset from "@/assets/recut-horizontal.webp.asset.json";
+import verticalAsset from "@/assets/recut-vertical.webp.asset.json";
 
 const TEAL = "#00d4aa";
 
@@ -14,22 +16,16 @@ function FilmFrame() {
         style={{
           width: 240,
           height: 135,
-          background:
-            "linear-gradient(135deg, rgba(0,212,170,0.10) 0%, rgba(20,24,28,0.9) 60%, rgba(10,10,18,1) 100%)",
           border: "1px solid rgba(0,212,170,0.35)",
           boxShadow: "0 0 40px -20px rgba(0,212,170,0.5)",
         }}
       >
-        <div className="absolute top-0 left-0 right-0 flex justify-between px-2 py-1 bg-black/60">
-          {dots.map((_, i) => (
-            <span key={`t${i}`} className="block w-2 h-2 rounded-sm bg-neutral-800" />
-          ))}
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 flex justify-between px-2 py-1 bg-black/60">
-          {dots.map((_, i) => (
-            <span key={`b${i}`} className="block w-2 h-2 rounded-sm bg-neutral-800" />
-          ))}
-        </div>
+        <img
+          src={horizontalAsset.url}
+          alt="Feature film frame"
+          className="absolute inset-0 w-full h-full"
+          style={{ objectFit: "cover" }}
+        />
       </div>
       <p className="text-xs uppercase tracking-widest text-neutral-400">
         Your feature · 16:9
@@ -42,19 +38,23 @@ function PhoneFrame() {
   return (
     <div className="flex flex-col items-center gap-3">
       <div
-        className="relative"
+        className="relative overflow-hidden"
         style={{
           width: 90,
           height: 180,
           borderRadius: 22,
-          background:
-            "linear-gradient(180deg, rgba(0,212,170,0.14) 0%, rgba(20,24,28,0.95) 60%, rgba(10,10,18,1) 100%)",
           border: "1.5px solid rgba(0,212,170,0.5)",
           boxShadow: "0 0 40px -15px rgba(0,212,170,0.6)",
         }}
       >
+        <img
+          src={verticalAsset.url}
+          alt="Vertical short frame"
+          className="absolute inset-0 w-full h-full"
+          style={{ objectFit: "cover" }}
+        />
         <div
-          className="absolute left-1/2 -translate-x-1/2 top-1.5 rounded-full bg-black"
+          className="absolute left-1/2 -translate-x-1/2 top-1.5 rounded-full bg-black z-10"
           style={{ width: 32, height: 6 }}
         />
       </div>
