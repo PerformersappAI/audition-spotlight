@@ -2599,7 +2599,7 @@ const useCredits = () => {
     hasEnoughCredits
   };
 };
-const fgLogo = "/assets/filmmaker-genius-logo-etPyjBIJ.png";
+const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
 const TEAL$8 = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
 const VIOLET = "#a855f7";
@@ -2886,12 +2886,12 @@ function Seo({
     ldArray.map((obj, i) => /* @__PURE__ */ jsx("script", { type: "application/ld+json", children: JSON.stringify(obj) }, i))
   ] });
 }
-const imgSceneAnalysis = "/assets/tool-script-analysis-new-BiY7WnKF.jpg";
-const imgStoryboard = "/assets/tool-storyboard-DJdyK2rH.jpg";
-const imgPitchDeck = "/assets/tool-pitch-deck-new-DOumyjBm.webp";
-const imgCallSheet = "/assets/tool-call-sheet-C6LxJaWv.jpg";
-const imgAuditions = "/assets/tool-auditions-Dhre6Jb1.jpg";
-const imgCrewHire = "/assets/tool-crew-hire-BPwDQxLv.jpg";
+const imgSceneAnalysis = "/assets/tool-script-analysis-new-BkCp-5Qx.webp";
+const imgStoryboard = "/assets/tool-storyboard-BhMwJfTE.webp";
+const imgPitchDeck = "/assets/tool-pitch-deck-new-KGycKjNa.webp";
+const imgCallSheet = "/assets/tool-call-sheet-DQpWMo_S.webp";
+const imgAuditions = "/assets/tool-auditions-CAWKiQYv.webp";
+const imgCrewHire = "/assets/tool-crew-hire-C6wHLsjN.webp";
 const TEAL$7 = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
@@ -2922,7 +2922,7 @@ const ToolCard$1 = ({
             src: card.img,
             alt: `${card.title} tool screenshot`,
             width: 800,
-            height: aspect === "tall" ? 1e3 : aspect === "16/9" ? 450 : 500,
+            height: aspect === "tall" ? 1200 : 450,
             loading: "lazy",
             decoding: "async",
             className: "w-full h-full object-cover"
@@ -2982,7 +2982,10 @@ const HomeMarketing = () => {
         {
           src: fgLogo,
           alt: "Filmmaker Genius logo",
+          width: 1151,
+          height: 320,
           decoding: "async",
+          ...{ fetchpriority: "high" },
           className: "h-auto",
           style: { width: "88%", maxWidth: 580, marginTop: 40 }
         }

@@ -1,12 +1,12 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
-import imgSceneAnalysis from "@/assets/tool-script-analysis-new.jpg";
-import imgStoryboard from "@/assets/tool-storyboard.jpg";
+import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
+import imgStoryboard from "@/assets/tool-storyboard.webp";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
-import imgCallSheet from "@/assets/tool-call-sheet.jpg";
-import imgAuditions from "@/assets/tool-auditions.jpg";
-import imgCrewHire from "@/assets/tool-crew-hire.jpg";
+import imgCallSheet from "@/assets/tool-call-sheet.webp";
+import imgAuditions from "@/assets/tool-auditions.webp";
+import imgCrewHire from "@/assets/tool-crew-hire.webp";
 
 const TEAL = "#00d4aa";
 
@@ -53,7 +53,7 @@ const ToolCard = ({
           src={card.img}
           alt={`${card.title} tool screenshot`}
           width={800}
-          height={aspect === "tall" ? 1000 : aspect === "16/9" ? 450 : 500}
+          height={aspect === "tall" ? 1200 : 450}
           loading="lazy"
           decoding="async"
           className="w-full h-full object-cover"
@@ -110,7 +110,10 @@ const HomeMarketing = () => {
         <img
           src={fgLogo}
           alt="Filmmaker Genius logo"
+          width={1151}
+          height={320}
           decoding="async"
+          {...({ fetchpriority: "high" } as any)}
           className="h-auto"
           style={{ width: "88%", maxWidth: 580, marginTop: 40 }}
         />
