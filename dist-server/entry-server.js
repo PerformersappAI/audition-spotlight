@@ -2697,6 +2697,8 @@ const GlobalLayout = ({ children }) => {
                   size: "icon",
                   className: "min-[600px]:hidden text-white hover:bg-white/10",
                   onClick: () => setMobileMenuOpen(!mobileMenuOpen),
+                  "aria-label": mobileMenuOpen ? "Close menu" : "Open menu",
+                  "aria-expanded": mobileMenuOpen,
                   children: mobileMenuOpen ? /* @__PURE__ */ jsx(X, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx(Menu, { className: "h-5 w-5" })
                 }
               )
@@ -2930,7 +2932,7 @@ const ToolCard$1 = ({
         ) }),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-5 py-4 border-t", style: { borderTopColor: "rgba(255,255,255,0.06)" }, children: [
           /* @__PURE__ */ jsx(
-            "h3",
+            "h2",
             {
               className: "text-white font-bold",
               style: { fontFamily: "'Inter Tight', Inter, sans-serif", fontSize: 22 },
