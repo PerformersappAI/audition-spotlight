@@ -140,7 +140,7 @@ export default function GreenLightEngine() {
                 background: "#1c2228",
                 border: "1px solid #2c3440",
                 borderRadius: 14,
-                padding: "26px 24px",
+                padding: "22px 20px",
                 display: "block",
                 textDecoration: "none",
                 color: "inherit",
