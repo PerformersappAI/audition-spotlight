@@ -66,7 +66,7 @@ export default function GreenLightEngine() {
       <Seo
         title="Green Light Engine — Where to Place Your Indie Film"
         description="Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services."
-        canonical="https://filmmakergenius.com/greenlight-engine"
+        canonical="https://filmmakergenius.com/green-light-engine"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
