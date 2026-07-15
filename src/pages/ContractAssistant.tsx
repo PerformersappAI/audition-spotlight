@@ -220,12 +220,17 @@ How can I help you get started?`
   const { toast } = useToast();
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 1) scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
 
   // Find regional office by ZIP code
   const findOfficeByZip = (zip: string) => {
