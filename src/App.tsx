@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import FestivalFinder from "./pages/FestivalFinder";
 import PitchDeckMaker from "./pages/PitchDeckMaker";
@@ -93,6 +95,14 @@ import MonetizationHub from "./pages/MonetizationHub";
 import MonetizationSubPage from "./pages/MonetizationSubPage";
 
 const queryClient = new QueryClient();
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 const AppContent = () => (
   <GlobalLayout>
@@ -199,6 +209,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+          <ScrollToTop />
           <AppContent />
         </BrowserRouter>
       </TooltipProvider>
