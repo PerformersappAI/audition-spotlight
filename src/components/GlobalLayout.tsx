@@ -56,8 +56,8 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           <nav className="hidden min-[600px]:flex items-center gap-8 justify-self-center">
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
-            <Link to="/pricing" className={navLinkClass}>Pricing</Link>
             <Link to="/blog" className={navLinkClass}>Blog</Link>
+            <Link to="/pricing" className={navLinkClass}>Pricing</Link>
           </nav>
 
           {/* RIGHT: Actions */}
@@ -153,18 +153,18 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 Academy
               </Link>
               <Link
-                to="/pricing"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
-              >
-                Pricing
-              </Link>
-              <Link
                 to="/blog"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
               >
                 Blog
+              </Link>
+              <Link
+                to="/pricing"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+              >
+                Pricing
               </Link>
               {user && (
                 <Link
@@ -220,11 +220,11 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {[
               { label: 'About', to: '/about' },
-              { label: 'Contact', to: '/contact' },
-              { label: 'Membership', to: '/membership' },
               { label: 'Academy', to: '/academy' },
-              { label: 'FAQ', to: '/faq' },
               { label: 'Blog', to: '/blog' },
+              { label: 'Membership', to: '/membership' },
+              { label: 'Contact', to: '/contact' },
+              { label: 'FAQ', to: '/faq' },
             ].map((l) => (
               <Link
                 key={l.to}
