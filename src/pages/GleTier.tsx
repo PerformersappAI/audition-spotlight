@@ -24,6 +24,16 @@ export default function GleTier() {
         title={`${title} — Green Light Engine | Filmmaker Genius`}
         description={sub}
         canonical={canonical}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            { "@type": "ListItem", position: 4, name: title, item: canonical },
+          ],
+        }}
       />
 
       <style>{`
