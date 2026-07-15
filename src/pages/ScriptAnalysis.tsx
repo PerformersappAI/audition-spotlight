@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ToolTopBar from "@/components/ToolTopBar";
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, ArrowLeft, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send, Pencil, ChevronDown } from 'lucide-react';
+import { Brain, FileText, Upload, Film, Users, Heart, Star, Lightbulb, Target, Clock, Download, Loader2, AlertTriangle, CheckCircle, Shield, MessageSquare, X, Send, Pencil, ChevronDown } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
@@ -541,27 +542,15 @@ const ScriptAnalysis = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <ToolTopBar />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto relative">
 
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-between mb-4">
-              <Button
-                variant="outline"
-                onClick={() => navigate('/toolbox')}
-                className="flex items-center gap-2"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Toolbox
-              </Button>
-              
-              <div className="flex items-center gap-3">
-                <Brain className="h-8 w-8 text-primary" />
-                <h1 className="text-4xl font-bold text-foreground">Script Analysis</h1>
-              </div>
-              
-              <div></div> {/* Spacer for flexbox alignment */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Brain className="h-8 w-8 text-primary" />
+              <h1 className="text-4xl font-bold text-foreground">Script Analysis</h1>
             </div>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Upload your script or paste text to get AI-powered analysis for character development, 

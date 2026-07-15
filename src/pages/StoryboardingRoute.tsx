@@ -1,4 +1,5 @@
 import { useAuth } from "@/hooks/useAuth";
+import ToolTopBar from "@/components/ToolTopBar";
 import Storyboarding from "./Storyboarding";
 
 export default function StoryboardingRoute() {
@@ -12,5 +13,10 @@ export default function StoryboardingRoute() {
     );
   }
 
-  return <Storyboarding />;
+  return (
+    <>
+      <ToolTopBar />
+      <Storyboarding />
+    </>
+  );
 }

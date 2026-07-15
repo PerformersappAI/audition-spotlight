@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
@@ -744,6 +745,7 @@ export default function MultiStepForm() {
 
   return (
     <div className="min-h-screen bg-background">
+      <ToolTopBar />
       <div className="container mx-auto px-6 py-8 max-w-4xl">
         {/* Header */}
         <div className="text-center mb-8">

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Headphones, Upload, Users, Wand2, Play, Check } from "lucide-react";
+import ToolTopBar from "@/components/ToolTopBar";
+import { Headphones, Upload, Users, Wand2, Play, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import ScriptUploader from "@/components/tableread/ScriptUploader";
@@ -18,7 +18,6 @@ const STEPS = [
 
 export default function TableRead() {
   const { user } = useAuth();
-  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [parsed, setParsed] = useState<ParsedTableRead | null>(null);
   const [assignments, setAssignments] = useState<Record<string, string>>({});
@@ -76,14 +75,10 @@ export default function TableRead() {
 
   return (
     <div className="min-h-screen bg-gray-950">
+      <ToolTopBar />
       <div className="border-b border-gray-800 bg-gray-900/50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">
-            <Link to="/toolbox">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-                <ArrowLeft className="w-5 h-5" />
-              </Button>
-            </Link>
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center">
                 <Headphones className="w-5 h-5 text-pink-400" />
