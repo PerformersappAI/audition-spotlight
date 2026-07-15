@@ -338,14 +338,17 @@ const Auth = () => {
   };
 
   return (
-    <div className="relative min-h-screen bg-background flex items-center justify-center p-4">
-      <Link
-        to="/"
-        className="absolute top-4 left-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
-      >
-        ← Back to Filmmaker Genius
-      </Link>
-      <div className="w-full max-w-2xl space-y-8">
+    <div className="min-h-screen bg-background flex flex-col">
+      <div className="container mx-auto px-4 pt-4">
+        <Link
+          to="/"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          ← Back to Filmmaker Genius
+        </Link>
+      </div>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="w-full max-w-2xl space-y-8">
         <div className="text-center">
           <h1 className="text-5xl font-bold">Filmmaker Genius</h1>
           <p className="text-muted-foreground mt-3 text-lg">Sign in or create your account.</p>
