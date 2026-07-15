@@ -225,6 +225,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               { label: 'Membership', to: '/membership' },
               { label: 'Academy', to: '/academy' },
               { label: 'FAQ', to: '/faq' },
+              { label: 'Blog', to: '/blog' },
             ].map((l) => (
               <Link
                 key={l.to}
