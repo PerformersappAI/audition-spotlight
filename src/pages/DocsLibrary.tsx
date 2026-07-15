@@ -101,8 +101,8 @@ export default function DocsLibrary() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
 
-  // Check if user has access (in real app, this would check subscription/payment status)
-  const hasAccess = !!user; // Simplified for demo
+  // Library is open to everyone; per-document actions can still gate themselves if needed.
+  const hasAccess = true;
 
   const allDocuments = documentBundles.flatMap(bundle => bundle.documents);
 

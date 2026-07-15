@@ -16,9 +16,8 @@ export default function StoryboardingRoute() {
     );
   }
 
-  // Logged-in users with ?tool=1 see the tool; otherwise show landing with "Go to Tool" CTA.
-  // Logged-out users always see the landing page.
-  if (user && showTool) {
+  // Anyone (logged in or not) with ?tool=1 can access the tool; default view is the landing.
+  if (showTool) {
     return <Storyboarding />;
   }
   return <StoryboardingLanding isAuthenticated={!!user} />;
