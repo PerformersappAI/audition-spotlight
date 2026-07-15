@@ -60,12 +60,12 @@ const ToolCard = ({
         />
       </div>
       <div className="flex items-center justify-between px-5 py-4 border-t" style={{ borderTopColor: "rgba(255,255,255,0.06)" }}>
-        <h3
+        <h2
           className="text-white font-bold"
           style={{ fontFamily: "'Inter Tight', Inter, sans-serif", fontSize: 22 }}
         >
           {card.title}
-        </h3>
+        </h2>
         <CtaPill label={card.cta} />
       </div>
     </Link>
