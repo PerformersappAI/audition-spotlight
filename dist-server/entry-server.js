@@ -2985,7 +2985,7 @@ const HomeMarketing = () => {
           width: 1151,
           height: 320,
           decoding: "async",
-          fetchPriority: "high",
+          ...{ fetchpriority: "high" },
           className: "h-auto",
           style: { width: "88%", maxWidth: 580, marginTop: 40 }
         }
