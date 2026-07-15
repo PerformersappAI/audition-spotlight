@@ -174,6 +174,14 @@ export default function Academy() {
         title="Academy — 62 Free Courses for Indie Filmmakers | Filmmaker Genius"
         description="Filmmaker Genius Academy: 62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization."
         canonical="https://filmmakergenius.com/academy"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+          ],
+        }}
       />
       <style>{`
         .ac-h1 { font-size: 52px; }
