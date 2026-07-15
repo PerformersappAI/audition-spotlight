@@ -38,19 +38,23 @@ function PhoneFrame() {
   return (
     <div className="flex flex-col items-center gap-3">
       <div
-        className="relative"
+        className="relative overflow-hidden"
         style={{
           width: 90,
           height: 180,
           borderRadius: 22,
-          background:
-            "linear-gradient(180deg, rgba(0,212,170,0.14) 0%, rgba(20,24,28,0.95) 60%, rgba(10,10,18,1) 100%)",
           border: "1.5px solid rgba(0,212,170,0.5)",
           boxShadow: "0 0 40px -15px rgba(0,212,170,0.6)",
         }}
       >
+        <img
+          src={verticalAsset.url}
+          alt="Vertical short frame"
+          className="absolute inset-0 w-full h-full"
+          style={{ objectFit: "cover" }}
+        />
         <div
-          className="absolute left-1/2 -translate-x-1/2 top-1.5 rounded-full bg-black"
+          className="absolute left-1/2 -translate-x-1/2 top-1.5 rounded-full bg-black z-10"
           style={{ width: 32, height: 6 }}
         />
       </div>
