@@ -160,6 +160,13 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
               >
                 Pricing
               </Link>
+              <Link
+                to="/blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+              >
+                Blog
+              </Link>
               {user && (
                 <Link
                   to="/dashboard"
