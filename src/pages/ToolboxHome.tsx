@@ -190,16 +190,6 @@ export default function ToolboxHome() {
       size: "small"
     },
     {
-      id: "concierge",
-      name: "Concierge",
-      description: "Direct producer desk access",
-      icon: MessageCircle,
-      status: "active",
-      badge: "Support",
-      route: "/consulting",
-      size: "small"
-    },
-    {
       id: "calendar",
       name: "Production Calendar",
       description: "Schedule shoots and milestones",
@@ -293,12 +283,6 @@ export default function ToolboxHome() {
             >
               Membership
             </Link>
-            <Link
-              to="/consulting"
-              className="text-gray-300 hover:text-white font-medium transition-colors"
-            >
-              Contact
-            </Link>
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 text-gray-300 hover:text-white font-medium transition-colors">
                 About
@@ -367,9 +351,6 @@ export default function ToolboxHome() {
                     </div>
                     <DropdownMenuItem asChild>
                       <Link to="/dashboard" className="cursor-pointer text-gray-200 hover:text-white">Dashboard</Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/training/my-learning" className="cursor-pointer text-gray-200 hover:text-white">My Learning</Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-gray-700" />
                     <DropdownMenuItem onClick={signOut} className="cursor-pointer text-red-400 hover:text-red-300">
@@ -648,12 +629,6 @@ export default function ToolboxHome() {
                     <FileText className="h-5 w-5 text-purple-400" />
                   </div>
                   <span className="text-base font-medium">Docs</span>
-                </Link>
-                <Link to="/consulting" className="flex items-center gap-3 text-gray-200 hover:text-blue-400 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 flex items-center justify-center">
-                    <MessageCircle className="h-5 w-5 text-blue-400" />
-                  </div>
-                  <span className="text-base font-medium">Concierge</span>
                 </Link>
                 <Link to="/calendar" className="flex items-center gap-3 text-gray-200 hover:text-amber-400 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-amber-500/20 flex items-center justify-center">

@@ -132,12 +132,6 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                           Docs Library
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem asChild>
-                        <Link to="/consulting" className="flex items-center gap-2 w-full cursor-pointer">
-                          <MessageCircle className="h-4 w-4" />
-                          Consulting
-                        </Link>
-                      </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
@@ -162,12 +156,6 @@ export const Layout = ({ children, userRole = 'ACTOR' }: LayoutProps) => {
                       <Link to="/library" className="flex items-center gap-2 w-full cursor-pointer">
                         <FileText className="h-4 w-4" />
                         Document Library
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link to="/consulting" className="flex items-center gap-2 w-full cursor-pointer">
-                        <MessageCircle className="h-4 w-4" />
-                        Consulting Services
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>

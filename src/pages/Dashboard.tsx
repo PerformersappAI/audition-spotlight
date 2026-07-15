@@ -144,9 +144,6 @@ const Dashboard = () => {
             <Button variant="outline" size="sm" onClick={() => navigate('/library')}>
               📚 Docs Library
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate('/consulting')}>
-              💼 Consulting
-            </Button>
             <Button variant="outline" size="sm" onClick={() => navigate('/calendar')}>
               📅 Calendar
             </Button>

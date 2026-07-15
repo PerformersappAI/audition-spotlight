@@ -13,13 +13,6 @@ export default function PostProductionPhase() {
       badge: "Premium",
       route: "/library"
     },
-    {
-      name: "Concierge / Consulting",
-      description: "Get expert guidance on editing and post-production workflows",
-      icon: MessageCircle,
-      badge: "Human Support",
-      route: "/consulting"
-    }
   ];
 
   return (

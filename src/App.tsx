@@ -7,7 +7,7 @@ import PitchDeckPreview from "./pages/PitchDeckPreview";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { GlobalLayout } from "@/components/GlobalLayout";
 import Index from "./pages/Index";
@@ -153,12 +153,12 @@ const AppContent = () => (
       <Route path="/toolbox/distribution" element={<DistributionPhase />} />
       <Route path="/submit" element={<MultiStepForm />} />
       <Route path="/library" element={<DocsLibrary />} />
-          <Route path="/consulting" element={<ConsultingIntake />} />
+          <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
-          <Route path="/training" element={<TrainingHub />} />
-          <Route path="/training/:courseId" element={<CourseDetail />} />
-          <Route path="/training/my-learning" element={<MyLearning />} />
-          <Route path="/training/certifications" element={<CertificationGallery />} />
+          <Route path="/training" element={<Navigate to="/" replace />} />
+          <Route path="/training/:courseId" element={<Navigate to="/" replace />} />
+          <Route path="/training/my-learning" element={<Navigate to="/" replace />} />
+          <Route path="/training/certifications" element={<Navigate to="/" replace />} />
           <Route path="/verify-certificate/:certificateNumber" element={<VerifyCertificate />} />
           <Route path="/contract-assistant" element={<ContractAssistant />} />
           <Route path="/funding-strategy" element={<FundingStrategy />} />
