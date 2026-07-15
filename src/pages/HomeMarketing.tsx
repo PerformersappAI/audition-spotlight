@@ -5,7 +5,7 @@ import imgSceneAnalysis from "@/assets/tool-script-analysis-new.jpg";
 // TODO: replace with real tool card image
 import imgStoryboard from "@/assets/tool-storyboard.jpg";
 // TODO: replace with real tool card image
-import imgPitchDeck from "@/assets/tool-pitch-deck-new.jpg";
+import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 // TODO: replace with real tool card image
 import imgCallSheet from "@/assets/tool-call-sheet.jpg";
 // TODO: replace with real tool card image
