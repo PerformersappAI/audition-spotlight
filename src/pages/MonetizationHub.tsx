@@ -8,8 +8,10 @@ interface Props {
 
 export default function MonetizationHub({ hubKey }: Props) {
   const hub = monetizationHubs[hubKey];
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   if (!hub) return null;
-  const { accent, accentRgb, keyBg, keyBg2, canonical, title, sub, stats, whatIsHeading, whatIsBody, keyFactsHeading, keyFacts, sectionLabel, tiles } = hub;
+  const { accent, accentRgb, keyBg, keyBg2, title, sub, stats, whatIsHeading, whatIsBody, keyFactsHeading, keyFacts, sectionLabel, tiles } = hub;
 
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', system-ui, sans-serif" }}>
