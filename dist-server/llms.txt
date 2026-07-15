@@ -1,0 +1,101 @@
+# Filmmaker Genius
+
+> AI tools and step-by-step training for indie filmmakers — from first draft to distribution.
+
+Filmmaker Genius is a production OS for independent filmmakers. It combines a suite of smart tools (script and scene analysis, storyboarding, pitch decks, call sheets, funding strategy, distribution readiness) with a full academy of courses covering every phase of filmmaking, plus the Green Light Engine — a niche and identity framework for building a sustainable directing career.
+
+## Tools
+
+- [Toolbox](https://filmmakergenius.com/toolbox): All filmmaking tools by phase
+- [Scene Analysis](https://filmmakergenius.com/scene-analysis): Break down any scene instantly
+- [Script Analysis](https://filmmakergenius.com/script-analysis): Full screenplay coverage and notes
+- [Storyboard Generator](https://filmmakergenius.com/storyboard): Visualize scenes shot by shot
+- [Table Read](https://filmmakergenius.com/table-read): AI-voiced screenplay table reads
+- [Pitch Deck Maker](https://filmmakergenius.com/pitch-deck): Investor-ready film pitch decks
+- [Call Sheet Generator](https://filmmakergenius.com/call-sheet): Professional daily call sheets
+- [Contract Assistant](https://filmmakergenius.com/contract-assistant): Draft and review film contracts
+- [Funding Strategy](https://filmmakergenius.com/funding-strategy): Map grants, investors, and crowdfunding
+- [Distribution Readiness](https://filmmakergenius.com/distribution-readiness): Assess your film for release
+- [Recut](https://filmmakergenius.com/recut): Rework and restructure your edit
+- [Crew Jobs](https://filmmakergenius.com/crew-hire): Hire and get hired on indie productions
+
+## Academy
+
+- [Academy](https://filmmakergenius.com/academy): 60+ filmmaking courses across every phase
+- [The Roberts Filmmaking Method](https://filmmakergenius.com/academy/how-to-make-a-movie): End-to-end indie feature framework
+
+- [Screenplay Writing 101](https://filmmakergenius.com/academy/how-to-write-a-screenplay)
+- [Story Structure & the Three-Act Format](https://filmmakergenius.com/academy/screenplay-act-structure)
+- [Writing the Short Film](https://filmmakergenius.com/academy/how-to-write-a-short-film-script)
+- [Writing the Logline & Pitch Document](https://filmmakergenius.com/academy/how-to-write-a-logline)
+- [Adapting Source Material for the Screen](https://filmmakergenius.com/academy/adapting-source-material)
+- [Writing for Documentary](https://filmmakergenius.com/academy/documentary-script-writing)
+- [The Rewrite: Developing Through Drafts](https://filmmakergenius.com/academy/how-to-rewrite-a-screenplay)
+- [Script Breakdown Fundamentals](https://filmmakergenius.com/academy/film-script-breakdown)
+- [Storyboarding for Indie Features](https://filmmakergenius.com/academy/how-to-storyboard-a-film)
+- [Budgeting & Scheduling Essentials](https://filmmakergenius.com/academy/film-budgeting-and-scheduling)
+- [Location Scouting & Management](https://filmmakergenius.com/academy/film-location-scouting)
+- [Casting & Working with Actors](https://filmmakergenius.com/academy/casting-for-indie-films)
+- [Hiring Your Department Heads](https://filmmakergenius.com/academy/hiring-department-heads)
+- [Production Design on a Budget](https://filmmakergenius.com/academy/production-design-on-a-budget)
+- [Wardrobe & Costume on a Budget](https://filmmakergenius.com/academy/costume-design-for-film)
+- [Building a Shot List from Your Script](https://filmmakergenius.com/academy/shot-list-filmmaking)
+- [Working with SAG-AFTRA on Low-Budget Films](https://filmmakergenius.com/academy/sag-aftra-for-filmmakers)
+- [Permits & Releases: The Full Picture](https://filmmakergenius.com/academy/film-permits-and-releases)
+- [Insurance & Legal Basics for Filmmakers](https://filmmakergenius.com/academy/film-production-insurance)
+- [Producing the Short Film](https://filmmakergenius.com/academy/how-to-produce-a-short-film)
+- [On-Set Protocols & Safety](https://filmmakergenius.com/academy/film-set-safety)
+- [Directing Actors on Indie Budgets](https://filmmakergenius.com/academy/directing-actors)
+- [Camera & Lighting Basics](https://filmmakergenius.com/academy/camera-and-lighting-basics)
+- [Sound Recording for Film](https://filmmakergenius.com/academy/production-sound-recording)
+- [The Producer's Job: Producing 101](https://filmmakergenius.com/academy/what-does-a-film-producer-do)
+- [Working with Child Actors](https://filmmakergenius.com/academy/working-with-child-actors)
+- [Working with Non-Actors](https://filmmakergenius.com/academy/directing-non-actors)
+- [iPhone & Mirrorless Camera Filmmaking](https://filmmakergenius.com/academy/smartphone-filmmaking)
+- [Drone Cinematography for Indie Films](https://filmmakergenius.com/academy/drone-cinematography)
+- [Stunt & Action Coordination Basics](https://filmmakergenius.com/academy/how-to-film-action-scenes)
+- [Producing a Documentary](https://filmmakergenius.com/academy/how-to-produce-a-documentary)
+- [Editing Workflow for Indies](https://filmmakergenius.com/academy/film-editing-workflow)
+- [Sound Design on a Budget](https://filmmakergenius.com/academy/sound-design-for-film)
+- [Color Grading Fundamentals](https://filmmakergenius.com/academy/color-grading-for-film)
+- [Music Licensing for Indie Films](https://filmmakergenius.com/academy/music-licensing-for-films)
+- [Working with a Composer](https://filmmakergenius.com/academy/working-with-a-film-composer)
+- [Visual Effects on a Budget](https://filmmakergenius.com/academy/vfx-on-a-budget)
+- [Creating Your Film Trailer](https://filmmakergenius.com/academy/how-to-make-a-film-trailer)
+- [DCP Creation & Delivery](https://filmmakergenius.com/academy/how-to-make-a-dcp)
+- [Festival Strategy & Submissions](https://filmmakergenius.com/academy/film-festival-strategy)
+- [Building Your EPK](https://filmmakergenius.com/academy/how-to-build-an-epk)
+- [DIY Film Distribution](https://filmmakergenius.com/academy/diy-film-distribution)
+- [Social Media Marketing for Your Film](https://filmmakergenius.com/academy/social-media-marketing-for-films)
+- [Building a Film Website & Press Strategy](https://filmmakergenius.com/academy/how-to-make-a-film-website)
+- [Pitching to Netflix, Amazon & Streaming Platforms](https://filmmakergenius.com/academy/how-to-pitch-to-streamers)
+- [SVOD vs AVOD vs TVOD: Choosing Your Platform](https://filmmakergenius.com/academy/streaming-revenue-models)
+- [International Sales & Foreign Distribution](https://filmmakergenius.com/academy/international-film-sales)
+- [Film Markets: AFM, Cannes & Berlin](https://filmmakergenius.com/academy/film-markets-explained)
+- [Understanding Distribution Contracts & Deal Terms](https://filmmakergenius.com/academy/film-distribution-contracts)
+- [Crowdfunding Campaigns That Work](https://filmmakergenius.com/academy/film-crowdfunding)
+- [Grants & Sponsorships](https://filmmakergenius.com/academy/grants-for-filmmakers)
+- [Pitching to Investors](https://filmmakergenius.com/academy/how-to-find-investors-for-a-film)
+- [Starting Your Production Company](https://filmmakergenius.com/academy/how-to-start-a-production-company)
+- [The Film Business Plan](https://filmmakergenius.com/academy/film-business-plan)
+- [Film Accounting & Tax Basics](https://filmmakergenius.com/academy/film-production-accounting)
+- [Copyright & IP Protection for Filmmakers](https://filmmakergenius.com/academy/copyright-for-filmmakers)
+- [Brand Partnerships & Product Placement](https://filmmakergenius.com/academy/brand-partnerships-for-films)
+- [Building a Career in Independent Film](https://filmmakergenius.com/academy/indie-filmmaking-career)
+- [AI Tools for Filmmakers](https://filmmakergenius.com/academy/ai-tools-for-filmmakers)
+- [Using AI for Script Development](https://filmmakergenius.com/academy/ai-script-writing)
+- [AI in Post-Production Workflows](https://filmmakergenius.com/academy/ai-in-post-production)
+- [Virtual Production & LED Volumes](https://filmmakergenius.com/academy/virtual-production)
+
+## Green Light Engine
+
+- [Green Light Engine](https://filmmakergenius.com/green-light-engine): Career framework for directors
+- [Niche & Identity](https://filmmakergenius.com/green-light-engine/niche): Define your directing niche
+
+## Company
+
+- [About](https://filmmakergenius.com/about): The story behind Filmmaker Genius
+- [Contact](https://filmmakergenius.com/contact): Get in touch
+- [FAQ](https://filmmakergenius.com/faq): Common questions answered
+- [Membership](https://filmmakergenius.com/membership): Plans and pricing
+- [Blog](https://filmmakergenius.com/blog): Filmmaking insights and tutorials
