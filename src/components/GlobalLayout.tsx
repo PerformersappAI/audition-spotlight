@@ -26,7 +26,6 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const hideLayout =
     location.pathname === '/auth' ||
     location.pathname === '/admin-login' ||
-    location.pathname === '/' ||
     location.pathname === '/toolbox';
 
   if (hideLayout) {
