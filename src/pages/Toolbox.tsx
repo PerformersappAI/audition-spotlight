@@ -158,7 +158,7 @@ export default function Toolbox() {
       <Seo
         title="Toolbox — Every Indie Film Tool in One Place | Filmmaker Genius"
         description="The Filmmaker Genius Toolbox: script analysis, storyboards, pitch decks, call sheets, casting, breakdowns, and distribution tools — grouped by production phase."
-        canonical="/toolbox"
+        canonical="https://filmmakergenius.com/toolbox"
       />
       <style>{`
         @keyframes recutPulse {
