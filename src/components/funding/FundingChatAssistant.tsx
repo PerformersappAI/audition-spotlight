@@ -82,7 +82,7 @@ export function FundingChatAssistant({ context }: FundingChatAssistantProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (messages.length > 0 && scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
