@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -100,6 +100,11 @@ export default function FundingStrategy() {
   const [currentStep, setCurrentStep] = useState(1);
   const [data, setData] = useState<FundingStrategyData>(initialData);
   const [isExporting, setIsExporting] = useState(false);
+
+  // Belt-and-suspenders: ensure the page opens at the top on mount.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const updateData = (updates: Partial<FundingStrategyData>) => {
     setData(prev => ({ ...prev, ...updates }));
