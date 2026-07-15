@@ -42,7 +42,7 @@ const ToolCard = ({
 }) => {
   const ratioStyle =
     aspect === "tall"
-      ? { height: "100%", minHeight: 380 }
+      ? { height: "100%", minHeight: 300 }
       : { aspectRatio: aspect === "16/9" ? "16 / 9" : "16 / 10" };
 
   return (
@@ -114,22 +114,9 @@ const HomeMarketing = () => {
       {/* TOOL GRID */}
       <section style={{ background: "#050505", padding: "44px 24px 72px" }}>
         <div className="mx-auto" style={{ maxWidth: 1040 }}>
-          {/* Explore toolbox banner */}
-          <Link
-            to="/toolbox"
-            className="mb-8 flex items-center justify-between rounded-xl border px-6 py-5 transition-colors hover:border-[#00d4aa]"
-            style={{ background: "#0c0c0c", borderColor: "rgba(255,255,255,0.08)" }}
-          >
-            <div>
-              <div className="text-white text-lg font-semibold">Explore the Toolbox</div>
-              <div className="text-white/60 text-sm">Every tool, organized by phase of production.</div>
-            </div>
-            <span className="text-sm font-semibold" style={{ color: TEAL }}>Enter →</span>
-          </Link>
-
-          {/* Row 1: 2-column bento */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            <div className="flex flex-col gap-5">
+          {/* Bento: left = two 16:9 stacked; right = tall Pitch Deck */}
+          <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px]">
+            <div className="flex flex-col gap-[14px]">
               <ToolCard card={sceneAnalysis} aspect="16/9" />
               <ToolCard card={storyboard} aspect="16/9" />
             </div>
@@ -137,7 +124,7 @@ const HomeMarketing = () => {
           </div>
 
           {/* Row 2: 3-column */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-5">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px] mt-[14px]">
             <ToolCard card={callSheet} aspect="16/10" />
             <ToolCard card={auditions} aspect="16/10" />
             <ToolCard card={crewHire} aspect="16/10" />

@@ -47,21 +47,21 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           borderBottomColor: 'rgba(255,255,255,0.08)',
         }}
       >
-        <div className="container mx-auto px-4 h-full flex items-center justify-between gap-6">
+        <div className="container mx-auto px-4 h-full grid grid-cols-[1fr_auto_1fr] items-center gap-6">
           {/* LEFT: Logo */}
-          <Link to="/" className="flex items-center shrink-0">
+          <Link to="/" className="flex items-center shrink-0 justify-self-start">
             <img src={fgLogo} alt="Filmmaker Genius" className="h-20 w-auto rounded-md" />
           </Link>
 
           {/* CENTER: Nav (desktop) */}
-          <nav className="hidden min-[600px]:flex items-center gap-8">
+          <nav className="hidden min-[600px]:flex items-center gap-8 justify-self-center">
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/pricing" className={navLinkClass}>Pricing</Link>
           </nav>
 
           {/* RIGHT: Actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 justify-self-end">
             {user ? (
               <>
                 <Link to="/membership" className="hidden sm:block">
@@ -92,7 +92,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 </div>
               </>
             ) : (
-              <div className="hidden min-[600px]:flex items-center gap-3">
+              <div className="hidden min-[600px]:flex items-center gap-5">
                 <Link
                   to="/crew"
                   className="px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors"
@@ -102,9 +102,11 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 >
                   Crew Jobs
                 </Link>
+                <div className="w-px h-5" style={{ background: 'rgba(255,255,255,0.12)' }} />
                 <Link to="/auth" className="text-sm font-medium text-white/75 hover:text-white transition-colors">
                   Sign In
                 </Link>
+                <div className="w-px h-5" style={{ background: 'rgba(255,255,255,0.12)' }} />
                 <Link
                   to="/membership"
                   className="px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors"
@@ -206,40 +208,38 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
         className="border-t mt-auto"
         style={{ background: '#080808', borderTopColor: 'rgba(255,255,255,0.06)' }}
       >
-        <div className="container mx-auto px-4 py-10">
-          {/* Row 1 */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-            <div className="flex items-center gap-3">
-              <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
-              <div className="leading-tight">
-                <div className="text-lg font-semibold text-white">Filmmaker Genius</div>
-                <div className="text-sm text-white/60">Where Genius Meets the Silver Screen.</div>
-              </div>
-            </div>
-            <nav className="flex flex-wrap gap-x-6 gap-y-2">
-              {[
-                { label: 'About', to: '/about' },
-                { label: 'Contact', to: '/contact' },
-                { label: 'Membership', to: '/membership' },
-                { label: 'Academy', to: '/academy' },
-                { label: 'FAQ', to: '/faq' },
-              ].map((l) => (
-                <Link
-                  key={l.to}
-                  to={l.to}
-                  className="text-sm text-white/65 hover:text-white transition-colors"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </nav>
+        <div className="container mx-auto px-4 py-10 flex flex-col items-center text-center">
+          {/* Top: logo + wordmark, tagline below */}
+          <div className="flex items-center gap-3">
+            <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
+            <div className="text-lg font-semibold text-white">Filmmaker Genius</div>
           </div>
+          <div className="text-sm text-white/60 mt-1">Where Genius Meets the Silver Screen.</div>
+
+          {/* Middle: centered links */}
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-6">
+            {[
+              { label: 'About', to: '/about' },
+              { label: 'Contact', to: '/contact' },
+              { label: 'Membership', to: '/membership' },
+              { label: 'Academy', to: '/academy' },
+              { label: 'FAQ', to: '/faq' },
+            ].map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                className="text-sm text-white/65 hover:text-white transition-colors"
+              >
+                {l.label}
+              </Link>
+            ))}
+          </nav>
 
           {/* Divider */}
-          <div className="my-6 h-px" style={{ background: 'rgba(255,255,255,0.06)' }} />
+          <div className="my-6 h-px w-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
 
-          {/* Row 2 */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Bottom */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
             <div className="flex gap-6">
               <Link to="/privacy" className="text-xs text-white/55 hover:text-white transition-colors">
                 Privacy Policy
