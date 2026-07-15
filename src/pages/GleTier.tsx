@@ -4,6 +4,8 @@ import { gleTiers } from "@/data/gleTiers";
 
 export default function GleTier() {
   const { tier } = useParams<{ tier: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const data = tier ? gleTiers[tier] : undefined;
 
   if (!data) {
