@@ -78,8 +78,8 @@ export default function CoursePage() {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
             itemListElement: [
-              { "@type": "ListItem", position: 1, name: "Academy", item: "https://filmmakergenius.com/academy" },
-              { "@type": "ListItem", position: 2, name: "Education Modules", item: "https://filmmakergenius.com/academy/education" },
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
               { "@type": "ListItem", position: 3, name: course.title, item: `https://filmmakergenius.com/academy/${course.slug}` },
             ],
           },
