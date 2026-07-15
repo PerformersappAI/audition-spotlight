@@ -38,18 +38,8 @@ export default function TableRead() {
   };
 
   const renderStep = () => {
-    if (!user) {
-      return (
-        <div className="bg-gray-900 border border-gray-800 rounded-lg p-12 text-center">
-          <Headphones className="w-12 h-12 mx-auto text-pink-400 mb-4" />
-          <h3 className="text-xl font-semibold text-white mb-2">Sign in to create a table read</h3>
-          <p className="text-gray-400 mb-6">You need an account to save your generated audiobooks.</p>
-          <Button onClick={() => navigate("/auth")} className="bg-pink-500 hover:bg-pink-600 text-white">
-            Sign In / Sign Up
-          </Button>
-        </div>
-      );
-    }
+    // Auth gate removed — tool is open to anonymous users. Save-to-account
+    // actions inside AudioPlayer still handle the !user case themselves.
     switch (step) {
       case 1:
         return <ScriptUploader onParsed={handleParsed} />;
