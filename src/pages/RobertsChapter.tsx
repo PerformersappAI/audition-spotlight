@@ -36,7 +36,7 @@ const RobertsChapter = () => {
     );
   }
 
-  const { seoTitle, canonical, category, number, title, intro, bodyHtml, cta, prev, next } =
+  const { seoTitle, category, number, title, intro, bodyHtml, cta, prev, next } =
     chapter;
 
   return (
