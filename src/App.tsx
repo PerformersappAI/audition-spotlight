@@ -48,6 +48,7 @@ import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
 import ToolboxHome from "./pages/ToolboxHome";
 import Toolbox from "./pages/Toolbox";
+import Recut from "./pages/Recut";
 import AdminHomepageSettings from "./pages/AdminHomepageSettings";
 import PreProductionPhase from "./pages/PreProductionPhase";
 import ProductionPhase from "./pages/ProductionPhase";
@@ -196,8 +197,10 @@ const AppContent = () => (
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/recut" element={<Recut />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
+
     </Routes>
   </GlobalLayout>
 );
