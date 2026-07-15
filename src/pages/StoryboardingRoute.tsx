@@ -1,12 +1,8 @@
 import { useAuth } from "@/hooks/useAuth";
-import { useSearchParams } from "react-router-dom";
-import StoryboardingLanding from "./StoryboardingLanding";
 import Storyboarding from "./Storyboarding";
 
 export default function StoryboardingRoute() {
-  const { user, loading } = useAuth();
-  const [params] = useSearchParams();
-  const showTool = params.get("tool") === "1";
+  const { loading } = useAuth();
 
   if (loading) {
     return (
@@ -16,9 +12,5 @@ export default function StoryboardingRoute() {
     );
   }
 
-  // Anyone (logged in or not) with ?tool=1 can access the tool; default view is the landing.
-  if (showTool) {
-    return <Storyboarding />;
-  }
-  return <StoryboardingLanding isAuthenticated={!!user} />;
+  return <Storyboarding />;
 }
