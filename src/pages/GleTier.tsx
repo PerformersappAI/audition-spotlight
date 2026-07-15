@@ -18,7 +18,7 @@ export default function GleTier() {
     );
   }
 
-  const { accent, canonical, label, title, sub, platforms } = data;
+  const { accent, label, title, sub, platforms } = data;
 
   return (
     <div style={{ background: "#14181c", color: "#fff", fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, sans-serif", minHeight: "100vh" }}>
