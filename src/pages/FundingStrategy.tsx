@@ -101,6 +101,11 @@ export default function FundingStrategy() {
   const [data, setData] = useState<FundingStrategyData>(initialData);
   const [isExporting, setIsExporting] = useState(false);
 
+  // Belt-and-suspenders: ensure the page opens at the top on mount.
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const updateData = (updates: Partial<FundingStrategyData>) => {
     setData(prev => ({ ...prev, ...updates }));
   };
