@@ -211,7 +211,7 @@ export default function GreenLightEngine() {
 
       <style>{`
         .gle-tile:hover { border-color: #678 !important; }
-        @media (max-width: 640px) {
+        @media (max-width: 700px) {
           .gle-grid-square { grid-template-columns: 1fr !important; }
           .gle-tile { aspect-ratio: auto !important; }
         }
