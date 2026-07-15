@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -188,6 +188,14 @@ const Membership = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+      <div className="container mx-auto px-4 pt-4">
+        <Link
+          to="/"
+          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+        >
+          ← Back to Filmmaker Genius
+        </Link>
+      </div>
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
         <div className="text-center mb-12">
@@ -390,7 +398,7 @@ const Membership = () => {
                 className="w-full"
                 size="lg"
                 onClick={handlePurchaseCredits}
-                disabled={!selectedCreditPack || purchasingCredits}
+                disabled={purchasingCredits}
               >
                 {purchasingCredits ? (
                   <>
@@ -441,29 +449,6 @@ const Membership = () => {
           </Card>
         </div>
 
-        {/* CTA for Non-logged Users */}
-        {!user && (
-          <div className="mt-12 text-center">
-            <Card className="max-w-2xl mx-auto bg-gradient-to-r from-gold/10 to-gold-light/10 border-gold/50">
-              <CardHeader>
-                <CardTitle className="text-2xl">Ready to Get Started?</CardTitle>
-                <CardDescription className="text-base">
-                  Sign up now and get 10 free credits to try out our tools!
-                </CardDescription>
-              </CardHeader>
-              <CardFooter className="flex justify-center">
-                <Button 
-                  size="lg"
-                  variant="gold"
-                  onClick={() => navigate('/auth')}
-                  className="px-12"
-                >
-                  Sign Up Now
-                </Button>
-              </CardFooter>
-            </Card>
-          </div>
-        )}
       </div>
     </div>
   );
