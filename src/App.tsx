@@ -179,6 +179,12 @@ const AppContent = () => (
           <Route path="/green-light-engine/:tier" element={<GleTier />} />
           <Route path="/academy/:courseSlug" element={<CoursePage />} />
           <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/faq" element={<FAQ />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/terms" element={<Terms />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
     </Routes>
