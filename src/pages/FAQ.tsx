@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
 import Seo from "@/components/Seo";
 
 const TEAL = "#00d4aa";
@@ -176,36 +176,6 @@ export default function FAQ() {
           })}
         </div>
 
-        {/* CONTACT PROMPT */}
-        <div style={{
-          background: "#0d0d1a", border: "1px solid #1e1e35",
-          borderRadius: 12, padding: 32, textAlign: "center",
-        }}>
-          <p style={{ margin: 0 }}>
-            <span style={{ display: "block", color: "#fff", fontWeight: 700, fontSize: "1.1em", marginBottom: 8 }}>
-              Didn't find your answer?
-            </span>
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.95em" }}>
-              Send us your question and we'll get back to you within 24 hours.
-            </span>
-          </p>
-          <Link
-            to="/contact"
-            className="faq-btn-teal"
-            style={{
-              display: "inline-block",
-              background: TEAL,
-              color: "#000",
-              fontSize: "0.875em",
-              fontWeight: 700,
-              padding: "12px 28px",
-              borderRadius: 6,
-              marginTop: 20,
-              textDecoration: "none",
-              transition: "background 0.2s",
-            }}
-          >Contact Us</Link>
-        </div>
       </div>
     </div>
   );
