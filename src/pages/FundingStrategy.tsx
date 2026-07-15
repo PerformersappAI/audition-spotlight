@@ -21,7 +21,7 @@ import {
   Sparkles,
   CheckCircle2
 } from "lucide-react";
-import { Link } from "react-router-dom";
+
 import { exportFundingStrategyToPDF, type FundingStrategyData } from "@/utils/exportFundingStrategyToPDF";
 import { FundingChatAssistant } from "@/components/funding/FundingChatAssistant";
 
@@ -155,12 +155,6 @@ export default function FundingStrategy() {
         <div className="container max-w-5xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <Link to="/">
-                <Button variant="ghost" size="sm">
-                  <ArrowLeft className="h-4 w-4 mr-2" />
-                  Back
-                </Button>
-              </Link>
               <div>
                 <h1 className="text-xl font-bold flex items-center gap-2">
                   <DollarSign className="h-5 w-5 text-emerald-500" />
