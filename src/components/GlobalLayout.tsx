@@ -22,9 +22,8 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Don't show layout on auth pages (they have their own nav)
+  // Don't show layout on admin login (it has its own nav)
   const hideLayout =
-    location.pathname === '/auth' ||
     location.pathname === '/admin-login';
 
   if (hideLayout) {

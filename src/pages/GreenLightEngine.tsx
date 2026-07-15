@@ -46,8 +46,8 @@ const TIERS: Tier[] = [
     tint: "rgba(255,128,0,0.16)",
     label: "Niche & Identity",
     title: "Matched to Your Film",
-    desc: "Platforms matched to your film's subject and audience — not just its specs.",
-    examples: "Black cinema · LGBTQ+ · Horror · Documentary · International · Shorts",
+    desc: "Platforms matched to your film's subject and audience.",
+    examples: "Black cinema · LGBTQ+ · Horror · Documentary · Shorts",
     linkColor: "#ff8000",
   },
 ];
@@ -124,9 +124,10 @@ export default function GreenLightEngine() {
           className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 260px)",
+            gridTemplateColumns: "repeat(2, 300px)",
+            gridAutoRows: "1fr",
             justifyContent: "center",
-            alignItems: "start",
+            alignItems: "stretch",
             gap: 18,
             textAlign: "left",
           }}
