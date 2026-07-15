@@ -72,6 +72,18 @@ import StoryboardingPricing from "./pages/StoryboardingPricing";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import HomeMarketing from "./pages/HomeMarketing";
+import Academy from "./pages/Academy";
+import EducationModules from "./pages/EducationModules";
+import CoursePage from "./pages/CoursePage";
+import CourseChapter from "./pages/CourseChapter";
+import RobertsFilmmaking from "./pages/RobertsFilmmaking";
+import RobertsChapter from "./pages/RobertsChapter";
+import GreenLightEngine from "./pages/GreenLightEngine";
+import GleTier from "./pages/GleTier";
+import GleNiche from "./pages/GleNiche";
+import GleNichePage from "./pages/GleNichePage";
+import MonetizationHub from "./pages/MonetizationHub";
+import MonetizationSubPage from "./pages/MonetizationSubPage";
 
 const queryClient = new QueryClient();
 
