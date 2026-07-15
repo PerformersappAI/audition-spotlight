@@ -71,13 +71,14 @@ import AnimaticView from "./pages/AnimaticView";
 import StoryboardingPricing from "./pages/StoryboardingPricing";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
+import HomeMarketing from "./pages/HomeMarketing";
 
 const queryClient = new QueryClient();
 
 const AppContent = () => (
   <GlobalLayout>
     <Routes>
-          <Route path="/" element={<ToolboxHome />} />
+          <Route path="/" element={<HomeMarketing />} />
           <Route path="/welcome" element={<Index />} />
       <Route path="/auth" element={<Auth />} />
       <Route path="/dashboard" element={<Dashboard />} />
