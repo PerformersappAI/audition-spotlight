@@ -35,8 +35,7 @@ const MEMBERS: Member[] = [
       <>Today, I combine my decades of on-set experience with cutting-edge technology to help actors, filmmakers, and industry professionals not just survive, but thrive. As the creator of <strong style={{ color: "#fff", fontWeight: 600 }}>The Actors Toolbox</strong>, I'm bringing professional tools and coaching to artists around the world.</>,
     ],
     links: [
-      { label: "Book a Session", href: "#", variant: "teal" },
-      { label: "View on IMDb ↗", href: "https://www.imdb.com/name/nm5659247/", variant: "outline", external: true },
+      { label: "View on IMDb ↗", href: "https://www.imdb.com/name/nm5659247/", variant: "teal", external: true },
     ],
   },
   {
@@ -55,9 +54,7 @@ const MEMBERS: Member[] = [
       <>Sal founded <strong style={{ color: "#fff", fontWeight: 600 }}>OPPRIME.tv</strong>, an independent video-on-demand platform with over 1,200 films in its library, and spent the next decade working directly with more than 1,500 independent filmmakers on marketing, distribution, and monetization strategies. Those years gave him firsthand insight into the obstacles filmmakers face at every stage — from production and distribution to audience growth and revenue generation.</>,
       <>The lessons from OPPRIME.tv became the foundation for Post Hollywood and its family of companies, all focused on helping actors and filmmakers build sustainable careers through practical tools, education, and opportunity.</>,
     ],
-    links: [
-      { label: "Connect on LinkedIn ↗", href: "https://www.linkedin.com/in/salframondi/", variant: "teal", external: true },
-    ],
+    links: [],
   },
 ];
 

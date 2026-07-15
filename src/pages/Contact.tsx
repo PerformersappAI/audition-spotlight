@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
 import Seo from "@/components/Seo";
 
 const TEAL = "#00d4aa";
@@ -211,31 +211,6 @@ export default function Contact() {
         </form>
       </section>
 
-      {/* FAQ BANNER */}
-      <section style={{ maxWidth: 760, margin: "56px auto 96px", padding: "0 24px" }}>
-        <div style={{
-          background: "rgba(0,212,170,0.05)",
-          border: "1px solid rgba(0,212,170,0.2)",
-          borderRadius: 20, padding: 40, textAlign: "center",
-        }}>
-          <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, margin: 0, fontWeight: 700 }}>Looking for quick answers?</h2>
-          <p style={{ marginTop: 10, fontSize: 14, color: "rgba(255,255,255,0.45)" }}>
-            Check our FAQ for instant answers to the most common questions about tools, credits, and membership.
-          </p>
-          <Link
-            to="/faq"
-            className="contact-btn-outline"
-            style={{
-              display: "inline-flex", alignItems: "center",
-              marginTop: 20, height: 44, padding: "0 28px",
-              borderRadius: 9999, background: "transparent",
-              border: "1px solid rgba(0,212,170,0.5)",
-              color: TEAL, fontWeight: 700, textDecoration: "none",
-              transition: "background 0.2s",
-            }}
-          >Browse the FAQ →</Link>
-        </div>
-      </section>
     </div>
   );
 }
