@@ -4,6 +4,8 @@ import { robertsChapters } from "@/data/robertsChapters";
 
 const RobertsChapter = () => {
   const { chapterId } = useParams<{ chapterId: string }>();
+  const location = useLocation();
+  const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const chapter = chapterId ? robertsChapters[chapterId] : undefined;
 
   if (!chapter) {
