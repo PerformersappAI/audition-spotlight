@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { Film, Users, Crown, Eye, EyeOff, Mail, RefreshCw, ArrowLeft, KeyRound } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 
@@ -338,12 +338,19 @@ const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="relative min-h-screen bg-background flex items-center justify-center p-4">
+      <Link
+        to="/"
+        className="absolute top-4 left-4 text-sm text-muted-foreground hover:text-foreground transition-colors"
+      >
+        ← Back to Filmmaker Genius
+      </Link>
       <div className="w-full max-w-2xl space-y-8">
         <div className="text-center">
-          <h1 className="text-5xl font-bold">Cast</h1>
-          <p className="text-muted-foreground mt-3 text-lg">Connect filmmakers, actors, and festivals</p>
+          <h1 className="text-5xl font-bold">Filmmaker Genius</h1>
+          <p className="text-muted-foreground mt-3 text-lg">Sign in or create your account.</p>
         </div>
+
 
         <Card className="p-4">
           <CardHeader>
