@@ -124,9 +124,10 @@ export default function GreenLightEngine() {
           className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 260px)",
+            gridTemplateColumns: "repeat(2, 300px)",
+            gridAutoRows: "1fr",
             justifyContent: "center",
-            alignItems: "start",
+            alignItems: "stretch",
             gap: 18,
             textAlign: "left",
           }}
