@@ -103,7 +103,7 @@ const Pricing = () => {
               ))}
             </ul>
             <a
-              href="#"
+              href="/membership"
               className="pr-btn-basic"
               style={{
                 display: 'block',
@@ -171,7 +171,7 @@ const Pricing = () => {
               ))}
             </ul>
             <a
-              href="#"
+              href="/membership"
               className="pr-btn-pro"
               style={{
                 display: 'block',
