@@ -122,107 +122,91 @@ export default function GreenLightEngine() {
 
         <div
           style={{
-            background: "#1c2228",
-            border: "1px solid #2c3440",
-            borderRadius: 16,
-            overflow: "hidden",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+            gap: 18,
             textAlign: "left",
           }}
         >
-          <div
-            className="gle-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: 0,
-            }}
-          >
-            {TIERS.map((t, i) => (
-              <Link
-                key={t.to}
-                to={t.to}
-                className={`gle-tile gle-tile-${i}`}
+          {TIERS.map((t) => (
+            <Link
+              key={t.to}
+              to={t.to}
+              className="gle-tile"
+              style={{
+                background: "#1c2228",
+                border: "1px solid #2c3440",
+                borderRadius: 14,
+                padding: "26px 24px",
+                display: "block",
+                textDecoration: "none",
+                color: "inherit",
+                transition: "border-color 0.15s ease",
+              }}
+            >
+              <div
                 style={{
-                  background: "#1c2228",
-                  padding: "26px 24px",
-                  display: "block",
-                  textDecoration: "none",
-                  color: "inherit",
-                  transition: "background 0.15s ease",
+                  width: 48,
+                  height: 48,
+                  borderRadius: 12,
+                  background: t.tint,
+                  marginBottom: 18,
+                }}
+              />
+              <div
+                style={{
+                  fontSize: 11,
+                  fontWeight: 800,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                  color: "#678",
+                  marginBottom: 4,
                 }}
               >
-                <div
-                  style={{
-                    width: 48,
-                    height: 48,
-                    borderRadius: 12,
-                    background: t.tint,
-                    marginBottom: 18,
-                  }}
-                />
-                <div
-                  style={{
-                    fontSize: 11,
-                    fontWeight: 800,
-                    letterSpacing: "0.1em",
-                    textTransform: "uppercase",
-                    color: "#678",
-                    marginBottom: 4,
-                  }}
-                >
-                  {t.label}
-                </div>
-                <h2 style={{ fontSize: 19, margin: 0, marginBottom: 9 }}>{t.title}</h2>
-                <p
-                  style={{
-                    color: "#9ab1c2",
-                    fontSize: 13.5,
-                    lineHeight: 1.6,
-                    margin: 0,
-                    marginBottom: 14,
-                  }}
-                >
-                  {t.desc}
-                </p>
-                <p
-                  style={{
-                    color: "#678",
-                    fontSize: 12.5,
-                    lineHeight: 1.5,
-                    margin: 0,
-                    marginBottom: 16,
-                  }}
-                >
-                  Examples:{" "}
-                  <span style={{ color: "#9ab1c2", fontWeight: t.examplesBold ? 700 : 400 }}>
-                    {t.examples}
-                  </span>
-                </p>
-                <div
-                  style={{
-                    fontSize: 13.5,
-                    fontWeight: 800,
-                    color: t.linkColor,
-                  }}
-                >
-                  See options →
-                </div>
-              </Link>
-            ))}
-          </div>
+                {t.label}
+              </div>
+              <h2 style={{ fontSize: 19, margin: 0, marginBottom: 9 }}>{t.title}</h2>
+              <p
+                style={{
+                  color: "#9ab1c2",
+                  fontSize: 13.5,
+                  lineHeight: 1.6,
+                  margin: 0,
+                  marginBottom: 14,
+                }}
+              >
+                {t.desc}
+              </p>
+              <p
+                style={{
+                  color: "#678",
+                  fontSize: 12.5,
+                  lineHeight: 1.5,
+                  margin: 0,
+                  marginBottom: 16,
+                }}
+              >
+                Examples:{" "}
+                <span style={{ color: "#9ab1c2", fontWeight: t.examplesBold ? 700 : 400 }}>
+                  {t.examples}
+                </span>
+              </p>
+              <div
+                style={{
+                  fontSize: 13.5,
+                  fontWeight: 800,
+                  color: t.linkColor,
+                }}
+              >
+                See options →
+              </div>
+            </Link>
+          ))}
         </div>
       </main>
 
       <style>{`
-        .gle-tile:hover { background: #20272e !important; }
-        .gle-tile-0, .gle-tile-2 { border-right: 1px solid #2c3440; }
-        .gle-tile-0, .gle-tile-1 { border-bottom: 1px solid #2c3440; }
-        @media (max-width: 639px) {
-          .gle-grid { grid-template-columns: 1fr !important; }
-          .gle-tile-0, .gle-tile-2 { border-right: none; }
-          .gle-tile-0, .gle-tile-1, .gle-tile-2 { border-bottom: 1px solid #2c3440; }
-          .gle-tile-3 { border-bottom: none; }
-        }
+        .gle-tile:hover { border-color: #678 !important; }
       `}</style>
     </div>
   );
