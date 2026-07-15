@@ -209,15 +209,8 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
         style={{ background: '#080808', borderTopColor: 'rgba(255,255,255,0.06)' }}
       >
         <div className="container mx-auto px-4 py-10 flex flex-col items-center text-center">
-          {/* Top: logo + wordmark, tagline below */}
-          <div className="flex items-center gap-3">
-            <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
-            <div className="text-lg font-semibold text-white">Filmmaker Genius</div>
-          </div>
-          <div className="text-sm text-white/60 mt-1">Where Genius Meets the Silver Screen.</div>
-
-          {/* Middle: centered links */}
-          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2 mt-6">
+          {/* Centered links */}
+          <nav className="flex flex-wrap justify-center gap-x-6 gap-y-2">
             {[
               { label: 'About', to: '/about' },
               { label: 'Contact', to: '/contact' },
@@ -238,17 +231,22 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           {/* Divider */}
           <div className="my-6 h-px w-full" style={{ background: 'rgba(255,255,255,0.06)' }} />
 
-          {/* Bottom */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 w-full">
-            <div className="flex gap-6">
-              <Link to="/privacy" className="text-xs text-white/55 hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-              <Link to="/terms" className="text-xs text-white/55 hover:text-white transition-colors">
-                Terms of Service
-              </Link>
+          {/* Bottom: copyright left, logo + legal right */}
+          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6 w-full">
+            <div className="text-xs text-white/50 flex items-center justify-center sm:justify-start">
+              © 2026 Filmmaker Genius
             </div>
-            <div className="text-xs text-white/50">© 2026 Filmmaker Genius</div>
+            <div className="flex flex-col items-center sm:items-end gap-3">
+              <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
+              <div className="flex gap-6">
+                <Link to="/privacy" className="text-xs text-white/55 hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+                <Link to="/terms" className="text-xs text-white/55 hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </footer>
