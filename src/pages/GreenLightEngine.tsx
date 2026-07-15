@@ -124,10 +124,11 @@ export default function GreenLightEngine() {
           className="gle-grid-square"
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
-            gap: 18,
-            textAlign: "left",
+            gridTemplateColumns: "repeat(2, 320px)",
+            justifyContent: "center",
             alignItems: "start",
+            gap: 20,
+            textAlign: "left",
           }}
         >
           {TIERS.map((t) => (
@@ -139,7 +140,7 @@ export default function GreenLightEngine() {
                 background: "#1c2228",
                 border: "1px solid #2c3440",
                 borderRadius: 14,
-                padding: "26px 24px",
+                padding: "22px 20px",
                 display: "block",
                 textDecoration: "none",
                 color: "inherit",
@@ -210,7 +211,7 @@ export default function GreenLightEngine() {
 
       <style>{`
         .gle-tile:hover { border-color: #678 !important; }
-        @media (max-width: 640px) {
+        @media (max-width: 700px) {
           .gle-grid-square { grid-template-columns: 1fr !important; }
           .gle-tile { aspect-ratio: auto !important; }
         }
