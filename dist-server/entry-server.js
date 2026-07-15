@@ -10609,6 +10609,7 @@ async function loadCourse(slug) {
   cache[slug] = c;
   return c;
 }
+const courseSlugs = Object.keys(loaders);
 const MOSAIC_STYLES = [
   { gridColumn: "1", gridRow: "1 / span 2", background: "linear-gradient(160deg,#071c20 0%,#0b2d35 100%)" },
   { gridColumn: "2", gridRow: "1", background: "linear-gradient(135deg,#050510 0%,#0a1030 100%)" },
@@ -12272,7 +12273,16 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(NotFound, {}) })
 ] }) });
+async function preloadForUrl(url2) {
+  const m = url2.match(/^\/academy\/([^/]+)(?:\/[^/]+)?\/?$/);
+  if (!m) return;
+  const slug = m[1];
+  if (courseSlugs.includes(slug)) {
+    await loadCourse(slug);
+  }
+}
 async function render(url2) {
+  await preloadForUrl(url2);
   const helmetContext = {};
   const queryClient = new QueryClient();
   const html = renderToString(
