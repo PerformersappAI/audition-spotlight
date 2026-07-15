@@ -2831,16 +2831,22 @@ const GlobalLayout = ({ children }) => {
 };
 const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
 const SITE_NAME = "Filmmaker Genius";
-const BRAND_SUFFIX = " | Filmmaker Genius";
+const BRAND_SUFFIXES = [
+  " | Filmmaker Genius",
+  " — Filmmaker Genius Academy",
+  " — Filmmaker Genius"
+];
 const TITLE_MAX = 60;
 const DESC_MAX = 160;
-const DESC_SOFT = 157;
+const DESC_SOFT = 148;
 function normalizeTitle(raw2) {
   const t = (raw2 || "").trim();
-  if (!t) return t;
-  if (t.length > TITLE_MAX && t.endsWith(BRAND_SUFFIX)) {
-    const stripped = t.slice(0, -BRAND_SUFFIX.length).trim().replace(/[—\-|]\s*$/, "").trim();
-    if (stripped.length > 0) return stripped;
+  if (!t || t.length <= TITLE_MAX) return t;
+  for (const suffix of BRAND_SUFFIXES) {
+    if (t.endsWith(suffix)) {
+      const stripped = t.slice(0, -suffix.length).trim().replace(/[—\-|]\s*$/, "").trim();
+      if (stripped.length > 0) return stripped;
+    }
   }
   return t;
 }
@@ -2951,7 +2957,23 @@ const HomeMarketing = () => {
         title: "Filmmaker Genius — AI Tools & Training for Indie Film",
         description: "AI tools and step-by-step training for indie filmmakers — script and scene analysis, storyboards, pitch decks, funding, distribution, and a full academy.",
         canonical: "https://filmmakergenius.com/",
-        type: "website"
+        type: "website",
+        jsonLd: [
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Filmmaker Genius",
+            url: "https://filmmakergenius.com/",
+            logo: "https://filmmakergenius.com/og-image.jpg",
+            description: "AI tools and training for indie filmmakers — script analysis, storyboards, pitch decks, funding, distribution, and academy courses."
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "Filmmaker Genius",
+            url: "https://filmmakergenius.com/"
+          }
+        ]
       }
     ),
     /* @__PURE__ */ jsxs("section", { className: "flex flex-col items-center", style: { padding: "0 24px 44px" }, children: [
