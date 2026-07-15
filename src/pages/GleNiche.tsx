@@ -19,6 +19,16 @@ export default function GleNiche() {
         title="Niche & Identity Streaming Platforms — Green Light Engine"
         description="Find the right identity- and genre-driven streaming home for your indie film: Black cinema, LGBTQ+, horror, documentary, international, and shorts platforms."
         canonical="https://filmmakergenius.com/greenlight-engine/niche"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            { "@type": "ListItem", position: 4, name: "Niche & Identity", item: "https://filmmakergenius.com/green-light-engine/niche" },
+          ],
+        }}
       />
 
       <style>{`
