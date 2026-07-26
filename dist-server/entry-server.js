@@ -17,7 +17,7 @@ import { twMerge } from "tailwind-merge";
 import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { Zap, X, Menu, ChevronDown, ChevronUp, Check as Check$1, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
+import { Shield, Zap, X, Menu, ChevronDown, ChevronUp, Check as Check$1, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -2447,6 +2447,41 @@ const badgeVariants = cva(
 function Badge({ className, variant, ...props }) {
   return /* @__PURE__ */ jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
 }
+const useAdminAuth = (redirectOnFail = true) => {
+  const { user, userProfile, loading } = useAuth();
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isChecking, setIsChecking] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const checkAdminRole = async () => {
+      console.log("useAdminAuth: State change", { loading, user: !!user, redirectOnFail });
+      if (!loading && user) {
+        const { data, error } = await supabase.rpc("has_role", {
+          _user_id: user.id,
+          _role: "admin"
+        });
+        console.log("useAdminAuth: Admin role check result", { data, error });
+        const adminStatus = data === true;
+        setIsAdmin(adminStatus);
+        setIsChecking(false);
+        if (redirectOnFail && !adminStatus) {
+          console.log("useAdminAuth: Redirecting non-admin user to home");
+          navigate("/", { replace: true });
+        }
+      } else if (!loading && !user) {
+        setIsAdmin(false);
+        setIsChecking(false);
+      }
+    };
+    checkAdminRole();
+  }, [user, loading, navigate, redirectOnFail]);
+  return {
+    isAdmin,
+    isChecking: loading || isChecking,
+    user,
+    userProfile
+  };
+};
 const useCredits = () => {
   const { user, userProfile } = useAuth();
   const [credits, setCredits] = useState(null);
@@ -2608,6 +2643,7 @@ const GlobalLayout = ({ children }) => {
   var _a2, _b2, _c, _d;
   const location = useLocation();
   const { user, userProfile } = useAuth();
+  const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const hideLayout = location.pathname === "/admin-login";
@@ -2637,6 +2673,17 @@ const GlobalLayout = ({ children }) => {
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 justify-self-end", children: [
               user ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                isAdmin && /* @__PURE__ */ jsxs(
+                  Link,
+                  {
+                    to: "/admin",
+                    className: "hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold border border-[#00d4aa]/50 text-[#00d4aa] hover:bg-[#00d4aa]/10 transition-colors",
+                    children: [
+                      /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4" }),
+                      "Admin"
+                    ]
+                  }
+                ),
                 /* @__PURE__ */ jsx(Link, { to: "/membership", className: "hidden sm:block", children: /* @__PURE__ */ jsxs(
                   Badge,
                   {
@@ -2753,6 +2800,18 @@ const GlobalLayout = ({ children }) => {
                     onClick: () => setMobileMenuOpen(false),
                     className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
                     children: "Dashboard"
+                  }
+                ),
+                user && isAdmin && /* @__PURE__ */ jsxs(
+                  Link,
+                  {
+                    to: "/admin",
+                    onClick: () => setMobileMenuOpen(false),
+                    className: "flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold text-[#00d4aa] hover:bg-[#00d4aa]/10",
+                    children: [
+                      /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4" }),
+                      "Admin"
+                    ]
                   }
                 ),
                 !user && /* @__PURE__ */ jsxs("div", { className: "pt-3 mt-2 border-t border-white/10 flex flex-col gap-2", children: [
