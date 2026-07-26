@@ -65,6 +65,15 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           <div className="flex items-center gap-3 justify-self-end">
             {user ? (
               <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold border border-[#00d4aa]/50 text-[#00d4aa] hover:bg-[#00d4aa]/10 transition-colors"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Link>
+                )}
                 <Link to="/membership" className="hidden sm:block">
                   <Badge
                     variant="outline"
