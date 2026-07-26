@@ -20,6 +20,7 @@ const VIOLET_HOVER = '#c084fc';
 export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const location = useLocation();
   const { user, userProfile } = useAuth();
+  const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
