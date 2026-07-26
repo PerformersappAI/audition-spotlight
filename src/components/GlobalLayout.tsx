@@ -187,6 +187,16 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                   Dashboard
                 </Link>
               )}
+              {user && isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold text-[#00d4aa] hover:bg-[#00d4aa]/10"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin
+                </Link>
+              )}
               {!user && (
                 <div className="pt-3 mt-2 border-t border-white/10 flex flex-col gap-2">
                   <Link
