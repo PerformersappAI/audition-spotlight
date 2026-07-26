@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Zap, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCredits } from '@/hooks/useCredits';
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
 
