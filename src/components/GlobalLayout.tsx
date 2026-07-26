@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Zap, Shield } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCredits } from '@/hooks/useCredits';
 import fgLogo from "@/assets/filmmaker-genius-logo.png";
 
@@ -19,6 +20,7 @@ const VIOLET_HOVER = '#c084fc';
 export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const location = useLocation();
   const { user, userProfile } = useAuth();
+  const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -63,6 +65,15 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           <div className="flex items-center gap-3 justify-self-end">
             {user ? (
               <>
+                {isAdmin && (
+                  <Link
+                    to="/admin"
+                    className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-semibold border border-[#00d4aa]/50 text-[#00d4aa] hover:bg-[#00d4aa]/10 transition-colors"
+                  >
+                    <Shield className="h-4 w-4" />
+                    Admin
+                  </Link>
+                )}
                 <Link to="/membership" className="hidden sm:block">
                   <Badge
                     variant="outline"
@@ -174,6 +185,16 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                   className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
                 >
                   Dashboard
+                </Link>
+              )}
+              {user && isAdmin && (
+                <Link
+                  to="/admin"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md text-sm font-semibold text-[#00d4aa] hover:bg-[#00d4aa]/10"
+                >
+                  <Shield className="h-4 w-4" />
+                  Admin
                 </Link>
               )}
               {!user && (
