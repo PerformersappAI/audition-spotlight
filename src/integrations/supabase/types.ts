@@ -1931,6 +1931,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      publish_due_blog_posts: { Args: never; Returns: undefined }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
