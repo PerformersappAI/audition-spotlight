@@ -203,6 +203,17 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                   Dashboard
                 </Link>
               )}
+              {user && (
+                <button
+                  onClick={async () => {
+                    setMobileMenuOpen(false);
+                    await handleSignOut();
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+                >
+                  Sign Out
+                </button>
+              )}
               {user && isAdmin && (
                 <Link
                   to="/admin"
