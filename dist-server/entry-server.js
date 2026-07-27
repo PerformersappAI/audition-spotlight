@@ -17,7 +17,7 @@ import { twMerge } from "tailwind-merge";
 import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { Shield, Zap, X, Menu, ChevronDown, ChevronUp, Check as Check$1, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
+import { Shield, Zap, LogOut, X, Menu, ChevronDown, ChevronUp, Check as Check$1, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -2642,10 +2642,15 @@ const VIOLET_HOVER = "#c084fc";
 const GlobalLayout = ({ children }) => {
   var _a2, _b2, _c, _d;
   const location = useLocation();
-  const { user, userProfile } = useAuth();
+  const navigate = useNavigate();
+  const { user, userProfile, signOut } = useAuth();
   const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/", { replace: true });
+  };
   const hideLayout = location.pathname === "/admin-login";
   if (hideLayout) {
     return /* @__PURE__ */ jsx(Fragment, { children });
@@ -2709,7 +2714,20 @@ const GlobalLayout = ({ children }) => {
                     /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-white", children: (userProfile == null ? void 0 : userProfile.first_name) || ((_d = user.email) == null ? void 0 : _d.split("@")[0]) }),
                     /* @__PURE__ */ jsx("p", { className: "text-xs text-white/50", children: user.email })
                   ] })
-                ] })
+                ] }),
+                /* @__PURE__ */ jsxs(
+                  Button,
+                  {
+                    variant: "ghost",
+                    size: "sm",
+                    onClick: handleSignOut,
+                    className: "hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors",
+                    children: [
+                      /* @__PURE__ */ jsx(LogOut, { className: "h-4 w-4" }),
+                      "Sign Out"
+                    ]
+                  }
+                )
               ] }) : /* @__PURE__ */ jsxs("div", { className: "hidden min-[600px]:flex items-center gap-5", children: [
                 /* @__PURE__ */ jsx(
                   Link,
@@ -2800,6 +2818,17 @@ const GlobalLayout = ({ children }) => {
                     onClick: () => setMobileMenuOpen(false),
                     className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
                     children: "Dashboard"
+                  }
+                ),
+                user && /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    onClick: async () => {
+                      setMobileMenuOpen(false);
+                      await handleSignOut();
+                    },
+                    className: "w-full text-left px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
+                    children: "Sign Out"
                   }
                 ),
                 user && isAdmin && /* @__PURE__ */ jsxs(
