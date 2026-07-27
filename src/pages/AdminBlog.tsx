@@ -29,7 +29,7 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
-import { Plus, Edit, Trash2, Calendar, Loader2 } from "lucide-react";
+import { Plus, Edit, Trash2, Calendar, Loader2, Sparkles } from "lucide-react";
 import BlogImageStudio from "@/components/admin/BlogImageStudio";
 
 interface BlogPost {
@@ -89,6 +89,33 @@ const AdminBlog = () => {
   const [saving, setSaving] = useState(false);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
+  const [aiTopic, setAiTopic] = useState("");
+  const [aiGenerating, setAiGenerating] = useState(false);
+
+  const generateWithAI = async () => {
+    setAiGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-blog-article", {
+        body: aiTopic.trim() ? { topic: aiTopic.trim() } : {},
+      });
+      if (error) throw error;
+      if ((data as any)?.error) throw new Error((data as any).error);
+      const { title, excerpt, body } = data as { title: string; excerpt: string; body: string };
+      setEditing((prev) => ({
+        ...prev,
+        title: title || prev.title,
+        slug: title ? slugify(title) : prev.slug,
+        excerpt: excerpt || prev.excerpt,
+        body: body || prev.body,
+      }));
+      setSlugTouched(false);
+      toast({ title: "Draft generated", description: "Review and edit before publishing." });
+    } catch (e: any) {
+      toast({ title: "Generation failed", description: e.message, variant: "destructive" });
+    } finally {
+      setAiGenerating(false);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -111,6 +138,7 @@ const AdminBlog = () => {
   const openCreate = () => {
     setEditing(emptyEditing);
     setSlugTouched(false);
+    setAiTopic("");
     setDialogOpen(true);
   };
 
