@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Zap, Shield } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Zap, Shield, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCredits } from '@/hooks/useCredits';
@@ -19,10 +19,16 @@ const VIOLET_HOVER = '#c084fc';
 
 export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const location = useLocation();
-  const { user, userProfile } = useAuth();
+  const navigate = useNavigate();
+  const { user, userProfile, signOut } = useAuth();
   const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/', { replace: true });
+  };
 
   // Don't show layout on admin login (it has its own nav)
   const hideLayout =
@@ -100,6 +106,16 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                     <p className="text-xs text-white/50">{user.email}</p>
                   </div>
                 </div>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
               </>
             ) : (
               <div className="hidden min-[600px]:flex items-center gap-5">
@@ -186,6 +202,17 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 >
                   Dashboard
                 </Link>
+              )}
+              {user && (
+                <button
+                  onClick={async () => {
+                    setMobileMenuOpen(false);
+                    await handleSignOut();
+                  }}
+                  className="w-full text-left px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+                >
+                  Sign Out
+                </button>
               )}
               {user && isAdmin && (
                 <Link
