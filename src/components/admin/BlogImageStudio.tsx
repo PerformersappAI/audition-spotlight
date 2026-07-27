@@ -33,8 +33,12 @@ const BlogImageStudio = ({ value, onChange }: Props) => {
         .from("blog-images")
         .upload(path, file, { contentType: file.type, upsert: false });
       if (error) throw error;
-      const { data } = supabase.storage.from("blog-images").getPublicUrl(path);
-      onChange(data.publicUrl);
+      const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
+      const { data: signed, error: signErr } = await supabase.storage
+        .from("blog-images")
+        .createSignedUrl(path, TEN_YEARS);
+      if (signErr || !signed?.signedUrl) throw signErr ?? new Error("Signed URL failed");
+      onChange(signed.signedUrl);
       toast({ title: "Image uploaded" });
     } catch (e: any) {
       toast({ title: "Upload failed", description: e.message, variant: "destructive" });
