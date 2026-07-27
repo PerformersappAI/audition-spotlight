@@ -46,6 +46,7 @@ import AdminCreditUsage from "./pages/AdminCreditUsage";
 import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
+import AdminBlog from "./pages/AdminBlog";
 import ToolboxHome from "./pages/ToolboxHome";
 import Toolbox from "./pages/Toolbox";
 import Recut from "./pages/Recut";
