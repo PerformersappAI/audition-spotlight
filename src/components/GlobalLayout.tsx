@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Menu, X, Zap, Shield } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Zap, Shield, LogOut } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCredits } from '@/hooks/useCredits';
@@ -19,10 +19,16 @@ const VIOLET_HOVER = '#c084fc';
 
 export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
   const location = useLocation();
-  const { user, userProfile } = useAuth();
+  const navigate = useNavigate();
+  const { user, userProfile, signOut } = useAuth();
   const { isAdmin } = useAdminAuth(false);
   const { credits } = useCredits();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/', { replace: true });
+  };
 
   // Don't show layout on admin login (it has its own nav)
   const hideLayout =
