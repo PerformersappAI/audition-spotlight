@@ -85,8 +85,18 @@ serve(async (req) => {
       });
     }
 
-    const { data: pub } = sb.storage.from("blog-images").getPublicUrl(path);
-    return new Response(JSON.stringify({ url: pub.publicUrl, path }), {
+    // Bucket is private (workspace policy blocks public buckets), use a long-lived signed URL.
+    const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
+    const { data: signed, error: signErr } = await sb.storage
+      .from("blog-images")
+      .createSignedUrl(path, TEN_YEARS);
+    if (signErr || !signed?.signedUrl) {
+      return new Response(
+        JSON.stringify({ error: `Signed URL failed: ${signErr?.message ?? "unknown"}` }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+      );
+    }
+    return new Response(JSON.stringify({ url: signed.signedUrl, path }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (e) {
