@@ -18,7 +18,8 @@ import {
   GraduationCap,
   ClipboardList,
   LineChart,
-  LayoutDashboard
+  LayoutDashboard,
+  Newspaper
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
