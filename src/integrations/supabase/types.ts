@@ -407,6 +407,7 @@ export type Database = {
           id: string
           published: boolean
           published_at: string | null
+          scheduled_for: string | null
           slug: string
           title: string
           updated_at: string
@@ -420,6 +421,7 @@ export type Database = {
           id?: string
           published?: boolean
           published_at?: string | null
+          scheduled_for?: string | null
           slug: string
           title: string
           updated_at?: string
@@ -433,6 +435,7 @@ export type Database = {
           id?: string
           published?: boolean
           published_at?: string | null
+          scheduled_for?: string | null
           slug?: string
           title?: string
           updated_at?: string
