@@ -368,6 +368,32 @@ const AdminBlog = () => {
           </DialogHeader>
 
           <div className="space-y-4">
+            {!editing.id && (
+              <div className="rounded-lg border border-border bg-muted/30 p-3 space-y-2">
+                <Label className="flex items-center gap-2 text-sm">
+                  <Sparkles className="w-4 h-4 text-primary" /> Generate with AI
+                </Label>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Optional topic (leave blank to let AI pick)"
+                    value={aiTopic}
+                    onChange={(e) => setAiTopic(e.target.value)}
+                    disabled={aiGenerating}
+                  />
+                  <Button type="button" onClick={generateWithAI} disabled={aiGenerating}>
+                    {aiGenerating ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Sparkles className="w-4 h-4 mr-2" />
+                    )}
+                    Generate
+                  </Button>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Drafts a full article for you to review. Nothing publishes automatically.
+                </p>
+              </div>
+            )}
             <div>
               <Label>Title</Label>
               <Input
