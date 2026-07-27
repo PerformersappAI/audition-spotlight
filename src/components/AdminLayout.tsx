@@ -18,7 +18,8 @@ import {
   GraduationCap,
   ClipboardList,
   LineChart,
-  LayoutDashboard
+  LayoutDashboard,
+  Newspaper
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
@@ -77,6 +78,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
   const navItems = [
     { path: '/admin', label: 'Dashboard', icon: BarChart3 },
     { path: '/admin/homepage', label: 'Homepage', icon: LayoutDashboard },
+    { path: '/admin/blog', label: 'Blog', icon: Newspaper },
     { path: '/admin/users', label: 'Users', icon: Users },
     { path: '/admin/auditions', label: 'Auditions', icon: Film },
     { path: '/admin/projects', label: 'Projects', icon: FileText },

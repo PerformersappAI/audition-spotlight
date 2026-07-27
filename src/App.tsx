@@ -46,6 +46,7 @@ import AdminCreditUsage from "./pages/AdminCreditUsage";
 import AdminCourses from "./pages/AdminCourses";
 import AdminQuizzes from "./pages/AdminQuizzes";
 import AdminQuizAnalytics from "./pages/AdminQuizAnalytics";
+import AdminBlog from "./pages/AdminBlog";
 import ToolboxHome from "./pages/ToolboxHome";
 import Toolbox from "./pages/Toolbox";
 import Recut from "./pages/Recut";
@@ -145,6 +146,7 @@ const AppContent = () => (
       <Route path="/admin/quizzes" element={<AdminQuizzes />} />
       <Route path="/admin/quiz-analytics" element={<AdminQuizAnalytics />} />
       <Route path="/admin/homepage" element={<AdminHomepageSettings />} />
+      <Route path="/admin/blog" element={<AdminBlog />} />
       <Route path="/toolbox" element={<Toolbox />} />
       <Route path="/toolbox/pre-production" element={<PreProductionPhase />} />
       <Route path="/toolbox/production" element={<ProductionPhase />} />

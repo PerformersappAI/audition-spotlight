@@ -11,7 +11,8 @@ import {
   TrendingUp,
   Calendar,
   Activity,
-  GraduationCap
+  GraduationCap,
+  Newspaper
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
@@ -165,6 +166,12 @@ const AdminDashboard = () => {
                 <Link to="/admin/courses">
                   <GraduationCap className="w-4 h-4" />
                   Manage Courses
+                </Link>
+              </Button>
+              <Button className="w-full justify-start gap-2" variant="outline" asChild>
+                <Link to="/admin/blog">
+                  <Newspaper className="w-4 h-4" />
+                  Manage Blog
                 </Link>
               </Button>
             </CardContent>
