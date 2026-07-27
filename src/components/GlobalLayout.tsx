@@ -106,6 +106,16 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                     <p className="text-xs text-white/50">{user.email}</p>
                   </div>
                 </div>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleSignOut}
+                  className="hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Sign Out
+                </Button>
               </>
             ) : (
               <div className="hidden min-[600px]:flex items-center gap-5">
