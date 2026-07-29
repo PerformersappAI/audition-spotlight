@@ -32,7 +32,7 @@ const ToolCard = ({
   className = "",
 }: {
   card: Card;
-  aspect: "16/9" | "16/10" | "tall";
+  aspect: "16/9" | "16/10" | "32/9" | "tall";
   className?: string;
 }) => {
   const ratioStyle =
