@@ -25,7 +25,7 @@ import GleNichePage from "./pages/GleNichePage";
 import GleTier from "./pages/GleTier";
 import CoursePage from "./pages/CoursePage";
 import CourseChapter from "./pages/CourseChapter";
-import NotFound from "./pages/NotFound";
+import Launch from "./pages/Launch";
 
 export const AppRoutes = () => (
   <GlobalLayout>
