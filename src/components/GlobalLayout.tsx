@@ -66,6 +66,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           {/* CENTER: Nav (desktop) */}
           <nav className="hidden min-[600px]:flex items-center gap-8 justify-self-center">
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
+            <Link to="/launch" className={navLinkClass}>Launch</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/blog" className={navLinkClass}>Blog</Link>
             <Link to="/pricing" className={navLinkClass}>Membership</Link>
@@ -185,6 +186,13 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
               >
                 Toolbox
+              </Link>
+              <Link
+                to="/launch"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+              >
+                Launch
               </Link>
               <Link
                 to="/academy"

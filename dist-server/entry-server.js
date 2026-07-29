@@ -2,7 +2,7 @@ var __defProp = Object.defineProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
 var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
 var _a, _b;
-import { jsx, Fragment, jsxs } from "react/jsx-runtime";
+import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
 import React__default, { Component, createContext, useState, useEffect, useContext, useMemo } from "react";
@@ -17,7 +17,8 @@ import { twMerge } from "tailwind-merge";
 import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
-import { Shield, Zap, LogOut, X, Menu, ChevronDown, ChevronUp, Check as Check$1, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
+import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -2447,6 +2448,107 @@ const badgeVariants = cva(
 function Badge({ className, variant, ...props }) {
   return /* @__PURE__ */ jsx("div", { className: cn(badgeVariants({ variant }), className), ...props });
 }
+const DropdownMenu = DropdownMenuPrimitive.Root;
+const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
+const DropdownMenuSubTrigger = React.forwardRef(({ className, inset, children, ...props }, ref) => /* @__PURE__ */ jsxs(
+  DropdownMenuPrimitive.SubTrigger,
+  {
+    ref,
+    className: cn(
+      "flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none data-[state=open]:bg-accent focus:bg-accent",
+      inset && "pl-8",
+      className
+    ),
+    ...props,
+    children: [
+      children,
+      /* @__PURE__ */ jsx(ChevronRight, { className: "ml-auto h-4 w-4" })
+    ]
+  }
+));
+DropdownMenuSubTrigger.displayName = DropdownMenuPrimitive.SubTrigger.displayName;
+const DropdownMenuSubContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  DropdownMenuPrimitive.SubContent,
+  {
+    ref,
+    className: cn(
+      "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      className
+    ),
+    ...props
+  }
+));
+DropdownMenuSubContent.displayName = DropdownMenuPrimitive.SubContent.displayName;
+const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Portal, { children: /* @__PURE__ */ jsx(
+  DropdownMenuPrimitive.Content,
+  {
+    ref,
+    sideOffset,
+    className: cn(
+      "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+      className
+    ),
+    ...props
+  }
+) }));
+DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName;
+const DropdownMenuItem = React.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ jsx(
+  DropdownMenuPrimitive.Item,
+  {
+    ref,
+    className: cn(
+      "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground",
+      inset && "pl-8",
+      className
+    ),
+    ...props
+  }
+));
+DropdownMenuItem.displayName = DropdownMenuPrimitive.Item.displayName;
+const DropdownMenuCheckboxItem = React.forwardRef(({ className, children, checked, ...props }, ref) => /* @__PURE__ */ jsxs(
+  DropdownMenuPrimitive.CheckboxItem,
+  {
+    ref,
+    className: cn(
+      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground",
+      className
+    ),
+    checked,
+    ...props,
+    children: [
+      /* @__PURE__ */ jsx("span", { className: "absolute left-2 flex h-3.5 w-3.5 items-center justify-center", children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Check$1, { className: "h-4 w-4" }) }) }),
+      children
+    ]
+  }
+));
+DropdownMenuCheckboxItem.displayName = DropdownMenuPrimitive.CheckboxItem.displayName;
+const DropdownMenuRadioItem = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(
+  DropdownMenuPrimitive.RadioItem,
+  {
+    ref,
+    className: cn(
+      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors data-[disabled]:pointer-events-none data-[disabled]:opacity-50 focus:bg-accent focus:text-accent-foreground",
+      className
+    ),
+    ...props,
+    children: [
+      /* @__PURE__ */ jsx("span", { className: "absolute left-2 flex h-3.5 w-3.5 items-center justify-center", children: /* @__PURE__ */ jsx(DropdownMenuPrimitive.ItemIndicator, { children: /* @__PURE__ */ jsx(Circle, { className: "h-2 w-2 fill-current" }) }) }),
+      children
+    ]
+  }
+));
+DropdownMenuRadioItem.displayName = DropdownMenuPrimitive.RadioItem.displayName;
+const DropdownMenuLabel = React.forwardRef(({ className, inset, ...props }, ref) => /* @__PURE__ */ jsx(
+  DropdownMenuPrimitive.Label,
+  {
+    ref,
+    className: cn("px-2 py-1.5 text-sm font-semibold", inset && "pl-8", className),
+    ...props
+  }
+));
+DropdownMenuLabel.displayName = DropdownMenuPrimitive.Label.displayName;
+const DropdownMenuSeparator = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(DropdownMenuPrimitive.Separator, { ref, className: cn("-mx-1 my-1 h-px bg-muted", className), ...props }));
+DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 const useAdminAuth = (redirectOnFail = true) => {
   const { user, userProfile, loading } = useAuth();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -2672,6 +2774,7 @@ const GlobalLayout = ({ children }) => {
             /* @__PURE__ */ jsx(Link, { to: "/", className: "flex items-center shrink-0 justify-self-start", children: /* @__PURE__ */ jsx("img", { src: fgLogo, alt: "Filmmaker Genius", className: "h-20 w-auto rounded-md" }) }),
             /* @__PURE__ */ jsxs("nav", { className: "hidden min-[600px]:flex items-center gap-8 justify-self-center", children: [
               /* @__PURE__ */ jsx(Link, { to: "/toolbox", className: navLinkClass, children: "Toolbox" }),
+              /* @__PURE__ */ jsx(Link, { to: "/launch", className: navLinkClass, children: "Launch" }),
               /* @__PURE__ */ jsx(Link, { to: "/academy", className: navLinkClass, children: "Academy" }),
               /* @__PURE__ */ jsx(Link, { to: "/blog", className: navLinkClass, children: "Blog" }),
               /* @__PURE__ */ jsx(Link, { to: "/pricing", className: navLinkClass, children: "Membership" })
@@ -2701,33 +2804,41 @@ const GlobalLayout = ({ children }) => {
                     ]
                   }
                 ) }),
-                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-lg", children: [
-                  /* @__PURE__ */ jsx(
-                    "div",
+                /* @__PURE__ */ jsxs(DropdownMenu, { children: [
+                  /* @__PURE__ */ jsx(DropdownMenuTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+                    "button",
                     {
-                      className: "h-8 w-8 rounded-full flex items-center justify-center",
-                      style: { background: `linear-gradient(135deg, ${TEAL$8}, ${VIOLET})` },
-                      children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
+                      className: "flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-lg hover:bg-white/10 transition-colors",
+                      "aria-label": "Account menu",
+                      children: [
+                        /* @__PURE__ */ jsx(
+                          "div",
+                          {
+                            className: "h-8 w-8 rounded-full flex items-center justify-center",
+                            style: { background: `linear-gradient(135deg, ${TEAL$8}, ${VIOLET})` },
+                            children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs("div", { className: "hidden md:block leading-tight text-left", children: [
+                          /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-white", children: (userProfile == null ? void 0 : userProfile.first_name) || ((_d = user.email) == null ? void 0 : _d.split("@")[0]) }),
+                          /* @__PURE__ */ jsx("p", { className: "text-xs text-white/50", children: user.email })
+                        ] })
+                      ]
                     }
-                  ),
-                  /* @__PURE__ */ jsxs("div", { className: "hidden md:block leading-tight", children: [
-                    /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-white", children: (userProfile == null ? void 0 : userProfile.first_name) || ((_d = user.email) == null ? void 0 : _d.split("@")[0]) }),
-                    /* @__PURE__ */ jsx("p", { className: "text-xs text-white/50", children: user.email })
-                  ] })
-                ] }),
-                /* @__PURE__ */ jsxs(
-                  Button,
-                  {
-                    variant: "ghost",
-                    size: "sm",
-                    onClick: handleSignOut,
-                    className: "hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors",
-                    children: [
-                      /* @__PURE__ */ jsx(LogOut, { className: "h-4 w-4" }),
+                  ) }),
+                  /* @__PURE__ */ jsxs(DropdownMenuContent, { align: "end", className: "w-48", children: [
+                    /* @__PURE__ */ jsx(DropdownMenuLabel, { className: "truncate", children: user.email }),
+                    /* @__PURE__ */ jsx(DropdownMenuSeparator, {}),
+                    /* @__PURE__ */ jsxs(DropdownMenuItem, { onClick: () => navigate("/refill"), children: [
+                      /* @__PURE__ */ jsx(Wallet, { className: "h-4 w-4 mr-2" }),
+                      "Refill"
+                    ] }),
+                    /* @__PURE__ */ jsxs(DropdownMenuItem, { onClick: handleSignOut, children: [
+                      /* @__PURE__ */ jsx(LogOut, { className: "h-4 w-4 mr-2" }),
                       "Sign Out"
-                    ]
-                  }
-                )
+                    ] })
+                  ] })
+                ] })
               ] }) : /* @__PURE__ */ jsxs("div", { className: "hidden min-[600px]:flex items-center gap-5", children: [
                 /* @__PURE__ */ jsx(
                   Link,
@@ -2787,6 +2898,15 @@ const GlobalLayout = ({ children }) => {
                 /* @__PURE__ */ jsx(
                   Link,
                   {
+                    to: "/launch",
+                    onClick: () => setMobileMenuOpen(false),
+                    className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
+                    children: "Launch"
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  Link,
+                  {
                     to: "/academy",
                     onClick: () => setMobileMenuOpen(false),
                     className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
@@ -2818,6 +2938,15 @@ const GlobalLayout = ({ children }) => {
                     onClick: () => setMobileMenuOpen(false),
                     className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
                     children: "Dashboard"
+                  }
+                ),
+                user && /* @__PURE__ */ jsx(
+                  Link,
+                  {
+                    to: "/refill",
+                    onClick: () => setMobileMenuOpen(false),
+                    className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
+                    children: "Refill"
                   }
                 ),
                 user && /* @__PURE__ */ jsx(
