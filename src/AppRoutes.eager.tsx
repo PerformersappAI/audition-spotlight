@@ -26,6 +26,8 @@ import GleTier from "./pages/GleTier";
 import CoursePage from "./pages/CoursePage";
 import CourseChapter from "./pages/CourseChapter";
 import NotFound from "./pages/NotFound";
+import Launch from "./pages/Launch";
+
 
 export const AppRoutes = () => (
   <GlobalLayout>
@@ -60,7 +62,9 @@ export const AppRoutes = () => (
       <Route path="/green-light-engine/:tier" element={<GleTier />} />
       <Route path="/academy/:courseSlug" element={<CoursePage />} />
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
+      <Route path="/launch" element={<Launch />} />
       <Route path="*" element={<NotFound />} />
+
     </Routes>
   </GlobalLayout>
 );

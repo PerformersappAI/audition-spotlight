@@ -4593,7 +4593,7 @@ const THEMES$1 = {
   emerald: { grad: "linear-gradient(135deg, #071a10 0%, #0a2d1a 100%)", accent: "#6ee7b7" },
   red: { grad: "linear-gradient(135deg, #2a0709 0%, #4a0d12 100%)", accent: "#ff4954" }
 };
-const OVERLAY$1 = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
+const OVERLAY$2 = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 const GROUPS$1 = [
   {
     key: "Script & Story",
@@ -4652,7 +4652,7 @@ function ToolCard({ tool }) {
   const borderColor = hover ? t.accent : isRed ? "rgba(239,68,68,0.55)" : "rgba(255,255,255,0.08)";
   const boxShadow = isRed ? hover ? "0 0 0 1px rgba(255,73,84,0.5), 0 12px 44px rgba(225,29,42,0.6)" : void 0 : void 0;
   const inner = /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY$1, pointerEvents: "none" } }),
+    /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY$2, pointerEvents: "none" } }),
     tool.badge && /* @__PURE__ */ jsx("span", { style: {
       position: "absolute",
       top: 18,
@@ -6843,7 +6843,7 @@ const THEMES = {
     badgeBorder: "rgba(239,68,68,0.3)"
   }
 };
-const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
+const OVERLAY$1 = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 const GROUPS = [
   {
     key: "education",
@@ -6869,20 +6869,6 @@ const GROUPS = [
       { title: "Distributors", to: "/academy/distributors", theme: "money", badge: "Distribution" },
       { title: "Video On Demand", to: "/academy/vod", theme: "money", badge: "Distribution" }
     ]
-  },
-  {
-    key: "greenlight",
-    label: "Distribution Engine",
-    tabs: ["All"],
-    cols: 1,
-    tiles: [{
-      title: "Green Light Engine",
-      to: "/green-light-engine",
-      theme: "greenlight",
-      badge: "Distribution",
-      sub: "See exactly where your film can go — and how to get there",
-      featured: true
-    }]
   },
   {
     key: "roberts",
@@ -6924,7 +6910,7 @@ function TileCard({ tile }) {
         textDecoration: "none"
       },
       children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY$1, pointerEvents: "none" } }),
         tile.badge && /* @__PURE__ */ jsx("span", { style: {
           position: "absolute",
           top: 18,
@@ -12601,6 +12587,130 @@ const NotFound = () => {
     ] }) })
   ] }) });
 };
+const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
+const THEME = {
+  grad: "linear-gradient(135deg, #120a25 0%, #1e1040 100%)",
+  accent: "#a78bfa"
+};
+function SuperstarDestroyerCard() {
+  const [hover, setHover] = useState(false);
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      onMouseEnter: () => setHover(true),
+      onMouseLeave: () => setHover(false),
+      style: {
+        display: "block",
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 16,
+        minHeight: 260,
+        border: `1px solid ${hover ? THEME.accent : "rgba(255,255,255,0.08)"}`,
+        background: THEME.grad,
+        cursor: "default",
+        transform: hover ? "translateY(-4px)" : "translateY(0)",
+        transition: "transform 0.25s, border-color 0.25s",
+        textDecoration: "none"
+      },
+      children: [
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" } }),
+        /* @__PURE__ */ jsx("div", { style: {
+          position: "absolute",
+          left: 32,
+          bottom: 32,
+          fontFamily: "'Inter Tight', sans-serif",
+          fontSize: 28,
+          fontWeight: 700,
+          color: "#fff",
+          textShadow: "0 2px 20px rgba(0,0,0,0.9)"
+        }, children: "Superstar Destroyer" })
+      ]
+    }
+  );
+}
+function GreenLightEngineCard() {
+  const [hover, setHover] = useState(false);
+  const theme = {
+    grad: "linear-gradient(135deg, #06200f 0%, #0a3318 100%)",
+    accent: "#00e054",
+    badgeBg: "rgba(0,224,84,0.14)",
+    badgeBorder: "rgba(0,224,84,0.3)"
+  };
+  return /* @__PURE__ */ jsxs(
+    Link,
+    {
+      to: "/green-light-engine",
+      onMouseEnter: () => setHover(true),
+      onMouseLeave: () => setHover(false),
+      style: {
+        display: "block",
+        position: "relative",
+        overflow: "hidden",
+        borderRadius: 16,
+        minHeight: 260,
+        border: `1px solid ${hover ? theme.accent : "rgba(255,255,255,0.08)"}`,
+        background: theme.grad,
+        cursor: "pointer",
+        transform: hover ? "translateY(-4px)" : "translateY(0)",
+        transition: "transform 0.25s, border-color 0.25s",
+        textDecoration: "none"
+      },
+      children: [
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" } }),
+        /* @__PURE__ */ jsx("span", { style: {
+          position: "absolute",
+          top: 18,
+          left: 20,
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+          padding: "4px 10px",
+          borderRadius: 9999,
+          color: theme.accent,
+          background: theme.badgeBg,
+          border: `1px solid ${theme.badgeBorder}`
+        }, children: "Distribution" }),
+        /* @__PURE__ */ jsx("div", { style: {
+          position: "absolute",
+          left: 32,
+          bottom: 68,
+          fontSize: 14,
+          color: "rgba(255,255,255,0.5)",
+          fontFamily: "'Inter Tight', sans-serif"
+        }, children: "See exactly where your film can go — and how to get there" }),
+        /* @__PURE__ */ jsx("div", { style: {
+          position: "absolute",
+          left: 32,
+          bottom: 32,
+          fontFamily: "'Inter Tight', sans-serif",
+          fontSize: 28,
+          fontWeight: 700,
+          color: "#fff",
+          textShadow: "0 2px 20px rgba(0,0,0,0.9)"
+        }, children: "Green Light Engine" }),
+        /* @__PURE__ */ jsx("div", { style: {
+          position: "absolute",
+          bottom: 20,
+          right: 22,
+          fontSize: 18,
+          color: theme.accent,
+          opacity: hover ? 1 : 0,
+          transition: "opacity 0.2s"
+        }, children: "→" })
+      ]
+    }
+  );
+}
+function Launch() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  return /* @__PURE__ */ jsx("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', sans-serif" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "72px 24px 80px" }, children: [
+    /* @__PURE__ */ jsx(SuperstarDestroyerCard, {}),
+    /* @__PURE__ */ jsx("div", { style: { marginTop: 16 }, children: /* @__PURE__ */ jsx(GreenLightEngineCard, {}) })
+  ] }) });
+}
 const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE__ */ jsxs(Routes, { children: [
   /* @__PURE__ */ jsx(Route, { path: "/", element: /* @__PURE__ */ jsx(HomeMarketing, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/about", element: /* @__PURE__ */ jsx(About, {}) }),
@@ -12632,6 +12742,7 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/green-light-engine/:tier", element: /* @__PURE__ */ jsx(GleTier, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug", element: /* @__PURE__ */ jsx(CoursePage, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsx(Launch, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(NotFound, {}) })
 ] }) });
 async function preloadForUrl(url2) {
