@@ -32,13 +32,13 @@ const ToolCard = ({
   className = "",
 }: {
   card: Card;
-  aspect: "16/9" | "16/10" | "tall";
+  aspect: "16/9" | "16/10" | "32/9" | "tall";
   className?: string;
 }) => {
   const ratioStyle =
     aspect === "tall"
       ? { height: "100%", minHeight: 300 }
-      : { aspectRatio: aspect === "16/9" ? "16 / 9" : "16 / 10" };
+      : { aspectRatio: aspect === "32/9" ? "32 / 9" : aspect === "16/9" ? "16 / 9" : "16 / 10" };
 
   return (
     <Link
@@ -148,9 +148,9 @@ const HomeMarketing = () => {
             </div>
           </div>
 
-          {/* Row 2: full-width horizontal Pitch Deck */}
+          {/* Row 2: full-width horizontal Pitch Deck (half-height) */}
           <div className="mt-[14px]">
-            <ToolCard card={pitchDeck} aspect="16/9" />
+            <ToolCard card={pitchDeck} aspect="32/9" />
           </div>
         </div>
       </section>
