@@ -217,6 +217,15 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 </Link>
               )}
               {user && (
+                <Link
+                  to="/refill"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+                >
+                  Refill
+                </Link>
+              )}
+              {user && (
                 <button
                   onClick={async () => {
                     setMobileMenuOpen(false);
