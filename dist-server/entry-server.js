@@ -3238,7 +3238,10 @@ const HomeMarketing = () => {
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "mt-[14px] flex flex-col gap-[14px]", children: [
-        /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "32/9" }),
+        /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
+          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
+          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
+        ] }),
         /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "32/9" })
       ] })
     ] }) })
