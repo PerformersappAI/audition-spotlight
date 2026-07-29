@@ -148,9 +148,9 @@ const HomeMarketing = () => {
             </div>
           </div>
 
-          {/* Row 2: full-width horizontal Pitch Deck */}
+          {/* Row 2: full-width horizontal Pitch Deck (half-height) */}
           <div className="mt-[14px]">
-            <ToolCard card={pitchDeck} aspect="16/9" />
+            <ToolCard card={pitchDeck} aspect="32/9" />
           </div>
         </div>
       </section>
