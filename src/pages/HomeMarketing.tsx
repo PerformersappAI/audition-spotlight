@@ -135,20 +135,22 @@ const HomeMarketing = () => {
       {/* TOOL GRID */}
       <section style={{ background: "#050505", padding: "44px 24px 72px" }}>
         <div className="mx-auto" style={{ maxWidth: 1040 }}>
-          {/* Bento: left = two 16:9 stacked; right = tall Pitch Deck */}
+          {/* Bento: left = two 16:9 stacked; right = three tall cards stacked */}
           <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px]">
             <div className="flex flex-col gap-[14px]">
               <ToolCard card={sceneAnalysis} aspect="16/9" />
               <ToolCard card={storyboard} aspect="16/9" />
             </div>
-            <ToolCard card={pitchDeck} aspect="tall" className="h-full" />
+            <div className="flex flex-col gap-[14px] h-full">
+              <ToolCard card={callSheet} aspect="16/10" />
+              <ToolCard card={auditions} aspect="16/10" />
+              <ToolCard card={crewHire} aspect="16/10" />
+            </div>
           </div>
 
-          {/* Row 2: 3-column */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-[14px] mt-[14px]">
-            <ToolCard card={callSheet} aspect="16/10" />
-            <ToolCard card={auditions} aspect="16/10" />
-            <ToolCard card={crewHire} aspect="16/10" />
+          {/* Row 2: full-width horizontal Pitch Deck */}
+          <div className="mt-[14px]">
+            <ToolCard card={pitchDeck} aspect="16/9" />
           </div>
         </div>
       </section>
