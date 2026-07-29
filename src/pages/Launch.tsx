@@ -106,6 +106,7 @@ function GreenLightEngineCard() {
   );
 }
 
+export default function Launch() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -114,6 +115,9 @@ function GreenLightEngineCard() {
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', sans-serif" }}>
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "72px 24px 80px" }}>
         <SuperstarDestroyerCard />
+        <div style={{ marginTop: 16 }}>
+          <GreenLightEngineCard />
+        </div>
       </div>
     </div>
   );
