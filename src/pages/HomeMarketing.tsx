@@ -38,7 +38,7 @@ const ToolCard = ({
   const ratioStyle =
     aspect === "tall"
       ? { height: "100%", minHeight: 300 }
-      : { aspectRatio: aspect === "16/9" ? "16 / 9" : "16 / 10" };
+      : { aspectRatio: aspect === "32/9" ? "32 / 9" : aspect === "16/9" ? "16 / 9" : "16 / 10" };
 
   return (
     <Link
