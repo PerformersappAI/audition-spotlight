@@ -3226,15 +3226,15 @@ const HomeMarketing = () => {
       )
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: "#050505", padding: "44px 24px 72px" }, children: /* @__PURE__ */ jsxs("div", { className: "mx-auto", style: { maxWidth: 1040 }, children: [
-      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px]", children: [
+      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch", children: [
         /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px]", children: [
           /* @__PURE__ */ jsx(ToolCard$1, { card: sceneAnalysis, aspect: "16/9" }),
           /* @__PURE__ */ jsx(ToolCard$1, { card: storyboard, aspect: "16/9" })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
-          /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "16/10" }),
-          /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "16/10" }),
-          /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "16/10" })
+          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "tall", className: "h-full" }) }),
+          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "tall", className: "h-full" }) }),
+          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "mt-[14px] flex flex-col gap-[14px]", children: [
