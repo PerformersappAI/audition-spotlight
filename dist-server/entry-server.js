@@ -3125,7 +3125,7 @@ const ToolCard$1 = ({
   aspect,
   className = ""
 }) => {
-  const ratioStyle = aspect === "tall" ? { height: "100%", minHeight: 300 } : { aspectRatio: aspect === "16/9" ? "16 / 9" : "16 / 10" };
+  const ratioStyle = aspect === "tall" ? { height: "100%", minHeight: 300 } : { aspectRatio: aspect === "32/9" ? "32 / 9" : aspect === "16/9" ? "16 / 9" : "16 / 10" };
   return /* @__PURE__ */ jsxs(
     Link,
     {
@@ -3231,13 +3231,13 @@ const HomeMarketing = () => {
           /* @__PURE__ */ jsx(ToolCard$1, { card: sceneAnalysis, aspect: "16/9" }),
           /* @__PURE__ */ jsx(ToolCard$1, { card: storyboard, aspect: "16/9" })
         ] }),
-        /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "tall", className: "h-full" })
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
+          /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "16/10" }),
+          /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "16/10" }),
+          /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "16/10" })
+        ] })
       ] }),
-      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-3 gap-[14px] mt-[14px]", children: [
-        /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "16/10" }),
-        /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "16/10" }),
-        /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "16/10" })
-      ] })
+      /* @__PURE__ */ jsx("div", { className: "mt-[14px]", children: /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "32/9" }) })
     ] }) })
   ] });
 };
