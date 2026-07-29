@@ -149,7 +149,8 @@ const HomeMarketing = () => {
           </div>
 
           {/* Row 2: full-width horizontal Pitch Deck (half-height) */}
-          <div className="mt-[14px]">
+          <div className="mt-[14px] flex flex-col gap-[14px]">
+            <ToolCard card={pitchDeck} aspect="32/9" />
             <ToolCard card={pitchDeck} aspect="32/9" />
           </div>
         </div>
