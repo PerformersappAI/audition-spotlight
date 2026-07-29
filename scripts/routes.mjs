@@ -16,6 +16,7 @@ const staticRoutes = [
   "/membership",
   "/toolbox",
   "/recut",
+  "/launch",
   "/crew-hire",
   "/blog",
   "/privacy",

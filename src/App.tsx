@@ -96,6 +96,7 @@ import GleNichePage from "./pages/GleNichePage";
 import MonetizationHub from "./pages/MonetizationHub";
 import MonetizationSubPage from "./pages/MonetizationSubPage";
 import Refill from "./pages/Refill";
+import Launch from "./pages/Launch";
 
 const queryClient = new QueryClient();
 
@@ -201,6 +202,7 @@ const AppContent = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/recut" element={<Recut />} />
+          <Route path="/launch" element={<Launch />} />
           <Route path="/refill" element={<Refill />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
