@@ -70,20 +70,6 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    key: "greenlight",
-    label: "Distribution Engine",
-    tabs: ["All"],
-    cols: 1,
-    tiles: [{
-      title: "Green Light Engine",
-      to: "/green-light-engine",
-      theme: "greenlight",
-      badge: "Distribution",
-      sub: "See exactly where your film can go — and how to get there",
-      featured: true,
-    }],
-  },
-  {
     key: "roberts",
     label: "Roberts' Filmmaking",
     tabs: ["All", "Roberts' Filmmaking"],
