@@ -62,7 +62,9 @@ export const AppRoutes = () => (
       <Route path="/green-light-engine/:tier" element={<GleTier />} />
       <Route path="/academy/:courseSlug" element={<CoursePage />} />
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
+      <Route path="/launch" element={<Launch />} />
       <Route path="*" element={<NotFound />} />
+
     </Routes>
   </GlobalLayout>
 );
