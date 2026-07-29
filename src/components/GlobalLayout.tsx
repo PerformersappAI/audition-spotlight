@@ -94,32 +94,41 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                   </Badge>
                 </Link>
 
-                <div className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-lg">
-                  <div
-                    className="h-8 w-8 rounded-full flex items-center justify-center"
-                    style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
-                  >
-                    <span className="text-sm font-semibold text-black">
-                      {userProfile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
-                    </span>
-                  </div>
-                  <div className="hidden md:block leading-tight">
-                    <p className="text-sm font-medium text-white">
-                      {userProfile?.first_name || user.email?.split('@')[0]}
-                    </p>
-                    <p className="text-xs text-white/50">{user.email}</p>
-                  </div>
-                </div>
-
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleSignOut}
-                  className="hidden sm:flex items-center gap-1.5 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sign Out
-                </Button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="flex items-center gap-3 bg-white/5 border border-white/10 p-2 rounded-lg hover:bg-white/10 transition-colors"
+                      aria-label="Account menu"
+                    >
+                      <div
+                        className="h-8 w-8 rounded-full flex items-center justify-center"
+                        style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
+                      >
+                        <span className="text-sm font-semibold text-black">
+                          {userProfile?.first_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      <div className="hidden md:block leading-tight text-left">
+                        <p className="text-sm font-medium text-white">
+                          {userProfile?.first_name || user.email?.split('@')[0]}
+                        </p>
+                        <p className="text-xs text-white/50">{user.email}</p>
+                      </div>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuLabel className="truncate">{user.email}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/refill')}>
+                      <Wallet className="h-4 w-4 mr-2" />
+                      Refill
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </>
             ) : (
               <div className="hidden min-[600px]:flex items-center gap-5">
