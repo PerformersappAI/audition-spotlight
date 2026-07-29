@@ -148,13 +148,16 @@ const HomeMarketing = () => {
             </div>
           </div>
 
-          {/* Row 2: split first box into two half-width halves, then one full-width 32/9 box */}
+          {/* Row 2: two rows of half-width 16/9 Pitch Deck boxes */}
           <div className="mt-[14px] flex flex-col gap-[14px]">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
               <ToolCard card={pitchDeck} aspect="16/9" />
             </div>
-            <ToolCard card={pitchDeck} aspect="32/9" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
+              <ToolCard card={pitchDeck} aspect="16/9" />
+              <ToolCard card={pitchDeck} aspect="16/9" />
+            </div>
           </div>
         </div>
       </section>
