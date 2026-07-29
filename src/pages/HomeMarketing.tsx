@@ -135,16 +135,22 @@ const HomeMarketing = () => {
       {/* TOOL GRID */}
       <section style={{ background: "#050505", padding: "44px 24px 72px" }}>
         <div className="mx-auto" style={{ maxWidth: 1040 }}>
-          {/* Bento: left = two 16:9 stacked; right = three tall cards stacked */}
-          <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px]">
+          {/* Bento: left = two 16/9 stacked; right = three cards stretching to match left height */}
+          <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch">
             <div className="flex flex-col gap-[14px]">
               <ToolCard card={sceneAnalysis} aspect="16/9" />
               <ToolCard card={storyboard} aspect="16/9" />
             </div>
             <div className="flex flex-col gap-[14px] h-full">
-              <ToolCard card={callSheet} aspect="16/10" />
-              <ToolCard card={auditions} aspect="16/10" />
-              <ToolCard card={crewHire} aspect="16/10" />
+              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                <ToolCard card={callSheet} aspect="tall" className="h-full" />
+              </div>
+              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                <ToolCard card={auditions} aspect="tall" className="h-full" />
+              </div>
+              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                <ToolCard card={crewHire} aspect="tall" className="h-full" />
+              </div>
             </div>
           </div>
 
