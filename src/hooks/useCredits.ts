@@ -136,58 +136,12 @@ export const useCredits = () => {
     loadData();
   }, [user]);
 
-  // Deduct credits for usage
-  const deductCredits = async (amount: number, description: string): Promise<boolean> => {
-    if (!user || !credits) {
-      toast.error('Please log in to use credits');
-      return false;
-    }
-
-    if (credits.available_credits < amount) {
-      toast.error(`Insufficient credits. You need ${amount} credits but only have ${credits.available_credits}.`);
-      return false;
-    }
-
-    try {
-      // Update credits
-      const { error: updateError } = await supabase
-        .from('user_credits')
-        .update({ 
-          used_credits: credits.used_credits + amount,
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', user.id);
-
-      if (updateError) {
-        console.error('Error updating credits:', updateError);
-        toast.error('Failed to deduct credits');
-        return false;
-      }
-
-      // Record transaction
-      const { error: transactionError } = await supabase
-        .from('credit_transactions')
-        .insert({
-          user_id: user.id,
-          amount: -amount,
-          transaction_type: 'usage',
-          description
-        });
-
-      if (transactionError) {
-        console.error('Error recording transaction:', transactionError);
-      }
-
-      // Refresh credits
-      await fetchCredits();
-      await fetchTransactions();
-
-      return true;
-    } catch (error) {
-      console.error('Error deducting credits:', error);
-      toast.error('Failed to deduct credits');
-      return false;
-    }
+  // Deprecated: credit spending is now enforced server-side by the edge
+  // functions (spend_credits). This only refreshes the displayed balance.
+  const deductCredits = async (_amount: number, _description: string): Promise<boolean> => {
+    if (!user) return false;
+    await Promise.all([fetchCredits(), fetchTransactions()]);
+    return true;
   };
 
   // Add credits (for purchases/subscriptions)
