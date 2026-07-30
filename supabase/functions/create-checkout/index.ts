@@ -75,8 +75,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${origin}/storyboarding/pricing?success=true`,
-      cancel_url: `${origin}/storyboarding/pricing?canceled=true`,
+      success_url: `${origin}/toolbox?subscribed=true`,
+      cancel_url: `${origin}/membership?canceled=true`,
       metadata: {
         user_id: user.id,
         plan_type: planType,
