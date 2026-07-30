@@ -34,90 +34,98 @@ enable_signup = true
 double_confirm_changes = true
 enable_confirmations = false
 
+# User-facing AI functions: auth required (credits enforced server-side)
+
 [functions.generate-storyboard]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-single-frame]
-verify_jwt = false
+verify_jwt = true
 
 [functions.parse-document]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyze-script]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyze-shots]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-storyboard-simple]
-verify_jwt = false
+verify_jwt = true
 
 [functions.ai-parse-shot-prompt]
-verify_jwt = false
+verify_jwt = true
 
 [functions.parse-audition-notice]
-verify_jwt = false
+verify_jwt = true
 
 [functions.parse-call-sheet]
-verify_jwt = false
+verify_jwt = true
 
 [functions.inpaint-frame]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-animatic]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyze-style-reference]
-verify_jwt = false
-
-[functions.generate-certificate]
-verify_jwt = false
+verify_jwt = true
 
 [functions.analyze-video]
-verify_jwt = false
+verify_jwt = true
 
 [functions.chat-with-analysis]
-verify_jwt = false
+verify_jwt = true
 
 [functions.contract-assistant]
-verify_jwt = false
-
-[functions.send-calendar]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-pitch-content]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-pitch-poster]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-character-portrait]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-scene-image]
-verify_jwt = false
+verify_jwt = true
 
 [functions.distribution-assistant]
-verify_jwt = false
-
-[functions.send-welcome-email]
-verify_jwt = false
+verify_jwt = true
 
 [functions.funding-assistant]
-verify_jwt = false
+verify_jwt = true
+
+[functions.extract-scenes]
+verify_jwt = true
+
+# Non-metered / admin & system functions (still require auth)
+
+[functions.send-calendar]
+verify_jwt = true
+
+[functions.generate-certificate]
+verify_jwt = true
+
+[functions.send-welcome-email]
+verify_jwt = true
 
 [functions.ingest-article]
-verify_jwt = false
+verify_jwt = true
 
 [functions.admin-recovery-link]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-blog-image]
-verify_jwt = false
+verify_jwt = true
 
 [functions.generate-blog-article]
-verify_jwt = false
+verify_jwt = true
+
+# Stripe calls this with its own signature; no JWT available.
 
 [functions.stripe-webhook]
 verify_jwt = false
-
