@@ -2685,42 +2685,22 @@ const useCredits = () => {
     };
     loadData();
   }, [user]);
-  const deductCredits = async (amount, description) => {
-    if (!user || !credits) {
-      toast$1.error("Please log in to use credits");
-      return false;
-    }
-    if (credits.available_credits < amount) {
-      toast$1.error(`Insufficient credits. You need ${amount} credits but only have ${credits.available_credits}.`);
-      return false;
-    }
-    try {
-      const { error: updateError } = await supabase.from("user_credits").update({
-        used_credits: credits.used_credits + amount,
-        updated_at: (/* @__PURE__ */ new Date()).toISOString()
-      }).eq("user_id", user.id);
-      if (updateError) {
-        console.error("Error updating credits:", updateError);
-        toast$1.error("Failed to deduct credits");
-        return false;
+  useEffect(() => {
+    const onUpdate = (e) => {
+      var _a2;
+      const available = (_a2 = e.detail) == null ? void 0 : _a2.available;
+      if (typeof available === "number") {
+        setCredits((prev) => prev ? { ...prev, available_credits: available } : prev);
       }
-      const { error: transactionError } = await supabase.from("credit_transactions").insert({
-        user_id: user.id,
-        amount: -amount,
-        transaction_type: "usage",
-        description
-      });
-      if (transactionError) {
-        console.error("Error recording transaction:", transactionError);
-      }
-      await fetchCredits();
-      await fetchTransactions();
-      return true;
-    } catch (error) {
-      console.error("Error deducting credits:", error);
-      toast$1.error("Failed to deduct credits");
-      return false;
-    }
+      fetchTransactions();
+    };
+    window.addEventListener("credits:updated", onUpdate);
+    return () => window.removeEventListener("credits:updated", onUpdate);
+  }, [user]);
+  const deductCredits = async (_amount, _description) => {
+    if (!user) return false;
+    await Promise.all([fetchCredits(), fetchTransactions()]);
+    return true;
   };
   const addCredits = async (amount, source, stripePaymentId) => {
     if (!user || !credits) {
@@ -6019,8 +5999,8 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
     setBuying(true);
     try {
       const { data, error } = await supabase.functions.invoke("create-credit-purchase", {
-        body: { creditAmount: "10" }
-        // $5 = 10 credits (smallest existing pack)
+        body: { creditAmount: "30" }
+        // $10 = 30 credits
       });
       if (error) throw error;
       if (data == null ? void 0 : data.url) window.location.href = data.url;
@@ -6041,7 +6021,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       }
     ),
     /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-2", children: "Add More Credits" }),
-    /* @__PURE__ */ jsx("p", { className: "text-white/60 mb-6 max-w-md mx-auto", children: "Buy more credits to keep using the tools. One-time $5 top-up (10 credits) — no subscription change." }),
+    /* @__PURE__ */ jsx("p", { className: "text-white/60 mb-6 max-w-md mx-auto", children: "Buy more credits to keep using the tools. One-time $10 top-up (30 credits) — no subscription change." }),
     /* @__PURE__ */ jsxs(
       Button,
       {
@@ -6052,7 +6032,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         style: { backgroundColor: TEAL$1 },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
-          "Buy More Credits — $5"
+          "Buy More Credits — $10 for 30 Credits"
         ]
       }
     ),
