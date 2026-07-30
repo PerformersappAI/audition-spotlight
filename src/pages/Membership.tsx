@@ -92,7 +92,7 @@ const Membership = () => {
     }
   };
 
-  const handleManageSubscription = async () => {
+  const handleCancelMembership = async () => {
     if (!user) {
       toast.error('Please sign in first');
       navigate('/auth');
@@ -101,26 +101,24 @@ const Membership = () => {
 
     setOpeningPortal(true);
     try {
-      const { data, error } = await supabase.functions.invoke('customer-portal');
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { reason_code: 'user_self_service' },
+      });
 
-      if (error) {
-        console.error('Portal error:', error);
-        toast.error('Failed to open subscription management. Please try again.');
+      if (data?.success) {
+        toast.success('Your membership is canceled — you keep access until the end of your billing period.');
+        fetchSubscription();
         return;
       }
 
-      if (data?.error === 'no_active_membership') {
+      const msg: string = data?.error || error?.message || '';
+      if (msg.toLowerCase().includes('no active subscription')) {
         toast.info("You don't have an active membership to cancel");
         return;
       }
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      } else {
-        toast.error('Failed to create portal session');
-      }
+      toast.error(msg || 'An error occurred. Please try again.');
     } catch (error) {
-      console.error('Error opening portal:', error);
+      console.error('Error canceling membership:', error);
       toast.error('An error occurred. Please try again.');
     } finally {
       setOpeningPortal(false);
