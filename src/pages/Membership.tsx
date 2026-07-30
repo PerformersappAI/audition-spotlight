@@ -356,77 +356,7 @@ const Membership = () => {
 
         {/* Credit Top-Up Section */}
         <div className="max-w-3xl mx-auto">
-          <Card className="p-8 bg-white/[0.03] border-white/10 text-center">
-            <div
-              className="h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
-            >
-              <Zap className="h-6 w-6 text-black" />
-            </div>
-            <h2 className="text-2xl font-semibold mb-2">Need More Credits?</h2>
-            <p className="text-white/60 mb-6 max-w-md mx-auto">
-              Purchase additional credits anytime. Credits never expire!
-            </p>
-
-            <div className="max-w-md mx-auto text-left space-y-6">
-              <div>
-                <label className="text-sm font-medium mb-2 block text-white/80">Select Credit Pack</label>
-                <Select value={selectedCreditPack} onValueChange={setSelectedCreditPack}>
-                  <SelectTrigger className="w-full bg-white/[0.02] border-white/10">
-                    <SelectValue placeholder="Choose credit amount" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {creditPacks.map((pack) => (
-                      <SelectItem key={pack.amount} value={pack.amount.toString()}>
-                        {pack.amount} Credits - ${pack.price.toFixed(2)} (${pack.pricePerCredit.toFixed(2)}/credit)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {selectedPack && (
-                <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Credits</span>
-                    <span className="font-semibold">{selectedPack.amount}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Price per credit</span>
-                    <span className="font-semibold">${selectedPack.pricePerCredit.toFixed(2)}</span>
-                  </div>
-                  <div className="border-t border-white/10 pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">Total</span>
-                      <span className="text-2xl font-bold" style={{ color: TEAL }}>
-                        ${selectedPack.price.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Button
-              size="lg"
-              onClick={handlePurchaseCredits}
-              disabled={purchasingCredits}
-              className="mt-6 text-black font-semibold"
-              style={{ backgroundColor: TEAL }}
-            >
-              {purchasingCredits ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Zap className="h-4 w-4 mr-2" />
-                  Purchase Credits
-                </>
-              )}
-            </Button>
-          </Card>
+          <AddCreditsCard showMembershipLink={false} />
         </div>
 
         {/* Credit Usage Information */}
