@@ -1,3 +1,4 @@
+import { aiInvoke, aiInvokeSafe, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState, useRef, useEffect } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -143,7 +144,7 @@ export const InpaintEditor = ({
       
       const maskedImageData = canvas.toDataURL('image/png');
 
-      const { data, error } = await supabase.functions.invoke('inpaint-frame', {
+      const { data, error } = await aiInvokeSafe('inpaint-frame', {
         body: {
           imageData: maskedImageData,
           prompt: prompt.trim(),

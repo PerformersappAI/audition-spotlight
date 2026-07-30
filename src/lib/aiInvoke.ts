@@ -102,3 +102,20 @@ export async function aiInvoke<T = any>(
   publishBalance((data as any)?.available_credits);
   return data as T;
 }
+
+/**
+ * Drop-in replacement for `supabase.functions.invoke` that keeps the
+ * `{ data, error }` shape but adds credit-paywall handling (402 → toast +
+ * redirect) and refreshes the displayed balance from `available_credits`.
+ */
+export async function aiInvokeSafe<T = any>(
+  functionName: string,
+  options: AiInvokeOptions = {},
+): Promise<{ data: T | null; error: any }> {
+  try {
+    const data = await aiInvoke<T>(functionName, options);
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}

@@ -1,3 +1,4 @@
+import { aiInvoke, aiInvokeSafe, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -37,7 +38,7 @@ export const AnimaticGenerator = ({
     setNeedsSetup(false);
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-animatic', {
+      const { data, error } = await aiInvokeSafe('generate-animatic', {
         body: {
           imageData,
           prompt,

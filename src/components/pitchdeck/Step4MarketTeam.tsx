@@ -1,3 +1,4 @@
+import { aiInvoke, aiInvokeSafe, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState } from "react";
 import { Sparkles, Loader2, Plus, X, FileText, FileImage, Link2 } from "lucide-react";
 import { toast } from "sonner";
@@ -171,7 +172,7 @@ const Step4MarketTeam = ({
     }
     setIsSuggestingComps(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke(
+      const { data: result, error } = await aiInvokeSafe(
         "generate-pitch-content",
         {
           body: {
@@ -259,7 +260,7 @@ const Step4MarketTeam = ({
   const handleGenerateStrategy = async () => {
     setIsGeneratingStrategy(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke(
+      const { data: result, error } = await aiInvokeSafe(
         "generate-pitch-content",
         {
           body: {
