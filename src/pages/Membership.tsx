@@ -198,7 +198,7 @@ const Membership = () => {
             </div>
             <button
               className="pr-btn-basic"
-              onClick={handleManageSubscription}
+              onClick={handleCancelMembership}
               disabled={openingPortal}
               style={{
                 padding: '12px 20px',
@@ -211,7 +211,7 @@ const Membership = () => {
                 cursor: openingPortal ? 'not-allowed' : 'pointer',
               }}
             >
-              {openingPortal ? 'Opening…' : 'Manage Subscription'}
+              {openingPortal ? 'Canceling…' : 'Cancel Membership'}
             </button>
           </div>
         )}
