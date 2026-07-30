@@ -1,10 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { GlobalLayout } from "@/components/GlobalLayout";
+import ToolGate from "@/components/ToolGate";
 import HomeMarketing from "./pages/HomeMarketing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
-import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Toolbox from "./pages/Toolbox";
@@ -37,12 +37,12 @@ export const AppRoutes = () => (
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/faq" element={<FAQ />} />
-      <Route path="/pricing" element={<Pricing />} />
+      <Route path="/pricing" element={<Navigate to="/membership" replace />} />
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/toolbox" element={<Toolbox />} />
-      <Route path="/recut" element={<Recut />} />
-      <Route path="/crew-hire" element={<CrewHire />} />
+      <Route path="/recut" element={<ToolGate><Recut /></ToolGate>} />
+      <Route path="/crew-hire" element={<ToolGate><CrewHire /></ToolGate>} />
       <Route path="/membership" element={<Membership />} />
       <Route path="/blog" element={<Blog />} />
       <Route path="/blog/:slug" element={<BlogPost />} />
