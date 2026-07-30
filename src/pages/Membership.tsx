@@ -10,6 +10,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import CreditCostTable from '@/components/CreditCostTable';
+
+const TEAL = '#00d4aa';
+const VIOLET = '#a855f7';
+
+
 
 const Membership = () => {
   const navigate = useNavigate();
