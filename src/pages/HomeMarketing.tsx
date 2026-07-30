@@ -106,6 +106,7 @@ const HomeMarketing = () => {
   const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet: Card = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
+  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
 
   return (
@@ -197,7 +198,7 @@ const HomeMarketing = () => {
           <NeonCube label="FUND" color="#39ff14">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
-              <ToolCard card={pitchDeck} aspect="16/9" />
+              <ToolCard card={contractAssistant} aspect="16/9" />
             </div>
           </NeonCube>
 

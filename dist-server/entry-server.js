@@ -3194,6 +3194,7 @@ const HomeMarketing = () => {
   const pitchDeck = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
+  const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
     /* @__PURE__ */ jsx(
@@ -3279,7 +3280,7 @@ const HomeMarketing = () => {
           ] }) }),
           /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#39ff14", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
-            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
+            /* @__PURE__ */ jsx(ToolCard$1, { card: contractAssistant, aspect: "16/9" })
           ] }) }),
           /* @__PURE__ */ jsx(NeonCube, { label: "RELEASE", color: "#ffcf1a", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
