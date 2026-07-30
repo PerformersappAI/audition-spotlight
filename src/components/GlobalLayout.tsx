@@ -60,7 +60,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
         <div className="container mx-auto px-4 h-full grid grid-cols-[1fr_auto_1fr] items-center gap-6">
           {/* LEFT: Logo */}
           <Link to="/" className="flex items-center shrink-0 justify-self-start">
-            <img src={fgLogo} alt="Filmmaker Genius" className="h-12 w-auto rounded-md" />
+            <img src={fgLogo} alt="Filmmaker Genius" className="h-16 w-auto rounded-md" />
           </Link>
 
           {/* CENTER: Nav (desktop) */}

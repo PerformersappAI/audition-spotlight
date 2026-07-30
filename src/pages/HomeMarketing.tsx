@@ -106,31 +106,38 @@ const HomeMarketing = () => {
         ]}
       />
       {/* HERO */}
-      <section className="flex flex-col items-center" style={{ padding: "0 24px 44px" }}>
-        <img
-          src={fgLogo}
-          alt="Filmmaker Genius logo"
-          width={1151}
-          height={320}
-          decoding="async"
-          {...({ fetchpriority: "high" } as any)}
-          className="h-auto"
-          style={{ width: "88%", maxWidth: 580, marginTop: 40 }}
-        />
+      <section className="flex flex-col items-center" style={{ padding: "72px 24px 44px" }}>
         <h1
-          className="text-white text-center"
+          className="text-center"
           style={{
+            fontFamily: "'Archivo Black', 'Inter Tight', sans-serif",
             textTransform: "uppercase",
-            fontWeight: 300,
-            letterSpacing: "0.14em",
-            fontSize: 42,
-            marginTop: 60,
-            lineHeight: 1.15,
+            letterSpacing: "0.02em",
+            fontSize: "clamp(34px, 7vw, 76px)",
+            lineHeight: 1.05,
+            background: "linear-gradient(180deg, #ffffff 0%, #e6e8ec 38%, #9aa0a8 62%, #f2f4f7 100%)",
+            WebkitBackgroundClip: "text",
+            backgroundClip: "text",
+            color: "transparent",
           }}
         >
-          Every Tool You Need — One Place.
+          Production Company in a Box
         </h1>
+        <p
+          className="text-center"
+          style={{
+            fontFamily: "'Archivo Black', 'Inter Tight', sans-serif",
+            textTransform: "uppercase",
+            letterSpacing: "0.16em",
+            fontSize: "clamp(14px, 2.2vw, 22px)",
+            marginTop: 28,
+            color: "rgba(255,255,255,0.92)",
+          }}
+        >
+          Shoot It. <span style={{ color: "#d4a84c" }}>Fund It.</span> Release It.
+        </p>
       </section>
+
 
       {/* TOOL GRID */}
       <section style={{ background: "#050505", padding: "44px 24px 72px" }}>
