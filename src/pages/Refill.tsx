@@ -163,14 +163,14 @@ export default function Refill() {
               <AlertDialogHeader>
                 <AlertDialogTitle>Cancel your membership?</AlertDialogTitle>
                 <AlertDialogDescription>
-                  You'll be sent to Stripe's billing portal to manage or cancel your membership.
-                  Your remaining credits stay on your account.
+                  Your membership will not renew. You keep full access until the end of your
+                  current billing period, and your remaining credits stay on your account.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Keep Membership</AlertDialogCancel>
                 <AlertDialogAction onClick={handleCancel} disabled={canceling}>
-                  {canceling ? 'Opening…' : 'Continue to Billing Portal'}
+                  {canceling ? 'Canceling…' : 'Yes, Cancel Membership'}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
