@@ -97,12 +97,12 @@ const TIERS = [
   {
     name: "Creator", price: "$19", cadence: "/month", highlighted: true,
     features: ["600 credits/month", "Unlimited projects", "Shot list PDF", "Animatic GIF export", "Client review links"],
-    cta: "Get Creator", href: "/storyboarding/pricing",
+    cta: "Get Creator", href: "/membership",
   },
   {
     name: "Pro", price: "$49", cadence: "/month",
     features: ["1,500 credits/month", "Priority queue", "MP4 export (coming)", "Bulk ZIP export", "White-label review"],
-    cta: "Get Pro", href: "/storyboarding/pricing",
+    cta: "Get Pro", href: "/membership",
   },
 ];
 
@@ -357,7 +357,7 @@ export default function StoryboardingLanding({ isAuthenticated }: Props) {
             ))}
           </div>
           <div className="mt-8 text-center">
-            <Link to="/storyboarding/pricing" className="text-primary hover:underline">
+            <Link to="/membership" className="text-primary hover:underline">
               See full feature comparison →
             </Link>
           </div>

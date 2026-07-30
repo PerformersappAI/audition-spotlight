@@ -69,7 +69,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
             <Link to="/launch" className={navLinkClass}>Launch</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/blog" className={navLinkClass}>Blog</Link>
-            <Link to="/pricing" className={navLinkClass}>Membership</Link>
+            <Link to="/membership" className={navLinkClass}>Membership</Link>
           </nav>
 
           {/* RIGHT: Actions */}
@@ -209,7 +209,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
                 Blog
               </Link>
               <Link
-                to="/pricing"
+                to="/membership"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
               >
