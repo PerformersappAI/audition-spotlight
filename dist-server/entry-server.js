@@ -2771,7 +2771,7 @@ const GlobalLayout = ({ children }) => {
         },
         children: [
           /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 h-full grid grid-cols-[1fr_auto_1fr] items-center gap-6", children: [
-            /* @__PURE__ */ jsx(Link, { to: "/", className: "flex items-center shrink-0 justify-self-start", children: /* @__PURE__ */ jsx("img", { src: fgLogo, alt: "Filmmaker Genius", className: "h-16 w-auto rounded-md" }) }),
+            /* @__PURE__ */ jsx(Link, { to: "/", className: "flex items-center shrink-0 justify-self-start", children: /* @__PURE__ */ jsx("img", { src: fgLogo, alt: "Filmmaker Genius", className: "h-20 w-auto rounded-md" }) }),
             /* @__PURE__ */ jsxs("nav", { className: "hidden min-[600px]:flex items-center gap-8 justify-self-center", children: [
               /* @__PURE__ */ jsx(Link, { to: "/toolbox", className: navLinkClass, children: "Toolbox" }),
               /* @__PURE__ */ jsx(Link, { to: "/launch", className: navLinkClass, children: "Launch" }),
