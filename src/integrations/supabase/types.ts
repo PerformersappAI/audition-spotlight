@@ -71,6 +71,51 @@ export type Database = {
         }
         Relationships: []
       }
+      api_usage_logs: {
+        Row: {
+          created_at: string
+          estimated_cost_usd: number | null
+          function_name: string
+          id: string
+          latency_ms: number | null
+          metadata: Json
+          operation: string | null
+          provider: string | null
+          status: string | null
+          tokens_input: number | null
+          tokens_output: number | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          estimated_cost_usd?: number | null
+          function_name: string
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          operation?: string | null
+          provider?: string | null
+          status?: string | null
+          tokens_input?: number | null
+          tokens_output?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          estimated_cost_usd?: number | null
+          function_name?: string
+          id?: string
+          latency_ms?: number | null
+          metadata?: Json
+          operation?: string | null
+          provider?: string | null
+          status?: string | null
+          tokens_input?: number | null
+          tokens_output?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           applicant_user_id: string
@@ -1186,6 +1231,27 @@ export type Database = {
         }
         Relationships: []
       }
+      processed_webhook_events: {
+        Row: {
+          event_id: string
+          event_type: string | null
+          id: string
+          processed_at: string
+        }
+        Insert: {
+          event_id: string
+          event_type?: string | null
+          id?: string
+          processed_at?: string
+        }
+        Update: {
+          event_id?: string
+          event_type?: string | null
+          id?: string
+          processed_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           bio: string | null
@@ -1910,6 +1976,15 @@ export type Database = {
           user_id: string
         }[]
       }
+      grant_credits: {
+        Args: {
+          _amount: number
+          _metadata?: Json
+          _reason: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1932,6 +2007,10 @@ export type Database = {
         Returns: undefined
       }
       publish_due_blog_posts: { Args: never; Returns: undefined }
+      refresh_plan_credits: {
+        Args: { _amount: number; _reason: string; _user_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
