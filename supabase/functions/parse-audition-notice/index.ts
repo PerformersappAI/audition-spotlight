@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,7 +12,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     console.log('parse-audition-notice: Request received');
     const { text } = await req.json();
     console.log('parse-audition-notice: Text length:', text?.length || 0);
@@ -132,8 +142,22 @@ ${text}`;
     
     console.log('Successfully extracted audition data');
 
+    const cost = serverCalculateCost({ feature: "text" });
+    const chargeRes = await charge(user!.id, cost, "parse-audition-notice", {});
+    await logUsage({
+      userId: user!.id,
+      functionName: "parse-audition-notice",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(
-      JSON.stringify({ success: true, data: extractedData }),
+      JSON.stringify({ success: true, data: extractedData, available_credits: chargeRes.available }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
@@ -143,6 +167,16 @@ ${text}`;
     if (error instanceof Error) {
       console.error('parse-audition-notice ERROR message:', error.message);
       console.error('parse-audition-notice ERROR stack:', error.stack);
+    }
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "parse-audition-notice",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
     }
     return new Response(
       JSON.stringify({ 
