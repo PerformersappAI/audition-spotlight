@@ -245,11 +245,9 @@ const CallSheet = () => {
         // Step 2: Parse extracted text into structured call sheet data
         setIsParsingData(true);
         try {
-          const { data, error } = await supabase.functions.invoke('parse-call-sheet', {
+          const data = await aiInvoke('parse-call-sheet', {
             body: { text: result.text }
           });
-
-          if (error) throw error;
 
           if (data) {
             // Populate form data

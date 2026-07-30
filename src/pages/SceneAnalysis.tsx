@@ -191,7 +191,7 @@ const SceneAnalysis = () => {
     setGeneratingStoryboard(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('generate-storyboard', {
+      const data = await aiInvoke('generate-storyboard', {
         body: {
           shots: selectedAnalysis.analysisResult.shots,
           sceneDetails: {
@@ -201,8 +201,6 @@ const SceneAnalysis = () => {
           }
         }
       });
-
-      if (error) throw error;
 
       if (data?.storyboard) {
         const updatedAnalysis = {

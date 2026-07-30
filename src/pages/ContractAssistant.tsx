@@ -390,11 +390,9 @@ Based on this information, what SAG-AFTRA agreement would you recommend? What ar
         const formData = new FormData();
         formData.append('file', file);
 
-        const { data, error } = await supabase.functions.invoke('parse-document', {
+        const data = await aiInvoke('parse-document', {
           body: formData,
         });
-
-        if (error) throw error;
 
         const extractedText = data?.text || data?.content || '';
         if (!extractedText) {

@@ -294,11 +294,9 @@ export default function CreateAudition() {
           setIsParsingFile(true);
           
           try {
-            const { data, error } = await supabase.functions.invoke('parse-audition-notice', {
+            const data = await aiInvoke('parse-audition-notice', {
               body: { text: ocrResult.text }
             });
-
-            if (error) throw error;
 
             if (data.success && data.data) {
               const parsed = data.data;
