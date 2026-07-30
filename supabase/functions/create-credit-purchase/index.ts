@@ -58,23 +58,11 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://filmmakergenius.com";
 
-    // Create one-time payment session with price_data
+    // Create one-time payment session with catalog price
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
-      line_items: [
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
-              name: `${pack.credits} Credits Pack`,
-              description: `One-time purchase of ${pack.credits} credits for FilmmakerGenius.com`,
-            },
-            unit_amount: pack.price,
-          },
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: "price_1TywJfC3S0CSSOB13MwPOgWv", quantity: 1 }],
       mode: "payment",
       success_url: `${origin}/membership?credits_purchased=${pack.credits}&success=true`,
       cancel_url: `${origin}/membership?canceled=true`,
