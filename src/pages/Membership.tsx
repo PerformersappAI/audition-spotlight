@@ -4,13 +4,13 @@ import Seo from '@/components/Seo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, Sparkles, Zap, Crown, CreditCard, Loader2, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import CreditCostTable from '@/components/CreditCostTable';
+import AddCreditsCard from '@/components/AddCreditsCard';
 
 const TEAL = '#00d4aa';
 const VIOLET = '#a855f7';
@@ -22,9 +22,7 @@ const Membership = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { credits, subscription, loading, fetchSubscription, fetchCredits } = useCredits();
-  const [selectedCreditPack, setSelectedCreditPack] = useState<string>('');
   const [subscribingPlan, setSubscribingPlan] = useState<string | null>(null);
-  const [purchasingCredits, setPurchasingCredits] = useState(false);
   const [openingPortal, setOpeningPortal] = useState(false);
 
   // Handle success/cancel URL params
@@ -50,12 +48,8 @@ const Membership = () => {
     }
   }, [searchParams, navigate, fetchSubscription, fetchCredits]);
 
-  const creditPacks = [
-    { amount: 10, price: 5.00, pricePerCredit: 0.50 },
-    { amount: 20, price: 9.00, pricePerCredit: 0.45 },
-    { amount: 30, price: 12.00, pricePerCredit: 0.40 },
-    { amount: 40, price: 14.00, pricePerCredit: 0.35 }
-  ];
+
+
 
   const subscriptionPlans = [
     {
