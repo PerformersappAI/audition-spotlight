@@ -3179,7 +3179,7 @@ const NeonCube = ({
       /* @__PURE__ */ jsx(
         "span",
         {
-          className: "absolute -top-3 left-5 px-2 text-[11px] font-semibold uppercase tracking-[0.2em]",
+          className: "absolute -top-4 left-5 px-2 text-[22px] font-semibold uppercase tracking-[0.2em]",
           style: { color, background: "#050505", fontFamily: "'Archivo Black', 'Inter Tight', sans-serif" },
           children: label
         }
@@ -3266,7 +3266,7 @@ const HomeMarketing = () => {
         className: "mx-auto flex flex-col",
         style: { maxWidth: 1040, gap: 40 },
         children: [
-          /* @__PURE__ */ jsx(NeonCube, { label: "SHOOT", color: TEAL$7, children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch", children: [
+          /* @__PURE__ */ jsx(NeonCube, { label: "SHOOT", color: "#b026ff", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px]", children: [
               /* @__PURE__ */ jsx(ToolCard$1, { card: sceneAnalysis, aspect: "16/9" }),
               /* @__PURE__ */ jsx(ToolCard$1, { card: storyboard, aspect: "16/9" })
@@ -3277,11 +3277,11 @@ const HomeMarketing = () => {
               /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#d4a84c", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
+          /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#39ff14", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
           ] }) }),
-          /* @__PURE__ */ jsx(NeonCube, { label: "RELEASE", color: "#a855f7", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
+          /* @__PURE__ */ jsx(NeonCube, { label: "RELEASE", color: "#ffcf1a", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
             /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
           ] }) })
