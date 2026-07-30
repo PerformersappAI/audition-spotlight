@@ -350,24 +350,23 @@ const Membership = () => {
 
         {/* Credit Top-Up Section */}
         <div className="max-w-3xl mx-auto">
-          <Card className="border-2 border-dashed border-primary/30">
-            <CardHeader className="text-center">
-              <div className="mb-4 flex justify-center">
-                <div className="p-3 rounded-full bg-primary/10">
-                  <CreditCard className="h-6 w-6 text-primary" />
-                </div>
-              </div>
-              <CardTitle className="text-2xl">Need More Credits?</CardTitle>
-              <CardDescription className="text-base">
-                Purchase additional credits anytime. Credits never expire!
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent className="space-y-6">
+          <Card className="p-8 bg-white/[0.03] border-white/10 text-center">
+            <div
+              className="h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4"
+              style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
+            >
+              <Zap className="h-6 w-6 text-black" />
+            </div>
+            <h2 className="text-2xl font-semibold mb-2">Need More Credits?</h2>
+            <p className="text-white/60 mb-6 max-w-md mx-auto">
+              Purchase additional credits anytime. Credits never expire!
+            </p>
+
+            <div className="max-w-md mx-auto text-left space-y-6">
               <div>
-                <label className="text-sm font-medium mb-2 block">Select Credit Pack</label>
+                <label className="text-sm font-medium mb-2 block text-white/80">Select Credit Pack</label>
                 <Select value={selectedCreditPack} onValueChange={setSelectedCreditPack}>
-                  <SelectTrigger className="w-full">
+                  <SelectTrigger className="w-full bg-white/[0.02] border-white/10">
                     <SelectValue placeholder="Choose credit amount" />
                   </SelectTrigger>
                   <SelectContent>
@@ -381,80 +380,54 @@ const Membership = () => {
               </div>
 
               {selectedPack && (
-                <div className="bg-accent/50 p-4 rounded-lg space-y-2">
+                <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4 space-y-2">
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Credits</span>
+                    <span className="text-white/60">Credits</span>
                     <span className="font-semibold">{selectedPack.amount}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Price per credit</span>
+                    <span className="text-white/60">Price per credit</span>
                     <span className="font-semibold">${selectedPack.pricePerCredit.toFixed(2)}</span>
                   </div>
-                  <div className="border-t border-border pt-2 mt-2">
-                    <div className="flex justify-between">
+                  <div className="border-t border-white/10 pt-2 mt-2">
+                    <div className="flex justify-between items-center">
                       <span className="font-semibold">Total</span>
-                      <span className="text-2xl font-bold text-gold">${selectedPack.price.toFixed(2)}</span>
+                      <span className="text-2xl font-bold" style={{ color: TEAL }}>
+                        ${selectedPack.price.toFixed(2)}
+                      </span>
                     </div>
                   </div>
                 </div>
               )}
-            </CardContent>
-            
-            <CardFooter>
-              <Button 
-                className="w-full"
-                size="lg"
-                onClick={handlePurchaseCredits}
-                disabled={purchasingCredits}
-              >
-                {purchasingCredits ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Processing...
-                  </>
-                ) : (
-                  'Purchase Credits'
-                )}
-              </Button>
-            </CardFooter>
+            </div>
+
+            <Button
+              size="lg"
+              onClick={handlePurchaseCredits}
+              disabled={purchasingCredits}
+              className="mt-6 text-black font-semibold"
+              style={{ backgroundColor: TEAL }}
+            >
+              {purchasingCredits ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Processing...
+                </>
+              ) : (
+                <>
+                  <Zap className="h-4 w-4 mr-2" />
+                  Purchase Credits
+                </>
+              )}
+            </Button>
           </Card>
         </div>
 
         {/* Credit Usage Information */}
-        <div className="mt-16 max-w-4xl mx-auto">
-          <Card>
-            <CardHeader>
-              <CardTitle>How Credits Work</CardTitle>
-              <CardDescription>Understanding our credit system</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <Badge variant="outline">Credit Costs</Badge>
-                  </h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Script Analysis: <span className="font-semibold text-foreground">5 credits</span></li>
-                    <li>• Scene Analysis: <span className="font-semibold text-foreground">3 credits</span></li>
-                    <li>• Storyboard Frame: <span className="font-semibold text-foreground">10 credits</span></li>
-                    <li>• Document Upload/OCR: <span className="font-semibold text-foreground">2 credits</span></li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <Badge variant="outline">Benefits</Badge>
-                  </h3>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>• Credits never expire</li>
-                    <li>• Use across all tools</li>
-                    <li>• Monthly subscription credits reset</li>
-                    <li>• Purchased credits stack with subscription</li>
-                  </ul>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="mt-16 max-w-4xl mx-auto text-white">
+          <CreditCostTable />
         </div>
+
 
       </div>
     </div>
