@@ -14,7 +14,6 @@ import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import FAQ from "./pages/FAQ";
-import Pricing from "./pages/Pricing";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import Auth from "./pages/Auth";
@@ -78,7 +77,6 @@ import VideoEvaluation from "./pages/VideoEvaluation";
 import { ActorDashboard } from "./pages/ActorDashboard";
 import Social from "./pages/Social";
 import AnimaticView from "./pages/AnimaticView";
-import StoryboardingPricing from "./pages/StoryboardingPricing";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import HomeMarketing from "./pages/HomeMarketing";
@@ -97,6 +95,7 @@ import MonetizationSubPage from "./pages/MonetizationSubPage";
 import Refill from "./pages/Refill";
 import Launch from "./pages/Launch";
 import Marketing from "./pages/Marketing";
+import ToolGate from "@/components/ToolGate";
 
 const queryClient = new QueryClient();
 
@@ -117,23 +116,23 @@ const AppContent = () => (
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/actor" element={<ActorHub />} />
       <Route path="/actor/profile" element={<ActorProfile />} />
-      <Route path="/crew" element={<CrewHub />} />
-      <Route path="/crew-hire" element={<CrewHire />} />
-      <Route path="/create-audition" element={<CreateAudition />} />
-      <Route path="/auditions" element={<Auditions />} />
+      <Route path="/crew" element={<ToolGate><CrewHub /></ToolGate>} />
+      <Route path="/crew-hire" element={<ToolGate><CrewHire /></ToolGate>} />
+      <Route path="/create-audition" element={<ToolGate><CreateAudition /></ToolGate>} />
+      <Route path="/auditions" element={<ToolGate><Auditions /></ToolGate>} />
       <Route path="/audition/:id" element={<AuditionDetail />} />
-      <Route path="/upload-auditions" element={<UploadAuditions />} />
-      <Route path="/scene-analysis" element={<SceneAnalysis />} />
-      <Route path="/script-analysis" element={<ScriptAnalysis />} />
-      <Route path="/storyboarding" element={<StoryboardingRoute />} />
-      <Route path="/storyboarding/pricing" element={<StoryboardingPricing />} />
-      <Route path="/call-sheet" element={<CallSheet />} />
+      <Route path="/upload-auditions" element={<ToolGate><UploadAuditions /></ToolGate>} />
+      <Route path="/scene-analysis" element={<ToolGate><SceneAnalysis /></ToolGate>} />
+      <Route path="/script-analysis" element={<ToolGate><ScriptAnalysis /></ToolGate>} />
+      <Route path="/storyboarding" element={<ToolGate><StoryboardingRoute /></ToolGate>} />
+      <Route path="/storyboarding/pricing" element={<Navigate to="/membership" replace />} />
+      <Route path="/call-sheet" element={<ToolGate><CallSheet /></ToolGate>} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />
       <Route path="/festivals" element={<Festivals />} />
-      <Route path="/calendar" element={<CalendarPage />} />
-      <Route path="/calendar" element={<CalendarPage />} />
+      <Route path="/calendar" element={<ToolGate><CalendarPage /></ToolGate>} />
+      <Route path="/calendar" element={<ToolGate><CalendarPage /></ToolGate>} />
       <Route path="/filmmaker" element={<FilmmakerDashboard />} />
       <Route path="/admin-login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminDashboard />} />
@@ -155,8 +154,8 @@ const AppContent = () => (
       <Route path="/toolbox/post-production" element={<PostProductionPhase />} />
       <Route path="/toolbox/film-release" element={<FilmReleasePhase />} />
       <Route path="/toolbox/distribution" element={<DistributionPhase />} />
-      <Route path="/submit" element={<MultiStepForm />} />
-      <Route path="/library" element={<DocsLibrary />} />
+      <Route path="/submit" element={<ToolGate><MultiStepForm /></ToolGate>} />
+      <Route path="/library" element={<ToolGate><DocsLibrary /></ToolGate>} />
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/training" element={<Navigate to="/" replace />} />
@@ -164,15 +163,15 @@ const AppContent = () => (
           <Route path="/training/my-learning" element={<Navigate to="/" replace />} />
           <Route path="/training/certifications" element={<Navigate to="/" replace />} />
           <Route path="/verify-certificate/:certificateNumber" element={<VerifyCertificate />} />
-          <Route path="/contract-assistant" element={<ContractAssistant />} />
-          <Route path="/funding-strategy" element={<FundingStrategy />} />
-          <Route path="/contract-filler" element={<ContractFiller />} />
-          <Route path="/pitch-deck" element={<PitchDeckMaker />} />
-          <Route path="/pitch-deck/preview" element={<PitchDeckPreview />} />
-          <Route path="/distribution-readiness" element={<DistributionReadiness />} />
-          <Route path="/table-read" element={<TableRead />} />
+          <Route path="/contract-assistant" element={<ToolGate><ContractAssistant /></ToolGate>} />
+          <Route path="/funding-strategy" element={<ToolGate><FundingStrategy /></ToolGate>} />
+          <Route path="/contract-filler" element={<ToolGate><ContractFiller /></ToolGate>} />
+          <Route path="/pitch-deck" element={<ToolGate><PitchDeckMaker /></ToolGate>} />
+          <Route path="/pitch-deck/preview" element={<ToolGate><PitchDeckPreview /></ToolGate>} />
+          <Route path="/distribution-readiness" element={<ToolGate><DistributionReadiness /></ToolGate>} />
+          <Route path="/table-read" element={<ToolGate><TableRead /></ToolGate>} />
           <Route path="/table-read/shared/:id" element={<TableReadShared />} />
-          <Route path="/video-evaluation" element={<VideoEvaluation />} />
+          <Route path="/video-evaluation" element={<ToolGate><VideoEvaluation /></ToolGate>} />
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
           <Route path="/social" element={<Social />} />
           <Route path="/animatic/:projectId" element={<AnimaticView />} />
@@ -198,10 +197,10 @@ const AppContent = () => (
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQ />} />
-          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/pricing" element={<Navigate to="/membership" replace />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
-          <Route path="/recut" element={<Recut />} />
+          <Route path="/recut" element={<ToolGate><Recut /></ToolGate>} />
           <Route path="/launch" element={<Launch />} />
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
