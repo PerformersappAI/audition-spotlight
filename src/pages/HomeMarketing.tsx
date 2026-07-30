@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 
@@ -141,37 +142,44 @@ const HomeMarketing = () => {
 
       {/* TOOL GRID */}
       <section style={{ background: "#050505", padding: "44px 24px 72px" }}>
-        <div className="mx-auto" style={{ maxWidth: 1040 }}>
-          {/* Bento: left = two 16/9 stacked; right = three cards stretching to match left height */}
-          <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch">
-            <div className="flex flex-col gap-[14px]">
-              <ToolCard card={sceneAnalysis} aspect="16/9" />
-              <ToolCard card={storyboard} aspect="16/9" />
+        <div
+          className="mx-auto flex flex-col"
+          style={{ maxWidth: 1040, gap: 40 }}
+        >
+          <NeonCube label="SHOOT" color={TEAL}>
+            {/* Bento: left = two 16/9 stacked; right = three cards stretching to match left height */}
+            <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch">
+              <div className="flex flex-col gap-[14px]">
+                <ToolCard card={sceneAnalysis} aspect="16/9" />
+                <ToolCard card={storyboard} aspect="16/9" />
+              </div>
+              <div className="flex flex-col gap-[14px] h-full">
+                <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                  <ToolCard card={callSheet} aspect="tall" className="h-full" />
+                </div>
+                <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                  <ToolCard card={auditions} aspect="tall" className="h-full" />
+                </div>
+                <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                  <ToolCard card={crewHire} aspect="tall" className="h-full" />
+                </div>
+              </div>
             </div>
-            <div className="flex flex-col gap-[14px] h-full">
-              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
-                <ToolCard card={callSheet} aspect="tall" className="h-full" />
-              </div>
-              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
-                <ToolCard card={auditions} aspect="tall" className="h-full" />
-              </div>
-              <div className="flex-1 [&>a>div:first-child]:!min-h-0">
-                <ToolCard card={crewHire} aspect="tall" className="h-full" />
-              </div>
-            </div>
-          </div>
+          </NeonCube>
 
-          {/* Row 2: two rows of half-width 16/9 Pitch Deck boxes */}
-          <div className="mt-[14px] flex flex-col gap-[14px]">
+          <NeonCube label="FUND" color="#d4a84c">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
               <ToolCard card={pitchDeck} aspect="16/9" />
             </div>
+          </NeonCube>
+
+          <NeonCube label="RELEASE" color="#a855f7">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
               <ToolCard card={pitchDeck} aspect="16/9" />
             </div>
-          </div>
+          </NeonCube>
         </div>
       </section>
     </div>
