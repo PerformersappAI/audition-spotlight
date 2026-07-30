@@ -68,20 +68,23 @@ export default function Refill() {
   const handleCancel = async () => {
     setCanceling(true);
     try {
-      const { data, error } = await supabase.functions.invoke('customer-portal');
-      if (error) throw error;
-      if (data?.error === 'no_active_membership') {
+      const { data, error } = await supabase.functions.invoke('cancel-subscription', {
+        body: { reason_code: 'user_self_service' },
+      });
+
+      if (data?.success) {
+        toast.success('Your membership is canceled — you keep access until the end of your billing period.');
+        return;
+      }
+
+      const msg: string = data?.error || error?.message || '';
+      if (msg.toLowerCase().includes('no active subscription')) {
         toast.info("You don't have an active membership to cancel");
         return;
       }
-      if (data?.url) window.location.href = data.url;
-      else throw new Error('No portal URL');
+      throw new Error(msg || 'Please contact support to cancel your membership.');
     } catch (e: any) {
-      toast.error(
-        e?.message?.includes('No Stripe customer')
-          ? 'No active membership found. Please contact support if this is unexpected.'
-          : (e?.message || 'Please contact support to cancel your membership.')
-      );
+      toast.error(e?.message || 'Please contact support to cancel your membership.');
     } finally {
       setCanceling(false);
     }
