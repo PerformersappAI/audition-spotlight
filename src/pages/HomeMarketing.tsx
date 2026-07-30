@@ -9,6 +9,7 @@ import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/tool-auditions.webp";
 import imgCrewHire from "@/assets/tool-crew-hire.webp";
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
+import imgMarketingInABox from "@/assets/Marketing_in_a_Box.png.asset.json";
 
 const TEAL = "#00d4aa";
 
@@ -109,7 +110,7 @@ const HomeMarketing = () => {
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
-  const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgPitchDeck };
+  const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
   const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
 
   return (
