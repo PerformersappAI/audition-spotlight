@@ -3111,6 +3111,26 @@ const imgPitchDeck = "/assets/tool-pitch-deck-new-KGycKjNa.webp";
 const imgCallSheet = "/assets/tool-call-sheet-DQpWMo_S.webp";
 const imgAuditions = "/assets/tool-auditions-CAWKiQYv.webp";
 const imgCrewHire = "/assets/tool-crew-hire-C6wHLsjN.webp";
+const version$2 = 1;
+const asset_id$2 = "5515411f-b226-45eb-a75f-d58c29bcf316";
+const project_id$2 = "2327b42e-2823-4633-a594-07a097a36c30";
+const url$2 = "/__l5e/assets-v1/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
+const r2_key$2 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
+const original_filename$2 = "contract-assistant.png";
+const size$2 = 2594611;
+const content_type$2 = "image/png";
+const created_at$2 = "2026-07-30T02:18:46Z";
+const imgContractAssistant = {
+  version: version$2,
+  asset_id: asset_id$2,
+  project_id: project_id$2,
+  url: url$2,
+  r2_key: r2_key$2,
+  original_filename: original_filename$2,
+  size: size$2,
+  content_type: content_type$2,
+  created_at: created_at$2
+};
 const TEAL$7 = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
@@ -3194,7 +3214,7 @@ const HomeMarketing = () => {
   const pitchDeck = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
-  const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
+  const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgPitchDeck };
   const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };

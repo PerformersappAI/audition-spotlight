@@ -8,6 +8,7 @@ import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/tool-auditions.webp";
 import imgCrewHire from "@/assets/tool-crew-hire.webp";
+import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 
 const TEAL = "#00d4aa";
 
@@ -106,7 +107,7 @@ const HomeMarketing = () => {
   const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet: Card = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
-  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
+  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgPitchDeck };
   const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
