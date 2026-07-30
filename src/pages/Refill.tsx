@@ -19,24 +19,8 @@ import { toast } from 'sonner';
 const TEAL = '#00d4aa';
 const VIOLET = '#a855f7';
 
-type ToolCost = { name: string; cost: string; free?: boolean };
 
-// First-draft credit costs — easy to tweak.
-const TOOL_COSTS: ToolCost[] = [
-  { name: 'Festival Finder', cost: 'Free', free: true },
-  { name: 'Call Sheet', cost: 'Free', free: true },
-  { name: 'Academy / Courses', cost: 'Free', free: true },
-  { name: 'Script Analysis', cost: '~1 credit (3-page section; more for longer)' },
-  { name: 'Scene Analysis', cost: '~1 credit' },
-  { name: 'Storyboarding', cost: '2–4 credits (grows with number of frames)' },
-  { name: 'Table Read (reader voices)', cost: '2–4 credits (varies by dialogue length)' },
-  { name: 'Pitch Deck Builder', cost: '~2 credits' },
-  { name: 'Video Evaluation', cost: '1 credit' },
-  { name: 'Funding Strategy', cost: '~1 credit' },
-  { name: 'Distribution Readiness', cost: '~1 credit' },
-  { name: 'Contract Assistant', cost: '~1 credit' },
-  { name: 'Contract Filler', cost: '0.5 credit' },
-];
+
 
 export default function Refill() {
   const { user, loading: authLoading } = useAuth();
