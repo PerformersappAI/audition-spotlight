@@ -19,6 +19,7 @@ type Card = {
   to: string;
   cta: string;
   img: string;
+  fit?: "cover" | "contain";
 };
 
 const CtaPill = ({ label }: { label: string }) => (
