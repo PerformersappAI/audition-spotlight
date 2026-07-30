@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, Sparkles, Home } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Crown, Settings, Sparkles, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -6286,14 +6286,62 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
 ] });
 const TEAL$1 = "#00d4aa";
 const VIOLET = "#a855f7";
+function AddCreditsCard({ className = "", showMembershipLink = true }) {
+  const [buying, setBuying] = useState(false);
+  const handleBuy = async () => {
+    setBuying(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-credit-purchase", {
+        body: { creditAmount: "10" }
+        // $5 = 10 credits (smallest existing pack)
+      });
+      if (error) throw error;
+      if (data == null ? void 0 : data.url) window.location.href = data.url;
+      else throw new Error("No checkout URL returned");
+    } catch (e) {
+      toast$1.error(e.message || "Could not start checkout");
+    } finally {
+      setBuying(false);
+    }
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: `p-8 bg-white/[0.03] border-white/10 text-center ${className}`, children: [
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
+        style: { background: `linear-gradient(135deg, ${TEAL$1}, ${VIOLET})` },
+        children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
+      }
+    ),
+    /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-2", children: "Add More Credits" }),
+    /* @__PURE__ */ jsx("p", { className: "text-white/60 mb-6 max-w-md mx-auto", children: "Buy more credits to keep using the tools. One-time $5 top-up (10 credits) — no subscription change." }),
+    /* @__PURE__ */ jsxs(
+      Button,
+      {
+        size: "lg",
+        onClick: handleBuy,
+        disabled: buying,
+        className: "text-black font-semibold",
+        style: { backgroundColor: TEAL$1 },
+        children: [
+          buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
+          "Buy More Credits — $5"
+        ]
+      }
+    ),
+    showMembershipLink && /* @__PURE__ */ jsxs("p", { className: "text-xs text-white/40 mt-4", children: [
+      "Need a bigger pack? See ",
+      /* @__PURE__ */ jsx(Link, { to: "/membership", className: "underline hover:text-white", children: "Membership" }),
+      "."
+    ] })
+  ] });
+}
 const Membership = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { credits, subscription, loading, fetchSubscription, fetchCredits } = useCredits();
-  const [selectedCreditPack, setSelectedCreditPack] = useState("");
   const [subscribingPlan, setSubscribingPlan] = useState(null);
-  const [purchasingCredits, setPurchasingCredits] = useState(false);
   const [openingPortal, setOpeningPortal] = useState(false);
   useEffect(() => {
     const success = searchParams.get("success");
@@ -6313,12 +6361,6 @@ const Membership = () => {
       navigate("/membership", { replace: true });
     }
   }, [searchParams, navigate, fetchSubscription, fetchCredits]);
-  const creditPacks = [
-    { amount: 10, price: 5, pricePerCredit: 0.5 },
-    { amount: 20, price: 9, pricePerCredit: 0.45 },
-    { amount: 30, price: 12, pricePerCredit: 0.4 },
-    { amount: 40, price: 14, pricePerCredit: 0.35 }
-  ];
   const subscriptionPlans = [
     {
       id: "basic",
@@ -6381,38 +6423,6 @@ const Membership = () => {
       setSubscribingPlan(null);
     }
   };
-  const handlePurchaseCredits = async () => {
-    if (!user) {
-      toast$1.error("Please sign in to purchase credits");
-      navigate("/auth");
-      return;
-    }
-    if (!selectedCreditPack) {
-      toast$1.error("Please select a credit pack");
-      return;
-    }
-    setPurchasingCredits(true);
-    try {
-      const { data, error } = await supabase.functions.invoke("create-credit-purchase", {
-        body: { creditAmount: selectedCreditPack }
-      });
-      if (error) {
-        console.error("Credit purchase error:", error);
-        toast$1.error("Failed to start checkout. Please try again.");
-        return;
-      }
-      if (data == null ? void 0 : data.url) {
-        window.open(data.url, "_blank");
-      } else {
-        toast$1.error("Failed to create checkout session");
-      }
-    } catch (error) {
-      console.error("Error creating credit purchase:", error);
-      toast$1.error("An error occurred. Please try again.");
-    } finally {
-      setPurchasingCredits(false);
-    }
-  };
   const handleManageSubscription = async () => {
     if (!user) {
       toast$1.error("Please sign in first");
@@ -6439,7 +6449,6 @@ const Membership = () => {
       setOpeningPortal(false);
     }
   };
-  const selectedPack = creditPacks.find((pack) => pack.amount.toString() === selectedCreditPack);
   return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -6554,71 +6563,7 @@ const Membership = () => {
           plan.id
         );
       }) }),
-      /* @__PURE__ */ jsx("div", { className: "max-w-3xl mx-auto", children: /* @__PURE__ */ jsxs(Card$1, { className: "p-8 bg-white/[0.03] border-white/10 text-center", children: [
-        /* @__PURE__ */ jsx(
-          "div",
-          {
-            className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-            style: { background: `linear-gradient(135deg, ${TEAL$1}, ${VIOLET})` },
-            children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
-          }
-        ),
-        /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-2", children: "Need More Credits?" }),
-        /* @__PURE__ */ jsx("p", { className: "text-white/60 mb-6 max-w-md mx-auto", children: "Purchase additional credits anytime. Credits never expire!" }),
-        /* @__PURE__ */ jsxs("div", { className: "max-w-md mx-auto text-left space-y-6", children: [
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { className: "text-sm font-medium mb-2 block text-white/80", children: "Select Credit Pack" }),
-            /* @__PURE__ */ jsxs(Select, { value: selectedCreditPack, onValueChange: setSelectedCreditPack, children: [
-              /* @__PURE__ */ jsx(SelectTrigger, { className: "w-full bg-white/[0.02] border-white/10", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Choose credit amount" }) }),
-              /* @__PURE__ */ jsx(SelectContent, { children: creditPacks.map((pack) => /* @__PURE__ */ jsxs(SelectItem, { value: pack.amount.toString(), children: [
-                pack.amount,
-                " Credits - $",
-                pack.price.toFixed(2),
-                " ($",
-                pack.pricePerCredit.toFixed(2),
-                "/credit)"
-              ] }, pack.amount)) })
-            ] })
-          ] }),
-          selectedPack && /* @__PURE__ */ jsxs("div", { className: "rounded-lg border border-white/10 bg-white/[0.02] p-4 space-y-2", children: [
-            /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm", children: [
-              /* @__PURE__ */ jsx("span", { className: "text-white/60", children: "Credits" }),
-              /* @__PURE__ */ jsx("span", { className: "font-semibold", children: selectedPack.amount })
-            ] }),
-            /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm", children: [
-              /* @__PURE__ */ jsx("span", { className: "text-white/60", children: "Price per credit" }),
-              /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
-                "$",
-                selectedPack.pricePerCredit.toFixed(2)
-              ] })
-            ] }),
-            /* @__PURE__ */ jsx("div", { className: "border-t border-white/10 pt-2 mt-2", children: /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center", children: [
-              /* @__PURE__ */ jsx("span", { className: "font-semibold", children: "Total" }),
-              /* @__PURE__ */ jsxs("span", { className: "text-2xl font-bold", style: { color: TEAL$1 }, children: [
-                "$",
-                selectedPack.price.toFixed(2)
-              ] })
-            ] }) })
-          ] })
-        ] }),
-        /* @__PURE__ */ jsx(
-          Button,
-          {
-            size: "lg",
-            onClick: handlePurchaseCredits,
-            disabled: purchasingCredits,
-            className: "mt-6 text-black font-semibold",
-            style: { backgroundColor: TEAL$1 },
-            children: purchasingCredits ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
-              "Processing..."
-            ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
-              "Purchase Credits"
-            ] })
-          }
-        )
-      ] }) }),
+      /* @__PURE__ */ jsx("div", { className: "max-w-3xl mx-auto", children: /* @__PURE__ */ jsx(AddCreditsCard, { showMembershipLink: false }) }),
       /* @__PURE__ */ jsx("div", { className: "mt-16 max-w-4xl mx-auto text-white", children: /* @__PURE__ */ jsx(CreditCostTable, {}) })
     ] })
   ] });

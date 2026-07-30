@@ -4,13 +4,13 @@ import Seo from '@/components/Seo';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, Sparkles, Zap, Crown, CreditCard, Loader2, Settings } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import CreditCostTable from '@/components/CreditCostTable';
+import AddCreditsCard from '@/components/AddCreditsCard';
 
 const TEAL = '#00d4aa';
 const VIOLET = '#a855f7';
@@ -22,9 +22,7 @@ const Membership = () => {
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
   const { credits, subscription, loading, fetchSubscription, fetchCredits } = useCredits();
-  const [selectedCreditPack, setSelectedCreditPack] = useState<string>('');
   const [subscribingPlan, setSubscribingPlan] = useState<string | null>(null);
-  const [purchasingCredits, setPurchasingCredits] = useState(false);
   const [openingPortal, setOpeningPortal] = useState(false);
 
   // Handle success/cancel URL params
@@ -50,12 +48,8 @@ const Membership = () => {
     }
   }, [searchParams, navigate, fetchSubscription, fetchCredits]);
 
-  const creditPacks = [
-    { amount: 10, price: 5.00, pricePerCredit: 0.50 },
-    { amount: 20, price: 9.00, pricePerCredit: 0.45 },
-    { amount: 30, price: 12.00, pricePerCredit: 0.40 },
-    { amount: 40, price: 14.00, pricePerCredit: 0.35 }
-  ];
+
+
 
   const subscriptionPlans = [
     {
@@ -124,42 +118,8 @@ const Membership = () => {
     }
   };
 
-  const handlePurchaseCredits = async () => {
-    if (!user) {
-      toast.error('Please sign in to purchase credits');
-      navigate('/auth');
-      return;
-    }
 
-    if (!selectedCreditPack) {
-      toast.error('Please select a credit pack');
-      return;
-    }
 
-    setPurchasingCredits(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-credit-purchase', {
-        body: { creditAmount: selectedCreditPack }
-      });
-
-      if (error) {
-        console.error('Credit purchase error:', error);
-        toast.error('Failed to start checkout. Please try again.');
-        return;
-      }
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      } else {
-        toast.error('Failed to create checkout session');
-      }
-    } catch (error) {
-      console.error('Error creating credit purchase:', error);
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setPurchasingCredits(false);
-    }
-  };
 
   const handleManageSubscription = async () => {
     if (!user) {
@@ -191,7 +151,7 @@ const Membership = () => {
     }
   };
 
-  const selectedPack = creditPacks.find(pack => pack.amount.toString() === selectedCreditPack);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
@@ -356,77 +316,7 @@ const Membership = () => {
 
         {/* Credit Top-Up Section */}
         <div className="max-w-3xl mx-auto">
-          <Card className="p-8 bg-white/[0.03] border-white/10 text-center">
-            <div
-              className="h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4"
-              style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
-            >
-              <Zap className="h-6 w-6 text-black" />
-            </div>
-            <h2 className="text-2xl font-semibold mb-2">Need More Credits?</h2>
-            <p className="text-white/60 mb-6 max-w-md mx-auto">
-              Purchase additional credits anytime. Credits never expire!
-            </p>
-
-            <div className="max-w-md mx-auto text-left space-y-6">
-              <div>
-                <label className="text-sm font-medium mb-2 block text-white/80">Select Credit Pack</label>
-                <Select value={selectedCreditPack} onValueChange={setSelectedCreditPack}>
-                  <SelectTrigger className="w-full bg-white/[0.02] border-white/10">
-                    <SelectValue placeholder="Choose credit amount" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {creditPacks.map((pack) => (
-                      <SelectItem key={pack.amount} value={pack.amount.toString()}>
-                        {pack.amount} Credits - ${pack.price.toFixed(2)} (${pack.pricePerCredit.toFixed(2)}/credit)
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {selectedPack && (
-                <div className="rounded-lg border border-white/10 bg-white/[0.02] p-4 space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Credits</span>
-                    <span className="font-semibold">{selectedPack.amount}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-white/60">Price per credit</span>
-                    <span className="font-semibold">${selectedPack.pricePerCredit.toFixed(2)}</span>
-                  </div>
-                  <div className="border-t border-white/10 pt-2 mt-2">
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">Total</span>
-                      <span className="text-2xl font-bold" style={{ color: TEAL }}>
-                        ${selectedPack.price.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <Button
-              size="lg"
-              onClick={handlePurchaseCredits}
-              disabled={purchasingCredits}
-              className="mt-6 text-black font-semibold"
-              style={{ backgroundColor: TEAL }}
-            >
-              {purchasingCredits ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <Zap className="h-4 w-4 mr-2" />
-                  Purchase Credits
-                </>
-              )}
-            </Button>
-          </Card>
+          <AddCreditsCard showMembershipLink={false} />
         </div>
 
         {/* Credit Usage Information */}
