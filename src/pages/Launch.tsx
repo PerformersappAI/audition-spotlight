@@ -32,6 +32,12 @@ function SuperstarDestroyerCard() {
       }}
     >
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
+      <span style={{
+        position: "absolute", top: 18, left: 20,
+        fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em",
+        padding: "4px 10px", borderRadius: 9999, color: THEME.accent,
+        background: THEME.badgeBg, border: `1px solid ${THEME.badgeBorder}`,
+      }}>Marketing</span>
       <div style={{
         position: "absolute",
         left: 32,
@@ -41,7 +47,7 @@ function SuperstarDestroyerCard() {
         fontWeight: 700,
         color: "#fff",
         textShadow: "0 2px 20px rgba(0,0,0,0.9)",
-      }}>Superstar Destroyer</div>
+      }}>Marketing in a Box</div>
     </div>
   );
 }
