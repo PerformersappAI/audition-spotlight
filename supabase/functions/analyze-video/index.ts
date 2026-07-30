@@ -1,6 +1,19 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import {
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  capExceededBody,
+  CapExceededError,
+  logUsage,
+  estimateUsd,
+  MAX_VIDEO_BYTES,
+} from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,8 +24,6 @@ const GEMINI_API_KEY = Deno.env.get('GEMINI_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL');
 const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
-
 serve(async (req) => {
   console.log('Analyze-video function called');
   
@@ -20,33 +31,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const started = Date.now();
+  let user: { id: string; email?: string } | null = null;
+
   try {
-    // Verify authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('No authorization header provided');
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const supabaseAuth = createClient(SUPABASE_URL!, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
-    if (authError || !user) {
-      console.error('Authentication failed:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
 
     console.log('Authenticated user:', user.id);
-    const { videoUrl, evaluationType, userId, scriptId, scriptText, characterName, sceneDescription } = await req.json();
-    console.log(`Analyzing video: ${JSON.stringify({ videoUrl, evaluationType, userId })}`);
+    const { videoUrl, evaluationType, scriptId, scriptText, characterName, sceneDescription, durationSeconds: durationHint } = await req.json();
+    console.log(`Analyzing video: ${JSON.stringify({ videoUrl, evaluationType, userId: user.id })}`);
 
     if (!videoUrl) {
       return new Response(
@@ -99,6 +93,29 @@ serve(async (req) => {
     if (parseInt(contentLength) < 1000) {
       throw new Error('Video file appears to be corrupt');
     }
+
+    const bytes = parseInt(contentLength);
+    if (bytes > MAX_VIDEO_BYTES) {
+      return capExceededBody('Video too large (max 200MB)');
+    }
+
+    const durationSeconds = Math.max(
+      1,
+      durationHint && Number.isFinite(Number(durationHint))
+        ? Math.ceil(Number(durationHint))
+        : Math.ceil(bytes / (1.5 * 1024 * 1024)),
+    );
+
+    let cost: number;
+    try {
+      cost = serverCalculateCost({ feature: 'video', durationSeconds });
+    } catch (e) {
+      if (e instanceof CapExceededError) return capExceededBody(e.message);
+      throw e;
+    }
+
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
     // Create upload session with Gemini Files API
     const uploadResponse = await fetch('https://generativelanguage.googleapis.com/upload/v1beta/files?key=' + GEMINI_API_KEY, {
@@ -306,15 +323,15 @@ Return your analysis in a structured format with clear sections and specific exa
       ]
     };
 
-    // Save to database if we have a user ID
-    if (userId && SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
+    // Save to database
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
       try {
         const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
         
         const { error: dbError } = await supabase
           .from('video_evaluations')
           .insert({
-            user_id: userId,
+            user_id: user.id,
             script_id: scriptId || null,
             evaluation_type: evaluationType,
             analysis_result: structuredAnalysis,
@@ -331,6 +348,24 @@ Return your analysis in a structured format with clear sections and specific exa
       }
     }
 
+    const usage = analysisData.usageMetadata || {};
+    const tokensInput = usage.promptTokenCount ?? undefined;
+    const tokensOutput = usage.candidatesTokenCount ?? undefined;
+
+    const chargeRes = await charge(user.id, cost, 'analyze-video', { durationSeconds, bytes });
+    await logUsage({
+      userId: user.id,
+      functionName: 'analyze-video',
+      provider: 'gemini',
+      operation: 'video',
+      tokensInput,
+      tokensOutput,
+      estimatedCostUsd: estimateUsd(tokensInput, tokensOutput),
+      status: 'success',
+      latencyMs: Date.now() - started,
+      metadata: { durationSeconds },
+    });
+
     // Clean up the uploaded file from Gemini
     try {
       await fetch(`https://generativelanguage.googleapis.com/v1beta/files/${fileName}?key=${GEMINI_API_KEY}`, {
@@ -343,7 +378,8 @@ Return your analysis in a structured format with clear sections and specific exa
 
     return new Response(JSON.stringify({ 
       analysis: structuredAnalysis,
-      success: true 
+      success: true,
+      available_credits: chargeRes.available,
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -351,6 +387,17 @@ Return your analysis in a structured format with clear sections and specific exa
   } catch (error) {
     console.error('Error in analyze-video function:', error);
     const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred';
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: 'analyze-video',
+        provider: 'gemini',
+        operation: 'video',
+        status: 'error',
+        latencyMs: Date.now() - started,
+        metadata: { error: errorMessage },
+      });
+    }
     return new Response(JSON.stringify({ 
       error: errorMessage,
       success: false 
