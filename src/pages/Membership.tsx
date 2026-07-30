@@ -118,42 +118,8 @@ const Membership = () => {
     }
   };
 
-  const handlePurchaseCredits = async () => {
-    if (!user) {
-      toast.error('Please sign in to purchase credits');
-      navigate('/auth');
-      return;
-    }
 
-    if (!selectedCreditPack) {
-      toast.error('Please select a credit pack');
-      return;
-    }
 
-    setPurchasingCredits(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-credit-purchase', {
-        body: { creditAmount: selectedCreditPack }
-      });
-
-      if (error) {
-        console.error('Credit purchase error:', error);
-        toast.error('Failed to start checkout. Please try again.');
-        return;
-      }
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-      } else {
-        toast.error('Failed to create checkout session');
-      }
-    } catch (error) {
-      console.error('Error creating credit purchase:', error);
-      toast.error('An error occurred. Please try again.');
-    } finally {
-      setPurchasingCredits(false);
-    }
-  };
 
   const handleManageSubscription = async () => {
     if (!user) {
@@ -185,7 +151,7 @@ const Membership = () => {
     }
   };
 
-  const selectedPack = creditPacks.find(pack => pack.amount.toString() === selectedCreditPack);
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
