@@ -12640,7 +12640,9 @@ const NotFound = () => {
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 const THEME = {
   grad: "linear-gradient(135deg, #120a25 0%, #1e1040 100%)",
-  accent: "#a78bfa"
+  accent: "#a78bfa",
+  badgeBg: "rgba(167,139,250,0.14)",
+  badgeBorder: "rgba(167,139,250,0.3)"
 };
 function SuperstarDestroyerCard() {
   const [hover, setHover] = useState(false);
@@ -12664,6 +12666,20 @@ function SuperstarDestroyerCard() {
       },
       children: [
         /* @__PURE__ */ jsx("div", { style: { position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" } }),
+        /* @__PURE__ */ jsx("span", { style: {
+          position: "absolute",
+          top: 18,
+          left: 20,
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.06em",
+          padding: "4px 10px",
+          borderRadius: 9999,
+          color: THEME.accent,
+          background: THEME.badgeBg,
+          border: `1px solid ${THEME.badgeBorder}`
+        }, children: "Marketing" }),
         /* @__PURE__ */ jsx("div", { style: {
           position: "absolute",
           left: 32,
@@ -12673,7 +12689,7 @@ function SuperstarDestroyerCard() {
           fontWeight: 700,
           color: "#fff",
           textShadow: "0 2px 20px rgba(0,0,0,0.9)"
-        }, children: "Superstar Destroyer" })
+        }, children: "Marketing in a Box" })
       ]
     }
   );
