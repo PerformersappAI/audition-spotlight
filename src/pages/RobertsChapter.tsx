@@ -316,7 +316,7 @@ const RobertsChapter = () => {
           }}
         >
           <Link
-            to="/pricing"
+            to="/membership"
             className="rc-cta-btn-teal"
             style={{
               height: 48,

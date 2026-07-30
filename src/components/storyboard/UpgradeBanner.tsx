@@ -30,7 +30,7 @@ export const UpgradeBanner = ({
       <Sparkles className="h-4 w-4 shrink-0 text-primary" />
       <span className="flex-1 text-foreground">{message}</span>
       <Button asChild size="sm" variant="default" className="h-7">
-        <Link to="/storyboarding/pricing">{ctaLabel}</Link>
+        <Link to="/membership">{ctaLabel}</Link>
       </Button>
       {dismissible && (
         <button

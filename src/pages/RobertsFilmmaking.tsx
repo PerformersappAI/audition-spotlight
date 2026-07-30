@@ -214,7 +214,7 @@ export default function RobertsFilmmaking() {
           Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform.
         </p>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }}>
-          <Link to="/pricing" style={{
+          <Link to="/membership" style={{
             height: 50, padding: "0 28px", borderRadius: 9999,
             background: TEAL, color: "#000", fontWeight: 700,
             display: "inline-flex", alignItems: "center", textDecoration: "none",
