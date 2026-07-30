@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { aiInvoke, InsufficientCreditsError } from '@/lib/aiInvoke';
 import { toast } from '@/hooks/use-toast';
 
 interface UploadStatus {
@@ -177,50 +178,51 @@ export const useOCRUpload = () => {
             setProgress(40);
             
             // Add idempotency header using file key
-            const { data, error } = await supabase.functions.invoke('parse-document', {
-              body: { 
-                fileData: base64Content,
-                fileName: file.name,
-                mimeType: file.type,
-                idempotencyKey: fileKey // Add idempotency key
-              }
-            });
-            
-            setProgress(70);
-            
-            if (error) {
-              console.error('[OCR] Document parsing error:', error);
-              
+            let data: any;
+            try {
+              data = await aiInvoke('parse-document', {
+                body: {
+                  fileData: base64Content,
+                  fileName: file.name,
+                  mimeType: file.type,
+                  idempotencyKey: fileKey // Add idempotency key
+                }
+              });
+            } catch (err) {
+              console.error('[OCR] Document parsing error:', err);
+
               // Mark as error
               uploadStatusRef.current[fileKey] = {
                 status: 'error',
                 timestamp: Date.now()
               };
-              
-              const errorMessage = error.message || error.toString();
-              
-              if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
-                toast({
-                  title: "Service Temporarily Unavailable",
-                  description: "AI service is busy. Please try uploading again in a few moments.",
-                  variant: "destructive"
-                });
-              } else if (errorMessage.includes('Invalid MIME type') || errorMessage.includes('image types')) {
-                toast({
-                  title: "PDF Processing Issue",
-                  description: "Trying alternative PDF processing method. Please wait...",
-                  variant: "default"
-                });
-              } else {
-                toast({
-                  title: "PDF Processing Failed",
-                  description: errorMessage.length > 100 ? "Unable to process PDF file. Please try a different file." : errorMessage,
-                  variant: "destructive"
-                });
+
+              if (!(err instanceof InsufficientCreditsError)) {
+                const errorMessage = err instanceof Error ? err.message : String(err);
+
+                if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again')) {
+                  toast({
+                    title: "Service Temporarily Unavailable",
+                    description: "AI service is busy. Please try uploading again in a few moments.",
+                    variant: "destructive"
+                  });
+                } else if (errorMessage.includes('Invalid MIME type') || errorMessage.includes('image types')) {
+                  toast({
+                    title: "PDF Processing Issue",
+                    description: "Trying alternative PDF processing method. Please wait...",
+                    variant: "default"
+                  });
+                } else {
+                  toast({
+                    title: "PDF Processing Failed",
+                    description: errorMessage.length > 100 ? "Unable to process PDF file. Please try a different file." : errorMessage,
+                    variant: "destructive"
+                  });
+                }
               }
               
-              onError?.(errorMessage);
-              
+              onError?.(err instanceof Error ? err.message : String(err));
+
               // Cleanup immediately on error
               setIsProcessing(false);
               setCurrentStage('idle');
@@ -229,7 +231,9 @@ export const useOCRUpload = () => {
               setCurrentFileSize(0);
               return;
             }
-            
+
+            setProgress(70);
+
             if (data?.text && data.text.trim()) {
               console.log(`[OCR] Successfully processed: ${file.name}`);
               
