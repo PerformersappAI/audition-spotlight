@@ -12742,14 +12742,6 @@ function GreenLightEngineCard() {
         /* @__PURE__ */ jsx("div", { style: {
           position: "absolute",
           left: 32,
-          bottom: 68,
-          fontSize: 14,
-          color: "rgba(255,255,255,0.5)",
-          fontFamily: "'Inter Tight', sans-serif"
-        }, children: "See exactly where your film can go — and how to get there" }),
-        /* @__PURE__ */ jsx("div", { style: {
-          position: "absolute",
-          left: 32,
           bottom: 32,
           fontFamily: "'Inter Tight', sans-serif",
           fontSize: 28,
