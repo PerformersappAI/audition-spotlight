@@ -14,7 +14,8 @@ function SuperstarDestroyerCard() {
   const [hover, setHover] = useState(false);
 
   return (
-    <div
+    <Link
+      to="/marketing"
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
@@ -25,7 +26,7 @@ function SuperstarDestroyerCard() {
         minHeight: 260,
         border: `1px solid ${hover ? THEME.accent : "rgba(255,255,255,0.08)"}`,
         background: THEME.grad,
-        cursor: "default",
+        cursor: "pointer",
         transform: hover ? "translateY(-4px)" : "translateY(0)",
         transition: "transform 0.25s, border-color 0.25s",
         textDecoration: "none",
@@ -48,7 +49,12 @@ function SuperstarDestroyerCard() {
         color: "#fff",
         textShadow: "0 2px 20px rgba(0,0,0,0.9)",
       }}>Marketing in a Box</div>
-    </div>
+      <div style={{
+        position: "absolute", bottom: 20, right: 22,
+        fontSize: 18, color: THEME.accent,
+        opacity: hover ? 1 : 0, transition: "opacity 0.2s",
+      }}>→</div>
+    </Link>
   );
 }
 
