@@ -3196,6 +3196,8 @@ const HomeMarketing = () => {
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
+  const marketingInABox = { title: "Marketing in a Box", to: "/launch", cta: "Explore", img: imgPitchDeck };
+  const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -3283,8 +3285,8 @@ const HomeMarketing = () => {
             /* @__PURE__ */ jsx(ToolCard$1, { card: contractAssistant, aspect: "16/9" })
           ] }) }),
           /* @__PURE__ */ jsx(NeonCube, { label: "RELEASE", color: "#ffcf1a", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
-            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
-            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
+            /* @__PURE__ */ jsx(ToolCard$1, { card: marketingInABox, aspect: "16/9" }),
+            /* @__PURE__ */ jsx(ToolCard$1, { card: greenLightEngine, aspect: "16/9" })
           ] }) })
         ]
       }
