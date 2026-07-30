@@ -1,16 +1,33 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+import {
+  corsHeaders,
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  logUsage,
+  estimateUsd,
+} from "../_shared/credits.ts";
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let userId: string | undefined;
+  const started = Date.now();
+
   try {
+    const user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+    userId = user.id;
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const { imageData } = await req.json();
 
     if (!imageData) {
@@ -81,7 +98,7 @@ Provide a concise but detailed style description that could be used to generate 
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'Payment required' }),
-          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
@@ -93,16 +110,40 @@ Provide a concise but detailed style description that could be used to generate 
 
     console.log('Style analysis complete');
 
+    const chargeRes = await charge(user.id, cost, "analyze-style-reference", {});
+    await logUsage({
+      userId: user.id,
+      functionName: "analyze-style-reference",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens ?? 0, data.usage?.completion_tokens ?? 0),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(
       JSON.stringify({ 
         styleDescription,
-        success: true
+        success: true,
+        available_credits: chargeRes.available
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error in analyze-style-reference:', error);
+    if (userId) {
+      await logUsage({
+        userId,
+        functionName: "analyze-style-reference",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error'

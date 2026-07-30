@@ -11,6 +11,7 @@ import { Brain, Video, FileText, Users, Target, Lightbulb, Clock, Star, Download
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { ToolPageRecommendations } from "@/components/training/ToolPageRecommendations";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -218,11 +219,13 @@ const SceneAnalysis = () => {
       }
     } catch (error) {
       console.error('Error generating storyboard:', error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to generate storyboard. Please try again."
-      });
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to generate storyboard. Please try again."
+        });
+      }
     } finally {
       setGeneratingStoryboard(false);
     }
