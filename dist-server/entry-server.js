@@ -3162,6 +3162,32 @@ const ToolCard$1 = ({
     }
   );
 };
+const NeonCube = ({
+  label,
+  color,
+  children
+}) => /* @__PURE__ */ jsxs(
+  "div",
+  {
+    className: "relative rounded-[18px] p-5",
+    style: {
+      background: "rgba(255,255,255,0.02)",
+      border: `1px solid ${color}`,
+      boxShadow: `0 0 28px -6px ${color}66, inset 0 0 20px -10px ${color}22`
+    },
+    children: [
+      /* @__PURE__ */ jsx(
+        "span",
+        {
+          className: "absolute -top-3 left-5 px-2 text-[11px] font-semibold uppercase tracking-[0.2em]",
+          style: { color, background: "#050505", fontFamily: "'Archivo Black', 'Inter Tight', sans-serif" },
+          children: label
+        }
+      ),
+      children
+    ]
+  }
+);
 const HomeMarketing = () => {
   const sceneAnalysis = { title: "Scene Analysis", to: "/scene-analysis", cta: "Let's Go", img: imgSceneAnalysis };
   const storyboard = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboard };
@@ -3234,29 +3260,34 @@ const HomeMarketing = () => {
         }
       )
     ] }),
-    /* @__PURE__ */ jsx("section", { style: { background: "#050505", padding: "44px 24px 72px" }, children: /* @__PURE__ */ jsxs("div", { className: "mx-auto", style: { maxWidth: 1040 }, children: [
-      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch", children: [
-        /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px]", children: [
-          /* @__PURE__ */ jsx(ToolCard$1, { card: sceneAnalysis, aspect: "16/9" }),
-          /* @__PURE__ */ jsx(ToolCard$1, { card: storyboard, aspect: "16/9" })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
-          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "tall", className: "h-full" }) }),
-          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "tall", className: "h-full" }) }),
-          /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "mt-[14px] flex flex-col gap-[14px]", children: [
-        /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
-          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
-          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
-          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
-          /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
-        ] })
-      ] })
-    ] }) })
+    /* @__PURE__ */ jsx("section", { style: { background: "#050505", padding: "44px 24px 72px" }, children: /* @__PURE__ */ jsxs(
+      "div",
+      {
+        className: "mx-auto flex flex-col",
+        style: { maxWidth: 1040, gap: 40 },
+        children: [
+          /* @__PURE__ */ jsx(NeonCube, { label: "SHOOT", color: TEAL$7, children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px]", children: [
+              /* @__PURE__ */ jsx(ToolCard$1, { card: sceneAnalysis, aspect: "16/9" }),
+              /* @__PURE__ */ jsx(ToolCard$1, { card: storyboard, aspect: "16/9" })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "tall", className: "h-full" }) }),
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "tall", className: "h-full" }) }),
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#d4a84c", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
+            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
+            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
+          ] }) }),
+          /* @__PURE__ */ jsx(NeonCube, { label: "RELEASE", color: "#a855f7", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
+            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" }),
+            /* @__PURE__ */ jsx(ToolCard$1, { card: pitchDeck, aspect: "16/9" })
+          ] }) })
+        ]
+      }
+    ) })
   ] });
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
