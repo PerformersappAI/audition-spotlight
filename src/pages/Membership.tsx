@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams, Link } from 'react-router-dom';
 import Seo from '@/components/Seo';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Zap, Crown, CreditCard, Loader2, Settings } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,10 +9,27 @@ import { toast } from 'sonner';
 import CreditCostTable from '@/components/CreditCostTable';
 import AddCreditsCard from '@/components/AddCreditsCard';
 
-const TEAL = '#00d4aa';
-const VIOLET = '#a855f7';
+const basicFeatures = [
+  '50 monthly credits',
+  'AI Script Analysis',
+  'Storyboard Generation',
+  'Scene Breakdown',
+  'Basic Support',
+  'Export to PDF',
+];
 
+const proFeatures = [
+  '100 monthly credits',
+  'Everything in Basic',
+  'Priority Support',
+  'Advanced Analytics',
+  'Early Access to Features',
+  'Custom Branding',
+];
 
+const Check = () => (
+  <span style={{ color: '#00d4aa', fontWeight: 700, flexShrink: 0 }}>✓</span>
+);
 
 const Membership = () => {
   const navigate = useNavigate();
@@ -37,54 +51,14 @@ const Membership = () => {
       } else {
         toast.success('Subscription activated successfully!');
       }
-      // Refresh subscription and credits data
       fetchSubscription();
       fetchCredits();
-      // Clean up URL
       navigate('/membership', { replace: true });
     } else if (canceled === 'true') {
       toast.info('Payment was canceled');
       navigate('/membership', { replace: true });
     }
   }, [searchParams, navigate, fetchSubscription, fetchCredits]);
-
-
-
-
-  const subscriptionPlans = [
-    {
-      id: 'basic',
-      name: 'Basic Plan',
-      price: 19.99,
-      credits: 50,
-      icon: Sparkles,
-      features: [
-        '50 monthly credits',
-        'AI Script Analysis',
-        'Storyboard Generation',
-        'Scene Breakdown',
-        'Basic Support',
-        'Export to PDF'
-      ],
-      popular: false
-    },
-    {
-      id: 'pro',
-      name: 'Pro Plan',
-      price: 24.99,
-      credits: 100,
-      icon: Crown,
-      features: [
-        '100 monthly credits',
-        'Everything in Basic',
-        'Priority Support',
-        'Advanced Analytics',
-        'Early Access to Features',
-        'Custom Branding'
-      ],
-      popular: true
-    }
-  ];
 
   const handleSubscribe = async (planId: string) => {
     if (!user) {
@@ -118,9 +92,6 @@ const Membership = () => {
     }
   };
 
-
-
-
   const handleManageSubscription = async () => {
     if (!user) {
       toast.error('Please sign in first');
@@ -151,180 +122,202 @@ const Membership = () => {
     }
   };
 
-
+  const plans = [
+    { id: 'basic', name: 'Basic Plan', price: '$19.99', credits: '50 credits per month', features: basicFeatures, popular: false },
+    { id: 'pro', name: 'Pro Plan', price: '$24.99', credits: '100 credits per month', features: proFeatures, popular: true },
+  ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
+    <div style={{ background: '#0a0a12', color: '#fff', minHeight: '100vh' }}>
       <Seo
         title="Filmmaker Genius Membership — Plans & Credits"
         description="Choose a Filmmaker Genius membership: monthly plans and credit packs that unlock AI script analysis, storyboards, scene breakdowns, and PDF exports."
         canonical="https://filmmakergenius.com/membership"
         type="website"
       />
-      <div className="container mx-auto px-4 pt-4">
-        <Link
-          to="/"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-        >
+      <style>{`
+        .pr-card:hover { border-color: #2e2e50 !important; }
+        .pr-btn-basic:hover { background: #222240 !important; }
+        .pr-btn-pro:hover { background: #00f0c0 !important; }
+        @media (max-width: 720px) {
+          .pr-plan-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      <div className="container mx-auto px-4" style={{ paddingTop: 18 }}>
+        <Link to="/" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
           ← Back to Filmmaker Genius
         </Link>
       </div>
-      <div className="container mx-auto px-4 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          {user && !loading && (credits?.available_credits || 0) === 0 && !subscription ? (
-            <>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">
-                Welcome to Filmmaker Genius!
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Choose a plan to get started and unlock powerful filmmaking tools
-              </p>
-            </>
-          ) : (
-            <>
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent">
-                Choose Your Plan
-              </h1>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Unlock powerful filmmaking tools with our flexible pricing options
-              </p>
-            </>
-          )}
-          
+
+      <div style={{ maxWidth: 1100, margin: '0 auto', padding: '48px 24px 80px' }}>
+        {/* HERO */}
+        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+          <h1 style={{ fontSize: '2.4em', fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 14 }}>
+            Choose Your Plan
+          </h1>
+          <p style={{ fontSize: '1.05em', color: '#888', maxWidth: 500, margin: '0 auto', lineHeight: 1.6 }}>
+            Unlock powerful filmmaking tools with our flexible pricing options
+          </p>
           {user && !loading && (
-            <div className="mt-6 inline-flex items-center gap-3 bg-accent/50 px-6 py-3 rounded-full">
-              <Zap className="h-5 w-5 text-gold" />
-              <span className="text-lg font-semibold">
-                {credits?.available_credits || 0} Credits Available
-              </span>
+            <div style={{ marginTop: 24, display: 'inline-block', background: '#12122a', border: '1px solid #1e1e35', padding: '10px 22px', borderRadius: 999, fontWeight: 600 }}>
+              <span style={{ color: '#00d4aa' }}>⚡</span> {credits?.available_credits || 0} Credits Available
             </div>
           )}
         </div>
 
-        {/* Current Subscription Status */}
+        {/* CURRENT SUBSCRIPTION */}
         {user && subscription && subscription.status === 'active' && (
-          <Card className="mb-8 border-gold/50 bg-gradient-to-r from-gold/10 to-gold-light/10">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Crown className="h-5 w-5 text-gold" />
+          <div
+            style={{
+              background: '#0d0d1a',
+              border: '1px solid #00d4aa',
+              borderRadius: 12,
+              padding: 24,
+              marginBottom: 32,
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: 16,
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <div>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>
                 Current Plan: {subscription.plan_type === 'basic' ? 'Basic' : 'Pro'}
-              </CardTitle>
-              <CardDescription>
-                Status: {subscription.status} | Renews: {subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : 'N/A'}
-              </CardDescription>
-            </CardHeader>
-            <CardFooter>
-              <Button 
-                variant="outline" 
-                onClick={handleManageSubscription}
-                disabled={openingPortal}
-              >
-                {openingPortal ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Opening...
-                  </>
-                ) : (
-                  <>
-                    <Settings className="mr-2 h-4 w-4" />
-                    Manage Subscription
-                  </>
-                )}
-              </Button>
-            </CardFooter>
-          </Card>
+              </div>
+              <div style={{ fontSize: '0.85em', color: '#888' }}>
+                Status: {subscription.status} | Renews:{' '}
+                {subscription.current_period_end
+                  ? new Date(subscription.current_period_end).toLocaleDateString()
+                  : 'N/A'}
+              </div>
+            </div>
+            <button
+              className="pr-btn-basic"
+              onClick={handleManageSubscription}
+              disabled={openingPortal}
+              style={{
+                padding: '12px 20px',
+                borderRadius: 8,
+                fontWeight: 700,
+                fontSize: '0.9em',
+                background: '#1a1a2e',
+                color: '#fff',
+                border: '1px solid #2e2e50',
+                cursor: openingPortal ? 'not-allowed' : 'pointer',
+              }}
+            >
+              {openingPortal ? 'Opening…' : 'Manage Subscription'}
+            </button>
+          </div>
         )}
 
-        {/* Subscription Plans */}
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
-          {subscriptionPlans.map((plan) => {
-            const Icon = plan.icon;
+        {/* PLAN CARDS */}
+        <div
+          className="pr-plan-grid"
+          style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 56 }}
+        >
+          {plans.map((plan) => {
             const isCurrentPlan = subscription?.plan_type === plan.id && subscription?.status === 'active';
             const isSubscribing = subscribingPlan === plan.id;
-            
             return (
-              <Card 
+              <div
                 key={plan.id}
-                className={`relative overflow-hidden transition-all hover:shadow-lg ${
-                  plan.popular ? 'border-gold shadow-glow' : ''
-                } ${isCurrentPlan ? 'ring-2 ring-gold' : ''}`}
+                className="pr-card"
+                style={{
+                  background: '#0d0d1a',
+                  border: plan.popular ? '1px solid #00d4aa' : '1px solid #1e1e35',
+                  borderRadius: 12,
+                  padding: 36,
+                  position: 'relative',
+                  boxShadow: plan.popular
+                    ? '0 0 0 1px rgba(0,212,170,0.13), 0 0 32px rgba(0,212,170,0.07)'
+                    : undefined,
+                }}
               >
                 {plan.popular && (
-                  <div className="absolute top-0 right-0 bg-gradient-to-r from-gold to-gold-light text-gold-foreground px-4 py-1 text-sm font-semibold rounded-bl-lg">
+                  <div
+                    style={{
+                      position: 'absolute',
+                      top: -13,
+                      left: '50%',
+                      transform: 'translateX(-50%)',
+                      background: '#00d4aa',
+                      color: '#000',
+                      fontSize: '0.72em',
+                      fontWeight: 800,
+                      padding: '4px 16px',
+                      borderRadius: 20,
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.05em',
+                    }}
+                  >
                     Most Popular
                   </div>
                 )}
-                
-                {isCurrentPlan && (
-                  <div className="absolute top-0 left-0 bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold rounded-br-lg">
-                    Your Plan
-                  </div>
-                )}
-                
-                <CardHeader className="text-center pb-8">
-                  <div className="mb-4 flex justify-center">
-                    <div className={`p-4 rounded-full ${plan.popular ? 'bg-gradient-to-r from-gold to-gold-light' : 'bg-primary/10'}`}>
-                      <Icon className={`h-8 w-8 ${plan.popular ? 'text-gold-foreground' : 'text-primary'}`} />
-                    </div>
-                  </div>
-                  <CardTitle className="text-3xl">{plan.name}</CardTitle>
-                  <div className="mt-4">
-                    <span className="text-5xl font-bold">${plan.price}</span>
-                    <span className="text-muted-foreground">/month</span>
-                  </div>
-                  <CardDescription className="mt-2 text-lg">
-                    {plan.credits} credits per month
-                  </CardDescription>
-                </CardHeader>
-                
-                <CardContent>
-                  <ul className="space-y-3">
-                    {plan.features.map((feature, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <Check className="h-5 w-5 text-gold mt-0.5 flex-shrink-0" />
-                        <span className="text-muted-foreground">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-                
-                <CardFooter>
-                  <Button 
-                    className="w-full"
-                    variant={plan.popular ? 'default' : 'outline'}
-                    size="lg"
-                    onClick={() => handleSubscribe(plan.id)}
-                    disabled={isCurrentPlan || isSubscribing}
-                  >
-                    {isSubscribing ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : isCurrentPlan ? (
-                      'Current Plan'
-                    ) : (
-                      `Subscribe to ${plan.name}`
-                    )}
-                  </Button>
-                </CardFooter>
-              </Card>
+                <div style={{ fontSize: '1.15em', fontWeight: 700, marginBottom: 8 }}>{plan.name}</div>
+                <div style={{ fontSize: '2.6em', fontWeight: 800, letterSpacing: '-0.03em', color: '#fff', marginBottom: 4 }}>
+                  {plan.price}
+                  <span style={{ fontSize: '0.4em', fontWeight: 500, color: '#666' }}>/month</span>
+                </div>
+                <div style={{ fontSize: '0.85em', color: '#00d4aa', fontWeight: 600, marginBottom: 28 }}>
+                  {plan.credits}
+                </div>
+                <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 32px 0', display: 'flex', flexDirection: 'column', gap: 12 }}>
+                  {plan.features.map((f) => (
+                    <li key={f} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: '0.9em', color: '#bbb' }}>
+                      <Check /> <span>{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  className={plan.popular ? 'pr-btn-pro' : 'pr-btn-basic'}
+                  onClick={() => handleSubscribe(plan.id)}
+                  disabled={isCurrentPlan || isSubscribing}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 8,
+                    width: '100%',
+                    padding: 14,
+                    borderRadius: 8,
+                    fontWeight: 700,
+                    fontSize: '0.9em',
+                    background: plan.popular ? '#00d4aa' : '#1a1a2e',
+                    color: plan.popular ? '#000' : '#fff',
+                    border: plan.popular ? 'none' : '1px solid #2e2e50',
+                    boxSizing: 'border-box',
+                    cursor: isCurrentPlan || isSubscribing ? 'not-allowed' : 'pointer',
+                    opacity: isCurrentPlan ? 0.7 : 1,
+                    transition: 'background 0.15s',
+                  }}
+                >
+                  {isSubscribing ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" /> Processing...
+                    </>
+                  ) : isCurrentPlan ? (
+                    'Current Plan'
+                  ) : (
+                    `Subscribe to ${plan.name}`
+                  )}
+                </button>
+              </div>
             );
           })}
         </div>
 
-        {/* Credit Top-Up Section */}
-        <div className="max-w-3xl mx-auto">
+        {/* ADD CREDITS */}
+        <div style={{ maxWidth: 760, margin: '0 auto 56px' }}>
           <AddCreditsCard showMembershipLink={false} />
         </div>
 
-        {/* Credit Usage Information */}
-        <div className="mt-16 max-w-4xl mx-auto text-white">
+        {/* CREDIT COSTS */}
+        <div style={{ maxWidth: 900, margin: '0 auto' }} className="text-white">
           <CreditCostTable />
         </div>
-
-
       </div>
     </div>
   );
