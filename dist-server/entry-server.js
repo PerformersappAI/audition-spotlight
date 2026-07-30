@@ -6,7 +6,7 @@ import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
 import React__default, { Component, createContext, useState, useEffect, useContext, useMemo } from "react";
-import { UNSAFE_invariant, Action, parsePath, stripBasename, UNSAFE_warning, joinPaths, UNSAFE_getResolveToMatches, resolveTo, matchRoutes, isRouteErrorResponse, createPath, matchPath } from "@remix-run/router";
+import { UNSAFE_invariant, UNSAFE_warning, resolveTo, UNSAFE_getResolveToMatches, Action, parsePath, stripBasename, joinPaths, matchRoutes, isRouteErrorResponse, createPath, matchPath } from "@remix-run/router";
 import fastCompare from "react-fast-compare";
 import invariant from "invariant";
 import shallowEqual from "shallowequal";
@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Crown, Settings, Sparkles, Home } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -571,6 +571,40 @@ function warningOnce(key, cond, message) {
     process.env.NODE_ENV !== "production" ? UNSAFE_warning(false, message) : void 0;
   }
 }
+function Navigate(_ref4) {
+  let {
+    to,
+    replace,
+    state,
+    relative
+  } = _ref4;
+  !useInRouterContext() ? process.env.NODE_ENV !== "production" ? UNSAFE_invariant(
+    false,
+    // TODO: This error is probably because they somehow have 2 versions of
+    // the router loaded. We can help them understand how to avoid that.
+    "<Navigate> may be used only in the context of a <Router> component."
+  ) : UNSAFE_invariant(false) : void 0;
+  let {
+    future,
+    static: isStatic
+  } = React.useContext(NavigationContext);
+  process.env.NODE_ENV !== "production" ? UNSAFE_warning(!isStatic, "<Navigate> must not be used on the initial render in a <StaticRouter>. This is a no-op, but you should modify your code so the <Navigate> is only ever rendered in response to some user interaction or state change.") : void 0;
+  let {
+    matches
+  } = React.useContext(RouteContext);
+  let {
+    pathname: locationPathname
+  } = useLocation();
+  let navigate = useNavigate();
+  let path = resolveTo(to, UNSAFE_getResolveToMatches(matches, future.v7_relativeSplatPath), locationPathname, relative === "path");
+  let jsonPath = JSON.stringify(path);
+  React.useEffect(() => navigate(JSON.parse(jsonPath), {
+    replace,
+    state,
+    relative
+  }), [navigate, jsonPath, relative, replace, state]);
+  return null;
+}
 function Route(_props) {
   process.env.NODE_ENV !== "production" ? UNSAFE_invariant(false, "A <Route> is only ever to be used as the child of <Routes> element, never rendered directly. Please wrap your <Route> in a <Routes>.") : UNSAFE_invariant(false);
 }
@@ -856,7 +890,7 @@ if (process.env.NODE_ENV !== "production") {
   FetchersContext.displayName = "Fetchers";
 }
 if (process.env.NODE_ENV !== "production") ;
-const isBrowser = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
+const isBrowser$1 = typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.document.createElement !== "undefined";
 const ABSOLUTE_URL_REGEX$1 = /^(?:[a-z][a-z0-9+.-]*:|\/\/)/i;
 const Link = /* @__PURE__ */ React.forwardRef(function LinkWithRef(_ref7, ref) {
   let {
@@ -877,7 +911,7 @@ const Link = /* @__PURE__ */ React.forwardRef(function LinkWithRef(_ref7, ref) {
   let isExternal = false;
   if (typeof to === "string" && ABSOLUTE_URL_REGEX$1.test(to)) {
     absoluteHref = to;
-    if (isBrowser) {
+    if (isBrowser$1) {
       try {
         let currentUrl = new URL(window.location.href);
         let targetUrl = to.startsWith("//") ? new URL(currentUrl.protocol + to) : new URL(to);
@@ -2777,7 +2811,7 @@ const GlobalLayout = ({ children }) => {
               /* @__PURE__ */ jsx(Link, { to: "/launch", className: navLinkClass, children: "Launch" }),
               /* @__PURE__ */ jsx(Link, { to: "/academy", className: navLinkClass, children: "Academy" }),
               /* @__PURE__ */ jsx(Link, { to: "/blog", className: navLinkClass, children: "Blog" }),
-              /* @__PURE__ */ jsx(Link, { to: "/pricing", className: navLinkClass, children: "Membership" })
+              /* @__PURE__ */ jsx(Link, { to: "/membership", className: navLinkClass, children: "Membership" })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 justify-self-end", children: [
               user ? /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -2925,7 +2959,7 @@ const GlobalLayout = ({ children }) => {
                 /* @__PURE__ */ jsx(
                   Link,
                   {
-                    to: "/pricing",
+                    to: "/membership",
                     onClick: () => setMobileMenuOpen(false),
                     className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
                     children: "Membership"
@@ -3047,6 +3081,20 @@ const GlobalLayout = ({ children }) => {
       }
     )
   ] });
+};
+const isBrowser = typeof window !== "undefined";
+const ToolGate = ({ children }) => {
+  const { user, loading: authLoading } = useAuth();
+  const { subscription, loading: creditsLoading } = useCredits();
+  const { isAdmin, isChecking } = useAdminAuth(false);
+  if (!isBrowser) return /* @__PURE__ */ jsx(Fragment, { children });
+  if (authLoading || user && (creditsLoading || isChecking)) {
+    return /* @__PURE__ */ jsx("div", { className: "flex min-h-[60vh] items-center justify-center", children: /* @__PURE__ */ jsx("div", { className: "h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" }) });
+  }
+  if (isAdmin) return /* @__PURE__ */ jsx(Fragment, { children });
+  const hasActiveSubscription = !!user && (subscription == null ? void 0 : subscription.status) === "active";
+  if (!hasActiveSubscription) return /* @__PURE__ */ jsx(Navigate, { to: "/membership", replace: true });
+  return /* @__PURE__ */ jsx(Fragment, { children });
 };
 const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
 const SITE_NAME = "Filmmaker Genius";
@@ -3972,327 +4020,6 @@ function FAQ() {
     ] })
   ] });
 }
-const basicFeatures = [
-  "50 monthly credits",
-  "AI Script Analysis",
-  "Storyboard Generation",
-  "Scene Breakdown",
-  "Basic Support",
-  "Export to PDF"
-];
-const proFeatures = [
-  "100 monthly credits",
-  "Everything in Basic",
-  "Priority Support",
-  "Advanced Analytics",
-  "Early Access to Features",
-  "Custom Branding"
-];
-const creditCosts = [
-  "Script Analysis: 5 credits",
-  "Scene Analysis: 3 credits",
-  "Storyboard Frame: 10 credits",
-  "Document Upload / OCR: 2 credits"
-];
-const benefits = [
-  "Credits never expire",
-  "Use across all tools",
-  "Monthly subscription credits reset",
-  "Purchased credits stack with subscription"
-];
-const Check = () => /* @__PURE__ */ jsx("span", { style: { color: "#00d4aa", fontWeight: 700, flexShrink: 0 }, children: "✓" });
-const Bullet = () => /* @__PURE__ */ jsx("span", { style: { color: "#00d4aa", fontWeight: 700, flexShrink: 0 }, children: "•" });
-const Pricing = () => {
-  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh" }, children: [
-    /* @__PURE__ */ jsx(
-      Seo,
-      {
-        title: "Membership & Pricing — Filmmaker Genius",
-        description: "Simple membership and pricing for indie filmmakers: Basic and Pro monthly plans with credits for AI script analysis, storyboards, scene breakdowns, and PDF exports.",
-        canonical: "https://filmmakergenius.com/pricing"
-      }
-    ),
-    /* @__PURE__ */ jsx("style", { children: `
-        .pr-card:hover { border-color: #2e2e50 !important; }
-        .pr-btn-basic:hover { background: #222240 !important; }
-        .pr-btn-pro:hover { background: #00f0c0 !important; }
-        .pr-btn-purchase:hover { background: #222240 !important; }
-        @media (max-width: 720px) {
-          .pr-plan-grid { grid-template-columns: 1fr !important; }
-          .pr-credits-grid { grid-template-columns: 1fr !important; }
-          .pr-credits-header { flex-direction: column !important; align-items: flex-start !important; }
-        }
-      ` }),
-    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4", style: { paddingTop: 18, paddingBottom: 0 }, children: /* @__PURE__ */ jsx(
-      Link,
-      {
-        to: "/",
-        style: {
-          display: "inline-block",
-          fontSize: 13,
-          color: "#9ab1c2",
-          textDecoration: "none",
-          transition: "color 0.15s"
-        },
-        onMouseEnter: (e) => e.currentTarget.style.color = "#fff",
-        onMouseLeave: (e) => e.currentTarget.style.color = "#9ab1c2",
-        children: "← Back to Filmmaker Genius"
-      }
-    ) }),
-    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1100, margin: "0 auto", padding: "48px 48px 80px" }, children: [
-      /* @__PURE__ */ jsxs("div", { style: { textAlign: "center", marginBottom: 56 }, children: [
-        /* @__PURE__ */ jsx("h1", { style: { fontSize: "2.4em", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14 }, children: "Choose Your Plan" }),
-        /* @__PURE__ */ jsx("p", { style: { fontSize: "1.05em", color: "#888", maxWidth: 500, margin: "0 auto", lineHeight: 1.6 }, children: "Unlock powerful filmmaking tools with our flexible pricing options" })
-      ] }),
-      /* @__PURE__ */ jsxs(
-        "div",
-        {
-          className: "pr-plan-grid",
-          style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 56 },
-          children: [
-            /* @__PURE__ */ jsxs(
-              "div",
-              {
-                className: "pr-card",
-                style: {
-                  background: "#0d0d1a",
-                  border: "1px solid #1e1e35",
-                  borderRadius: 12,
-                  padding: 36,
-                  position: "relative"
-                },
-                children: [
-                  /* @__PURE__ */ jsx("div", { style: { fontSize: "1.15em", fontWeight: 700, marginBottom: 8 }, children: "Basic Plan" }),
-                  /* @__PURE__ */ jsxs("div", { style: { fontSize: "2.6em", fontWeight: 800, letterSpacing: "-0.03em", color: "#fff", marginBottom: 4 }, children: [
-                    "$19.99",
-                    /* @__PURE__ */ jsx("span", { style: { fontSize: "0.4em", fontWeight: 500, color: "#666" }, children: "/month" })
-                  ] }),
-                  /* @__PURE__ */ jsx("div", { style: { fontSize: "0.85em", color: "#00d4aa", fontWeight: 600, marginBottom: 28 }, children: "50 credits per month" }),
-                  /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 32px 0", display: "flex", flexDirection: "column", gap: 12 }, children: basicFeatures.map((f) => /* @__PURE__ */ jsxs("li", { style: { display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.9em", color: "#bbb" }, children: [
-                    /* @__PURE__ */ jsx(Check, {}),
-                    " ",
-                    /* @__PURE__ */ jsx("span", { children: f })
-                  ] }, f)) }),
-                  /* @__PURE__ */ jsx(
-                    "a",
-                    {
-                      href: "/membership",
-                      className: "pr-btn-basic",
-                      style: {
-                        display: "block",
-                        width: "100%",
-                        textAlign: "center",
-                        padding: 14,
-                        borderRadius: 8,
-                        fontWeight: 700,
-                        fontSize: "0.9em",
-                        background: "#1a1a2e",
-                        color: "#fff",
-                        border: "1px solid #2e2e50",
-                        textDecoration: "none",
-                        boxSizing: "border-box",
-                        transition: "background 0.15s"
-                      },
-                      children: "Subscribe to Basic Plan"
-                    }
-                  )
-                ]
-              }
-            ),
-            /* @__PURE__ */ jsxs(
-              "div",
-              {
-                className: "pr-card",
-                style: {
-                  background: "#0d0d1a",
-                  border: "1px solid #00d4aa",
-                  borderRadius: 12,
-                  padding: 36,
-                  position: "relative",
-                  boxShadow: "0 0 0 1px rgba(0,212,170,0.13), 0 0 32px rgba(0,212,170,0.07)"
-                },
-                children: [
-                  /* @__PURE__ */ jsx(
-                    "div",
-                    {
-                      style: {
-                        position: "absolute",
-                        top: -13,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        background: "#00d4aa",
-                        color: "#000",
-                        fontSize: "0.72em",
-                        fontWeight: 800,
-                        padding: "4px 16px",
-                        borderRadius: 20,
-                        textTransform: "uppercase",
-                        letterSpacing: "0.05em"
-                      },
-                      children: "Most Popular"
-                    }
-                  ),
-                  /* @__PURE__ */ jsx("div", { style: { fontSize: "1.15em", fontWeight: 700, marginBottom: 8 }, children: "Pro Plan" }),
-                  /* @__PURE__ */ jsxs("div", { style: { fontSize: "2.6em", fontWeight: 800, letterSpacing: "-0.03em", color: "#fff", marginBottom: 4 }, children: [
-                    "$24.99",
-                    /* @__PURE__ */ jsx("span", { style: { fontSize: "0.4em", fontWeight: 500, color: "#666" }, children: "/month" })
-                  ] }),
-                  /* @__PURE__ */ jsx("div", { style: { fontSize: "0.85em", color: "#00d4aa", fontWeight: 600, marginBottom: 28 }, children: "100 credits per month" }),
-                  /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 32px 0", display: "flex", flexDirection: "column", gap: 12 }, children: proFeatures.map((f) => /* @__PURE__ */ jsxs("li", { style: { display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.9em", color: "#bbb" }, children: [
-                    /* @__PURE__ */ jsx(Check, {}),
-                    " ",
-                    /* @__PURE__ */ jsx("span", { children: f })
-                  ] }, f)) }),
-                  /* @__PURE__ */ jsx(
-                    "a",
-                    {
-                      href: "/membership",
-                      className: "pr-btn-pro",
-                      style: {
-                        display: "block",
-                        width: "100%",
-                        textAlign: "center",
-                        padding: 14,
-                        borderRadius: 8,
-                        fontWeight: 700,
-                        fontSize: "0.9em",
-                        background: "#00d4aa",
-                        color: "#000",
-                        textDecoration: "none",
-                        boxSizing: "border-box",
-                        transition: "background 0.15s"
-                      },
-                      children: "Subscribe to Pro Plan"
-                    }
-                  )
-                ]
-              }
-            )
-          ]
-        }
-      ),
-      /* @__PURE__ */ jsx(
-        "div",
-        {
-          style: {
-            background: "#0d0d1a",
-            border: "1px solid #1e1e35",
-            borderRadius: 12,
-            padding: 36,
-            marginBottom: 32
-          },
-          children: /* @__PURE__ */ jsxs(
-            "div",
-            {
-              className: "pr-credits-header",
-              style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 24, flexWrap: "wrap" },
-              children: [
-                /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("h2", { style: { fontSize: "1.25em", fontWeight: 700, marginBottom: 6 }, children: "Need More Credits?" }),
-                  /* @__PURE__ */ jsx("p", { style: { fontSize: "0.875em", color: "#666" }, children: "Purchase additional credits anytime. Credits never expire!" })
-                ] }),
-                /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, alignItems: "center", flexWrap: "wrap" }, children: [
-                  /* @__PURE__ */ jsxs(
-                    "select",
-                    {
-                      defaultValue: "",
-                      style: {
-                        background: "#0a0a12",
-                        border: "1px solid #2a2a3a",
-                        color: "#fff",
-                        padding: "10px 16px",
-                        borderRadius: 6,
-                        fontFamily: "inherit",
-                        fontSize: "0.9em"
-                      },
-                      children: [
-                        /* @__PURE__ */ jsx("option", { value: "", children: "Choose credit amount" }),
-                        /* @__PURE__ */ jsx("option", { children: "25 Credits" }),
-                        /* @__PURE__ */ jsx("option", { children: "50 Credits" }),
-                        /* @__PURE__ */ jsx("option", { children: "100 Credits" }),
-                        /* @__PURE__ */ jsx("option", { children: "250 Credits" })
-                      ]
-                    }
-                  ),
-                  /* @__PURE__ */ jsx(
-                    "a",
-                    {
-                      href: "/membership",
-                      className: "pr-btn-purchase",
-                      style: {
-                        display: "inline-flex",
-                        alignItems: "center",
-                        background: "#1a1a2e",
-                        color: "#fff",
-                        border: "1px solid #2e2e50",
-                        padding: "10px 20px",
-                        borderRadius: 6,
-                        fontWeight: 600,
-                        fontFamily: "inherit",
-                        fontSize: "0.9em",
-                        textDecoration: "none",
-                        transition: "background 0.15s"
-                      },
-                      children: "Purchase Credits"
-                    }
-                  )
-                ] })
-              ]
-            }
-          )
-        }
-      ),
-      /* @__PURE__ */ jsxs("div", { style: { background: "#0d0d1a", border: "1px solid #1e1e35", borderRadius: 12, padding: 36 }, children: [
-        /* @__PURE__ */ jsx("h2", { style: { fontSize: "1.25em", fontWeight: 700 }, children: "How Credits Work" }),
-        /* @__PURE__ */ jsx("p", { style: { fontSize: "0.85em", color: "#555", marginBottom: 28 }, children: "Understanding our credit system" }),
-        /* @__PURE__ */ jsxs("div", { className: "pr-credits-grid", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 32 }, children: [
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx(
-              "div",
-              {
-                style: {
-                  textTransform: "uppercase",
-                  fontSize: "0.8em",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  color: "#555",
-                  marginBottom: 16
-                },
-                children: "Credit Costs"
-              }
-            ),
-            /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }, children: creditCosts.map((c) => /* @__PURE__ */ jsxs("li", { style: { display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875em", color: "#aaa" }, children: [
-              /* @__PURE__ */ jsx(Bullet, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: c })
-            ] }, c)) })
-          ] }),
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx(
-              "div",
-              {
-                style: {
-                  textTransform: "uppercase",
-                  fontSize: "0.8em",
-                  fontWeight: 700,
-                  letterSpacing: "0.08em",
-                  color: "#555",
-                  marginBottom: 16
-                },
-                children: "Benefits"
-              }
-            ),
-            /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }, children: benefits.map((b) => /* @__PURE__ */ jsxs("li", { style: { display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.875em", color: "#aaa" }, children: [
-              /* @__PURE__ */ jsx(Bullet, {}),
-              " ",
-              /* @__PURE__ */ jsx("span", { children: b })
-            ] }, b)) })
-          ] })
-        ] })
-      ] })
-    ] })
-  ] });
-};
 const TEAL$4 = "#00d4aa";
 const SECTIONS$1 = [
   {
@@ -6336,6 +6063,23 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
     ] })
   ] });
 }
+const basicFeatures = [
+  "50 monthly credits",
+  "AI Script Analysis",
+  "Storyboard Generation",
+  "Scene Breakdown",
+  "Basic Support",
+  "Export to PDF"
+];
+const proFeatures = [
+  "100 monthly credits",
+  "Everything in Basic",
+  "Priority Support",
+  "Advanced Analytics",
+  "Early Access to Features",
+  "Custom Branding"
+];
+const Check = () => /* @__PURE__ */ jsx("span", { style: { color: "#00d4aa", fontWeight: 700, flexShrink: 0 }, children: "✓" });
 const Membership = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -6361,40 +6105,6 @@ const Membership = () => {
       navigate("/membership", { replace: true });
     }
   }, [searchParams, navigate, fetchSubscription, fetchCredits]);
-  const subscriptionPlans = [
-    {
-      id: "basic",
-      name: "Basic Plan",
-      price: 19.99,
-      credits: 50,
-      icon: Sparkles,
-      features: [
-        "50 monthly credits",
-        "AI Script Analysis",
-        "Storyboard Generation",
-        "Scene Breakdown",
-        "Basic Support",
-        "Export to PDF"
-      ],
-      popular: false
-    },
-    {
-      id: "pro",
-      name: "Pro Plan",
-      price: 24.99,
-      credits: 100,
-      icon: Crown,
-      features: [
-        "100 monthly credits",
-        "Everything in Basic",
-        "Priority Support",
-        "Advanced Analytics",
-        "Early Access to Features",
-        "Custom Branding"
-      ],
-      popular: true
-    }
-  ];
   const handleSubscribe = async (planId) => {
     if (!user) {
       toast$1.error("Please sign in to subscribe");
@@ -6449,7 +6159,11 @@ const Membership = () => {
       setOpeningPortal(false);
     }
   };
-  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
+  const plans = [
+    { id: "basic", name: "Basic Plan", price: "$19.99", credits: "50 credits per month", features: basicFeatures, popular: false },
+    { id: "pro", name: "Pro Plan", price: "$24.99", credits: "100 credits per month", features: proFeatures, popular: true }
+  ];
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh" }, children: [
     /* @__PURE__ */ jsx(
       Seo,
       {
@@ -6459,112 +6173,168 @@ const Membership = () => {
         type: "website"
       }
     ),
-    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 pt-4", children: /* @__PURE__ */ jsx(
-      Link,
-      {
-        to: "/",
-        className: "text-sm text-muted-foreground hover:text-foreground transition-colors",
-        children: "← Back to Filmmaker Genius"
-      }
-    ) }),
-    /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 py-12", children: [
-      /* @__PURE__ */ jsxs("div", { className: "text-center mb-12", children: [
-        user && !loading && ((credits == null ? void 0 : credits.available_credits) || 0) === 0 && !subscription ? /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent", children: "Welcome to Filmmaker Genius!" }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Choose a plan to get started and unlock powerful filmmaking tools" })
-        ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx("h1", { className: "text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-gold to-gold-light bg-clip-text text-transparent", children: "Choose Your Plan" }),
-          /* @__PURE__ */ jsx("p", { className: "text-xl text-muted-foreground max-w-2xl mx-auto", children: "Unlock powerful filmmaking tools with our flexible pricing options" })
-        ] }),
-        user && !loading && /* @__PURE__ */ jsxs("div", { className: "mt-6 inline-flex items-center gap-3 bg-accent/50 px-6 py-3 rounded-full", children: [
-          /* @__PURE__ */ jsx(Zap, { className: "h-5 w-5 text-gold" }),
-          /* @__PURE__ */ jsxs("span", { className: "text-lg font-semibold", children: [
-            (credits == null ? void 0 : credits.available_credits) || 0,
-            " Credits Available"
-          ] })
+    /* @__PURE__ */ jsx("style", { children: `
+        .pr-card:hover { border-color: #2e2e50 !important; }
+        .pr-btn-basic:hover { background: #222240 !important; }
+        .pr-btn-pro:hover { background: #00f0c0 !important; }
+        @media (max-width: 720px) {
+          .pr-plan-grid { grid-template-columns: 1fr !important; }
+        }
+      ` }),
+    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4", style: { paddingTop: 18 }, children: /* @__PURE__ */ jsx(Link, { to: "/", className: "text-sm text-muted-foreground hover:text-foreground transition-colors", children: "← Back to Filmmaker Genius" }) }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1100, margin: "0 auto", padding: "48px 24px 80px" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { textAlign: "center", marginBottom: 40 }, children: [
+        /* @__PURE__ */ jsx("h1", { style: { fontSize: "2.4em", fontWeight: 800, letterSpacing: "-0.03em", marginBottom: 14 }, children: "Choose Your Plan" }),
+        /* @__PURE__ */ jsx("p", { style: { fontSize: "1.05em", color: "#888", maxWidth: 500, margin: "0 auto", lineHeight: 1.6 }, children: "Unlock powerful filmmaking tools with our flexible pricing options" }),
+        user && !loading && /* @__PURE__ */ jsxs("div", { style: { marginTop: 24, display: "inline-block", background: "#12122a", border: "1px solid #1e1e35", padding: "10px 22px", borderRadius: 999, fontWeight: 600 }, children: [
+          /* @__PURE__ */ jsx("span", { style: { color: "#00d4aa" }, children: "⚡" }),
+          " ",
+          (credits == null ? void 0 : credits.available_credits) || 0,
+          " Credits Available"
         ] })
       ] }),
-      user && subscription && subscription.status === "active" && /* @__PURE__ */ jsxs(Card$1, { className: "mb-8 border-gold/50 bg-gradient-to-r from-gold/10 to-gold-light/10", children: [
-        /* @__PURE__ */ jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
-            /* @__PURE__ */ jsx(Crown, { className: "h-5 w-5 text-gold" }),
-            "Current Plan: ",
-            subscription.plan_type === "basic" ? "Basic" : "Pro"
-          ] }),
-          /* @__PURE__ */ jsxs(CardDescription, { children: [
-            "Status: ",
-            subscription.status,
-            " | Renews: ",
-            subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "N/A"
-          ] })
-        ] }),
-        /* @__PURE__ */ jsx(CardFooter, { children: /* @__PURE__ */ jsx(
-          Button,
-          {
-            variant: "outline",
-            onClick: handleManageSubscription,
-            disabled: openingPortal,
-            children: openingPortal ? /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
-              "Opening..."
-            ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-              /* @__PURE__ */ jsx(Settings, { className: "mr-2 h-4 w-4" }),
-              "Manage Subscription"
-            ] })
-          }
-        ) })
-      ] }),
-      /* @__PURE__ */ jsx("div", { className: "grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16", children: subscriptionPlans.map((plan) => {
-        const Icon = plan.icon;
-        const isCurrentPlan = (subscription == null ? void 0 : subscription.plan_type) === plan.id && (subscription == null ? void 0 : subscription.status) === "active";
-        const isSubscribing = subscribingPlan === plan.id;
-        return /* @__PURE__ */ jsxs(
-          Card$1,
-          {
-            className: `relative overflow-hidden transition-all hover:shadow-lg ${plan.popular ? "border-gold shadow-glow" : ""} ${isCurrentPlan ? "ring-2 ring-gold" : ""}`,
-            children: [
-              plan.popular && /* @__PURE__ */ jsx("div", { className: "absolute top-0 right-0 bg-gradient-to-r from-gold to-gold-light text-gold-foreground px-4 py-1 text-sm font-semibold rounded-bl-lg", children: "Most Popular" }),
-              isCurrentPlan && /* @__PURE__ */ jsx("div", { className: "absolute top-0 left-0 bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold rounded-br-lg", children: "Your Plan" }),
-              /* @__PURE__ */ jsxs(CardHeader, { className: "text-center pb-8", children: [
-                /* @__PURE__ */ jsx("div", { className: "mb-4 flex justify-center", children: /* @__PURE__ */ jsx("div", { className: `p-4 rounded-full ${plan.popular ? "bg-gradient-to-r from-gold to-gold-light" : "bg-primary/10"}`, children: /* @__PURE__ */ jsx(Icon, { className: `h-8 w-8 ${plan.popular ? "text-gold-foreground" : "text-primary"}` }) }) }),
-                /* @__PURE__ */ jsx(CardTitle, { className: "text-3xl", children: plan.name }),
-                /* @__PURE__ */ jsxs("div", { className: "mt-4", children: [
-                  /* @__PURE__ */ jsxs("span", { className: "text-5xl font-bold", children: [
-                    "$",
-                    plan.price
-                  ] }),
-                  /* @__PURE__ */ jsx("span", { className: "text-muted-foreground", children: "/month" })
-                ] }),
-                /* @__PURE__ */ jsxs(CardDescription, { className: "mt-2 text-lg", children: [
-                  plan.credits,
-                  " credits per month"
-                ] })
-              ] }),
-              /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("ul", { className: "space-y-3", children: plan.features.map((feature, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-3", children: [
-                /* @__PURE__ */ jsx(Check$1, { className: "h-5 w-5 text-gold mt-0.5 flex-shrink-0" }),
-                /* @__PURE__ */ jsx("span", { className: "text-muted-foreground", children: feature })
-              ] }, index)) }) }),
-              /* @__PURE__ */ jsx(CardFooter, { children: /* @__PURE__ */ jsx(
-                Button,
-                {
-                  className: "w-full",
-                  variant: plan.popular ? "default" : "outline",
-                  size: "lg",
-                  onClick: () => handleSubscribe(plan.id),
-                  disabled: isCurrentPlan || isSubscribing,
-                  children: isSubscribing ? /* @__PURE__ */ jsxs(Fragment, { children: [
-                    /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
-                    "Processing..."
-                  ] }) : isCurrentPlan ? "Current Plan" : `Subscribe to ${plan.name}`
-                }
-              ) })
-            ]
+      user && subscription && subscription.status === "active" && /* @__PURE__ */ jsxs(
+        "div",
+        {
+          style: {
+            background: "#0d0d1a",
+            border: "1px solid #00d4aa",
+            borderRadius: 12,
+            padding: 24,
+            marginBottom: 32,
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 16,
+            alignItems: "center",
+            justifyContent: "space-between"
           },
-          plan.id
-        );
-      }) }),
-      /* @__PURE__ */ jsx("div", { className: "max-w-3xl mx-auto", children: /* @__PURE__ */ jsx(AddCreditsCard, { showMembershipLink: false }) }),
-      /* @__PURE__ */ jsx("div", { className: "mt-16 max-w-4xl mx-auto text-white", children: /* @__PURE__ */ jsx(CreditCostTable, {}) })
+          children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("div", { style: { fontWeight: 700, marginBottom: 4 }, children: [
+                "Current Plan: ",
+                subscription.plan_type === "basic" ? "Basic" : "Pro"
+              ] }),
+              /* @__PURE__ */ jsxs("div", { style: { fontSize: "0.85em", color: "#888" }, children: [
+                "Status: ",
+                subscription.status,
+                " | Renews:",
+                " ",
+                subscription.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : "N/A"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                className: "pr-btn-basic",
+                onClick: handleManageSubscription,
+                disabled: openingPortal,
+                style: {
+                  padding: "12px 20px",
+                  borderRadius: 8,
+                  fontWeight: 700,
+                  fontSize: "0.9em",
+                  background: "#1a1a2e",
+                  color: "#fff",
+                  border: "1px solid #2e2e50",
+                  cursor: openingPortal ? "not-allowed" : "pointer"
+                },
+                children: openingPortal ? "Opening…" : "Manage Subscription"
+              }
+            )
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: "pr-plan-grid",
+          style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 24, marginBottom: 56 },
+          children: plans.map((plan) => {
+            const isCurrentPlan = (subscription == null ? void 0 : subscription.plan_type) === plan.id && (subscription == null ? void 0 : subscription.status) === "active";
+            const isSubscribing = subscribingPlan === plan.id;
+            return /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: "pr-card",
+                style: {
+                  background: "#0d0d1a",
+                  border: plan.popular ? "1px solid #00d4aa" : "1px solid #1e1e35",
+                  borderRadius: 12,
+                  padding: 36,
+                  position: "relative",
+                  boxShadow: plan.popular ? "0 0 0 1px rgba(0,212,170,0.13), 0 0 32px rgba(0,212,170,0.07)" : void 0
+                },
+                children: [
+                  plan.popular && /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      style: {
+                        position: "absolute",
+                        top: -13,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        background: "#00d4aa",
+                        color: "#000",
+                        fontSize: "0.72em",
+                        fontWeight: 800,
+                        padding: "4px 16px",
+                        borderRadius: 20,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.05em"
+                      },
+                      children: "Most Popular"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx("div", { style: { fontSize: "1.15em", fontWeight: 700, marginBottom: 8 }, children: plan.name }),
+                  /* @__PURE__ */ jsxs("div", { style: { fontSize: "2.6em", fontWeight: 800, letterSpacing: "-0.03em", color: "#fff", marginBottom: 4 }, children: [
+                    plan.price,
+                    /* @__PURE__ */ jsx("span", { style: { fontSize: "0.4em", fontWeight: 500, color: "#666" }, children: "/month" })
+                  ] }),
+                  /* @__PURE__ */ jsx("div", { style: { fontSize: "0.85em", color: "#00d4aa", fontWeight: 600, marginBottom: 28 }, children: plan.credits }),
+                  /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", padding: 0, margin: "0 0 32px 0", display: "flex", flexDirection: "column", gap: 12 }, children: plan.features.map((f) => /* @__PURE__ */ jsxs("li", { style: { display: "flex", gap: 10, alignItems: "flex-start", fontSize: "0.9em", color: "#bbb" }, children: [
+                    /* @__PURE__ */ jsx(Check, {}),
+                    " ",
+                    /* @__PURE__ */ jsx("span", { children: f })
+                  ] }, f)) }),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      className: plan.popular ? "pr-btn-pro" : "pr-btn-basic",
+                      onClick: () => handleSubscribe(plan.id),
+                      disabled: isCurrentPlan || isSubscribing,
+                      style: {
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: 8,
+                        width: "100%",
+                        padding: 14,
+                        borderRadius: 8,
+                        fontWeight: 700,
+                        fontSize: "0.9em",
+                        background: plan.popular ? "#00d4aa" : "#1a1a2e",
+                        color: plan.popular ? "#000" : "#fff",
+                        border: plan.popular ? "none" : "1px solid #2e2e50",
+                        boxSizing: "border-box",
+                        cursor: isCurrentPlan || isSubscribing ? "not-allowed" : "pointer",
+                        opacity: isCurrentPlan ? 0.7 : 1,
+                        transition: "background 0.15s"
+                      },
+                      children: isSubscribing ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }),
+                        " Processing..."
+                      ] }) : isCurrentPlan ? "Current Plan" : `Subscribe to ${plan.name}`
+                    }
+                  )
+                ]
+              },
+              plan.id
+            );
+          })
+        }
+      ),
+      /* @__PURE__ */ jsx("div", { style: { maxWidth: 760, margin: "0 auto 56px" }, children: /* @__PURE__ */ jsx(AddCreditsCard, { showMembershipLink: false }) }),
+      /* @__PURE__ */ jsx("div", { style: { maxWidth: 900, margin: "0 auto" }, className: "text-white", children: /* @__PURE__ */ jsx(CreditCostTable, {}) })
     ] })
   ] });
 };
@@ -7595,7 +7365,7 @@ function RobertsFilmmaking() {
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
-        /* @__PURE__ */ jsx(Link, { to: "/pricing", style: {
+        /* @__PURE__ */ jsx(Link, { to: "/membership", style: {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
@@ -8966,7 +8736,7 @@ const RobertsChapter = () => {
                     /* @__PURE__ */ jsx(
                       Link,
                       {
-                        to: "/pricing",
+                        to: "/membership",
                         className: "rc-cta-btn-teal",
                         style: {
                           height: 48,
@@ -12846,12 +12616,12 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/about", element: /* @__PURE__ */ jsx(About, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/contact", element: /* @__PURE__ */ jsx(Contact, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/faq", element: /* @__PURE__ */ jsx(FAQ, {}) }),
-  /* @__PURE__ */ jsx(Route, { path: "/pricing", element: /* @__PURE__ */ jsx(Pricing, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/pricing", element: /* @__PURE__ */ jsx(Navigate, { to: "/membership", replace: true }) }),
   /* @__PURE__ */ jsx(Route, { path: "/privacy", element: /* @__PURE__ */ jsx(Privacy, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/terms", element: /* @__PURE__ */ jsx(Terms, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/toolbox", element: /* @__PURE__ */ jsx(Toolbox, {}) }),
-  /* @__PURE__ */ jsx(Route, { path: "/recut", element: /* @__PURE__ */ jsx(Recut, {}) }),
-  /* @__PURE__ */ jsx(Route, { path: "/crew-hire", element: /* @__PURE__ */ jsx(CrewHire, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/recut", element: /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(Recut, {}) }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/crew-hire", element: /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(CrewHire, {}) }) }),
   /* @__PURE__ */ jsx(Route, { path: "/membership", element: /* @__PURE__ */ jsx(Membership, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/blog", element: /* @__PURE__ */ jsx(Blog, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/blog/:slug", element: /* @__PURE__ */ jsx(BlogPost, {}) }),
