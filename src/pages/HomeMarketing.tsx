@@ -73,6 +73,33 @@ const ToolCard = ({
   );
 };
 
+const NeonCube = ({
+  label,
+  color,
+  children,
+}: {
+  label: string;
+  color: string;
+  children: ReactNode;
+}) => (
+  <div
+    className="relative rounded-[18px] p-5"
+    style={{
+      background: "rgba(255,255,255,0.02)",
+      border: `1px solid ${color}`,
+      boxShadow: `0 0 28px -6px ${color}66, inset 0 0 20px -10px ${color}22`,
+    }}
+  >
+    <span
+      className="absolute -top-3 left-5 px-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
+      style={{ color, background: "#050505", fontFamily: "'Archivo Black', 'Inter Tight', sans-serif" }}
+    >
+      {label}
+    </span>
+    {children}
+  </div>
+);
+
 const HomeMarketing = () => {
   const sceneAnalysis: Card = { title: "Scene Analysis", to: "/scene-analysis", cta: "Let's Go", img: imgSceneAnalysis };
   const storyboard: Card = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboard };
