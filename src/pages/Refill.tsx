@@ -2,13 +2,15 @@ import { useEffect, useState } from 'react';
 import { Navigate, Link } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Zap, Loader2, CircleDot } from 'lucide-react';
+import CreditCostTable from '@/components/CreditCostTable';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
@@ -17,24 +19,8 @@ import { toast } from 'sonner';
 const TEAL = '#00d4aa';
 const VIOLET = '#a855f7';
 
-type ToolCost = { name: string; cost: string; free?: boolean };
 
-// First-draft credit costs — easy to tweak.
-const TOOL_COSTS: ToolCost[] = [
-  { name: 'Festival Finder', cost: 'Free', free: true },
-  { name: 'Call Sheet', cost: 'Free', free: true },
-  { name: 'Academy / Courses', cost: 'Free', free: true },
-  { name: 'Script Analysis', cost: '~1 credit (3-page section; more for longer)' },
-  { name: 'Scene Analysis', cost: '~1 credit' },
-  { name: 'Storyboarding', cost: '2–4 credits (grows with number of frames)' },
-  { name: 'Table Read (reader voices)', cost: '2–4 credits (varies by dialogue length)' },
-  { name: 'Pitch Deck Builder', cost: '~2 credits' },
-  { name: 'Video Evaluation', cost: '1 credit' },
-  { name: 'Funding Strategy', cost: '~1 credit' },
-  { name: 'Distribution Readiness', cost: '~1 credit' },
-  { name: 'Contract Assistant', cost: '~1 credit' },
-  { name: 'Contract Filler', cost: '0.5 credit' },
-];
+
 
 export default function Refill() {
   const { user, loading: authLoading } = useAuth();
@@ -193,36 +179,8 @@ export default function Refill() {
         </Card>
 
         {/* 3. How Your Credits Work */}
-        <Card className="p-6 mb-8 bg-white/[0.03] border-white/10">
-          <h2 className="text-xl font-semibold mb-2">How Your Credits Work</h2>
-          <p className="text-sm text-white/60 mb-5">
-            Every AI tool runs on credits. Here's exactly what each one costs — so you always know
-            where you stand.
-          </p>
-          <div className="border border-white/5 rounded-md overflow-hidden">
-            <div className="grid grid-cols-[1fr_auto] gap-4 px-4 py-2.5 bg-white/5 text-xs uppercase tracking-wider text-white/50">
-              <span>Tool</span>
-              <span>Cost</span>
-            </div>
-            <ul className="divide-y divide-white/5">
-              {TOOL_COSTS.map(t => (
-                <li key={t.name} className="grid grid-cols-[1fr_auto] gap-4 px-4 py-3 items-center text-sm">
-                  <span className="text-white/90">{t.name}</span>
-                  {t.free ? (
-                    <Badge
-                      variant="outline"
-                      className="border-[#00d4aa]/40 text-[#00d4aa] bg-[#00d4aa]/5"
-                    >
-                      {t.cost}
-                    </Badge>
-                  ) : (
-                    <span className="text-white/70 text-right">{t.cost}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </Card>
+        <CreditCostTable className="mb-8" />
+
 
         {/* 4. Cancel Membership */}
         <div className="text-center pb-10">
