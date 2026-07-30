@@ -81,7 +81,7 @@ Provide a concise but detailed style description that could be used to generate 
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'Payment required' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       

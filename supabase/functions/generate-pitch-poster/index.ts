@@ -127,7 +127,7 @@ serve(async (req) => {
               "AI credits exhausted. Add credits in Settings > Workspace > Usage.",
           }),
           {
-            status: 402,
+            status: 503,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           },
         );

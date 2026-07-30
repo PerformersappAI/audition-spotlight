@@ -138,7 +138,7 @@ Return ONLY this JSON shape:
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'Credits depleted. Please add credits to continue.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       return new Response(

@@ -596,7 +596,7 @@ Make your analysis deeply personal to this scene - reference specific lines, act
           success: false,
           retryable: false
         }), {
-          status: 402,
+          status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }

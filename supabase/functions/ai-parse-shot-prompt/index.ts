@@ -146,7 +146,7 @@ Extract the following information:
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'AI credits depleted. Please add credits in Settings → Workspace → Usage.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
 

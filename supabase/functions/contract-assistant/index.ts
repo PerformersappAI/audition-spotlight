@@ -166,7 +166,7 @@ RESPONSE STYLE:
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "Payment required, please add funds to your Lovable AI workspace." }), {
-          status: 402,
+          status: 503,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }

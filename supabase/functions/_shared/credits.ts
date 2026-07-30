@@ -141,7 +141,7 @@ export async function charge(
 export function insufficientCreditsBody(required: number, available: number) {
   return new Response(
     JSON.stringify({ error: "Insufficient credits", required, available }),
-    { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } },
+    { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } },
   );
 }
 

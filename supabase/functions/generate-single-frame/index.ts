@@ -302,7 +302,7 @@ serve(async (req) => {
           error: 'AI image service temporarily unavailable (workspace AI balance reached). This is unrelated to your account credits — please contact support.',
           errorType: 'ai_gateway_balance'
         }), {
-          status: 402,
+          status: 503,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }

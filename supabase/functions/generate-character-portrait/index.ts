@@ -153,7 +153,7 @@ serve(async (req) => {
     if (response.status === 402) {
       return new Response(
         JSON.stringify({ error: "AI credits exhausted. Add funds in Lovable AI workspace settings." }),
-        { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
     if (!response.ok) {

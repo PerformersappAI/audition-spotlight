@@ -148,7 +148,7 @@ Return only the extracted text without any commentary.`;
               success: false,
               retryable: false
             }), {
-              status: 402,
+              status: 503,
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             });
           }

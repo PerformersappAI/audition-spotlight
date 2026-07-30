@@ -299,7 +299,7 @@ Return ONLY the description. Double line break between paragraphs.`;
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "API credits exhausted. Please add credits to continue." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();

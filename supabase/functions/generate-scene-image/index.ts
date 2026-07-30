@@ -134,7 +134,7 @@ Visual Style Requirements:
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "Credits exhausted. Please add more credits." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       
