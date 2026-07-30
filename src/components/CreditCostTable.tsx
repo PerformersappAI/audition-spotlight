@@ -5,18 +5,23 @@ type ToolCost = { name: string; cost: string; free?: boolean };
 
 // First-draft credit costs — easy to tweak.
 export const TOOL_COSTS: ToolCost[] = [
-  { name: 'Call Sheet', cost: 'Free', free: true },
   { name: 'Academy / Courses', cost: 'Free', free: true },
-  { name: 'Script Analysis', cost: '~1 credit (3-page section; more for longer)' },
   { name: 'Scene Analysis', cost: '~1 credit' },
-  { name: 'Storyboarding', cost: '2–4 credits (grows with number of frames)' },
-  { name: 'Table Read (reader voices)', cost: '2–4 credits (varies by dialogue length)' },
-  { name: 'Pitch Deck Builder', cost: '~2 credits' },
-  { name: 'Video Evaluation', cost: '1 credit' },
-  { name: 'Funding Strategy', cost: '~1 credit' },
-  { name: 'Distribution Readiness', cost: '~1 credit' },
+  { name: 'Storyboard Generator', cost: '2–4 credits (grows with number of frames)' },
+  { name: 'Table Read', cost: '2–4 credits (varies by dialogue length)' },
+  { name: 'Fundraising', cost: '~1 credit' },
+  { name: 'Pitch Deck Maker', cost: '~2 credits' },
+  { name: 'Calendar', cost: 'Free', free: true },
+  { name: 'Call Sheet Generator', cost: '~1 credit' },
+  { name: 'Project Intake Form', cost: 'Free', free: true },
   { name: 'Contract Assistant', cost: '~1 credit' },
-  { name: 'Contract Filler', cost: '0.5 credit' },
+  { name: 'Document Library', cost: 'Free', free: true },
+  { name: 'Auditions', cost: 'Free', free: true },
+  { name: 'Crew Hire', cost: 'Free', free: true },
+  { name: 'Distribution Readiness Assessment', cost: '~1 credit' },
+  { name: 'Recut', cost: '~1 credit' },
+  { name: 'Marketing in a Box', cost: '—' },
+  { name: 'Green Light Engine', cost: '—' },
 ];
 
 const CreditCostTable = ({ className = '' }: { className?: string }) => (
