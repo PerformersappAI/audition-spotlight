@@ -3204,7 +3204,7 @@ const ToolCard$1 = ({
             height: aspect === "tall" ? 1200 : 450,
             loading: "lazy",
             decoding: "async",
-            className: "w-full h-full object-cover"
+            className: `w-full h-full ${card.fit === "contain" ? "object-contain" : "object-cover"}`
           }
         ) }),
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between px-5 py-4 border-t", style: { borderTopColor: "rgba(255,255,255,0.06)" }, children: [
@@ -3257,7 +3257,7 @@ const HomeMarketing = () => {
   const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
-  const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url };
+  const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url, fit: "contain" };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
     /* @__PURE__ */ jsx(
       Seo,
