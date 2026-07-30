@@ -1967,6 +1967,7 @@ export type Database = {
       }
     }
     Functions: {
+      get_available_credits: { Args: { _user_id: string }; Returns: number }
       get_user_subscription_status: {
         Args: { _user_id: string }
         Returns: {
@@ -2010,6 +2011,18 @@ export type Database = {
       refresh_plan_credits: {
         Args: { _amount: number; _reason: string; _user_id: string }
         Returns: undefined
+      }
+      spend_credits: {
+        Args: {
+          _cost: number
+          _feature: string
+          _metadata?: Json
+          _user_id: string
+        }
+        Returns: {
+          available_credits: number
+          success: boolean
+        }[]
       }
     }
     Enums: {
