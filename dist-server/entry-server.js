@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, CreditCard, Sparkles, Home } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Crown, Loader2, Settings, Sparkles, Home } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -2737,9 +2737,9 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$8 = "#00d4aa";
+const TEAL$9 = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
-const VIOLET = "#a855f7";
+const VIOLET$1 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
 const GlobalLayout = ({ children }) => {
   var _a2, _b2, _c, _d;
@@ -2815,7 +2815,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$8}, ${VIOLET})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$9}, ${VIOLET$1})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -2845,9 +2845,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/crew-hire",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors",
-                    style: { backgroundColor: VIOLET },
+                    style: { backgroundColor: VIOLET$1 },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = VIOLET_HOVER,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = VIOLET,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = VIOLET$1,
                     children: "Crew Jobs"
                   }
                 ),
@@ -2859,9 +2859,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$8 },
+                    style: { backgroundColor: TEAL$9 },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$8,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$9,
                     children: "Get Started"
                   }
                 )
@@ -2979,7 +2979,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/crew-hire",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-white text-center",
-                      style: { backgroundColor: VIOLET },
+                      style: { backgroundColor: VIOLET$1 },
                       children: "Crew Jobs"
                     }
                   ),
@@ -2998,7 +2998,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$8 },
+                      style: { backgroundColor: TEAL$9 },
                       children: "Get Started"
                     }
                   )
@@ -3171,12 +3171,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$7, borderColor: `${TEAL$7}66` },
+    style: { color: TEAL$8, borderColor: `${TEAL$8}66` },
     children: label
   }
 );
@@ -3192,7 +3192,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$7,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$8,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3355,7 +3355,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$6 = "#00d4aa";
+const TEAL$7 = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3459,7 +3459,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$6, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$7, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3475,7 +3475,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$6 : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$7 : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3554,7 +3554,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3562,7 +3562,7 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$5 = "#00d4aa";
+const TEAL$6 = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
 const inputStyle = {
   width: "100%",
@@ -3661,7 +3661,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$5 }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3694,13 +3694,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$5 }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$6 }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$5,
+        background: TEAL$6,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3713,7 +3713,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$5 }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3773,7 +3773,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$5,
+            background: TEAL$6,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3789,7 +3789,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$4 = "#00d4aa";
+const TEAL$5 = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -3883,7 +3883,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$4,
+        color: TEAL$5,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -3922,7 +3922,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$4 : "#fff",
+                color: isOpen ? TEAL$5 : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -3943,7 +3943,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$4 : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$5 : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4293,7 +4293,7 @@ const Pricing = () => {
     ] })
   ] });
 };
-const TEAL$3 = "#00d4aa";
+const TEAL$4 = "#00d4aa";
 const SECTIONS$1 = [
   {
     h: "The short version",
@@ -4377,7 +4377,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$3,
+            color: TEAL$4,
             marginBottom: 14
           },
           children: "Legal"
@@ -4482,7 +4482,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$3, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$4, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4495,7 +4495,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$2 = "#00d4aa";
+const TEAL$3 = "#00d4aa";
 const SECTIONS = [
   {
     h: "You own your work",
@@ -4579,7 +4579,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$2,
+            color: TEAL$3,
             marginBottom: 14
           },
           children: "Legal"
@@ -4684,7 +4684,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$2, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$3, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4996,7 +4996,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$1 = "#00d4aa";
+const TEAL$2 = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -5066,7 +5066,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$1 },
+        style: { color: TEAL$2 },
         children: "AI Recut"
       }
     ),
@@ -5074,7 +5074,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$1,
+        stroke: TEAL$2,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -5092,8 +5092,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$1}`,
-          color: TEAL$1,
+          border: `1px solid ${TEAL$2}`,
+          color: TEAL$2,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -5131,7 +5131,7 @@ function Recut() {
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$1, color: "#0a0a12" },
+            style: { background: TEAL$2, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -5199,7 +5199,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$1}`,
+              border: `2px dashed ${TEAL$2}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -5217,7 +5217,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$1, color: "#0a0a12" },
+                  style: { background: TEAL$2, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -5232,7 +5232,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$1 },
+              style: { color: TEAL$2 },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -6244,6 +6244,44 @@ function CrewHire() {
     ] })
   ] });
 }
+const TOOL_COSTS = [
+  { name: "Festival Finder", cost: "Free", free: true },
+  { name: "Call Sheet", cost: "Free", free: true },
+  { name: "Academy / Courses", cost: "Free", free: true },
+  { name: "Script Analysis", cost: "~1 credit (3-page section; more for longer)" },
+  { name: "Scene Analysis", cost: "~1 credit" },
+  { name: "Storyboarding", cost: "2–4 credits (grows with number of frames)" },
+  { name: "Table Read (reader voices)", cost: "2–4 credits (varies by dialogue length)" },
+  { name: "Pitch Deck Builder", cost: "~2 credits" },
+  { name: "Video Evaluation", cost: "1 credit" },
+  { name: "Funding Strategy", cost: "~1 credit" },
+  { name: "Distribution Readiness", cost: "~1 credit" },
+  { name: "Contract Assistant", cost: "~1 credit" },
+  { name: "Contract Filler", cost: "0.5 credit" }
+];
+const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { className: `p-6 bg-white/[0.03] border-white/10 ${className}`, children: [
+  /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-2", children: "How Your Credits Work" }),
+  /* @__PURE__ */ jsx("p", { className: "text-sm text-white/60 mb-5", children: "Every AI tool runs on credits. Here's exactly what each one costs — so you always know where you stand." }),
+  /* @__PURE__ */ jsxs("div", { className: "border border-white/5 rounded-md overflow-hidden", children: [
+    /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[1fr_auto] gap-4 px-4 py-2.5 bg-white/5 text-xs uppercase tracking-wider text-white/50", children: [
+      /* @__PURE__ */ jsx("span", { children: "Tool" }),
+      /* @__PURE__ */ jsx("span", { children: "Cost" })
+    ] }),
+    /* @__PURE__ */ jsx("ul", { className: "divide-y divide-white/5", children: TOOL_COSTS.map((t) => /* @__PURE__ */ jsxs("li", { className: "grid grid-cols-[1fr_auto] gap-4 px-4 py-3 items-center text-sm", children: [
+      /* @__PURE__ */ jsx("span", { className: "text-white/90", children: t.name }),
+      t.free ? /* @__PURE__ */ jsx(
+        Badge,
+        {
+          variant: "outline",
+          className: "border-[#00d4aa]/40 text-[#00d4aa] bg-[#00d4aa]/5",
+          children: t.cost
+        }
+      ) : /* @__PURE__ */ jsx("span", { className: "text-white/70 text-right", children: t.cost })
+    ] }, t.name)) })
+  ] })
+] });
+const TEAL$1 = "#00d4aa";
+const VIOLET = "#a855f7";
 const Membership = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -6512,17 +6550,22 @@ const Membership = () => {
           plan.id
         );
       }) }),
-      /* @__PURE__ */ jsx("div", { className: "max-w-3xl mx-auto", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-dashed border-primary/30", children: [
-        /* @__PURE__ */ jsxs(CardHeader, { className: "text-center", children: [
-          /* @__PURE__ */ jsx("div", { className: "mb-4 flex justify-center", children: /* @__PURE__ */ jsx("div", { className: "p-3 rounded-full bg-primary/10", children: /* @__PURE__ */ jsx(CreditCard, { className: "h-6 w-6 text-primary" }) }) }),
-          /* @__PURE__ */ jsx(CardTitle, { className: "text-2xl", children: "Need More Credits?" }),
-          /* @__PURE__ */ jsx(CardDescription, { className: "text-base", children: "Purchase additional credits anytime. Credits never expire!" })
-        ] }),
-        /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+      /* @__PURE__ */ jsx("div", { className: "max-w-3xl mx-auto", children: /* @__PURE__ */ jsxs(Card$1, { className: "p-8 bg-white/[0.03] border-white/10 text-center", children: [
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
+            style: { background: `linear-gradient(135deg, ${TEAL$1}, ${VIOLET})` },
+            children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
+          }
+        ),
+        /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-2", children: "Need More Credits?" }),
+        /* @__PURE__ */ jsx("p", { className: "text-white/60 mb-6 max-w-md mx-auto", children: "Purchase additional credits anytime. Credits never expire!" }),
+        /* @__PURE__ */ jsxs("div", { className: "max-w-md mx-auto text-left space-y-6", children: [
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { className: "text-sm font-medium mb-2 block", children: "Select Credit Pack" }),
+            /* @__PURE__ */ jsx("label", { className: "text-sm font-medium mb-2 block text-white/80", children: "Select Credit Pack" }),
             /* @__PURE__ */ jsxs(Select, { value: selectedCreditPack, onValueChange: setSelectedCreditPack, children: [
-              /* @__PURE__ */ jsx(SelectTrigger, { className: "w-full", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Choose credit amount" }) }),
+              /* @__PURE__ */ jsx(SelectTrigger, { className: "w-full bg-white/[0.02] border-white/10", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Choose credit amount" }) }),
               /* @__PURE__ */ jsx(SelectContent, { children: creditPacks.map((pack) => /* @__PURE__ */ jsxs(SelectItem, { value: pack.amount.toString(), children: [
                 pack.amount,
                 " Credits - $",
@@ -6533,79 +6576,46 @@ const Membership = () => {
               ] }, pack.amount)) })
             ] })
           ] }),
-          selectedPack && /* @__PURE__ */ jsxs("div", { className: "bg-accent/50 p-4 rounded-lg space-y-2", children: [
+          selectedPack && /* @__PURE__ */ jsxs("div", { className: "rounded-lg border border-white/10 bg-white/[0.02] p-4 space-y-2", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm", children: [
-              /* @__PURE__ */ jsx("span", { className: "text-muted-foreground", children: "Credits" }),
+              /* @__PURE__ */ jsx("span", { className: "text-white/60", children: "Credits" }),
               /* @__PURE__ */ jsx("span", { className: "font-semibold", children: selectedPack.amount })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm", children: [
-              /* @__PURE__ */ jsx("span", { className: "text-muted-foreground", children: "Price per credit" }),
+              /* @__PURE__ */ jsx("span", { className: "text-white/60", children: "Price per credit" }),
               /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
                 "$",
                 selectedPack.pricePerCredit.toFixed(2)
               ] })
             ] }),
-            /* @__PURE__ */ jsx("div", { className: "border-t border-border pt-2 mt-2", children: /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
+            /* @__PURE__ */ jsx("div", { className: "border-t border-white/10 pt-2 mt-2", children: /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center", children: [
               /* @__PURE__ */ jsx("span", { className: "font-semibold", children: "Total" }),
-              /* @__PURE__ */ jsxs("span", { className: "text-2xl font-bold text-gold", children: [
+              /* @__PURE__ */ jsxs("span", { className: "text-2xl font-bold", style: { color: TEAL$1 }, children: [
                 "$",
                 selectedPack.price.toFixed(2)
               ] })
             ] }) })
           ] })
         ] }),
-        /* @__PURE__ */ jsx(CardFooter, { children: /* @__PURE__ */ jsx(
+        /* @__PURE__ */ jsx(
           Button,
           {
-            className: "w-full",
             size: "lg",
             onClick: handlePurchaseCredits,
             disabled: purchasingCredits,
+            className: "mt-6 text-black font-semibold",
+            style: { backgroundColor: TEAL$1 },
             children: purchasingCredits ? /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
               "Processing..."
-            ] }) : "Purchase Credits"
+            ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
+              "Purchase Credits"
+            ] })
           }
-        ) })
+        )
       ] }) }),
-      /* @__PURE__ */ jsx("div", { className: "mt-16 max-w-4xl mx-auto", children: /* @__PURE__ */ jsxs(Card$1, { children: [
-        /* @__PURE__ */ jsxs(CardHeader, { children: [
-          /* @__PURE__ */ jsx(CardTitle, { children: "How Credits Work" }),
-          /* @__PURE__ */ jsx(CardDescription, { children: "Understanding our credit system" })
-        ] }),
-        /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-6", children: [
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("h3", { className: "font-semibold mb-3 flex items-center gap-2", children: /* @__PURE__ */ jsx(Badge, { variant: "outline", children: "Credit Costs" }) }),
-            /* @__PURE__ */ jsxs("ul", { className: "space-y-2 text-sm text-muted-foreground", children: [
-              /* @__PURE__ */ jsxs("li", { children: [
-                "• Script Analysis: ",
-                /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground", children: "5 credits" })
-              ] }),
-              /* @__PURE__ */ jsxs("li", { children: [
-                "• Scene Analysis: ",
-                /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground", children: "3 credits" })
-              ] }),
-              /* @__PURE__ */ jsxs("li", { children: [
-                "• Storyboard Frame: ",
-                /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground", children: "10 credits" })
-              ] }),
-              /* @__PURE__ */ jsxs("li", { children: [
-                "• Document Upload/OCR: ",
-                /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground", children: "2 credits" })
-              ] })
-            ] })
-          ] }),
-          /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("h3", { className: "font-semibold mb-3 flex items-center gap-2", children: /* @__PURE__ */ jsx(Badge, { variant: "outline", children: "Benefits" }) }),
-            /* @__PURE__ */ jsxs("ul", { className: "space-y-2 text-sm text-muted-foreground", children: [
-              /* @__PURE__ */ jsx("li", { children: "• Credits never expire" }),
-              /* @__PURE__ */ jsx("li", { children: "• Use across all tools" }),
-              /* @__PURE__ */ jsx("li", { children: "• Monthly subscription credits reset" }),
-              /* @__PURE__ */ jsx("li", { children: "• Purchased credits stack with subscription" })
-            ] })
-          ] })
-        ] }) })
-      ] }) })
+      /* @__PURE__ */ jsx("div", { className: "mt-16 max-w-4xl mx-auto text-white", children: /* @__PURE__ */ jsx(CreditCostTable, {}) })
     ] })
   ] });
 };
