@@ -3111,16 +3111,36 @@ const imgPitchDeck = "/assets/tool-pitch-deck-new-KGycKjNa.webp";
 const imgCallSheet = "/assets/tool-call-sheet-DQpWMo_S.webp";
 const imgAuditions = "/assets/tool-auditions-CAWKiQYv.webp";
 const imgCrewHire = "/assets/tool-crew-hire-C6wHLsjN.webp";
-const version$2 = 1;
-const asset_id$2 = "5515411f-b226-45eb-a75f-d58c29bcf316";
-const project_id$2 = "2327b42e-2823-4633-a594-07a097a36c30";
-const url$2 = "/__l5e/assets-v1/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
-const r2_key$2 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
-const original_filename$2 = "contract-assistant.png";
-const size$2 = 2594611;
-const content_type$2 = "image/png";
-const created_at$2 = "2026-07-30T02:18:46Z";
+const version$3 = 1;
+const asset_id$3 = "5515411f-b226-45eb-a75f-d58c29bcf316";
+const project_id$3 = "2327b42e-2823-4633-a594-07a097a36c30";
+const url$3 = "/__l5e/assets-v1/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
+const r2_key$3 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/5515411f-b226-45eb-a75f-d58c29bcf316/contract-assistant.png";
+const original_filename$3 = "contract-assistant.png";
+const size$3 = 2594611;
+const content_type$3 = "image/png";
+const created_at$3 = "2026-07-30T02:18:46Z";
 const imgContractAssistant = {
+  version: version$3,
+  asset_id: asset_id$3,
+  project_id: project_id$3,
+  url: url$3,
+  r2_key: r2_key$3,
+  original_filename: original_filename$3,
+  size: size$3,
+  content_type: content_type$3,
+  created_at: created_at$3
+};
+const version$2 = 1;
+const asset_id$2 = "78da1148-891b-4254-b345-5c26c17aad4e";
+const project_id$2 = "2327b42e-2823-4633-a594-07a097a36c30";
+const url$2 = "/__l5e/assets-v1/78da1148-891b-4254-b345-5c26c17aad4e/Marketing_in_a_Box.png";
+const r2_key$2 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/78da1148-891b-4254-b345-5c26c17aad4e/Marketing_in_a_Box.png";
+const original_filename$2 = "Marketing_in_a_Box.png";
+const size$2 = 1985791;
+const content_type$2 = "image/png";
+const created_at$2 = "2026-07-30T02:26:15Z";
+const imgMarketingInABox = {
   version: version$2,
   asset_id: asset_id$2,
   project_id: project_id$2,
@@ -3216,7 +3236,7 @@ const HomeMarketing = () => {
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
-  const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgPitchDeck };
+  const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
   const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
     /* @__PURE__ */ jsx(
