@@ -19,6 +19,7 @@ type Card = {
   to: string;
   cta: string;
   img: string;
+  fit?: "cover" | "contain";
 };
 
 const CtaPill = ({ label }: { label: string }) => (
@@ -60,7 +61,7 @@ const ToolCard = ({
           height={aspect === "tall" ? 1200 : 450}
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover"
+          className={`w-full h-full ${card.fit === "contain" ? "object-contain" : "object-cover"}`}
         />
       </div>
       <div className="flex items-center justify-between px-5 py-4 border-t" style={{ borderTopColor: "rgba(255,255,255,0.06)" }}>
@@ -112,7 +113,7 @@ const HomeMarketing = () => {
   const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
-  const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url };
+  const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url, fit: "contain" };
 
   return (
     <div style={{ background: "#000" }} className="min-h-screen">
