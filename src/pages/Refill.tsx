@@ -70,6 +70,10 @@ export default function Refill() {
     try {
       const { data, error } = await supabase.functions.invoke('customer-portal');
       if (error) throw error;
+      if (data?.error === 'no_active_membership') {
+        toast.info("You don't have an active membership to cancel");
+        return;
+      }
       if (data?.url) window.location.href = data.url;
       else throw new Error('No portal URL');
     } catch (e: any) {
