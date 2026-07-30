@@ -91,7 +91,7 @@ const NeonCube = ({
     }}
   >
     <span
-      className="absolute -top-3 left-5 px-2 text-[11px] font-semibold uppercase tracking-[0.2em]"
+      className="absolute -top-4 left-5 px-2 text-[22px] font-semibold uppercase tracking-[0.2em]"
       style={{ color, background: "#050505", fontFamily: "'Archivo Black', 'Inter Tight', sans-serif" }}
     >
       {label}
@@ -173,7 +173,7 @@ const HomeMarketing = () => {
           className="mx-auto flex flex-col"
           style={{ maxWidth: 1040, gap: 40 }}
         >
-          <NeonCube label="SHOOT" color={TEAL}>
+          <NeonCube label="SHOOT" color="#b026ff">
             {/* Bento: left = two 16/9 stacked; right = three cards stretching to match left height */}
             <div className="grid grid-cols-1 min-[960px]:grid-cols-[1fr_337px] gap-[14px] items-stretch">
               <div className="flex flex-col gap-[14px]">
@@ -194,14 +194,14 @@ const HomeMarketing = () => {
             </div>
           </NeonCube>
 
-          <NeonCube label="FUND" color="#d4a84c">
+          <NeonCube label="FUND" color="#39ff14">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
               <ToolCard card={pitchDeck} aspect="16/9" />
             </div>
           </NeonCube>
 
-          <NeonCube label="RELEASE" color="#a855f7">
+          <NeonCube label="RELEASE" color="#ffcf1a">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
               <ToolCard card={pitchDeck} aspect="16/9" />
               <ToolCard card={pitchDeck} aspect="16/9" />
