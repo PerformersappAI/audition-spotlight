@@ -16,7 +16,7 @@ interface AddCreditsCardProps {
 }
 
 /**
- * Shared one-time $5 top-up box (10 credits).
+ * Shared one-time $10 top-up box (30 credits).
  * Used on both the Refill (/refill) and Membership (/membership) pages so the two stay in sync.
  */
 export default function AddCreditsCard({ className = '', showMembershipLink = true }: AddCreditsCardProps) {
@@ -26,7 +26,7 @@ export default function AddCreditsCard({ className = '', showMembershipLink = tr
     setBuying(true);
     try {
       const { data, error } = await supabase.functions.invoke('create-credit-purchase', {
-        body: { creditAmount: '10' }, // $5 = 10 credits (smallest existing pack)
+        body: { creditAmount: '30' }, // $10 = 30 credits
       });
       if (error) throw error;
       if (data?.url) window.location.href = data.url;
@@ -48,7 +48,7 @@ export default function AddCreditsCard({ className = '', showMembershipLink = tr
       </div>
       <h2 className="text-2xl font-semibold mb-2">Add More Credits</h2>
       <p className="text-white/60 mb-6 max-w-md mx-auto">
-        Buy more credits to keep using the tools. One-time $5 top-up (10 credits) — no
+        Buy more credits to keep using the tools. One-time $10 top-up (30 credits) — no
         subscription change.
       </p>
       <Button
@@ -59,7 +59,7 @@ export default function AddCreditsCard({ className = '', showMembershipLink = tr
         style={{ backgroundColor: TEAL }}
       >
         {buying ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
-        Buy More Credits — $5
+        Buy More Credits — $10 for 30 Credits
       </Button>
       {showMembershipLink && (
         <p className="text-xs text-white/40 mt-4">
