@@ -151,32 +151,7 @@ export default function Refill() {
         </Card>
 
         {/* 2. Add More Credits */}
-        <Card className="p-8 mb-8 bg-white/[0.03] border-white/10 text-center">
-          <div
-            className="h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4"
-            style={{ background: `linear-gradient(135deg, ${TEAL}, ${VIOLET})` }}
-          >
-            <Zap className="h-6 w-6 text-black" />
-          </div>
-          <h2 className="text-2xl font-semibold mb-2">Add More Credits</h2>
-          <p className="text-white/60 mb-6 max-w-md mx-auto">
-            Buy more credits to keep using the tools. One-time $5 top-up (10 credits) — no
-            subscription change.
-          </p>
-          <Button
-            size="lg"
-            onClick={handleBuy}
-            disabled={buying}
-            className="text-black font-semibold"
-            style={{ backgroundColor: TEAL }}
-          >
-            {buying ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Zap className="h-4 w-4 mr-2" />}
-            Buy More Credits — $5
-          </Button>
-          <p className="text-xs text-white/40 mt-4">
-            Need a bigger pack? See <Link to="/membership" className="underline hover:text-white">Membership</Link>.
-          </p>
-        </Card>
+        <AddCreditsCard className="mb-8" />
 
         {/* 3. How Your Credits Work */}
         <CreditCostTable className="mb-8" />
