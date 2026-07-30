@@ -26,7 +26,7 @@ const VIOLET = '#a855f7';
 export default function Refill() {
   const { user, loading: authLoading } = useAuth();
   const { credits, transactions, loading, fetchCredits, fetchTransactions } = useCredits();
-  const [buying, setBuying] = useState(false);
+  const [canceling, setCanceling] = useState(false);
   const [canceling, setCanceling] = useState(false);
 
   useEffect(() => {
@@ -63,21 +63,8 @@ export default function Refill() {
 
   const usageLog = transactions.filter(t => t.transaction_type === 'usage');
 
-  const handleBuy = async () => {
-    setBuying(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-credit-purchase', {
-        body: { creditAmount: '10' }, // $5 = 10 credits (smallest existing pack)
-      });
-      if (error) throw error;
-      if (data?.url) window.location.href = data.url;
-      else throw new Error('No checkout URL returned');
-    } catch (e: any) {
-      toast.error(e.message || 'Could not start checkout');
-    } finally {
-      setBuying(false);
-    }
-  };
+
+
 
   const handleCancel = async () => {
     setCanceling(true);
