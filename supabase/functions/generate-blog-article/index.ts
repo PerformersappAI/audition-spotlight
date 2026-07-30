@@ -55,7 +55,7 @@ Use "MISTAKES" and "TUTORIAL" framing. NEVER use "tips." ("5 Filmmaking Mistakes
 - One primary keyword per article, placed in the title, headline, first 100 words, and at least one ## heading.
 - Chase volume + LOW difficulty. Prefer: how to make a short film; how to write a logline; best free video editing software; screenplay script format; screenplay act structure; how to script writing; shot list; camera shots in filmmaking; long shot camera angles; color grading video software; runway ai video maker; film festivals in new york; film grants for short films; how to become a producer in film; filmmaking mistakes; filmmaking tutorial; how to film a movie scene.
 - Skip giant wrong-intent tool/brand terms (davinci resolve, sora ai, movie poster) as primary keywords.
-- Internal links: 2–5 Markdown links to real FilmmakerGenius tools where they fit — /pitch-deck, /call-sheet, /storyboarding, /festival-finder, /script-analysis, /funding-strategy, /distribution-readiness, /membership. Descriptive anchor text.
+- Internal links: 2–5 Markdown links to real FilmmakerGenius tools where they fit — /pitch-deck, /call-sheet, /storyboarding, /script-analysis, /funding-strategy, /distribution-readiness, /membership. Descriptive anchor text.
 
 # FUNNEL
 Drive to the FilmmakerGenius pipeline — especially the Pitch Deck Builder (/pitch-deck). For logline/screenplay/funding topics, the logline → Pitch Deck path is the primary CTA. Match the tool to the topic. One mention, woven in.
