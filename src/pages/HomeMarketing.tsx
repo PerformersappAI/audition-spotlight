@@ -61,7 +61,7 @@ const ToolCard = ({
           height={aspect === "tall" ? 1200 : 450}
           loading="lazy"
           decoding="async"
-          className="w-full h-full object-cover"
+          className={`w-full h-full ${card.fit === "contain" ? "object-contain" : "object-cover"}`}
         />
       </div>
       <div className="flex items-center justify-between px-5 py-4 border-t" style={{ borderTopColor: "rgba(255,255,255,0.06)" }}>
