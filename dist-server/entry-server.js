@@ -3196,7 +3196,7 @@ const HomeMarketing = () => {
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
-  const marketingInABox = { title: "Marketing in a Box", to: "/launch", cta: "Explore", img: imgPitchDeck };
+  const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgPitchDeck };
   const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
     /* @__PURE__ */ jsx(
@@ -12771,6 +12771,47 @@ function Launch() {
     /* @__PURE__ */ jsx("div", { style: { marginTop: 16 }, children: /* @__PURE__ */ jsx(GreenLightEngineCard, {}) })
   ] }) });
 }
+function Marketing() {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  return /* @__PURE__ */ jsx(
+    "div",
+    {
+      style: {
+        background: "#0a0a12",
+        color: "#fff",
+        minHeight: "100vh",
+        fontFamily: "'Inter Tight', sans-serif"
+      },
+      children: /* @__PURE__ */ jsx(
+        "div",
+        {
+          style: {
+            maxWidth: 1120,
+            margin: "0 auto",
+            padding: "96px 24px 80px"
+          },
+          children: /* @__PURE__ */ jsx(
+            "h1",
+            {
+              className: "text-center",
+              style: {
+                fontFamily: "'Anton', 'Archivo Black', sans-serif",
+                textTransform: "uppercase",
+                letterSpacing: "0.02em",
+                fontSize: "clamp(34px, 7vw, 76px)",
+                lineHeight: 1.05,
+                color: "#00d4aa"
+              },
+              children: "Marketing in a Box"
+            }
+          )
+        }
+      )
+    }
+  );
+}
 const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE__ */ jsxs(Routes, { children: [
   /* @__PURE__ */ jsx(Route, { path: "/", element: /* @__PURE__ */ jsx(HomeMarketing, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/about", element: /* @__PURE__ */ jsx(About, {}) }),
@@ -12803,6 +12844,7 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug", element: /* @__PURE__ */ jsx(CoursePage, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsx(Launch, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/marketing", element: /* @__PURE__ */ jsx(Marketing, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(NotFound, {}) })
 ] }) });
 async function preloadForUrl(url2) {

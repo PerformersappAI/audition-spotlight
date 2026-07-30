@@ -27,6 +27,7 @@ import CoursePage from "./pages/CoursePage";
 import CourseChapter from "./pages/CourseChapter";
 import NotFound from "./pages/NotFound";
 import Launch from "./pages/Launch";
+import Marketing from "./pages/Marketing";
 
 
 export const AppRoutes = () => (
@@ -63,6 +64,7 @@ export const AppRoutes = () => (
       <Route path="/academy/:courseSlug" element={<CoursePage />} />
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
       <Route path="/launch" element={<Launch />} />
+      <Route path="/marketing" element={<Marketing />} />
       <Route path="*" element={<NotFound />} />
 
     </Routes>

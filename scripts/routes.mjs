@@ -17,6 +17,7 @@ const staticRoutes = [
   "/toolbox",
   "/recut",
   "/launch",
+  "/marketing",
   "/crew-hire",
   "/blog",
   "/privacy",
