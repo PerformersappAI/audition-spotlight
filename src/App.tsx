@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
-import FestivalFinder from "./pages/FestivalFinder";
 import PitchDeckMaker from "./pages/PitchDeckMaker";
 import PitchDeckPreview from "./pages/PitchDeckPreview";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -133,7 +132,7 @@ const AppContent = () => (
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />
       <Route path="/festivals" element={<Festivals />} />
-      <Route path="/festival-finder" element={<FestivalFinder />} />
+      <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/calendar" element={<CalendarPage />} />
       <Route path="/filmmaker" element={<FilmmakerDashboard />} />
       <Route path="/admin-login" element={<AdminLogin />} />

@@ -170,16 +170,6 @@ export default function ToolboxHome() {
   // Secondary tools - displayed as smaller cards
   const secondaryModules: Module[] = [
     {
-      id: "festival_finder",
-      name: "Film Festivals",
-      description: "Find festivals in your area by ZIP code",
-      icon: MapPin,
-      status: "active",
-      badge: "Location",
-      route: "/festival-finder",
-      size: "small"
-    },
-    {
       id: "docs_library",
       name: "Docs Library",
       description: "Forms, templates, and checklists",
@@ -618,12 +608,6 @@ export default function ToolboxHome() {
             <div className="flex flex-col md:flex-row md:items-center gap-6">
               <h3 className="text-xl font-bold text-white whitespace-nowrap">More Tools</h3>
               <div className="flex flex-wrap items-center gap-4 md:gap-8">
-                <Link to="/festival-finder" className="flex items-center gap-3 text-gray-200 hover:text-teal-400 transition-colors">
-                  <div className="w-10 h-10 rounded-xl bg-teal-500/20 flex items-center justify-center">
-                    <MapPin className="h-5 w-5 text-teal-400" />
-                  </div>
-                  <span className="text-base font-medium">Festivals</span>
-                </Link>
                 <Link to="/library" className="flex items-center gap-3 text-gray-200 hover:text-purple-400 transition-colors">
                   <div className="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
                     <FileText className="h-5 w-5 text-purple-400" />

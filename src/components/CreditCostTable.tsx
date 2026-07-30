@@ -5,7 +5,6 @@ type ToolCost = { name: string; cost: string; free?: boolean };
 
 // First-draft credit costs — easy to tweak.
 export const TOOL_COSTS: ToolCost[] = [
-  { name: 'Festival Finder', cost: 'Free', free: true },
   { name: 'Call Sheet', cost: 'Free', free: true },
   { name: 'Academy / Courses', cost: 'Free', free: true },
   { name: 'Script Analysis', cost: '~1 credit (3-page section; more for longer)' },

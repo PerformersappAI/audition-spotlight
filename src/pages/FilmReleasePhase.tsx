@@ -2,17 +2,10 @@ import { Link } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, ChevronRight, MessageCircle, Presentation } from "lucide-react";
+import { ChevronRight, MessageCircle, Presentation } from "lucide-react";
 
 export default function FilmReleasePhase() {
   const tools = [
-    {
-      name: "Film Festivals",
-      description: "Find festivals in your area by ZIP code",
-      icon: MapPin,
-      badge: "Location",
-      route: "/festival-finder"
-    },
     {
       name: "Pitch Deck Maker",
       description: "Create marketing materials for festival submissions",
