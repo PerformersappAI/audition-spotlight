@@ -8,6 +8,7 @@ import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/tool-auditions.webp";
 import imgCrewHire from "@/assets/tool-crew-hire.webp";
+import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 
 const TEAL = "#00d4aa";
 
