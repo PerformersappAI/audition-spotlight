@@ -109,6 +109,11 @@ const Membership = () => {
         return;
       }
 
+      if (data?.error === 'no_active_membership') {
+        toast.info("You don't have an active membership to cancel");
+        return;
+      }
+
       if (data?.url) {
         window.open(data.url, '_blank');
       } else {
