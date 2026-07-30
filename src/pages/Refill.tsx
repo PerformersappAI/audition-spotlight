@@ -27,7 +27,6 @@ export default function Refill() {
   const { user, loading: authLoading } = useAuth();
   const { credits, transactions, loading, fetchCredits, fetchTransactions } = useCredits();
   const [canceling, setCanceling] = useState(false);
-  const [canceling, setCanceling] = useState(false);
 
   useEffect(() => {
     document.title = 'Account & Credits | Filmmaker Genius';
