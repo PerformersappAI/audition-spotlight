@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
-import fgLogo from "@/assets/filmmaker-genius-logo.png";
+
 import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
 import imgStoryboard from "@/assets/tool-storyboard.webp";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
