@@ -77,7 +77,7 @@ const Step2Story = ({ data, update }: Step2Props) => {
   ) => {
     setLoading(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+      const result = await aiInvoke('generate-pitch-content', {
         body: {
           field,
           context: {
@@ -93,7 +93,6 @@ const Step2Story = ({ data, update }: Step2Props) => {
           },
         },
       });
-      if (error) throw error;
       if (result?.content !== undefined) {
         update(targetKey, result.content as any);
         toast.success(successMsg);
@@ -145,7 +144,7 @@ const Step2Story = ({ data, update }: Step2Props) => {
     }
     setIsGeneratingEpisodes(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+      const result = await aiInvoke('generate-pitch-content', {
         body: {
           field: "episodes",
           context: {
@@ -159,7 +158,6 @@ const Step2Story = ({ data, update }: Step2Props) => {
           },
         },
       });
-      if (error) throw error;
       const arr = result?.episodes || result?.content;
       if (Array.isArray(arr)) {
         update("episodes", arr.map((e: any) => ({

@@ -25,6 +25,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { aiInvoke, InsufficientCreditsError } from '@/lib/aiInvoke';
 
 interface VideoUploadFormProps {
   onVideoUploaded?: (videoUrl: string, duration: number, fileSize: number) => void;
@@ -207,8 +208,9 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
 
     setIsAnalyzing(true);
 
+    let data: any;
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-video', {
+      data = await aiInvoke('analyze-video', {
         body: {
           videoUrl,
           evaluationType,
@@ -222,27 +224,32 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
           category
         }
       });
-
-      if (error) {
-        console.error('Video analysis error:', error);
-        const errorMessage = error.message || error.toString();
-        
-        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
-          toast({
-            title: "AI service is temporarily busy",
-            description: "Please try analyzing again in a few moments.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Analysis failed",
-            description: `Failed to analyze video: ${errorMessage}`,
-            variant: "destructive"
-          });
-        }
+    } catch (error) {
+      if (error instanceof InsufficientCreditsError) {
+        setIsAnalyzing(false);
         return;
       }
+      console.error('Video analysis error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
+      if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
+        toast({
+          title: "AI service is temporarily busy",
+          description: "Please try analyzing again in a few moments.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Analysis failed",
+          description: `Failed to analyze video: ${errorMessage}`,
+          variant: "destructive"
+        });
+      }
+      setIsAnalyzing(false);
+      return;
+    }
+
+    try {
       if (data?.analysis) {
         toast({
           title: "Analysis complete",
@@ -255,11 +262,13 @@ export const VideoUploadForm: React.FC<VideoUploadFormProps> = ({
       }
     } catch (error) {
       console.error('Error analyzing video:', error);
-      toast({
-        title: "Analysis failed",
-        description: "Failed to analyze video. Please try again.",
-        variant: "destructive"
-      });
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast({
+          title: "Analysis failed",
+          description: "Failed to analyze video. Please try again.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsAnalyzing(false);
     }

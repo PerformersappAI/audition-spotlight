@@ -285,10 +285,9 @@ const Storyboarding = () => {
     // Re-extract scenes from the original script so user can re-pick
     setIsExtractingScenes(true);
     try {
-      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+      const data = await aiInvoke('extract-scenes', {
         body: { scriptText: selectedProject.scriptText }
       });
-      if (error) throw error;
       if (data?.scenes?.length) {
         setExtractedScenes(data.scenes as Scene[]);
         if (Array.isArray(data.cast)) setExtractedCast(data.cast as CastMember[]);
@@ -418,7 +417,7 @@ const Storyboarding = () => {
         description: `Using AI to generate ${desiredShots} detailed storyboard shots...`,
       });
 
-      const { data, error } = await supabase.functions.invoke('analyze-shots', {
+      const data = await aiInvoke('analyze-shots', {
         body: {
           scriptText,
           genre,
@@ -561,8 +560,6 @@ const Storyboarding = () => {
           shotCount: Math.max(2, Math.min(40, targetShotCount)),
         }
       });
-
-      if (error) throw error;
       if (!data?.shots) throw new Error('Invalid response from analyze-shots');
 
       const shots = data.shots;

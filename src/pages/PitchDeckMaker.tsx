@@ -203,7 +203,7 @@ const PitchDeckMaker = () => {
     }
     setIsGeneratingLogline(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+      const result = await aiInvoke('generate-pitch-content', {
         body: {
           field: "logline",
           context: {
@@ -214,7 +214,6 @@ const PitchDeckMaker = () => {
           },
         },
       });
-      if (error) throw error;
       if (result?.content) {
         update("logline", result.content);
         toast.success("Logline generated");

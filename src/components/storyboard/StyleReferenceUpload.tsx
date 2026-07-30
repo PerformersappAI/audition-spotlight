@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Upload, X, ImageIcon, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+NOPE
 import { useToast } from "@/hooks/use-toast";
 
 interface StyleReferenceUploadProps {
@@ -57,11 +57,11 @@ export const StyleReferenceUpload = ({
         // Analyze the style using AI
         setIsAnalyzing(true);
         try {
-          const { data, error } = await supabase.functions.invoke('analyze-style-reference', {
+          const data = await aiInvoke('analyze-style-reference', {
             body: { imageData: base64Data }
           });
 
-          if (!error && data?.styleDescription) {
+          if (data?.styleDescription) {
             onStyleDescriptionGenerated?.(data.styleDescription);
             toast({
               title: "Style Analyzed",
