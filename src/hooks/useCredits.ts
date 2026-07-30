@@ -136,6 +136,19 @@ export const useCredits = () => {
     loadData();
   }, [user]);
 
+  // Authoritative balance pushed by server responses (see src/lib/aiInvoke.ts)
+  useEffect(() => {
+    const onUpdate = (e: Event) => {
+      const available = (e as CustomEvent).detail?.available;
+      if (typeof available === 'number') {
+        setCredits(prev => prev ? { ...prev, available_credits: available } : prev);
+      }
+      fetchTransactions();
+    };
+    window.addEventListener('credits:updated', onUpdate);
+    return () => window.removeEventListener('credits:updated', onUpdate);
+  }, [user]);
+
   // Deprecated: credit spending is now enforced server-side by the edge
   // functions (spend_credits). This only refreshes the displayed balance.
   const deductCredits = async (_amount: number, _description: string): Promise<boolean> => {
