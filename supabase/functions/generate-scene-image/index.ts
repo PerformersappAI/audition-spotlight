@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, capExceededBody, CapExceededError, logUsage } from "../_shared/credits.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -9,6 +10,20 @@ serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const authedUser = await authenticateUser(req);
+  if (!authedUser) return unauthorizedBody();
+  const started = Date.now();
+  const frameCount = 1;
+  let cost: number;
+  try {
+    cost = serverCalculateCost({ feature: "images", frames: frameCount });
+  } catch (e) {
+    if (e instanceof CapExceededError) return capExceededBody(e.message);
+    throw e;
+  }
+  const balance = await ensureBalance(authedUser.id, cost);
+  if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
   try {
     const { 
@@ -138,17 +153,22 @@ Visual Style Requirements:
       throw new Error("No image generated");
     }
 
+    const chargeRes = await charge(authedUser.id, cost, "generate-scene-image", { frames: frameCount });
+    await logUsage({ userId: authedUser.id, functionName: "generate-scene-image", provider: "lovable-gateway", operation: "image", status: "success", latencyMs: Date.now() - started, metadata: { frames: frameCount } });
+
     return new Response(
       JSON.stringify({ 
         imageUrl,
         sceneType,
-        message: `Scene image generated successfully`
+        message: `Scene image generated successfully`,
+        available_credits: chargeRes.available
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
     console.error("Scene image generation error:", error);
+    await logUsage({ userId: authedUser.id, functionName: "generate-scene-image", provider: "lovable-gateway", operation: "image", status: "error", metadata: { error: String(error) } });
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Failed to generate scene image" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

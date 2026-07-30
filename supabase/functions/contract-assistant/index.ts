@@ -1,13 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
-const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
+import {
+  corsHeaders,
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  logUsage,
+  estimateUsd,
+} from "../_shared/credits.ts";
 
 const SAG_AFTRA_KNOWLEDGE = `
 You are an expert AI assistant specializing in SAG-AFTRA (Screen Actors Guild - American Federation of Television and Radio Artists) contracts and union agreements for film and television productions. You have comprehensive knowledge of:
@@ -93,29 +95,17 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let userId: string | undefined;
+  const started = Date.now();
+
   try {
-    // Verify authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('No authorization header provided');
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+    userId = user.id;
 
-    const supabaseAuth = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
-    if (authError || !user) {
-      console.error('Authentication failed:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
     console.log('Authenticated user:', user.id);
     const { messages, projectDetails } = await req.json();
@@ -188,11 +178,33 @@ RESPONSE STYLE:
       });
     }
 
+    // Charge before streaming since the response body cannot be modified afterwards.
+    await charge(user.id, cost, "contract-assistant", {});
+    await logUsage({
+      userId: user.id,
+      functionName: "contract-assistant",
+      provider: "lovable-gateway",
+      operation: "text",
+      estimatedCostUsd: estimateUsd(0, 0),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
     console.error("Contract assistant error:", error);
+    if (userId) {
+      await logUsage({
+        userId,
+        functionName: "contract-assistant",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, capExceededBody, CapExceededError, logUsage } from "../_shared/credits.ts";
 
 const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
 
@@ -115,6 +116,20 @@ serve(async (req) => {
   }
 
   console.log('Generate-single-frame function called (Gemini 2.5 Flash Image)');
+
+  const authedUser = await authenticateUser(req);
+  if (!authedUser) return unauthorizedBody();
+  const started = Date.now();
+  const frameCount = 1;
+  let cost: number;
+  try {
+    cost = serverCalculateCost({ feature: "images", frames: frameCount });
+  } catch (e) {
+    if (e instanceof CapExceededError) return capExceededBody(e.message);
+    throw e;
+  }
+  const balance = await ensureBalance(authedUser.id, cost);
+  if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
   try {
     const { 
@@ -330,16 +345,21 @@ serve(async (req) => {
 
     console.log(`Successfully generated shot ${shot.shotNumber} with Gemini 2.5 Flash Image`);
 
+    const chargeRes = await charge(authedUser.id, cost, "generate-single-frame", { frames: frameCount });
+    await logUsage({ userId: authedUser.id, functionName: "generate-single-frame", provider: "lovable-gateway", operation: "image", status: "success", latencyMs: Date.now() - started, metadata: { frames: frameCount } });
+
     return new Response(JSON.stringify({ 
       imageData: imageUrl,
       shotNumber: shot.shotNumber,
-      generatedAt: new Date().toISOString()
+      generatedAt: new Date().toISOString(),
+      available_credits: chargeRes.available
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('Error in generate-single-frame:', error);
+    await logUsage({ userId: authedUser.id, functionName: "generate-single-frame", provider: "lovable-gateway", operation: "image", status: "error", metadata: { error: String(error) } });
     
     const fallbackSvg = `data:image/svg+xml;base64,${btoa(`
       <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
