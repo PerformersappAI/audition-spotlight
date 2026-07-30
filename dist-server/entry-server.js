@@ -3227,9 +3227,9 @@ const HomeMarketing = () => {
             color: "rgba(255,255,255,0.92)"
           },
           children: [
-            "Shoot It. ",
-            /* @__PURE__ */ jsx("span", { style: { color: "#d4a84c" }, children: "Fund It." }),
-            " Release It."
+            "Shoot. ",
+            /* @__PURE__ */ jsx("span", { style: { color: "#d4a84c" }, children: "Fund." }),
+            " Release."
           ]
         }
       )
