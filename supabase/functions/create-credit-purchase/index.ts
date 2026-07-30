@@ -9,10 +9,7 @@ const corsHeaders = {
 
 // Credit pack options (amount in cents)
 const CREDIT_PACKS = {
-  "10": { credits: 10, price: 500, pricePerCredit: 0.50 },
-  "20": { credits: 20, price: 900, pricePerCredit: 0.45 },
-  "30": { credits: 30, price: 1200, pricePerCredit: 0.40 },
-  "40": { credits: 40, price: 1400, pricePerCredit: 0.35 },
+  "30": { credits: 30, price: 1000, pricePerCredit: 0.33 },
 };
 
 const logStep = (step: string, details?: any) => {
@@ -36,7 +33,7 @@ serve(async (req) => {
     const { creditAmount } = await req.json();
     const pack = CREDIT_PACKS[creditAmount as keyof typeof CREDIT_PACKS];
     if (!pack) {
-      throw new Error("Invalid credit amount. Must be 10, 20, 30, or 40");
+      throw new Error("Invalid credit amount. Must be 30");
     }
     logStep("Credit pack selected", { creditAmount, pack });
 
