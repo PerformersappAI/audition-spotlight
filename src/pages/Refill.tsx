@@ -9,6 +9,8 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Zap, Loader2, CircleDot } from 'lucide-react';
+import CreditCostTable from '@/components/CreditCostTable';
+
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
 import { supabase } from '@/integrations/supabase/client';
