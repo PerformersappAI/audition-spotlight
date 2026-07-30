@@ -1,4 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import {
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  logUsage,
+  estimateUsd,
+} from "../_shared/credits.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -90,7 +100,18 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let userId: string | undefined;
+  const started = Date.now();
+
   try {
+    const user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+    userId = user.id;
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const body = await req.json() as GenerateRequest;
     const rawType = (body.type ?? body.field ?? "").toString().toLowerCase().replace(/[_\s-]/g, "");
     const type: GenerationType | undefined = FIELD_ALIASES[rawType];
@@ -299,7 +320,7 @@ Return ONLY the description. Double line break between paragraphs.`;
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "API credits exhausted. Please add credits to continue." }),
-          { status: 402, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          { status: 503, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
       const errorText = await response.text();
@@ -313,6 +334,19 @@ Return ONLY the description. Double line break between paragraphs.`;
 
     console.log(`Successfully generated ${type} content`);
 
+    const chargeRes = await charge(user.id, cost, "generate-pitch-content", { type });
+    await logUsage({
+      userId: user.id,
+      functionName: "generate-pitch-content",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: result.usage?.prompt_tokens,
+      tokensOutput: result.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(result.usage?.prompt_tokens ?? 0, result.usage?.completion_tokens ?? 0),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     // JSON-shaped responses
     if (type === "comps" || type === "episodes" || type === "character") {
       try {
@@ -322,25 +356,35 @@ Return ONLY the description. Double line break between paragraphs.`;
         if (type === "comps") extra.comparables = parsed;
         if (type === "episodes") extra.episodes = parsed;
         return new Response(
-          JSON.stringify({ content: parsed, ...extra }),
+          JSON.stringify({ content: parsed, ...extra, available_credits: chargeRes.available }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       } catch {
         console.error(`Failed to parse ${type} JSON:`, content);
         return new Response(
-          JSON.stringify({ content }),
+          JSON.stringify({ content, available_credits: chargeRes.available }),
           { headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
     }
 
     return new Response(
-      JSON.stringify({ content }),
+      JSON.stringify({ content, available_credits: chargeRes.available }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
     console.error("Error generating pitch content:", error);
+    if (userId) {
+      await logUsage({
+        userId,
+        functionName: "generate-pitch-content",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error occurred" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }

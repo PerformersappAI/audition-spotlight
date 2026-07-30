@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
@@ -33,29 +34,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
-    // Verify authentication
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      console.error('No authorization header provided');
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
 
-    const supabaseAuth = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } }
-    });
-
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
-    if (authError || !user) {
-      console.error('Authentication failed:', authError);
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
     console.log('Authenticated user:', user.id);
     const { scriptText, genre, tone, shotCount } = await req.json();
@@ -234,14 +221,38 @@ REMEMBER: Each description should be precise enough that an AI image generator c
 
     console.log(`Successfully analyzed ${analyzedShots.length} shots with Gemini`);
 
+    const cost = serverCalculateCost({ feature: "text" });
+    const chargeRes = await charge(user!.id, cost, "analyze-shots", {});
+    await logUsage({
+      userId: user!.id,
+      functionName: "analyze-shots",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(
-      JSON.stringify({ shots: analyzedShots }),
+      JSON.stringify({ shots: analyzedShots, available_credits: chargeRes.available }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   } catch (error) {
     console.error('Error in analyze-shots function:', error);
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "analyze-shots",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error',

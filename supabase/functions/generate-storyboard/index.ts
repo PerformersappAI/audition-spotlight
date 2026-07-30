@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, capExceededBody, CapExceededError, logUsage, MAX_FRAMES_PER_REQUEST } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -96,6 +97,8 @@ serve(async (req) => {
     }
 
     console.log('Authenticated user:', user.id);
+    const authedUser = await authenticateUser(req);
+    if (!authedUser) return unauthorizedBody();
     const { 
       shots, 
       genre, 
@@ -114,6 +117,20 @@ serve(async (req) => {
       );
     }
 
+    const frameCount = shots.length;
+    let cost: number;
+    try {
+      cost = serverCalculateCost({ feature: "images", frames: frameCount });
+    } catch (e) {
+      if (e instanceof CapExceededError) return capExceededBody(e.message);
+      throw e;
+    }
+    const balance = await ensureBalance(authedUser.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+    const started = Date.now();
+
+    const shotsToProcess = shots.slice(0, MAX_FRAMES_PER_REQUEST);
+
     if (!LOVABLE_API_KEY) {
       return new Response(
         JSON.stringify({ error: 'LOVABLE_API_KEY not configured' }),
@@ -122,11 +139,11 @@ serve(async (req) => {
     }
 
     const genreStyle = getArtStylePrompt(genre, tone);
-    console.log(`Generating ${shots.length} frames with Gemini 2.5 Flash Image`);
+    console.log(`Generating ${shotsToProcess.length} frames with Gemini 2.5 Flash Image`);
 
     const storyboardFrames = [];
     
-    for (const shot of shots) {
+    for (const shot of shotsToProcess) {
       const framingPrompt = getShotFraming(shot.cameraAngle);
       const visualDesc = shot.visualDescription || shot.sceneAction || shot.description;
       
@@ -346,16 +363,26 @@ IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
 
     console.log(`Generated ${storyboardFrames.length} frames with Gemini 2.5 Flash Image`);
 
+    const chargeRes = await charge(authedUser.id, cost, "generate-storyboard", { frames: frameCount });
+    await logUsage({ userId: authedUser.id, functionName: "generate-storyboard", provider: "lovable-gateway", operation: "image", status: "success", latencyMs: Date.now() - started, metadata: { frames: frameCount } });
+
     return new Response(JSON.stringify({ 
       success: true, 
       storyboard: storyboardFrames,
-      totalFrames: storyboardFrames.length 
+      totalFrames: storyboardFrames.length,
+      available_credits: chargeRes.available
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('Error in generate-storyboard:', error);
+    try {
+      const authedUser = await authenticateUser(req);
+      if (authedUser) {
+        await logUsage({ userId: authedUser.id, functionName: "generate-storyboard", provider: "lovable-gateway", operation: "image", status: "error", metadata: { error: String(error) } });
+      }
+    } catch (_) { /* best effort */ }
     return new Response(JSON.stringify({ 
       error: error instanceof Error ? error.message : 'Unknown error'
     }), {

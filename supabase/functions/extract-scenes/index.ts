@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -34,25 +35,15 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
-    const authHeader = req.headers.get('Authorization');
-    if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
 
-    const supabaseAuth = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-      global: { headers: { Authorization: authHeader } }
-    });
-    const { data: { user }, error: authError } = await supabaseAuth.auth.getUser();
-    if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Unauthorized' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
     if (!LOVABLE_API_KEY) {
       return new Response(
@@ -147,7 +138,7 @@ Return ONLY this JSON shape:
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'Credits depleted. Please add credits to continue.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       return new Response(
@@ -203,12 +194,36 @@ Return ONLY this JSON shape:
 
     console.log(`extract-scenes: returned ${scenes.length} scenes, ${cast.length} cast members`);
 
+    const cost = serverCalculateCost({ feature: "text" });
+    const chargeRes = await charge(user!.id, cost, "extract-scenes", {});
+    await logUsage({
+      userId: user!.id,
+      functionName: "extract-scenes",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(
-      JSON.stringify({ scenes, cast }),
+      JSON.stringify({ scenes, cast, available_credits: chargeRes.available }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
     console.error('extract-scenes error:', error);
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "extract-scenes",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ error: error instanceof Error ? error.message : 'Unknown error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }

@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -13,7 +14,16 @@ serve(async (req) => {
 
   console.log('Parse-document function called');
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const { fileData, fileName, mimeType, idempotencyKey } = await req.json();
     
     console.log(`Processing request - File: ${fileName}, Idempotency Key: ${idempotencyKey || 'none'}`);
@@ -138,7 +148,7 @@ Return only the extracted text without any commentary.`;
               success: false,
               retryable: false
             }), {
-              status: 402,
+              status: 503,
               headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             });
           }
@@ -169,13 +179,28 @@ Return only the extracted text without any commentary.`;
         }
 
         console.log(`✅ Successfully processed ${isPDF ? 'PDF' : 'image'}`);
+
+        const cost = serverCalculateCost({ feature: "text" });
+        const chargeRes = await charge(user!.id, cost, "parse-document", {});
+        await logUsage({
+          userId: user!.id,
+          functionName: "parse-document",
+          provider: "lovable-gateway",
+          operation: "text",
+          tokensInput: result.usage?.prompt_tokens,
+          tokensOutput: result.usage?.completion_tokens,
+          estimatedCostUsd: estimateUsd(result.usage?.prompt_tokens, result.usage?.completion_tokens),
+          status: "success",
+          latencyMs: Date.now() - started,
+        });
         
         return new Response(JSON.stringify({ 
           success: true, 
           text: extractedText.trim(),
           type: "document",
           confidence: 0.95,
-          modelUsed: 'google/gemini-3-flash-preview'
+          modelUsed: 'google/gemini-3-flash-preview',
+          available_credits: chargeRes.available
         }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -194,6 +219,16 @@ Return only the extracted text without any commentary.`;
 
   } catch (error) {
     console.error('Error in parse-document function:', error);
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "parse-document",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(JSON.stringify({ 
       error: error instanceof Error ? error.message : 'Unknown error occurred',
       success: false 

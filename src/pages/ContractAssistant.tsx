@@ -11,6 +11,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { 
   Send, 
   FileText, 
@@ -390,11 +391,9 @@ Based on this information, what SAG-AFTRA agreement would you recommend? What ar
         const formData = new FormData();
         formData.append('file', file);
 
-        const { data, error } = await supabase.functions.invoke('parse-document', {
+        const data = await aiInvoke('parse-document', {
           body: formData,
         });
-
-        if (error) throw error;
 
         const extractedText = data?.text || data?.content || '';
         if (!extractedText) {
@@ -418,11 +417,13 @@ Based on this information, what SAG-AFTRA agreement would you recommend? What ar
       });
     } catch (error) {
       console.error("Upload error:", error);
-      toast({
-        title: "Upload Failed",
-        description: error instanceof Error ? error.message : "Failed to process document",
-        variant: "destructive",
-      });
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast({
+          title: "Upload Failed",
+          description: error instanceof Error ? error.message : "Failed to process document",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsUploadingDoc(false);
       if (fileInputRef.current) {

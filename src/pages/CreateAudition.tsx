@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -294,11 +295,9 @@ export default function CreateAudition() {
           setIsParsingFile(true);
           
           try {
-            const { data, error } = await supabase.functions.invoke('parse-audition-notice', {
+            const data = await aiInvoke('parse-audition-notice', {
               body: { text: ocrResult.text }
             });
-
-            if (error) throw error;
 
             if (data.success && data.data) {
               const parsed = data.data;
@@ -371,11 +370,13 @@ export default function CreateAudition() {
             }
           } catch (parseError: any) {
             console.error('Parse error:', parseError);
-            toast({
-              title: "Parsing Error",
-              description: "Could not extract all fields. Please fill in manually.",
-              variant: "destructive",
-            });
+            if (!(parseError instanceof InsufficientCreditsError)) {
+              toast({
+                title: "Parsing Error",
+                description: "Could not extract all fields. Please fill in manually.",
+                variant: "destructive",
+              });
+            }
           } finally {
             setIsParsingFile(false);
           }

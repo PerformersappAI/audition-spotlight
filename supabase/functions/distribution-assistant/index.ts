@@ -1,9 +1,15 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-};
+import {
+  corsHeaders,
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  logUsage,
+  estimateUsd,
+} from "../_shared/credits.ts";
 
 const SYSTEM_PROMPT = `You are a film distribution expert assistant helping filmmakers prepare their projects for distribution. You have deep knowledge of:
 
@@ -46,7 +52,18 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let userId: string | undefined;
+  const started = Date.now();
+
   try {
+    const user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+    userId = user.id;
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const { messages, context } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
@@ -85,7 +102,7 @@ serve(async (req) => {
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: "AI credits exhausted. Please add credits to continue." }), {
-          status: 402,
+          status: 503,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
@@ -97,11 +114,32 @@ serve(async (req) => {
       });
     }
 
+    await charge(user.id, cost, "distribution-assistant", {});
+    await logUsage({
+      userId: user.id,
+      functionName: "distribution-assistant",
+      provider: "lovable-gateway",
+      operation: "text",
+      estimatedCostUsd: estimateUsd(0, 0),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(response.body, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
   } catch (error) {
     console.error("distribution-assistant error:", error);
+    if (userId) {
+      await logUsage({
+        userId,
+        functionName: "distribution-assistant",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },

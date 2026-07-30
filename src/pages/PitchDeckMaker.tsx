@@ -1,3 +1,4 @@
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
@@ -203,7 +204,7 @@ const PitchDeckMaker = () => {
     }
     setIsGeneratingLogline(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke("generate-pitch-content", {
+      const result = await aiInvoke('generate-pitch-content', {
         body: {
           field: "logline",
           context: {
@@ -214,7 +215,6 @@ const PitchDeckMaker = () => {
           },
         },
       });
-      if (error) throw error;
       if (result?.content) {
         update("logline", result.content);
         toast.success("Logline generated");

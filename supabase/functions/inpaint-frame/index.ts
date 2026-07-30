@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, capExceededBody, CapExceededError, logUsage } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,6 +11,20 @@ serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
+
+  const authedUser = await authenticateUser(req);
+  if (!authedUser) return unauthorizedBody();
+  const started = Date.now();
+  const frameCount = 1;
+  let cost: number;
+  try {
+    cost = serverCalculateCost({ feature: "images", frames: frameCount });
+  } catch (e) {
+    if (e instanceof CapExceededError) return capExceededBody(e.message);
+    throw e;
+  }
+  const balance = await ensureBalance(authedUser.id, cost);
+  if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
 
   try {
     const { imageData, maskData, prompt, artStyle } = await req.json();
@@ -73,7 +88,7 @@ serve(async (req) => {
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: 'Payment required. Please add credits to your workspace.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
@@ -90,16 +105,21 @@ serve(async (req) => {
 
     console.log('In-paint operation completed successfully');
 
+    const chargeRes = await charge(authedUser.id, cost, "inpaint-frame", { frames: frameCount });
+    await logUsage({ userId: authedUser.id, functionName: "inpaint-frame", provider: "lovable-gateway", operation: "image", status: "success", latencyMs: Date.now() - started, metadata: { frames: frameCount } });
+
     return new Response(
       JSON.stringify({ 
         imageData: editedImageUrl,
-        message: data.choices?.[0]?.message?.content || 'Image edited successfully'
+        message: data.choices?.[0]?.message?.content || 'Image edited successfully',
+        available_credits: chargeRes.available
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('Error in inpaint-frame function:', error);
+    await logUsage({ userId: authedUser.id, functionName: "inpaint-frame", provider: "lovable-gateway", operation: "image", status: "error", metadata: { error: String(error) } });
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error occurred'

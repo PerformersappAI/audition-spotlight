@@ -15,6 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
+import { aiInvoke, InsufficientCreditsError } from '@/lib/aiInvoke';
 import { toast } from 'sonner';
 import { useOCRUpload } from '@/hooks/useOCRUpload';
 import { useScriptAnalysis } from '@/hooks/useScriptAnalysis';
@@ -229,8 +230,9 @@ const ScriptAnalysis = () => {
     setAnalysisElapsedTime(0);
     const startTime = Date.now();
 
+    let data: any;
     try {
-      const { data, error } = await supabase.functions.invoke('analyze-script', {
+      data = await aiInvoke('analyze-script', {
         body: {
           scriptText: currentScript.scriptText,
           genre: currentScript.genre,
@@ -238,20 +240,23 @@ const ScriptAnalysis = () => {
           selectedDirectors
         }
       });
+    } catch (error) {
+      if (error instanceof InsufficientCreditsError) return;
+      console.error('Script analysis error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
-      if (error) {
-        console.error('Script analysis error:', error);
-        const errorMessage = error.message || error.toString();
-        
-        // Check if this is a retryable error
-        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
-          toast.error("AI service is temporarily busy. Please try analyzing again in a few moments.");
-        } else {
-          toast.error(`Failed to analyze script: ${errorMessage}`);
-        }
-        return;
+      // Check if this is a retryable error
+      if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
+        toast.error("AI service is temporarily busy. Please try analyzing again in a few moments.");
+      } else {
+        toast.error(`Failed to analyze script: ${errorMessage}`);
       }
+      setIsAnalyzing(false);
+      setAnalysisElapsedTime(0);
+      return;
+    }
 
+    try {
       if (data?.analysis) {
         // Save to database
         const savedAnalysis = await saveAnalysis(
@@ -282,7 +287,9 @@ const ScriptAnalysis = () => {
       }
     } catch (error) {
       console.error('Error analyzing script:', error);
-      toast.error("Failed to analyze script. Please try again.");
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast.error("Failed to analyze script. Please try again.");
+      }
     } finally {
       setIsAnalyzing(false);
       setAnalysisElapsedTime(0);
@@ -509,7 +516,7 @@ const ScriptAnalysis = () => {
     setChatLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-with-analysis', {
+      const data = await aiInvoke('chat-with-analysis', {
         body: {
           messages: newMessages,
           scriptText: currentScript.scriptText,
@@ -519,8 +526,6 @@ const ScriptAnalysis = () => {
           analysisResult: selectedAnalysis?.analysisResult
         }
       });
-
-      if (error) throw error;
 
       const assistantMessage = {
         role: 'assistant',
@@ -534,7 +539,9 @@ const ScriptAnalysis = () => {
       }, 100);
     } catch (error) {
       console.error('Chat error:', error);
-      toast.error('Failed to get response');
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast.error('Failed to get response');
+      }
     } finally {
       setChatLoading(false);
     }

@@ -26,6 +26,7 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { aiInvoke, InsufficientCreditsError } from '@/lib/aiInvoke';
 
 interface ScriptBasedVideoAnalysis {
   id: string;
@@ -179,9 +180,10 @@ export const ScriptBasedVideoEvaluation: React.FC<ScriptBasedVideoEvaluationProp
     setIsAnalyzing(true);
     setSelectedAnalysis(prev => prev ? { ...prev, status: "analyzing" } : null);
 
+    let data: any;
     try {
       // Call the analyze-video edge function with script context
-      const { data, error } = await supabase.functions.invoke('analyze-video', {
+      data = await aiInvoke('analyze-video', {
         body: {
           videoUrl: selectedAnalysis.videoUrl,
           evaluationType: 'script_based',
@@ -192,28 +194,34 @@ export const ScriptBasedVideoEvaluation: React.FC<ScriptBasedVideoEvaluationProp
           sceneDescription: sceneDescription
         }
       });
-
-      if (error) {
-        console.error('Script-based video analysis error:', error);
-        const errorMessage = error.message || error.toString();
-        
-        // Check if this is a retryable error
-        if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
-          toast({
-            title: "AI service is temporarily busy",
-            description: "Please try analyzing again in a few moments.",
-            variant: "destructive"
-          });
-        } else {
-          toast({
-            title: "Analysis failed",
-            description: `Failed to analyze video: ${errorMessage}`,
-            variant: "destructive"
-          });
-        }
+    } catch (error) {
+      if (error instanceof InsufficientCreditsError) {
+        setSelectedAnalysis(prev => prev ? { ...prev, status: "error" } : null);
+        setIsAnalyzing(false);
         return;
       }
+      console.error('Script-based video analysis error:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
 
+      if (errorMessage.includes('temporarily overloaded') || errorMessage.includes('try again') || errorMessage.includes('Rate limit')) {
+        toast({
+          title: "AI service is temporarily busy",
+          description: "Please try analyzing again in a few moments.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Analysis failed",
+          description: `Failed to analyze video: ${errorMessage}`,
+          variant: "destructive"
+        });
+      }
+      setSelectedAnalysis(prev => prev ? { ...prev, status: "error" } : null);
+      setIsAnalyzing(false);
+      return;
+    }
+
+    try {
       if (data?.analysis) {
         const updatedAnalysis = {
           ...selectedAnalysis,
@@ -241,11 +249,13 @@ export const ScriptBasedVideoEvaluation: React.FC<ScriptBasedVideoEvaluationProp
     } catch (error) {
       console.error('Error analyzing video:', error);
       setSelectedAnalysis(prev => prev ? { ...prev, status: "error" } : null);
-      toast({
-        title: "Analysis failed",
-        description: "Failed to analyze video. Please try again.",
-        variant: "destructive"
-      });
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast({
+          title: "Analysis failed",
+          description: "Failed to analyze video. Please try again.",
+          variant: "destructive"
+        });
+      }
     } finally {
       setIsAnalyzing(false);
     }

@@ -1,6 +1,7 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, capExceededBody, CapExceededError, logUsage, MAX_FRAMES_PER_REQUEST } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -50,6 +51,10 @@ serve(async (req) => {
 
   console.log('Generate-storyboard-simple function called (Gemini 2.5 Flash Image)');
 
+  const authedUser = await authenticateUser(req);
+  if (!authedUser) return unauthorizedBody();
+  const started = Date.now();
+
   try {
     const { 
       scene_text, 
@@ -94,6 +99,17 @@ serve(async (req) => {
     const shots = shotsData.shots || [];
     console.log(`Analyzed into ${shots.length} shots`);
 
+    const frameCount = shots.length;
+    let cost: number;
+    try {
+      cost = serverCalculateCost({ feature: "images", frames: frameCount });
+    } catch (e) {
+      if (e instanceof CapExceededError) return capExceededBody(e.message);
+      throw e;
+    }
+    const balance = await ensureBalance(authedUser.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     // Step 2: Generate storyboard frames using Gemini 2.5 Flash Image
     if (!LOVABLE_API_KEY) {
       return new Response(
@@ -102,9 +118,10 @@ serve(async (req) => {
       );
     }
 
+    const shotsToProcess = shots.slice(0, MAX_FRAMES_PER_REQUEST);
     const panels = [];
 
-    for (const shot of shots) {
+    for (const shot of shotsToProcess) {
       console.log(`Generating image for shot ${shot.shotNumber}`);
 
       const framingPrompt = getShotFraming(shot.cameraAngle || 'medium shot');
@@ -232,12 +249,16 @@ IMAGE FORMAT: Horizontal/landscape orientation (16:9 aspect ratio)`;
 
     console.log(`Successfully generated ${panels.length} panels`);
 
-    return new Response(JSON.stringify({ panels }), {
+    const chargeRes = await charge(authedUser.id, cost, "generate-storyboard-simple", { frames: frameCount });
+    await logUsage({ userId: authedUser.id, functionName: "generate-storyboard-simple", provider: "lovable-gateway", operation: "image", status: "success", latencyMs: Date.now() - started, metadata: { frames: frameCount } });
+
+    return new Response(JSON.stringify({ panels, available_credits: chargeRes.available }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
 
   } catch (error) {
     console.error('Error in generate-storyboard-simple:', error);
+    await logUsage({ userId: authedUser.id, functionName: "generate-storyboard-simple", provider: "lovable-gateway", operation: "image", status: "error", metadata: { error: String(error) } });
     return new Response(JSON.stringify({ 
       error: error instanceof Error ? error.message : 'Unknown error'
     }), {

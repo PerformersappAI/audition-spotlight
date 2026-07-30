@@ -1,4 +1,14 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import {
+  authenticateUser,
+  serverCalculateCost,
+  ensureBalance,
+  charge,
+  insufficientCreditsBody,
+  unauthorizedBody,
+  logUsage,
+  estimateUsd,
+} from "../_shared/credits.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -58,7 +68,18 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let userId: string | undefined;
+  const started = Date.now();
+
   try {
+    const user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+    userId = user.id;
+
+    const cost = serverCalculateCost({ feature: "pitch_deck" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const body = (await req.json()) as PosterRequest;
 
     if (!body.prompt && !body.projectTitle) {
@@ -127,7 +148,7 @@ serve(async (req) => {
               "AI credits exhausted. Add credits in Settings > Workspace > Usage.",
           }),
           {
-            status: 402,
+            status: 503,
             headers: { ...corsHeaders, "Content-Type": "application/json" },
           },
         );
@@ -166,16 +187,39 @@ serve(async (req) => {
     }
 
     console.log("Poster generated successfully");
+
+    const chargeRes = await charge(user.id, cost, "generate-pitch-poster", {});
+    await logUsage({
+      userId: user.id,
+      functionName: "generate-pitch-poster",
+      provider: "lovable-gateway",
+      operation: "images",
+      estimatedCostUsd: estimateUsd(0, 0),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     return new Response(
       JSON.stringify({
         imageUrl,
         message:
           data.choices?.[0]?.message?.content || "Poster generated successfully",
+        available_credits: chargeRes.available,
       }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } },
     );
   } catch (error) {
     console.error("Poster generation error:", error);
+    if (userId) {
+      await logUsage({
+        userId,
+        functionName: "generate-pitch-poster",
+        provider: "lovable-gateway",
+        operation: "images",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({
         error: error instanceof Error ? error.message : "Failed to generate poster",

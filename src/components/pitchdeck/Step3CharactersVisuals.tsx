@@ -1,3 +1,4 @@
+import { aiInvoke, aiInvokeSafe, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState } from "react";
 import { Plus, X, Sparkles, Loader2, Image as ImageIcon, User } from "lucide-react";
 import { toast } from "sonner";
@@ -73,7 +74,7 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
     }
     setGeneratingPortraitIdx(i);
     try {
-      const { data: result, error } = await supabase.functions.invoke(
+      const { data: result, error } = await aiInvokeSafe(
         "generate-character-portrait",
         {
           body: {
@@ -110,7 +111,7 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
     }
     setGeneratingStyle(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke(
+      const { data: result, error } = await aiInvokeSafe(
         "generate-pitch-content",
         {
           body: {
@@ -144,7 +145,7 @@ const Step3CharactersVisuals = ({ data, update }: Props) => {
     }
     setGeneratingPoster(true);
     try {
-      const { data: result, error } = await supabase.functions.invoke(
+      const { data: result, error } = await aiInvokeSafe(
         "generate-pitch-poster",
         {
           body: {

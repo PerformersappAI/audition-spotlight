@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -10,7 +11,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const { text } = await req.json();
     
     if (!text) {
@@ -225,14 +235,38 @@ For missing fields, use null. Extract complete information for all sections: gen
       console.warn('⚠️ Extraction warnings:', warnings.join(', '));
     }
 
+    const cost = serverCalculateCost({ feature: "text" });
+    const chargeRes = await charge(user!.id, cost, "parse-call-sheet", {});
+    await logUsage({
+      userId: user!.id,
+      functionName: "parse-call-sheet",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
+
     // Return the structured data
     return new Response(
-      JSON.stringify(parsedData),
+      JSON.stringify({ ...parsedData, available_credits: chargeRes.available }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
     console.error('❌ Error in parse-call-sheet function:', error);
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "parse-call-sheet",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error occurred',

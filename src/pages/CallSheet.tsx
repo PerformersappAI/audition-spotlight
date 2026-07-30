@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Upload, Download, Film, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement } from "@/hooks/useCallSheets";
 import { exportCallSheetToPDF } from "@/utils/exportCallSheetToPDF";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -245,11 +246,9 @@ const CallSheet = () => {
         // Step 2: Parse extracted text into structured call sheet data
         setIsParsingData(true);
         try {
-          const { data, error } = await supabase.functions.invoke('parse-call-sheet', {
+          const data = await aiInvoke('parse-call-sheet', {
             body: { text: result.text }
           });
-
-          if (error) throw error;
 
           if (data) {
             // Populate form data
@@ -307,11 +306,13 @@ const CallSheet = () => {
           }
         } catch (error) {
           console.error('Call sheet parsing error:', error);
-          toast({
-            title: "Parsing Failed",
-            description: error instanceof Error ? error.message : "Failed to parse call sheet",
-            variant: "destructive",
-          });
+          if (!(error instanceof InsufficientCreditsError)) {
+            toast({
+              title: "Parsing Failed",
+              description: error instanceof Error ? error.message : "Failed to parse call sheet",
+              variant: "destructive",
+            });
+          }
         } finally {
           setIsParsingData(false);
         }

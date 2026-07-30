@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -46,7 +47,16 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  let user: { id: string } | null = null;
+  const started = Date.now();
   try {
+    user = await authenticateUser(req);
+    if (!user) return unauthorizedBody();
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const balance = await ensureBalance(user.id, cost);
+    if (!balance.ok) return insufficientCreditsBody(cost, balance.available);
+
     const { messages, scriptText, genre, tone, selectedDirectors, analysisResult } = await req.json();
     
     const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
@@ -108,7 +118,7 @@ ${SCENE_ANALYSIS_FRAMEWORK.core_dimensions.join('\n')}
       }
       if (response.status === 402) {
         return new Response(JSON.stringify({ error: 'Credits exhausted. Please add more credits.' }), {
-          status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
       const errorText = await response.text();
@@ -116,12 +126,36 @@ ${SCENE_ANALYSIS_FRAMEWORK.core_dimensions.join('\n')}
     }
 
     const data = await response.json();
+
+    const cost = serverCalculateCost({ feature: "text" });
+    const chargeRes = await charge(user!.id, cost, "chat-with-analysis", {});
+    await logUsage({
+      userId: user!.id,
+      functionName: "chat-with-analysis",
+      provider: "lovable-gateway",
+      operation: "text",
+      tokensInput: data.usage?.prompt_tokens,
+      tokensOutput: data.usage?.completion_tokens,
+      estimatedCostUsd: estimateUsd(data.usage?.prompt_tokens, data.usage?.completion_tokens),
+      status: "success",
+      latencyMs: Date.now() - started,
+    });
     
-    return new Response(JSON.stringify(data), {
+    return new Response(JSON.stringify({ ...data, available_credits: chargeRes.available }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
     console.error('Error in chat-with-analysis function:', error);
+    if (user) {
+      await logUsage({
+        userId: user.id,
+        functionName: "chat-with-analysis",
+        provider: "lovable-gateway",
+        operation: "text",
+        status: "error",
+        latencyMs: Date.now() - started,
+      });
+    }
     return new Response(
       JSON.stringify({ 
         error: error instanceof Error ? error.message : 'Unknown error occurred' 

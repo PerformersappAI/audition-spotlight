@@ -1,3 +1,4 @@
+import { InsufficientCreditsError, aiInvoke, aiInvokeSafe } from "@/lib/aiInvoke";
 import { useState, useEffect, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -285,10 +286,9 @@ const Storyboarding = () => {
     // Re-extract scenes from the original script so user can re-pick
     setIsExtractingScenes(true);
     try {
-      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+      const data = await aiInvoke('extract-scenes', {
         body: { scriptText: selectedProject.scriptText }
       });
-      if (error) throw error;
       if (data?.scenes?.length) {
         setExtractedScenes(data.scenes as Scene[]);
         if (Array.isArray(data.cast)) setExtractedCast(data.cast as CastMember[]);
@@ -410,7 +410,7 @@ const Storyboarding = () => {
     // Calculate appropriate number of shots based on script length
     const wordCount = scriptText.split(/\s+/).length;
     let desiredShots = Math.ceil(wordCount / 150); // ~1 shot per 150 words
-    desiredShots = Math.max(6, Math.min(desiredShots, 24)); // Between 6-24 shots
+    desiredShots = Math.max(6, Math.min(desiredShots, 20)); // Between 6-20 shots (server hard-caps at 20)
     
     try {
       toast({
@@ -418,7 +418,7 @@ const Storyboarding = () => {
         description: `Using AI to generate ${desiredShots} detailed storyboard shots...`,
       });
 
-      const { data, error } = await supabase.functions.invoke('analyze-shots', {
+      const data = await aiInvoke('analyze-shots', {
         body: {
           scriptText,
           genre,
@@ -427,10 +427,6 @@ const Storyboarding = () => {
         }
       });
 
-      if (error) {
-        console.error('Error calling analyze-shots:', error);
-        throw error;
-      }
 
       if (!data || !data.shots) {
         throw new Error('Invalid response from analyze-shots function');
@@ -484,7 +480,7 @@ const Storyboarding = () => {
         description: "Identifying scenes so you can pick which ones to storyboard...",
       });
 
-      const { data, error } = await supabase.functions.invoke('extract-scenes', {
+      const { data, error } = await aiInvokeSafe('extract-scenes', {
         body: { scriptText: currentProject.scriptText }
       });
 
@@ -553,7 +549,7 @@ const Storyboarding = () => {
         0
       );
 
-      const { data, error } = await supabase.functions.invoke('analyze-shots', {
+      const { data, error } = await aiInvokeSafe('analyze-shots', {
         body: {
           scriptText: focusedScript,
           genre: currentProject.genre,
@@ -561,8 +557,6 @@ const Storyboarding = () => {
           shotCount: Math.max(2, Math.min(40, targetShotCount)),
         }
       });
-
-      if (error) throw error;
       if (!data?.shots) throw new Error('Invalid response from analyze-shots');
 
       const shots = data.shots;
@@ -666,7 +660,7 @@ const Storyboarding = () => {
 
       const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${enrichedDesc}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
 
-      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+      const { data, error } = await aiInvokeSafe('generate-character-portrait', {
         body: {
           characterName: member.name,
           characterDescription: prompt,
@@ -765,7 +759,7 @@ const Storyboarding = () => {
       const styleName = artStyles.find(s => s.id === currentProject.artStyle)?.name || currentProject.artStyle || 'cinematic';
       const styleModifier = artStyles.find(s => s.id === currentProject.artStyle)?.promptModifier || styleName;
 
-      const { data, error } = await supabase.functions.invoke('generate-character-portrait', {
+      const { data, error } = await aiInvokeSafe('generate-character-portrait', {
         body: {
           characterName: member.name,
           characterDescription: `Three-quarter length portrait. ${member.description || member.name}.`,
@@ -843,7 +837,7 @@ const Storyboarding = () => {
         .filter(c => c.imageUrl)
         .map(c => ({ name: c.name, imageUrl: c.imageUrl }));
 
-      const { data, error } = await supabase.functions.invoke('generate-storyboard-simple', {
+      const { data, error } = await aiInvokeSafe('generate-storyboard-simple', {
         body: {
           scene_text: currentProject.scriptText,
           style: stylePrompt,
@@ -1011,7 +1005,7 @@ const Storyboarding = () => {
     setIsParsingPrompt(prev => new Map(prev).set(shotNumber, true));
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-parse-shot-prompt', {
+      const { data, error } = await aiInvokeSafe('ai-parse-shot-prompt', {
         body: { 
           prompt: prompt.trim(),
           existingShot: currentShot 
@@ -1489,7 +1483,7 @@ const Storyboarding = () => {
         ? { ...shot, cameraAngle: angleOverride, shotType: angleOverride }
         : shot;
 
-      const { data: frameData, error } = await supabase.functions.invoke('generate-single-frame', {
+      const { data: frameData, error } = await aiInvokeSafe('generate-single-frame', {
         body: { 
           shot: shotForGen,
           artStyle: stylePrompt,
