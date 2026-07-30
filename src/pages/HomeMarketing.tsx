@@ -10,6 +10,7 @@ import imgAuditions from "@/assets/tool-auditions.webp";
 import imgCrewHire from "@/assets/tool-crew-hire.webp";
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 import imgMarketingInABox from "@/assets/Marketing_in_a_Box.png.asset.json";
+import imgGreenLightEngine from "@/assets/green-light-engine.png.asset.json";
 
 const TEAL = "#00d4aa";
 
@@ -111,7 +112,7 @@ const HomeMarketing = () => {
   const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
-  const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
+  const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url };
 
   return (
     <div style={{ background: "#000" }} className="min-h-screen">
