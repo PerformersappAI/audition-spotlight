@@ -3227,7 +3227,7 @@ const HomeMarketing = () => {
         {
           className: "text-center",
           style: {
-            fontFamily: "'Archivo Black', 'Inter Tight', sans-serif",
+            fontFamily: "'Anton', 'Archivo Black', sans-serif",
             textTransform: "uppercase",
             letterSpacing: "0.02em",
             fontSize: "clamp(34px, 7vw, 76px)",
