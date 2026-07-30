@@ -3152,14 +3152,14 @@ const imgMarketingInABox = {
   created_at: created_at$3
 };
 const version$2 = 1;
-const asset_id$2 = "2d821ba8-e775-4b28-86ba-ac068ab89672";
+const asset_id$2 = "75f915bd-9307-41f7-b3ff-93d068929ad1";
 const project_id$2 = "2327b42e-2823-4633-a594-07a097a36c30";
-const url$2 = "/__l5e/assets-v1/2d821ba8-e775-4b28-86ba-ac068ab89672/green-light-engine.png";
-const r2_key$2 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/2d821ba8-e775-4b28-86ba-ac068ab89672/green-light-engine.png";
+const url$2 = "/__l5e/assets-v1/75f915bd-9307-41f7-b3ff-93d068929ad1/green-light-engine.png";
+const r2_key$2 = "a/v1/2327b42e-2823-4633-a594-07a097a36c30/75f915bd-9307-41f7-b3ff-93d068929ad1/green-light-engine.png";
 const original_filename$2 = "green-light-engine.png";
-const size$2 = 2014267;
+const size$2 = 1916480;
 const content_type$2 = "image/png";
-const created_at$2 = "2026-07-30T02:33:53Z";
+const created_at$2 = "2026-07-30T02:39:36Z";
 const imgGreenLightEngine = {
   version: version$2,
   asset_id: asset_id$2,
