@@ -108,6 +108,8 @@ const HomeMarketing = () => {
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgPitchDeck };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
+  const marketingInABox: Card = { title: "Marketing in a Box", to: "/launch", cta: "Explore", img: imgPitchDeck };
+  const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgPitchDeck };
 
   return (
     <div style={{ background: "#000" }} className="min-h-screen">
@@ -204,8 +206,8 @@ const HomeMarketing = () => {
 
           <NeonCube label="RELEASE" color="#ffcf1a">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-[14px]">
-              <ToolCard card={pitchDeck} aspect="16/9" />
-              <ToolCard card={pitchDeck} aspect="16/9" />
+              <ToolCard card={marketingInABox} aspect="16/9" />
+              <ToolCard card={greenLightEngine} aspect="16/9" />
             </div>
           </NeonCube>
         </div>
