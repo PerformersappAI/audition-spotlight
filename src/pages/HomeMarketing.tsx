@@ -134,7 +134,7 @@ const HomeMarketing = () => {
             color: "rgba(255,255,255,0.92)",
           }}
         >
-          Shoot It. <span style={{ color: "#d4a84c" }}>Fund It.</span> Release It.
+          Shoot. <span style={{ color: "#d4a84c" }}>Fund.</span> Release.
         </p>
       </section>
 
