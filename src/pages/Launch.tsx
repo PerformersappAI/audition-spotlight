@@ -6,6 +6,8 @@ const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50
 const THEME = {
   grad: "linear-gradient(135deg, #120a25 0%, #1e1040 100%)",
   accent: "#a78bfa",
+  badgeBg: "rgba(167,139,250,0.14)",
+  badgeBorder: "rgba(167,139,250,0.3)",
 };
 
 function SuperstarDestroyerCard() {
