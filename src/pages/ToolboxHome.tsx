@@ -26,7 +26,6 @@ import {
   Video, 
   Users, 
   User,
-  MapPin, 
   Trophy, 
   FileText, 
   MessageCircle, 
