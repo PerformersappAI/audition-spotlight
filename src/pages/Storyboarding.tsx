@@ -409,7 +409,7 @@ const Storyboarding = () => {
     // Calculate appropriate number of shots based on script length
     const wordCount = scriptText.split(/\s+/).length;
     let desiredShots = Math.ceil(wordCount / 150); // ~1 shot per 150 words
-    desiredShots = Math.max(6, Math.min(desiredShots, 24)); // Between 6-24 shots
+    desiredShots = Math.max(6, Math.min(desiredShots, 20)); // Between 6-20 shots (server hard-caps at 20)
     
     try {
       toast({
@@ -426,10 +426,6 @@ const Storyboarding = () => {
         }
       });
 
-      if (error) {
-        console.error('Error calling analyze-shots:', error);
-        throw error;
-      }
 
       if (!data || !data.shots) {
         throw new Error('Invalid response from analyze-shots function');
