@@ -129,7 +129,7 @@ const HomeMarketing = () => {
             fontFamily: "'Archivo Black', 'Inter Tight', sans-serif",
             textTransform: "uppercase",
             letterSpacing: "0.16em",
-            fontSize: "clamp(14px, 2.2vw, 22px)",
+            fontSize: "clamp(28px, 4.4vw, 44px)",
             marginTop: 28,
             color: "rgba(255,255,255,0.92)",
           }}
