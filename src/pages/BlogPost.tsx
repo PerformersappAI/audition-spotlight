@@ -121,7 +121,23 @@ const BlogPost = () => {
             />
           )}
 
-          <div className="prose prose-invert max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-2xl prose-p:text-foreground/90 prose-p:leading-relaxed prose-li:text-foreground/90 prose-a:text-[#00d4aa] prose-strong:text-foreground">
+          <div className="prose prose-invert prose-lg max-w-3xl mx-auto leading-[1.75]
+            prose-headings:font-bold prose-headings:tracking-tight
+            prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-14 prose-h2:mb-5
+            prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4
+            prose-h4:text-xl prose-h4:mt-8 prose-h4:mb-3
+            prose-p:my-6 prose-p:text-foreground/90 prose-p:leading-[1.8]
+            prose-li:my-2 prose-li:text-foreground/90
+            prose-ul:my-6 prose-ul:pl-6 prose-ol:my-6 prose-ol:pl-6
+            prose-strong:text-foreground prose-em:text-foreground/90
+            prose-a:text-[#00d4aa] prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-[#00d4aa]/80
+            prose-blockquote:border-l-4 prose-blockquote:border-[#00d4aa]/50 prose-blockquote:bg-[#00d4aa]/5
+            prose-blockquote:py-2 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic
+            prose-blockquote:text-foreground/85
+            prose-hr:border-border prose-hr:my-12
+            prose-img:rounded-xl prose-img:my-8
+            prose-code:text-[#00d4aa] prose-pre:bg-card prose-pre:border prose-pre:border-border
+            prose-table:my-8 prose-th:text-foreground prose-td:text-foreground/90 prose-td:border-border">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>{post.body}</ReactMarkdown>
           </div>
 
