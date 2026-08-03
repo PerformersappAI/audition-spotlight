@@ -114,7 +114,8 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.ingest-article]
-verify_jwt = true
+verify_jwt = false
+
 
 [functions.admin-recovery-link]
 verify_jwt = true
