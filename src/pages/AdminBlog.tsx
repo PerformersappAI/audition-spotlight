@@ -31,6 +31,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
 import { Plus, Edit, Trash2, Calendar, Loader2, Sparkles } from "lucide-react";
 import BlogImageStudio from "@/components/admin/BlogImageStudio";
+import { sanitizeLinks } from "@/lib/sanitizeLinks";
+
 
 interface BlogPost {
   id: string;
