@@ -180,9 +180,10 @@ const AdminBlog = () => {
       slug,
       excerpt: editing.excerpt.trim() || null,
       author_name: editing.author_name.trim() || null,
-      body: editing.body,
+      body: sanitizeLinks(editing.body),
       cover_image: editing.cover_image,
     };
+
 
     if (editing.mode === "now") {
       record.published = true;
