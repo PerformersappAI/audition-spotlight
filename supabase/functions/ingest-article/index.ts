@@ -54,6 +54,7 @@ Deno.serve(async (req) => {
       slug,
       body: sanitizeLinks(content),
 
+
       excerpt: (body as any).excerpt ? String((body as any).excerpt) : null,
       cover_image: (body as any).imageUrl || (body as any).cover_image || null,
       author_name: (body as any).author_name || null,
