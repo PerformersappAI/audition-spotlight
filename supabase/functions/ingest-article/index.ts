@@ -1,4 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeLinks } from "../_shared/sanitizeLinks.ts";
+
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
