@@ -1,4 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { sanitizeLinks } from "../_shared/sanitizeLinks.ts";
+
 
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -50,7 +52,9 @@ Deno.serve(async (req) => {
     const row: Record<string, unknown> = {
       title,
       slug,
-      body: content,
+      body: sanitizeLinks(content),
+
+
       excerpt: (body as any).excerpt ? String((body as any).excerpt) : null,
       cover_image: (body as any).imageUrl || (body as any).cover_image || null,
       author_name: (body as any).author_name || null,
