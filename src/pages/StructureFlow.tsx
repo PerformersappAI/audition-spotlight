@@ -1,4 +1,5 @@
 import { Link, useParams, Navigate } from "react-router-dom";
+import { Home } from "lucide-react";
 import Seo from "@/components/Seo";
 
 export type StructureKey =
