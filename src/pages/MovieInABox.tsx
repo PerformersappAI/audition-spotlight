@@ -21,7 +21,7 @@ type CardDef = {
 const cards: CardDef[] = [
   {
     key: "save-the-cat",
-    to: "/movie-in-a-box/save-the-cat",
+    to: "/movie-in-a-box/save-the-cat/structure",
     title: "Save the Cat",
     count: "15 beats",
     description:
@@ -33,7 +33,7 @@ const cards: CardDef[] = [
   },
   {
     key: "three-act",
-    to: "/movie-in-a-box/three-act",
+    to: "/movie-in-a-box/three-act/structure",
     title: "Three-Act",
     count: "3 acts",
     description:
@@ -44,7 +44,7 @@ const cards: CardDef[] = [
   },
   {
     key: "heros-journey",
-    to: "/movie-in-a-box/heros-journey",
+    to: "/movie-in-a-box/heros-journey/structure",
     title: "Hero's Journey",
     count: "12 stages",
     description:
@@ -55,7 +55,7 @@ const cards: CardDef[] = [
   },
   {
     key: "story-circle",
-    to: "/movie-in-a-box/story-circle",
+    to: "/movie-in-a-box/story-circle/structure",
     title: "Story Circle",
     count: "8 steps",
     description:
