@@ -135,11 +135,11 @@ export default function MovieInABox() {
             })}
           </div>
 
-          {/* Compare box — neutral treatment */}
+          {/* Compare card — neutral treatment, centered below the grid */}
           <Link
             to="/movie-in-a-box/compare"
             aria-label="Compare all four structures side by side"
-            className="w-full mt-5 flex items-center gap-4 rounded-xl bg-[#161a21] border border-white/15 hover:border-white/35 p-5 cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.05)] hover:shadow-[0_0_24px_rgba(226,232,240,0.18)]"
+            className="w-full sm:w-[calc(50%-9px)] mx-auto mt-5 flex flex-col items-center text-center gap-4 rounded-xl bg-[#161a21] border border-white/15 hover:border-white/35 p-[22px] cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.05)] hover:shadow-[0_0_24px_rgba(226,232,240,0.18)]"
           >
             <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
               <svg
@@ -155,7 +155,7 @@ export default function MovieInABox() {
                 <rect x="18" y="10" width="3" height="11" rx="1" fill="currentColor" />
               </svg>
             </div>
-            <div className="flex-1 text-left">
+            <div>
               <p className="font-serif text-[17px] text-foreground">
                 Compare all four side by side
               </p>
@@ -163,7 +163,6 @@ export default function MovieInABox() {
                 See the same story through every lens — and how the beats line up.
               </p>
             </div>
-            <span className="text-foreground/70 text-xl flex-shrink-0">→</span>
           </Link>
 
           {/* Hint */}
