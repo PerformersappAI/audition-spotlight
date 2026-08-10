@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams, Navigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 
 export type StructureKey =
@@ -33,22 +33,72 @@ const CONFIG: Record<
   },
 };
 
+const STOPS = [
+  { key: "structure", label: "Structure" },
+  { key: "beats", label: "Beats" },
+  { key: "scene", label: "Scene" },
+  { key: "shots", label: "Shots" },
+  { key: "movie", label: "Movie" },
+] as const;
+
+type StopKey = (typeof STOPS)[number]["key"];
+
 export default function StructureFlow({
   structureKey,
 }: {
   structureKey: StructureKey;
 }) {
   const { title, accent, subtitle } = CONFIG[structureKey];
+  const { stop } = useParams<{ stop?: string }>();
+
+  if (!stop || !STOPS.some((s) => s.key === stop)) {
+    return <Navigate to={`/movie-in-a-box/${structureKey}/structure`} replace />;
+  }
+
+  const activeStop = stop as StopKey;
+  const stopLabel = STOPS.find((s) => s.key === activeStop)!.label;
 
   return (
     <>
       <Seo
-        title={`${title} | Movie in a Box | Filmmaker Genius`}
+        title={`${title} — ${stopLabel} | Movie in a Box | Filmmaker Genius`}
         description={subtitle}
-        canonical={`https://filmmakergenius.com/movie-in-a-box/${structureKey}`}
+        canonical={`https://filmmakergenius.com/movie-in-a-box/${structureKey}/${activeStop}`}
         type="website"
       />
-      <section className="min-h-[calc(100vh-96px)] flex items-center justify-center bg-background px-4 py-16">
+
+      <nav
+        aria-label={`${title} flow`}
+        className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
+      >
+        <div className="container mx-auto px-4">
+          <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
+            {STOPS.map((s) => {
+              const isActive = s.key === activeStop;
+              const label =
+                s.key === "beats" ? `Beats (${title})` : s.label;
+              return (
+                <li key={s.key}>
+                  <Link
+                    to={`/movie-in-a-box/${structureKey}/${s.key}`}
+                    aria-current={isActive ? "page" : undefined}
+                    className={
+                      isActive
+                        ? "inline-block rounded-md px-3 py-1.5 font-semibold"
+                        : "inline-block rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                    }
+                    style={isActive ? { color: accent } : undefined}
+                  >
+                    {label}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </nav>
+
+      <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
         <div className="w-full max-w-[780px] mx-auto text-center">
           <Link
             to="/movie-in-a-box"
@@ -61,16 +111,11 @@ export default function StructureFlow({
             className="text-4xl sm:text-5xl font-bold tracking-tight"
             style={{ color: accent }}
           >
-            {title}
+            {title} — {stopLabel}
           </h1>
-          <p className="text-lg text-foreground/60 mt-4">{subtitle}</p>
-
-          <div
-            className="mt-10 rounded-xl bg-[#161a21] p-12 text-foreground/40 text-sm"
-            style={{ border: `1px solid ${accent}40` }}
-          >
-            Your step-by-step assembly line will live here.
-          </div>
+          <p className="text-lg text-foreground/60 mt-4">
+            This stop will hold your {stopLabel.toLowerCase()} — coming next.
+          </p>
         </div>
       </section>
     </>
