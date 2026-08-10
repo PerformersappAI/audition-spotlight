@@ -183,12 +183,20 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
           >
             <div className="container mx-auto px-4 py-4 space-y-1">
               <Link
+                to="/movie-in-a-box"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
+              >
+                Movie in a Box
+              </Link>
+              <Link
                 to="/toolbox"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5"
               >
                 Toolbox
               </Link>
+
               <Link
                 to="/launch"
                 onClick={() => setMobileMenuOpen(false)}
