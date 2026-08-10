@@ -65,12 +65,14 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
 
           {/* CENTER: Nav (desktop) */}
           <nav className="hidden min-[600px]:flex items-center gap-8 justify-self-center">
+            <Link to="/movie-in-a-box" className={navLinkClass}>Movie in a Box</Link>
             <Link to="/toolbox" className={navLinkClass}>Toolbox</Link>
             <Link to="/launch" className={navLinkClass}>Launch</Link>
             <Link to="/academy" className={navLinkClass}>Academy</Link>
             <Link to="/blog" className={navLinkClass}>Blog</Link>
             <Link to="/membership" className={navLinkClass}>Membership</Link>
           </nav>
+
 
           {/* RIGHT: Actions */}
           <div className="flex items-center gap-3 justify-self-end">
