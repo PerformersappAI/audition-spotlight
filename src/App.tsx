@@ -206,7 +206,9 @@ const AppContent = () => (
           <Route path="/launch" element={<Launch />} />
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
+          <Route path="/movie-in-a-box" element={<MovieInABox />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
           <Route path="*" element={<NotFound />} />
 
     </Routes>
