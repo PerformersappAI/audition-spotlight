@@ -197,11 +197,8 @@ function ThreeActDiagram() {
         width="70"
         height="8"
         rx="4"
-        fill="currentColor"
-        className="text-gold/20"
-        stroke="currentColor"
         strokeWidth="1"
-        className="text-gold/20 stroke-gold"
+        className="fill-gold/20 stroke-gold"
       />
       <rect
         x="92"
@@ -209,11 +206,8 @@ function ThreeActDiagram() {
         width="136"
         height="12"
         rx="6"
-        fill="currentColor"
-        className="text-gold/20"
-        stroke="currentColor"
         strokeWidth="1"
-        className="text-gold/20 stroke-gold"
+        className="fill-gold/20 stroke-gold"
       />
       <rect
         x="242"
@@ -221,11 +215,8 @@ function ThreeActDiagram() {
         width="70"
         height="8"
         rx="4"
-        fill="currentColor"
-        className="text-gold/20"
-        stroke="currentColor"
         strokeWidth="1"
-        className="text-gold/20 stroke-gold"
+        className="fill-gold/20 stroke-gold"
       />
       <circle cx="80" cy="12" r="2.5" className="fill-gold" />
       <circle cx="232" cy="12" r="2.5" className="fill-gold" />
