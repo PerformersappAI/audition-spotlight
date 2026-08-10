@@ -113,22 +113,7 @@ export default function MovieInABox() {
                     e.currentTarget.style.border = `1px solid ${card.accent}66`;
                   }}
                 >
-                  {card.featured && (
-                    <span
-                      className="absolute top-3 left-3 z-10 text-background text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
-                      style={{ backgroundColor: card.accent }}
-                    >
-                      START HERE
-                    </span>
-                  )}
-                  <div
-                    className={[
-                      "flex items-center justify-between",
-                      card.featured && "mt-5",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                  >
+                  <div className="flex items-center justify-between">
                     <h3 className="text-[19px] font-semibold text-foreground">
                       {card.title}
                     </h3>
