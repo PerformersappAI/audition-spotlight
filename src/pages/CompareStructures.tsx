@@ -1,0 +1,36 @@
+import { Link } from "react-router-dom";
+import Seo from "@/components/Seo";
+
+export default function CompareStructures() {
+  return (
+    <>
+      <Seo
+        title="Compare All Four | Movie in a Box | Filmmaker Genius"
+        description="The same story through every lens."
+        canonical="https://filmmakergenius.com/movie-in-a-box/compare"
+        type="website"
+      />
+      <section className="min-h-[calc(100vh-96px)] flex items-center justify-center bg-background px-4 py-16">
+        <div className="w-full max-w-[780px] mx-auto text-center">
+          <Link
+            to="/movie-in-a-box"
+            className="inline-block text-sm text-foreground/50 hover:text-foreground transition-colors mb-8"
+          >
+            ← Back to Movie in a Box
+          </Link>
+
+          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+            Compare all four
+          </h1>
+          <p className="text-lg text-foreground/60 mt-4">
+            The same story through every lens.
+          </p>
+
+          <div className="mt-10 rounded-xl bg-[#161a21] border border-white/15 p-12 text-foreground/40 text-sm">
+            The side-by-side comparison will live here.
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
