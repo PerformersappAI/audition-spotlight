@@ -66,9 +66,10 @@ export default function MovieInABox() {
             {cards.map((card) => {
               const Diagram = card.diagram;
               return (
-                <button
+                <div
                   key={card.key}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   aria-label={`Select ${card.title}`}
                   className={[
                     "relative rounded-xl bg-[#161a21] p-[22px] text-left flex flex-col gap-3",
@@ -84,7 +85,7 @@ export default function MovieInABox() {
                       START HERE
                     </span>
                   )}
-                  <div className="flex items-center justify-between">
+                  <div className={["flex items-center justify-between", card.featured && "mt-5"].filter(Boolean).join(" ")}>
                     <h3 className="text-[19px] font-semibold text-foreground">
                       {card.title}
                     </h3>
