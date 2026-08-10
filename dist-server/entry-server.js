@@ -2787,6 +2787,7 @@ const GlobalLayout = ({ children }) => {
           /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 h-full grid grid-cols-[1fr_auto_1fr] items-center gap-6", children: [
             /* @__PURE__ */ jsx(Link, { to: "/", className: "flex items-center shrink-0 justify-self-start", children: /* @__PURE__ */ jsx("img", { src: fgLogo, alt: "Filmmaker Genius", className: "h-20 w-auto rounded-md" }) }),
             /* @__PURE__ */ jsxs("nav", { className: "hidden min-[600px]:flex items-center gap-8 justify-self-center", children: [
+              /* @__PURE__ */ jsx(Link, { to: "/movie-in-a-box", className: navLinkClass, children: "Movie in a Box" }),
               /* @__PURE__ */ jsx(Link, { to: "/toolbox", className: navLinkClass, children: "Toolbox" }),
               /* @__PURE__ */ jsx(Link, { to: "/launch", className: navLinkClass, children: "Launch" }),
               /* @__PURE__ */ jsx(Link, { to: "/academy", className: navLinkClass, children: "Academy" }),
@@ -2900,6 +2901,15 @@ const GlobalLayout = ({ children }) => {
               className: "min-[600px]:hidden border-t",
               style: { background: "rgba(0,0,0,0.95)", borderTopColor: "rgba(255,255,255,0.08)" },
               children: /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 py-4 space-y-1", children: [
+                /* @__PURE__ */ jsx(
+                  Link,
+                  {
+                    to: "/movie-in-a-box",
+                    onClick: () => setMobileMenuOpen(false),
+                    className: "block px-3 py-2 rounded-md text-sm font-medium text-white/75 hover:text-white hover:bg-white/5",
+                    children: "Movie in a Box"
+                  }
+                ),
                 /* @__PURE__ */ jsx(
                   Link,
                   {
@@ -6113,7 +6123,7 @@ const Membership = () => {
       setSubscribingPlan(null);
     }
   };
-  const handleManageSubscription = async () => {
+  const handleCancelMembership = async () => {
     if (!user) {
       toast$1.error("Please sign in first");
       navigate("/auth");
@@ -6121,19 +6131,22 @@ const Membership = () => {
     }
     setOpeningPortal(true);
     try {
-      const { data, error } = await supabase.functions.invoke("customer-portal");
-      if (error) {
-        console.error("Portal error:", error);
-        toast$1.error("Failed to open subscription management. Please try again.");
+      const { data, error } = await supabase.functions.invoke("cancel-subscription", {
+        body: { reason_code: "user_self_service" }
+      });
+      if (data == null ? void 0 : data.success) {
+        toast$1.success("Your membership is canceled — you keep access until the end of your billing period.");
+        fetchSubscription();
         return;
       }
-      if (data == null ? void 0 : data.url) {
-        window.open(data.url, "_blank");
-      } else {
-        toast$1.error("Failed to create portal session");
+      const msg = (data == null ? void 0 : data.error) || (error == null ? void 0 : error.message) || "";
+      if (msg.toLowerCase().includes("no active subscription")) {
+        toast$1.info("You don't have an active membership to cancel");
+        return;
       }
+      toast$1.error(msg || "An error occurred. Please try again.");
     } catch (error) {
-      console.error("Error opening portal:", error);
+      console.error("Error canceling membership:", error);
       toast$1.error("An error occurred. Please try again.");
     } finally {
       setOpeningPortal(false);
@@ -6206,7 +6219,7 @@ const Membership = () => {
               "button",
               {
                 className: "pr-btn-basic",
-                onClick: handleManageSubscription,
+                onClick: handleCancelMembership,
                 disabled: openingPortal,
                 style: {
                   padding: "12px 20px",
@@ -6218,7 +6231,7 @@ const Membership = () => {
                   border: "1px solid #2e2e50",
                   cursor: openingPortal ? "not-allowed" : "pointer"
                 },
-                children: openingPortal ? "Opening…" : "Manage Subscription"
+                children: openingPortal ? "Canceling…" : "Cancel Membership"
               }
             )
           ]
@@ -6621,7 +6634,7 @@ const BlogPost = () => {
           className: "w-full rounded-xl mb-10"
         }
       ),
-      /* @__PURE__ */ jsx("div", { className: "prose prose-invert max-w-none prose-headings:font-bold prose-h2:text-3xl prose-h2:mt-10 prose-h2:mb-4 prose-h3:text-2xl prose-p:text-foreground/90 prose-p:leading-relaxed prose-li:text-foreground/90 prose-a:text-[#00d4aa] prose-strong:text-foreground", children: /* @__PURE__ */ jsx(ReactMarkdown, { remarkPlugins: [remarkGfm], children: post.body }) }),
+      /* @__PURE__ */ jsx("div", { className: "prose prose-invert prose-lg max-w-3xl mx-auto leading-[1.75]\n            prose-headings:font-bold prose-headings:tracking-tight\n            prose-h2:text-3xl md:prose-h2:text-4xl prose-h2:mt-14 prose-h2:mb-5\n            prose-h3:text-2xl prose-h3:mt-10 prose-h3:mb-4\n            prose-h4:text-xl prose-h4:mt-8 prose-h4:mb-3\n            prose-p:my-6 prose-p:text-foreground/90 prose-p:leading-[1.8]\n            prose-li:my-2 prose-li:text-foreground/90\n            prose-ul:my-6 prose-ul:pl-6 prose-ol:my-6 prose-ol:pl-6\n            prose-strong:text-foreground prose-em:text-foreground/90\n            prose-a:text-[#00d4aa] prose-a:underline prose-a:underline-offset-4 hover:prose-a:text-[#00d4aa]/80\n            prose-blockquote:border-l-4 prose-blockquote:border-[#00d4aa]/50 prose-blockquote:bg-[#00d4aa]/5\n            prose-blockquote:py-2 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic\n            prose-blockquote:text-foreground/85\n            prose-hr:border-border prose-hr:my-12\n            prose-img:rounded-xl prose-img:my-8\n            prose-code:text-[#00d4aa] prose-pre:bg-card prose-pre:border prose-pre:border-border\n            prose-table:my-8 prose-th:text-foreground prose-td:text-foreground/90 prose-td:border-border", children: /* @__PURE__ */ jsx(ReactMarkdown, { remarkPlugins: [remarkGfm], children: post.body }) }),
       /* @__PURE__ */ jsxs("div", { className: "mt-16 p-8 rounded-xl border border-[#00d4aa]/30 bg-[#00d4aa]/5 text-center", children: [
         /* @__PURE__ */ jsx("h2", { className: "text-2xl font-semibold mb-3", children: "Ready to run your production in one place?" }),
         /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Upload your script and get storyboards, table reads, crew, contracts, and casting — all connected." }),

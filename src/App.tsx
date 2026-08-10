@@ -95,6 +95,8 @@ import MonetizationSubPage from "./pages/MonetizationSubPage";
 import Refill from "./pages/Refill";
 import Launch from "./pages/Launch";
 import Marketing from "./pages/Marketing";
+import MovieInABox from "./pages/MovieInABox";
+
 import ToolGate from "@/components/ToolGate";
 
 const queryClient = new QueryClient();
@@ -204,7 +206,9 @@ const AppContent = () => (
           <Route path="/launch" element={<Launch />} />
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
+          <Route path="/movie-in-a-box" element={<MovieInABox />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
           <Route path="*" element={<NotFound />} />
 
     </Routes>
