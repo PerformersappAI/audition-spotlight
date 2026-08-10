@@ -95,6 +95,8 @@ import MonetizationSubPage from "./pages/MonetizationSubPage";
 import Refill from "./pages/Refill";
 import Launch from "./pages/Launch";
 import Marketing from "./pages/Marketing";
+import MovieInABox from "./pages/MovieInABox";
+
 import ToolGate from "@/components/ToolGate";
 
 const queryClient = new QueryClient();
