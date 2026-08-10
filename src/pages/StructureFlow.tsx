@@ -113,13 +113,6 @@ export default function StructureFlow({
 
       <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
         <div className="w-full max-w-[780px] mx-auto text-center">
-          <Link
-            to="/movie-in-a-box"
-            className="inline-block text-sm text-foreground/50 hover:text-foreground transition-colors mb-8"
-          >
-            ← Back to Movie in a Box
-          </Link>
-
           <h1
             className="text-4xl sm:text-5xl font-bold tracking-tight"
             style={{ color: accent }}
