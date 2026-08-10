@@ -1,41 +1,67 @@
+import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 
-const cards = [
+const GOLD = "#d4a017";
+const VIOLET = "#a855f7";
+const ROSE = "#fb7185";
+const TEAL = "#00d4aa";
+
+type CardDef = {
+  key: string;
+  to: string;
+  title: string;
+  count: string;
+  description: string;
+  bestFor: string;
+  accent: string;
+  featured?: boolean;
+  diagram: (props: { accent: string }) => JSX.Element;
+};
+
+const cards: CardDef[] = [
   {
     key: "save-the-cat",
+    to: "/movie-in-a-box/save-the-cat",
     title: "Save the Cat",
     count: "15 beats",
     description:
       "Turn-by-turn directions. Fifteen clear beats, each with a job. The most guidance of any structure.",
     bestFor: "Best for your first film",
+    accent: GOLD,
     featured: true,
     diagram: SaveTheCatDiagram,
   },
   {
     key: "three-act",
+    to: "/movie-in-a-box/three-act",
     title: "Three-Act",
     count: "3 acts",
     description:
       "Beginning, middle, end — in a 1 / 2 / 1 rhythm. The foundation under everything. Simple and flexible.",
     bestFor: "Best for almost anything",
+    accent: VIOLET,
     diagram: ThreeActDiagram,
   },
   {
     key: "heros-journey",
+    to: "/movie-in-a-box/heros-journey",
     title: "Hero's Journey",
     count: "12 stages",
     description:
       "The classic myth: an ordinary hero is called to adventure, faces an ordeal, and returns transformed.",
     bestFor: "Best for epic & transformation",
+    accent: ROSE,
     diagram: HerosJourneyDiagram,
   },
   {
     key: "story-circle",
+    to: "/movie-in-a-box/story-circle",
     title: "Story Circle",
     count: "8 steps",
     description:
       "Eight plain words — you, need, go, search, find, take, return, change. The quickest way to a complete story.",
     bestFor: "Best for character-driven stories",
+    accent: TEAL,
     diagram: StoryCircleDiagram,
   },
 ];
@@ -66,26 +92,43 @@ export default function MovieInABox() {
             {cards.map((card) => {
               const Diagram = card.diagram;
               return (
-                <div
+                <Link
                   key={card.key}
-                  role="button"
-                  tabIndex={0}
+                  to={card.to}
                   aria-label={`Select ${card.title}`}
-                  className={[
-                    "relative rounded-xl bg-[#161a21] p-[22px] text-left flex flex-col gap-3",
-                    "border transition-all duration-300 cursor-pointer",
-                    "hover:-translate-y-0.5 hover:shadow-surface",
-                    card.featured
-                      ? "border-gold/50 hover:border-gold/70"
-                      : "border-[#242b35] hover:border-[#3d4756]",
-                  ].join(" ")}
+                  className="group relative rounded-xl bg-[#161a21] p-[22px] text-left flex flex-col gap-3 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
+                  style={
+                    {
+                      border: `1px solid ${card.accent}66`,
+                      boxShadow: `0 0 12px ${card.accent}14`,
+                      ["--accent" as string]: card.accent,
+                    } as React.CSSProperties
+                  }
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.boxShadow = `0 0 24px ${card.accent}40`;
+                    e.currentTarget.style.border = `1px solid ${card.accent}b3`;
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.boxShadow = `0 0 12px ${card.accent}14`;
+                    e.currentTarget.style.border = `1px solid ${card.accent}66`;
+                  }}
                 >
                   {card.featured && (
-                    <span className="absolute top-3 left-3 z-10 bg-gold text-background text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-surface">
+                    <span
+                      className="absolute top-3 left-3 z-10 text-background text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+                      style={{ backgroundColor: card.accent }}
+                    >
                       START HERE
                     </span>
                   )}
-                  <div className={["flex items-center justify-between", card.featured && "mt-5"].filter(Boolean).join(" ")}>
+                  <div
+                    className={[
+                      "flex items-center justify-between",
+                      card.featured && "mt-5",
+                    ]
+                      .filter(Boolean)
+                      .join(" ")}
+                  >
                     <h3 className="text-[19px] font-semibold text-foreground">
                       {card.title}
                     </h3>
@@ -94,7 +137,7 @@ export default function MovieInABox() {
                     </span>
                   </div>
                   <div className="bg-[#0c0e13] rounded-lg p-4">
-                    <Diagram />
+                    <Diagram accent={card.accent} />
                   </div>
                   <p className="text-sm text-foreground/60 leading-snug">
                     {card.description}
@@ -102,25 +145,24 @@ export default function MovieInABox() {
                   <span className="inline-flex items-center self-start px-2.5 py-1 rounded-full text-xs font-medium text-success bg-success/10 border border-success/30 mt-1">
                     {card.bestFor}
                   </span>
-                </div>
+                </Link>
               );
             })}
           </div>
 
-          {/* Compare box */}
-          <div
-            role="button"
-            tabIndex={0}
+          {/* Compare box — neutral treatment */}
+          <Link
+            to="/movie-in-a-box/compare"
             aria-label="Compare all four structures side by side"
-            className="w-full mt-5 flex items-center gap-4 rounded-xl bg-[#161a21] border border-[#00d4aa]/40 p-5 cursor-pointer hover:border-[#00d4aa] transition-all duration-300"
+            className="w-full mt-5 flex items-center gap-4 rounded-xl bg-[#161a21] border border-white/15 hover:border-white/35 p-5 cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.05)] hover:shadow-[0_0_24px_rgba(226,232,240,0.18)]"
           >
-            <div className="w-12 h-12 rounded-lg bg-[#00d4aa]/10 flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
               <svg
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
                 fill="none"
-                className="text-[#00d4aa]"
+                className="text-foreground/80"
               >
                 <rect x="3" y="13" width="4" height="8" rx="1" fill="currentColor" />
                 <rect x="8" y="9" width="4" height="12" rx="1" fill="currentColor" />
@@ -136,8 +178,8 @@ export default function MovieInABox() {
                 See the same story through every lens — and how the beats line up.
               </p>
             </div>
-            <span className="text-[#00d4aa] text-xl flex-shrink-0">→</span>
-          </div>
+            <span className="text-foreground/70 text-xl flex-shrink-0">→</span>
+          </Link>
 
           {/* Hint */}
           <p className="text-center text-xs text-foreground/50 mt-[22px]">
@@ -149,153 +191,65 @@ export default function MovieInABox() {
   );
 }
 
-function SaveTheCatDiagram() {
-  const dots = [
-    16, 38, 64, 88, 118, 152, 182, 210, 236, 266, 300,
-  ];
+function SaveTheCatDiagram({ accent }: { accent: string }) {
+  const dots = [16, 38, 64, 88, 118, 152, 182, 210, 236, 266, 300];
   const large = [64, 236];
   return (
-    <svg
-      viewBox="0 0 320 24"
-      className="w-full h-6"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <line
-        x1="10"
-        y1="12"
-        x2="310"
-        y2="12"
-        stroke="currentColor"
-        strokeWidth="2"
-        className="text-gold/30"
-      />
-      {dots.map((x, i) => {
-        const isLarge = large.includes(x);
-        return (
-          <circle
-            key={i}
-            cx={x}
-            cy="12"
-            r={isLarge ? 3.5 : 2}
-            fill="currentColor"
-            className="text-gold"
-          />
-        );
-      })}
+    <svg viewBox="0 0 320 24" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
+      <line x1="10" y1="12" x2="310" y2="12" stroke={accent} strokeOpacity="0.35" strokeWidth="2" />
+      {dots.map((x, i) => (
+        <circle key={i} cx={x} cy="12" r={large.includes(x) ? 3.5 : 2} fill={accent} />
+      ))}
     </svg>
   );
 }
 
-function ThreeActDiagram() {
+function ThreeActDiagram({ accent }: { accent: string }) {
   return (
-    <svg
-      viewBox="0 0 320 24"
-      className="w-full h-6"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <rect
-        x="8"
-        y="8"
-        width="70"
-        height="8"
-        rx="4"
-        strokeWidth="1"
-        className="fill-gold/20 stroke-gold"
-      />
-      <rect
-        x="92"
-        y="6"
-        width="136"
-        height="12"
-        rx="6"
-        strokeWidth="1"
-        className="fill-gold/20 stroke-gold"
-      />
-      <rect
-        x="242"
-        y="8"
-        width="70"
-        height="8"
-        rx="4"
-        strokeWidth="1"
-        className="fill-gold/20 stroke-gold"
-      />
-      <circle cx="80" cy="12" r="2.5" className="fill-gold" />
-      <circle cx="232" cy="12" r="2.5" className="fill-gold" />
-      <circle cx="160" cy="4" r="2.5" className="fill-gold" />
+    <svg viewBox="0 0 320 24" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
+      <rect x="8" y="8" width="70" height="8" rx="4" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
+      <rect x="92" y="6" width="136" height="12" rx="6" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
+      <rect x="242" y="8" width="70" height="8" rx="4" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
+      <circle cx="80" cy="12" r="2.5" fill={accent} />
+      <circle cx="232" cy="12" r="2.5" fill={accent} />
+      <circle cx="160" cy="4" r="2.5" fill={accent} />
     </svg>
   );
 }
 
-function HerosJourneyDiagram() {
+function HerosJourneyDiagram({ accent }: { accent: string }) {
   return (
-    <svg
-      viewBox="0 0 320 32"
-      className="w-full h-6"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <line
-        x1="10"
-        y1="16"
-        x2="118"
-        y2="16"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeDasharray="4 3"
-        className="text-gold/40"
-      />
-      <line
-        x1="202"
-        y1="16"
-        x2="310"
-        y2="16"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeDasharray="4 3"
-        className="text-gold/40"
-      />
-      <circle
-        cx="160"
-        cy="16"
-        r="13"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        className="text-gold/50"
-      />
-      <circle cx="160" cy="3" r="2.5" className="fill-gold" />
-      <circle cx="173" cy="16" r="2.5" className="fill-gold" />
-      <circle cx="160" cy="29" r="2.5" className="fill-gold" />
-      <circle cx="147" cy="16" r="2.5" className="fill-gold" />
+    <svg viewBox="0 0 320 32" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
+      <line x1="10" y1="16" x2="118" y2="16" stroke={accent} strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="4 3" />
+      <line x1="202" y1="16" x2="310" y2="16" stroke={accent} strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="4 3" />
+      <circle cx="160" cy="16" r="13" fill="none" stroke={accent} strokeOpacity="0.6" strokeWidth="1.5" />
+      <circle cx="160" cy="3" r="2.5" fill={accent} />
+      <circle cx="173" cy="16" r="2.5" fill={accent} />
+      <circle cx="160" cy="29" r="2.5" fill={accent} />
+      <circle cx="147" cy="16" r="2.5" fill={accent} />
     </svg>
   );
 }
 
-function StoryCircleDiagram() {
+function StoryCircleDiagram({ accent }: { accent: string }) {
   const cx = 160;
   const cy = 16;
   const r = 13;
   const dots = 8;
   return (
-    <svg
-      viewBox="0 0 320 32"
-      className="w-full h-6"
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <circle
-        cx={cx}
-        cy={cy}
-        r={r}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        className="text-[#00d4aa]"
-      />
+    <svg viewBox="0 0 320 32" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke={accent} strokeWidth="1.5" />
       {Array.from({ length: dots }).map((_, i) => {
         const angle = (i * 2 * Math.PI) / dots - Math.PI / 2;
-        const x = cx + r * Math.cos(angle);
-        const y = cy + r * Math.sin(angle);
-        return <circle key={i} cx={x} cy={y} r="2.5" className="fill-[#00d4aa]" />;
+        return (
+          <circle
+            key={i}
+            cx={cx + r * Math.cos(angle)}
+            cy={cy + r * Math.sin(angle)}
+            r="2.5"
+            fill={accent}
+          />
+        );
       })}
     </svg>
   );

@@ -96,6 +96,8 @@ import Refill from "./pages/Refill";
 import Launch from "./pages/Launch";
 import Marketing from "./pages/Marketing";
 import MovieInABox from "./pages/MovieInABox";
+import StructureFlow from "./pages/StructureFlow";
+import CompareStructures from "./pages/CompareStructures";
 
 import ToolGate from "@/components/ToolGate";
 
@@ -207,6 +209,11 @@ const AppContent = () => (
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
           <Route path="/movie-in-a-box" element={<MovieInABox />} />
+          <Route path="/movie-in-a-box/save-the-cat" element={<StructureFlow structureKey="save-the-cat" />} />
+          <Route path="/movie-in-a-box/three-act" element={<StructureFlow structureKey="three-act" />} />
+          <Route path="/movie-in-a-box/heros-journey" element={<StructureFlow structureKey="heros-journey" />} />
+          <Route path="/movie-in-a-box/story-circle" element={<StructureFlow structureKey="story-circle" />} />
+          <Route path="/movie-in-a-box/compare" element={<CompareStructures />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 
           <Route path="*" element={<NotFound />} />
