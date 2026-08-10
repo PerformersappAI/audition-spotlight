@@ -209,10 +209,14 @@ const AppContent = () => (
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
           <Route path="/movie-in-a-box" element={<MovieInABox />} />
-          <Route path="/movie-in-a-box/save-the-cat" element={<StructureFlow structureKey="save-the-cat" />} />
-          <Route path="/movie-in-a-box/three-act" element={<StructureFlow structureKey="three-act" />} />
-          <Route path="/movie-in-a-box/heros-journey" element={<StructureFlow structureKey="heros-journey" />} />
-          <Route path="/movie-in-a-box/story-circle" element={<StructureFlow structureKey="story-circle" />} />
+          <Route path="/movie-in-a-box/save-the-cat" element={<Navigate to="/movie-in-a-box/save-the-cat/structure" replace />} />
+          <Route path="/movie-in-a-box/save-the-cat/:stop" element={<StructureFlow structureKey="save-the-cat" />} />
+          <Route path="/movie-in-a-box/three-act" element={<Navigate to="/movie-in-a-box/three-act/structure" replace />} />
+          <Route path="/movie-in-a-box/three-act/:stop" element={<StructureFlow structureKey="three-act" />} />
+          <Route path="/movie-in-a-box/heros-journey" element={<Navigate to="/movie-in-a-box/heros-journey/structure" replace />} />
+          <Route path="/movie-in-a-box/heros-journey/:stop" element={<StructureFlow structureKey="heros-journey" />} />
+          <Route path="/movie-in-a-box/story-circle" element={<Navigate to="/movie-in-a-box/story-circle/structure" replace />} />
+          <Route path="/movie-in-a-box/story-circle/:stop" element={<StructureFlow structureKey="story-circle" />} />
           <Route path="/movie-in-a-box/compare" element={<CompareStructures />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 
