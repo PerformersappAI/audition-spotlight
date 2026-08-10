@@ -1,5 +1,4 @@
 import { Link, useParams, Navigate } from "react-router-dom";
-import { Home } from "lucide-react";
 import Seo from "@/components/Seo";
 
 export type StructureKey =
@@ -79,7 +78,6 @@ export default function StructureFlow({
                 to="/movie-in-a-box"
                 className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
               >
-                <Home className="h-3.5 w-3.5" />
                 <span>Movie in a Box</span>
               </Link>
             </li>
