@@ -102,14 +102,15 @@ export default function MovieInABox() {
                   <span className="inline-flex items-center self-start px-2.5 py-1 rounded-full text-xs font-medium text-success bg-success/10 border border-success/30 mt-1">
                     {card.bestFor}
                   </span>
-                </button>
+                </div>
               );
             })}
           </div>
 
           {/* Compare box */}
-          <button
-            type="button"
+          <div
+            role="button"
+            tabIndex={0}
             aria-label="Compare all four structures side by side"
             className="w-full mt-5 flex items-center gap-4 rounded-xl bg-[#161a21] border border-[#00d4aa]/40 p-5 cursor-pointer hover:border-[#00d4aa] transition-all duration-300"
           >
@@ -136,7 +137,7 @@ export default function MovieInABox() {
               </p>
             </div>
             <span className="text-[#00d4aa] text-xl flex-shrink-0">→</span>
-          </button>
+          </div>
 
           {/* Hint */}
           <p className="text-center text-xs text-foreground/50 mt-[22px]">
