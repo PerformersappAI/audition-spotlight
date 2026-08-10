@@ -74,6 +74,18 @@ export default function StructureFlow({
       >
         <div className="container mx-auto px-4">
           <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
+            <li>
+              <Link
+                to="/movie-in-a-box"
+                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+              >
+                <Home className="h-3.5 w-3.5" />
+                <span>Movie in a Box</span>
+              </Link>
+            </li>
+            <li className="text-foreground/30" aria-hidden="true">
+              ›
+            </li>
             {STOPS.map((s) => {
               const isActive = s.key === activeStop;
               const label =
