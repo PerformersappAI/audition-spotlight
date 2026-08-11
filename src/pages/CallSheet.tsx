@@ -165,6 +165,42 @@ const CallSheet = () => {
     return "";
   };
 
+  /** Resolve ambiguous numeric dates by matching the weekday printed on the call sheet. */
+  const extractShootDate = (raw: any, sourceText: string): string => {
+    const weekdayNumbers: Record<string, number> = {
+      sunday: 0, monday: 1, tuesday: 2, wednesday: 3,
+      thursday: 4, friday: 5, saturday: 6,
+    };
+    const headerDate = sourceText.match(
+      /\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b\s*,?\s*(\d{1,2})[./-](\d{1,2})[./-](\d{4})/i
+    );
+
+    if (headerDate) {
+      const expectedWeekday = weekdayNumbers[headerDate[1].toLowerCase()];
+      const first = Number(headerDate[2]);
+      const second = Number(headerDate[3]);
+      const year = Number(headerDate[4]);
+      const candidates = [
+        { month: first, day: second },
+        { month: second, day: first },
+      ];
+
+      for (const candidate of candidates) {
+        const date = new Date(year, candidate.month - 1, candidate.day);
+        const isValid = candidate.month >= 1 && candidate.month <= 12
+          && candidate.day >= 1 && candidate.day <= 31
+          && date.getFullYear() === year
+          && date.getMonth() === candidate.month - 1
+          && date.getDate() === candidate.day;
+        if (isValid && date.getDay() === expectedWeekday) {
+          return `${year}-${String(candidate.month).padStart(2, "0")}-${String(candidate.day).padStart(2, "0")}`;
+        }
+      }
+    }
+
+    return toISODate(raw);
+  };
+
   const clean = (raw: any): string => {
     if (typeof raw !== "string") return "";
     const s = raw.trim();
@@ -302,7 +338,7 @@ const CallSheet = () => {
               ...prev,
               production_company: clean(data.production_company) || prev.production_company,
               project_name: clean(data.project_name) || prev.project_name,
-              shoot_date: toISODate(data.shoot_date) || prev.shoot_date,
+              shoot_date: extractShootDate(data.shoot_date, result.text) || prev.shoot_date,
               day_number: clean(data.day_number) || prev.day_number,
               script_color: clean(data.script_color) || prev.script_color,
               schedule_color: clean(data.schedule_color) || prev.schedule_color,
