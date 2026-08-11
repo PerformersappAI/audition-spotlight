@@ -75,6 +75,12 @@ const STRUCTURES: Record<string, { name: string; color: string; beats: string[] 
     beats: ["You", "Need", "Go", "Search", "Find", "Take", "Return", "Change"],
   },
 };
+const MOVIES: Record<string, { title: string; slug: string }> = {
+  "three-act": { title: "The Godfather", slug: "the-godfather" },
+  "save-the-cat": { title: "The Silence of the Lambs", slug: "the-silence-of-the-lambs" },
+  "heros-journey": { title: "Gladiator", slug: "gladiator" },
+  "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
+};
 
 
 const BEAT_CONTENT: Record<string, Record<string, BeatContent>> = {
