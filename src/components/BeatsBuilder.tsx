@@ -36,7 +36,7 @@ const M: Beat[] = [
 export default function BeatsBuilder({ structureKey }: { structureKey: string }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [genMsg, setGenMsg] = useState(false);
-  const [focus, setFocus] = useState<FwKey | null>(null);
+  const [sel, setSel] = useState<FwKey[]>([]);
 
   useEffect(() => {
     try { const raw = localStorage.getItem("mib-master-beats"); setAnswers(raw ? JSON.parse(raw) : {}); }
@@ -46,25 +46,34 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
   const set = (i: number, v: string) =>
     setAnswers((p) => { const n = { ...p, [i]: v }; try { localStorage.setItem("mib-master-beats", JSON.stringify(n)); } catch { /* ignore */ } return n; });
 
+  const toggle = (k: FwKey) => setSel((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
+
   const cov = (k: FwKey) => {
     let tot = 0, fill = 0;
     M.forEach((b, i) => { if (b.fw[k]) { tot++; if ((answers[i] || "").trim()) fill++; } });
     return { tot, fill, pct: tot ? Math.round((fill / tot) * 100) : 0 };
   };
 
-  const visible = M.map((b, i) => ({ b, i })).filter(({ b }) => !focus || !!b.fw[focus]);
+  const showAll = sel.length === 0;
+  const visible = M.map((b, i) => ({ b, i })).filter(({ b }) => showAll || sel.some((k) => !!b.fw[k]));
+  const count = showAll ? 4 : sel.length;
+  const one = sel.length === 1 ? COLOR[sel[0]] : null;
 
-  const Badge = ({ k, big }: { k: FwKey; big?: boolean }) => {
+  const Badge = ({ k }: { k: FwKey }) => {
     const f = FW.find((x) => x.key === k)!;
     const c = cov(k);
-    const active = focus === k;
+    const on = sel.includes(k);
+    const dim = !showAll && !on;
     return (
       <button
-        onClick={() => setFocus(active ? null : k)}
-        className={`text-left rounded-lg border px-3 py-2.5 transition-all ${big ? "flex-1 min-w-[180px]" : ""}`}
-        style={{ borderColor: active ? f.color : "rgba(255,255,255,0.10)", background: active ? `${f.color}18` : "rgba(255,255,255,0.03)" }}
+        onClick={() => toggle(k)}
+        className="text-left rounded-lg border px-3 py-2.5 transition-all"
+        style={{ borderColor: on ? f.color : "rgba(255,255,255,0.10)", background: on ? `${f.color}18` : "rgba(255,255,255,0.03)", opacity: dim ? 0.45 : 1 }}
       >
-        <div className="text-[12px] font-extrabold" style={{ color: f.color }}>{f.name}</div>
+        <div className="flex items-center justify-between">
+          <div className="text-[12px] font-extrabold" style={{ color: f.color }}>{f.name}</div>
+          {on && <span className="text-[11px] font-extrabold" style={{ color: f.color }}>✓</span>}
+        </div>
         <div className="text-[9.5px] text-foreground/30 mb-1.5">{c.tot} beats</div>
         <div className="h-[5px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
           <div className="h-full rounded-full transition-all" style={{ width: `${c.pct}%`, backgroundColor: f.color }} />
@@ -82,31 +91,31 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">Your Beat Sheet</h1>
         <p className="mt-3 text-foreground/60 text-[15px] max-w-[620px] leading-relaxed">
-          Answer each beat <span className="text-foreground font-semibold">once</span>. Every answer maps into all four frameworks at the same time — or click a framework to build in just that one.
+          Answer each beat <span className="text-foreground font-semibold">once</span>. Every answer maps into all four frameworks — or select the ones you want and the sheet narrows to just those.
         </p>
 
-        {/* coverage / filter */}
+        {/* coverage / multi-select filter */}
         <div className="mt-7">
-          <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3">
-            {focus ? <>Building in <span style={{ color: COLOR[focus] }}>{FNAME[focus]}</span> only</> : "Click a framework to focus on just that one"}
+          <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3 flex items-center gap-2 flex-wrap">
+            {showAll ? (
+              <span>Click any frameworks to focus — pick one, two, three, or all</span>
+            ) : (
+              <span className="flex items-center gap-2 flex-wrap">
+                <span className="normal-case tracking-normal">Building in&nbsp;
+                  {sel.map((k, i) => (<span key={k}><span style={{ color: COLOR[k] }} className="font-bold">{FNAME[k]}</span>{i < sel.length - 1 ? " + " : ""}</span>))}
+                </span>
+                <button onClick={() => setSel([])} className="normal-case tracking-normal font-semibold text-foreground/50 hover:text-foreground underline">show all four</button>
+              </span>
+            )}
           </div>
 
-          {focus ? (
-            <div className="flex items-center gap-3 flex-wrap">
-              <Badge k={focus} big />
-              <button onClick={() => setFocus(null)} className="text-[12.5px] font-bold rounded-lg border border-white/15 px-4 py-2.5 text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors">
-                ← Show all four frameworks
-              </button>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-              {FW.map((f) => <Badge key={f.key} k={f.key} />)}
-            </div>
-          )}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+            {FW.map((f) => <Badge key={f.key} k={f.key} />)}
+          </div>
 
           <div className="mt-4 flex items-center justify-end flex-wrap gap-3">
-            <button onClick={() => setGenMsg(true)} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={focus ? { backgroundColor: COLOR[focus], color: "#0c0e13" } : { backgroundImage: GRAD, color: "#0c0e13" }}>
-              {focus ? `✨ Generate my ${FNAME[focus]} outline` : "✨ Generate my 4 outlines"}
+            <button onClick={() => setGenMsg(true)} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={one ? { backgroundColor: one, color: "#0c0e13" } : { backgroundImage: GRAD, color: "#0c0e13" }}>
+              ✨ Generate my {count} outline{count > 1 ? "s" : ""}
             </button>
           </div>
           {genMsg && <div className="mt-2 text-right text-[12px] text-foreground/55">Outline generation is coming next — your answers are saved.</div>}
@@ -115,7 +124,7 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
         {/* beats */}
         <div className="mt-6">
           {visible.map(({ b, i }, idx) => {
-            const keys = focus ? ([focus] as FwKey[]) : (Object.keys(b.fw) as FwKey[]);
+            const keys = showAll ? (Object.keys(b.fw) as FwKey[]) : sel.filter((k) => !!b.fw[k]);
             const filled = (answers[i] || "").trim().length > 0;
             return (
               <div key={i} className="mb-3 rounded-xl border bg-white/[0.03] px-[17px] py-4" style={{ borderColor: filled ? "rgba(55,184,124,0.4)" : "rgba(255,255,255,0.10)" }}>
@@ -139,7 +148,7 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
                   placeholder="Write this beat for YOUR movie…"
                   className="w-full min-h-[54px] resize-y rounded-lg border border-white/10 bg-black/25 text-foreground text-[13.5px] px-3 py-2.5 leading-relaxed focus:outline-none focus:border-white/25"
                 />
-                {!focus && (Object.keys(b.fw) as FwKey[]).length === 1 && (
+                {showAll && (Object.keys(b.fw) as FwKey[]).length === 1 && (
                   <div className="text-[10px] text-foreground/30 mt-2">
                     Only <span className="font-bold" style={{ color: COLOR[(Object.keys(b.fw) as FwKey[])[0]] }}>{FNAME[(Object.keys(b.fw) as FwKey[])[0]]}</span> asks for this beat — a moment the others let you skip.
                   </div>
@@ -151,7 +160,7 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
 
         <div className="mt-4 flex items-center justify-between flex-wrap gap-3 pb-4">
           <span className="text-[12.5px] text-foreground/50">✓ Saved automatically</span>
-          <Link to={`/movie-in-a-box/${structureKey}/scene`} className="rounded-lg px-6 py-3 text-sm font-bold text-[#0c0e13]" style={focus ? { backgroundColor: COLOR[focus] } : { backgroundImage: GRAD }}>
+          <Link to={`/movie-in-a-box/${structureKey}/scene`} className="rounded-lg px-6 py-3 text-sm font-bold text-[#0c0e13]" style={one ? { backgroundColor: one } : { backgroundImage: GRAD }}>
             Continue to Scene →
           </Link>
         </div>
