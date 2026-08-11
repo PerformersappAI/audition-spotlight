@@ -126,6 +126,46 @@ const CallSheet = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  /**
+   * HTML <input type="time"> only accepts 24h "HH:MM". The AI often returns
+   * "08:30 AM", "9 PM", "18.30" etc., which the browser silently discards —
+   * making the field look empty. Normalize before setting state.
+   */
+  const to24h = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    const m = s.match(/^(\d{1,2})\s*[:.h]?\s*(\d{2})?\s*(a\.?m\.?|p\.?m\.?)?$/i);
+    if (!m) return "";
+    let h = parseInt(m[1], 10);
+    const min = m[2] ? parseInt(m[2], 10) : 0;
+    const mer = m[3]?.toLowerCase().replace(/\./g, "");
+    if (mer === "pm" && h < 12) h += 12;
+    if (mer === "am" && h === 12) h = 0;
+    if (h > 23 || min > 59) return "";
+    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  };
+
+  /** <input type="date"> needs YYYY-MM-DD. */
+  const toISODate = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const dmy = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+    const parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+    return "";
+  };
+
+  const clean = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    return !s || s.toLowerCase() === "null" || s.toLowerCase() === "unknown" ? "" : s;
+  };
+
+
   const addScene = () => {
     setScenes([...scenes, {
       scene_number: "",
