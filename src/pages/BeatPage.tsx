@@ -75,6 +75,12 @@ const STRUCTURES: Record<string, { name: string; color: string; beats: string[] 
     beats: ["You", "Need", "Go", "Search", "Find", "Take", "Return", "Change"],
   },
 };
+const MOVIES: Record<string, { title: string; slug: string }> = {
+  "three-act": { title: "The Godfather", slug: "the-godfather" },
+  "save-the-cat": { title: "The Silence of the Lambs", slug: "the-silence-of-the-lambs" },
+  "heros-journey": { title: "Gladiator", slug: "gladiator" },
+  "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
+};
 
 
 const BEAT_CONTENT: Record<string, Record<string, BeatContent>> = {
@@ -162,6 +168,8 @@ export default function BeatPage() {
     ? `/movie-in-a-box/${structure}/structure`
     : "/movie-in-a-box";
 
+  const movie = MOVIES[structure];
+
   return (
     <>
       <Seo
@@ -182,6 +190,19 @@ export default function BeatPage() {
           <Link to={structureHref} className="text-foreground/50 hover:text-foreground transition-colors">
             {meta.name}
           </Link>
+          {movie && (
+            <>
+              <span className="text-foreground/30 px-2" aria-hidden="true">
+                ›
+              </span>
+              <Link
+                to={`/movie-in-a-box/movie/${movie.slug}`}
+                className="text-foreground/50 hover:text-foreground transition-colors"
+              >
+                {movie.title}
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
