@@ -235,7 +235,6 @@ For missing fields, use null. Extract complete information for all sections: gen
       console.warn('⚠️ Extraction warnings:', warnings.join(', '));
     }
 
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "parse-call-sheet", {});
     await logUsage({
       userId: user!.id,
