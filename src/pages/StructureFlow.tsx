@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 
@@ -167,52 +167,6 @@ const DIAGRAM_MODE: Record<StructureKey, "line" | "circle"> = {
   "story-circle": "circle",
 };
 
-function ScrollRow({ children, color }: { children: ReactNode; color: string }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [bar, setBar] = useState({ w: 0, left: 0, show: false });
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const update = () => {
-      const max = el.scrollWidth - el.clientWidth;
-      if (max <= 1) {
-        setBar((b) => (b.show ? { ...b, show: false } : b));
-        return;
-      }
-      const w = (el.clientWidth / el.scrollWidth) * 100;
-      const left = (el.scrollLeft / max) * (100 - w);
-      setBar({ w, left, show: true });
-    };
-    update();
-    const t = setTimeout(update, 120);
-    el.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    return () => {
-      el.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-      clearTimeout(t);
-    };
-  }, [children]);
-  return (
-    <div className="relative">
-      <div ref={ref} className="overflow-x-auto mib-noscroll">
-        {children}
-      </div>
-      {bar.show && (
-        <div
-          className="pointer-events-none absolute left-4 right-4 bottom-0 h-[3px] rounded-full"
-          style={{ background: "rgba(255,255,255,0.06)" }}
-        >
-          <div
-            className="absolute inset-y-0 rounded-full"
-            style={{ width: `${bar.w}%`, left: `${bar.left}%`, backgroundColor: color, opacity: 0.9 }}
-          />
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function StructureFlow({
   structureKey,
 }: {
@@ -288,8 +242,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
       >
         <div className="container mx-auto px-4">
-          <ScrollRow color={accent}>
-            <ul className="flex items-center gap-1 py-2.5 text-sm whitespace-nowrap">
+            <ul className="flex items-center gap-1 overflow-x-auto mib-noscroll py-2.5 text-sm whitespace-nowrap">
               <li>
                 <Link
                   to="/movie-in-a-box"
@@ -323,9 +276,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 );
               })}
             </ul>
-          </ScrollRow>
-          <ScrollRow color={accent}>
-            <ul className="flex items-center pb-3 text-sm whitespace-nowrap border-t border-white/5 pt-1.5">
+            <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
               <li>
                 <Link
                   to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
@@ -339,10 +290,10 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 const bslug = slugify(name);
                 return (
                   <li key={bslug} className="flex items-center">
-                    <span className="text-foreground/25 px-1" aria-hidden="true">·</span>
+                    <span className="text-foreground/25 px-0.5" aria-hidden="true">·</span>
                     <Link
                       to={`/movie-in-a-box/${structureKey}/beat/${bslug}`}
-                      className="inline-block rounded-md px-2.5 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                      className="inline-block rounded-md px-2 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
                     >
                       {name}
                     </Link>
@@ -350,7 +301,6 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 );
               })}
             </ul>
-          </ScrollRow>
         </div>
       </nav>
 
