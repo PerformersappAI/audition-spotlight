@@ -47,7 +47,7 @@ const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
   "heros-journey": { title: "Gladiator", slug: "gladiator" },
   "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
 };
-
+const STOPS = [
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
   { key: "scene", label: "Scene" },
