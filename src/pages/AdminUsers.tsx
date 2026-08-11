@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Search, Pencil, Trash2 } from 'lucide-react';
+import { Search, Pencil, Trash2, KeyRound } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -86,6 +86,21 @@ const AdminUsers = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const sendPasswordReset = async (user: UserProfile) => {
+    if (!user.email) {
+      toast({ variant: 'destructive', title: 'Error', description: 'This user has no email on file' });
+      return;
+    }
+    const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+      redirectTo: `${window.location.origin}/auth`,
+    });
+    if (error) {
+      toast({ variant: 'destructive', title: 'Error', description: error.message });
+      return;
+    }
+    toast({ title: 'Reset link sent', description: `Password reset email sent to ${user.email}` });
   };
 
   const updateUserRole = async (userId: string, newRole: 'admin' | 'filmmaker' | 'film_festival') => {
@@ -367,6 +382,14 @@ const AdminUsers = () => {
                                 <SelectItem value="admin">Admin</SelectItem>
                               </SelectContent>
                             </Select>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => sendPasswordReset(user)}
+                              title="Send password reset email"
+                            >
+                              <KeyRound className="h-4 w-4" />
+                            </Button>
                             <Button
                               variant="ghost"
                               size="icon"

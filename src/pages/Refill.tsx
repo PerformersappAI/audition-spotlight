@@ -11,6 +11,8 @@ import {
 import { Zap, Loader2, CircleDot } from 'lucide-react';
 import CreditCostTable from '@/components/CreditCostTable';
 import AddCreditsCard from '@/components/AddCreditsCard';
+import PasswordSettingsCard from '@/components/PasswordSettingsCard';
+
 
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
@@ -147,8 +149,13 @@ export default function Refill() {
         {/* 2. Add More Credits */}
         <AddCreditsCard className="mb-8" />
 
-        {/* 3. How Your Credits Work */}
+        {/* 3. Password & Security */}
+        <PasswordSettingsCard email={user.email} className="mb-8" />
+
+        {/* 4. How Your Credits Work */}
         <CreditCostTable className="mb-8" />
+
+
 
 
         {/* 4. Cancel Membership */}
