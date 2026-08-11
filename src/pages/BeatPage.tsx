@@ -646,7 +646,8 @@ export default function BeatPage() {
   const idx = struct.beats.findIndex((b) => b.slug === slug);
   const prev = idx > 0 ? struct.beats[idx - 1] : null;
   const next = idx >= 0 && idx < struct.beats.length - 1 ? struct.beats[idx + 1] : null;
-  const beat = structure === "three-act" ? THREE_ACT[slug] : undefined;
+  const CONTENT: Record<string, Record<string, Beat>> = { "three-act": THREE_ACT, "save-the-cat": SAVE_THE_CAT };
+  const beat = CONTENT[structure]?.[slug];
   const beatName = beat?.name ?? struct.beats[idx]?.name ?? "Beat";
 
   return (
