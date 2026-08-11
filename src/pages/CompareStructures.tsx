@@ -134,77 +134,83 @@ export default function CompareStructures() {
 
             <ul className="flex items-center gap-1">
               <li>
-                <Link
-                  to="/movie-in-a-box/three-act/structure"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
-                  style={{ color: "#a855f7" }}
-                >
-                  Three-Act
-                </Link>
+                <span className="inline-flex items-center gap-1.5">
+                  <Link
+                    to="/movie-in-a-box/three-act/structure"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-semibold hover:bg-white/5 transition-colors"
+                    style={{ color: "#a855f7" }}
+                  >
+                    Three-Act
+                  </Link>
+                  <span className="text-[13px]" style={{ color: "#a855f7", opacity: 0.5 }} aria-hidden="true">·</span>
+                  <Link
+                    to="/movie-in-a-box/movie/the-godfather"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                    style={{ color: "#a855f7", opacity: 0.85 }}
+                  >
+                    The Godfather
+                  </Link>
+                </span>
               </li>
+              <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
               <li>
-                <Link
-                  to="/movie-in-a-box/save-the-cat/structure"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
-                  style={{ color: "#d4a017" }}
-                >
-                  Save the Cat
-                </Link>
+                <span className="inline-flex items-center gap-1.5">
+                  <Link
+                    to="/movie-in-a-box/save-the-cat/structure"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-semibold hover:bg-white/5 transition-colors"
+                    style={{ color: "#d4a017" }}
+                  >
+                    Save the Cat
+                  </Link>
+                  <span className="text-[13px]" style={{ color: "#d4a017", opacity: 0.5 }} aria-hidden="true">·</span>
+                  <Link
+                    to="/movie-in-a-box/movie/the-silence-of-the-lambs"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                    style={{ color: "#d4a017", opacity: 0.85 }}
+                  >
+                    The Silence of the Lambs
+                  </Link>
+                </span>
               </li>
+              <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
               <li>
-                <Link
-                  to="/movie-in-a-box/heros-journey/structure"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
-                  style={{ color: "#fb7185" }}
-                >
-                  Hero's Journey
-                </Link>
+                <span className="inline-flex items-center gap-1.5">
+                  <Link
+                    to="/movie-in-a-box/heros-journey/structure"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-semibold hover:bg-white/5 transition-colors"
+                    style={{ color: "#fb7185" }}
+                  >
+                    Hero's Journey
+                  </Link>
+                  <span className="text-[13px]" style={{ color: "#fb7185", opacity: 0.5 }} aria-hidden="true">·</span>
+                  <Link
+                    to="/movie-in-a-box/movie/gladiator"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                    style={{ color: "#fb7185", opacity: 0.85 }}
+                  >
+                    Gladiator
+                  </Link>
+                </span>
               </li>
+              <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
               <li>
-                <Link
-                  to="/movie-in-a-box/story-circle/structure"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
-                  style={{ color: "#2bd1c0" }}
-                >
-                  Story Circle
-                </Link>
-              </li>
-            </ul>
-
-            <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
-
-            <ul className="flex items-center gap-1">
-              <li>
-                <Link
-                  to="/movie-in-a-box/movie/the-godfather"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                  The Godfather
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/movie-in-a-box/movie/the-silence-of-the-lambs"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                  The Silence of the Lambs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/movie-in-a-box/movie/gladiator"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                  Gladiator
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/movie-in-a-box/movie/forrest-gump"
-                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
-                >
-                  Forrest Gump
-                </Link>
+                <span className="inline-flex items-center gap-1.5">
+                  <Link
+                    to="/movie-in-a-box/story-circle/structure"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-semibold hover:bg-white/5 transition-colors"
+                    style={{ color: "#2bd1c0" }}
+                  >
+                    Story Circle
+                  </Link>
+                  <span className="text-[13px]" style={{ color: "#2bd1c0", opacity: 0.5 }} aria-hidden="true">·</span>
+                  <Link
+                    to="/movie-in-a-box/movie/forrest-gump"
+                    className="inline-flex items-center rounded-md px-2 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                    style={{ color: "#2bd1c0", opacity: 0.85 }}
+                  >
+                    Forrest Gump
+                  </Link>
+                </span>
               </li>
             </ul>
           </div>
