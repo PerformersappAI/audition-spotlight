@@ -156,7 +156,12 @@ const CallSheet = () => {
     const dmy = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
     if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
     const parsed = new Date(s);
-    if (!isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+    if (!isNaN(parsed.getTime())) {
+      const y = parsed.getFullYear();
+      const m = String(parsed.getMonth() + 1).padStart(2, "0");
+      const d = String(parsed.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
     return "";
   };
 
