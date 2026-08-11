@@ -1141,9 +1141,6 @@ export default function BeatPage() {
                   <span className="text-[11px] text-foreground/60 rounded-full px-2.5 py-[2px] border border-white/10">{beat.moviePos}</span>
                 </div>
 
-                <div className="mb-4 flex items-center justify-center text-center rounded-lg border border-dashed border-white/20 bg-black/30 text-[10.5px] text-foreground/40" style={{ width: "100%", maxWidth: 220, height: 120 }}>
-                  Film still (optional) — leave blank
-                </div>
 
                 <p className="text-[15.5px] leading-relaxed text-foreground mb-4">{beat.scene}</p>
 
