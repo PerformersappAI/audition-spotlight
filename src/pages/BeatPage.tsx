@@ -266,15 +266,6 @@ export default function BeatPage() {
               We're still writing this one — check back soon.
             </p>
           )}
-
-          <div className="mt-14">
-            <Link
-              to={structureHref}
-              className="text-sm text-foreground/60 hover:text-foreground transition-colors"
-            >
-              ← Back to {meta.name}
-            </Link>
-          </div>
         </div>
       </section>
     </>
