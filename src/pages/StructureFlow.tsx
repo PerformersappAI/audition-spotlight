@@ -288,6 +288,31 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
               );
             })}
           </ul>
+          <ul className="flex items-center overflow-x-auto pb-2.5 text-sm whitespace-nowrap border-t border-white/5 pt-1.5">
+            <li>
+              <Link
+                to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
+                className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold hover:bg-white/5 transition-colors"
+                style={{ color: accent }}
+              >
+                {MOVIE[structureKey].title}
+              </Link>
+            </li>
+            {DATA[structureKey].names.map((name) => {
+              const bslug = slugify(name);
+              return (
+                <li key={bslug} className="flex items-center">
+                  <span className="text-foreground/25 px-1" aria-hidden="true">·</span>
+                  <Link
+                    to={`/movie-in-a-box/${structureKey}/beat/${bslug}`}
+                    className="inline-block rounded-md px-2.5 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                  >
+                    {name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </nav>
 
