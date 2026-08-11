@@ -144,6 +144,13 @@ const DATA: Record<StructureKey, StructData> = {
   },
 };
 
+const DIAGRAM_MODE: Record<StructureKey, "line" | "circle"> = {
+  "three-act": "line",
+  "save-the-cat": "line",
+  "heros-journey": "circle",
+  "story-circle": "circle",
+};
+
 export default function StructureFlow({
   structureKey,
 }: {
@@ -173,11 +180,15 @@ if(opts.title)s+='<text x="'+c+'" y="'+(c+6)+'" text-anchor="middle" font-family
 s+='</svg>';}
 var el=document.getElementById(id); if(el) el.innerHTML=s;}
 
-    draw("sfLine", "line", data.names, data.color, structureKey, { acts: data.acts });
-    draw("sfCircle", "circle", data.names, data.color, structureKey, {
-      title: data.title,
-      size: data.size,
-    });
+    const mode = DIAGRAM_MODE[structureKey];
+    if (mode === "line") {
+      draw("sfLine", "line", data.names, data.color, structureKey, { acts: data.acts });
+    } else {
+      draw("sfCircle", "circle", data.names, data.color, structureKey, {
+        title: data.title,
+        size: data.size,
+      });
+    }
 
     const onClick = (e: Event) => {
       const target = e.target as Element | null;
@@ -186,12 +197,11 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       if (path) navigate(path);
     };
 
-    const containers = ["sfLine", "sfCircle"]
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-    containers.forEach((el) => el.addEventListener("click", onClick));
+    const containerId = mode === "line" ? "sfLine" : "sfCircle";
+    const container = document.getElementById(containerId) as HTMLElement | null;
+    container?.addEventListener("click", onClick);
     return () => {
-      containers.forEach((el) => el.removeEventListener("click", onClick));
+      container?.removeEventListener("click", onClick);
     };
   }, [structureKey, stop, navigate]);
 
@@ -256,17 +266,11 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       {activeStop === "structure" ? (
         <section className="bg-background px-4 py-12">
           <div className="w-full max-w-[1080px] mx-auto">
-            <p className="text-xs uppercase tracking-[0.2em] text-foreground/45 font-semibold mb-4">
-              As a line
-            </p>
-            <div id="sfLine" className="w-full" />
-
-            <div className="my-12 h-px bg-white/10" />
-
-            <p className="text-xs uppercase tracking-[0.2em] text-foreground/45 font-semibold mb-4">
-              As a circle
-            </p>
-            <div id="sfCircle" className="w-full max-w-[1040px] mx-auto" />
+            {DIAGRAM_MODE[structureKey] === "line" ? (
+              <div id="sfLine" className="w-full" />
+            ) : (
+              <div id="sfCircle" className="w-full max-w-[1040px] mx-auto" />
+            )}
           </div>
         </section>
       ) : (
