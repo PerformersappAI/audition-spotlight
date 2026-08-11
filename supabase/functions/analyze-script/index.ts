@@ -729,7 +729,6 @@ Make your analysis deeply personal to this scene - reference specific lines, act
       console.log('WARNING: No castOfCharacters in analysis result!');
     }
     
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "analyze-script", {});
     await logUsage({
       userId: user!.id,
