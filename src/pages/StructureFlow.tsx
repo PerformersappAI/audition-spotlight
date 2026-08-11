@@ -41,6 +41,12 @@ const CONFIG: Record<
   },
 };
 
+const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
+  "three-act": { title: "The Godfather", slug: "the-godfather" },
+  "save-the-cat": { title: "The Silence of the Lambs", slug: "the-silence-of-the-lambs" },
+  "heros-journey": { title: "Gladiator", slug: "gladiator" },
+  "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
+};
 const STOPS = [
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
@@ -243,6 +249,18 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
               >
                 <span>Movie in a Box</span>
+              </Link>
+            </li>
+            <li className="text-foreground/30" aria-hidden="true">
+              ›
+            </li>
+            <li>
+              <Link
+                to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
+                className="inline-flex items-center rounded-md px-3 py-1.5 font-medium hover:bg-white/5 transition-colors"
+                style={{ color: accent }}
+              >
+                {MOVIE[structureKey].title}
               </Link>
             </li>
             <li className="text-foreground/30" aria-hidden="true">
