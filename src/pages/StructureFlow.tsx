@@ -144,6 +144,13 @@ const DATA: Record<StructureKey, StructData> = {
   },
 };
 
+const DIAGRAM_MODE: Record<StructureKey, "line" | "circle"> = {
+  "three-act": "line",
+  "save-the-cat": "line",
+  "heros-journey": "circle",
+  "story-circle": "circle",
+};
+
 export default function StructureFlow({
   structureKey,
 }: {
