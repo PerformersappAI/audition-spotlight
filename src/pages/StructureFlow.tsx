@@ -3,6 +3,8 @@ import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
 import SceneBuilder from "@/components/SceneBuilder";
+import ShotsBuilder from "@/components/ShotsBuilder";
+
 
 function slugify(name: string) {
   return name
