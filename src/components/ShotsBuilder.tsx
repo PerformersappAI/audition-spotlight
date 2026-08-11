@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 type FwKey = "p" | "g" | "r" | "t";
 const COLOR: Record<FwKey, string> = { p: "#a855f7", g: "#d4a017", r: "#fb7185", t: "#2bd1c0" };
 const FW: { key: FwKey; name: string }[] = [
@@ -12,7 +10,6 @@ const FW: { key: FwKey; name: string }[] = [
 type Beat = { t: string; act: 1 | 2 | 3; fw: Partial<Record<FwKey, string>> };
 const ACTS: Record<1 | 2 | 3, string> = { 1: "Act I — Setup", 2: "Act II — Confrontation", 3: "Act III — Resolution" };
 
-// The unified master spine — 17 story moments, each mapped to the frameworks that share it.
 const M: Beat[] = [
   { t: "The Ordinary World", act: 1, fw: { p: "Ordinary World", g: "Opening / Set-Up", r: "Ordinary World", t: "You" } },
   { t: "The Theme", act: 1, fw: { g: "Theme Stated" } },
@@ -33,18 +30,7 @@ const M: Beat[] = [
   { t: "The New World", act: 3, fw: { p: "Resolution", g: "Final Image", t: "Change" } },
 ];
 
-export default function ShotsBuilder(_props: { structureKey: string }) {
-  const [sel, setSel] = useState<FwKey[]>([]);
-
-  useEffect(() => {
-    try { const f = localStorage.getItem("mib-frameworks"); if (f) setSel(JSON.parse(f)); } catch { /* ignore */ }
-  }, []);
-  useEffect(() => {
-    try { localStorage.setItem("mib-frameworks", JSON.stringify(sel)); } catch { /* ignore */ }
-  }, [sel]);
-
-  const toggle = (k: FwKey) => setSel((s) => (s.includes(k) ? s.filter((x) => x !== k) : [...s, k]));
-
+export default function ShotsBuilder({ sel, onToggle }: { structureKey: string; sel: FwKey[]; onToggle: (k: FwKey) => void }) {
   const fws = sel.length ? sel : (["p", "g", "r", "t"] as FwKey[]);
   const visible = M.filter((b) => fws.some((k) => b.fw[k]));
   const acts = ([1, 2, 3] as const).map((a) => ({ a, items: visible.filter((v) => v.act === a) })).filter((g) => g.items.length > 0);
@@ -54,9 +40,8 @@ export default function ShotsBuilder(_props: { structureKey: string }) {
       <div className="container mx-auto max-w-[900px]">
         <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-foreground/45">Your movie · shots</div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">Shots</h1>
-        <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[620px]">Pick the framework(s) you are building with. The beats you will create shots for appear below — this is the skeleton of your movie.</p>
+        <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[620px]">Pick the framework(s) you are building with. The beats you will create shots for appear below — and they drive the Shot Flow bar up top.</p>
 
-        {/* Framework picker (multi-select) */}
         <div className="mt-6 flex flex-wrap gap-2">
           {FW.map((f) => {
             const on = sel.includes(f.key);
@@ -64,7 +49,7 @@ export default function ShotsBuilder(_props: { structureKey: string }) {
             return (
               <button
                 key={f.key}
-                onClick={() => toggle(f.key)}
+                onClick={() => onToggle(f.key)}
                 className="rounded-full px-4 py-2 text-[13px] font-bold border flex items-center gap-2 transition-colors"
                 style={{ borderColor: on ? c : "rgba(255,255,255,0.12)", background: on ? `${c}1e` : "transparent", color: on ? "#f4f5f7" : "rgba(244,245,247,0.55)" }}
               >
@@ -76,7 +61,6 @@ export default function ShotsBuilder(_props: { structureKey: string }) {
         </div>
         <div className="mt-2 text-[11.5px] text-foreground/40">{sel.length ? `${sel.length} selected` : "Showing all four combined"}</div>
 
-        {/* Beat skeleton — appears / disappears with the selection */}
         <div className="mt-4">
           {acts.map((g) => (
             <div key={g.a} className="mt-7">

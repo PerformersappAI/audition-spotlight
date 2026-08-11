@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
@@ -51,6 +51,26 @@ const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
   "heros-journey": { title: "Gladiator", slug: "gladiator" },
   "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
 };
+type FwKey = "p" | "g" | "r" | "t";
+const MASTER_BEATS: { t: string; fw: FwKey[] }[] = [
+  { t: "The Ordinary World", fw: ["p", "g", "r", "t"] },
+  { t: "The Theme", fw: ["g"] },
+  { t: "The Need", fw: ["t"] },
+  { t: "The Call", fw: ["p", "g", "r"] },
+  { t: "The Refusal", fw: ["g", "r"] },
+  { t: "The Mentor", fw: ["r"] },
+  { t: "The Point of No Return", fw: ["p", "g", "r", "t"] },
+  { t: "The Bond", fw: ["g"] },
+  { t: "The Trials", fw: ["p", "g", "r", "t"] },
+  { t: "The Midpoint Turn", fw: ["p", "g", "t"] },
+  { t: "The Walls Close In", fw: ["g", "r"] },
+  { t: "The Lowest Point", fw: ["p", "g", "r", "t"] },
+  { t: "The Dark Night", fw: ["g"] },
+  { t: "The Turn to the End", fw: ["g", "r", "t"] },
+  { t: "The Final Test", fw: ["p", "g", "r"] },
+  { t: "The Elixir", fw: ["r"] },
+  { t: "The New World", fw: ["p", "g", "t"] },
+];
 const STOPS = [
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
@@ -225,6 +245,19 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
     };
   }, [structureKey, stop, navigate]);
 
+  const [fwSel, setFwSel] = useState<FwKey[]>([]);
+  useEffect(() => {
+    try { const f = localStorage.getItem("mib-frameworks"); if (f) setFwSel(JSON.parse(f)); } catch { /* ignore */ }
+  }, [stop]);
+  const toggleFw = (k: FwKey) =>
+    setFwSel((s) => {
+      const n = s.includes(k) ? s.filter((x) => x !== k) : [...s, k];
+      try { localStorage.setItem("mib-frameworks", JSON.stringify(n)); } catch { /* ignore */ }
+      return n;
+    });
+  const shotFlowFws = fwSel.length ? fwSel : (["p", "g", "r", "t"] as FwKey[]);
+  const shotFlowBeats = MASTER_BEATS.filter((b) => b.fw.some((k) => shotFlowFws.includes(k)));
+
   if (!stop || !STOPS.some((s) => s.key === stop)) {
     return <Navigate to={`/movie-in-a-box/${structureKey}/structure`} replace />;
   }
@@ -279,31 +312,45 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 );
               })}
             </ul>
-            <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
-              <li>
-                <Link
-                  to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
-                  className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold hover:bg-white/5 transition-colors"
-                  style={{ color: accent }}
-                >
-                  {MOVIE[structureKey].title}
-                </Link>
-              </li>
-              {DATA[structureKey].names.map((name) => {
-                const bslug = slugify(name);
-                return (
-                  <li key={bslug} className="flex items-center">
+            {activeStop === "shots" ? (
+              <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
+                <li>
+                  <span className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold" style={{ color: accent }}>Shot Flow</span>
+                </li>
+                {shotFlowBeats.map((b) => (
+                  <li key={b.t} className="flex items-center">
                     <span className="text-foreground/25 px-0.5" aria-hidden="true">·</span>
-                    <Link
-                      to={`/movie-in-a-box/${structureKey}/beat/${bslug}`}
-                      className="inline-block rounded-md px-2 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-                    >
-                      {name}
-                    </Link>
+                    <span className="inline-block rounded-md px-2 py-1.5 text-foreground/60">{b.t}</span>
                   </li>
-                );
-              })}
-            </ul>
+                ))}
+              </ul>
+            ) : (
+              <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
+                <li>
+                  <Link
+                    to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
+                    className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold hover:bg-white/5 transition-colors"
+                    style={{ color: accent }}
+                  >
+                    {MOVIE[structureKey].title}
+                  </Link>
+                </li>
+                {DATA[structureKey].names.map((name) => {
+                  const bslug = slugify(name);
+                  return (
+                    <li key={bslug} className="flex items-center">
+                      <span className="text-foreground/25 px-0.5" aria-hidden="true">·</span>
+                      <Link
+                        to={`/movie-in-a-box/${structureKey}/beat/${bslug}`}
+                        className="inline-block rounded-md px-2 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                      >
+                        {name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
         </div>
       </nav>
 
@@ -353,7 +400,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       ) : activeStop === "scene" ? (
         <SceneBuilder structureKey={structureKey} />
       ) : activeStop === "shots" ? (
-        <ShotsBuilder structureKey={structureKey} />
+        <ShotsBuilder structureKey={structureKey} sel={fwSel} onToggle={toggleFw} />
       ) : (
         <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
           <div className="w-full max-w-[780px] mx-auto text-center">
