@@ -439,10 +439,20 @@ export const exportCallSheetToPDF = (
     });
   }
 
-  // Footer on all pages
+  // Logo + footer on all pages
   const pageCount = doc.internal.pages.length - 1;
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
+
+    if (logo?.dataUrl && logoW && logoH) {
+      try {
+        const fmt = logo.dataUrl.includes('image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(logo.dataUrl, fmt, (pageWidth - logoW) / 2, 4, logoW, logoH);
+      } catch (e) {
+        console.error('Failed to add logo to PDF', e);
+      }
+    }
+
     doc.setFontSize(7);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(100, 100, 100);
