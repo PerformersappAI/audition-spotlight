@@ -15,6 +15,67 @@ function Oscar({ size = 18 }: { size?: number }) {
   );
 }
 
+const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const STRUCTURES: Record<string, { name: string; color: string; beats: string[] }> = {
+  "three-act": {
+    name: "Three-Act",
+    color: "#a855f7",
+    beats: [
+      "Ordinary World",
+      "Inciting Incident",
+      "First Plot Point",
+      "Rising Action",
+      "Midpoint",
+      "Crisis / Low",
+      "Climax",
+      "Resolution",
+    ],
+  },
+  "save-the-cat": {
+    name: "Save the Cat",
+    color: "#d4a017",
+    beats: [
+      "Opening",
+      "Theme",
+      "Setup",
+      "Catalyst",
+      "Debate",
+      "Break 2",
+      "B Story",
+      "Fun & Games",
+      "Midpoint",
+      "Bad Guys",
+      "All Is Lost",
+      "Dark Night",
+      "Break 3",
+      "Finale",
+      "Final Image",
+    ],
+  },
+  "heros-journey": {
+    name: "Hero's Journey",
+    color: "#fb7185",
+    beats: ["Ordinary", "Call", "Refusal", "Mentor", "Threshold", "Tests", "Inmost Cave", "Ordeal", "Reward", "Road Back", "Resurrection", "Return"],
+  },
+  "story-circle": {
+    name: "Story Circle",
+    color: "#2bd1c0",
+    beats: ["You", "Need", "Go", "Search", "Find", "Take", "Return", "Change"],
+  },
+};
+
+const MOVIE_TO_STRUCTURE: Record<string, string> = {
+  "the-godfather": "three-act",
+  "the-silence-of-the-lambs": "save-the-cat",
+  gladiator: "heros-journey",
+  "forrest-gump": "story-circle",
+};
+
 const MOVIES: Record<
   string,
   { title: string; structureName: string; color: string; oscars: number; oscarLabel: string }
@@ -52,6 +113,8 @@ const MOVIES: Record<
 export default function MoviePage() {
   const { slug = "" } = useParams();
   const movie = MOVIES[slug];
+  const structureKey = MOVIE_TO_STRUCTURE[slug];
+  const structure = STRUCTURES[structureKey];
 
   if (!movie) {
     return (
@@ -73,38 +136,57 @@ export default function MoviePage() {
         type="article"
       />
 
-      <nav
-        aria-label="Movie in a Box breadcrumb"
-        className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
-      >
-        <div className="container mx-auto px-4">
-          <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
-            <li>
-              <Link
-                to="/movie-in-a-box"
-                className="inline-flex items-center rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                Movie in a Box
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">›</li>
-            <li>
-              <Link
-                to="/movie-in-a-box/compare"
-                className="inline-flex items-center rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                Compare
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">›</li>
-            <li>
-              <span className="inline-block rounded-md px-3 py-1.5 font-semibold text-foreground">
-                {movie.title}
-              </span>
-            </li>
-          </ul>
+      <div className="border-b border-white/10 bg-[#0c0e13]/95">
+        <div className="container mx-auto px-4 pt-3 text-sm whitespace-nowrap overflow-x-auto">
+          <Link to="/movie-in-a-box" className="text-foreground/50 hover:text-foreground transition-colors">
+            Movie in a Box
+          </Link>
+          <span className="text-foreground/30 px-2" aria-hidden="true">
+            ›
+          </span>
+          <Link
+            to={structure ? `/movie-in-a-box/${structureKey}/structure` : "/movie-in-a-box"}
+            className="text-foreground/50 hover:text-foreground transition-colors"
+          >
+            {structure?.name ?? movie.structureName}
+          </Link>
+          <span className="text-foreground/30 px-2" aria-hidden="true">
+            ›
+          </span>
+          <span className="font-semibold text-foreground">{movie.title}</span>
         </div>
-      </nav>
+      </div>
+
+      {structure && (
+        <nav
+          aria-label={`${structure.name} beats`}
+          className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
+        >
+          <div className="container mx-auto px-4">
+            <ul className="flex items-center overflow-x-auto py-2.5 text-sm whitespace-nowrap">
+              {structure.beats.map((beat, i) => {
+                const beatSlug = slugify(beat);
+                return (
+                  <li key={beatSlug} className="flex items-center">
+                    {i > 0 && (
+                      <span className="text-foreground/25 px-1" aria-hidden="true">
+                        ·
+                      </span>
+                    )}
+                    <Link
+                      to={`/movie-in-a-box/${structureKey}/beat/${beatSlug}`}
+                      className="inline-block rounded-md px-2.5 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                    >
+                      {beat}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </nav>
+      )}
+
 
       <section className="bg-background px-4 py-20">
         <div className="container mx-auto flex flex-col items-center text-center">
