@@ -210,8 +210,8 @@ export default function MoviePage() {
             Represents: {movie.structureName}
           </span>
 
-          <div className="mt-6 flex items-center gap-2">
-            <div className="flex items-center gap-1">
+          <div className="mt-6 flex flex-col items-center gap-2">
+            <div className="flex flex-row items-center gap-2">
               {Array.from({ length: movie.oscars }).map((_, i) => (
                 <Oscar key={i} />
               ))}
