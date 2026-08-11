@@ -57,6 +57,8 @@ type StructData = {
   size: number;
   names: string[];
   acts: [string, number, number][];
+  lead: string;
+  tag: string;
 };
 
 const DATA: Record<StructureKey, StructData> = {
