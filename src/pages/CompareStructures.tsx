@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
+import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 
 function Oscar({ size = 16 }: { size?: number }) {
   return (
@@ -322,10 +323,20 @@ export default function CompareStructures() {
                   className="group flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-all hover:-translate-y-1 hover:bg-white/[0.05] border-l-[3px]"
                   style={{ borderLeftColor: m.color }}
                 >
-                  <div
-                    className="shrink-0 rounded-md border border-dashed border-white/25 bg-black/40"
-                    style={{ width: 76, height: 110 }}
-                  />
+                  {m.slug === "gladiator" ? (
+                    <img
+                      src={gladiatorPoster.url}
+                      alt="Gladiator movie poster"
+                      className="shrink-0 rounded-md object-cover bg-black/40"
+                      style={{ width: 76, height: 110 }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div
+                      className="shrink-0 rounded-md border border-dashed border-white/25 bg-black/40"
+                      style={{ width: 76, height: 110 }}
+                    />
+                  )}
                   <div className="min-w-0 flex-1">
                     <span
                       className="text-[10px] font-semibold uppercase tracking-[0.18em]"
