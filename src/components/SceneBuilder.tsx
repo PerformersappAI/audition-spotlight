@@ -85,7 +85,10 @@ export default function SceneBuilder({ structureKey }: { structureKey: string })
         <div className="mt-6">
           {acts.map((g) => (
             <div key={g.a}>
-              <p className="text-[12px] font-bold uppercase tracking-[0.16em] mt-6 mb-3 bg-clip-text text-transparent w-fit" style={{ backgroundImage: GRAD }}>{ACTS[g.a]}</p>
+              <div className="mt-9 mb-4 flex items-center gap-3">
+                <h2 className="font-serif text-[26px] sm:text-[30px] font-bold text-foreground whitespace-nowrap">{ACTS[g.a]}</h2>
+                <span className="flex-1 h-px bg-white/12" />
+              </div>
               {g.items.map(({ b, i }, idx) => {
                 const keys = showAll ? (Object.keys(b.fw) as FwKey[]) : sel.filter((k) => !!b.fw[k]);
                 const list = scenes[i] || [];
