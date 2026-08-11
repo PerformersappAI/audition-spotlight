@@ -398,7 +398,8 @@ export const exportCallSheetToPDF = (
   // ===== CREW SECTION (New Page) =====
   if (crew.length > 0) {
     doc.addPage();
-    yPosition = 15;
+    yPosition = logoW ? 15 + logoBand : 15;
+
     
     yPosition = drawSectionHeader(doc, 'CREW', yPosition, pageWidth);
     
