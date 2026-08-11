@@ -102,3 +102,6 @@ All colors MUST be HSL.
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.5);
 }
+
+.mib-noscroll{scrollbar-width:none;-ms-overflow-style:none;}
+.mib-noscroll::-webkit-scrollbar{display:none;}
