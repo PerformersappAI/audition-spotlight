@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
+import SceneBuilder from "@/components/SceneBuilder";
 
 function slugify(name: string) {
   return name
@@ -257,8 +258,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
               </li>
               {STOPS.map((s) => {
                 const isActive = s.key === activeStop;
-                const label =
-                  s.key === "beats" ? `Beats (${title})` : s.label;
+                const label = s.label;
                 return (
                   <li key={s.key}>
                     <Link
@@ -348,6 +348,8 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         </section>
       ) : activeStop === "beats" ? (
         <BeatsBuilder structureKey={structureKey} />
+      ) : activeStop === "scene" ? (
+        <SceneBuilder structureKey={structureKey} />
       ) : (
         <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
           <div className="w-full max-w-[780px] mx-auto text-center">
