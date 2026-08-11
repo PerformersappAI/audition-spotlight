@@ -228,19 +228,37 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         </div>
       </nav>
 
-      <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
-        <div className="w-full max-w-[780px] mx-auto text-center">
-          <h1
-            className="text-4xl sm:text-5xl font-bold tracking-tight"
-            style={{ color: accent }}
-          >
-            {title} — {stopLabel}
-          </h1>
-          <p className="text-lg text-foreground/60 mt-4">
-            This stop will hold your {stopLabel.toLowerCase()} — coming next.
-          </p>
-        </div>
-      </section>
+      {activeStop === "structure" ? (
+        <section className="bg-background px-4 py-12">
+          <div className="w-full max-w-[1080px] mx-auto">
+            <p className="text-xs uppercase tracking-[0.2em] text-foreground/45 font-semibold mb-4">
+              As a line
+            </p>
+            <div id="sfLine" className="w-full" />
+
+            <div className="my-12 h-px bg-white/10" />
+
+            <p className="text-xs uppercase tracking-[0.2em] text-foreground/45 font-semibold mb-4">
+              As a circle
+            </p>
+            <div id="sfCircle" className="w-full max-w-[560px] mx-auto" />
+          </div>
+        </section>
+      ) : (
+        <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
+          <div className="w-full max-w-[780px] mx-auto text-center">
+            <h1
+              className="text-4xl sm:text-5xl font-bold tracking-tight"
+              style={{ color: accent }}
+            >
+              {title} — {stopLabel}
+            </h1>
+            <p className="text-lg text-foreground/60 mt-4">
+              This stop will hold your {stopLabel.toLowerCase()} — coming next.
+            </p>
+          </div>
+        </section>
+      )}
     </>
   );
 }
