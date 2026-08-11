@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 
 function Oscar({ size = 16 }: { size?: number }) {
   return (
@@ -258,9 +259,19 @@ export default function MoviePage() {
 
       <section className="bg-background px-4 pt-16 pb-10">
         <div className="container mx-auto flex flex-col items-center text-center">
-          <div className="rounded-lg border border-dashed border-white/25 bg-black/40 flex items-center justify-center text-center" style={{ width: 132, height: 194 }}>
-            <span className="text-[10px] text-foreground/40 px-2">Movie poster</span>
-          </div>
+          {slug === "gladiator" ? (
+            <img
+              src={gladiatorPoster.url}
+              alt="Gladiator movie poster"
+              className="rounded-lg object-cover bg-black/40"
+              style={{ width: 132, height: 194 }}
+              loading="lazy"
+            />
+          ) : (
+            <div className="rounded-lg border border-dashed border-white/25 bg-black/40 flex items-center justify-center text-center" style={{ width: 132, height: 194 }}>
+              <span className="text-[10px] text-foreground/40 px-2">Movie poster</span>
+            </div>
+          )}
           <span className="mt-7 text-[12px] font-semibold uppercase tracking-[0.28em]" style={{ color: movie.color }}>{movie.structureName}</span>
           <h1 className="mt-2 text-4xl font-bold tracking-tight" style={{ color: movie.color }}>{movie.title}</h1>
           <span className="mt-4 block h-[2px] w-10 rounded-full" style={{ backgroundColor: movie.color, opacity: 0.7 }} />
