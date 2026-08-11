@@ -2,6 +2,13 @@ import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
 import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 import godfatherPoster from "@/assets/godfather-poster.png.asset.json";
+import lambsPoster from "@/assets/lambs-poster.png.asset.json";
+
+const POSTERS: Record<string, string> = {
+  gladiator: gladiatorPoster.url,
+  "the-godfather": godfatherPoster.url,
+  "the-silence-of-the-lambs": lambsPoster.url,
+};
 
 function Oscar({ size = 16 }: { size?: number }) {
   return (
@@ -261,9 +268,9 @@ export default function MoviePage() {
 
       <section className="bg-background px-4 pt-16 pb-10">
         <div className="container mx-auto flex flex-col items-center text-center">
-          {slug === "gladiator" || slug === "the-godfather" ? (
+          {POSTERS[slug] ? (
             <img
-              src={slug === "gladiator" ? gladiatorPoster.url : godfatherPoster.url}
+              src={POSTERS[slug]}
               alt={`${movie.title} movie poster`}
               className="rounded-lg object-cover bg-black/40"
               style={{ width: 132, height: 194 }}
