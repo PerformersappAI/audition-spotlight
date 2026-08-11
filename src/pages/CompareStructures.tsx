@@ -2,6 +2,60 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 
+function Oscar({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size * 2} viewBox="0 0 12 24" aria-hidden="true" style={{ display: "block" }}>
+      <g fill="#e7c04a">
+        <circle cx="6" cy="3" r="2" />
+        <path d="M4.6 5.2h2.8l1 6.6a6 6 0 0 1-4.8 0z" />
+        <rect x="4.4" y="12.2" width="3.2" height="6.4" rx="0.6" />
+        <rect x="2.6" y="18.6" width="6.8" height="1.8" rx="0.5" />
+        <rect x="1.8" y="20.4" width="8.4" height="2.4" rx="0.6" />
+      </g>
+    </svg>
+  );
+}
+
+const MOVIE_CARDS = [
+  {
+    slug: "the-godfather",
+    title: "The Godfather",
+    structureName: "Three-Act",
+    color: "#a855f7",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "First Plot Point = Michael shoots Sollozzo and McCluskey.",
+  },
+  {
+    slug: "the-silence-of-the-lambs",
+    title: "The Silence of the Lambs",
+    structureName: "Save the Cat",
+    color: "#d4a017",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "Catalyst = Clarice is sent to interview Hannibal Lecter.",
+  },
+  {
+    slug: "gladiator",
+    title: "Gladiator",
+    structureName: "Hero's Journey",
+    color: "#fb7185",
+    oscars: 1,
+    oscarLabel: "Best Picture",
+    teaser: "Crossing the Threshold = Maximus is enslaved and made a gladiator.",
+  },
+  {
+    slug: "forrest-gump",
+    title: "Forrest Gump",
+    structureName: "Story Circle",
+    color: "#2bd1c0",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "You = young Forrest on the bus-stop bench, starting his story.",
+  },
+];
+
+
 export default function CompareStructures() {
   const navigate = useNavigate();
 
