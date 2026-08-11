@@ -22,37 +22,6 @@ export default function CompareStructures() {
     line('l3',['Ordinary','Call','Refusal','Mentor','Threshold','Tests','Inmost Cave','Ordeal','Reward','Road Back','Resurrection','Return'],[0.03,0.10,0.15,0.20,0.25,0.40,0.48,0.55,0.63,0.75,0.90,0.98],'#fb7185',false);
     line('l4',['You','Need','Go','Search','Find','Take','Return','Change'],[0.02,0.12,0.25,0.40,0.50,0.68,0.80,0.97],'#2bd1c0',false);
 
-    (function(){
-      var NS="http://www.w3.org/2000/svg", cx=600, cy=580;
-      function xy(p:number,r:number){var a=(-90+p*360)*Math.PI/180;return[cx+r*Math.cos(a),cy+r*Math.sin(a),a];}
-      function wedge(p0:number,p1:number,r:number,fill:string){var a0=(-90+p0*360)*Math.PI/180,a1=(-90+p1*360)*Math.PI/180,x0=cx+r*Math.cos(a0),y0=cy+r*Math.sin(a0),x1=cx+r*Math.cos(a1),y1=cy+r*Math.sin(a1),lg=(p1-p0)>0.5?1:0;return '<path d="M'+cx+' '+cy+' L'+x0+' '+y0+' A'+r+' '+r+' 0 '+lg+' 1 '+x1+' '+y1+' Z" fill="'+fill+'"/>';}
-      var rings=[
-        {color:'#a855f7',r:340,outer:true,names:['Ordinary World','Inciting Incident','First Plot Point','Rising Action','Midpoint','Crisis / Low','Climax','Resolution'],p:[0.02,0.12,0.25,0.40,0.50,0.75,0.90,0.99]},
-        {color:'#d4a017',r:268,names:['Opening','Theme','Setup','Catalyst','Debate','Break 2','B Story','Fun & Games','Midpoint','Bad Guys','All Is Lost','Dark Night','Break 3','Finale','Final Image'],p:[0.01,0.05,0.07,0.11,0.18,0.25,0.28,0.40,0.50,0.62,0.68,0.75,0.78,0.90,1.0]},
-        {color:'#fb7185',r:198,names:['Ordinary','Call','Refusal','Mentor','Threshold','Tests','Inmost Cave','Ordeal','Reward','Road Back','Resurrection','Return'],p:[0.03,0.10,0.15,0.20,0.25,0.40,0.48,0.55,0.63,0.75,0.90,0.98]},
-        {color:'#2bd1c0',r:130,names:['You','Need','Go','Search','Find','Take','Return','Change'],p:[0.02,0.12,0.25,0.40,0.50,0.68,0.80,0.97]}
-      ] as Array<{color:string;r:number;outer?:boolean;names:string[];p:number[]}>;
-      var s='<svg viewBox="0 0 1200 1200" xmlns="'+NS+'" style="width:100%;height:auto;display:block">';
-      s+=wedge(0,0.25,356,ACT1); s+=wedge(0.25,0.75,356,ACT2); s+=wedge(0.75,1.0,356,ACT3);
-      [0,0.25,0.75].forEach(function(pp){var q=xy(pp,356);s+='<line x1="'+cx+'" y1="'+cy+'" x2="'+q[0]+'" y2="'+q[1]+'" stroke="#c39cf5" stroke-width="1.6" stroke-opacity="0.6"/>';});
-      rings.forEach(function(ring){
-        s+='<circle cx="'+cx+'" cy="'+cy+'" r="'+ring.r+'" fill="none" stroke="'+ring.color+'" stroke-width="'+(ring.outer?2.4:1.8)+'" stroke-opacity="'+(ring.outer?0.8:0.65)+'"/>';
-        for(var i=0;i<ring.p.length;i++){var q=xy(ring.p[i],ring.r),x=q[0],y=q[1],a=q[2];
-          s+='<circle cx="'+x+'" cy="'+y+'" r="'+(ring.outer?6:5)+'" fill="'+ring.color+'"/>';
-          if(ring.outer){var lr=ring.r+18,lx=cx+lr*Math.cos(a),ly=cy+lr*Math.sin(a),ca=Math.cos(a),an=Math.abs(ca)<0.34?'middle':(ca>0?'start':'end');
-            s+='<text x="'+lx+'" y="'+(ly+4)+'" text-anchor="'+an+'" font-family="serif" font-weight="700" font-size="12" fill="#efe6ff">'+ring.names[i]+'</text>';}
-        }
-      });
-      function actLabel(p:number,txt:string,sub:string){var Lin=xy(p,346),c=xy(p,532),x=c[0],y=c[1];
-        s+='<line x1="'+Lin[0]+'" y1="'+Lin[1]+'" x2="'+x+'" y2="'+y+'" stroke="#a855f7" stroke-width="2.5"/>';
-        s+='<rect x="'+(x-72)+'" y="'+(y-30)+'" width="144" height="60" rx="11" fill="#a855f7"/>';
-        s+='<text x="'+x+'" y="'+(y-2)+'" text-anchor="middle" font-family="serif" font-size="27" font-weight="800" letter-spacing="1" fill="#12141a">'+txt+'</text>';
-        s+='<text x="'+x+'" y="'+(y+17)+'" text-anchor="middle" font-family="sans-serif" font-size="9.5" font-weight="700" fill="#2c1147">'+sub+'</text>';}
-      actLabel(0,'ACT I','begins at the opening'); actLabel(0.25,'ACT II','begins at plot point 1'); actLabel(0.75,'ACT III','begins at the low point');
-      var leg=[['Three-Act','#a855f7'],['Save the Cat','#d4a017'],["Hero's Journey",'#fb7185'],['Story Circle','#2bd1c0']];
-      leg.forEach(function(l,i){var ly=cy-42+i*28;s+='<circle cx="'+(cx-66)+'" cy="'+(ly-4)+'" r="5.5" fill="'+l[1]+'"/>';s+='<text x="'+(cx-52)+'" y="'+ly+'" text-anchor="start" font-family="sans-serif" font-size="12.5" font-weight="600" fill="'+l[1]+'">'+l[0]+'</text>';});
-      s+='</svg>';document.getElementById('diag')!.innerHTML=s;
-    })();
   }, []);
 
 
@@ -99,8 +68,7 @@ export default function CompareStructures() {
             </h1>
             <p className="text-lg text-foreground/60 mt-4">
               The same story, four ways — all synced to the three acts. Act I is the
-              lightest purple, Act II darker, Act III the darkest. That shading fills the
-              lines and slices the circle.
+              lightest purple, Act II darker, Act III the darkest.
             </p>
           </div>
 
@@ -152,16 +120,6 @@ export default function CompareStructures() {
             </div>
           </div>
 
-          <hr className="my-16 border-white/10" />
-
-          <div className="px-4">
-            <h2 className="container mx-auto text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6">
-              As concentric rings — sliced by act
-            </h2>
-            <div className="max-w-[1200px] mx-auto">
-              <div id="diag" className="w-full" />
-            </div>
-          </div>
         </div>
       </section>
 
