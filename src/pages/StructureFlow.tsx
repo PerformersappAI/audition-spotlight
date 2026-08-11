@@ -180,11 +180,15 @@ if(opts.title)s+='<text x="'+c+'" y="'+(c+6)+'" text-anchor="middle" font-family
 s+='</svg>';}
 var el=document.getElementById(id); if(el) el.innerHTML=s;}
 
-    draw("sfLine", "line", data.names, data.color, structureKey, { acts: data.acts });
-    draw("sfCircle", "circle", data.names, data.color, structureKey, {
-      title: data.title,
-      size: data.size,
-    });
+    const mode = DIAGRAM_MODE[structureKey];
+    if (mode === "line") {
+      draw("sfLine", "line", data.names, data.color, structureKey, { acts: data.acts });
+    } else {
+      draw("sfCircle", "circle", data.names, data.color, structureKey, {
+        title: data.title,
+        size: data.size,
+      });
+    }
 
     const onClick = (e: Event) => {
       const target = e.target as Element | null;
@@ -193,12 +197,11 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       if (path) navigate(path);
     };
 
-    const containers = ["sfLine", "sfCircle"]
-      .map((id) => document.getElementById(id))
-      .filter(Boolean) as HTMLElement[];
-    containers.forEach((el) => el.addEventListener("click", onClick));
+    const containerId = mode === "line" ? "sfLine" : "sfCircle";
+    const container = document.getElementById(containerId) as HTMLElement | null;
+    container?.addEventListener("click", onClick);
     return () => {
-      containers.forEach((el) => el.removeEventListener("click", onClick));
+      container?.removeEventListener("click", onClick);
     };
   }, [structureKey, stop, navigate]);
 
