@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
+import BeatsBuilder from "@/components/BeatsBuilder";
 
 function slugify(name: string) {
   return name
@@ -345,6 +346,8 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
             </div>
           </div>
         </section>
+      ) : activeStop === "beats" ? (
+        <BeatsBuilder structureKey={structureKey} />
       ) : (
         <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
           <div className="w-full max-w-[780px] mx-auto text-center">
