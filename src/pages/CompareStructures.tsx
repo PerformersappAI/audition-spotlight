@@ -91,27 +91,78 @@ export default function CompareStructures() {
         </div>
       </nav>
 
-      <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
-        <div className="w-full max-w-[780px] mx-auto text-center">
-          <Link
-            to="/movie-in-a-box"
-            className="inline-block text-sm text-foreground/50 hover:text-foreground transition-colors mb-8"
-          >
-            ← Back to Movie in a Box
-          </Link>
+      <section className="bg-background px-4 py-16">
+        <div className="container mx-auto">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
+              Four structures, one story
+            </h1>
+            <p className="text-lg text-foreground/60 mt-4">
+              The same story, four ways — all synced to the three acts. Act I is the
+              lightest purple, Act II darker, Act III the darkest. That shading fills the
+              lines and slices the circle.
+            </p>
+          </div>
 
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-            Compare all four
-          </h1>
-          <p className="text-lg text-foreground/60 mt-4">
-            The same story through every lens.
-          </p>
+          <div className="mt-14">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6">
+              As four lines — shaded by act
+            </h2>
 
-          <div className="mt-10 rounded-xl bg-[#161a21] border border-white/15 p-12 text-foreground/40 text-sm">
-            The side-by-side comparison will live here.
+            <div className="space-y-8">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-sm font-semibold" style={{ color: "#a855f7" }}>
+                    Three-Act
+                  </span>
+                  <span
+                    className="rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide"
+                    style={{
+                      color: "#a855f7",
+                      backgroundColor: "#a855f71e",
+                      border: "1px solid #a855f759",
+                    }}
+                  >
+                    Reference
+                  </span>
+                </div>
+                <div id="l1" className="w-full" />
+              </div>
+
+              <div>
+                <div className="text-sm font-semibold mb-1" style={{ color: "#d4a017" }}>
+                  Save the Cat
+                </div>
+                <div id="l2" className="w-full" />
+              </div>
+
+              <div>
+                <div className="text-sm font-semibold mb-1" style={{ color: "#fb7185" }}>
+                  Hero's Journey
+                </div>
+                <div id="l3" className="w-full" />
+              </div>
+
+              <div>
+                <div className="text-sm font-semibold mb-1" style={{ color: "#2bd1c0" }}>
+                  Story Circle
+                </div>
+                <div id="l4" className="w-full" />
+              </div>
+            </div>
+          </div>
+
+          <hr className="my-16 border-white/10" />
+
+          <div>
+            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6">
+              As concentric rings — sliced by act
+            </h2>
+            <div id="diag" className="w-full max-w-[840px] mx-auto" />
           </div>
         </div>
       </section>
+
     </>
   );
 }
