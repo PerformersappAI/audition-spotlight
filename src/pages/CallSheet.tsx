@@ -572,6 +572,53 @@ const CallSheet = () => {
           </CardContent>
         </Card>
 
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Production Logo
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-20 w-40 shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-2">
+                {logo ? (
+                  <img src={logo.dataUrl} alt="Production logo preview" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-xs text-muted-foreground">No logo</span>
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Browse for your logo (PNG or JPG, under 3MB). It prints centered at the top of every page of the exported PDF.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Input
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                    id="logo-upload"
+                  />
+                  <Button type="button" variant="secondary" asChild>
+                    <Label htmlFor="logo-upload" className="cursor-pointer">
+                      {logo ? "Replace Logo" : "Browse for Logo"}
+                    </Label>
+                  </Button>
+                  {logo && (
+                    <Button type="button" variant="ghost" onClick={removeLogo}>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+
+
         <form onSubmit={handleSubmit}>
           <Tabs defaultValue="general" className="space-y-6">
             <TabsList className="grid w-full grid-cols-5">
