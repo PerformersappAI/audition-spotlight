@@ -36,6 +36,7 @@ const M: Beat[] = [
 export default function BeatsBuilder({ structureKey }: { structureKey: string }) {
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [genMsg, setGenMsg] = useState(false);
+  const [focus, setFocus] = useState<FwKey | null>(null);
 
   useEffect(() => {
     try { const raw = localStorage.getItem("mib-master-beats"); setAnswers(raw ? JSON.parse(raw) : {}); }
@@ -51,6 +52,28 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
     return { tot, fill, pct: tot ? Math.round((fill / tot) * 100) : 0 };
   };
 
+  const visible = M.map((b, i) => ({ b, i })).filter(({ b }) => !focus || !!b.fw[focus]);
+
+  const Badge = ({ k, big }: { k: FwKey; big?: boolean }) => {
+    const f = FW.find((x) => x.key === k)!;
+    const c = cov(k);
+    const active = focus === k;
+    return (
+      <button
+        onClick={() => setFocus(active ? null : k)}
+        className={`text-left rounded-lg border px-3 py-2.5 transition-all ${big ? "flex-1 min-w-[180px]" : ""}`}
+        style={{ borderColor: active ? f.color : "rgba(255,255,255,0.10)", background: active ? `${f.color}18` : "rgba(255,255,255,0.03)" }}
+      >
+        <div className="text-[12px] font-extrabold" style={{ color: f.color }}>{f.name}</div>
+        <div className="text-[9.5px] text-foreground/30 mb-1.5">{c.tot} beats</div>
+        <div className="h-[5px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
+          <div className="h-full rounded-full transition-all" style={{ width: `${c.pct}%`, backgroundColor: f.color }} />
+        </div>
+        <div className="text-[10px] text-foreground/50 mt-1.5">{c.fill} of {c.tot} · {c.pct}%</div>
+      </button>
+    );
+  };
+
   return (
     <section className="bg-background px-4 py-10">
       <div className="container mx-auto max-w-[860px]">
@@ -59,44 +82,45 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
         </div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">Your Beat Sheet</h1>
         <p className="mt-3 text-foreground/60 text-[15px] max-w-[620px] leading-relaxed">
-          Answer each beat <span className="text-foreground font-semibold">once</span>. Every answer is mapped into all four master frameworks at the same time — so your story is complete no matter which lens you use.
+          Answer each beat <span className="text-foreground font-semibold">once</span>. Every answer maps into all four frameworks at the same time — or click a framework to build in just that one.
         </p>
 
-        {/* coverage */}
+        {/* coverage / filter */}
         <div className="mt-7">
-          <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3">Coverage — how complete your story is in each framework</div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {FW.map((f) => {
-              const c = cov(f.key);
-              return (
-                <div key={f.key} className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2.5">
-                  <div className="text-[12px] font-extrabold" style={{ color: f.color }}>{f.name}</div>
-                  <div className="text-[9.5px] text-foreground/30 mb-1.5">{c.tot} core beats</div>
-                  <div className="h-[5px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-                    <div className="h-full rounded-full transition-all" style={{ width: `${c.pct}%`, backgroundColor: f.color }} />
-                  </div>
-                  <div className="text-[10px] text-foreground/50 mt-1.5">{c.fill} of {c.tot} · {c.pct}%</div>
-                </div>
-              );
-            })}
+          <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3">
+            {focus ? <>Building in <span style={{ color: COLOR[focus] }}>{FNAME[focus]}</span> only</> : "Click a framework to focus on just that one"}
           </div>
+
+          {focus ? (
+            <div className="flex items-center gap-3 flex-wrap">
+              <Badge k={focus} big />
+              <button onClick={() => setFocus(null)} className="text-[12.5px] font-bold rounded-lg border border-white/15 px-4 py-2.5 text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors">
+                ← Show all four frameworks
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              {FW.map((f) => <Badge key={f.key} k={f.key} />)}
+            </div>
+          )}
+
           <div className="mt-4 flex items-center justify-end flex-wrap gap-3">
-            <button onClick={() => setGenMsg(true)} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={{ backgroundImage: GRAD, color: "#0c0e13" }}>
-              ✨ Generate my 4 outlines
+            <button onClick={() => setGenMsg(true)} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={focus ? { backgroundColor: COLOR[focus], color: "#0c0e13" } : { backgroundImage: GRAD, color: "#0c0e13" }}>
+              {focus ? `✨ Generate my ${FNAME[focus]} outline` : "✨ Generate my 4 outlines"}
             </button>
           </div>
-          {genMsg && <div className="mt-2 text-right text-[12px] text-foreground/55">Outline generation is coming next — your answers are saved and will produce a Three-Act, Save the Cat, Hero's Journey, and Story Circle outline.</div>}
+          {genMsg && <div className="mt-2 text-right text-[12px] text-foreground/55">Outline generation is coming next — your answers are saved.</div>}
         </div>
 
         {/* beats */}
         <div className="mt-6">
-          {M.map((b, i) => {
-            const keys = Object.keys(b.fw) as FwKey[];
+          {visible.map(({ b, i }, idx) => {
+            const keys = focus ? ([focus] as FwKey[]) : (Object.keys(b.fw) as FwKey[]);
             const filled = (answers[i] || "").trim().length > 0;
             return (
               <div key={i} className="mb-3 rounded-xl border bg-white/[0.03] px-[17px] py-4" style={{ borderColor: filled ? "rgba(55,184,124,0.4)" : "rgba(255,255,255,0.10)" }}>
                 <div className="flex items-baseline gap-2.5 flex-wrap">
-                  <span className="font-serif font-bold text-[13px] text-foreground/30">{i + 1}</span>
+                  <span className="font-serif font-bold text-[13px] text-foreground/30">{idx + 1}</span>
                   <span className="font-serif font-bold text-[18px] text-foreground">{b.t}</span>
                   {filled && <span className="ml-auto text-[11px] font-bold" style={{ color: "#37b87c" }}>✓ written</span>}
                 </div>
@@ -115,9 +139,9 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
                   placeholder="Write this beat for YOUR movie…"
                   className="w-full min-h-[54px] resize-y rounded-lg border border-white/10 bg-black/25 text-foreground text-[13.5px] px-3 py-2.5 leading-relaxed focus:outline-none focus:border-white/25"
                 />
-                {keys.length === 1 && (
+                {!focus && (Object.keys(b.fw) as FwKey[]).length === 1 && (
                   <div className="text-[10px] text-foreground/30 mt-2">
-                    Only <span className="font-bold" style={{ color: COLOR[keys[0]] }}>{FNAME[keys[0]]}</span> asks for this beat — a moment the others let you skip.
+                    Only <span className="font-bold" style={{ color: COLOR[(Object.keys(b.fw) as FwKey[])[0]] }}>{FNAME[(Object.keys(b.fw) as FwKey[])[0]]}</span> asks for this beat — a moment the others let you skip.
                   </div>
                 )}
               </div>
@@ -127,7 +151,7 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
 
         <div className="mt-4 flex items-center justify-between flex-wrap gap-3 pb-4">
           <span className="text-[12.5px] text-foreground/50">✓ Saved automatically</span>
-          <Link to={`/movie-in-a-box/${structureKey}/scene`} className="rounded-lg px-6 py-3 text-sm font-bold text-[#0c0e13]" style={{ backgroundImage: GRAD }}>
+          <Link to={`/movie-in-a-box/${structureKey}/scene`} className="rounded-lg px-6 py-3 text-sm font-bold text-[#0c0e13]" style={focus ? { backgroundColor: COLOR[focus] } : { backgroundImage: GRAD }}>
             Continue to Scene →
           </Link>
         </div>
