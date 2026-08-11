@@ -324,10 +324,10 @@ export default function CompareStructures() {
                   className="group flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-all hover:-translate-y-1 hover:bg-white/[0.05] border-l-[3px]"
                   style={{ borderLeftColor: m.color }}
                 >
-                  {m.slug === "gladiator" ? (
+                  {m.slug === "gladiator" || m.slug === "the-godfather" ? (
                     <img
-                      src={gladiatorPoster.url}
-                      alt="Gladiator movie poster"
+                      src={m.slug === "gladiator" ? gladiatorPoster.url : godfatherPoster.url}
+                      alt={`${m.title} movie poster`}
                       className="shrink-0 rounded-md object-cover bg-black/40"
                       style={{ width: 76, height: 110 }}
                       loading="lazy"
