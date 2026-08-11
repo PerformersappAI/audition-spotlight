@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
-import { BarChart3 } from "lucide-react";
+import { BarChart3, SlidersHorizontal } from "lucide-react";
 
 const GOLD = "#d4a017";
 const VIOLET = "#a855f7";
