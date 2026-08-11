@@ -147,8 +147,13 @@ export default function Refill() {
         {/* 2. Add More Credits */}
         <AddCreditsCard className="mb-8" />
 
-        {/* 3. How Your Credits Work */}
+        {/* 3. Password & Security */}
+        <PasswordSettingsCard email={user.email} className="mb-8" />
+
+        {/* 4. How Your Credits Work */}
         <CreditCostTable className="mb-8" />
+
+
 
 
         {/* 4. Cancel Membership */}
