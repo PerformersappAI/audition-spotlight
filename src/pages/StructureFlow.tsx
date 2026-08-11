@@ -266,7 +266,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
             <p className="text-xs uppercase tracking-[0.2em] text-foreground/45 font-semibold mb-4">
               As a circle
             </p>
-            <div id="sfCircle" className="w-full max-w-[860px] mx-auto" />
+            <div id="sfCircle" className="w-full max-w-[1040px] mx-auto" />
           </div>
         </section>
       ) : (
