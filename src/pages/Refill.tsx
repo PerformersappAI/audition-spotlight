@@ -11,6 +11,8 @@ import {
 import { Zap, Loader2, CircleDot } from 'lucide-react';
 import CreditCostTable from '@/components/CreditCostTable';
 import AddCreditsCard from '@/components/AddCreditsCard';
+import PasswordSettingsCard from '@/components/PasswordSettingsCard';
+
 
 import { useAuth } from '@/hooks/useAuth';
 import { useCredits } from '@/hooks/useCredits';
