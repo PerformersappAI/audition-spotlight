@@ -10,7 +10,7 @@ const FW: { key: FwKey; name: string; color: string }[] = [
 ];
 const COLOR: Record<FwKey, string> = { p: "#a855f7", g: "#d4a017", r: "#fb7185", t: "#2bd1c0" };
 const FNAME: Record<FwKey, string> = { p: "Three-Act", g: "Save the Cat", r: "Hero's Journey", t: "Story Circle" };
-const GRAD = "linear-gradient(90deg,#a855f7,#d4a017,#fb7185,#2bd1c0)";
+const GRAD = "linear-gradient(90deg,#d7dce4,#c3cad6)";
 const ACTS: Record<1 | 2 | 3, string> = { 1: "Act I — Setup", 2: "Act II — Confrontation", 3: "Act III — Resolution" };
 
 type Ex = { slug: string; action: string };
