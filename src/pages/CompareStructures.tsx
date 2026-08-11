@@ -3,6 +3,13 @@ import { Link, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 import godfatherPoster from "@/assets/godfather-poster.png.asset.json";
+import lambsPoster from "@/assets/lambs-poster.png.asset.json";
+
+const POSTERS: Record<string, string> = {
+  gladiator: gladiatorPoster.url,
+  "the-godfather": godfatherPoster.url,
+  "the-silence-of-the-lambs": lambsPoster.url,
+};
 
 function Oscar({ size = 16 }: { size?: number }) {
   return (
