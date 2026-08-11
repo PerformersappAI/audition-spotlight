@@ -276,11 +276,42 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       {activeStop === "structure" ? (
         <section className="bg-background px-4 py-12">
           <div className="w-full max-w-[1080px] mx-auto">
+            <div className="text-center">
+              <span
+                className="inline-block text-xs font-bold uppercase tracking-[0.2em] mb-4"
+                style={{ color: accent }}
+              >
+                Structure
+              </span>
+              <h1
+                className="text-4xl sm:text-5xl font-bold tracking-tight mb-4"
+                style={{ color: accent }}
+              >
+                {title}
+              </h1>
+              <p className="mx-auto max-w-[600px] text-foreground/70 text-lg leading-relaxed mb-3">
+                {DATA[structureKey].lead}
+              </p>
+              <p className="text-sm text-foreground/50 mb-10">
+                {DATA[structureKey].tag}
+              </p>
+            </div>
+
             {DIAGRAM_MODE[structureKey] === "line" ? (
               <div id="sfLine" className="w-full" />
             ) : (
               <div id="sfCircle" className="w-full max-w-[1040px] mx-auto" />
             )}
+
+            <div className="mt-10 flex justify-center">
+              <Link
+                to={`/movie-in-a-box/${structureKey}/beats`}
+                className="inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-sm transition-transform hover:-translate-y-0.5"
+                style={{ backgroundColor: accent, color: "#0c0e13" }}
+              >
+                Start building <span aria-hidden="true">→</span> Beats
+              </Link>
+            </div>
           </div>
         </section>
       ) : (
