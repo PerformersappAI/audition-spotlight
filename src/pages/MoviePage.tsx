@@ -195,19 +195,18 @@ export default function MoviePage() {
             style={{ width: 120, height: 176 }}
           />
 
-          <h1 className="mt-8 text-4xl font-bold tracking-tight" style={{ color: movie.color }}>
+          <span className="mt-8 text-[12px] font-semibold uppercase tracking-[0.28em]" style={{ color: movie.color }}>
+            {movie.structureName}
+          </span>
+
+          <h1 className="mt-2 text-4xl font-bold tracking-tight" style={{ color: movie.color }}>
             {movie.title}
           </h1>
 
-          <span
-            className="mt-4 inline-block rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.15em]"
-            style={{
-              color: movie.color,
-              backgroundColor: `${movie.color}1e`,
-              border: `1px solid ${movie.color}59`,
-            }}
-          >
-            Represents: {movie.structureName}
+          <span className="mt-4 block h-[2px] w-10 rounded-full" style={{ backgroundColor: movie.color, opacity: 0.7 }} />
+
+          <span className="mt-4 text-xs text-foreground/45">
+            This film is our guide to the {movie.structureName} structure.
           </span>
 
           <div className="mt-6 flex flex-col items-center gap-2">
