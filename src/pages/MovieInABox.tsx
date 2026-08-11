@@ -1,10 +1,11 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { BarChart3 } from "lucide-react";
 
 const GOLD = "#d4a017";
 const VIOLET = "#a855f7";
 const ROSE = "#fb7185";
-const TEAL = "#00d4aa";
+const TEAL = "#2bd1c0";
 
 type CardDef = {
   key: string;
@@ -14,23 +15,10 @@ type CardDef = {
   description: string;
   bestFor: string;
   accent: string;
-  featured?: boolean;
   diagram: (props: { accent: string }) => JSX.Element;
 };
 
 const cards: CardDef[] = [
-  {
-    key: "save-the-cat",
-    to: "/movie-in-a-box/save-the-cat/structure",
-    title: "Save the Cat",
-    count: "15 beats",
-    description:
-      "Turn-by-turn directions. Fifteen clear beats, each with a job. The most guidance of any structure.",
-    bestFor: "Best for your first film",
-    accent: GOLD,
-    featured: true,
-    diagram: SaveTheCatDiagram,
-  },
   {
     key: "three-act",
     to: "/movie-in-a-box/three-act/structure",
@@ -41,6 +29,17 @@ const cards: CardDef[] = [
     bestFor: "Best for almost anything",
     accent: VIOLET,
     diagram: ThreeActDiagram,
+  },
+  {
+    key: "save-the-cat",
+    to: "/movie-in-a-box/save-the-cat/structure",
+    title: "Save the Cat",
+    count: "15 beats",
+    description:
+      "Turn-by-turn directions. Fifteen clear beats, each with a job. The most guidance of any structure.",
+    bestFor: "Best for your first film",
+    accent: GOLD,
+    diagram: SaveTheCatDiagram,
   },
   {
     key: "heros-journey",
@@ -66,6 +65,10 @@ const cards: CardDef[] = [
   },
 ];
 
+function isSaveTheCat(accent: string) {
+  return accent.toLowerCase() === GOLD.toLowerCase();
+}
+
 export default function MovieInABox() {
   return (
     <>
@@ -78,7 +81,7 @@ export default function MovieInABox() {
       <section className="min-h-[calc(100vh-96px)] flex items-center justify-center bg-background px-4 py-16">
         <div className="w-full max-w-[780px] mx-auto">
           {/* Header */}
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
               Movie in a <span className="text-gold">Box</span>
             </h1>
@@ -87,30 +90,101 @@ export default function MovieInABox() {
             </p>
           </div>
 
+          {/* Hero compare banner */}
+          <Link
+            to="/movie-in-a-box/compare"
+            aria-label="Compare all four story structures side by side"
+            className="group relative flex flex-col items-center text-center rounded-xl bg-[#161a21] border border-white/25 px-6 py-8 sm:py-10 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-white/45 mb-8"
+            style={{
+              boxShadow: "0 0 20px rgba(255,255,255,0.10)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 34px rgba(255,255,255,0.20)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.boxShadow =
+                "0 0 20px rgba(255,255,255,0.10)";
+            }}
+          >
+            <div className="w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mb-4">
+              <BarChart3
+                className="w-8 h-8 text-foreground"
+                strokeWidth={1.8}
+              />
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+              Compare all four side by side
+            </h2>
+            <p className="text-base text-foreground/70 mt-2 max-w-md">
+              See the same story through every lens — the best place to start.
+            </p>
+
+            <div className="flex items-center gap-2 mt-4">
+              {[
+                { color: VIOLET, label: "Three-Act" },
+                { color: GOLD, label: "Save the Cat" },
+                { color: ROSE, label: "Hero's Journey" },
+                { color: TEAL, label: "Story Circle" },
+              ].map((dot) => (
+                <span
+                  key={dot.label}
+                  className="w-2.5 h-2.5 rounded-full"
+                  style={{ backgroundColor: dot.color }}
+                  aria-label={dot.label}
+                />
+              ))}
+            </div>
+
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-foreground/90 transition-colors group-hover:text-foreground">
+              Start here
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="transition-transform group-hover:translate-x-1"
+              >
+                <path d="M5 12h14" />
+                <path d="m12 5 7 7-7 7" />
+              </svg>
+            </span>
+          </Link>
+
           {/* 2x2 Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-[18px]">
             {cards.map((card) => {
               const Diagram = card.diagram;
+              const isGold = isSaveTheCat(card.accent);
               return (
                 <Link
                   key={card.key}
                   to={card.to}
                   aria-label={`Select ${card.title}`}
                   className="group relative rounded-xl bg-[#161a21] p-[22px] text-left flex flex-col gap-3 transition-all duration-300 cursor-pointer hover:-translate-y-0.5"
-                  style={
-                    {
-                      border: `1px solid ${card.accent}66`,
-                      boxShadow: `0 0 12px ${card.accent}14`,
-                      ["--accent" as string]: card.accent,
-                    } as React.CSSProperties
-                  }
+                  style={{
+                    border: `1px solid ${card.accent}73`,
+                    boxShadow: isGold
+                      ? `0 0 18px ${card.accent}40`
+                      : `0 0 14px ${card.accent}26`,
+                    ["--accent" as string]: card.accent,
+                  }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.boxShadow = `0 0 24px ${card.accent}40`;
-                    e.currentTarget.style.border = `1px solid ${card.accent}b3`;
+                    e.currentTarget.style.boxShadow = isGold
+                      ? `0 0 34px ${card.accent}73`
+                      : `0 0 26px ${card.accent}4D`;
+                    e.currentTarget.style.border = `1px solid ${card.accent}CC`;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.boxShadow = `0 0 12px ${card.accent}14`;
-                    e.currentTarget.style.border = `1px solid ${card.accent}66`;
+                    e.currentTarget.style.boxShadow = isGold
+                      ? `0 0 18px ${card.accent}40`
+                      : `0 0 14px ${card.accent}26`;
+                    e.currentTarget.style.border = `1px solid ${card.accent}73`;
                   }}
                 >
                   <div className="flex items-center justify-between">
@@ -127,48 +201,20 @@ export default function MovieInABox() {
                   <p className="text-sm text-foreground/60 leading-snug">
                     {card.description}
                   </p>
-                  <span className="inline-flex items-center self-start px-2.5 py-1 rounded-full text-xs font-medium text-success bg-success/10 border border-success/30 mt-1">
+                  <span
+                    className="inline-flex items-center self-start px-2.5 py-1 rounded-full text-xs font-medium mt-1"
+                    style={{
+                      color: card.accent,
+                      backgroundColor: `${card.accent}1E`,
+                      border: `1px solid ${card.accent}59`,
+                    }}
+                  >
                     {card.bestFor}
                   </span>
                 </Link>
               );
             })}
           </div>
-
-          {/* Compare card — neutral treatment, centered below the grid */}
-          <Link
-            to="/movie-in-a-box/compare"
-            aria-label="Compare all four structures side by side"
-            className="w-full sm:w-[calc(50%-9px)] mx-auto mt-5 flex flex-col items-center text-center gap-4 rounded-xl bg-[#161a21] border border-white/15 hover:border-white/35 p-[22px] cursor-pointer transition-all duration-300 shadow-[0_0_12px_rgba(255,255,255,0.05)] hover:shadow-[0_0_24px_rgba(226,232,240,0.18)]"
-          >
-            <div className="w-12 h-12 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-foreground/80"
-              >
-                <rect x="3" y="13" width="4" height="8" rx="1" fill="currentColor" />
-                <rect x="8" y="9" width="4" height="12" rx="1" fill="currentColor" />
-                <rect x="13" y="5" width="4" height="16" rx="1" fill="currentColor" />
-                <rect x="18" y="10" width="3" height="11" rx="1" fill="currentColor" />
-              </svg>
-            </div>
-            <div>
-              <p className="font-serif text-[17px] text-foreground">
-                Compare all four side by side
-              </p>
-              <p className="text-[13px] text-foreground/60 mt-0.5">
-                See the same story through every lens — and how the beats line up.
-              </p>
-            </div>
-          </Link>
-
-          {/* Hint */}
-          <p className="text-center text-xs text-foreground/50 mt-[22px]">
-            Not sure? Start with Save the Cat — you can relight your film through another lens anytime.
-          </p>
         </div>
       </section>
     </>
@@ -179,10 +225,28 @@ function SaveTheCatDiagram({ accent }: { accent: string }) {
   const dots = [16, 38, 64, 88, 118, 152, 182, 210, 236, 266, 300];
   const large = [64, 236];
   return (
-    <svg viewBox="0 0 320 24" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
-      <line x1="10" y1="12" x2="310" y2="12" stroke={accent} strokeOpacity="0.35" strokeWidth="2" />
+    <svg
+      viewBox="0 0 320 24"
+      className="w-full h-6"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <line
+        x1="10"
+        y1="12"
+        x2="310"
+        y2="12"
+        stroke={accent}
+        strokeOpacity="0.35"
+        strokeWidth="2"
+      />
       {dots.map((x, i) => (
-        <circle key={i} cx={x} cy="12" r={large.includes(x) ? 3.5 : 2} fill={accent} />
+        <circle
+          key={i}
+          cx={x}
+          cy="12"
+          r={large.includes(x) ? 3.5 : 2}
+          fill={accent}
+        />
       ))}
     </svg>
   );
@@ -190,10 +254,44 @@ function SaveTheCatDiagram({ accent }: { accent: string }) {
 
 function ThreeActDiagram({ accent }: { accent: string }) {
   return (
-    <svg viewBox="0 0 320 24" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
-      <rect x="8" y="8" width="70" height="8" rx="4" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
-      <rect x="92" y="6" width="136" height="12" rx="6" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
-      <rect x="242" y="8" width="70" height="8" rx="4" fill={accent} fillOpacity="0.2" stroke={accent} strokeWidth="1" />
+    <svg
+      viewBox="0 0 320 24"
+      className="w-full h-6"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <rect
+        x="8"
+        y="8"
+        width="70"
+        height="8"
+        rx="4"
+        fill={accent}
+        fillOpacity="0.2"
+        stroke={accent}
+        strokeWidth="1"
+      />
+      <rect
+        x="92"
+        y="6"
+        width="136"
+        height="12"
+        rx="6"
+        fill={accent}
+        fillOpacity="0.2"
+        stroke={accent}
+        strokeWidth="1"
+      />
+      <rect
+        x="242"
+        y="8"
+        width="70"
+        height="8"
+        rx="4"
+        fill={accent}
+        fillOpacity="0.2"
+        stroke={accent}
+        strokeWidth="1"
+      />
       <circle cx="80" cy="12" r="2.5" fill={accent} />
       <circle cx="232" cy="12" r="2.5" fill={accent} />
       <circle cx="160" cy="4" r="2.5" fill={accent} />
@@ -203,10 +301,40 @@ function ThreeActDiagram({ accent }: { accent: string }) {
 
 function HerosJourneyDiagram({ accent }: { accent: string }) {
   return (
-    <svg viewBox="0 0 320 32" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
-      <line x1="10" y1="16" x2="118" y2="16" stroke={accent} strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="4 3" />
-      <line x1="202" y1="16" x2="310" y2="16" stroke={accent} strokeOpacity="0.45" strokeWidth="1.5" strokeDasharray="4 3" />
-      <circle cx="160" cy="16" r="13" fill="none" stroke={accent} strokeOpacity="0.6" strokeWidth="1.5" />
+    <svg
+      viewBox="0 0 320 32"
+      className="w-full h-6"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <line
+        x1="10"
+        y1="16"
+        x2="118"
+        y2="16"
+        stroke={accent}
+        strokeOpacity="0.45"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+      />
+      <line
+        x1="202"
+        y1="16"
+        x2="310"
+        y2="16"
+        stroke={accent}
+        strokeOpacity="0.45"
+        strokeWidth="1.5"
+        strokeDasharray="4 3"
+      />
+      <circle
+        cx="160"
+        cy="16"
+        r="13"
+        fill="none"
+        stroke={accent}
+        strokeOpacity="0.6"
+        strokeWidth="1.5"
+      />
       <circle cx="160" cy="3" r="2.5" fill={accent} />
       <circle cx="173" cy="16" r="2.5" fill={accent} />
       <circle cx="160" cy="29" r="2.5" fill={accent} />
@@ -221,8 +349,19 @@ function StoryCircleDiagram({ accent }: { accent: string }) {
   const r = 13;
   const dots = 8;
   return (
-    <svg viewBox="0 0 320 32" className="w-full h-6" preserveAspectRatio="xMidYMid meet">
-      <circle cx={cx} cy={cy} r={r} fill="none" stroke={accent} strokeWidth="1.5" />
+    <svg
+      viewBox="0 0 320 32"
+      className="w-full h-6"
+      preserveAspectRatio="xMidYMid meet"
+    >
+      <circle
+        cx={cx}
+        cy={cy}
+        r={r}
+        fill="none"
+        stroke={accent}
+        strokeWidth="1.5"
+      />
       {Array.from({ length: dots }).map((_, i) => {
         const angle = (i * 2 * Math.PI) / dots - Math.PI / 2;
         return (
