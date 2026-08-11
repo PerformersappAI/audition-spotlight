@@ -313,7 +313,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
               })}
             </ul>
             {activeStop === "shots" ? (
-              <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
+              <ul className="flex flex-wrap items-center gap-y-1 pb-3 pt-1.5 text-sm border-t border-white/5">
                 <li>
                   <span className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold" style={{ color: accent }}>Shot Flow</span>
                 </li>
