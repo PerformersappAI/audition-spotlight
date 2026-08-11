@@ -155,7 +155,7 @@ export default function BeatPage() {
     slug?: string;
   }>();
 
-  const meta = STRUCTURES[structure] ?? { name: "Movie in a Box", color: "#d4a017" };
+  const meta = STRUCTURES[structure] ?? { name: "Movie in a Box", color: "#d4a017", beats: [] };
   const content = BEAT_CONTENT[structure]?.[slug];
   const beatName = content?.name ?? titleCase(slug);
   const structureHref = STRUCTURES[structure]
@@ -171,45 +171,54 @@ export default function BeatPage() {
         type="article"
       />
 
+      <div className="border-b border-white/10 bg-[#0c0e13]/95">
+        <div className="container mx-auto px-4 pt-3 text-sm whitespace-nowrap overflow-x-auto">
+          <Link to="/movie-in-a-box" className="text-foreground/50 hover:text-foreground transition-colors">
+            Movie in a Box
+          </Link>
+          <span className="text-foreground/30 px-2" aria-hidden="true">
+            ›
+          </span>
+          <Link to={structureHref} className="text-foreground/50 hover:text-foreground transition-colors">
+            {meta.name}
+          </Link>
+        </div>
+      </div>
+
       <nav
-        aria-label="Breadcrumb"
+        aria-label={`${meta.name} beats`}
         className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
       >
         <div className="container mx-auto px-4">
-          <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
-            <li>
-              <Link
-                to="/movie-in-a-box"
-                className="inline-block rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                Movie in a Box
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">
-              ›
-            </li>
-            <li>
-              <Link
-                to={structureHref}
-                className="inline-block rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                {meta.name}
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">
-              ›
-            </li>
-            <li>
-              <span
-                aria-current="page"
-                className="inline-block rounded-md px-3 py-1.5 font-semibold"
-                style={{ color: meta.color }}
-              >
-                {beatName}
-              </span>
-            </li>
+          <ul className="flex items-center overflow-x-auto py-2.5 text-sm whitespace-nowrap">
+            {meta.beats.map((beat, i) => {
+              const beatSlug = slugify(beat);
+              const isCurrent = beatSlug === slug;
+              return (
+                <li key={beatSlug} className="flex items-center">
+                  {i > 0 && (
+                    <span className="text-foreground/25 px-1" aria-hidden="true">
+                      ·
+                    </span>
+                  )}
+                  <Link
+                    to={`/movie-in-a-box/${structure}/beat/${beatSlug}`}
+                    aria-current={isCurrent ? "page" : undefined}
+                    className={
+                      isCurrent
+                        ? "inline-block rounded-md px-2.5 py-1.5 font-bold"
+                        : "inline-block rounded-md px-2.5 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                    }
+                    style={isCurrent ? { color: meta.color } : undefined}
+                  >
+                    {beat}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
+
       </nav>
 
       <section className="bg-background px-4 py-14">
