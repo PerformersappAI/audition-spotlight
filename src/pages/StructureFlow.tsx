@@ -266,6 +266,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
             <li className="text-foreground/30" aria-hidden="true">
               ›
             </li>
+            {STOPS.map((s) => {
               const isActive = s.key === activeStop;
               const label =
                 s.key === "beats" ? `Beats (${title})` : s.label;
