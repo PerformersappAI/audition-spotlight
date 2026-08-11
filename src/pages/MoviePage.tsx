@@ -236,19 +236,20 @@ export default function MoviePage() {
           <Link to="/movie-in-a-box" className="text-foreground/50 hover:text-foreground transition-colors">Movie in a Box</Link>
           <span className="text-foreground/30 px-2" aria-hidden="true">›</span>
           <Link to={`/movie-in-a-box/${movie.structureKey}/structure`} className="transition-colors" style={{ color: movie.color, fontWeight: 600 }}>{movie.structureName}</Link>
-          <span className="text-foreground/30 px-2" aria-hidden="true">›</span>
-          <span className="font-semibold text-foreground">{movie.title}</span>
         </div>
       </div>
 
       <nav aria-label={`${movie.structureName} beats`} className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur">
         <div className="container mx-auto px-4">
           <ul className="flex items-center overflow-x-auto py-2.5 text-sm whitespace-nowrap">
-            {movie.subheader.map((b, i) => {
+            <li>
+              <span className="inline-block rounded-md px-2.5 py-1.5 font-semibold" style={{ color: movie.color }}>{movie.title}</span>
+            </li>
+            {movie.subheader.map((b) => {
               const bs = slugify(b);
               return (
                 <li key={bs} className="flex items-center">
-                  {i > 0 && <span className="text-foreground/25 px-1" aria-hidden="true">·</span>}
+                  <span className="text-foreground/25 px-1" aria-hidden="true">·</span>
                   <Link to={`/movie-in-a-box/${movie.structureKey}/beat/${bs}`} className="inline-block rounded-md px-2.5 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors">{b}</Link>
                 </li>
               );
