@@ -108,28 +108,106 @@ export default function CompareStructures() {
       />
 
       <nav
-        aria-label="Movie in a Box breadcrumb"
+        aria-label="Movie in a Box quick navigation"
         className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
       >
         <div className="container mx-auto px-4">
-          <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
-            <li>
-              <Link
-                to="/movie-in-a-box"
-                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                <span>Movie in a Box</span>
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">
-              ›
-            </li>
-            <li>
-              <span className="inline-block rounded-md px-3 py-1.5 font-semibold text-foreground">
-                Compare
-              </span>
-            </li>
-          </ul>
+          <div className="flex items-center gap-1 overflow-x-auto py-3 text-sm whitespace-nowrap">
+            <ul className="flex items-center gap-1">
+              <li>
+                <Link
+                  to="/movie-in-a-box"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  Movie in a Box
+                </Link>
+              </li>
+              <li className="text-foreground/30" aria-hidden="true">›</li>
+              <li>
+                <span className="inline-block rounded-md px-3 py-2 text-[14px] font-semibold text-foreground">
+                  Compare
+                </span>
+              </li>
+            </ul>
+
+            <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
+
+            <ul className="flex items-center gap-1">
+              <li>
+                <Link
+                  to="/movie-in-a-box/three-act/structure"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                  style={{ color: "#a855f7" }}
+                >
+                  Three-Act
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/save-the-cat/structure"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                  style={{ color: "#d4a017" }}
+                >
+                  Save the Cat
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/heros-journey/structure"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                  style={{ color: "#fb7185" }}
+                >
+                  Hero's Journey
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/story-circle/structure"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] font-medium hover:bg-white/5 transition-colors"
+                  style={{ color: "#2bd1c0" }}
+                >
+                  Story Circle
+                </Link>
+              </li>
+            </ul>
+
+            <span className="mx-2 h-4 w-px bg-white/10" aria-hidden="true" />
+
+            <ul className="flex items-center gap-1">
+              <li>
+                <Link
+                  to="/movie-in-a-box/movie/the-godfather"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  The Godfather
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/movie/the-silence-of-the-lambs"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  The Silence of the Lambs
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/movie/gladiator"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  Gladiator
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/movie-in-a-box/movie/forrest-gump"
+                  className="inline-flex items-center rounded-md px-3 py-2 text-[14px] text-foreground/70 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  Forrest Gump
+                </Link>
+              </li>
+            </ul>
+          </div>
         </div>
       </nav>
 
