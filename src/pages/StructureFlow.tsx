@@ -320,7 +320,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 {shotFlowBeats.map((b) => (
                   <li key={b.t} className="flex items-center">
                     <span className="text-foreground/25 px-0.5" aria-hidden="true">·</span>
-                    <span className="inline-block rounded-md px-2 py-1.5 text-foreground/60">{b.t}</span>
+                    <Link to={`/movie-in-a-box/${structureKey}/shots/${slugify(b.t)}`} className="inline-block rounded-md px-2 py-1.5 text-foreground/60 hover:text-foreground hover:bg-white/5 transition-colors">{b.t}</Link>
                   </li>
                 ))}
               </ul>
