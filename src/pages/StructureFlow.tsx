@@ -79,6 +79,8 @@ const DATA: Record<StructureKey, StructData> = {
       ["Act II", 3, 5],
       ["Act III", 6, 7],
     ],
+    lead: "Beginning, middle, and end — the foundation every other structure is built on, and the shape everyone already feels.",
+    tag: "The foundation · 8 beats",
   },
   "save-the-cat": {
     title: "Save the Cat",
@@ -106,6 +108,8 @@ const DATA: Record<StructureKey, StructData> = {
       ["Act II", 6, 12],
       ["Act III", 13, 14],
     ],
+    lead: "The most step-by-step way to shape a story: fifteen beats, each with a clear job and a place it belongs.",
+    tag: "Best for your first film · 15 beats",
   },
   "heros-journey": {
     title: "Hero's Journey",
@@ -130,6 +134,8 @@ const DATA: Record<StructureKey, StructData> = {
       ["Initiation", 5, 8],
       ["Return", 9, 11],
     ],
+    lead: "The three acts told as a mythic journey — leave the ordinary world, face an ordeal, and return changed.",
+    tag: "Best for transformation · 12 stages",
   },
   "story-circle": {
     title: "Story Circle",
@@ -141,6 +147,8 @@ const DATA: Record<StructureKey, StructData> = {
       ["Act II", 3, 5],
       ["Act III", 6, 7],
     ],
+    lead: "A leaner loop of the same idea in eight plain steps — you, need, go… change.",
+    tag: "Fast and character-driven · 8 steps",
   },
 };
 
