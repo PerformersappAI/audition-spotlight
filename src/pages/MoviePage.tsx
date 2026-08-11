@@ -1,6 +1,7 @@
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
 import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
+import godfatherPoster from "@/assets/godfather-poster.png.asset.json";
 
 function Oscar({ size = 16 }: { size?: number }) {
   return (
