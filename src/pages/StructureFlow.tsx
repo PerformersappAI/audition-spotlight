@@ -3,6 +3,8 @@ import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
 import SceneBuilder from "@/components/SceneBuilder";
+import ShotsBuilder from "@/components/ShotsBuilder";
+
 
 function slugify(name: string) {
   return name
@@ -350,6 +352,8 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         <BeatsBuilder structureKey={structureKey} />
       ) : activeStop === "scene" ? (
         <SceneBuilder structureKey={structureKey} />
+      ) : activeStop === "shots" ? (
+        <ShotsBuilder structureKey={structureKey} />
       ) : (
         <section className="min-h-[calc(100vh-140px)] flex items-center justify-center bg-background px-4 py-16">
           <div className="w-full max-w-[780px] mx-auto text-center">
@@ -368,3 +372,4 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
     </>
   );
 }
+
