@@ -331,7 +331,7 @@ export default function CompareStructures() {
                     <p className="mt-2 text-sm text-foreground/60 leading-relaxed">{m.teaser}</p>
                   </div>
                   <div className="shrink-0 flex flex-col items-center gap-1 pl-1">
-                    <div className="flex flex-col items-center">
+                    <div className="flex flex-row items-center gap-2">
                       {Array.from({ length: m.oscars }).map((_, i) => (
                         <Oscar key={i} />
                       ))}
