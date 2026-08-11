@@ -107,7 +107,12 @@ export const exportCallSheetToPDF = (
   doc.text(`CALLSHEET:${dayNum}`, centerX + centerColWidth/2, yPosition + 7, { align: 'center' });
   
   doc.setFontSize(10);
-  const dateText = new Date(callSheet.shoot_date).toLocaleDateString('en-GB', { 
+  // Parse YYYY-MM-DD as a LOCAL date so the weekday never shifts a day back.
+  const parseLocalDate = (raw: string) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((raw || '').trim());
+    return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(raw);
+  };
+  const dateText = parseLocalDate(callSheet.shoot_date).toLocaleDateString('en-GB', { 
     weekday: 'long', 
     day: 'numeric',
     month: 'long',
