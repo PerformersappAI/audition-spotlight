@@ -99,12 +99,20 @@ export const exportCallSheetToPDF = (
   const centerX = margin + leftColWidth;
   
   doc.setFont('helvetica', 'bold');
-  doc.setFontSize(16);
-  doc.text(callSheet.project_name.toUpperCase(), centerX + centerColWidth/2, yPosition, { align: 'center' });
-  
+  doc.setFontSize(14);
+  const titleMaxWidth = centerColWidth - 6;
+  const projectTitle = (callSheet.project_name || 'UNTITLED PRODUCTION').toUpperCase();
+  const titleLines = doc.splitTextToSize(projectTitle, titleMaxWidth) as string[];
+  const titleLineHeight = 5.5;
+  doc.text(titleLines, centerX + centerColWidth / 2, yPosition, {
+    align: 'center',
+    lineHeightFactor: 1.1,
+  });
+
+  const subtitleY = yPosition + Math.max(7, titleLines.length * titleLineHeight + 1.5);
   doc.setFontSize(11);
   const dayNum = callSheet.day_number ? ` DAY ${callSheet.day_number}` : '';
-  doc.text(`CALLSHEET:${dayNum}`, centerX + centerColWidth/2, yPosition + 7, { align: 'center' });
+  doc.text(`CALLSHEET:${dayNum}`, centerX + centerColWidth / 2, subtitleY, { align: 'center' });
   
   doc.setFontSize(10);
   // Parse YYYY-MM-DD as a LOCAL date so the weekday never shifts a day back.
@@ -118,7 +126,8 @@ export const exportCallSheetToPDF = (
     month: 'long',
     year: 'numeric'
   }).toUpperCase();
-  doc.text(dateText, centerX + centerColWidth/2, yPosition + 13, { align: 'center' });
+  const dateY = subtitleY + 6;
+  doc.text(dateText, centerX + centerColWidth / 2, dateY, { align: 'center' });
   
   // Right Column - Call Times
   const rightX = margin + leftColWidth + centerColWidth;
@@ -155,7 +164,7 @@ export const exportCallSheetToPDF = (
   const wrapTime = callSheet.wrap_time || 'TBD';
   doc.text(`Est. Wrap: ${formatTime(wrapTime)}`, rightX, rightY);
   
-  yPosition = Math.max(leftY, rightY, yPosition + 18) + 4;
+  yPosition = Math.max(leftY, rightY, dateY + 3) + 4;
   
   // Draw horizontal line under header
   doc.setLineWidth(0.5);
