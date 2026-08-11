@@ -31,6 +31,12 @@ const drawSectionHeader = (doc: jsPDF, text: string, yPosition: number, pageWidt
   return yPosition + 6;
 };
 
+export interface CallSheetLogo {
+  dataUrl: string;
+  width: number;
+  height: number;
+}
+
 export const exportCallSheetToPDF = (
   callSheet: CallSheetData,
   scenes: CallSheetScene[],
@@ -38,13 +44,28 @@ export const exportCallSheetToPDF = (
   crew: CallSheetCrew[],
   background: CallSheetBackground[],
   breaks: CallSheetBreak[] = [],
-  requirements: CallSheetRequirement[] = []
+  requirements: CallSheetRequirement[] = [],
+  logo?: CallSheetLogo | null
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
   const margin = 14;
   const contentWidth = pageWidth - (margin * 2);
-  let yPosition = 12;
+
+  // Reserve a band at the top of every page for the logo
+  let logoW = 0;
+  let logoH = 0;
+  const logoBand = 18;
+  if (logo?.dataUrl && logo.width > 0 && logo.height > 0) {
+    const maxH = 14;
+    const maxW = 60;
+    const scale = Math.min(maxH / logo.height, maxW / logo.width);
+    logoW = logo.width * scale;
+    logoH = logo.height * scale;
+  }
+
+  let yPosition = logoW ? 12 + logoBand : 12;
+
 
   // ===== THREE-COLUMN HEADER =====
   const leftColWidth = 55;
