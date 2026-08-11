@@ -99,6 +99,7 @@ import MovieInABox from "./pages/MovieInABox";
 import StructureFlow from "./pages/StructureFlow";
 import CompareStructures from "./pages/CompareStructures";
 import BeatPage from "./pages/BeatPage";
+import MoviePage from "./pages/MoviePage";
 
 import ToolGate from "@/components/ToolGate";
 
@@ -220,6 +221,7 @@ const AppContent = () => (
           <Route path="/movie-in-a-box/story-circle/:stop" element={<StructureFlow structureKey="story-circle" />} />
           <Route path="/movie-in-a-box/compare" element={<CompareStructures />} />
           <Route path="/movie-in-a-box/:structure/beat/:slug" element={<BeatPage />} />
+          <Route path="/movie-in-a-box/movie/:slug" element={<MoviePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
 
           <Route path="*" element={<NotFound />} />
