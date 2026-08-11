@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
@@ -51,6 +51,26 @@ const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
   "heros-journey": { title: "Gladiator", slug: "gladiator" },
   "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
 };
+type FwKey = "p" | "g" | "r" | "t";
+const MASTER_BEATS: { t: string; fw: FwKey[] }[] = [
+  { t: "The Ordinary World", fw: ["p", "g", "r", "t"] },
+  { t: "The Theme", fw: ["g"] },
+  { t: "The Need", fw: ["t"] },
+  { t: "The Call", fw: ["p", "g", "r"] },
+  { t: "The Refusal", fw: ["g", "r"] },
+  { t: "The Mentor", fw: ["r"] },
+  { t: "The Point of No Return", fw: ["p", "g", "r", "t"] },
+  { t: "The Bond", fw: ["g"] },
+  { t: "The Trials", fw: ["p", "g", "r", "t"] },
+  { t: "The Midpoint Turn", fw: ["p", "g", "t"] },
+  { t: "The Walls Close In", fw: ["g", "r"] },
+  { t: "The Lowest Point", fw: ["p", "g", "r", "t"] },
+  { t: "The Dark Night", fw: ["g"] },
+  { t: "The Turn to the End", fw: ["g", "r", "t"] },
+  { t: "The Final Test", fw: ["p", "g", "r"] },
+  { t: "The Elixir", fw: ["r"] },
+  { t: "The New World", fw: ["p", "g", "t"] },
+];
 const STOPS = [
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
@@ -224,6 +244,19 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       container?.removeEventListener("click", onClick);
     };
   }, [structureKey, stop, navigate]);
+
+  const [fwSel, setFwSel] = useState<FwKey[]>([]);
+  useEffect(() => {
+    try { const f = localStorage.getItem("mib-frameworks"); if (f) setFwSel(JSON.parse(f)); } catch { /* ignore */ }
+  }, [stop]);
+  const toggleFw = (k: FwKey) =>
+    setFwSel((s) => {
+      const n = s.includes(k) ? s.filter((x) => x !== k) : [...s, k];
+      try { localStorage.setItem("mib-frameworks", JSON.stringify(n)); } catch { /* ignore */ }
+      return n;
+    });
+  const shotFlowFws = fwSel.length ? fwSel : (["p", "g", "r", "t"] as FwKey[]);
+  const shotFlowBeats = MASTER_BEATS.filter((b) => b.fw.some((k) => shotFlowFws.includes(k)));
 
   if (!stop || !STOPS.some((s) => s.key === stop)) {
     return <Navigate to={`/movie-in-a-box/${structureKey}/structure`} replace />;
