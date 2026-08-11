@@ -126,6 +126,46 @@ const CallSheet = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  /**
+   * HTML <input type="time"> only accepts 24h "HH:MM". The AI often returns
+   * "08:30 AM", "9 PM", "18.30" etc., which the browser silently discards —
+   * making the field look empty. Normalize before setting state.
+   */
+  const to24h = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    const m = s.match(/^(\d{1,2})\s*[:.h]?\s*(\d{2})?\s*(a\.?m\.?|p\.?m\.?)?$/i);
+    if (!m) return "";
+    let h = parseInt(m[1], 10);
+    const min = m[2] ? parseInt(m[2], 10) : 0;
+    const mer = m[3]?.toLowerCase().replace(/\./g, "");
+    if (mer === "pm" && h < 12) h += 12;
+    if (mer === "am" && h === 12) h = 0;
+    if (h > 23 || min > 59) return "";
+    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  };
+
+  /** <input type="date"> needs YYYY-MM-DD. */
+  const toISODate = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const dmy = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+    const parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) return parsed.toISOString().slice(0, 10);
+    return "";
+  };
+
+  const clean = (raw: any): string => {
+    if (typeof raw !== "string") return "";
+    const s = raw.trim();
+    return !s || s.toLowerCase() === "null" || s.toLowerCase() === "unknown" ? "" : s;
+  };
+
+
   const addScene = () => {
     setScenes([...scenes, {
       scene_number: "",
@@ -251,53 +291,102 @@ const CallSheet = () => {
           });
 
           if (data) {
-            // Populate form data
-            if (data.production_company) updateField("production_company", data.production_company);
-            if (data.project_name) updateField("project_name", data.project_name);
-            if (data.shoot_date) updateField("shoot_date", data.shoot_date);
-            if (data.day_number) updateField("day_number", data.day_number);
-            if (data.script_color) updateField("script_color", data.script_color);
-            if (data.schedule_color) updateField("schedule_color", data.schedule_color);
-            if (data.general_crew_call) updateField("general_crew_call", data.general_crew_call);
-            if (data.shooting_call) updateField("shooting_call", data.shooting_call);
-            if (data.lunch_time) updateField("lunch_time", data.lunch_time);
-            if (data.courtesy_breakfast_time) updateField("courtesy_breakfast_time", data.courtesy_breakfast_time);
-            if (data.director) updateField("director", data.director);
-            if (data.line_producer) updateField("line_producer", data.line_producer);
-            if (data.upm) updateField("upm", data.upm);
-            if (data.shooting_location) updateField("shooting_location", data.shooting_location);
-            if (data.location_address) updateField("location_address", data.location_address);
-            if (data.crew_parking) updateField("crew_parking", data.crew_parking);
-            if (data.basecamp) updateField("basecamp", data.basecamp);
-            if (data.nearest_hospital) updateField("nearest_hospital", data.nearest_hospital);
-            if (data.hospital_address) updateField("hospital_address", data.hospital_address);
-            if (data.weather_description) updateField("weather_description", data.weather_description);
-            if (data.high_temp) updateField("high_temp", data.high_temp);
-            if (data.low_temp) updateField("low_temp", data.low_temp);
-            if (data.sunrise_time) updateField("sunrise_time", data.sunrise_time);
-            if (data.sunset_time) updateField("sunset_time", data.sunset_time);
-            if (data.executive_producers) updateField("executive_producers", data.executive_producers);
-            if (data.producers) updateField("producers", data.producers);
+            const crewCall = to24h(data.general_crew_call) || to24h(data.shooting_call);
+            setFormData(prev => ({
+              ...prev,
+              production_company: clean(data.production_company) || prev.production_company,
+              project_name: clean(data.project_name) || prev.project_name,
+              shoot_date: toISODate(data.shoot_date) || prev.shoot_date,
+              day_number: clean(data.day_number) || prev.day_number,
+              script_color: clean(data.script_color) || prev.script_color,
+              schedule_color: clean(data.schedule_color) || prev.schedule_color,
+              general_crew_call: crewCall || prev.general_crew_call,
+              unit_call_time: crewCall || prev.unit_call_time,
+              shooting_call: to24h(data.shooting_call) || prev.shooting_call,
+              lunch_time: to24h(data.lunch_time) || prev.lunch_time,
+              courtesy_breakfast_time: to24h(data.courtesy_breakfast_time) || prev.courtesy_breakfast_time,
+              wrap_time: to24h(data.wrap_time) || prev.wrap_time,
+              director: clean(data.director) || prev.director,
+              associate_director: clean(data.associate_director) || prev.associate_director,
+              line_producer: clean(data.line_producer) || prev.line_producer,
+              upm: clean(data.upm) || prev.upm,
+              shooting_location: clean(data.shooting_location) || prev.shooting_location,
+              location_address: clean(data.location_address) || prev.location_address,
+              crew_parking: clean(data.crew_parking) || prev.crew_parking,
+              basecamp: clean(data.basecamp) || prev.basecamp,
+              nearest_hospital: clean(data.nearest_hospital) || prev.nearest_hospital,
+              hospital_address: clean(data.hospital_address) || prev.hospital_address,
+              weather_description: clean(data.weather_description) || prev.weather_description,
+              high_temp: clean(data.high_temp) || prev.high_temp,
+              low_temp: clean(data.low_temp) || prev.low_temp,
+              sunrise_time: clean(data.sunrise_time) || prev.sunrise_time,
+              sunset_time: clean(data.sunset_time) || prev.sunset_time,
+              executive_producers: Array.isArray(data.executive_producers) ? data.executive_producers : prev.executive_producers,
+              producers: Array.isArray(data.producers) ? data.producers : prev.producers,
+            }));
 
             // Populate scenes
             if (data.scenes && data.scenes.length > 0) {
-              setScenes(data.scenes);
+              setScenes(data.scenes.map((s: any) => ({
+                ...s,
+                scene_number: clean(s.scene_number),
+                set_description: clean(s.set_description),
+                location: clean(s.location),
+                notes: clean(s.notes),
+                pages: clean(s.pages),
+                day_night: clean(s.day_night),
+                cast_ids: Array.isArray(s.cast_ids) ? s.cast_ids : [],
+                start_time: to24h(s.start_time),
+                int_ext: clean(s.int_ext),
+              })));
             }
 
             // Populate cast
             if (data.cast && data.cast.length > 0) {
-              setCast(data.cast);
+              setCast(data.cast.map((c: any) => ({
+                ...c,
+                character_name: clean(c.character_name),
+                actor_name: clean(c.actor_name),
+                cast_id: clean(c.cast_id),
+                status: clean(c.status),
+                special_instructions: clean(c.special_instructions),
+                pickup_time: to24h(c.pickup_time),
+                call_time: to24h(c.call_time),
+                set_ready_time: to24h(c.set_ready_time),
+                makeup_time: to24h(c.makeup_time),
+                costume_time: to24h(c.costume_time),
+                travel_time: to24h(c.travel_time),
+                on_set_time: to24h(c.on_set_time),
+              })));
             }
 
             // Populate crew
             if (data.crew && data.crew.length > 0) {
-              setCrew(data.crew);
+              setCrew(data.crew.map((c: any) => ({
+                ...c,
+                department: clean(c.department),
+                title: clean(c.title),
+                name: clean(c.name),
+                phone: clean(c.phone),
+                off_set: clean(c.off_set),
+                call_time: to24h(c.call_time),
+              })));
             }
 
             // Populate background
             if (data.background && data.background.length > 0) {
-              setBackground(data.background);
+              setBackground(data.background.map((b: any) => ({
+                ...b,
+                description: clean(b.description),
+                notes: clean(b.notes),
+                call_time: to24h(b.call_time),
+                makeup_time: to24h(b.makeup_time),
+                costume_time: to24h(b.costume_time),
+                travel_time: to24h(b.travel_time),
+                on_set_time: to24h(b.on_set_time),
+              })));
             }
+
 
             toast({
               title: "Success",
