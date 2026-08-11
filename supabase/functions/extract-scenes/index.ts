@@ -194,7 +194,6 @@ Return ONLY this JSON shape:
 
     console.log(`extract-scenes: returned ${scenes.length} scenes, ${cast.length} cast members`);
 
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "extract-scenes", {});
     await logUsage({
       userId: user!.id,

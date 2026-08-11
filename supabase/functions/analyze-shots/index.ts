@@ -221,7 +221,6 @@ REMEMBER: Each description should be precise enough that an AI image generator c
 
     console.log(`Successfully analyzed ${analyzedShots.length} shots with Gemini`);
 
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "analyze-shots", {});
     await logUsage({
       userId: user!.id,

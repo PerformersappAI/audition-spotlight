@@ -180,7 +180,6 @@ Return only the extracted text without any commentary.`;
 
         console.log(`✅ Successfully processed ${isPDF ? 'PDF' : 'image'}`);
 
-        const cost = serverCalculateCost({ feature: "text" });
         const chargeRes = await charge(user!.id, cost, "parse-document", {});
         await logUsage({
           userId: user!.id,

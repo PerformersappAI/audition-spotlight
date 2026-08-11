@@ -142,7 +142,6 @@ ${text}`;
     
     console.log('Successfully extracted audition data');
 
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "parse-audition-notice", {});
     await logUsage({
       userId: user!.id,

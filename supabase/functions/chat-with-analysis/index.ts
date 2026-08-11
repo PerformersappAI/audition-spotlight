@@ -127,7 +127,6 @@ ${SCENE_ANALYSIS_FRAMEWORK.core_dimensions.join('\n')}
 
     const data = await response.json();
 
-    const cost = serverCalculateCost({ feature: "text" });
     const chargeRes = await charge(user!.id, cost, "chat-with-analysis", {});
     await logUsage({
       userId: user!.id,
