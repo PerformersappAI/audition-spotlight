@@ -9,12 +9,73 @@ type BeatContent = {
   example: string;
 };
 
-const STRUCTURES: Record<string, { name: string; color: string }> = {
-  "three-act": { name: "Three-Act", color: "#a855f7" },
-  "save-the-cat": { name: "Save the Cat", color: "#d4a017" },
-  "heros-journey": { name: "Hero's Journey", color: "#fb7185" },
-  "story-circle": { name: "Story Circle", color: "#2bd1c0" },
+const slugify = (name: string) =>
+  name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+const STRUCTURES: Record<string, { name: string; color: string; beats: string[] }> = {
+  "three-act": {
+    name: "Three-Act",
+    color: "#a855f7",
+    beats: [
+      "Ordinary World",
+      "Inciting Incident",
+      "First Plot Point",
+      "Rising Action",
+      "Midpoint",
+      "Crisis / Low",
+      "Climax",
+      "Resolution",
+    ],
+  },
+  "save-the-cat": {
+    name: "Save the Cat",
+    color: "#d4a017",
+    beats: [
+      "Opening",
+      "Theme",
+      "Setup",
+      "Catalyst",
+      "Debate",
+      "Break 2",
+      "B Story",
+      "Fun & Games",
+      "Midpoint",
+      "Bad Guys",
+      "All Is Lost",
+      "Dark Night",
+      "Break 3",
+      "Finale",
+      "Final Image",
+    ],
+  },
+  "heros-journey": {
+    name: "Hero's Journey",
+    color: "#fb7185",
+    beats: [
+      "Ordinary",
+      "Call",
+      "Refusal",
+      "Mentor",
+      "Threshold",
+      "Tests",
+      "Inmost Cave",
+      "Ordeal",
+      "Reward",
+      "Road Back",
+      "Resurrection",
+      "Return",
+    ],
+  },
+  "story-circle": {
+    name: "Story Circle",
+    color: "#2bd1c0",
+    beats: ["You", "Need", "Go", "Search", "Find", "Take", "Return", "Change"],
+  },
 };
+
 
 const BEAT_CONTENT: Record<string, Record<string, BeatContent>> = {
   "three-act": {
