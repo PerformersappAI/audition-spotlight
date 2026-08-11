@@ -41,7 +41,13 @@ const CONFIG: Record<
   },
 };
 
-const STOPS = [
+const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
+  "three-act": { title: "The Godfather", slug: "the-godfather" },
+  "save-the-cat": { title: "The Silence of the Lambs", slug: "the-silence-of-the-lambs" },
+  "heros-journey": { title: "Gladiator", slug: "gladiator" },
+  "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
+};
+
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
   { key: "scene", label: "Scene" },
@@ -248,7 +254,18 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
             <li className="text-foreground/30" aria-hidden="true">
               ›
             </li>
-            {STOPS.map((s) => {
+            <li>
+              <Link
+                to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
+                className="inline-flex items-center rounded-md px-3 py-1.5 font-medium hover:bg-white/5 transition-colors"
+                style={{ color: accent }}
+              >
+                {MOVIE[structureKey].title}
+              </Link>
+            </li>
+            <li className="text-foreground/30" aria-hidden="true">
+              ›
+            </li>
               const isActive = s.key === activeStop;
               const label =
                 s.key === "beats" ? `Beats (${title})` : s.label;
