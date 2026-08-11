@@ -288,40 +288,42 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         className="sticky top-0 z-40 border-b border-white/10 bg-[#0c0e13]/95 backdrop-blur"
       >
         <div className="container mx-auto px-4">
-          <ul className="flex items-center gap-1 overflow-x-auto py-2.5 text-sm whitespace-nowrap">
-            <li>
-              <Link
-                to="/movie-in-a-box"
-                className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-              >
-                <span>Movie in a Box</span>
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">
-              ›
-            </li>
-            {STOPS.map((s) => {
-              const isActive = s.key === activeStop;
-              const label =
-                s.key === "beats" ? `Beats (${title})` : s.label;
-              return (
-                <li key={s.key}>
-                  <Link
-                    to={`/movie-in-a-box/${structureKey}/${s.key}`}
-                    aria-current={isActive ? "page" : undefined}
-                    className={
-                      isActive
-                        ? "inline-block rounded-md px-3 py-1.5 font-semibold"
-                        : "inline-block rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
-                    }
-                    style={isActive ? { color: accent } : undefined}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+          <ScrollRow color={accent}>
+            <ul className="flex items-center gap-1 py-2.5 text-sm whitespace-nowrap">
+              <li>
+                <Link
+                  to="/movie-in-a-box"
+                  className="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                >
+                  <span>Movie in a Box</span>
+                </Link>
+              </li>
+              <li className="text-foreground/30" aria-hidden="true">
+                ›
+              </li>
+              {STOPS.map((s) => {
+                const isActive = s.key === activeStop;
+                const label =
+                  s.key === "beats" ? `Beats (${title})` : s.label;
+                return (
+                  <li key={s.key}>
+                    <Link
+                      to={`/movie-in-a-box/${structureKey}/${s.key}`}
+                      aria-current={isActive ? "page" : undefined}
+                      className={
+                        isActive
+                          ? "inline-block rounded-md px-3 py-1.5 font-semibold"
+                          : "inline-block rounded-md px-3 py-1.5 text-foreground/50 hover:text-foreground hover:bg-white/5 transition-colors"
+                      }
+                      style={isActive ? { color: accent } : undefined}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </ScrollRow>
           <ul className="flex items-center overflow-x-auto pb-2.5 text-sm whitespace-nowrap border-t border-white/5 pt-1.5">
             <li>
               <Link
