@@ -254,18 +254,6 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
             <li className="text-foreground/30" aria-hidden="true">
               ›
             </li>
-            <li>
-              <Link
-                to={`/movie-in-a-box/movie/${MOVIE[structureKey].slug}`}
-                className="inline-flex items-center rounded-md px-3 py-1.5 font-medium hover:bg-white/5 transition-colors"
-                style={{ color: accent }}
-              >
-                {MOVIE[structureKey].title}
-              </Link>
-            </li>
-            <li className="text-foreground/30" aria-hidden="true">
-              ›
-            </li>
             {STOPS.map((s) => {
               const isActive = s.key === activeStop;
               const label =
