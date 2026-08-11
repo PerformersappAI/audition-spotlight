@@ -168,6 +168,8 @@ export default function BeatPage() {
     ? `/movie-in-a-box/${structure}/structure`
     : "/movie-in-a-box";
 
+  const movie = MOVIES[structure];
+
   return (
     <>
       <Seo
@@ -188,6 +190,19 @@ export default function BeatPage() {
           <Link to={structureHref} className="text-foreground/50 hover:text-foreground transition-colors">
             {meta.name}
           </Link>
+          {movie && (
+            <>
+              <span className="text-foreground/30 px-2" aria-hidden="true">
+                ›
+              </span>
+              <Link
+                to={`/movie-in-a-box/movie/${movie.slug}`}
+                className="text-foreground/50 hover:text-foreground transition-colors"
+              >
+                {movie.title}
+              </Link>
+            </>
+          )}
         </div>
       </div>
 
