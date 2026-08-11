@@ -2,6 +2,60 @@ import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 
+function Oscar({ size = 16 }: { size?: number }) {
+  return (
+    <svg width={size} height={size * 2} viewBox="0 0 12 24" aria-hidden="true" style={{ display: "block" }}>
+      <g fill="#e7c04a">
+        <circle cx="6" cy="3" r="2" />
+        <path d="M4.6 5.2h2.8l1 6.6a6 6 0 0 1-4.8 0z" />
+        <rect x="4.4" y="12.2" width="3.2" height="6.4" rx="0.6" />
+        <rect x="2.6" y="18.6" width="6.8" height="1.8" rx="0.5" />
+        <rect x="1.8" y="20.4" width="8.4" height="2.4" rx="0.6" />
+      </g>
+    </svg>
+  );
+}
+
+const MOVIE_CARDS = [
+  {
+    slug: "the-godfather",
+    title: "The Godfather",
+    structureName: "Three-Act",
+    color: "#a855f7",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "First Plot Point = Michael shoots Sollozzo and McCluskey.",
+  },
+  {
+    slug: "the-silence-of-the-lambs",
+    title: "The Silence of the Lambs",
+    structureName: "Save the Cat",
+    color: "#d4a017",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "Catalyst = Clarice is sent to interview Hannibal Lecter.",
+  },
+  {
+    slug: "gladiator",
+    title: "Gladiator",
+    structureName: "Hero's Journey",
+    color: "#fb7185",
+    oscars: 1,
+    oscarLabel: "Best Picture",
+    teaser: "Crossing the Threshold = Maximus is enslaved and made a gladiator.",
+  },
+  {
+    slug: "forrest-gump",
+    title: "Forrest Gump",
+    structureName: "Story Circle",
+    color: "#2bd1c0",
+    oscars: 2,
+    oscarLabel: "Best Screenplay · Best Picture",
+    teaser: "You = young Forrest on the bus-stop bench, starting his story.",
+  },
+];
+
+
 export default function CompareStructures() {
   const navigate = useNavigate();
 
@@ -99,8 +153,10 @@ export default function CompareStructures() {
               Four structures, one story
             </h1>
             <p className="text-lg text-foreground/60 mt-4">
-              Every one of these tells the same story — a beginning, a middle, and an end.
-              Here they are side by side, all lined up against the three acts you already know.
+              The same story, four ways — all lined up against the three acts you already know.{" "}
+              <strong className="text-foreground/80">
+                Click any beat and we'll teach you what it is, then show you the exact moment a famous movie nailed it.
+              </strong>
             </p>
           </div>
 
@@ -164,38 +220,65 @@ export default function CompareStructures() {
             </div>
           </div>
 
-          <div className="mt-20 mx-auto max-w-[820px]">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6 text-center">
-              Why line them up like this?
+          <div className="mt-20">
+            <h2 className="font-serif text-[32px] leading-tight text-foreground text-center">
+              Learn each structure through a movie you know
             </h2>
-            <p className="text-foreground/70 leading-relaxed mb-6">
-              Every filmmaker already understands a story as a beginning, a middle, and an end.
-              That three-act shape isn't just a convention — it's how our minds naturally organize a story.
-              It clicks. So instead of asking you to learn four competing systems from scratch, we
-              line all four up against the one you already know.
+            <p className="mt-4 mx-auto max-w-[720px] text-center text-sm text-foreground/60 leading-relaxed">
+              Click any beat — on the lines above or on a structure's page — and we'll tell you exactly
+              what it is, then show you that exact moment in a famous film. Each structure follows one
+              movie all the way through.
             </p>
-            <blockquote
-              className="font-serif text-2xl sm:text-3xl italic text-foreground/90 border-l-4 pl-6 py-2 my-8"
-              style={{ borderColor: "#a855f7" }}
-            >
-              They're not four different stories. They're four maps of the same territory.
-            </blockquote>
-            <p className="text-foreground/70 leading-relaxed mb-6">
-              Save the Cat, the Hero's Journey, and the Story Circle are all the same three acts —
-              just told in more detail, or with a different emphasis. That's why you can read any
-              column straight down and find the same beats in the same places.
-            </p>
-            <p className="text-foreground/70 leading-relaxed">
-              So you don't have to master four philosophies. You already know the shape. Pick the
-              lens that fits the movie in your head — knowing that underneath, it's still the
-              beginning, middle, and end you've understood your whole life.
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[940px] mx-auto">
+              {MOVIE_CARDS.map((m) => (
+                <Link
+                  key={m.slug}
+                  to={`/movie-in-a-box/movie/${m.slug}`}
+                  className="group flex items-start gap-4 rounded-xl border border-white/10 bg-white/[0.03] p-5 transition-all hover:-translate-y-1 hover:bg-white/[0.05] border-l-[3px]"
+                  style={{ borderLeftColor: m.color }}
+                >
+                  <div
+                    className="shrink-0 rounded-md border border-dashed border-white/25 bg-black/40"
+                    style={{ width: 76, height: 110 }}
+                  />
+                  <div className="min-w-0 flex-1">
+                    <span
+                      className="text-[10px] font-semibold uppercase tracking-[0.18em]"
+                      style={{ color: m.color }}
+                    >
+                      {m.structureName}
+                    </span>
+                    <h3 className="font-serif text-[19px] text-foreground mt-1">{m.title}</h3>
+                    <p className="mt-2 text-sm text-foreground/60 leading-relaxed">{m.teaser}</p>
+                  </div>
+                  <div className="shrink-0 flex flex-col items-center gap-1 pl-1">
+                    <div className="flex flex-col items-center">
+                      {Array.from({ length: m.oscars }).map((_, i) => (
+                        <Oscar key={i} />
+                      ))}
+                    </div>
+                    <span className="text-[9px] text-foreground/40 text-center leading-tight max-w-[86px]">
+                      {m.oscarLabel}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+
+            <p className="mt-6 flex items-center justify-center gap-2 text-xs text-foreground/40">
+              <Oscar />
+              <span>Academy Award — Best Screenplay and/or Best Picture.</span>
             </p>
           </div>
 
           <div className="mt-20">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-8 text-center">
-              The four at a glance
+            <h2 className="font-serif text-[32px] leading-tight text-foreground text-center">
+              Already know it? Start building.
             </h2>
+            <p className="mt-4 mb-10 mx-auto max-w-[720px] text-center text-sm text-foreground/60 leading-relaxed">
+              Choose your lens and go straight to building your film — no lesson required.
+            </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[900px] mx-auto">
               <Link
                 to="/movie-in-a-box/three-act/structure"
