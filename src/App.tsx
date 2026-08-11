@@ -221,6 +221,7 @@ const AppContent = () => (
           <Route path="/movie-in-a-box/story-circle" element={<Navigate to="/movie-in-a-box/story-circle/structure" replace />} />
           <Route path="/movie-in-a-box/story-circle/:stop" element={<StructureFlow structureKey="story-circle" />} />
           <Route path="/movie-in-a-box/compare" element={<CompareStructures />} />
+          <Route path="/movie-in-a-box/engine-room" element={<EngineRoom />} />
           <Route path="/movie-in-a-box/:structure/beat/:slug" element={<BeatPage />} />
           <Route path="/movie-in-a-box/movie/:slug" element={<MoviePage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
