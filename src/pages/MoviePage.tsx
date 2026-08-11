@@ -261,9 +261,9 @@ export default function MoviePage() {
 
       <section className="bg-background px-4 pt-16 pb-10">
         <div className="container mx-auto flex flex-col items-center text-center">
-          {slug === "gladiator" || slug === "the-godfather" ? (
+          {POSTERS[slug] ? (
             <img
-              src={slug === "gladiator" ? gladiatorPoster.url : godfatherPoster.url}
+              src={POSTERS[slug]}
               alt={`${movie.title} movie poster`}
               className="rounded-lg object-cover bg-black/40"
               style={{ width: 132, height: 194 }}
