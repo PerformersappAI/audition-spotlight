@@ -39,9 +39,13 @@ export default function BeatsBuilder({ structureKey }: { structureKey: string })
   const [sel, setSel] = useState<FwKey[]>([]);
 
   useEffect(() => {
-    try { const raw = localStorage.getItem("mib-master-beats"); setAnswers(raw ? JSON.parse(raw) : {}); }
-    catch { setAnswers({}); }
+    try { const raw = localStorage.getItem("mib-master-beats"); setAnswers(raw ? JSON.parse(raw) : {}); } catch { setAnswers({}); }
+    try { const f = localStorage.getItem("mib-frameworks"); if (f) setSel(JSON.parse(f)); } catch { /* ignore */ }
   }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem("mib-frameworks", JSON.stringify(sel)); } catch { /* ignore */ }
+  }, [sel]);
 
   const set = (i: number, v: string) =>
     setAnswers((p) => { const n = { ...p, [i]: v }; try { localStorage.setItem("mib-master-beats", JSON.stringify(n)); } catch { /* ignore */ } return n; });
