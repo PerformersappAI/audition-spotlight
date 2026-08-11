@@ -106,7 +106,7 @@ export const exportCallSheetToPDF = (
   const titleLineHeight = 5.5;
   doc.text(titleLines, centerX + centerColWidth / 2, yPosition, {
     align: 'center',
-    lineHeightFactor: titleLineHeight / 14,
+    lineHeightFactor: 1.1,
   });
 
   const subtitleY = yPosition + Math.max(7, titleLines.length * titleLineHeight + 1.5);
