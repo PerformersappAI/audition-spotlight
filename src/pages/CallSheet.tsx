@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +11,7 @@ import { Loader2, Plus, Trash2, Upload, Download, Film, Save } from "lucide-reac
 import { supabase } from "@/integrations/supabase/client";
 import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement } from "@/hooks/useCallSheets";
-import { exportCallSheetToPDF } from "@/utils/exportCallSheetToPDF";
+import { exportCallSheetToPDF, type CallSheetLogo } from "@/utils/exportCallSheetToPDF";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
@@ -22,6 +22,7 @@ const CallSheet = () => {
   const { saveCallSheet } = useCallSheets();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isParsingData, setIsParsingData] = useState(false);
+  const [logo, setLogo] = useState<CallSheetLogo | null>(null);
   const { 
     processFile, 
     isProcessing: isProcessingFile,
@@ -456,8 +457,54 @@ const CallSheet = () => {
     }
   };
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("callsheet_logo");
+      if (stored) setLogo(JSON.parse(stored));
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file", description: "Please choose a PNG or JPG image.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      toast({ title: "Image too large", description: "Logos must be under 3MB.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result);
+      const img = new Image();
+      img.onload = () => {
+        const next: CallSheetLogo = { dataUrl, width: img.naturalWidth, height: img.naturalHeight };
+        setLogo(next);
+        try {
+          localStorage.setItem("callsheet_logo", JSON.stringify(next));
+        } catch {
+          /* logo too large to persist; still usable this session */
+        }
+        toast({ title: "Logo added", description: "It will appear at the top of every PDF page." });
+      };
+      img.onerror = () => toast({ title: "Error", description: "Could not read that image.", variant: "destructive" });
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const removeLogo = () => {
+    setLogo(null);
+    localStorage.removeItem("callsheet_logo");
+  };
+
   const handleDownloadPDF = () => {
-    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements);
+    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements, logo);
   };
 
   return (
@@ -524,6 +571,53 @@ const CallSheet = () => {
             </div>
           </CardContent>
         </Card>
+
+        <Card className="mb-6">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Upload className="h-5 w-5" />
+              Production Logo
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex h-20 w-40 shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-2">
+                {logo ? (
+                  <img src={logo.dataUrl} alt="Production logo preview" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-xs text-muted-foreground">No logo</span>
+                )}
+              </div>
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Browse for your logo (PNG or JPG, under 3MB). It prints centered at the top of every page of the exported PDF.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <Input
+                    type="file"
+                    accept="image/png,image/jpeg"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                    id="logo-upload"
+                  />
+                  <Button type="button" variant="secondary" asChild>
+                    <Label htmlFor="logo-upload" className="cursor-pointer">
+                      {logo ? "Replace Logo" : "Browse for Logo"}
+                    </Label>
+                  </Button>
+                  {logo && (
+                    <Button type="button" variant="ghost" onClick={removeLogo}>
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Remove
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+
 
         <form onSubmit={handleSubmit}>
           <Tabs defaultValue="general" className="space-y-6">

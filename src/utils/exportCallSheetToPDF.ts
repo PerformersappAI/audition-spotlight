@@ -31,6 +31,12 @@ const drawSectionHeader = (doc: jsPDF, text: string, yPosition: number, pageWidt
   return yPosition + 6;
 };
 
+export interface CallSheetLogo {
+  dataUrl: string;
+  width: number;
+  height: number;
+}
+
 export const exportCallSheetToPDF = (
   callSheet: CallSheetData,
   scenes: CallSheetScene[],
@@ -38,13 +44,28 @@ export const exportCallSheetToPDF = (
   crew: CallSheetCrew[],
   background: CallSheetBackground[],
   breaks: CallSheetBreak[] = [],
-  requirements: CallSheetRequirement[] = []
+  requirements: CallSheetRequirement[] = [],
+  logo?: CallSheetLogo | null
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
   const margin = 14;
   const contentWidth = pageWidth - (margin * 2);
-  let yPosition = 12;
+
+  // Reserve a band at the top of every page for the logo
+  let logoW = 0;
+  let logoH = 0;
+  const logoBand = 18;
+  if (logo?.dataUrl && logo.width > 0 && logo.height > 0) {
+    const maxH = 14;
+    const maxW = 60;
+    const scale = Math.min(maxH / logo.height, maxW / logo.width);
+    logoW = logo.width * scale;
+    logoH = logo.height * scale;
+  }
+
+  let yPosition = logoW ? 12 + logoBand : 12;
+
 
   // ===== THREE-COLUMN HEADER =====
   const leftColWidth = 55;
@@ -377,7 +398,8 @@ export const exportCallSheetToPDF = (
   // ===== CREW SECTION (New Page) =====
   if (crew.length > 0) {
     doc.addPage();
-    yPosition = 15;
+    yPosition = logoW ? 15 + logoBand : 15;
+
     
     yPosition = drawSectionHeader(doc, 'CREW', yPosition, pageWidth);
     
@@ -417,10 +439,20 @@ export const exportCallSheetToPDF = (
     });
   }
 
-  // Footer on all pages
+  // Logo + footer on all pages
   const pageCount = doc.internal.pages.length - 1;
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
+
+    if (logo?.dataUrl && logoW && logoH) {
+      try {
+        const fmt = logo.dataUrl.includes('image/png') ? 'PNG' : 'JPEG';
+        doc.addImage(logo.dataUrl, fmt, (pageWidth - logoW) / 2, 4, logoW, logoH);
+      } catch (e) {
+        console.error('Failed to add logo to PDF', e);
+      }
+    }
+
     doc.setFontSize(7);
     doc.setFont('helvetica', 'italic');
     doc.setTextColor(100, 100, 100);
