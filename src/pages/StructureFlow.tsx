@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 
@@ -166,6 +166,52 @@ const DIAGRAM_MODE: Record<StructureKey, "line" | "circle"> = {
   "heros-journey": "circle",
   "story-circle": "circle",
 };
+
+function ScrollRow({ children, color }: { children: ReactNode; color: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [bar, setBar] = useState({ w: 0, left: 0, show: false });
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const update = () => {
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 1) {
+        setBar((b) => (b.show ? { ...b, show: false } : b));
+        return;
+      }
+      const w = (el.clientWidth / el.scrollWidth) * 100;
+      const left = (el.scrollLeft / max) * (100 - w);
+      setBar({ w, left, show: true });
+    };
+    update();
+    const t = setTimeout(update, 120);
+    el.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      el.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+      clearTimeout(t);
+    };
+  }, [children]);
+  return (
+    <div className="relative">
+      <div ref={ref} className="overflow-x-auto mib-noscroll">
+        {children}
+      </div>
+      {bar.show && (
+        <div
+          className="pointer-events-none absolute left-4 right-4 bottom-0 h-[3px] rounded-full"
+          style={{ background: "rgba(255,255,255,0.06)" }}
+        >
+          <div
+            className="absolute inset-y-0 rounded-full"
+            style={{ width: `${bar.w}%`, left: `${bar.left}%`, backgroundColor: color, opacity: 0.9 }}
+          />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function StructureFlow({
   structureKey,
