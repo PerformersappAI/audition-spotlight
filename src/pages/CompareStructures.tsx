@@ -154,11 +154,13 @@ export default function CompareStructures() {
 
           <hr className="my-16 border-white/10" />
 
-          <div>
-            <h2 className="text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6">
+          <div className="px-4">
+            <h2 className="container mx-auto text-xs font-semibold uppercase tracking-[0.2em] text-foreground/40 mb-6">
               As concentric rings — sliced by act
             </h2>
-            <div id="diag" className="w-full max-w-[840px] mx-auto" />
+            <div className="max-w-[1200px] mx-auto">
+              <div id="diag" className="w-full" />
+            </div>
           </div>
         </div>
       </section>
