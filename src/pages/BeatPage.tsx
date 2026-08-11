@@ -858,6 +858,161 @@ const HEROS_JOURNEY: Record<string, Beat> = {
   },
 };
 
+const STORY_CIRCLE: Record<string, Beat> = {
+  you: {
+    name: "You", actChip: "Order · the known", posChip: "Step 1", aliasChip: "A zone of comfort",
+    lead: "The circle opens with You — a character in a zone of comfort. Before anything happens, we meet them in their familiar, ordinary world, at rest.",
+    oneLiner: "establish the character in their comfort zone.",
+    theory: [
+      "Dan Harmon’s Story Circle strips the Hero’s Journey to eight plain words, and it begins the same way: with the hero at home, in their normal life. “You” is the establishing beat — a specific person in a specific comfort zone.",
+      "The audience needs to identify with this person and understand their world before it gets disrupted. The more grounded the comfort zone, the more we feel it when they leave.",
+      "Harmon’s rule of thumb: the top of the circle is “order” — the known. Everything below is “chaos” — the unknown. We start at the top.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Establish a specific character", "Show their zone of comfort", "Ground us in their ordinary world", "Make us identify with them"],
+    moviePos: "You · Order (top of the circle)",
+    scene: "Young Forrest in Greenbow, Alabama — leg braces, a low IQ, and a fiercely loving mother. His comfort zone: home, and Mama’s belief that he is no different from anyone else.",
+    works: [
+      { b: "A comfort zone built on one belief.", text: "Forrest’s “order” is home and Mama’s creed — “you’re no different than anybody else.” It’s a simple, specific world we instantly understand." },
+      { b: "Grounded, so the leaving lands.", text: "Because we feel the smallness and safety of Greenbow, every later plunge into history hits harder." },
+    ],
+    steal: "Start with a comfort zone we can name in a sentence. Forrest’s is “home and Mama’s love” — the clearer the order, the more the chaos to come will matter.",
+  },
+  need: {
+    name: "Need", actChip: "Order · the known", posChip: "Step 2", aliasChip: "The want",
+    lead: "Need is the second beat: the character wants something more. A desire, a lack, a hunger surfaces inside the comfort zone — the engine of the whole circle.",
+    oneLiner: "name the want that will pull the character out of comfort.",
+    theory: [
+      "Every story runs on a want. “Need” plants it: the thing the character is missing or desires, consciously or not. It’s what will eventually push them out of the comfort zone and into chaos.",
+      "The Need can be spoken or buried. Often the character doesn’t fully understand it — but the audience should feel it.",
+      "The Need is what the whole circle answers. By “Change,” we’ll see whether — and how — it was met.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Plant the character’s want or lack", "Make it the engine of the journey", "It can be conscious or buried", "Set up what “Change” will answer"],
+    moviePos: "Need · Order (top of the circle)",
+    scene: "His deep need is love and belonging — which becomes Jenny, the one child kind to him: “You can sit here if you want.” Everything he does for the rest of his life orbits that need.",
+    works: [
+      { b: "One need, the whole life.", text: "Forrest’s need is belonging, and it takes the shape of Jenny in a single childhood moment. Every road he walks after is really a walk back toward her." },
+      { b: "Buried, but felt.", text: "Forrest never announces his need — but we feel it in every choice. The audience carries the want he can’t articulate." },
+    ],
+    steal: "Give your hero one need and let everything orbit it. Forrest’s whole odyssey is powered by “belonging” — a single want makes even an episodic life cohere.",
+  },
+  go: {
+    name: "Go", actChip: "Chaos ↓ · crossing down", posChip: "Step 3", aliasChip: "Into the unknown",
+    lead: "Go is the crossing: the character enters an unfamiliar situation, leaving the comfort zone for the unknown. It’s the descent from “order” into “chaos.”",
+    oneLiner: "push the character across, out of comfort and into the unknown.",
+    theory: [
+      "“Go” is the Story Circle’s threshold. The character steps — or is thrown — into a new, unfamiliar situation. The top half of the circle (order) gives way to the bottom (chaos).",
+      "It’s driven by the Need: the want makes staying impossible. The character crosses into a world with different rules.",
+      "This is the equivalent of the Hero’s Journey threshold, stripped to one word — the leap into the unknown.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Leave the comfort zone", "Enter an unfamiliar situation", "Let the Need drive the crossing", "Descend from order into chaos"],
+    moviePos: "Go · Chaos ↓ (crossing down)",
+    scene: "Forrest leaves the familiar again and again: his braces shatter and he can run — into a football scholarship, then the Army and Vietnam. He crosses into the wide, chaotic world.",
+    works: [
+      { b: "The braces shatter — and he’s gone.", text: "The literal image of Forrest breaking free of his leg braces is the crossing: home gives way to football fields, the Army, Vietnam — the wide unknown." },
+      { b: "He crosses again and again.", text: "Forrest’s “Go” isn’t one door but many; each time the familiar drops away and a new chaotic world opens." },
+    ],
+    steal: "Make the crossing physical and clear. Forrest’s braces flying apart as he runs is “Go” in one image — a visible break from the comfort zone into the unknown.",
+  },
+  search: {
+    name: "Search", actChip: "Chaos · the unknown", posChip: "Step 4", aliasChip: "Adapt & struggle",
+    lead: "Search is life in the chaos: the character adapts to the unfamiliar world and struggles through it, unknowingly chasing the Need. It’s the road of trials, one word long.",
+    oneLiner: "make the character adapt and struggle in the unknown.",
+    theory: [
+      "In “Search,” the character learns the rules of the new world by living in it — adapting, enduring, trying and failing. This is the bulk of the middle, the equivalent of the Hero’s Journey’s tests.",
+      "The struggle should reveal character and keep the Need alive beneath the surface, even when the character seems to have forgotten it.",
+      "It’s chaos: unpredictable, demanding, transforming the character through experience.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Adapt to the new world’s rules", "Struggle, try, endure", "Keep the Need alive underneath", "Reveal character through experience"],
+    moviePos: "Search · Chaos (the unknown)",
+    scene: "He moves through the chaos of an era — Vietnam, Bubba’s shrimp dream, Lt. Dan, ping-pong fame, presidents and history at every turn — adapting and enduring, unknowingly searching for belonging.",
+    works: [
+      { b: "He adapts to everything.", text: "War, ping-pong, shrimping, fame — Forrest meets each chaotic new world and simply endures it, learning its rules by living them." },
+      { b: "The need runs underneath.", text: "Through all the noise of history, the search for belonging never stops humming — he’s really looking for Jenny and a place to be." },
+    ],
+    steal: "Let the search wander but never lose the need. Forrest drifts through decades of chaos, yet every stretch quietly serves his hunger for belonging.",
+  },
+  find: {
+    name: "Find", actChip: "Chaos · the unknown", posChip: "Step 5", aliasChip: "Get what they wanted",
+    lead: "Find is the getting: the character finally obtains what they were searching for. The want is met — at least on the surface. It’s the peak of the chaos.",
+    oneLiner: "let the character get what they were after.",
+    theory: [
+      "“Find” is the point where the character achieves the goal — gets the thing, wins the prize, reaches the object of the search. It often feels like victory.",
+      "But in the Story Circle, “Find” is not the end. Getting what you wanted always comes with a bill, which the next beat — “Take” — will present.",
+      "The Find can be the literal goal or a truer version of the buried Need suddenly within reach.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Deliver the thing the character sought", "Make it feel like a win", "Set up the coming cost", "Reach the peak of the chaos"],
+    moviePos: "Find · Chaos (the unknown)",
+    scene: "He gets what he sought, in pieces: war hero, ping-pong champion, shrimping tycoon, rich and famous. And Jenny comes back to him for a real stretch of love. He finds success — and, briefly, her.",
+    works: [
+      { b: "He gets it all.", text: "Medals, fame, a shrimping fortune — Forrest “finds” worldly success. And, more importantly, Jenny returns for a real stretch of love: the true need, briefly met." },
+      { b: "The win is set to curdle.", text: "Everything Forrest finds is exactly what the next beat will make him pay for — the peak that precedes the price." },
+    ],
+    steal: "Give the hero the win before the bill. Forrest gets success and Jenny both — “Find” should feel like arrival, so “Take” can hurt.",
+  },
+  take: {
+    name: "Take", actChip: "Chaos · the unknown", posChip: "Step 6", aliasChip: "Pay the price",
+    lead: "Take is the price: the character pays, heavily, for what they found. It’s the step beginners most often skip — and the one that gives the circle its weight.",
+    oneLiner: "make the character pay a heavy price for what they gained.",
+    theory: [
+      "Harmon calls “Take” the beat writers most often forget. Getting what you want must cost something — a loss, a sacrifice, a consequence — or the story feels weightless.",
+      "This is the low point of the circle: the price of the Find comes due, often stripping away what the character valued most.",
+      "The heavier the price, the more the return and the change will mean.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Charge a real price for the Find", "Take away something valued", "Hit the low point of the circle", "Earn the coming change"],
+    moviePos: "Take · Chaos (the low point)",
+    scene: "Every gain exacts its price: Bubba dies; Lt. Dan loses his legs; Mama dies; and Jenny slips away again after one night. Overwhelmed by loss, Forrest simply runs — across America, for years.",
+    works: [
+      { b: "Every gain has its bill.", text: "Bubba’s death, Lt. Dan’s legs, Mama’s death, Jenny leaving after one night — Forrest pays for everything he found, all at once." },
+      { b: "The low point of the circle.", text: "Overwhelmed, he just runs — for years. It’s the emotional floor, the price that makes the return home mean something." },
+    ],
+    steal: "Never skip the Take. Forrest’s success costs him Bubba, Mama, and Jenny — the price is what turns a string of events into a story.",
+  },
+  return: {
+    name: "Return", actChip: "Order ↑ · crossing back", posChip: "Step 7", aliasChip: "Back where they started",
+    lead: "Return is the climb back: the character comes back to where they started — the comfort zone — but carrying everything the journey did to them. Chaos gives way to order again.",
+    oneLiner: "bring the character home, back up to the world of order.",
+    theory: [
+      "“Return” is the crossing back — the character re-enters the ordinary world, the top of the circle. But they aren’t the same person who left.",
+      "The world may look the same; the character doesn’t. The return sets up the final measure of change.",
+      "It’s the mirror of “Go” — the same threshold, crossed the other way.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Re-enter the ordinary world", "Mirror the “Go” crossing", "Carry the journey’s marks home", "Set up the final change"],
+    moviePos: "Return · Order ↑ (crossing back)",
+    scene: "Forrest comes home to Greenbow. Jenny reappears — with a son, Forrest Jr., his child. They marry; he climbs back into the ordinary world, but changed, having finally found the family he needed.",
+    works: [
+      { b: "Home again — but different.", text: "Forrest returns to Greenbow, the comfort zone he started in. Jenny comes back with their son; he climbs back into ordinary life, marked by everything between." },
+      { b: "The need, finally met.", text: "The belonging he chased through decades of chaos is here at last — a family, a home. The circle is nearly closed." },
+    ],
+    steal: "Bring the hero home to the same place, changed. Forrest returns to Greenbow — “Return” works because the world is familiar but the man is not.",
+  },
+  change: {
+    name: "Change", actChip: "Order · changed", posChip: "Step 8", aliasChip: "Transformed",
+    lead: "Change is the close of the circle: the character, now transformed by the whole journey, is back in order — but different. And the final image rhymes with the first.",
+    oneLiner: "show the character transformed, closing the circle where it began.",
+    theory: [
+      "The last beat completes the loop. The character is back in the comfort zone, but the journey has changed them — that difference is the whole point of the circle.",
+      "Harmon’s structure, like the Hero’s Journey, prizes the mirror: the end echoes the beginning so the transformation is visible at a glance.",
+      "If nothing has changed, the circle isn’t a story — just a trip. The change is what it was all for.",
+    ],
+    checklistTitle: "What this beat must do",
+    checklist: ["Show the transformed character", "Close the loop in the comfort zone", "Mirror the opening image", "Prove the Need was answered"],
+    moviePos: "Change · Order (circle closed)",
+    scene: "Jenny dies, but Forrest is now a father — the parent to his son that Mama was to him. Belonging, sought his whole life, is now his to give. The final image mirrors the first: Forrest Jr. boards the school bus, and the feather lifts off again.",
+    works: [
+      { b: "He becomes the giver of belonging.", text: "Forrest, who spent his life needing to belong, is now a father giving that belonging to his son — the exact role Mama held at the start." },
+      { b: "The circle closes on a mirror.", text: "Forrest Jr. boarding the school bus as the feather lifts rhymes with the opening — the same frame, a transformed meaning. The loop is complete." },
+    ],
+    steal: "End by mirroring your open, with the hero transformed. Forrest Jr. on the bus, the feather rising again — “Change” lands because it answers “You” with a changed man.",
+  },
+};
+
 export default function BeatPage() {
   const { structure = "", slug = "" } = useParams();
   const struct = STRUCTURES[structure];
