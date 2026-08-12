@@ -1,172 +1,218 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 
 type FwKey = "p" | "g" | "r" | "t";
-const FW: { key: FwKey; name: string; color: string }[] = [
-  { key: "p", name: "Three-Act", color: "#a855f7" },
-  { key: "g", name: "Save the Cat", color: "#d4a017" },
-  { key: "r", name: "Hero's Journey", color: "#fb7185" },
-  { key: "t", name: "Story Circle", color: "#2bd1c0" },
-];
-const COLOR: Record<FwKey, string> = { p: "#a855f7", g: "#d4a017", r: "#fb7185", t: "#2bd1c0" };
-const FNAME: Record<FwKey, string> = { p: "Three-Act", g: "Save the Cat", r: "Hero's Journey", t: "Story Circle" };
-const GRAD = "linear-gradient(90deg,#d7dce4,#c3cad6)";
+const FWC: Record<FwKey, string> = { p: "#a855f7", g: "#d4a017", r: "#fb7185", t: "#2bd1c0" };
+const GOLD = "#d4a017";
 
-type Beat = { t: string; fw: Partial<Record<FwKey, string>>; q: string; ex: string };
-const M: Beat[] = [
-  { t: "The Ordinary World", fw: { p: "Ordinary World", g: "Opening / Set-Up", r: "Ordinary World", t: "You" }, q: "Who is your hero, and what is their normal life before the story begins?", ex: "Luke, a restless farm boy on Tatooine." },
-  { t: "The Theme", fw: { g: "Theme Stated" }, q: "What deeper truth is your story really about? (Often said out loud, early.)", ex: "Trust the Force, not just the machine." },
-  { t: "The Need", fw: { t: "Need" }, q: "What does your hero secretly need or long for?", ex: "Luke longs for purpose beyond the farm." },
-  { t: "The Call", fw: { p: "Inciting Incident", g: "Catalyst", r: "Call to Adventure" }, q: "What outside event breaks the normal world and calls your hero to the story?", ex: "Leia's hidden message in R2-D2." },
-  { t: "The Refusal", fw: { r: "Refusal of the Call", g: "Debate" }, q: "How does your hero resist or hesitate before committing?", ex: "Luke says he can't leave the farm." },
-  { t: "The Mentor", fw: { r: "Meeting the Mentor" }, q: "Who guides your hero — and what do they teach or give them?", ex: "Obi-Wan trains Luke and gives him the lightsaber." },
-  { t: "The Point of No Return", fw: { p: "First Plot Point", g: "Break into Two", r: "Crossing the Threshold", t: "Go" }, q: "What forces your hero to commit fully, with no way back?", ex: "His aunt and uncle killed; Luke leaves with Obi-Wan." },
-  { t: "The Bond", fw: { g: "B Story" }, q: "What relationship helps your hero grow and carries the theme?", ex: "Han Solo and the crew." },
-  { t: "The Trials", fw: { p: "Rising Action", g: "Fun & Games", r: "Tests, Allies, Enemies", t: "Search" }, q: "What does your hero do and learn in the new world? (The big set-pieces.)", ex: "The cantina, the Falcon, into the Death Star." },
-  { t: "The Midpoint Turn", fw: { p: "Midpoint", g: "Midpoint", t: "Find" }, q: "What midway turn — a win that sours or a loss that opens a path — raises the stakes?", ex: "They rescue Leia, but the escape turns desperate." },
-  { t: "The Walls Close In", fw: { g: "Bad Guys Close In", r: "Approach the Inmost Cave" }, q: "How does the pressure tighten as your hero nears the biggest test?", ex: "Vader and the TIE fighters close in." },
-  { t: "The Lowest Point", fw: { p: "Crisis / Low", g: "All Is Lost", r: "The Ordeal", t: "Take" }, q: "What is the lowest point — the loss or the price your hero pays?", ex: "Obi-Wan is struck down." },
-  { t: "The Dark Night", fw: { g: "Dark Night of the Soul" }, q: "How does your hero sit with the loss before finding the resolve to go on?", ex: "Grief over Obi-Wan before the assault." },
-  { t: "The Turn to the End", fw: { g: "Break into Three", r: "Reward / Road Back", t: "Return" }, q: "What insight or resolve launches your hero into the finale?", ex: "Joining the Rebel attack on the Death Star." },
-  { t: "The Final Test", fw: { p: "Climax", g: "Finale", r: "Resurrection" }, q: "What is the final confrontation where your hero spends everything they've learned?", ex: "The trench run; Luke trusts the Force." },
-  { t: "The Elixir", fw: { r: "Return with the Elixir" }, q: "What does your hero bring back that helps their world — not just themselves?", ex: "The Death Star destroyed; hope restored." },
-  { t: "The New World", fw: { p: "Resolution", g: "Final Image", t: "Change" }, q: "What is the final image — how have your hero and their world changed?", ex: "The farm boy honored as a hero." },
-];
+type Beat = { t: string; slug: string; fw: Partial<Record<FwKey, string>> };
+function slugify(s: string) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
 
-export default function BeatsBuilder({ structureKey }: { structureKey: string }) {
-  const [answers, setAnswers] = useState<Record<number, string>>({});
-  const [genMsg, setGenMsg] = useState(false);
+const RAW: { t: string; fw: Partial<Record<FwKey, string>> }[] = [
+  { t: "The Ordinary World", fw: { p: "Ordinary World", g: "Opening / Set-Up", r: "Ordinary World", t: "You" } },
+  { t: "The Theme", fw: { g: "Theme Stated" } },
+  { t: "The Need", fw: { t: "Need" } },
+  { t: "The Call", fw: { p: "Inciting Incident", g: "Catalyst", r: "Call to Adventure" } },
+  { t: "The Refusal", fw: { g: "Debate", r: "Refusal of the Call" } },
+  { t: "The Mentor", fw: { r: "Meeting the Mentor" } },
+  { t: "The Point of No Return", fw: { p: "First Plot Point", g: "Break into Two", r: "Crossing the Threshold", t: "Go" } },
+  { t: "The Bond", fw: { g: "B Story" } },
+  { t: "The Trials", fw: { p: "Rising Action", g: "Fun & Games", r: "Tests, Allies, Enemies", t: "Search" } },
+  { t: "The Midpoint Turn", fw: { p: "Midpoint", g: "Midpoint", t: "Find" } },
+  { t: "The Walls Close In", fw: { g: "Bad Guys Close In", r: "Approach the Inmost Cave" } },
+  { t: "The Lowest Point", fw: { p: "Crisis / Low Point", g: "All Is Lost", r: "The Ordeal", t: "Take" } },
+  { t: "The Dark Night", fw: { g: "Dark Night of the Soul" } },
+  { t: "The Turn to the End", fw: { g: "Break into Three", r: "Reward / Road Back", t: "Return" } },
+  { t: "The Final Test", fw: { p: "Climax", g: "Finale", r: "Resurrection" } },
+  { t: "The Elixir", fw: { r: "Return with the Elixir" } },
+  { t: "The New World", fw: { p: "Resolution", g: "Final Image", t: "Change" } },
+];
+const M: Beat[] = RAW.map((b) => ({ ...b, slug: slugify(b.t) }));
+
+const OW_GROUPS: { L: string; name: string; qs: string[] }[] = [
+  { L: "A", name: "The Hero — basics", qs: [
+    "Who is your main character (name, age, gender)?",
+    "What's their job or role in life right now?",
+    "How would a stranger describe them in one sentence?",
+    "How do they see themselves in one sentence?",
+    "What are they exceptionally good at — their signature skill?",
+    "What small habit or quirk makes them feel like a real person?",
+  ] },
+  { L: "B", name: "Their inner world — flaw, wound, want vs. need", qs: [
+    "What is their core flaw — the thing holding them back?",
+    "What past wound created that flaw (their “ghost”)?",
+    "What do they consciously WANT at the start?",
+    "What do they actually NEED (the lesson they don't yet know)?",
+    "What lie do they believe about themselves or the world?",
+    "What are they most afraid of?",
+    "What do they secretly long for but won't admit?",
+    "What's the “hole” in their life the story will eventually fill?",
+  ] },
+  { L: "C", name: "Their daily life — the routine", qs: [
+    "Walk me through an ordinary day for them, start to finish.",
+    "What does their home look and feel like?",
+    "How do they spend their time / make their living?",
+    "Their relationship to that work — love it, trapped by it, indifferent?",
+    "What rituals or routines define their “normal”?",
+    "What everyday problem do they deal with (before the big one hits)?",
+  ] },
+  { L: "D", name: "The world — setting", qs: [
+    "Where does the story begin (place)?",
+    "What time period / era is it?",
+    "What are the “rules” of this world — social, cultural, physical?",
+    "What's the mood and atmosphere of this place?",
+    "What's beautiful or appealing about their world?",
+    "What's suffocating or limiting about it?",
+    "How does this world shape who they are?",
+  ] },
+  { L: "E", name: "Relationships", qs: [
+    "Who are the most important people in their life right now?",
+    "Who do they live with / who's their family?",
+    "Who's their closest ally or friend?",
+    "Is there a love interest in the ordinary world? Who?",
+    "Who do they have tension or conflict with?",
+    "Is a mentor present yet, or still to come?",
+    "How do others treat them — respected, overlooked, feared, loved?",
+  ] },
+  { L: "F", name: "The status quo — and what's missing", qs: [
+    "What “normal” is about to be shattered?",
+    "What are they avoiding, tolerating, or settling for?",
+    "What would they call “fine” that actually isn't?",
+    "If nothing ever changed, where would this life lead them?",
+    "What's the one thing that could tempt them out of their comfort zone?",
+  ] },
+  { L: "G", name: "Theme & meaning", qs: [
+    "What is the movie really about underneath the plot?",
+    "How is that theme quietly present in the ordinary world?",
+    "What belief will the story challenge or prove?",
+    "If someone stated the theme out loud early, what would they say?",
+  ] },
+  { L: "H", name: "Tone, genre, style", qs: [
+    "What genre is this?",
+    "Emotional tone of the opening — warm, tense, melancholy, fun?",
+    "What existing movies feel tonally similar to your goal?",
+    "Is the opening realistic, stylized, epic, or intimate?",
+  ] },
+  { L: "I", name: "Opening image — visual & sensory", qs: [
+    "If the first shot introduced your hero, what would we see?",
+    "What single image captures their “before” state?",
+    "What sounds, colors, and textures define this world?",
+    "What is your hero physically doing in that first scene?",
+    "What contrast do you want between this opening and the film's ending?",
+  ] },
+  { L: "J", name: "Seeds of what's coming", qs: [
+    "What tiny hint of the coming adventure can we plant here?",
+    "What's at stake if their world gets disrupted?",
+    "What does your hero not yet know is about to happen?",
+  ] },
+];
+const OW_TOTAL = OW_GROUPS.reduce((n, g) => n + g.qs.length, 0);
+
+function OWForm({ ans, setAns, filled, onClose, hint, setHint }: {
+  ans: Record<number, string>; setAns: (qi: number, v: string) => void; filled: number; onClose: () => void; hint: string; setHint: (s: string) => void;
+}) {
+  const pct = Math.round((filled / OW_TOTAL) * 100);
+  let n = 0;
+  return (
+    <div className="border-t border-white/10">
+      <div className="px-4 pt-3 pb-2 border-b border-white/[0.08]">
+        <div className="h-1.5 rounded-full bg-[#0c0e13] overflow-hidden"><div className="h-full" style={{ width: pct + "%", background: `linear-gradient(90deg,${GOLD},#f0d089)` }} /></div>
+        <div className="text-[11px] text-foreground/50 mt-1.5 flex justify-between"><span>{filled} of {OW_TOTAL} answered</span><span>the more you answer, the richer the movie</span></div>
+      </div>
+      {hint && <div className="mx-4 mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: `1px solid ${GOLD}55`, background: "#1a1710", color: "#f0d089" }}>{hint}</div>}
+      <div className="px-4 pb-4">
+        {OW_GROUPS.map((g) => (
+          <div key={g.L}>
+            <div className="mt-5 mb-1 flex items-center gap-2.5">
+              <span className="w-[22px] h-[22px] rounded-md flex items-center justify-center text-[12px] font-extrabold" style={{ background: "#f0d089", color: "#1a1300" }}>{g.L}</span>
+              <span className="text-[13px] font-extrabold" style={{ color: "#f0d089" }}>{g.name}</span>
+              <span className="flex-1 h-px bg-white/10" />
+            </div>
+            {g.qs.map((q) => {
+              const qi = n++; const cur = ans[qi] || "";
+              return (
+                <div key={qi} className="flex gap-3 py-2.5 border-b border-white/[0.045]">
+                  <span className="w-6 text-right text-[11px] font-extrabold text-foreground/35 pt-1">{qi + 1}</span>
+                  <div className="flex-1">
+                    <label className="block text-[13px] font-semibold text-foreground mb-1.5">{q}</label>
+                    <textarea value={cur} onChange={(e) => setAns(qi, e.target.value)} placeholder="Type your answer…" className="w-full bg-[#0f1116] text-foreground border border-white/10 rounded-lg px-2.5 py-2 text-[12.5px] resize-y" style={{ minHeight: 36, fontFamily: "inherit" }} />
+                    <button onClick={() => setHint("🧠 The filmmaking brain is our next step — this button will draft your answer here.")} className="mt-1.5 text-[10.5px] font-bold rounded-md px-2.5 py-1" style={{ color: "#f0d089", background: "#1a1710", border: `1px solid ${GOLD}66` }}>✨ AI help with this</button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+      <div className="mx-4 mb-4 rounded-xl p-4" style={{ border: `1px solid ${GOLD}55`, background: "linear-gradient(180deg,#1a1710,#141109)" }}>
+        <div className="text-[14px] font-extrabold" style={{ color: "#f0d089" }}>🧠 The Filmmaking Brain</div>
+        <div className="text-[12px] text-foreground/55 mt-1 mb-3">Give a one-line premise and it drafts all {OW_TOTAL} — or polishes your answers, or writes the finished Ordinary World section. (Wiring the brain is our next step.)</div>
+        <input placeholder="e.g. 'A retired hitman in Naples pulled back for one last job to save his daughter'" className="w-full bg-[#0f1116] text-foreground border border-white/10 rounded-lg px-3 py-2.5 text-[12.5px]" />
+        <div className="flex gap-2 flex-wrap mt-2.5">
+          <button onClick={() => setHint("🧠 Coming next — 'Draft all' fills every answer from your premise.")} className="text-[12px] font-bold rounded-lg px-3 py-2" style={{ background: GOLD, color: "#1a1300" }}>✨ Draft all answers</button>
+          <button onClick={() => setHint("🧠 Coming next — 'Polish' upgrades the answers you wrote.")} className="text-[12px] font-bold rounded-lg px-3 py-2 border border-white/10 text-foreground">✧ Polish my answers</button>
+          <button onClick={() => setHint("🧠 Coming next — this turns your answers into the finished Ordinary World.")} className="text-[12px] font-bold rounded-lg px-3 py-2 border border-white/10 text-foreground">📝 Write the Ordinary World section</button>
+        </div>
+      </div>
+      <div className="flex justify-end px-4 pb-4">
+        <button onClick={onClose} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={{ background: "#37b87c", color: "#04120b" }}>✓ Done — collapse &amp; go to next</button>
+      </div>
+    </div>
+  );
+}
+
+export default function BeatsBuilder(_props: { structureKey: string }) {
   const [sel, setSel] = useState<FwKey[]>([]);
+  const [open, setOpen] = useState(-1);
+  const [answers, setAnswers] = useState<Record<string, Record<number, string>>>({});
+  const [hint, setHint] = useState("");
 
   useEffect(() => {
-    try { const raw = localStorage.getItem("mib-master-beats"); setAnswers(raw ? JSON.parse(raw) : {}); } catch { setAnswers({}); }
     try { const f = localStorage.getItem("mib-frameworks"); if (f) setSel(JSON.parse(f)); } catch { /* ignore */ }
+    try { const a = localStorage.getItem("mib-beats"); if (a) setAnswers(JSON.parse(a)); } catch { /* ignore */ }
   }, []);
+  useEffect(() => { try { localStorage.setItem("mib-beats", JSON.stringify(answers)); } catch { /* ignore */ } }, [answers]);
 
-  useEffect(() => {
-    try { localStorage.setItem("mib-frameworks", JSON.stringify(sel)); } catch { /* ignore */ }
-  }, [sel]);
+  const fws = sel.length ? sel : (["p", "g", "r", "t"] as FwKey[]);
+  const visible = M.filter((b) => fws.some((k) => b.fw[k]));
 
-  const set = (i: number, v: string) =>
-    setAnswers((p) => { const n = { ...p, [i]: v }; try { localStorage.setItem("mib-master-beats", JSON.stringify(n)); } catch { /* ignore */ } return n; });
+  const setAns = (slug: string, qi: number, val: string) =>
+    setAnswers((a) => ({ ...a, [slug]: { ...(a[slug] || {}), [qi]: val } }));
 
-  const toggle = (k: FwKey) => setSel((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
-
-  const cov = (k: FwKey) => {
-    let tot = 0, fill = 0;
-    M.forEach((b, i) => { if (b.fw[k]) { tot++; if ((answers[i] || "").trim()) fill++; } });
-    return { tot, fill, pct: tot ? Math.round((fill / tot) * 100) : 0 };
-  };
-
-  const showAll = sel.length === 0;
-  const visible = M.map((b, i) => ({ b, i })).filter(({ b }) => showAll || sel.some((k) => !!b.fw[k]));
-  const count = showAll ? 4 : sel.length;
-  const one = sel.length === 1 ? COLOR[sel[0]] : null;
-
-  const Badge = ({ k }: { k: FwKey }) => {
-    const f = FW.find((x) => x.key === k)!;
-    const c = cov(k);
-    const on = sel.includes(k);
-    const dim = !showAll && !on;
-    return (
-      <button
-        onClick={() => toggle(k)}
-        className="text-left rounded-lg border px-3 py-2.5 transition-all"
-        style={{ borderColor: on ? f.color : "rgba(255,255,255,0.10)", background: on ? `${f.color}18` : "rgba(255,255,255,0.03)", opacity: dim ? 0.45 : 1 }}
-      >
-        <div className="flex items-center justify-between">
-          <div className="text-[12px] font-extrabold" style={{ color: f.color }}>{f.name}</div>
-          {on && <span className="text-[11px] font-extrabold" style={{ color: f.color }}>✓</span>}
-        </div>
-        <div className="text-[9.5px] text-foreground/30 mb-1.5">{c.tot} beats</div>
-        <div className="h-[5px] rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.08)" }}>
-          <div className="h-full rounded-full transition-all" style={{ width: `${c.pct}%`, backgroundColor: f.color }} />
-        </div>
-        <div className="text-[10px] text-foreground/50 mt-1.5">{c.fill} of {c.tot} · {c.pct}%</div>
-      </button>
-    );
-  };
+  const owAns = answers["the-ordinary-world"] || {};
+  const owFilled = Object.values(owAns).filter((v) => v && v.trim()).length;
 
   return (
-    <section className="bg-background px-4 py-10">
-      <div className="container mx-auto max-w-[860px]">
-        <div className="text-[12px] font-bold uppercase tracking-[0.2em] bg-clip-text text-transparent w-fit" style={{ backgroundImage: GRAD }}>
-          Your movie · one sheet, four frameworks
-        </div>
-        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">Your Beat Sheet</h1>
-        <p className="mt-3 text-foreground/60 text-[15px] max-w-[620px] leading-relaxed">
-          Answer each beat <span className="text-foreground font-semibold">once</span>. Every answer maps into all four frameworks — or select the ones you want and the sheet narrows to just those.
-        </p>
+    <section className="bg-background px-4 py-10 pb-24">
+      <div className="container mx-auto max-w-[900px]">
+        <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-foreground/45">Your movie · beats</div>
+        <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">The Beats</h1>
+        <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[640px]">Open a beat, answer its questions — the more you answer, the richer the movie — then hit Done and it collapses. One open at a time.</p>
 
-        {/* coverage / multi-select filter */}
-        <div className="mt-7">
-          <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3 flex items-center gap-2 flex-wrap">
-            {showAll ? (
-              <span>Click any frameworks to focus — pick one, two, three, or all</span>
-            ) : (
-              <span className="flex items-center gap-2 flex-wrap">
-                <span className="normal-case tracking-normal">Building in&nbsp;
-                  {sel.map((k, i) => (<span key={k}><span style={{ color: COLOR[k] }} className="font-bold">{FNAME[k]}</span>{i < sel.length - 1 ? " + " : ""}</span>))}
-                </span>
-                <button onClick={() => setSel([])} className="normal-case tracking-normal font-semibold text-foreground/50 hover:text-foreground underline">show all four</button>
-              </span>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-            {FW.map((f) => <Badge key={f.key} k={f.key} />)}
-          </div>
-
-          <div className="mt-4 flex items-center justify-end flex-wrap gap-3">
-            <button onClick={() => setGenMsg(true)} className="text-[13px] font-extrabold rounded-lg px-5 py-2.5" style={one ? { backgroundColor: one, color: "#0c0e13" } : { backgroundImage: GRAD, color: "#0c0e13" }}>
-              ✨ Generate my {count} outline{count > 1 ? "s" : ""}
-            </button>
-          </div>
-          {genMsg && <div className="mt-2 text-right text-[12px] text-foreground/55">Outline generation is coming next — your answers are saved.</div>}
-        </div>
-
-        {/* beats */}
-        <div className="mt-6">
-          {visible.map(({ b, i }, idx) => {
-            const keys = showAll ? (Object.keys(b.fw) as FwKey[]) : sel.filter((k) => !!b.fw[k]);
-            const filled = (answers[i] || "").trim().length > 0;
+        <div className="mt-6 flex flex-col gap-2.5">
+          {visible.map((b, i) => {
+            const isOpen = open === i;
+            const chips = fws.filter((k) => b.fw[k]);
+            const isOW = b.slug === "the-ordinary-world";
             return (
-              <div key={i} className="mb-3 rounded-xl border bg-white/[0.03] px-[17px] py-4" style={{ borderColor: filled ? "rgba(55,184,124,0.4)" : "rgba(255,255,255,0.10)" }}>
-                <div className="flex items-baseline gap-2.5 flex-wrap">
-                  <span className="font-serif font-bold text-[13px] text-foreground/30">{idx + 1}</span>
-                  <span className="font-serif font-bold text-[18px] text-foreground">{b.t}</span>
-                  {filled && <span className="ml-auto text-[11px] font-bold" style={{ color: "#37b87c" }}>✓ written</span>}
-                </div>
-                <div className="flex flex-wrap gap-1.5 my-2.5">
-                  {keys.map((k) => (
-                    <span key={k} className="text-[10px] font-bold rounded-full px-2.5 py-[3px] whitespace-nowrap" style={{ color: COLOR[k], backgroundColor: `${COLOR[k]}22`, border: `1px solid ${COLOR[k]}66` }}>
-                      {b.fw[k]}
-                    </span>
-                  ))}
-                </div>
-                <div className="text-[14px] text-foreground/90 font-medium mb-1">{b.q}</div>
-                <div className="text-[12px] text-foreground/55 italic mb-2.5"><span className="not-italic font-bold text-foreground/55">e.g. Star Wars:</span> {b.ex}</div>
-                <textarea
-                  value={answers[i] || ""}
-                  onChange={(e) => set(i, e.target.value)}
-                  placeholder="Write this beat for YOUR movie…"
-                  className="w-full min-h-[54px] resize-y rounded-lg border border-white/10 bg-black/25 text-foreground text-[13.5px] px-3 py-2.5 leading-relaxed focus:outline-none focus:border-white/25"
-                />
-                {showAll && (Object.keys(b.fw) as FwKey[]).length === 1 && (
-                  <div className="text-[10px] text-foreground/30 mt-2">
-                    Only <span className="font-bold" style={{ color: COLOR[(Object.keys(b.fw) as FwKey[])[0]] }}>{FNAME[(Object.keys(b.fw) as FwKey[])[0]]}</span> asks for this beat — a moment the others let you skip.
-                  </div>
+              <div key={b.slug} className="rounded-xl border bg-white/[0.02] overflow-hidden" style={{ borderColor: isOpen ? GOLD : "#2c323b" }}>
+                <button onClick={() => { setOpen(isOpen ? -1 : i); setHint(""); }} className="w-full flex items-center gap-3 px-4 py-3.5 text-left">
+                  <span className="w-6 h-6 rounded-md bg-[#0c0e13] border border-white/10 flex items-center justify-center text-[11px] font-extrabold text-foreground/55 flex-shrink-0">{i + 1}</span>
+                  <span className="text-[15px] font-extrabold text-foreground">{b.t}</span>
+                  <span className="flex gap-1.5 flex-wrap">
+                    {chips.map((k) => <span key={k} className="text-[9px] font-bold rounded-full px-2 py-[2px]" style={{ color: FWC[k], background: `${FWC[k]}1f`, border: `1px solid ${FWC[k]}55` }}>{b.fw[k]}</span>)}
+                  </span>
+                  <span className="ml-auto flex items-center gap-3 flex-shrink-0">
+                    {isOW && <span className="text-[11px] text-foreground/40">{owFilled}/{OW_TOTAL}</span>}
+                    <span className="text-[12px] text-foreground/50 inline-block" style={{ transform: isOpen ? "rotate(90deg)" : "none" }}>▸</span>
+                  </span>
+                </button>
+                {isOpen && (isOW
+                  ? <OWForm ans={owAns} setAns={(qi, v) => setAns(b.slug, qi, v)} filled={owFilled} onClose={() => setOpen(-1)} hint={hint} setHint={setHint} />
+                  : <div className="px-4 py-6 text-[12.5px] text-foreground/40 italic border-t border-white/10">This beat opens into the same kind of question template as The Ordinary World — tailored to “{b.t}.” We'll build it next.</div>
                 )}
               </div>
             );
           })}
-        </div>
-
-        <div className="mt-4 flex items-center justify-between flex-wrap gap-3 pb-4">
-          <span className="text-[12.5px] text-foreground/50">✓ Saved automatically</span>
-          <Link to={`/movie-in-a-box/${structureKey}/scene`} className="rounded-lg px-6 py-3 text-sm font-bold text-[#0c0e13]" style={one ? { backgroundColor: one } : { backgroundImage: GRAD }}>
-            Continue to Scene →
-          </Link>
         </div>
       </div>
     </section>
