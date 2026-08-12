@@ -334,7 +334,19 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                   </li>
                 ))}
               </ul>
-            ) : (
+            ) : activeStop === "scene" ? (
+              <ul className="flex flex-wrap items-center gap-y-1 pb-3 pt-1.5 text-sm border-t border-white/5">
+                <li>
+                  <span className="inline-flex items-center rounded-md px-3 py-1.5 font-semibold" style={{ color: accent }}>Scene Flow</span>
+                </li>
+                {shotFlowBeats.map((b) => (
+                  <li key={b.t} className="flex items-center">
+                    <span className="text-foreground/25 px-0.5" aria-hidden="true">·</span>
+                    <Link to={`/movie-in-a-box/${structureKey}/scene/${slugify(b.t)}`} className="inline-block rounded-md px-2 py-1.5 text-foreground/60 hover:text-foreground hover:bg-white/5 transition-colors">{b.t}</Link>
+                  </li>
+                ))}
+              </ul>
+            ) : (activeStop === "structure" || activeStop === "cast" || activeStop === "beats") ? (
               <ul className="flex items-center overflow-x-auto mib-noscroll pb-3 pr-6 text-sm whitespace-nowrap border-t border-white/5 pt-1.5" style={{ marginRight: "calc(50% - 50vw)" }}>
                 <li>
                   <Link
@@ -360,7 +372,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                   );
                 })}
               </ul>
-            )}
+            ) : null}
         </div>
       </nav>
 
@@ -408,7 +420,7 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
       ) : activeStop === "beats" ? (
         <BeatsBuilder structureKey={structureKey} />
       ) : activeStop === "scene" ? (
-        <SceneBuilder structureKey={structureKey} />
+        <SceneBuilder structureKey={structureKey} sel={fwSel} onToggle={toggleFw} />
       ) : activeStop === "cast" ? (
         <CastBuilder structureKey={structureKey} />
       ) : activeStop === "shots" ? (
