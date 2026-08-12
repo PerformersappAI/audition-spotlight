@@ -70,10 +70,24 @@ const NEED_GROUPS: Group[] = [
   { L: "J", name: "Craft & seeds", qs: ["What image could symbolize the empty place inside them?", "What line of dialogue could hint at the need without naming it?", "How will the audience feel the need before they understand it?", "What “before/after” contrast will show the need resolved?", "How does meeting the need connect to the film's theme?"] },
 ];
 
+const CALL_GROUPS: Group[] = [
+  { L: "A", name: "The event itself", qs: ["What single event breaks your hero's normal world?", "Is it a chance, a message, a death, an offer, a threat, a discovery?", "Does it come from outside (fate) or from the hero's own choice?", "What exactly happens in that moment, beat by beat?", "Is it a sudden shock or a slow-dawning realization?", "Could the story exist without this event? (If yes, it's not the real call.)", "Why does this event, specifically, force a response?"] },
+  { L: "B", name: "Who or what delivers it", qs: ["Who is the messenger or catalyst — a herald, a villain, an accident?", "Do they mean to change the hero's life, or is it a side effect?", "What do they want from the hero?", "Does the hero trust the source of the call?", "Is the caller an ally, an enemy, or something ambiguous?"] },
+  { L: "C", name: "Timing & placement", qs: ["How far into the movie does the call land (roughly)?", "What's the last “normal” beat right before it?", "Does a smaller inciting ripple precede the big one?", "Is the audience ahead of the hero, or do they learn it together?", "How much ordinary world do we need before the call earns its impact?"] },
+  { L: "D", name: "The hero's first reaction", qs: ["What's their immediate gut response — fear, excitement, denial, anger?", "Do they grasp its importance right away, or dismiss it?", "What does the reaction reveal about their flaw?", "Whom do they turn to first?", "What do they try to do to make it go away?", "How does it collide with the life they've built?"] },
+  { L: "E", name: "The disruption", qs: ["What exactly is knocked out of balance?", "What can the hero no longer pretend or ignore?", "What door does it open — and what door does it close?", "What's taken from them, or dangled in front of them?", "Why can't they simply return to how things were?"] },
+  { L: "F", name: "Stakes introduced", qs: ["What does the hero stand to gain if they respond?", "What do they stand to lose if they don't?", "Who else is affected by this event?", "Is the threat personal, communal, or existential?", "What's the ticking clock, if any?", "How do the stakes escalate from here?"] },
+  { L: "G", name: "The dramatic question", qs: ["What central question does the call plant (“Will they…?”)?", "What's the hero's new goal, even if unstated?", "What obstacle immediately stands in the way?", "What's the “adventure” being offered, in plain terms?", "What makes this a story worth two hours?"] },
+  { L: "H", name: "Emotion & tone", qs: ["What do you want the audience to feel at this moment?", "Is the call thrilling, terrifying, tragic, or tempting?", "How does the tone here signal the genre?", "What's the emotional whiplash between before and after?", "Where's the spark of hope inside the disruption?"] },
+  { L: "I", name: "Craft & dramatization", qs: ["What's the visual image of the call?", "Is it delivered through action, dialogue, or event?", "What line could a character say to mark the turn?", "How do you make it inevitable yet surprising?", "What sensory detail makes it land (a sound, an object, a face)?", "How do you avoid it feeling contrived or convenient?"] },
+  { L: "J", name: "Seeds & connection", qs: ["How does the call target the hero's specific flaw or need?", "What earlier detail pays off in this moment?", "How does the call carry the theme?", "What does it foreshadow about the ending?", "How does it set up the refusal that follows?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
   "the-need": NEED_GROUPS,
+  "the-call": CALL_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
