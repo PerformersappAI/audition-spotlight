@@ -226,6 +226,19 @@ const FINALTEST_GROUPS: Group[] = [
   { L: "J", name: "Toward resolution", qs: ["How does the climax release the built-up tension?", "What changes in the world the instant the hero wins?", "What question does the final test finally answer?", "How does the hero emerge different from this fight?", "What does the victory make possible?", "How does this beat hand off to the ending?"] },
 ];
 
+const ELIXIR_GROUPS: Group[] = [
+  { L: "A", name: "The reward", qs: ["What does your hero gain from the journey?", "What is the elixir — the prize, wisdom, or change they bring back?", "How does the victory translate into something lasting?", "What does the hero now possess that they didn't at the start?", "How does the reward serve others, not just the hero?", "What was it all for?"] },
+  { L: "B", name: "The transformation complete", qs: ["How has the hero fundamentally changed?", "What is the hero now capable of?", "How does the hero's new self show in their actions?", "What flaw has the hero finally overcome?", "How does the hero embody the theme fully now?", "Who has the hero become?"] },
+  { L: "C", name: "The wound healed", qs: ["How is the hero's original wound resolved?", "What old pain is finally released?", "How does the hero make peace with the past?", "What does the hero forgive at last?", "How is the hero made whole?"] },
+  { L: "D", name: "Return with the gift", qs: ["How does the hero return to the world they left?", "What does the hero bring back to their community?", "How is the ordinary world changed by the hero's gift?", "Who benefits from what the hero learned?", "How does the hero share the elixir?"] },
+  { L: "E", name: "Relationships restored", qs: ["How are the hero's key relationships resolved?", "What bond is repaired or deepened?", "How does the hero reconnect with those they love?", "What reconciliation happens here?", "Who stands beside the hero now?"] },
+  { L: "F", name: "Proof of change", qs: ["What moment proves the hero has truly transformed?", "How does the hero handle a callback to an earlier situation differently?", "What does the hero do now that echoes — and reverses — the opening?", "How does the hero demonstrate mastery of the lesson?", "What test does the hero pass without effort now?"] },
+  { L: "G", name: "The cost remembered", qs: ["What did the journey cost, and how is that honored?", "Who or what is remembered here?", "How does the hero carry their losses forward?", "What scar remains, and what does it mean?", "How is the victory tempered by what was lost?"] },
+  { L: "H", name: "The theme resolved", qs: ["How does the story's theme land its final statement?", "What truth has the whole journey proven?", "What does the ending say about the central question?", "How does the elixir answer the theme?", "What wisdom does the audience take away?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel as the story resolves?", "What image captures the hero's new world?", "What final line or moment do you want to leave them with?", "How do you make the ending feel satisfying, not tidy?", "How do you honor the emotional journey here?", "What note — hopeful, bittersweet, open — does the ending strike?"] },
+  { L: "J", name: "The lasting impression", qs: ["What do you want people to remember most?", "How does the ending recontextualize the beginning?", "What lingers after the credits?", "How does the hero's story ripple outward?", "What does the elixir promise for the future?", "How does this beat complete the emotional arc?", "What makes the ending unforgettable?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -242,6 +255,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-dark-night": DARKNIGHT_GROUPS,
   "the-turn-to-the-end": TURNEND_GROUPS,
   "the-final-test": FINALTEST_GROUPS,
+  "the-elixir": ELIXIR_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
