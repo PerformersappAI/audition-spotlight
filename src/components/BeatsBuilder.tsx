@@ -174,6 +174,19 @@ const WALLS_GROUPS: Group[] = [
   { L: "J", name: "Toward the abyss", qs: ["How does this beat deliver the hero to the lowest point?", "What final thread of hope is about to snap?", "What does the hero walk into, unaware?", "How does the thematic argument look like it's losing?", "What sets up the “all is lost” moment?"] },
 ];
 
+const LOWEST_GROUPS: Group[] = [
+  { L: "A", name: "The all-is-lost moment", qs: ["What is the lowest point your hero reaches?", "What does the hero lose completely here?", "What makes this the darkest moment of the story?", "How does everything the hero built collapse?", "Why does it feel like the end?", "What's the emotional bottom your hero hits?"] },
+  { L: "B", name: "Death & its echo", qs: ["What dies here — literally, or a dream, relationship, or version of the self?", "How does a whiff of death hang over this moment?", "Who or what does the hero mourn?", "How does the loss connect to the story's theme?", "What does the hero fear is gone forever?"] },
+  { L: "C", name: "Defeat by the antagonist", qs: ["How does the antagonist win this round decisively?", "What does the enemy take or destroy?", "How does the villain's plan seem unstoppable now?", "What does the hero's defeat cost the wider world?", "Why does the hero seem powerless to respond?"] },
+  { L: "D", name: "Isolation & abandonment", qs: ["How is the hero alone at the lowest point?", "Who has left, betrayed, or died?", "What support system is gone?", "How does the hero push away the people who remain?", "What makes the loneliness total?"] },
+  { L: "E", name: "The wound reopened", qs: ["How does the hero's original wound resurface here?", "What old pain does this moment echo?", "How does the hero's flaw finally catch up with them?", "What lie about themselves does the hero fully believe now?", "How does the past come back to haunt them?", "What shame does the hero confront?"] },
+  { L: "F", name: "Rock-bottom behavior", qs: ["How does the hero behave at their worst?", "What destructive choice does despair drive?", "What does the hero do that they'll regret?", "How does the hero give up?", "What line does the hero cross, or nearly cross?"] },
+  { L: "G", name: "The spark in the dark", qs: ["What tiny ember of hope survives?", "What does the hero still have, even now?", "Who or what refuses to let the hero quit?", "What memory, object, or word keeps a flicker alive?", "How does the theme whisper back here?", "What plants the seed of the comeback?"] },
+  { L: "H", name: "Reckoning with the need", qs: ["How does the hero finally see their true need?", "What truth can no longer be avoided?", "What must the hero accept to move forward?", "How does the want die so the need can live?", "What realization begins to form in the ashes?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel at rock bottom?", "What image captures the lowest point?", "What line lands hardest here?", "How long do you let the audience sit in the dark?", "How do you avoid melodrama while going deep?", "What silence or stillness carries the weight?"] },
+  { L: "J", name: "Toward the turn", qs: ["How does this moment set up the hero's rise?", "What has to break before the hero can change?", "What question does the lowest point leave hanging?", "How does hitting bottom become the pivot?", "What does the hero need to do next to climb out?", "How does the darkness make the coming light matter?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -186,6 +199,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-trials": TRIALS_GROUPS,
   "the-midpoint-turn": MIDPOINT_GROUPS,
   "the-walls-close-in": WALLS_GROUPS,
+  "the-lowest-point": LOWEST_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
