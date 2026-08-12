@@ -358,6 +358,15 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
   const visible = M.filter((b) => fws.some((k) => b.fw[k]));
 
   const setMain = (slug: string, qi: number, val: string) => setAnswers((a) => ({ ...a, [slug]: { ...(a[slug] || {}), [qi]: val } }));
+  const toggleFw = (k: FwKey) => {
+    const on = fws.includes(k);
+    let next: FwKey[];
+    if (on) { if (fws.length === 1) return; next = fws.filter((x) => x !== k); }
+    else { next = [...fws, k]; }
+    setSel(next);
+    try { localStorage.setItem("mib-frameworks", JSON.stringify(next)); } catch { /* ignore */ }
+    setOpenIdx(-1);
+  };
   const setCoachAns = (slug: string, qi: number, ci: number, val: string) => setCoach((c) => ({ ...c, [slug]: { ...(c[slug] || {}), [qi]: { ...((c[slug] || {})[qi] || {}), [ci]: val } } }));
 
   const openCoach = (slug: string, qi: number) => {
@@ -393,6 +402,17 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
         <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-foreground/45">Your movie · beats</div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">The Beats</h1>
         <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[640px]">Open a beat and answer its questions. Stuck on one? Hit ✨ and the AI Coach on the right walks you through it — your coaching answers weave back into your main answer.</p>
+
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wide text-foreground/40 mr-1">Frameworks</span>
+          {(([['p', 'Three-Act'], ['g', 'Save the Cat'], ['r', "Hero's Journey"], ['t', 'Story Circle']]) as [FwKey, string][]).map(([k, label]) => {
+            const on = fws.includes(k);
+            return (
+              <button key={k} onClick={() => toggleFw(k)} className="text-[12px] font-bold rounded-full px-3.5 py-1.5" style={on ? { color: FWC[k], background: `${FWC[k]}26`, border: `1px solid ${FWC[k]}` } : { color: "rgba(255,255,255,0.42)", background: "transparent", border: "1px solid #2c323b" }}>{label}</button>
+            );
+          })}
+        </div>
+        <p className="text-[11.5px] text-foreground/40 mt-2">Pick which frameworks to work in. Your choice carries across Beats, Scene, and Shots — and your answers are kept even if you switch.</p>
 
         <div className="mt-6 lg:flex lg:gap-6 lg:items-start">
           <div className="lg:flex-1 min-w-0 flex flex-col gap-2.5">
