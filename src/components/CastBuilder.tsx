@@ -71,7 +71,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         if (payload?.error) throw new Error(payload.error);
         const vs = payload?.voices;
         if (Array.isArray(vs)) setVoices(vs);
-        else throw new Error("No voices returned");
+        else throw new Error("No voices. Raw: " + JSON.stringify(payload).slice(0, 300));
       } catch (e) {
         setVoicesErr(e instanceof Error ? e.message : "Could not load voices");
       } finally {
