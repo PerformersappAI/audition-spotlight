@@ -29,7 +29,9 @@ const RAW: { t: string; fw: Partial<Record<FwKey, string>> }[] = [
 ];
 const M: Beat[] = RAW.map((b) => ({ ...b, slug: slugify(b.t) }));
 
-const OW_GROUPS: { L: string; name: string; qs: string[] }[] = [
+type Group = { L: string; name: string; qs: string[] };
+
+const OW_GROUPS: Group[] = [
   { L: "A", name: "The Hero — basics", qs: ["Who is your main character (name, age, gender)?", "What's their job or role in life right now?", "How would a stranger describe them in one sentence?", "How do they see themselves in one sentence?", "What are they exceptionally good at — their signature skill?", "What small habit or quirk makes them feel like a real person?"] },
   { L: "B", name: "Their inner world — flaw, wound, want vs. need", qs: ["What is their core flaw — the thing holding them back?", "What past wound created that flaw (their “ghost”)?", "What do they consciously WANT at the start?", "What do they actually NEED (the lesson they don't yet know)?", "What lie do they believe about themselves or the world?", "What are they most afraid of?", "What do they secretly long for but won't admit?", "What's the “hole” in their life the story will eventually fill?"] },
   { L: "C", name: "Their daily life — the routine", qs: ["Walk me through an ordinary day for them, start to finish.", "What does their home look and feel like?", "How do they spend their time / make their living?", "Their relationship to that work — love it, trapped by it, indifferent?", "What rituals or routines define their “normal”?", "What everyday problem do they deal with (before the big one hits)?"] },
@@ -41,14 +43,35 @@ const OW_GROUPS: { L: string; name: string; qs: string[] }[] = [
   { L: "I", name: "Opening image — visual & sensory", qs: ["If the first shot introduced your hero, what would we see?", "What single image captures their “before” state?", "What sounds, colors, and textures define this world?", "What is your hero physically doing in that first scene?", "What contrast do you want between this opening and the film's ending?"] },
   { L: "J", name: "Seeds of what's coming", qs: ["What tiny hint of the coming adventure can we plant here?", "What's at stake if their world gets disrupted?", "What does your hero not yet know is about to happen?"] },
 ];
-const OW_ITEMS: ({ kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number })[] = (() => {
-  const out: ({ kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number })[] = [];
-  let qi = 0;
-  for (const g of OW_GROUPS) { out.push({ kind: "group", L: g.L, name: g.name }); for (const q of g.qs) { out.push({ kind: "q", text: q, qi }); qi++; } }
+
+const THEME_GROUPS: Group[] = [
+  { L: "A", name: "The central truth", qs: ["In one sentence, what is the single truth your movie argues?", "What life lesson does your hero need to learn by the end?", "If your movie were a bumper sticker, what would it say?", "What question is your story asking (e.g., “Can a person change?”)?", "What is your honest answer to that question by the final frame?", "Why does this truth matter to you personally as the storyteller?"] },
+  { L: "B", name: "The moral argument", qs: ["What does your story say is the “right” way to live?", "What does it say is the “wrong” way — and who embodies it?", "What price does a character pay for ignoring the theme?", "What reward does a character earn for living it?", "Is the theme a warning, a hope, a comfort, or a provocation?", "What belief does your audience hold that you want to challenge?"] },
+  { L: "C", name: "How it's stated", qs: ["Which character says the theme out loud, early on?", "What exact line of dialogue could state it (a draft)?", "Does the hero dismiss or misunderstand it when they first hear it?", "Is it stated directly, ironically, or as a throwaway they'll only get later?", "What everyday moment could carry the theme without announcing it?"] },
+  { L: "D", name: "The opposing view (antithesis)", qs: ["What's the counter-argument your antagonist truly believes?", "Why is that counter-argument seductive or reasonable?", "Where does the counter-argument look like it's winning?", "Who is the living proof of the wrong path?", "How do you keep the theme from feeling preachy?"] },
+  { L: "E", name: "The hero's relationship to the theme", qs: ["How does the hero embody the OPPOSITE of the theme at the start?", "What false belief must they shed to learn it?", "What moment forces them to confront the theme head-on?", "Do they learn it fully, partially, or too late?", "How does living the theme change what they want?", "Is the theme learned through victory or through loss?"] },
+  { L: "F", name: "Theme through characters", qs: ["Which supporting character reflects the theme achieved?", "Which reflects the theme rejected or failed?", "How does the love interest or ally push the hero toward the truth?", "Does any character argue the theme aloud on the hero's behalf?", "What does the villain reveal about the theme by opposing it?"] },
+  { L: "G", name: "Theme through world, image & motif", qs: ["What recurring image or object could symbolize the theme?", "What visual motif appears at start, middle, and end to track it?", "How can the setting itself embody the argument?", "What color, sound, or piece of music carries the theme?", "What “before” image will you contrast with an “after” image to prove change?", "Is there a metaphor at the heart of the story (a cage, a door, a river)?"] },
+  { L: "H", name: "The cost & the payoff", qs: ["What must the hero sacrifice to embody the theme?", "What does the world gain if the hero lives it?", "What emotional payoff do you want the audience to feel?", "What would make the theme land as earned rather than stated?", "If you removed the theme, would the plot still matter — why or why not?"] },
+  { L: "I", name: "Tone & universality", qs: ["Is your theme universal enough for a stranger to feel it?", "How does the genre shape the way the theme is delivered?", "Could the theme be misread — and are you okay with that ambiguity?", "What's a movie whose theme landed on you — and how did it do it?", "In your genre, is the theme usually spoken or shown? Which will you do?"] },
+  { L: "J", name: "Testing & seeds", qs: ["Where is the theme first planted so it pays off later?", "What scene most clearly tests the theme under pressure?", "What's the final image that proves the theme true?", "If a viewer described your movie's message, what would you want them to say?", "What line will the audience remember and repeat?", "Does every subplot echo or complicate the theme?"] },
+];
+
+const BEAT_FORMS: Record<string, Group[]> = {
+  "the-ordinary-world": OW_GROUPS,
+  "the-theme": THEME_GROUPS,
+};
+
+type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
+function flattenItems(groups: Group[]): Item[] {
+  const out: Item[] = []; let qi = 0;
+  for (const g of groups) { out.push({ kind: "group", L: g.L, name: g.name }); for (const q of g.qs) { out.push({ kind: "q", text: q, qi }); qi++; } }
   return out;
-})();
-const OW_FLAT: string[] = OW_GROUPS.flatMap((g) => g.qs);
-const OW_TOTAL = OW_FLAT.length;
+}
+const BEAT_ITEMS: Record<string, Item[]> = {};
+const BEAT_FLAT: Record<string, string[]> = {};
+const BEAT_TOTAL: Record<string, number> = {};
+for (const [s, g] of Object.entries(BEAT_FORMS)) { BEAT_ITEMS[s] = flattenItems(g); BEAT_FLAT[s] = g.flatMap((x) => x.qs); BEAT_TOTAL[s] = BEAT_FLAT[s].length; }
 
 const CHAR_COACH: string[] = [
   "What's their full name — and do they go by anything else (nickname, alias, title)?",
@@ -102,7 +125,7 @@ const CHAR_COACH: string[] = [
   "If they got everything they wanted, would they actually be happy — why or why not?",
   "In one line: what makes them worth following for two hours — why them?",
 ];
-const COACH_SETS: Record<number, string[]> = { 0: CHAR_COACH };
+const COACH_SETS: Record<string, string[]> = { "the-ordinary-world:0": CHAR_COACH };
 
 export default function BeatsBuilder(_props: { structureKey: string }) {
   const [sel, setSel] = useState<FwKey[]>([]);
@@ -134,13 +157,13 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
 
   const weave = async () => {
     if (!active || weaving) return;
-    const set = COACH_SETS[active.qi];
+    const set = COACH_SETS[`${active.slug}:${active.qi}`];
     if (!set) return;
     setCoachErr(""); setWeaving(true);
     try {
       const cAns = (coach[active.slug] || {})[active.qi] || {};
       const items = set.map((q, ci) => ({ q, a: cAns[ci] || "" }));
-      const { data, error } = await supabase.functions.invoke("movie-brain", { body: { mainQuestion: OW_FLAT[active.qi] || "", items } });
+      const { data, error } = await supabase.functions.invoke("movie-brain", { body: { mainQuestion: (BEAT_FLAT[active.slug] || [])[active.qi] || "", items } });
       if (error) throw error;
       const p = data as { text?: string; error?: string } | null;
       if (p?.error) throw new Error(p.error);
@@ -151,7 +174,7 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
     } finally { setWeaving(false); }
   };
 
-  const activeSet = active ? COACH_SETS[active.qi] : undefined;
+  const activeSet = active ? COACH_SETS[`${active.slug}:${active.qi}`] : undefined;
   const activeCoachAns = active ? ((coach[active.slug] || {})[active.qi] || {}) : {};
 
   return (
@@ -162,12 +185,13 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
         <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[640px]">Open a beat and answer its questions. Stuck on one? Hit ✨ and the AI Coach on the right walks you through it — your coaching answers weave back into your main answer.</p>
 
         <div className="mt-6 lg:flex lg:gap-6 lg:items-start">
-          {/* LEFT — the beats */}
           <div className="lg:flex-1 min-w-0 flex flex-col gap-2.5">
             {visible.map((b, i) => {
               const isOpen = openIdx === i;
               const chips = fws.filter((k) => b.fw[k]);
-              const isOW = b.slug === "the-ordinary-world";
+              const built = !!BEAT_FORMS[b.slug];
+              const items = BEAT_ITEMS[b.slug] || [];
+              const total = BEAT_TOTAL[b.slug] || 0;
               const mainAns = answers[b.slug] || {};
               const filled = Object.values(mainAns).filter((v) => v && v.trim()).length;
               return (
@@ -179,13 +203,13 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
                       {chips.map((k) => <span key={k} className="text-[9px] font-bold rounded-full px-2 py-[2px]" style={{ color: FWC[k], background: `${FWC[k]}1f`, border: `1px solid ${FWC[k]}55` }}>{b.fw[k]}</span>)}
                     </span>
                     <span className="ml-auto flex items-center gap-3 flex-shrink-0">
-                      {isOW && <span className="text-[11px] text-foreground/40">{filled}/{OW_TOTAL}</span>}
+                      {built && <span className="text-[11px] text-foreground/40">{filled}/{total}</span>}
                       <span className="text-[12px] text-foreground/50 inline-block" style={{ transform: isOpen ? "rotate(90deg)" : "none" }}>▸</span>
                     </span>
                   </button>
-                  {isOpen && (isOW ? (
+                  {isOpen && (built ? (
                     <div className="border-t border-white/10 px-4 pb-4">
-                      {OW_ITEMS.map((it) => it.kind === "group" ? (
+                      {items.map((it) => it.kind === "group" ? (
                         <div key={"g" + it.L} className="mt-5 mb-1 flex items-center gap-2.5">
                           <span className="w-[22px] h-[22px] rounded-md flex items-center justify-center text-[12px] font-extrabold" style={{ background: "#f0d089", color: "#1a1300" }}>{it.L}</span>
                           <span className="text-[13px] font-extrabold" style={{ color: "#f0d089" }}>{it.name}</span>
@@ -197,7 +221,7 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
                           <div className="flex-1">
                             <label className="block text-[13px] font-semibold text-foreground mb-1.5">{it.text}</label>
                             <textarea value={mainAns[it.qi] || ""} onChange={(e) => setMain(b.slug, it.qi, e.target.value)} placeholder="Type your answer…" className="w-full bg-[#0f1116] text-foreground border border-white/10 rounded-lg px-2.5 py-2 text-[12.5px] resize-y" style={{ minHeight: 36, fontFamily: "inherit" }} />
-                            <button onClick={() => openCoach(b.slug, it.qi)} className="mt-1.5 text-[10.5px] font-bold rounded-md px-2.5 py-1" style={{ color: "#f0d089", background: "#1a1710", border: `1px solid ${GOLD}66` }}>✨ Coach me on this →</button>
+                            {COACH_SETS[`${b.slug}:${it.qi}`] && <button onClick={() => openCoach(b.slug, it.qi)} className="mt-1.5 text-[10.5px] font-bold rounded-md px-2.5 py-1" style={{ color: "#f0d089", background: "#1a1710", border: `1px solid ${GOLD}66` }}>✨ Coach me on this →</button>}
                           </div>
                         </div>
                       ))}
@@ -210,7 +234,6 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
             })}
           </div>
 
-          {/* RIGHT — the AI coach */}
           <aside id="mib-coach" className="mt-5 lg:mt-0 lg:w-[380px] lg:flex-shrink-0">
             <div className="lg:sticky lg:top-[92px] rounded-xl border border-white/12 bg-[#12141a] overflow-hidden flex flex-col" style={{ maxHeight: "calc(100vh - 110px)" }}>
               <div className="px-4 py-3 border-b border-white/10 flex items-center gap-2" style={{ background: "linear-gradient(180deg,#1a1710,#12141a)" }}>
@@ -223,7 +246,7 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
                 <div className="flex flex-col min-h-0">
                   <div className="px-4 pt-3 pb-2 border-b border-white/8">
                     <div className="text-[10px] uppercase tracking-wide text-foreground/40 font-bold">Coaching</div>
-                    <div className="text-[13px] font-bold text-foreground mt-0.5">{OW_FLAT[active.qi]}</div>
+                    <div className="text-[13px] font-bold text-foreground mt-0.5">{(BEAT_FLAT[active.slug] || [])[active.qi]}</div>
                   </div>
                   {activeSet ? (
                     <>
