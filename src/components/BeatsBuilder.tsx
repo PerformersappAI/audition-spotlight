@@ -109,6 +109,19 @@ const MENTOR_GROUPS: Group[] = [
   { L: "J", name: "Craft & seeds", qs: ["What's the image of the mentor we'll remember?", "What line of theirs will echo later?", "How do you keep the mentor from feeling like a cliché?", "What flaw or humor makes them human?", "How does meeting the mentor push the hero toward the threshold?", "What does the mentor foreshadow about the final test?"] },
 ];
 
+const PONR_GROUPS: Group[] = [
+  { L: "A", name: "The commitment", qs: ["What action commits your hero to the journey, with no way back?", "Is it a choice they make, or a bridge that burns behind them?", "What's the exact moment “before” becomes impossible?", "Why is this decision irreversible?", "Does the hero commit willingly, or are they pushed past the point?", "What do they finally decide to pursue?", "How does this choice differ from who they were in the ordinary world?"] },
+  { L: "B", name: "Crossing the threshold", qs: ["What literal or symbolic threshold do they cross (a door, a border, a plane)?", "What marks the boundary between the old world and the new?", "Who or what guards that threshold?", "What test must they pass to cross?", "What's the first thing they see on the other side?", "How does the world visibly change once they cross?"] },
+  { L: "C", name: "What's left behind", qs: ["What or whom does the hero leave behind?", "What comfort or safety is now gone?", "What identity do they shed at the threshold?", "What do they sacrifice to cross?", "What will they miss?"] },
+  { L: "D", name: "The new world", qs: ["What are the rules of the new world?", "How is it different from the ordinary world?", "What's exciting or wondrous about it?", "What's dangerous or disorienting about it?", "Who runs this world?", "Where does the hero fit (or not) in it?"] },
+  { L: "E", name: "The choice", qs: ["What alternative could the hero have taken instead?", "What tips them toward going rather than staying?", "Is it courage, love, desperation, or duty?", "Do they fully understand what they're committing to?", "What lie or hope do they carry across with them?"] },
+  { L: "F", name: "The cost", qs: ["What price do they pay to cross?", "Who pays a price alongside them?", "What's the immediate consequence of committing?", "What can never be undone now?", "What does the commitment reveal about their want vs. need?"] },
+  { L: "G", name: "Stakes locked in", qs: ["What's now on the line that wasn't before?", "What's the new, sharper goal?", "What's the deadline or pressure driving them?", "How have the stakes escalated from the call?", "What makes retreat impossible?"] },
+  { L: "H", name: "The guardian / first obstacle", qs: ["What first challenge tests them in the new world?", "Who opposes their entry?", "What early failure or fumble humbles them?", "What do they learn immediately about the road ahead?", "Who do they meet first on the other side?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel as they cross?", "What image captures the point of no return?", "What line marks the commitment?", "How do you make the leap feel both scary and thrilling?", "What physical action embodies “no going back”?", "How does pacing shift as we enter Act Two?"] },
+  { L: "J", name: "Momentum forward", qs: ["How does crossing propel the story into the trials?", "What promise (of fun, danger, discovery) does this open?", "How does the new world reflect the hero's inner state?", "What thematic meaning does the crossing carry?", "What does it foreshadow about how they'll return, changed?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -116,6 +129,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-call": CALL_GROUPS,
   "the-refusal": REFUSAL_GROUPS,
   "the-mentor": MENTOR_GROUPS,
+  "the-point-of-no-return": PONR_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
