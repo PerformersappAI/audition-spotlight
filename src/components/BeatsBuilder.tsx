@@ -239,6 +239,19 @@ const ELIXIR_GROUPS: Group[] = [
   { L: "J", name: "The lasting impression", qs: ["What do you want people to remember most?", "How does the ending recontextualize the beginning?", "What lingers after the credits?", "How does the hero's story ripple outward?", "What does the elixir promise for the future?", "How does this beat complete the emotional arc?", "What makes the ending unforgettable?"] },
 ];
 
+const NEWWORLD_GROUPS: Group[] = [
+  { L: "A", name: "The changed world", qs: ["What does your hero's world look like now?", "How is the new normal different from the ordinary world of beat one?", "What has changed for the better?", "What new equilibrium has the story settled into?", "How does the world reflect the hero's transformation?", "What is life like now that the journey is over?"] },
+  { L: "B", name: "The hero at home", qs: ["How does the hero inhabit their new life?", "What role does the hero now play in their world?", "How do others see the hero differently?", "What place has the hero earned?", "How does the hero belong now in a way they didn't before?"] },
+  { L: "C", name: "The mirror of the opening", qs: ["How does this beat echo and invert the ordinary world?", "What image from the beginning returns, transformed?", "What routine or ritual now means something different?", "How does a callback show how far the hero has come?", "What did the hero fear at the start that they now embrace?", "How does the ending rhyme with the beginning?"] },
+  { L: "D", name: "New relationships", qs: ["What do the hero's relationships look like now?", "Who is beside the hero in the new world?", "What new connection has formed?", "How has the hero's role in their family or community shifted?", "What bond defines this new chapter?"] },
+  { L: "E", name: "The seed of the future", qs: ["What new possibility opens for the hero?", "What does the hero want next?", "What door does the ending leave ajar?", "What hint of a future story lingers?", "How does the new world set up what comes after?"] },
+  { L: "F", name: "The legacy", qs: ["What has the hero built or left behind?", "How will the hero's actions outlast them?", "Who will carry on what the hero started?", "What has the hero passed on to others?", "How does the world remember what the hero did?"] },
+  { L: "G", name: "The unresolved", qs: ["What is deliberately left unresolved?", "What ambiguity do you want the audience to sit with?", "What question lingers after the story ends?", "What price of the journey is still visible?", "What isn't fully healed, and why?"] },
+  { L: "H", name: "The final statement", qs: ["What is the last thing you want to say with this story?", "How does the new world deliver the theme's final proof?", "What does the ending assert about the world?", "What feeling do you want to leave the audience with?", "What does the story ultimately mean?", "Why did this story need to be told?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel in the final moments?", "What is the closing image of your movie?", "What is the last line, look, or gesture?", "How do you land the ending so it resonates?", "How do you avoid a false or rushed finish?", "What emotional note does the very end strike?"] },
+  { L: "J", name: "The whole journey", qs: ["Looking back, what was this story really about?", "How does every beat build to this ending?", "What arc has the hero completed?", "How does the new world justify everything that came before?", "What will people carry with them after they watch?", "Is this the ending your story was always reaching for?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -256,6 +269,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-turn-to-the-end": TURNEND_GROUPS,
   "the-final-test": FINALTEST_GROUPS,
   "the-elixir": ELIXIR_GROUPS,
+  "the-new-world": NEWWORLD_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
