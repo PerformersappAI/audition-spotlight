@@ -347,9 +347,13 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
   const [coachErr, setCoachErr] = useState("");
 
   useEffect(() => {
-    try { const f = localStorage.getItem("mib-frameworks"); if (f) setSel(JSON.parse(f)); } catch { /* ignore */ }
+    const readFw = () => { try { const f = localStorage.getItem("mib-frameworks"); setSel(f ? JSON.parse(f) : []); } catch { /* ignore */ } };
+    readFw();
     try { const a = localStorage.getItem("mib-beats"); if (a) setAnswers(JSON.parse(a)); } catch { /* ignore */ }
     try { const c = localStorage.getItem("mib-beats-coach"); if (c) setCoach(JSON.parse(c)); } catch { /* ignore */ }
+    window.addEventListener("mib-fw", readFw);
+    window.addEventListener("storage", readFw);
+    return () => { window.removeEventListener("mib-fw", readFw); window.removeEventListener("storage", readFw); };
   }, []);
   useEffect(() => { try { localStorage.setItem("mib-beats", JSON.stringify(answers)); } catch { /* ignore */ } }, [answers]);
   useEffect(() => { try { localStorage.setItem("mib-beats-coach", JSON.stringify(coach)); } catch { /* ignore */ } }, [coach]);
@@ -365,6 +369,7 @@ export default function BeatsBuilder(_props: { structureKey: string }) {
     else { next = [...fws, k]; }
     setSel(next);
     try { localStorage.setItem("mib-frameworks", JSON.stringify(next)); } catch { /* ignore */ }
+    try { window.dispatchEvent(new CustomEvent("mib-fw")); } catch { /* ignore */ }
     setOpenIdx(-1);
   };
   const setCoachAns = (slug: string, qi: number, ci: number, val: string) => setCoach((c) => ({ ...c, [slug]: { ...(c[slug] || {}), [qi]: { ...((c[slug] || {})[qi] || {}), [ci]: val } } }));
