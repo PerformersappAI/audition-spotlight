@@ -67,7 +67,9 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
       try {
         const { data, error } = await supabase.functions.invoke("elevenlabs-voice", { body: { action: "list" } });
         if (error) throw error;
-        const vs = (data as { voices?: Voice[] } | null)?.voices;
+        const payload = data as { voices?: Voice[]; error?: string } | null;
+        if (payload?.error) throw new Error(payload.error);
+        const vs = payload?.voices;
         if (Array.isArray(vs)) setVoices(vs);
         else throw new Error("No voices returned");
       } catch (e) {
@@ -107,7 +109,9 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
       const line = first ? `Hi, I'm ${first}. This is how I'll sound in your movie.` : "Hello. This is how I'll sound in your movie.";
       const { data, error } = await supabase.functions.invoke("elevenlabs-voice", { body: { action: "tts", voiceId: v, text: line } });
       if (error) throw error;
-      const url = (data as { audio?: string } | null)?.audio;
+      const payload = data as { audio?: string; error?: string } | null;
+      if (payload?.error) throw new Error(payload.error);
+      const url = payload?.audio;
       if (url) { const audio = new Audio(url); await audio.play(); }
     } catch (e) {
       setVoicesErr(e instanceof Error ? e.message : "Preview failed");
