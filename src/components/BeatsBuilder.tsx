@@ -135,6 +135,19 @@ const BOND_GROUPS: Group[] = [
   { L: "J", name: "Craft & payoff", qs: ["What image captures this relationship?", "What recurring detail or callback tracks it?", "What line between them will the audience remember?", "How do you keep it from feeling like a subplot tacked on?", "How does the bond's resolution pay off the theme?", "How does this relationship change the hero's final choice?"] },
 ];
 
+const TRIALS_GROUPS: Group[] = [
+  { L: "A", name: "The promise of the premise", qs: ["What's the “fun” the audience came to see, delivered here?", "What set-pieces show off your movie's core concept?", "What does the poster or trailer promise that this section pays off?", "What's the most entertaining scene of the whole film — is it here?", "How does the hero explore the new world's possibilities?", "What makes this section a joy (or a thrill, or a terror) to watch?"] },
+  { L: "B", name: "Tests & challenges", qs: ["What series of obstacles does the hero face?", "What's the first test, and how do they handle it?", "Which tests do they pass, and which do they fail?", "What does each test teach them?", "How do the tests escalate in difficulty?", "What test reveals their true weakness?"] },
+  { L: "C", name: "Allies", qs: ["Who joins the hero's team, and how?", "What does each ally bring (skill, humor, heart, muscle)?", "Who's the most loyal, and who's unreliable?", "How does the hero earn their allies' trust?", "What does an ally teach or sacrifice?"] },
+  { L: "D", name: "Enemies", qs: ["Who opposes the hero in the new world?", "Are the enemies minions, rivals, or the antagonist's agents?", "What's the first real clash with the opposition?", "How does the enemy test the hero's resolve?", "What does the hero underestimate about their enemies?"] },
+  { L: "E", name: "Learning the new world", qs: ["What rules must the hero learn to survive here?", "What surprises or overwhelms them?", "What advantage do they discover they have?", "What tool or ally becomes essential?", "How does the world push back against them?", "What do they misread about how this world works?"] },
+  { L: "F", name: "Skill & growth", qs: ["What new skill or strength does the hero develop?", "How do they get better at the thing they came to do?", "What confidence do they gain (that may be false)?", "What old habit still trips them up?", "What small victory feels like progress?"] },
+  { L: "G", name: "Fun & tone", qs: ["What's the tone here — playful, tense, wondrous, escalating dread?", "Where's the humor or levity?", "What moment makes the audience fall in love with the hero?", "What “save the cat” act makes us root for them?", "How does the genre flavor these scenes?"] },
+  { L: "H", name: "Escalation", qs: ["How do the stakes rise across the trials?", "What complication makes things harder than expected?", "What does the hero lose along the way?", "What pushes them toward the midpoint?", "What false sense of control builds before the turn?"] },
+  { L: "I", name: "The hero's flaw at work", qs: ["How does the hero's flaw sabotage them during the trials?", "Where does their old wound resurface?", "What relationship strains under pressure?", "What shortcut or mistake do they make?", "What do the trials reveal that the hero still needs to learn?", "How does the want-vs-need tension show up here?"] },
+  { L: "J", name: "Craft & momentum", qs: ["What are the 2–3 signature scenes of this section?", "What image defines the trials?", "What line captures the hero mid-adventure?", "How do you keep this section from sagging (the “muddy middle”)?", "How does each scene end with momentum into the next?", "How do the trials set up the midpoint turn?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -144,6 +157,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-mentor": MENTOR_GROUPS,
   "the-point-of-no-return": PONR_GROUPS,
   "the-bond": BOND_GROUPS,
+  "the-trials": TRIALS_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
