@@ -142,3 +142,6 @@ verify_jwt = true
 
 [functions.higgsfield-test]
 verify_jwt = true
+
+[functions.movie-brain]
+verify_jwt = true
