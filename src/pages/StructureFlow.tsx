@@ -447,6 +447,31 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
                 Start building <span aria-hidden="true">→</span> Beats
               </Link>
             </div>
+
+            <div className="mt-14 border-t border-white/10 pt-10 max-w-[780px] mx-auto">
+              <div className="text-center mb-7">
+                <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: accent }}>Definitions</span>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ color: accent }}>The words you'll use to build your movie</h2>
+                <p className="text-sm text-foreground/55 mt-2 max-w-[560px] mx-auto">They nest, biggest to smallest — a beat holds scenes, a scene holds shots, a shot is built from clips. Shown here through {MOVIE[structureKey].title}.</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                {DEF_META.map((d, i) => (
+                  <div key={d.term} className="rounded-xl border border-white/10 bg-white/[0.02] px-5 py-4 grid sm:grid-cols-[132px_1fr] gap-3">
+                    <div>
+                      <div className="text-[10px] font-extrabold tracking-[0.14em]" style={{ color: accent }}>0{i + 1}</div>
+                      <div className="text-lg font-bold font-serif" style={{ color: accent }}>{d.term}{d.term === "Clip" ? <span className="text-[12px] opacity-60"> (cube)</span> : null}</div>
+                    </div>
+                    <div>
+                      <div className="text-[13px] text-foreground/60 leading-relaxed">{d.def}</div>
+                      <div className="text-[13px] text-foreground/85 mt-2 pl-3 border-l-2" style={{ borderColor: accent }}>
+                        <span className="block text-[10px] font-bold uppercase tracking-wide mb-0.5" style={{ color: accent }}>{MOVIE[structureKey].title}</span>
+                        {DEF_EX[structureKey][i]}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
       ) : activeStop === "beats" ? (
