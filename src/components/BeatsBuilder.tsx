@@ -96,12 +96,26 @@ const REFUSAL_GROUPS: Group[] = [
   { L: "J", name: "The tipping point", qs: ["What's the exact moment they decide to go?", "Is it courage, desperation, love, or having no choice?", "How does saying yes reveal growth (or the start of it)?", "How does the refusal deepen our investment in the hero?", "How does it set up the cost of the point of no return?"] },
 ];
 
+const MENTOR_GROUPS: Group[] = [
+  { L: "A", name: "Who is the mentor", qs: ["Who guides your hero — and how do they meet?", "What makes this person qualified to teach the hero?", "Is the mentor a person, a group, a place, an object, or an idea?", "Are they a classic wise guide, a reluctant one, or a flawed one?", "What's their first impression on the hero (and on us)?", "What do they see in the hero that the hero can't see yet?"] },
+  { L: "B", name: "What they give", qs: ["What tangible tool, weapon, or resource do they provide?", "What intangible gift — courage, a truth, a skill, permission?", "Is the gift given freely, earned, or stolen?", "Does the gift come with a warning or a cost?", "What will the hero misuse or misunderstand about it at first?", "When, later, will the gift pay off?"] },
+  { L: "C", name: "The wisdom", qs: ["What's the one lesson the mentor most wants to impart?", "How does that lesson connect to the film's theme?", "What does the hero resist hearing?", "What advice will only make sense to the hero much later?", "What piece of wisdom is a lie or half-truth (if any)?"] },
+  { L: "D", name: "The relationship", qs: ["What's the emotional bond between mentor and hero?", "Is it parental, adversarial, romantic, transactional?", "What does the hero give the mentor in return?", "Where do they clash?", "What does the mentor demand of the hero?", "How does the mentor challenge the hero's flaw?"] },
+  { L: "E", name: "The mentor's own story", qs: ["What's the mentor's past — their own failed or completed journey?", "What regret or wound drives them to help?", "What did they lose that they hope the hero won't?", "Are they seeking redemption through the hero?", "What's their unfinished business?"] },
+  { L: "F", name: "How they prepare the hero", qs: ["What training, test, or trial do they put the hero through?", "What weakness do they force the hero to face?", "How do they build the hero's confidence — or humble it?", "What do they refuse to do for the hero (so the hero must)?", "What do they reveal about the road ahead?"] },
+  { L: "G", name: "Resistance & trust", qs: ["Does the hero trust the mentor immediately, or earn it?", "What makes the hero doubt them?", "Is there a betrayal, real or feared?", "What secret does the mentor keep?", "How is trust finally sealed?"] },
+  { L: "H", name: "The gift's meaning", qs: ["What does the gift symbolize thematically?", "How does it represent the hero's potential?", "What must the hero become to be worthy of it?", "How will the gift be transformed by the hero's use of it?", "What happens if the hero loses the gift?"] },
+  { L: "I", name: "The mentor's fate", qs: ["Does the mentor accompany the hero, or send them alone?", "Will the mentor die, leave, or be lost — and when?", "How does the mentor's absence force the hero to grow?", "What last words or lesson do they leave?", "How does the hero carry the mentor forward?", "Does the hero eventually surpass or fulfill the mentor?"] },
+  { L: "J", name: "Craft & seeds", qs: ["What's the image of the mentor we'll remember?", "What line of theirs will echo later?", "How do you keep the mentor from feeling like a cliché?", "What flaw or humor makes them human?", "How does meeting the mentor push the hero toward the threshold?", "What does the mentor foreshadow about the final test?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
   "the-need": NEED_GROUPS,
   "the-call": CALL_GROUPS,
   "the-refusal": REFUSAL_GROUPS,
+  "the-mentor": MENTOR_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
