@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 const GOLD = "#d4a017";
 
-type Character = { name: string; role: string; desc: string; voice: string; photos: number };
+type Character = { name: string; role: string; desc: string; voice: string; photos: string[] };
 
 const ROLES = ["Lead", "Supporting", "Extra"];
 const VOICE_GROUPS: { label: string; opts: [string, string][] }[] = [
@@ -28,15 +28,42 @@ const VOICE_GROUPS: { label: string; opts: [string, string][] }[] = [
 ];
 
 const LS = "mib-cast";
-const blank = (): Character => ({ name: "", role: "Lead", desc: "", voice: "", photos: 0 });
+const blank = (): Character => ({ name: "", role: "Lead", desc: "", voice: "", photos: [] });
 
-export default function CastBuilder(_props: { structureKey: string }) {
+function fileToThumb(file: File, cb: (url: string) => void) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 320;
+      let w = img.width, h = img.height;
+      if (w > h && w > max) { h = (h * max) / w; w = max; }
+      else if (h > max) { w = (w * max) / h; h = max; }
+      const canvas = document.createElement("canvas");
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      if (ctx) ctx.drawImage(img, 0, 0, w, h);
+      cb(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    img.src = (e.target?.result as string) || "";
+  };
+  reader.readAsDataURL(file);
+}
+
+export default function CastBuilder({ structureKey }: { structureKey: string }) {
   const [cast, setCast] = useState<Character[]>([blank()]);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const pending = useRef<{ i: number; slot: number } | null>(null);
 
   useEffect(() => {
     try {
       const raw = localStorage.getItem(LS);
-      if (raw) { const arr = JSON.parse(raw); if (Array.isArray(arr) && arr.length) setCast(arr); }
+      if (raw) {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr) && arr.length) {
+          setCast(arr.map((c: Partial<Character>) => ({ ...blank(), ...c, photos: Array.isArray(c.photos) ? c.photos : [] })));
+        }
+      }
     } catch { /* ignore */ }
   }, []);
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(cast)); } catch { /* ignore */ } }, [cast]);
@@ -44,12 +71,34 @@ export default function CastBuilder(_props: { structureKey: string }) {
   const update = (i: number, patch: Partial<Character>) => setCast((c) => c.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
   const addChar = () => setCast((c) => [...c, blank()]);
   const rm = (i: number) => setCast((c) => (c.length > 1 ? c.filter((_, idx) => idx !== i) : c));
-  const setPhotos = (i: number, slot: number) => update(i, { photos: cast[i].photos === slot + 1 ? slot : slot + 1 });
+
+  const pickPhoto = (i: number, slot: number) => { pending.current = { i, slot }; fileRef.current?.click(); };
+  const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const t = pending.current;
+    e.target.value = "";
+    if (!file || !t) return;
+    fileToThumb(file, (url) => {
+      setCast((c) => c.map((x, idx) => {
+        if (idx !== t.i) return x;
+        const p = [...x.photos];
+        p[t.slot] = url;
+        return { ...x, photos: p };
+      }));
+    });
+  };
+  const removePhoto = (i: number, slot: number) => setCast((c) => c.map((x, idx) => {
+    if (idx !== i) return x;
+    const p = [...x.photos];
+    p[slot] = "";
+    return { ...x, photos: p };
+  }));
 
   const voiced = cast.filter((c) => c.voice).length;
 
   return (
     <section className="bg-background px-4 py-10 pb-24">
+      <input ref={fileRef} type="file" accept="image/*" onChange={onFile} className="hidden" />
       <div className="container mx-auto max-w-[900px]">
         <div className="text-[12px] font-semibold uppercase tracking-[0.2em] text-foreground/45">Your movie · cast</div>
         <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight mt-2 text-foreground">Cast</h1>
@@ -66,12 +115,18 @@ export default function CastBuilder(_props: { structureKey: string }) {
               <div className="flex flex-col gap-2 flex-shrink-0">
                 <div className="flex gap-2">
                   {[0, 1, 2].map((s) => {
-                    const filled = s < c.photos;
+                    const url = c.photos[s];
                     return (
-                      <button key={s} onClick={() => setPhotos(i, s)} className="w-[52px] h-[64px] rounded-[7px] flex items-center justify-center text-[18px]"
-                        style={{ border: filled ? "1px solid #2c323b" : "1px dashed #2c323b", background: filled ? "#161a21" : "#0c0e13", color: filled ? "#e8eaed" : "#6b7280" }}>
-                        {filled ? "🧑" : "+"}
-                      </button>
+                      <div key={s} className="relative w-[52px] h-[64px] rounded-[7px] overflow-hidden" style={{ border: url ? "1px solid #2c323b" : "1px dashed #2c323b", background: url ? "#000" : "#0c0e13" }}>
+                        {url ? (
+                          <>
+                            <img src={url} alt="reference" className="w-full h-full object-cover" />
+                            <button onClick={() => removePhoto(i, s)} className="absolute top-0 right-0 bg-black/70 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-bl" title="Remove">✕</button>
+                          </>
+                        ) : (
+                          <button onClick={() => pickPhoto(i, s)} className="w-full h-full flex items-center justify-center text-[18px] text-foreground/40 hover:text-foreground" title="Upload a photo">+</button>
+                        )}
+                      </div>
                     );
                   })}
                 </div>
@@ -120,8 +175,8 @@ export default function CastBuilder(_props: { structureKey: string }) {
 
         <div className="mt-8 pt-5 border-t border-white/10 flex items-center gap-4 flex-wrap">
           <div className="text-[12px] text-foreground/55">🎬 <b className="text-foreground">{cast.length}</b> cast · 🎙️ <b className="text-foreground">{voiced}</b> voiced</div>
-          <Link to="continue-placeholder" className="ml-auto inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-[13.5px] font-bold" style={{ backgroundColor: GOLD, color: "#1a1300" }} onClick={(e) => e.preventDefault()}>
-            Save cast → Continue to Shots →
+          <Link to={`/movie-in-a-box/${structureKey}/beats`} className="ml-auto inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-[13.5px] font-bold" style={{ backgroundColor: GOLD, color: "#1a1300" }}>
+            Save cast → Continue to Beats →
           </Link>
         </div>
       </div>
