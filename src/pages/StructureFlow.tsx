@@ -52,6 +52,38 @@ const MOVIE: Record<StructureKey, { title: string; slug: string }> = {
   "heros-journey": { title: "Gladiator", slug: "gladiator" },
   "story-circle": { title: "Forrest Gump", slug: "forrest-gump" },
 };
+const DEF_META: { term: string; def: string }[] = [
+  { term: "Beat", def: "A big moment in your story — a turning point that pushes it forward." },
+  { term: "Scene", def: "One place, one moment — everything that happens before you move somewhere else or jump in time." },
+  { term: "Shot", def: "One continuous piece of video from one camera, with no cutting away." },
+  { term: "Clip", def: "One little piece the AI makes at a time, about ten seconds long — snap a few together to build a longer shot." },
+];
+const DEF_EX: Record<StructureKey, string[]> = {
+  "three-act": [
+    "Michael chooses to kill for the family — the war hero becomes a mafia man.",
+    "Michael sits down to dinner with Sollozzo and the crooked police captain at a small Italian restaurant.",
+    "The camera holds tight on Michael's face as he sits frozen, working up the nerve.",
+    "A ten-second piece of Michael's eyes flicking toward the bathroom, joined to the next to build the look.",
+  ],
+  "save-the-cat": [
+    "Clarice takes the case — the turning point that pulls her into hunting a killer.",
+    "Clarice walks the basement cell block to Hannibal Lecter's glass cell for the first time.",
+    "The camera holds on Clarice's nervous face as she stops in front of the glass.",
+    "A ten-second piece of Clarice swallowing her fear, joined to the next to build that first look.",
+  ],
+  "heros-journey": [
+    "Maximus rises from slave to hero — the moment the crowd starts to love him.",
+    "Maximus stands in the arena after a brutal fight, blood and sand everywhere.",
+    "The camera circles Maximus as he throws down his sword and roars, “Are you not entertained?”",
+    "A ten-second piece of Maximus turning to shout, joined to the next to build the moment.",
+  ],
+  "story-circle": [
+    "Forrest discovers he can run — the turning point that frees him and changes his life.",
+    "Young Forrest is chased by bullies down a dirt road while Jenny yells, “Run, Forrest, run!”",
+    "The camera tracks beside Forrest as his leg braces shatter and he sprints free.",
+    "A ten-second piece of the braces flying apart, joined to the next to build the run.",
+  ],
+};
 type FwKey = "p" | "g" | "r" | "t";
 const MASTER_BEATS: { t: string; fw: FwKey[] }[] = [
   { t: "The Ordinary World", fw: ["p", "g", "r", "t"] },
@@ -414,6 +446,31 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
               >
                 Start building <span aria-hidden="true">→</span> Beats
               </Link>
+            </div>
+
+            <div className="mt-14 border-t border-white/10 pt-10 max-w-[780px] mx-auto">
+              <div className="text-center mb-7">
+                <span className="inline-block text-xs font-bold uppercase tracking-[0.2em] mb-2" style={{ color: accent }}>Definitions</span>
+                <h2 className="text-2xl sm:text-3xl font-bold tracking-tight" style={{ color: accent }}>The words you'll use to build your movie</h2>
+                <p className="text-sm text-foreground/55 mt-2 max-w-[560px] mx-auto">They nest, biggest to smallest — a beat holds scenes, a scene holds shots, a shot is built from clips. Shown here through {MOVIE[structureKey].title}.</p>
+              </div>
+              <div className="flex flex-col gap-3">
+                {DEF_META.map((d, i) => (
+                  <div key={d.term} className="rounded-xl border border-white/10 bg-white/[0.02] px-5 py-4 grid sm:grid-cols-[132px_1fr] gap-3">
+                    <div>
+                      <div className="text-[10px] font-extrabold tracking-[0.14em]" style={{ color: accent }}>0{i + 1}</div>
+                      <div className="text-lg font-bold font-serif" style={{ color: accent }}>{d.term}{d.term === "Clip" ? <span className="text-[12px] opacity-60"> (cube)</span> : null}</div>
+                    </div>
+                    <div>
+                      <div className="text-[13px] text-foreground/60 leading-relaxed">{d.def}</div>
+                      <div className="text-[13px] text-foreground/85 mt-2 pl-3 border-l-2" style={{ borderColor: accent }}>
+                        <span className="block text-[10px] font-bold uppercase tracking-wide mb-0.5" style={{ color: accent }}>{MOVIE[structureKey].title}</span>
+                        {DEF_EX[structureKey][i]}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>
