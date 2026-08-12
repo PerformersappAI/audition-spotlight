@@ -57,6 +57,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   const [genIdx, setGenIdx] = useState<number | null>(null);
   const [genErr, setGenErr] = useState("");
   const [fal, setFal] = useState("checking");
+  const [hf, setHf] = useState("checking");
 
   useEffect(() => {
     try {
