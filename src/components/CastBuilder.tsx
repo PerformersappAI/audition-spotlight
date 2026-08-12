@@ -57,6 +57,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   const [genIdx, setGenIdx] = useState<number | null>(null);
   const [genErr, setGenErr] = useState("");
   const [fal, setFal] = useState("checking");
+  const [hf, setHf] = useState("checking");
 
   useEffect(() => {
     try {
@@ -80,6 +81,20 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         else setFal(p?.error || `fal auth failed (status ${p?.status})`);
       } catch (e) {
         setFal(e instanceof Error ? e.message : "fal check failed");
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("higgsfield-test", { body: {} });
+        if (error) throw error;
+        const p = data as { ok?: boolean; status?: number; error?: string } | null;
+        if (p?.ok) setHf("ok");
+        else setHf(p?.error || `Higgsfield auth failed (status ${p?.status})`);
+      } catch (e) {
+        setHf(e instanceof Error ? e.message : "Higgsfield check failed");
       }
     })();
   }, []);
@@ -196,10 +211,13 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         </div>
 
         {voicesErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Voice error: {voicesErr}</div>}
-        <div className="mt-2 text-[11px]">
-          {fal === "checking" ? <span className="text-foreground/40">Checking fal.ai…</span>
+        <div className="mt-2 text-[11px] flex flex-col gap-1">
+          <div>{fal === "checking" ? <span className="text-foreground/40">Checking fal.ai…</span>
             : fal === "ok" ? <span style={{ color: "#57d38c" }}>🔌 fal.ai connected ✓</span>
-            : <span style={{ color: "#ff9a9a" }}>fal.ai: {fal}</span>}
+            : <span style={{ color: "#ff9a9a" }}>fal.ai: {fal}</span>}</div>
+          <div>{hf === "checking" ? <span className="text-foreground/40">Checking Higgsfield…</span>
+            : hf === "ok" ? <span style={{ color: "#57d38c" }}>🔌 Higgsfield connected ✓</span>
+            : <span style={{ color: "#ff9a9a" }}>Higgsfield: {hf}</span>}</div>
         </div>
         {genErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Face error: {genErr}</div>}
 
