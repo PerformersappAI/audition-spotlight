@@ -3,6 +3,7 @@ import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
 import SceneBuilder from "@/components/SceneBuilder";
+import CastBuilder from "@/components/CastBuilder";
 import ShotsBuilder from "@/components/ShotsBuilder";
 
 
@@ -75,6 +76,7 @@ const STOPS = [
   { key: "structure", label: "Structure" },
   { key: "beats", label: "Beats" },
   { key: "scene", label: "Scene" },
+  { key: "cast", label: "Cast" },
   { key: "shots", label: "Shots" },
   { key: "movie", label: "Movie" },
 ] as const;
@@ -399,6 +401,8 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         <BeatsBuilder structureKey={structureKey} />
       ) : activeStop === "scene" ? (
         <SceneBuilder structureKey={structureKey} />
+      ) : activeStop === "cast" ? (
+        <CastBuilder structureKey={structureKey} />
       ) : activeStop === "shots" ? (
         <ShotsBuilder structureKey={structureKey} sel={fwSel} onToggle={toggleFw} />
       ) : (
