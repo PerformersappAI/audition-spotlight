@@ -53,7 +53,12 @@ export default function SceneBuilder({ structureKey }: { structureKey: string })
   const add = (i: number) => setScenes((p) => { const n = { ...p, [i]: [...(p[i] || []), { slug: "", action: "" }] }; persist(n); return n; });
   const upd = (i: number, j: number, field: "slug" | "action", v: string) => setScenes((p) => { const arr = [...(p[i] || [])]; arr[j] = { ...arr[j], [field]: v }; const n = { ...p, [i]: arr }; persist(n); return n; });
   const rm = (i: number, j: number) => setScenes((p) => { const arr = [...(p[i] || [])]; arr.splice(j, 1); const n = { ...p, [i]: arr }; persist(n); return n; });
-  const toggle = (k: FwKey) => setSel((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
+  const ALL_FW: FwKey[] = ["p", "g", "r", "t"];
+  const toggle = (k: FwKey) => setSel((prev) => {
+    const eff = prev.length ? prev : ALL_FW;
+    if (eff.includes(k)) { if (eff.length === 1) return prev; return eff.filter((x) => x !== k); }
+    return [...eff, k];
+  });
 
   const showAll = sel.length === 0;
   const one = sel.length === 1 ? COLOR[sel[0]] : null;
@@ -70,12 +75,12 @@ export default function SceneBuilder({ structureKey }: { structureKey: string })
 
         <div className="mt-6">
           <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3">
-            {showAll ? <span>Showing all four frameworks — click to narrow</span> : (
+            {showAll ? <span>All four frameworks on — click any to turn it off</span> : (
               <span className="normal-case tracking-normal">Building scenes for {sel.map((k, i) => (<span key={k}><span style={{ color: COLOR[k] }} className="font-bold">{FNAME[k]}</span>{i < sel.length - 1 ? " + " : ""}</span>))} · <button onClick={() => setSel([])} className="underline font-semibold text-foreground/50 hover:text-foreground">show all</button></span>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
-            {FW.map((f) => { const on = sel.includes(f.key); const dim = !showAll && !on; return (
+            {FW.map((f) => { const eff = sel.length ? sel : (["p", "g", "r", "t"] as FwKey[]); const on = eff.includes(f.key); const dim = !on; return (
               <button key={f.key} onClick={() => toggle(f.key)} className="text-[12px] font-bold rounded-lg border px-3 py-2 transition-all" style={{ borderColor: on ? f.color : "rgba(255,255,255,0.10)", background: on ? `${f.color}18` : "rgba(255,255,255,0.03)", color: f.color, opacity: dim ? 0.45 : 1 }}>{on ? "✓ " : ""}{f.name}</button>
             ); })}
           </div>
