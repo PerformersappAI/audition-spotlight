@@ -133,3 +133,6 @@ verify_jwt = false
 
 [functions.cancel-subscription]
 verify_jwt = true
+
+[functions.elevenlabs-voice]
+verify_jwt = true
