@@ -122,6 +122,19 @@ const PONR_GROUPS: Group[] = [
   { L: "J", name: "Momentum forward", qs: ["How does crossing propel the story into the trials?", "What promise (of fun, danger, discovery) does this open?", "How does the new world reflect the hero's inner state?", "What thematic meaning does the crossing carry?", "What does it foreshadow about how they'll return, changed?"] },
 ];
 
+const BOND_GROUPS: Group[] = [
+  { L: "A", name: "Who is the bond", qs: ["Which relationship carries the emotional heart of your film?", "Who is that person (love interest, ally, rival, mentor, child, friend)?", "How and when do they enter the hero's life?", "What's the first spark or connection between them?", "Why this person, and not anyone else?", "What do they represent to the hero?"] },
+  { L: "B", name: "The relationship's nature", qs: ["Is it romance, friendship, family, rivalry-turned-respect?", "What draws them together?", "What keeps them apart?", "What does each want from the other?", "What's the power balance between them?", "How do they change in each other's presence?"] },
+  { L: "C", name: "Theme through the bond", qs: ["How does this relationship embody the film's theme?", "What truth does the bond teach the hero that the main plot can't?", "Does the bond model the “right way” the hero must learn?", "How does the B-story argue the theme alongside the A-story?", "What does the hero learn from this person that saves them later?"] },
+  { L: "D", name: "Contrast & complement", qs: ["How is the bond's worldview different from the hero's?", "What does this person have that the hero lacks?", "What does the hero have that this person needs?", "How do they complete or challenge each other?", "Where do their values clash?", "How does the bond expose the hero's flaw?"] },
+  { L: "E", name: "How it grows", qs: ["What moments deepen the bond across the story?", "What shared experience cements it?", "What vulnerability does the hero show only to this person?", "What secret do they share?", "How does trust build (or break) between them?"] },
+  { L: "F", name: "Conflict within it", qs: ["What misunderstanding or betrayal strains the bond?", "What does the hero risk losing in this relationship?", "How does the hero's flaw damage the bond?", "Is there a breakup, falling-out, or separation?", "What's the lowest point for this relationship?"] },
+  { L: "G", name: "What it teaches the hero", qs: ["What lesson does the bond force the hero to confront?", "How does this person see through the hero's mask?", "What do they demand the hero become?", "What do they forgive in the hero?", "What sacrifice does the bond inspire?", "How does the relationship push the hero toward their need?"] },
+  { L: "H", name: "Stakes of the bond", qs: ["What happens to this person if the hero fails?", "Would the hero trade the mission for this relationship?", "What's the cost of choosing the bond over the goal (or vice versa)?", "How does the bond raise the emotional stakes of the plot?", "Who threatens this relationship?"] },
+  { L: "I", name: "The bond under pressure", qs: ["How does the bond behave at the darkest moment?", "Does this person save the hero, or need saving?", "What does the hero do for them that proves growth?", "Is the bond reconciled, lost, or transformed by the end?", "What final moment defines the relationship?"] },
+  { L: "J", name: "Craft & payoff", qs: ["What image captures this relationship?", "What recurring detail or callback tracks it?", "What line between them will the audience remember?", "How do you keep it from feeling like a subplot tacked on?", "How does the bond's resolution pay off the theme?", "How does this relationship change the hero's final choice?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -130,6 +143,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-refusal": REFUSAL_GROUPS,
   "the-mentor": MENTOR_GROUPS,
   "the-point-of-no-return": PONR_GROUPS,
+  "the-bond": BOND_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
