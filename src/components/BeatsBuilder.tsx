@@ -213,6 +213,19 @@ const TURNEND_GROUPS: Group[] = [
   { L: "J", name: "Into the climax", qs: ["How does this beat hand the hero to the final test?", "What is the hero walking into?", "What's the last thing the hero does before the battle?", "What question will the climax answer?", "How does the theme reach its decisive test?", "What makes the audience lean in for the finale?"] },
 ];
 
+const FINALTEST_GROUPS: Group[] = [
+  { L: "A", name: "The confrontation", qs: ["What is the final showdown your hero faces?", "Who or what does the hero confront at the climax?", "Where does the final battle take place?", "What form does the ultimate test take?", "How does the conflict reach its peak here?", "What makes this the hardest thing the hero has ever done?"] },
+  { L: "B", name: "The stakes at their highest", qs: ["What does the hero win or lose in this moment?", "What is on the line for everyone the hero cares about?", "What happens if the hero fails?", "Why can't the hero walk away?", "How does the outcome define everything that came before?"] },
+  { L: "C", name: "The antagonist's peak", qs: ["How does the antagonist reach full power here?", "What is the villain's final move?", "How does the antagonist exploit the hero's remaining weakness?", "What makes the enemy nearly unbeatable?", "How does the antagonist embody the theme's opposite?", "What does the villain believe they've already won?"] },
+  { L: "D", name: "The darkest turn", qs: ["What moment makes it look like the hero will lose?", "What goes wrong at the worst possible time?", "What does the hero sacrifice in the fight?", "Who is hurt or lost at the climax?", "How low does the hero fall before the final rise?"] },
+  { L: "E", name: "The hero's true self", qs: ["How does the hero draw on their transformation to win?", "What lesson from the journey does the hero finally use?", "How does the hero's need — not their want — carry the day?", "What proves the hero has truly changed?", "What does the hero do now that they could never have done at the start?", "How does the theme win through the hero's action?"] },
+  { L: "F", name: "The decisive move", qs: ["What is the hero's winning choice or action?", "How does the hero turn the tables?", "What clever, brave, or selfless act clinches it?", "How does an earlier setup pay off decisively?", "What surprises the audience yet feels inevitable?"] },
+  { L: "G", name: "The cost of victory", qs: ["What price does the hero pay to win?", "What does the hero give up in the final test?", "Who or what is not saved?", "How is the victory bittersweet?", "What scar does the hero carry out of the climax?"] },
+  { L: "H", name: "Resolution of the antagonist", qs: ["How is the antagonist defeated, converted, or reckoned with?", "What becomes of the villain?", "How does the antagonist's defeat prove the theme?", "Does the hero show mercy, justice, or something else?", "What final truth does the confrontation reveal?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel at the climax?", "What image captures the peak of the story?", "What line lands as the decisive blow?", "How do you pace the climax for maximum tension?", "How do you make the victory feel earned?", "What single moment do you want people to remember?"] },
+  { L: "J", name: "Toward resolution", qs: ["How does the climax release the built-up tension?", "What changes in the world the instant the hero wins?", "What question does the final test finally answer?", "How does the hero emerge different from this fight?", "What does the victory make possible?", "How does this beat hand off to the ending?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -228,6 +241,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-lowest-point": LOWEST_GROUPS,
   "the-dark-night": DARKNIGHT_GROUPS,
   "the-turn-to-the-end": TURNEND_GROUPS,
+  "the-final-test": FINALTEST_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
