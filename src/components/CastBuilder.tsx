@@ -113,24 +113,42 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
             <div key={i} className="rounded-xl border border-white/10 bg-white/[0.02] p-4 flex gap-5 flex-wrap">
               {/* face lock */}
               <div className="flex flex-col gap-2 flex-shrink-0">
-                <div className="flex gap-2">
+                <div className="flex gap-2.5 flex-wrap">
                   {[0, 1, 2].map((s) => {
                     const url = c.photos[s];
                     return (
-                      <div key={s} className="relative w-[52px] h-[64px] rounded-[7px] overflow-hidden" style={{ border: url ? "1px solid #2c323b" : "1px dashed #2c323b", background: url ? "#000" : "#0c0e13" }}>
+                      <div
+                        key={s}
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          const file = e.dataTransfer.files?.[0];
+                          if (!file || !file.type.startsWith("image/")) return;
+                          fileToThumb(file, (u) => setCast((cs) => cs.map((x, idx) => {
+                            if (idx !== i) return x;
+                            const p = [...x.photos]; p[s] = u; return { ...x, photos: p };
+                          })));
+                        }}
+                        className="relative w-[112px] h-[188px] rounded-[10px] overflow-hidden"
+                        style={{ border: url ? "1px solid #2c323b" : "1px dashed #3a414c", background: url ? "#000" : "#0c0e13" }}
+                      >
                         {url ? (
                           <>
                             <img src={url} alt="reference" className="w-full h-full object-cover" />
-                            <button onClick={() => removePhoto(i, s)} className="absolute top-0 right-0 bg-black/70 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-bl" title="Remove">✕</button>
+                            <button onClick={() => removePhoto(i, s)} className="absolute top-1 right-1 bg-black/70 text-white text-[11px] w-5 h-5 flex items-center justify-center rounded-md" title="Remove">✕</button>
                           </>
                         ) : (
-                          <button onClick={() => pickPhoto(i, s)} className="w-full h-full flex items-center justify-center text-[18px] text-foreground/40 hover:text-foreground" title="Upload a photo">+</button>
+                          <button onClick={() => pickPhoto(i, s)} className="w-full h-full flex flex-col items-center justify-center gap-1.5 text-foreground/45 hover:text-foreground" title="Upload a photo">
+                            <span className="text-[30px] leading-none">＋</span>
+                            <span className="text-[10.5px] font-semibold">Upload</span>
+                            <span className="text-[9px] text-foreground/30">or drag a photo</span>
+                          </button>
                         )}
                       </div>
                     );
                   })}
                 </div>
-                <div className="text-[9.5px] text-foreground/40 text-center max-w-[132px] leading-snug">reference photos → locks the face (Soul ID)</div>
+                <div className="text-[10px] text-foreground/40 max-w-[360px] leading-snug">Reference photos → these lock the character's face (Soul ID). Add a front, 3/4, and side angle for the strongest match.</div>
               </div>
 
               {/* fields */}
