@@ -19,24 +19,31 @@ const CAT_LABEL: Record<string, string> = {
   premade: "ElevenLabs library",
 };
 
+function scaleToThumb(img: HTMLImageElement): string {
+  const max = 320;
+  let w = img.width, h = img.height;
+  if (w > h && w > max) { h = (h * max) / w; w = max; }
+  else if (h > max) { w = (w * max) / h; h = max; }
+  const canvas = document.createElement("canvas");
+  canvas.width = w; canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (ctx) ctx.drawImage(img, 0, 0, w, h);
+  return canvas.toDataURL("image/jpeg", 0.82);
+}
 function fileToThumb(file: File, cb: (url: string) => void) {
   const reader = new FileReader();
   reader.onload = (e) => {
     const img = new Image();
-    img.onload = () => {
-      const max = 320;
-      let w = img.width, h = img.height;
-      if (w > h && w > max) { h = (h * max) / w; w = max; }
-      else if (h > max) { w = (w * max) / h; h = max; }
-      const canvas = document.createElement("canvas");
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext("2d");
-      if (ctx) ctx.drawImage(img, 0, 0, w, h);
-      cb(canvas.toDataURL("image/jpeg", 0.82));
-    };
+    img.onload = () => cb(scaleToThumb(img));
     img.src = (e.target?.result as string) || "";
   };
   reader.readAsDataURL(file);
+}
+function urlToThumb(src: string, cb: (url: string) => void) {
+  const img = new Image();
+  img.onload = () => { try { cb(scaleToThumb(img)); } catch { cb(src); } };
+  img.onerror = () => cb(src);
+  img.src = src;
 }
 
 export default function CastBuilder({ structureKey }: { structureKey: string }) {
@@ -47,6 +54,8 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   const [voicesLoading, setVoicesLoading] = useState(true);
   const [voicesErr, setVoicesErr] = useState("");
   const [playing, setPlaying] = useState<number | null>(null);
+  const [genIdx, setGenIdx] = useState<number | null>(null);
+  const [genErr, setGenErr] = useState("");
 
   useEffect(() => {
     try {
@@ -71,7 +80,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         if (payload?.error) throw new Error(payload.error);
         const vs = payload?.voices;
         if (Array.isArray(vs)) setVoices(vs);
-        else throw new Error("No voices. Raw: " + JSON.stringify(payload).slice(0, 300));
+        else throw new Error("No voices returned");
       } catch (e) {
         setVoicesErr(e instanceof Error ? e.message : "Could not load voices");
       } finally {
@@ -84,21 +93,54 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   const addChar = () => setCast((c) => [...c, blank()]);
   const rm = (i: number) => setCast((c) => (c.length > 1 ? c.filter((_, idx) => idx !== i) : c));
 
+  const setSlot = (i: number, slot: number, url: string) => setCast((c) => c.map((x, idx) => {
+    if (idx !== i) return x;
+    const p = [...x.photos]; p[slot] = url; return { ...x, photos: p };
+  }));
   const pickPhoto = (i: number, slot: number) => { pending.current = { i, slot }; fileRef.current?.click(); };
   const onFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const t = pending.current;
     e.target.value = "";
     if (!file || !t) return;
-    fileToThumb(file, (url) => setCast((c) => c.map((x, idx) => {
-      if (idx !== t.i) return x;
-      const p = [...x.photos]; p[t.slot] = url; return { ...x, photos: p };
-    })));
+    fileToThumb(file, (url) => setSlot(t.i, t.slot, url));
   };
-  const removePhoto = (i: number, slot: number) => setCast((c) => c.map((x, idx) => {
-    if (idx !== i) return x;
-    const p = [...x.photos]; p[slot] = ""; return { ...x, photos: p };
-  }));
+  const removePhoto = (i: number, slot: number) => setSlot(i, slot, "");
+
+  const generateFace = async (i: number) => {
+    if (genIdx !== null) return;
+    const c = cast[i];
+    setGenErr("");
+    setGenIdx(i);
+    try {
+      const ref = c.photos.find((p) => p);
+      const { data, error } = await supabase.functions.invoke("generate-character-portrait", {
+        body: {
+          characterName: c.name || "Character",
+          characterDescription: c.desc,
+          characterRole: c.role,
+          referencePhotoUrl: ref || undefined,
+        },
+      });
+      if (error) throw error;
+      const payload = data as { imageUrl?: string; error?: string } | null;
+      if (payload?.error) throw new Error(payload.error);
+      const url = payload?.imageUrl;
+      if (!url) throw new Error("No image returned");
+      urlToThumb(url, (thumb) => setCast((cs) => cs.map((x, idx) => {
+        if (idx !== i) return x;
+        const p = [...x.photos];
+        let slot = [0, 1, 2].find((s) => !p[s]);
+        if (slot === undefined) slot = 2;
+        p[slot] = thumb;
+        return { ...x, photos: p };
+      })));
+    } catch (e) {
+      setGenErr(e instanceof Error ? e.message : "Face generation failed");
+    } finally {
+      setGenIdx(null);
+    }
+  };
 
   const playPreview = async (i: number) => {
     const v = cast[i].voice;
@@ -124,7 +166,6 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   voices.forEach((v) => { (grouped[v.category] ||= []).push(v); });
   const orderedCats = [...CAT_ORDER.filter((c) => grouped[c]), ...Object.keys(grouped).filter((c) => !CAT_ORDER.includes(c))];
   const voiceName = (id: string) => voices.find((v) => v.id === id)?.name || "";
-
   const voiced = cast.filter((c) => c.voice).length;
 
   return (
@@ -136,12 +177,11 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         <p className="text-[13.5px] text-foreground/55 mt-2 max-w-[640px]">Load your characters once. Lock each one's face and voice here — every shot in the whole movie points back to this page, so a character looks and sounds the same from the first scene to the last.</p>
 
         <div className="mt-5 rounded-xl px-4 py-3 text-[12.5px] text-foreground/70 leading-relaxed" style={{ border: `1px solid ${GOLD}44`, background: "#1a1710" }}>
-          <b style={{ color: "#f0d089" }}>Two things lock a character:</b> the <b className="text-foreground">reference photos</b> keep their face the same in every shot (Soul ID), and the <b className="text-foreground">voice</b> you pick is reused every time they speak. Voices are live from your ElevenLabs account — hit ▶ to hear one.
+          <b style={{ color: "#f0d089" }}>Two things lock a character:</b> the <b className="text-foreground">reference photos</b> keep their face the same in every shot (Soul ID), and the <b className="text-foreground">voice</b> you pick is reused every time they speak. Upload a photo, or generate a face from the description — then pick a live voice and hit ▶ to hear it.
         </div>
 
-        {voicesErr && (
-          <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Voice error: {voicesErr}</div>
-        )}
+        {voicesErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Voice error: {voicesErr}</div>}
+        {genErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Face error: {genErr}</div>}
 
         <div className="mt-6 flex flex-col gap-4">
           {cast.map((c, i) => (
@@ -158,10 +198,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
                           e.preventDefault();
                           const file = e.dataTransfer.files?.[0];
                           if (!file || !file.type.startsWith("image/")) return;
-                          fileToThumb(file, (u) => setCast((cs) => cs.map((x, idx) => {
-                            if (idx !== i) return x;
-                            const p = [...x.photos]; p[s] = u; return { ...x, photos: p };
-                          })));
+                          fileToThumb(file, (u) => setSlot(i, s, u));
                         }}
                         className="relative w-[112px] h-[188px] rounded-[10px] overflow-hidden"
                         style={{ border: url ? "1px solid #2c323b" : "1px dashed #3a414c", background: url ? "#000" : "#0c0e13" }}
@@ -182,7 +219,10 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
                     );
                   })}
                 </div>
-                <div className="text-[10px] text-foreground/40 max-w-[360px] leading-snug">Reference photos → these lock the character's face (Soul ID). Add a front, 3/4, and side angle for the strongest match.</div>
+                <button onClick={() => generateFace(i)} disabled={genIdx !== null} className="mt-1 text-[11.5px] font-bold rounded-lg border py-2 px-2 disabled:opacity-50" style={{ borderColor: `${GOLD}66`, color: "#f0d089", background: "#1a1710" }}>
+                  {genIdx === i ? "✨ Generating…" : "✨ Generate a face"}
+                </button>
+                <div className="text-[10px] text-foreground/40 max-w-[360px] leading-snug">Upload a photo, or generate one from the name + description. These lock the character's face (Soul ID).</div>
               </div>
 
               <div className="flex-1 min-w-[260px]">
