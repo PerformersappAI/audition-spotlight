@@ -57,9 +57,23 @@ const THEME_GROUPS: Group[] = [
   { L: "J", name: "Testing & seeds", qs: ["Where is the theme first planted so it pays off later?", "What scene most clearly tests the theme under pressure?", "What's the final image that proves the theme true?", "If a viewer described your movie's message, what would you want them to say?", "What line will the audience remember and repeat?", "Does every subplot echo or complicate the theme?"] },
 ];
 
+const NEED_GROUPS: Group[] = [
+  { L: "A", name: "Naming the need", qs: ["What does your hero most deeply need (not want) — in one word?", "What's missing inside them that no external win could fix?", "If they got everything they wanted but not this, would they be empty — why?", "What emotional hunger drives them without their knowing it?", "Is the need connection, worth, freedom, forgiveness, courage — or what?", "Finish the sentence: “Deep down, they need to learn that ___.”"] },
+  { L: "B", name: "The root of the need", qs: ["Where did this lack come from — what event or absence created it?", "Who or what taught them to believe they don't deserve it?", "What formative moment planted the void?", "Is the need inherited from family, or forged by circumstance?", "What have they been substituting for the real thing?", "How long have they carried this — and what has it cost them?"] },
+  { L: "C", name: "Want vs. Need", qs: ["What does your hero consciously WANT (the external goal)?", "How does that want disguise the deeper need?", "Where do want and need pull in opposite directions?", "At what point must they choose between the want and the need?", "Can they get the want without the need — or only one?", "What do they think will make them happy that actually won't?"] },
+  { L: "D", name: "How the need shows up", qs: ["What everyday behavior reveals the unmet need?", "What do they overdo to compensate (work, control, charm, distance)?", "What do they avoid because of it?", "How does the need leak out in a moment of weakness?", "What do they secretly envy in others?", "What lie do they tell themselves to keep the need buried?"] },
+  { L: "E", name: "The gap the hero can't see", qs: ["What's obvious to everyone but the hero?", "Who has tried to tell them the truth — and been ignored?", "What defense keeps them from seeing their own need?", "What would they have to admit for the need to surface?", "What are they most afraid the need would make them feel?"] },
+  { L: "F", name: "Others & the need", qs: ["Who models the fulfilled version of what the hero lacks?", "Who exploits the hero's unmet need?", "Who loves them despite (or because of) the wound?", "How does the antagonist's own need mirror or invert the hero's?", "Who finally says the thing the hero needs to hear?"] },
+  { L: "G", name: "Symptoms & behavior", qs: ["What small, specific action shows the need in scene one?", "What relationship suffers because of it?", "What opportunity have they refused because of it?", "What do they do when the need gets triggered under stress?", "How does the need shape the way they speak to people?"] },
+  { L: "H", name: "The stakes of the need", qs: ["What happens to them if the need is never met?", "What happens to the people around them?", "Why is now the moment this need must be faced?", "What would “too late” look like for this need?", "What's the quiet tragedy if they win the plot but lose the need?"] },
+  { L: "I", name: "The arc of the need", qs: ["What's the first crack that lets light into the need?", "What forces them to confront it at the midpoint?", "What loss makes the need undeniable?", "What moment do they finally accept it?", "What choice proves they've met the need?", "Do they meet it fully, or is it bittersweet?"] },
+  { L: "J", name: "Craft & seeds", qs: ["What image could symbolize the empty place inside them?", "What line of dialogue could hint at the need without naming it?", "How will the audience feel the need before they understand it?", "What “before/after” contrast will show the need resolved?", "How does meeting the need connect to the film's theme?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
+  "the-need": NEED_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
