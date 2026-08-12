@@ -249,12 +249,20 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
 
   const [fwSel, setFwSel] = useState<FwKey[]>([]);
   useEffect(() => {
-    try { const f = localStorage.getItem("mib-frameworks"); if (f) setFwSel(JSON.parse(f)); } catch { /* ignore */ }
+    const readFw = () => { try { const f = localStorage.getItem("mib-frameworks"); setFwSel(f ? JSON.parse(f) : []); } catch { /* ignore */ } };
+    readFw();
+    window.addEventListener("mib-fw", readFw);
+    window.addEventListener("storage", readFw);
+    return () => { window.removeEventListener("mib-fw", readFw); window.removeEventListener("storage", readFw); };
   }, [stop]);
   const toggleFw = (k: FwKey) =>
     setFwSel((s) => {
-      const n = s.includes(k) ? s.filter((x) => x !== k) : [...s, k];
+      const eff = s.length ? s : (["p", "g", "r", "t"] as FwKey[]);
+      let n: FwKey[];
+      if (eff.includes(k)) { if (eff.length === 1) return s; n = eff.filter((x) => x !== k); }
+      else { n = [...eff, k]; }
       try { localStorage.setItem("mib-frameworks", JSON.stringify(n)); } catch { /* ignore */ }
+      try { window.dispatchEvent(new CustomEvent("mib-fw")); } catch { /* ignore */ }
       return n;
     });
   const shotFlowFws = fwSel.length ? fwSel : (["p", "g", "r", "t"] as FwKey[]);

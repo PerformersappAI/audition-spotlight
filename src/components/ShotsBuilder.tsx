@@ -44,7 +44,7 @@ export default function ShotsBuilder({ sel, onToggle }: { structureKey: string; 
 
         <div className="mt-6 flex flex-wrap gap-2">
           {FW.map((f) => {
-            const on = sel.includes(f.key);
+            const on = fws.includes(f.key);
             const c = COLOR[f.key];
             return (
               <button

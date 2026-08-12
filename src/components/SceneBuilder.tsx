@@ -45,20 +45,26 @@ export default function SceneBuilder({ structureKey }: { structureKey: string })
   useEffect(() => {
     try { const s = localStorage.getItem("mib-scenes"); setScenes(s ? JSON.parse(s) : {}); } catch { setScenes({}); }
     try { const a = localStorage.getItem("mib-master-beats"); setAnswers(a ? JSON.parse(a) : {}); } catch { setAnswers({}); }
-    try { const f = localStorage.getItem("mib-frameworks"); if (f) setSel(JSON.parse(f)); } catch { /* ignore */ }
+    const readFw = () => { try { const f = localStorage.getItem("mib-frameworks"); setSel(f ? JSON.parse(f) : []); } catch { /* ignore */ } };
+    readFw();
+    window.addEventListener("mib-fw", readFw);
+    window.addEventListener("storage", readFw);
+    return () => { window.removeEventListener("mib-fw", readFw); window.removeEventListener("storage", readFw); };
   }, []);
-  useEffect(() => { try { localStorage.setItem("mib-frameworks", JSON.stringify(sel)); } catch { /* ignore */ } }, [sel]);
 
   const persist = (n: Record<number, Scene[]>) => { try { localStorage.setItem("mib-scenes", JSON.stringify(n)); } catch { /* ignore */ } };
   const add = (i: number) => setScenes((p) => { const n = { ...p, [i]: [...(p[i] || []), { slug: "", action: "" }] }; persist(n); return n; });
   const upd = (i: number, j: number, field: "slug" | "action", v: string) => setScenes((p) => { const arr = [...(p[i] || [])]; arr[j] = { ...arr[j], [field]: v }; const n = { ...p, [i]: arr }; persist(n); return n; });
   const rm = (i: number, j: number) => setScenes((p) => { const arr = [...(p[i] || [])]; arr.splice(j, 1); const n = { ...p, [i]: arr }; persist(n); return n; });
   const ALL_FW: FwKey[] = ["p", "g", "r", "t"];
-  const toggle = (k: FwKey) => setSel((prev) => {
-    const eff = prev.length ? prev : ALL_FW;
-    if (eff.includes(k)) { if (eff.length === 1) return prev; return eff.filter((x) => x !== k); }
-    return [...eff, k];
-  });
+  const writeFw = (n: FwKey[]) => { try { localStorage.setItem("mib-frameworks", JSON.stringify(n)); } catch { /* ignore */ } try { window.dispatchEvent(new CustomEvent("mib-fw")); } catch { /* ignore */ } };
+  const toggle = (k: FwKey) => {
+    const eff = sel.length ? sel : ALL_FW;
+    let n: FwKey[];
+    if (eff.includes(k)) { if (eff.length === 1) return; n = eff.filter((x) => x !== k); }
+    else { n = [...eff, k]; }
+    setSel(n); writeFw(n);
+  };
 
   const showAll = sel.length === 0;
   const one = sel.length === 1 ? COLOR[sel[0]] : null;
@@ -76,7 +82,7 @@ export default function SceneBuilder({ structureKey }: { structureKey: string })
         <div className="mt-6">
           <div className="text-[10.5px] font-bold uppercase tracking-[0.14em] text-foreground/40 mb-3">
             {showAll ? <span>All four frameworks on — click any to turn it off</span> : (
-              <span className="normal-case tracking-normal">Building scenes for {sel.map((k, i) => (<span key={k}><span style={{ color: COLOR[k] }} className="font-bold">{FNAME[k]}</span>{i < sel.length - 1 ? " + " : ""}</span>))} · <button onClick={() => setSel([])} className="underline font-semibold text-foreground/50 hover:text-foreground">show all</button></span>
+              <span className="normal-case tracking-normal">Building scenes for {sel.map((k, i) => (<span key={k}><span style={{ color: COLOR[k] }} className="font-bold">{FNAME[k]}</span>{i < sel.length - 1 ? " + " : ""}</span>))} · <button onClick={() => { setSel([]); writeFw([]); }} className="underline font-semibold text-foreground/50 hover:text-foreground">show all</button></span>
             )}
           </div>
           <div className="flex flex-wrap gap-2">
