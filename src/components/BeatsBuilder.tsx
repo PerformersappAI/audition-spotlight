@@ -161,6 +161,19 @@ const MIDPOINT_GROUPS: Group[] = [
   { L: "J", name: "Propulsion forward", qs: ["How does the midpoint launch the “walls close in” descent?", "What clock starts ticking louder now?", "What does the hero chase in the second half?", "How does the midpoint plant the seed of the lowest point?", "What thematic meaning does the turn carry?"] },
 ];
 
+const WALLS_GROUPS: Group[] = [
+  { L: "A", name: "The mounting pressure", qs: ["How does the pressure tighten around your hero after the midpoint?", "What's going wrong that wasn't before?", "What deadline or threat is closing in?", "How does each scene raise the tension a notch?", "What safety nets are being removed one by one?", "What's the sense of the walls literally or figuratively closing?", "Why does everything feel harder now?"] },
+  { L: "B", name: "The antagonist gains", qs: ["How does the enemy gain the upper hand?", "What move does the antagonist make that the hero can't counter?", "What resource or ally does the enemy take from the hero?", "How does the villain exploit the hero's flaw?", "What does the antagonist reveal about their plan?", "Why does the enemy seem to be winning?"] },
+  { L: "C", name: "The team fractures", qs: ["How does the hero's alliance start to crack?", "Who doubts the hero's plan or leadership?", "What argument or betrayal splits the team?", "Who leaves, is captured, or is lost?", "How does isolation begin to set in?"] },
+  { L: "D", name: "Internal decay", qs: ["How does the hero's old flaw resurface under pressure?", "What bad habit or fear takes over?", "What mistake does the hero make out of desperation?", "How does the hero's confidence erode?", "What relationship does the hero damage here?", "How does the hero's want blind them to their need?"] },
+  { L: "E", name: "The approach", qs: ["What is the “inmost cave” — the most dangerous place or confrontation ahead?", "How does the hero prepare (or fail to) for the biggest test?", "What's the plan going in, and what could go wrong?", "What does the hero fear most about what's coming?", "What's the point of no return before the ordeal?"] },
+  { L: "F", name: "Loss & attrition", qs: ["What does the hero lose on the way in?", "What sacrifice is demanded to get closer?", "Who gets hurt as they approach?", "What tool or advantage fails at the worst time?", "What hope dims here?"] },
+  { L: "G", name: "The hero's doubt", qs: ["What makes the hero question whether they can win?", "What temptation to quit or turn back appears?", "Whose faith in the hero wavers?", "What lie does the hero start to believe again?", "How does the hero try (and fail) to hold it together?"] },
+  { L: "H", name: "The narrowing path", qs: ["How do the hero's options shrink?", "What choice becomes unavoidable?", "What door closes behind them?", "What makes retreat impossible now?", "How does the noose tighten toward the low point?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel as the walls close?", "What image captures the mounting dread?", "What line signals the danger?", "How do you build suspense without stalling?", "How does the tone darken?", "What quiet moment before the storm hits hardest?"] },
+  { L: "J", name: "Toward the abyss", qs: ["How does this beat deliver the hero to the lowest point?", "What final thread of hope is about to snap?", "What does the hero walk into, unaware?", "How does the thematic argument look like it's losing?", "What sets up the “all is lost” moment?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -172,6 +185,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-bond": BOND_GROUPS,
   "the-trials": TRIALS_GROUPS,
   "the-midpoint-turn": MIDPOINT_GROUPS,
+  "the-walls-close-in": WALLS_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
