@@ -83,11 +83,25 @@ const CALL_GROUPS: Group[] = [
   { L: "J", name: "Seeds & connection", qs: ["How does the call target the hero's specific flaw or need?", "What earlier detail pays off in this moment?", "How does the call carry the theme?", "What does it foreshadow about the ending?", "How does it set up the refusal that follows?"] },
 ];
 
+const REFUSAL_GROUPS: Group[] = [
+  { L: "A", name: "The nature of the refusal", qs: ["How does your hero resist the call at first?", "Is the refusal loud (open defiance) or quiet (avoidance)?", "Do they say no outright, or just fail to say yes?", "Is it one refusal or a series of hesitations?", "How long do they resist before circumstances force them?", "Is the refusal reasonable, cowardly, or both?"] },
+  { L: "B", name: "The fear behind it", qs: ["What are they truly afraid of losing?", "What's the worst thing they imagine could happen?", "How does this fear connect to their core wound?", "Do they fear failure, or do they fear success?", "What comfort are they clinging to?", "What does the fear protect them from feeling?"] },
+  { L: "C", name: "The excuses", qs: ["What practical reasons do they give for refusing?", "What responsibilities do they hide behind?", "Which excuse do they half-believe, and which is pure avoidance?", "Who or what do they blame for not being able to go?", "What would they never admit is the real reason?"] },
+  { L: "D", name: "What holds them back", qs: ["What in the ordinary world are they reluctant to leave?", "Who would they be abandoning?", "What obligation feels like a chain?", "What have they invested that they'd have to walk away from?", "What identity would they have to give up to say yes?", "What's the safest, smallest version of their life they're protecting?"] },
+  { L: "E", name: "The debate", qs: ["What's the argument for going vs. staying, in their head?", "What does the rational side say? The emotional side?", "Do they weigh it openly or bury it?", "What tips the internal scale, moment to moment?", "What do they tell themselves to justify hesitating?"] },
+  { L: "F", name: "Others in the refusal", qs: ["Who pushes them to go?", "Who begs them to stay?", "Does anyone shame, dare, or guilt them?", "Does a mentor figure appear during the refusal?", "Whose opinion matters most to them here?"] },
+  { L: "G", name: "The stakes of staying", qs: ["What happens if they refuse for good?", "What's the cost of the comfortable life they'd keep?", "What regret would haunt them?", "What would they lose that's worse than the risk of going?", "Why is staying no longer actually safe?"] },
+  { L: "H", name: "The turning pressure", qs: ["What event or revelation makes refusing impossible?", "What's the “second push” that overrides the fear?", "What's taken away that removes the option to stay?", "What raises the stakes so high that inaction becomes unbearable?", "Does the hero choose, or is the choice forced on them?", "What final straw breaks their resistance?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel during the hesitation?", "How do you keep the refusal from stalling the pace?", "What image captures their reluctance?", "What line marks the moment of doubt?", "How do you make the audience root for them to say yes?", "What physical action shows the internal debate?"] },
+  { L: "J", name: "The tipping point", qs: ["What's the exact moment they decide to go?", "Is it courage, desperation, love, or having no choice?", "How does saying yes reveal growth (or the start of it)?", "How does the refusal deepen our investment in the hero?", "How does it set up the cost of the point of no return?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
   "the-need": NEED_GROUPS,
   "the-call": CALL_GROUPS,
+  "the-refusal": REFUSAL_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
