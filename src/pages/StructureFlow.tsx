@@ -74,9 +74,9 @@ const MASTER_BEATS: { t: string; fw: FwKey[] }[] = [
 ];
 const STOPS = [
   { key: "structure", label: "Structure" },
+  { key: "cast", label: "Cast" },
   { key: "beats", label: "Beats" },
   { key: "scene", label: "Scene" },
-  { key: "cast", label: "Cast" },
   { key: "shots", label: "Shots" },
   { key: "movie", label: "Movie" },
 ] as const;
