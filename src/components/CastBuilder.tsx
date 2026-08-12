@@ -56,6 +56,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
   const [playing, setPlaying] = useState<number | null>(null);
   const [genIdx, setGenIdx] = useState<number | null>(null);
   const [genErr, setGenErr] = useState("");
+  const [fal, setFal] = useState("checking");
 
   useEffect(() => {
     try {
@@ -69,6 +70,19 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
     } catch { /* ignore */ }
   }, []);
   useEffect(() => { try { localStorage.setItem(LS, JSON.stringify(cast)); } catch { /* ignore */ } }, [cast]);
+  useEffect(() => {
+    (async () => {
+      try {
+        const { data, error } = await supabase.functions.invoke("fal-test", { body: {} });
+        if (error) throw error;
+        const p = data as { ok?: boolean; status?: number; error?: string } | null;
+        if (p?.ok) setFal("ok");
+        else setFal(p?.error || `fal auth failed (status ${p?.status})`);
+      } catch (e) {
+        setFal(e instanceof Error ? e.message : "fal check failed");
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -182,6 +196,11 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
         </div>
 
         {voicesErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Voice error: {voicesErr}</div>}
+        <div className="mt-2 text-[11px]">
+          {fal === "checking" ? <span className="text-foreground/40">Checking fal.ai…</span>
+            : fal === "ok" ? <span style={{ color: "#57d38c" }}>🔌 fal.ai connected ✓</span>
+            : <span style={{ color: "#ff9a9a" }}>fal.ai: {fal}</span>}
+        </div>
         {genErr && <div className="mt-3 rounded-lg px-3 py-2 text-[11.5px]" style={{ border: "1px solid #7a2b2b", background: "#2a1414", color: "#ff9a9a" }}>Face error: {genErr}</div>}
 
         <div className="mt-6 flex flex-col gap-4">

@@ -136,3 +136,6 @@ verify_jwt = true
 
 [functions.elevenlabs-voice]
 verify_jwt = true
+
+[functions.fal-test]
+verify_jwt = true
