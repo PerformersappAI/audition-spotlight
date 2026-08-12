@@ -187,6 +187,19 @@ const LOWEST_GROUPS: Group[] = [
   { L: "J", name: "Toward the turn", qs: ["How does this moment set up the hero's rise?", "What has to break before the hero can change?", "What question does the lowest point leave hanging?", "How does hitting bottom become the pivot?", "What does the hero need to do next to climb out?", "How does the darkness make the coming light matter?"] },
 ];
 
+const DARKNIGHT_GROUPS: Group[] = [
+  { L: "A", name: "The soul in darkness", qs: ["What is your hero's dark night of the soul?", "How is this an inner low, distinct from the external lowest point?", "What does the hero grapple with in the quiet after the crash?", "What does the hero feel they've lost about themselves?", "How deep does the despair go?", "What does the hero believe is no longer possible?"] },
+  { L: "B", name: "Grief & processing", qs: ["How does the hero mourn what was lost?", "What stages of grief does the hero move through here?", "What does the hero need to feel before they can act?", "How does the hero sit with the pain rather than flee it?", "What emotion finally breaks the surface?"] },
+  { L: "C", name: "The reckoning", qs: ["What hard truth does the hero face about themselves?", "How does the hero own their part in the failure?", "What excuse or illusion does the hero finally drop?", "What does the hero admit they got wrong?", "How does the hero confront their deepest fear?", "What does the hero forgive — in themselves or others?"] },
+  { L: "D", name: "The old self dies", qs: ["What version of the hero has to die here?", "What belief does the hero let go of?", "What identity no longer fits?", "How does the hero release the want that was holding them back?", "What does the hero surrender?"] },
+  { L: "E", name: "The whisper of the mentor", qs: ["How does the mentor's lesson return to the hero now?", "What words, memory, or gift resurfaces to guide them?", "How does the theme speak to the hero in the dark?", "Who reaches the hero when they're lowest?", "What truth finally lands that the hero once rejected?"] },
+  { L: "F", name: "The choice to rise", qs: ["What makes the hero decide to keep going?", "What is worth fighting for, even now?", "How does the hero choose the need over the want?", "What flips despair into resolve?", "What does the hero find inside that they didn't know was there?", "How does the hero say yes to the fight again?"] },
+  { L: "G", name: "Gathering the pieces", qs: ["What does the hero gather to prepare for the final push?", "How does the hero make amends before moving on?", "Who does the hero reconnect with?", "What resource, plan, or ally comes back?", "How does the hero rebuild enough to stand?"] },
+  { L: "H", name: "The transformed hero", qs: ["How is the hero different coming out of the dark night?", "What new strength or clarity emerges?", "How does the hero now embody the theme?", "What can the hero do now that they couldn't before?", "What fear no longer controls them?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel in this turning?", "What image captures the hero's rebirth?", "What line marks the decision to rise?", "How do you earn the turn so it doesn't feel cheap?", "How do you pace the shift from despair to resolve?", "What quiet beat makes the change believable?"] },
+  { L: "J", name: "Toward the climax", qs: ["How does the dark night launch the hero toward the final test?", "What is the hero now ready to do?", "What plan forms out of the darkness?", "What's at stake in the battle ahead?", "How does the transformed hero change the odds?", "What promise does this beat make about the ending?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -200,6 +213,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-midpoint-turn": MIDPOINT_GROUPS,
   "the-walls-close-in": WALLS_GROUPS,
   "the-lowest-point": LOWEST_GROUPS,
+  "the-dark-night": DARKNIGHT_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
