@@ -200,6 +200,19 @@ const DARKNIGHT_GROUPS: Group[] = [
   { L: "J", name: "Toward the climax", qs: ["How does the dark night launch the hero toward the final test?", "What is the hero now ready to do?", "What plan forms out of the darkness?", "What's at stake in the battle ahead?", "How does the transformed hero change the odds?", "What promise does this beat make about the ending?"] },
 ];
 
+const TURNEND_GROUPS: Group[] = [
+  { L: "A", name: "The pivot to the finale", qs: ["What launches your hero into the final stretch?", "How does the story turn decisively toward its ending?", "What decision or event kicks off the endgame?", "How does the hero commit fully to the final path?", "What signals that there's no turning back now?", "How does the pace accelerate here?"] },
+  { L: "B", name: "The new plan", qs: ["What is the hero's plan for the final confrontation?", "How is this plan different from what failed before?", "What has the hero learned that shapes the new approach?", "What role does each ally play in the plan?", "What could still go wrong with it?", "How does the plan reflect the hero's transformation?"] },
+  { L: "C", name: "Rallying the team", qs: ["How does the hero gather their allies for the end?", "Who rejoins the fight, and why?", "How does the hero inspire or lead now?", "What broken bond gets repaired here?", "How does the team unite around a shared goal?"] },
+  { L: "D", name: "Storming the castle", qs: ["How does the hero move toward the antagonist's stronghold?", "What obstacles stand between the hero and the final battle?", "What's the point of entry into the climax?", "How does the hero break through defenses?", "What early win or setback happens on the way in?"] },
+  { L: "E", name: "Raising the stakes", qs: ["How do the stakes reach their peak here?", "What does the hero stand to lose in the finale?", "What does the wider world stand to lose?", "How does the antagonist raise the threat?", "What deadline or ticking clock intensifies?", "Why does everything come down to this?"] },
+  { L: "F", name: "The hero's resolve", qs: ["How does the transformed hero show up differently now?", "What fear has the hero conquered to get here?", "What does the hero draw on for strength?", "How does the hero embody the theme in action?", "What does the hero refuse to give up on?"] },
+  { L: "G", name: "Setbacks on approach", qs: ["What last obstacle nearly stops the hero?", "What sacrifice does the approach demand?", "Who or what is lost on the way to the climax?", "What twist complicates the plan?", "How does the hero adapt when things go sideways?"] },
+  { L: "H", name: "The gathering forces", qs: ["How do all the threads converge toward the climax?", "What setups from earlier pay off now?", "How does the antagonist prepare for the hero's arrival?", "What secret or reveal changes the board?", "How does the story tighten toward the final clash?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel as the end nears?", "What image captures the charge to the finale?", "What line signals the final push?", "How do you build momentum without losing clarity?", "How do you make the audience believe the hero can win?", "What quiet beat precedes the storm of the climax?"] },
+  { L: "J", name: "Into the climax", qs: ["How does this beat hand the hero to the final test?", "What is the hero walking into?", "What's the last thing the hero does before the battle?", "What question will the climax answer?", "How does the theme reach its decisive test?", "What makes the audience lean in for the finale?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -214,6 +227,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-walls-close-in": WALLS_GROUPS,
   "the-lowest-point": LOWEST_GROUPS,
   "the-dark-night": DARKNIGHT_GROUPS,
+  "the-turn-to-the-end": TURNEND_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
