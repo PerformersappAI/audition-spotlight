@@ -91,7 +91,8 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
 
   const update = (i: number, patch: Partial<Character>) => setCast((c) => c.map((x, idx) => (idx === i ? { ...x, ...patch } : x)));
   const addChar = () => setCast((c) => [...c, blank()]);
-  const rm = (i: number) => setCast((c) => (c.length > 1 ? c.filter((_, idx) => idx !== i) : c));
+  const rm = (i: number) => setCast((c) => (c.length > 1 ? c.filter((_, idx) => idx !== i) : [blank()]));
+  const resetAll = () => { if (window.confirm("Erase the entire cast and start over? This clears every character.")) setCast([blank()]); };
 
   const setSlot = (i: number, slot: number, url: string) => setCast((c) => c.map((x, idx) => {
     if (idx !== i) return x;
@@ -266,6 +267,7 @@ export default function CastBuilder({ structureKey }: { structureKey: string }) 
 
         <div className="mt-8 pt-5 border-t border-white/10 flex items-center gap-4 flex-wrap">
           <div className="text-[12px] text-foreground/55">🎬 <b className="text-foreground">{cast.length}</b> cast · 🎙️ <b className="text-foreground">{voiced}</b> voiced</div>
+          <button onClick={resetAll} className="text-[12px] font-semibold text-foreground/45 hover:text-rose-400 underline">Reset all</button>
           <Link to={`/movie-in-a-box/${structureKey}/beats`} className="ml-auto inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-[13.5px] font-bold" style={{ backgroundColor: GOLD, color: "#1a1300" }}>
             Save cast → Continue to Beats →
           </Link>
