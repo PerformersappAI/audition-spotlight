@@ -79,6 +79,7 @@ export default function SceneBeatPage() {
   const [fwSel, setFwSel] = useState<FwKey[]>([]);
   const [full, setFull] = useState<Record<string, SceneData[]>>({});
   const [answersBeat, setAnswersBeat] = useState<Record<number, string>>({});
+  const [beatAns, setBeatAns] = useState<Record<string, Record<number, string>>>({});
   const [openScene, setOpenScene] = useState(-1);
   const [active, setActive] = useState<{ si: number; qi: number } | null>(null);
   const [weaving, setWeaving] = useState(false);
@@ -89,6 +90,7 @@ export default function SceneBeatPage() {
     readFw();
     try { const s = localStorage.getItem("mib-scene-dev"); setFull(s ? JSON.parse(s) : {}); } catch { /* ignore */ }
     try { const a = localStorage.getItem("mib-master-beats"); setAnswersBeat(a ? JSON.parse(a) : {}); } catch { /* ignore */ }
+    try { const b = localStorage.getItem("mib-beats"); setBeatAns(b ? JSON.parse(b) : {}); } catch { /* ignore */ }
     window.addEventListener("mib-fw", readFw);
     window.addEventListener("storage", readFw);
     return () => { window.removeEventListener("mib-fw", readFw); window.removeEventListener("storage", readFw); };
@@ -107,7 +109,7 @@ export default function SceneBeatPage() {
     try { window.dispatchEvent(new CustomEvent("mib-scenes-change")); } catch { /* ignore */ }
   };
   const updateScenes = (fn: (arr: SceneData[]) => SceneData[]) => { persist({ ...full, [beat]: fn([...(full[beat] || [])]) }); };
-  const addScene = () => updateScenes((arr) => [...arr, { a: {}, c: {} }]);
+  const addScene = () => updateScenes((arr) => [...arr, { a: { 4: current.t }, c: {} }]);
   const removeScene = (si: number) => { updateScenes((arr) => { const n = [...arr]; n.splice(si, 1); return n; }); if (openScene === si) setOpenScene(-1); setActive(null); };
   const setAnswer = (si: number, qi: number, val: string) => updateScenes((arr) => { const n = [...arr]; n[si] = { ...n[si], a: { ...n[si].a, [qi]: val } }; return n; });
   const setCoachAns = (si: number, qi: number, ci: number, val: string) => updateScenes((arr) => { const n = [...arr]; const sc = n[si]; n[si] = { ...sc, c: { ...sc.c, [qi]: { ...(sc.c[qi] || {}), [ci]: val } } }; return n; });
@@ -121,6 +123,7 @@ export default function SceneBeatPage() {
       const sc = (full[beat] || [])[active.si];
       const cAns = (sc?.c || {})[active.qi] || {};
       const items = COACH.map((q, ci) => ({ q, a: cAns[ci] || "" }));
+      if (storyContext) items.unshift({ q: "Background on the hero and world, from the writer's Ordinary World beat (use as context, do not contradict)", a: storyContext });
       const { data, error } = await supabase.functions.invoke("movie-brain", { body: { mainQuestion: SCENE_FLAT[active.qi] || "", items } });
       if (error) throw error;
       const p = data as { text?: string; error?: string } | null;
@@ -134,6 +137,9 @@ export default function SceneBeatPage() {
   const chips = fws.filter((k) => current.fw[k]);
   const mine = (answersBeat[idx] || "").trim();
   const activeCoachAns = active ? (((full[beat] || [])[active.si]?.c || {})[active.qi] || {}) : {};
+  const ow = beatAns["the-ordinary-world"] || {};
+  const storyFacts = ([["Hero", 0], ["Flaw", 6], ["Wants", 8], ["Needs", 9], ["World", 20], ["People", 27]] as [string, number][]).map(([k, i]) => [k, (ow[i] || "").trim()] as [string, string]).filter(([, v]) => v);
+  const storyContext = storyFacts.map(([k, v]) => `${k}: ${v}`).join(" · ");
 
   return (
     <>
@@ -229,7 +235,24 @@ export default function SceneBeatPage() {
                   {active && <button onClick={() => setActive(null)} className="ml-auto text-foreground/40 hover:text-foreground text-[13px]">✕</button>}
                 </div>
                 {!active ? (
-                  <div className="p-5 text-[12.5px] text-foreground/45 leading-relaxed">Add a scene, open it, and hit <span style={{ color: "#f0d089" }} className="font-bold">✨ Coach me on this</span> next to any question. I'll ask you deeper questions here — and weave your answers back into your answer.</div>
+                  <div className="p-4 overflow-y-auto" style={{ flex: "1 1 auto" }}>
+                    <div className="text-[10px] uppercase tracking-wide text-foreground/40 font-bold mb-2">Carried over · from your beat</div>
+                    {storyFacts.length ? (
+                      <>
+                        <div className="rounded-lg border px-3 py-1.5" style={{ borderColor: "rgba(240,208,137,0.3)", background: "rgba(240,208,137,0.05)" }}>
+                          {storyFacts.map(([k, v]) => (
+                            <div key={k} className="grid grid-cols-[58px_1fr] gap-2 py-1.5 border-b border-white/[0.05] last:border-0">
+                              <span className="text-[9.5px] font-bold uppercase tracking-wide text-foreground/40 pt-0.5">{k}</span>
+                              <span className="text-[12px] text-foreground/85 leading-snug">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="text-[11px] text-foreground/50 leading-relaxed mt-3"><span style={{ color: "#f0d089" }} className="font-bold">✨ Same brain as your beat.</span> The coach uses these facts when you weave a scene answer. Hit <span style={{ color: "#f0d089" }} className="font-bold">✨ Coach me on this</span> on any question to start.</div>
+                      </>
+                    ) : (
+                      <div className="text-[12.5px] text-foreground/45 leading-relaxed">Answer your <span className="font-bold" style={{ color: "#f0d089" }}>Ordinary World</span> beat and the hero, flaw, and world you wrote will show up here — and feed the scene coach. For now, add a scene and hit ✨ on any question.</div>
+                    )}
+                  </div>
                 ) : (
                   <div className="flex flex-col min-h-0">
                     <div className="px-4 pt-3 pb-2 border-b border-white/8">
