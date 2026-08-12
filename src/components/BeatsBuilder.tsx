@@ -148,6 +148,19 @@ const TRIALS_GROUPS: Group[] = [
   { L: "J", name: "Craft & momentum", qs: ["What are the 2–3 signature scenes of this section?", "What image defines the trials?", "What line captures the hero mid-adventure?", "How do you keep this section from sagging (the “muddy middle”)?", "How does each scene end with momentum into the next?", "How do the trials set up the midpoint turn?"] },
 ];
 
+const MIDPOINT_GROUPS: Group[] = [
+  { L: "A", name: "The turn itself", qs: ["What happens at the exact middle that changes everything?", "Is it a false victory (looks great, then sours) or a false defeat (looks lost, then a path opens)?", "What does the hero achieve or lose here?", "Why is this the pivot point of the whole film?", "What truth is revealed at the midpoint?", "How does the story flip direction here?", "What can never go back to how it was before the midpoint?"] },
+  { L: "B", name: "False win / false loss", qs: ["If it's a win, why is it hollow or temporary?", "If it's a loss, what hope survives inside it?", "What does the hero mistakenly believe they've accomplished?", "What's the sting hidden inside the apparent success?", "What's the gift hidden inside the apparent failure?", "How does the audience know it's not really over?"] },
+  { L: "C", name: "Raising the stakes", qs: ["How do the stakes double at the midpoint?", "What new threat or deadline emerges?", "What does the hero now stand to lose that they didn't before?", "How does the antagonist escalate?", "What makes the second half harder than the first?"] },
+  { L: "D", name: "The mirror moment", qs: ["What forces the hero to look at themselves honestly?", "What truth about their flaw do they glimpse (even if they reject it)?", "What question do they silently ask (“Who am I? What must I do?”)?", "How does the midpoint confront the hero with their need?", "What do they realize they've been getting wrong?"] },
+  { L: "E", name: "Shift in the hero", qs: ["Does the hero move from reactive to proactive (or the reverse)?", "What new resolve or plan do they form?", "How does their goal sharpen or change?", "What do they commit to that they wouldn't have before?", "What mask do they drop, or put on?", "How are they different walking out of the midpoint than walking in?"] },
+  { L: "F", name: "New information", qs: ["What secret or twist is revealed here?", "What does the hero learn about the enemy?", "What does the hero learn about an ally?", "What does the audience learn that the hero doesn't (or vice versa)?", "How does the new information reframe everything before it?"] },
+  { L: "G", name: "The want / need pivot", qs: ["Does the hero get closer to the want but further from the need (or vice versa)?", "What temptation appears at the midpoint?", "What's the first real hint they may have to choose want vs. need?", "How does the midpoint test their values?", "What would the “old” hero do vs. the “changing” hero?"] },
+  { L: "H", name: "Relationships at the midpoint", qs: ["How does the bond / B-story turn here?", "Who is revealed as friend or foe?", "What alliance forms or breaks?", "How does a key relationship raise the stakes?", "What promise or betrayal happens?"] },
+  { L: "I", name: "Emotion & craft", qs: ["What do you want the audience to feel at the midpoint?", "What's the signature midpoint image or set-piece?", "What line marks the turn?", "How do you make the midpoint a genuine surprise?", "How does tone shift into the darker second half?", "What's the “point of no return” quality of this beat?"] },
+  { L: "J", name: "Propulsion forward", qs: ["How does the midpoint launch the “walls close in” descent?", "What clock starts ticking louder now?", "What does the hero chase in the second half?", "How does the midpoint plant the seed of the lowest point?", "What thematic meaning does the turn carry?"] },
+];
+
 const BEAT_FORMS: Record<string, Group[]> = {
   "the-ordinary-world": OW_GROUPS,
   "the-theme": THEME_GROUPS,
@@ -158,6 +171,7 @@ const BEAT_FORMS: Record<string, Group[]> = {
   "the-point-of-no-return": PONR_GROUPS,
   "the-bond": BOND_GROUPS,
   "the-trials": TRIALS_GROUPS,
+  "the-midpoint-turn": MIDPOINT_GROUPS,
 };
 
 type Item = { kind: "group"; L: string; name: string } | { kind: "q"; text: string; qi: number };
