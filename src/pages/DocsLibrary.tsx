@@ -121,7 +121,7 @@ const documentBundles = [
     documents: [
       { id: "37", title: "Adult Talent Release", description: "Release of likeness, voice, and performance from an adult", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/adult-talent-release" },
       { id: "38", title: "Background / Extra Release", description: "Release for background performers appearing on camera", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/background-extra-release" },
-      { id: "39", title: "Minor Talent Release (Parental)", description: "Parental release for a minor's likeness and performance", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "39", title: "Minor Talent Release (Parental)", description: "Parental release for a minor's likeness and performance", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/minor-talent-release" },
       { id: "40", title: "Depiction / Appearance Release", description: "Release for recognizable individuals appearing on camera", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "41", title: "Personal Release", description: "General release for friends, family, or private individuals", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "42", title: "Interview / Subject Release", description: "Release for documentary interviews and real subjects", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true },
