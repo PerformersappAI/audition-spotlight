@@ -112,8 +112,10 @@ import CollaborationAgreement from "./pages/agreements/CollaborationAgreement";
 import CertificateOfAuthorship from "./pages/agreements/CertificateOfAuthorship";
 import RightsAssignmentAgreement from "./pages/agreements/RightsAssignmentAgreement";
 import NonDisclosureAgreement from "./pages/agreements/NonDisclosureAgreement";
+import LLCOperatingAgreement from "./pages/agreements/LLCOperatingAgreement";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
+
 
 
 
@@ -191,6 +193,8 @@ const AppContent = () => (
           <Route path="/library/rights-assignment-agreement" element={<ToolGate><RightsAssignmentAgreement /></ToolGate>} />
           <Route path="/library/shopping-agreement" element={<ToolGate><ShoppingAgreement /></ToolGate>} />
           <Route path="/library/non-disclosure-agreement" element={<ToolGate><NonDisclosureAgreement /></ToolGate>} />
+          <Route path="/library/llc-operating-agreement" element={<ToolGate><LLCOperatingAgreement /></ToolGate>} />
+
 
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
