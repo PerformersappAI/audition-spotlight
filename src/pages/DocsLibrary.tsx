@@ -244,6 +244,7 @@ const documentBundles = [
 export default function DocsLibrary() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Library is open to everyone; per-document actions can still gate themselves if needed.
