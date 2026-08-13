@@ -52,7 +52,7 @@ const documentBundles = [
       { id: "6", title: "Certificate of Authorship", description: "Confirm chain of title and original authorship", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/certificate-of-authorship" },
       { id: "7", title: "Rights Assignment Agreement", description: "Transfer intellectual property rights to the production entity", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/rights-assignment-agreement" },
       { id: "8", title: "Shopping Agreement", description: "Allow a producer to shop a project to financiers or studios", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/shopping-agreement" },
-      { id: "9", title: "Non-Disclosure Agreement (NDA)", description: "Protect confidential project information during development", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "9", title: "Non-Disclosure Agreement (NDA)", description: "Protect confidential project information during development", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/non-disclosure-agreement" },
     ]
   },
   {
@@ -250,7 +250,7 @@ export default function DocsLibrary() {
   // Library is open to everyone; per-document actions can still gate themselves if needed.
   const hasAccess = true;
 
-  const allDocuments = documentBundles.flatMap(bundle => bundle.documents);
+  const allDocuments: Document[] = documentBundles.flatMap(bundle => bundle.documents);
 
   const filteredDocuments = allDocuments.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
