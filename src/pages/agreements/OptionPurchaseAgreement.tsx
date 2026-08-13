@@ -394,6 +394,21 @@ const OptionPurchaseAgreement = () => {
                     value={form.property_description}
                     onChange={(e) => set("property_description", e.target.value)}
                   />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                    disabled={!form.property_description.trim() || legalizing === "property_description"}
+                    onClick={() => legalize("property_description", "Property Description")}
+                  >
+                    {legalizing === "property_description" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Make Professional
+                  </Button>
                 </div>
               </CardContent>
             </Card>
