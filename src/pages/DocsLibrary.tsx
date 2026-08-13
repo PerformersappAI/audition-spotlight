@@ -103,7 +103,8 @@ const documentBundles = [
       { id: "30", title: "Producer Agreement", description: "Define the producer's duties, fees, and credit", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/producer-agreement" },
       { id: "31", title: "Cinematographer (DP) Agreement", description: "Engage the director of photography and specify camera package", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/cinematographer-agreement" },
 
-      { id: "32", title: "Independent Contractor Agreement", description: "Classify a hire as an independent contractor for services", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "32", title: "Independent Contractor Agreement", description: "Classify a hire as an independent contractor for services", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/independent-contractor-agreement" },
+
       { id: "33", title: "Loan-Out Agreement (template)", description: "Engage a talent loaned out through a personal service company", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "34", title: "Kit / Box Rental Agreement", description: "Rent specialized equipment owned by a crew member", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "35", title: "Intern / Volunteer Agreement", description: "Outline unpaid or low-paid intern duties and expectations", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
