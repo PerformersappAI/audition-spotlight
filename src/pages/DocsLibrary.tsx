@@ -125,7 +125,7 @@ const documentBundles = [
       { id: "40", title: "Depiction / Appearance Release", description: "Release for recognizable individuals appearing on camera", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/depiction-appearance-release" },
       { id: "41", title: "Personal Release", description: "General release for friends, family, or private individuals", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/personal-release" },
       { id: "42", title: "Interview / Subject Release", description: "Release for documentary interviews and real subjects", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/interview-subject-release" },
-      { id: "43", title: "Crowd Notice / Signage", description: "On-set notice advising the public of filming and release", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "43", title: "Crowd Notice / Signage", description: "On-set notice advising the public of filming and release", category: "talent_releases", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/crowd-notice-signage" },
     ]
   },
   {
