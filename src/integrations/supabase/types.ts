@@ -1260,6 +1260,7 @@ export type Database = {
           email: string
           first_name: string | null
           id: string
+          is_internal: boolean
           last_name: string | null
           location: string | null
           phone: string | null
@@ -1275,6 +1276,7 @@ export type Database = {
           email: string
           first_name?: string | null
           id?: string
+          is_internal?: boolean
           last_name?: string | null
           location?: string | null
           phone?: string | null
@@ -1290,6 +1292,7 @@ export type Database = {
           email?: string
           first_name?: string | null
           id?: string
+          is_internal?: boolean
           last_name?: string | null
           location?: string | null
           phone?: string | null
