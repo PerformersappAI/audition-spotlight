@@ -10,7 +10,7 @@ import { toast } from "@/hooks/use-toast";
 import { Loader2, Plus, Trash2, Upload, Download, Film, Save } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
-import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement } from "@/hooks/useCallSheets";
+import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement, type CallSheetScheduleRow, type CallSheetAdvanceRow } from "@/hooks/useCallSheets";
 import { exportCallSheetToPDF, type CallSheetLogo } from "@/utils/exportCallSheetToPDF";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
@@ -69,6 +69,23 @@ const CallSheet = () => {
     current_script: "",
     unit_base: "",
     unit_base_address: "",
+    // Expanded professional template
+    block_focus: "",
+    total_pages: "",
+    gate_access_code: "",
+    truck_parking: "",
+    emergency_numbers: "",
+    on_set_medic: "",
+    map_link: "",
+    precipitation: "",
+    wind: "",
+    second_meal_time: "",
+    sound_hard_out_time: "",
+    safety_briefing: "",
+    walkie_channels: "",
+    general_notes: "",
+    key_contacts: "",
+    next_day_label: "",
   });
 
   const [scenes, setScenes] = useState<CallSheetScene[]>([{
@@ -97,6 +114,7 @@ const CallSheet = () => {
     costume_time: "",
     travel_time: "",
     on_set_time: "",
+    wrap_time: "",
   }]);
 
   const [crew, setCrew] = useState<CallSheetCrew[]>([{
@@ -117,10 +135,29 @@ const CallSheet = () => {
     costume_time: "",
     travel_time: "",
     on_set_time: "",
+    holding_area: "",
   }]);
 
   const [breaks, setBreaks] = useState<CallSheetBreak[]>([]);
-  const [requirements, setRequirements] = useState<CallSheetRequirement[]>([]);
+  const [requirements, setRequirements] = useState<CallSheetRequirement[]>([{ department: "", notes: "" }]);
+  const [scheduleRows, setScheduleRows] = useState<CallSheetScheduleRow[]>([{ time: "", activity: "", description: "" }]);
+  const [advanceRows, setAdvanceRows] = useState<CallSheetAdvanceRow[]>([{ scene_number: "", set_description: "", day_night: "", cast: "" }]);
+
+  const addScheduleRow = () => setScheduleRows([...scheduleRows, { time: "", activity: "", description: "" }]);
+  const removeScheduleRow = (index: number) => setScheduleRows(scheduleRows.filter((_, i) => i !== index));
+  const updateScheduleRow = (index: number, field: keyof CallSheetScheduleRow, value: string) => {
+    const updated = [...scheduleRows];
+    updated[index] = { ...updated[index], [field]: value };
+    setScheduleRows(updated);
+  };
+
+  const addAdvanceRow = () => setAdvanceRows([...advanceRows, { scene_number: "", set_description: "", day_night: "", cast: "" }]);
+  const removeAdvanceRow = (index: number) => setAdvanceRows(advanceRows.filter((_, i) => i !== index));
+  const updateAdvanceRow = (index: number, field: keyof CallSheetAdvanceRow, value: string) => {
+    const updated = [...advanceRows];
+    updated[index] = { ...updated[index], [field]: value };
+    setAdvanceRows(updated);
+  };
 
 
   const updateField = (field: keyof CallSheetData, value: any) => {
@@ -247,6 +284,7 @@ const CallSheet = () => {
       costume_time: "",
       travel_time: "",
       on_set_time: "",
+      wrap_time: "",
     }]);
   };
 
@@ -291,6 +329,7 @@ const CallSheet = () => {
       costume_time: "",
       travel_time: "",
       on_set_time: "",
+      holding_area: "",
     }]);
   };
 
@@ -478,7 +517,7 @@ const CallSheet = () => {
         requirementsCount: requirements.length
       });
       
-      await saveCallSheet(formData, scenes, cast, crew, background, breaks, requirements);
+      await saveCallSheet(formData, scenes, cast, crew, background, breaks, requirements.filter(r => r.department || r.notes), scheduleRows, advanceRows);
       
       console.log('✅ Save successful, navigating to dashboard...');
       toast({
@@ -545,7 +584,7 @@ const CallSheet = () => {
   };
 
   const handleDownloadPDF = () => {
-    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements, logo);
+    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements.filter(r => r.department || r.notes), logo, scheduleRows, advanceRows);
   };
 
   return (
@@ -662,12 +701,17 @@ const CallSheet = () => {
 
         <form onSubmit={handleSubmit}>
           <Tabs defaultValue="general" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
               <TabsTrigger value="general">General</TabsTrigger>
               <TabsTrigger value="scenes">Scenes</TabsTrigger>
               <TabsTrigger value="cast">Cast</TabsTrigger>
               <TabsTrigger value="crew">Crew</TabsTrigger>
               <TabsTrigger value="background">Background</TabsTrigger>
+              <TabsTrigger value="schedule">Schedule</TabsTrigger>
+              <TabsTrigger value="requirements">Requirements</TabsTrigger>
+              <TabsTrigger value="notes">Notes &amp; Safety</TabsTrigger>
+              <TabsTrigger value="advance">Advance</TabsTrigger>
+              <TabsTrigger value="contacts">Contacts</TabsTrigger>
             </TabsList>
 
             <TabsContent value="general">
@@ -702,6 +746,17 @@ const CallSheet = () => {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Block / Focus</Label>
+                      <Input placeholder="The Getaway Block" value={formData.block_focus} onChange={(e) => updateField("block_focus", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Total Pages</Label>
+                      <Input placeholder="4 3/8" value={formData.total_pages} onChange={(e) => updateField("total_pages", e.target.value)} />
+                    </div>
+                  </div>
+
                   <div className="grid grid-cols-5 gap-4">
                     <div className="space-y-2">
                       <Label>LX Precall</Label>
@@ -722,6 +777,17 @@ const CallSheet = () => {
                     <div className="space-y-2">
                       <Label>Est. Wrap</Label>
                       <Input type="time" value={formData.wrap_time} onChange={(e) => updateField("wrap_time", e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>2nd Meal</Label>
+                      <Input type="time" value={formData.second_meal_time} onChange={(e) => updateField("second_meal_time", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Sound Hard-Out</Label>
+                      <Input type="time" value={formData.sound_hard_out_time} onChange={(e) => updateField("sound_hard_out_time", e.target.value)} />
                     </div>
                   </div>
 
@@ -756,6 +822,17 @@ const CallSheet = () => {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
+                      <Label>Gate / Access Code</Label>
+                      <Input value={formData.gate_access_code} onChange={(e) => updateField("gate_access_code", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Map / Directions Link</Label>
+                      <Input value={formData.map_link} onChange={(e) => updateField("map_link", e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
                       <Label>Unit Base</Label>
                       <Input value={formData.unit_base} onChange={(e) => updateField("unit_base", e.target.value)} />
                     </div>
@@ -774,6 +851,10 @@ const CallSheet = () => {
                       <Label>Basecamp</Label>
                       <Input value={formData.basecamp} onChange={(e) => updateField("basecamp", e.target.value)} />
                     </div>
+                    <div className="space-y-2">
+                      <Label>Truck / Picture-Car Parking</Label>
+                      <Input value={formData.truck_parking} onChange={(e) => updateField("truck_parking", e.target.value)} />
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
@@ -784,6 +865,17 @@ const CallSheet = () => {
                     <div className="space-y-2">
                       <Label>Hospital Address</Label>
                       <Input value={formData.hospital_address} onChange={(e) => updateField("hospital_address", e.target.value)} />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Emergency Numbers</Label>
+                      <Input placeholder="Ambulance / Police / Fire" value={formData.emergency_numbers} onChange={(e) => updateField("emergency_numbers", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>On-Set Medic / First Aid</Label>
+                      <Input value={formData.on_set_medic} onChange={(e) => updateField("on_set_medic", e.target.value)} />
                     </div>
                   </div>
 
@@ -808,6 +900,14 @@ const CallSheet = () => {
                     <div className="space-y-2">
                       <Label>Sunset</Label>
                       <Input value={formData.sunset_time} onChange={(e) => updateField("sunset_time", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Precipitation</Label>
+                      <Input value={formData.precipitation} onChange={(e) => updateField("precipitation", e.target.value)} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Wind</Label>
+                      <Input value={formData.wind} onChange={(e) => updateField("wind", e.target.value)} />
                     </div>
                   </div>
                 </CardContent>
@@ -910,7 +1010,7 @@ const CallSheet = () => {
                                 <Input placeholder="W/SW" value={member.status} onChange={(e) => updateCast(index, "status", e.target.value)} />
                               </div>
                             </div>
-                            <div className="grid grid-cols-3 gap-4">
+                            <div className="grid grid-cols-4 gap-4">
                               <div className="space-y-2">
                                 <Label>Pickup Time</Label>
                                 <Input type="time" value={member.pickup_time} onChange={(e) => updateCast(index, "pickup_time", e.target.value)} />
@@ -922,6 +1022,10 @@ const CallSheet = () => {
                               <div className="space-y-2">
                                 <Label>Set Ready</Label>
                                 <Input type="time" value={member.set_ready_time} onChange={(e) => updateCast(index, "set_ready_time", e.target.value)} />
+                              </div>
+                              <div className="space-y-2">
+                                <Label>Wrap Time</Label>
+                                <Input type="time" value={member.wrap_time} onChange={(e) => updateCast(index, "wrap_time", e.target.value)} />
                               </div>
                             </div>
                             <div className="space-y-2">
@@ -992,11 +1096,17 @@ const CallSheet = () => {
             <TabsContent value="background">
               <Card>
                 <CardHeader>
-                  <CardTitle>Background Actors</CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Background Actors</CardTitle>
+                    <Button type="button" onClick={addBackground} size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Background
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {background.map((item, index) => (
-                    <div key={index} className="grid grid-cols-4 gap-4">
+                    <div key={index} className="grid grid-cols-5 gap-4">
                       <div className="space-y-2">
                         <Label>Quantity</Label>
                         <Input type="number" value={item.quantity || ''} onChange={(e) => {
@@ -1022,6 +1132,14 @@ const CallSheet = () => {
                         }} />
                       </div>
                       <div className="space-y-2">
+                        <Label>Holding Area</Label>
+                        <Input value={item.holding_area} onChange={(e) => {
+                          const updated = [...background];
+                          updated[index].holding_area = e.target.value;
+                          setBackground(updated);
+                        }} />
+                      </div>
+                      <div className="space-y-2">
                         <Label>Notes</Label>
                         <Input value={item.notes} onChange={(e) => {
                           const updated = [...background];
@@ -1031,6 +1149,163 @@ const CallSheet = () => {
                       </div>
                     </div>
                   ))}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="schedule">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Schedule / Running Order</CardTitle>
+                    <Button type="button" onClick={addScheduleRow} size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Row
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {scheduleRows.map((row, index) => (
+                    <div key={index} className="flex items-end gap-4">
+                      <div className="w-32 space-y-2">
+                        <Label>Time</Label>
+                        <Input placeholder="07:00" value={row.time} onChange={(e) => updateScheduleRow(index, "time", e.target.value)} />
+                      </div>
+                      <div className="w-56 space-y-2">
+                        <Label>Scene / Activity</Label>
+                        <Input placeholder="Sc. 14 / Company Move" value={row.activity} onChange={(e) => updateScheduleRow(index, "activity", e.target.value)} />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <Label>Description</Label>
+                        <Input value={row.description} onChange={(e) => updateScheduleRow(index, "description", e.target.value)} />
+                      </div>
+                      {scheduleRows.length > 1 && (
+                        <Button type="button" variant="destructive" size="icon" onClick={() => removeScheduleRow(index)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="requirements">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Department Requirements</CardTitle>
+                    <Button type="button" onClick={addRequirement} size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Requirement
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {requirements.length === 0 && (
+                    <p className="text-sm text-muted-foreground">No requirements yet. Add a row to note department needs and atmosphere.</p>
+                  )}
+                  {requirements.map((req, index) => (
+                    <div key={index} className="flex items-start gap-4">
+                      <div className="w-56 space-y-2">
+                        <Label>Department</Label>
+                        <Input placeholder="Props / SFX / Stunts" value={req.department} onChange={(e) => updateRequirement(index, "department", e.target.value)} />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <Label>Notes</Label>
+                        <Textarea rows={2} value={req.notes} onChange={(e) => updateRequirement(index, "notes", e.target.value)} />
+                      </div>
+                      <Button type="button" variant="destructive" size="icon" className="mt-8" onClick={() => removeRequirement(index)}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="notes">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Notes &amp; Safety</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Mandatory Safety Briefing / Bulletin</Label>
+                    <Textarea rows={4} value={formData.safety_briefing} onChange={(e) => updateField("safety_briefing", e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Walkie-Talkie Channels</Label>
+                    <Input placeholder="1 Production / 2 Camera / 3 Grip" value={formData.walkie_channels} onChange={(e) => updateField("walkie_channels", e.target.value)} />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>General Notes / Boilerplate</Label>
+                    <Textarea rows={4} value={formData.general_notes} onChange={(e) => updateField("general_notes", e.target.value)} />
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="advance">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Advance Schedule</CardTitle>
+                    <Button type="button" onClick={addAdvanceRow} size="sm">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Row
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="space-y-2">
+                    <Label>Next Day Label</Label>
+                    <Input placeholder="Day 4 - Fri, Aug 14" value={formData.next_day_label} onChange={(e) => updateField("next_day_label", e.target.value)} />
+                  </div>
+                  {advanceRows.map((row, index) => (
+                    <div key={index} className="flex items-end gap-4">
+                      <div className="w-28 space-y-2">
+                        <Label>Scene #</Label>
+                        <Input value={row.scene_number} onChange={(e) => updateAdvanceRow(index, "scene_number", e.target.value)} />
+                      </div>
+                      <div className="flex-1 space-y-2">
+                        <Label>Set</Label>
+                        <Input value={row.set_description} onChange={(e) => updateAdvanceRow(index, "set_description", e.target.value)} />
+                      </div>
+                      <div className="w-24 space-y-2">
+                        <Label>D/N</Label>
+                        <Input value={row.day_night} onChange={(e) => updateAdvanceRow(index, "day_night", e.target.value)} />
+                      </div>
+                      <div className="w-40 space-y-2">
+                        <Label>Cast</Label>
+                        <Input placeholder="1, 2, 5" value={row.cast} onChange={(e) => updateAdvanceRow(index, "cast", e.target.value)} />
+                      </div>
+                      {advanceRows.length > 1 && (
+                        <Button type="button" variant="destructive" size="icon" onClick={() => removeAdvanceRow(index)}>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="contacts">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Key Contacts</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    <Label>Key Contacts</Label>
+                    <Textarea
+                      rows={8}
+                      placeholder={"Director - Name - 555-0100\n1st AD - Name - 555-0101\n2nd AD - Name - 555-0102\nUPM - Name - 555-0103\nLine Producer - Name - 555-0104\nProduction Line - 555-0105"}
+                      value={formData.key_contacts}
+                      onChange={(e) => updateField("key_contacts", e.target.value)}
+                    />
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>
