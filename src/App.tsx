@@ -143,6 +143,8 @@ import AdultTalentRelease from "./pages/agreements/AdultTalentRelease";
 import BackgroundExtraRelease from "./pages/agreements/BackgroundExtraRelease";
 import MinorTalentRelease from "./pages/agreements/MinorTalentRelease";
 import DepictionAppearanceRelease from "./pages/agreements/DepictionAppearanceRelease";
+import PersonalRelease from "./pages/agreements/PersonalRelease";
+
 
 
 
