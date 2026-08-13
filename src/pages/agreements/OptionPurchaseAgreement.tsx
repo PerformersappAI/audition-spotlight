@@ -85,6 +85,31 @@ const OptionPurchaseAgreement = () => {
   const set = <K extends keyof OptionAgreementForm>(key: K, value: OptionAgreementForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
+  const [legalizing, setLegalizing] = useState<"property_description" | "contingent_comp" | null>(null);
+
+  const legalize = async (field: "property_description" | "contingent_comp", context: string) => {
+    const value = form[field].trim();
+    if (!value) return;
+    setLegalizing(field);
+    try {
+      const res = await aiInvoke<{ text?: string; error?: string }>("legalize-text", {
+        body: { text: value, context },
+      });
+      if (res?.text) {
+        set(field, res.text);
+        toast.success("Clause rewritten");
+      } else {
+        toast.error(res?.error || "No text returned");
+      }
+    } catch (err) {
+      if (!(err instanceof InsufficientCreditsError)) {
+        toast.error(err instanceof Error ? err.message : "Something went wrong");
+      }
+    } finally {
+      setLegalizing(null);
+    }
+  };
+
   const v = (value: string, placeholder: string) => (value.trim() ? value.trim() : `[${placeholder}]`);
 
   const intro = `This Option and Purchase Agreement ("Agreement") is entered into as of ${v(
