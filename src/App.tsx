@@ -131,6 +131,7 @@ import DetailedBudget from "./pages/agreements/DetailedBudget";
 import CrewContactList from "./pages/agreements/CrewContactList";
 import CastDealMemo from "./pages/agreements/CastDealMemo";
 import CrewDealMemo from "./pages/agreements/CrewDealMemo";
+import DirectorAgreement from "./pages/agreements/DirectorAgreement";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 

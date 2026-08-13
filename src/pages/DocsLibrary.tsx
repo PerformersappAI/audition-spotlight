@@ -99,7 +99,7 @@ const documentBundles = [
     documents: [
       { id: "27", title: "Cast Deal Memo", description: "Summarize terms for a cast member's engagement", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/cast-deal-memo" },
       { id: "28", title: "Crew Deal Memo", description: "Summarize terms for a crew member's engagement", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/crew-deal-memo" },
-      { id: "29", title: "Director Agreement", description: "Define the director's services, compensation, and final cut", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "29", title: "Director Agreement", description: "Define the director's services, compensation, and final cut", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/director-agreement" },
       { id: "30", title: "Producer Agreement", description: "Define the producer's duties, fees, and credit", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "31", title: "Cinematographer (DP) Agreement", description: "Engage the director of photography and specify camera package", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "32", title: "Independent Contractor Agreement", description: "Classify a hire as an independent contractor for services", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
