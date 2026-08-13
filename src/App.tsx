@@ -124,6 +124,7 @@ import StripboardProductionBoard from "./pages/agreements/StripboardProductionBo
 import OneLineSchedule from "./pages/agreements/OneLineSchedule";
 import ShootingSchedule from "./pages/agreements/ShootingSchedule";
 import DayOutOfDays from "./pages/agreements/DayOutOfDays";
+import ShotList from "./pages/agreements/ShotList";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -218,6 +219,7 @@ const AppContent = () => (
           <Route path="/library/one-line-schedule" element={<ToolGate><OneLineSchedule /></ToolGate>} />
           <Route path="/library/shooting-schedule" element={<ToolGate><ShootingSchedule /></ToolGate>} />
           <Route path="/library/day-out-of-days" element={<ToolGate><DayOutOfDays /></ToolGate>} />
+          <Route path="/library/shot-list" element={<ToolGate><ShotList /></ToolGate>} />
 
 
 
