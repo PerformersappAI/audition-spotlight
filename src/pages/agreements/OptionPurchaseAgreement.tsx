@@ -60,7 +60,7 @@ const INITIAL_FORM: OptionAgreementForm = {
   reserved_rights:
     "publication (print) rights, live stage rights, and radio rights are reserved to Owner",
   credit: "",
-  governing_law: "",
+  governing_law: "the State of California",
 };
 
 const DISCLAIMER =
@@ -79,8 +79,16 @@ const formatDate = (value: string) => {
 
 type Clause = { heading: string; body: string };
 
+const GOV_OPTIONS = [
+  "the State of California",
+  "the State of New York",
+  "the State of Delaware",
+  "the State of Georgia",
+];
+
 const OptionPurchaseAgreement = () => {
   const [form, setForm] = useState<OptionAgreementForm>(INITIAL_FORM);
+  const [govChoice, setGovChoice] = useState<string>("the State of California");
 
   const set = <K extends keyof OptionAgreementForm>(key: K, value: OptionAgreementForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -581,14 +589,48 @@ const OptionPurchaseAgreement = () => {
               <CardHeader>
                 <CardTitle>Governing Law</CardTitle>
               </CardHeader>
-              <CardContent>
-                <Label htmlFor="governing_law">Governing Law</Label>
-                <Input
-                  id="governing_law"
-                  placeholder="the State of California"
-                  value={form.governing_law}
-                  onChange={(e) => set("governing_law", e.target.value)}
-                />
+              <CardContent className="space-y-4">
+                <div>
+                  <Label htmlFor="governing_law_select">Governing Law</Label>
+                  <Select
+                    value={govChoice}
+                    onValueChange={(val) => {
+                      setGovChoice(val);
+                      if (val !== "Other") {
+                        set("governing_law", val);
+                      } else {
+                        set("governing_law", "");
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="governing_law_select">
+                      <SelectValue placeholder="Select jurisdiction" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {GOV_OPTIONS.map((opt) => (
+                        <SelectItem key={opt} value={opt}>
+                          {opt}
+                        </SelectItem>
+                      ))}
+                      <SelectItem value="Other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                {govChoice === "Other" && (
+                  <div>
+                    <Label htmlFor="governing_law_custom">Custom Jurisdiction</Label>
+                    <Input
+                      id="governing_law_custom"
+                      placeholder="e.g., the State of Texas, or the Republic of Italy"
+                      value={form.governing_law}
+                      onChange={(e) => set("governing_law", e.target.value)}
+                    />
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  The jurisdiction whose laws govern this agreement — usually where your company is
+                  formed (e.g., California, New York, Delaware). Not where you film.
+                </p>
               </CardContent>
             </Card>
           </div>
