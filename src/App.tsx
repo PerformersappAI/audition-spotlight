@@ -124,6 +124,7 @@ import StripboardProductionBoard from "./pages/agreements/StripboardProductionBo
 import OneLineSchedule from "./pages/agreements/OneLineSchedule";
 import ShootingSchedule from "./pages/agreements/ShootingSchedule";
 import DayOutOfDays from "./pages/agreements/DayOutOfDays";
+import ShotList from "./pages/agreements/ShotList";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
