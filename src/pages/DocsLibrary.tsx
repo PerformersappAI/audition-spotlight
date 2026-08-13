@@ -250,7 +250,7 @@ export default function DocsLibrary() {
   // Library is open to everyone; per-document actions can still gate themselves if needed.
   const hasAccess = true;
 
-  const allDocuments = documentBundles.flatMap(bundle => bundle.documents);
+  const allDocuments: Document[] = documentBundles.flatMap(bundle => bundle.documents);
 
   const filteredDocuments = allDocuments.filter(doc => {
     const matchesSearch = doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
