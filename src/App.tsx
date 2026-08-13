@@ -145,6 +145,8 @@ import MinorTalentRelease from "./pages/agreements/MinorTalentRelease";
 import DepictionAppearanceRelease from "./pages/agreements/DepictionAppearanceRelease";
 import PersonalRelease from "./pages/agreements/PersonalRelease";
 import InterviewSubjectRelease from "./pages/agreements/InterviewSubjectRelease";
+import CrowdNoticeSignage from "./pages/agreements/CrowdNoticeSignage";
+
 
 
 
@@ -276,6 +278,9 @@ const AppContent = () => (
           <Route path="/library/depiction-appearance-release" element={<ToolGate><DepictionAppearanceRelease /></ToolGate>} />
           <Route path="/library/personal-release" element={<ToolGate><PersonalRelease /></ToolGate>} />
           <Route path="/library/interview-subject-release" element={<ToolGate><InterviewSubjectRelease /></ToolGate>} />
+          <Route path="/library/crowd-notice-signage" element={<ToolGate><CrowdNoticeSignage /></ToolGate>} />
+
+
 
 
 
