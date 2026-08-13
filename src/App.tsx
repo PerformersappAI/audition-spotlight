@@ -293,6 +293,7 @@ const AppContent = () => (
           <Route path="/library/location-scout-report" element={<ToolGate><LocationScoutReport /></ToolGate>} />
           <Route path="/library/tech-scout-survey" element={<ToolGate><TechScoutSurvey /></ToolGate>} />
           <Route path="/library/permit-application-checklist" element={<ToolGate><PermitApplicationChecklist /></ToolGate>} />
+          <Route path="/library/film-office-cover-letter" element={<ToolGate><FilmOfficeCoverLetter /></ToolGate>} />
 
 
 
