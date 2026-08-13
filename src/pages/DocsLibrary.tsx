@@ -85,7 +85,7 @@ const documentBundles = [
       { id: "21", title: "Day Out of Days (DOOD)", description: "Track cast availability and work days across the schedule", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/day-out-of-days" },
       { id: "22", title: "Shot List", description: "List every camera shot planned for each scene", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/shot-list" },
       { id: "23", title: "Storyboard Template", description: "Frame-by-frame visual planning template with notes", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/storyboard-template" },
-      { id: "24", title: "Budget Top Sheet", description: "Summary of the production budget by category", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "24", title: "Budget Top Sheet", description: "Summary of the production budget by category", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/budget-top-sheet" },
       { id: "25", title: "Detailed Budget Template", description: "Line-item budget with account codes and fringes", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "26", title: "Crew List / Contact Sheet", description: "Contact information and roles for all crew members", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
     ]

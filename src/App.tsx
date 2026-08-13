@@ -126,6 +126,7 @@ import ShootingSchedule from "./pages/agreements/ShootingSchedule";
 import DayOutOfDays from "./pages/agreements/DayOutOfDays";
 import ShotList from "./pages/agreements/ShotList";
 import StoryboardTemplate from "./pages/agreements/StoryboardTemplate";
+import BudgetTopSheet from "./pages/agreements/BudgetTopSheet";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -222,6 +223,7 @@ const AppContent = () => (
           <Route path="/library/day-out-of-days" element={<ToolGate><DayOutOfDays /></ToolGate>} />
           <Route path="/library/shot-list" element={<ToolGate><ShotList /></ToolGate>} />
           <Route path="/library/storyboard-template" element={<ToolGate><StoryboardTemplate /></ToolGate>} />
+          <Route path="/library/budget-top-sheet" element={<ToolGate><BudgetTopSheet /></ToolGate>} />
 
 
 
