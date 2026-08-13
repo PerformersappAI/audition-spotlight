@@ -107,7 +107,7 @@ const documentBundles = [
 
       { id: "33", title: "Loan-Out Agreement (template)", description: "Engage a talent loaned out through a personal service company", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/loan-out-agreement" },
 
-      { id: "34", title: "Kit / Box Rental Agreement", description: "Rent specialized equipment owned by a crew member", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "34", title: "Kit / Box Rental Agreement", description: "Rent specialized equipment owned by a crew member", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/kit-box-rental-agreement" },
       { id: "35", title: "Intern / Volunteer Agreement", description: "Outline unpaid or low-paid intern duties and expectations", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "36", title: "Parental / Guardian Consent (Minor)", description: "Consent and terms for employing a minor performer", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
     ]
