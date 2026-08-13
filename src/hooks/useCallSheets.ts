@@ -43,7 +43,38 @@ export interface CallSheetData {
   current_script?: string;
   unit_base?: string;
   unit_base_address?: string;
+  // Expanded professional template fields (form + PDF only; not persisted)
+  block_focus?: string;
+  total_pages?: string;
+  gate_access_code?: string;
+  truck_parking?: string;
+  emergency_numbers?: string;
+  on_set_medic?: string;
+  map_link?: string;
+  precipitation?: string;
+  wind?: string;
+  second_meal_time?: string;
+  sound_hard_out_time?: string;
+  safety_briefing?: string;
+  walkie_channels?: string;
+  general_notes?: string;
+  key_contacts?: string;
+  next_day_label?: string;
 }
+
+export interface CallSheetScheduleRow {
+  time?: string;
+  activity?: string;
+  description?: string;
+}
+
+export interface CallSheetAdvanceRow {
+  scene_number?: string;
+  set_description?: string;
+  day_night?: string;
+  cast?: string;
+}
+
 
 export interface CallSheetScene {
   id?: string;
@@ -75,6 +106,7 @@ export interface CallSheetCast {
   costume_time?: string;
   travel_time?: string;
   on_set_time?: string;
+  wrap_time?: string;
 }
 
 export interface CallSheetCrew {
@@ -97,6 +129,7 @@ export interface CallSheetBackground {
   costume_time?: string;
   travel_time?: string;
   on_set_time?: string;
+  holding_area?: string;
 }
 
 export interface CallSheetBreak {
@@ -216,7 +249,10 @@ export const useCallSheets = () => {
     crew: CallSheetCrew[],
     background: CallSheetBackground[],
     breaks: CallSheetBreak[] = [],
-    requirements: CallSheetRequirement[] = []
+    requirements: CallSheetRequirement[] = [],
+    // Carried for PDF export / future persistence; not stored in the current schema.
+    _scheduleRows: CallSheetScheduleRow[] = [],
+    _advanceRows: CallSheetAdvanceRow[] = []
   ) => {
     try {
       console.log('🚀 Starting call sheet save...', { callSheetData, scenesCount: scenes.length, castCount: cast.length });
