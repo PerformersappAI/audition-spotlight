@@ -9,7 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Download, Printer, RotateCcw } from "lucide-react";
+import { AlertTriangle, Download, Loader2, Printer, RotateCcw, Sparkles } from "lucide-react";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
+import { toast } from "sonner";
 
 interface OptionAgreementForm {
   effective_date: string;
