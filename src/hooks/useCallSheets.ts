@@ -106,6 +106,7 @@ export interface CallSheetCast {
   costume_time?: string;
   travel_time?: string;
   on_set_time?: string;
+  wrap_time?: string;
 }
 
 export interface CallSheetCrew {
@@ -128,6 +129,7 @@ export interface CallSheetBackground {
   costume_time?: string;
   travel_time?: string;
   on_set_time?: string;
+  holding_area?: string;
 }
 
 export interface CallSheetBreak {
@@ -247,7 +249,10 @@ export const useCallSheets = () => {
     crew: CallSheetCrew[],
     background: CallSheetBackground[],
     breaks: CallSheetBreak[] = [],
-    requirements: CallSheetRequirement[] = []
+    requirements: CallSheetRequirement[] = [],
+    // Carried for PDF export / future persistence; not stored in the current schema.
+    _scheduleRows: CallSheetScheduleRow[] = [],
+    _advanceRows: CallSheetAdvanceRow[] = []
   ) => {
     try {
       console.log('🚀 Starting call sheet save...', { callSheetData, scenesCount: scenes.length, castCount: cast.length });
