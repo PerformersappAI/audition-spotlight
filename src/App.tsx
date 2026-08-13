@@ -118,6 +118,7 @@ import FinancingTermSheet from "./pages/agreements/FinancingTermSheet";
 import RecoupmentWaterfall from "./pages/agreements/RecoupmentWaterfall";
 import DeferredCompensationAgreement from "./pages/agreements/DeferredCompensationAgreement";
 import ExecutiveProducerAgreement from "./pages/agreements/ExecutiveProducerAgreement";
+import CoProductionAgreement from "./pages/agreements/CoProductionAgreement";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
