@@ -109,6 +109,8 @@ import LiteraryRightsOption from "./pages/agreements/LiteraryRightsOption";
 import WriterAgreement from "./pages/agreements/WriterAgreement";
 import LifeRightsAgreement from "./pages/agreements/LifeRightsAgreement";
 import CollaborationAgreement from "./pages/agreements/CollaborationAgreement";
+import CertificateOfAuthorship from "./pages/agreements/CertificateOfAuthorship";
+
 
 
 
@@ -180,6 +182,7 @@ const AppContent = () => (
       <Route path="/library/writer-agreement-work-for-hire" element={<ToolGate><WriterAgreement /></ToolGate>} />
       <Route path="/library/life-rights-agreement" element={<ToolGate><LifeRightsAgreement /></ToolGate>} />
       <Route path="/library/collaboration-agreement" element={<ToolGate><CollaborationAgreement /></ToolGate>} />
+      <Route path="/library/certificate-of-authorship" element={<ToolGate><CertificateOfAuthorship /></ToolGate>} />
 
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
