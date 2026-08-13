@@ -515,6 +515,21 @@ const OptionPurchaseAgreement = () => {
                     value={form.contingent_comp}
                     onChange={(e) => set("contingent_comp", e.target.value)}
                   />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                    disabled={!form.contingent_comp.trim() || legalizing === "contingent_comp"}
+                    onClick={() => legalize("contingent_comp", "Contingent Compensation")}
+                  >
+                    {legalizing === "contingent_comp" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Make Professional
+                  </Button>
                 </div>
               </CardContent>
             </Card>
