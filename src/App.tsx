@@ -272,6 +272,9 @@ const AppContent = () => (
           <Route path="/library/background-extra-release" element={<ToolGate><BackgroundExtraRelease /></ToolGate>} />
           <Route path="/library/minor-talent-release" element={<ToolGate><MinorTalentRelease /></ToolGate>} />
           <Route path="/library/depiction-appearance-release" element={<ToolGate><DepictionAppearanceRelease /></ToolGate>} />
+          <Route path="/library/personal-release" element={<ToolGate><PersonalRelease /></ToolGate>} />
+
+
 
 
 
