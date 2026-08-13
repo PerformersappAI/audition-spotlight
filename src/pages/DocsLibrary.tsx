@@ -62,7 +62,7 @@ const documentBundles = [
     icon: DollarSign,
     description: "Entity formation, investment, and financial structure documents",
     documents: [
-      { id: "10", title: "LLC Operating Agreement", description: "Govern the production company's ownership and operations", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "10", title: "LLC Operating Agreement", description: "Govern the production company's ownership and operations", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/llc-operating-agreement" },
       { id: "11", title: "Investor Agreement (template)", description: "Outline investment terms, equity, and repayment expectations", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "12", title: "Financing Term Sheet", description: "Summarize key investment terms before drafting final documents", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "13", title: "Recoupment / Waterfall Schedule", description: "Map the order and priority of revenue distribution", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
