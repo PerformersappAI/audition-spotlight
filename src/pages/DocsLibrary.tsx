@@ -51,7 +51,7 @@ const documentBundles = [
       { id: "5", title: "Collaboration Agreement", description: "Define ownership and duties between creative partners", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/collaboration-agreement" },
       { id: "6", title: "Certificate of Authorship", description: "Confirm chain of title and original authorship", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/certificate-of-authorship" },
       { id: "7", title: "Rights Assignment Agreement", description: "Transfer intellectual property rights to the production entity", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/rights-assignment-agreement" },
-      { id: "8", title: "Shopping Agreement", description: "Allow a producer to shop a project to financiers or studios", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "8", title: "Shopping Agreement", description: "Allow a producer to shop a project to financiers or studios", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/shopping-agreement" },
       { id: "9", title: "Non-Disclosure Agreement (NDA)", description: "Protect confidential project information during development", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },

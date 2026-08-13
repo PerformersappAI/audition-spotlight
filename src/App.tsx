@@ -111,6 +111,7 @@ import LifeRightsAgreement from "./pages/agreements/LifeRightsAgreement";
 import CollaborationAgreement from "./pages/agreements/CollaborationAgreement";
 import CertificateOfAuthorship from "./pages/agreements/CertificateOfAuthorship";
 import RightsAssignmentAgreement from "./pages/agreements/RightsAssignmentAgreement";
+import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
 
 
@@ -185,7 +186,8 @@ const AppContent = () => (
       <Route path="/library/life-rights-agreement" element={<ToolGate><LifeRightsAgreement /></ToolGate>} />
       <Route path="/library/collaboration-agreement" element={<ToolGate><CollaborationAgreement /></ToolGate>} />
       <Route path="/library/certificate-of-authorship" element={<ToolGate><CertificateOfAuthorship /></ToolGate>} />
-      <Route path="/library/rights-assignment-agreement" element={<ToolGate><RightsAssignmentAgreement /></ToolGate>} />
+          <Route path="/library/rights-assignment-agreement" element={<ToolGate><RightsAssignmentAgreement /></ToolGate>} />
+          <Route path="/library/shopping-agreement" element={<ToolGate><ShoppingAgreement /></ToolGate>} />
 
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
