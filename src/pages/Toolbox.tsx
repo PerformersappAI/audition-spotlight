@@ -46,9 +46,9 @@ const GROUPS: Group[] = [
     label: "Production Office",
     rows: [
       { cols: 3, tools: [
-        { title: "Calendar", to: "/calendar", theme: "violet" },
-        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
         { title: "Project Intake Form", to: "/submit", theme: "violet" },
+        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
+        { title: "Calendar", to: "/calendar", theme: "violet" },
       ]},
       { cols: 2, tools: [
         { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
