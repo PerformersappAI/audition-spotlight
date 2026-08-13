@@ -104,6 +104,7 @@ import BeatPage from "./pages/BeatPage";
 import MoviePage from "./pages/MoviePage";
 import ShotBeatPage from "./pages/ShotBeatPage";
 import SceneBeatPage from "./pages/SceneBeatPage";
+import OptionPurchaseAgreement from "./pages/agreements/OptionPurchaseAgreement";
 
 import ToolGate from "@/components/ToolGate";
 
@@ -167,6 +168,7 @@ const AppContent = () => (
       <Route path="/toolbox/distribution" element={<DistributionPhase />} />
       <Route path="/submit" element={<ToolGate><MultiStepForm /></ToolGate>} />
       <Route path="/library" element={<ToolGate><DocsLibrary /></ToolGate>} />
+      <Route path="/library/option-purchase-agreement" element={<ToolGate><OptionPurchaseAgreement /></ToolGate>} />
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/training" element={<Navigate to="/" replace />} />

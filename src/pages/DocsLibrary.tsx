@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -32,6 +33,7 @@ interface Document {
   format: string;
   size: string;
   premium: boolean;
+  route?: string;
 }
 
 const documentBundles = [
@@ -42,7 +44,7 @@ const documentBundles = [
     icon: FileText,
     description: "Contracts for acquiring, developing, and protecting intellectual property",
     documents: [
-      { id: "1", title: "Option / Purchase Agreement", description: "Acquire rights to a screenplay, book, or life story", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "1", title: "Option / Purchase Agreement", description: "Acquire rights to a screenplay, book, or life story", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/option-purchase-agreement" },
       { id: "2", title: "Literary Rights Option Agreement", description: "Option literary material for a set period and price", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "3", title: "Writer Agreement (Work-for-Hire)", description: "Hire a writer to create original material for the project", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "4", title: "Life Rights Agreement", description: "Secure permission to portray a person's life story", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
@@ -242,6 +244,7 @@ const documentBundles = [
 export default function DocsLibrary() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   // Library is open to everyone; per-document actions can still gate themselves if needed.
@@ -255,6 +258,14 @@ export default function DocsLibrary() {
     const matchesCategory = selectedCategory === "all" || doc.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
+
+  const handleDocClick = (doc: Document) => {
+    if (doc.route) {
+      navigate(doc.route);
+      return;
+    }
+    handleDownload(doc);
+  };
 
   const handleDownload = (document: Document) => {
     if (!hasAccess) {
@@ -370,7 +381,7 @@ export default function DocsLibrary() {
 
                 <div className="grid gap-4">
                   {bundle.documents.map((doc) => (
-                    <Card key={doc.id}>
+                    <Card key={doc.id} onClick={doc.route ? () => navigate(doc.route!) : undefined} className={doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : undefined}>
                       <CardContent className="flex items-center justify-between p-4">
                         <div className="flex items-center gap-4">
                           <FileText className="h-8 w-8 text-muted-foreground" />
@@ -384,12 +395,12 @@ export default function DocsLibrary() {
                           </div>
                         </div>
                         <Button 
-                          onClick={() => handleDownload(doc)}
+                          onClick={(e) => { e.stopPropagation(); handleDocClick(doc); }}
                           variant="outline"
                           size="sm"
                         >
                           <Download className="h-4 w-4 mr-2" />
-                          Download
+                          {doc.route ? "Open" : "Download"}
                         </Button>
                       </CardContent>
                     </Card>
@@ -407,7 +418,7 @@ export default function DocsLibrary() {
               </h3>
               <div className="grid gap-4">
                 {filteredDocuments.map((doc) => (
-                  <Card key={doc.id}>
+                  <Card key={doc.id} onClick={doc.route ? () => navigate(doc.route!) : undefined} className={doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : undefined}>
                     <CardContent className="flex items-center justify-between p-4">
                       <div className="flex items-center gap-4">
                         <FileText className="h-8 w-8 text-muted-foreground" />
@@ -421,12 +432,12 @@ export default function DocsLibrary() {
                         </div>
                       </div>
                       <Button 
-                        onClick={() => handleDownload(doc)}
+                        onClick={(e) => { e.stopPropagation(); handleDocClick(doc); }}
                         variant="outline"
                         size="sm"
                       >
                         <Download className="h-4 w-4 mr-2" />
-                        Download
+                        {doc.route ? "Open" : "Download"}
                       </Button>
                     </CardContent>
                   </Card>
