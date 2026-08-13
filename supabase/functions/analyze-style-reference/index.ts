@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { STYLE_REFERENCE_PROMPT } from "../_shared/prompts/analyze-style-reference.ts";
 import {
   corsHeaders,
   authenticateUser,
@@ -55,15 +57,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'system',
-            content: `You are an expert visual style analyst. Analyze images and describe their visual style in detail for use as art direction prompts. Focus on:
-- Art style (photorealistic, illustrated, animated, etc.)
-- Color palette and saturation
-- Lighting style and mood
-- Line work and texture
-- Composition tendencies
-- Overall aesthetic feel
-
-Provide a concise but detailed style description that could be used to generate similar-looking artwork.`
+            content: CORE_BRAIN + "\n\n" + STYLE_REFERENCE_PROMPT
           },
           {
             role: 'user',

@@ -2,6 +2,8 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { AUDITION_NOTICE_PROMPT } from "../_shared/prompts/audition-notice.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -33,11 +35,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = `You are an expert at extracting audition notice information from text. 
-Extract all available fields from the provided text and return them in the exact JSON format specified.
-If a field is not found in the text, return null for that field.
-For boolean fields, return true or false based on the text content.
-For array fields like posting_targets, return an array of strings.`;
+    const systemPrompt = CORE_BRAIN + "\n\n" + AUDITION_NOTICE_PROMPT;
 
     const userPrompt = `Extract audition notice details from this text and return ONLY valid JSON with these exact fields:
 

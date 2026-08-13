@@ -1,5 +1,7 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { MOVIE_BRAIN_PROMPT } from "../_shared/prompts/movie-brain.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -18,7 +20,7 @@ serve(async (req) => {
       .join("\n\n");
     if (!qa) return json({ error: "Answer a few coaching questions first — then I can weave them into your answer." });
 
-    const system = "You are a master screenwriter's development assistant. You turn a writer's scattered notes into ONE vivid, specific, cohesive answer. Rules: use ONLY the facts the writer gave you; you may smooth connective tissue, but do NOT invent major new facts (no new names, places, or events they did not mention). Write clean, confident prose — a short paragraph of 2 to 5 sentences. No headers, no bullet points, no preamble.";
+    const system = CORE_BRAIN + "\n\n" + MOVIE_BRAIN_PROMPT;
     const user = `The writer is answering this question about their film's opening (the Ordinary World):\n\n"${mainQuestion}"\n\nHere are the writer's notes from a set of deeper coaching questions:\n\n${qa}\n\nWeave these notes into ONE polished answer to the question above — grounded only in what the writer provided. Return only the answer text.`;
 
     const r = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {

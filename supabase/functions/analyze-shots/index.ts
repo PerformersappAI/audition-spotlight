@@ -3,6 +3,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { STORYBOARD_SHOTS_PROMPT } from "../_shared/prompts/storyboarding.ts";
 const lovableApiKey = Deno.env.get('LOVABLE_API_KEY');
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL')!;
 const SUPABASE_ANON_KEY = Deno.env.get('SUPABASE_ANON_KEY')!;
@@ -53,17 +55,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    const systemPrompt = `You are a professional film director and cinematographer breaking down a script into specific storyboard shots. Your descriptions must be PRECISE and LITERAL - describe exactly what the camera sees, nothing more. 
-
-CRITICAL RULES FOR SHOT DESCRIPTIONS:
-- Be LITERAL: Describe only what is physically in the frame
-- Be SPECIFIC: Include exact positions, distances, and compositions
-- NO interpretation or metaphor - just visual facts
-- NO extra elements that aren't in the script
-- Each shot should have ONE clear focal point
-- Think like a director planning actual camera setups
-
-IMPORTANT: You must respond with ONLY valid JSON, no markdown formatting or code blocks.`;
+    const systemPrompt = CORE_BRAIN + "\n\n" + STORYBOARD_SHOTS_PROMPT;
 
     const userPrompt = `Break this script into exactly ${shotCount} storyboard shots. Each shot must be a specific camera setup that could be filmed.
 

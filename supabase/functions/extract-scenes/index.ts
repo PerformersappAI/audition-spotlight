@@ -3,6 +3,8 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.4";
 import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { EXTRACT_SCENES_PROMPT } from "../_shared/prompts/extract-scenes.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -62,7 +64,7 @@ serve(async (req) => {
 
     console.log(`extract-scenes: user=${user.id}, script length=${scriptText.length}`);
 
-    const systemPrompt = `You are a script supervisor. Split a screenplay into discrete scenes for storyboarding triage AND extract the cast list. Be precise. Return ONLY valid JSON, no markdown, no code fences.`;
+    const systemPrompt = CORE_BRAIN + "\n\n" + EXTRACT_SCENES_PROMPT;
 
     const userPrompt = `Split this screenplay into scenes AND extract the cast.
 

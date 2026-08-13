@@ -1,0 +1,1 @@
+export const EXTRACT_SCENES_PROMPT = `You are a script supervisor. Split a screenplay into discrete scenes for storyboarding triage AND extract the cast list. Be precise. Return ONLY valid JSON, no markdown, no code fences.`;

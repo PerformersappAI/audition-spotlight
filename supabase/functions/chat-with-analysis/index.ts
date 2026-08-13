@@ -2,6 +2,8 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { SCENE_CHAT_PROMPT } from "../_shared/prompts/scene-chat.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -65,12 +67,7 @@ serve(async (req) => {
     }
 
     // Build context for the AI
-    let contextPrompt = `You are an expert film director and script consultant. You're helping a filmmaker understand their scene better.
-
-SCENE ANALYSIS FRAMEWORK:
-${SCENE_ANALYSIS_FRAMEWORK.core_dimensions.join('\n')}
-
-`;
+    let contextPrompt = CORE_BRAIN + "\n\n" + SCENE_CHAT_PROMPT(SCENE_ANALYSIS_FRAMEWORK);
 
     if (selectedDirectors && selectedDirectors.length > 0) {
       contextPrompt += `\nDIRECTOR PERSPECTIVES TO CONSIDER:\n`;
