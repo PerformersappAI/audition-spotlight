@@ -424,26 +424,6 @@ export const exportCallSheetToPDF = (
     yPosition = (doc as any).lastAutoTable.finalY + 4;
   }
   
-  // ===== REQUIREMENTS SECTION =====
-  if (requirements.length > 0) {
-    yPosition = drawSectionHeader(doc, 'REQUIREMENTS', yPosition, pageWidth);
-    
-    const reqData = requirements.map(r => [r.department, r.notes || '']);
-
-    autoTable(doc, {
-      startY: yPosition,
-      body: reqData,
-      theme: 'grid',
-      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
-      columnStyles: {
-        0: { cellWidth: 40, fontStyle: 'bold', fillColor: [245, 245, 245] },
-        1: { cellWidth: 142 },
-      },
-    });
-    
-    yPosition = (doc as any).lastAutoTable.finalY + 4;
-  }
-  
   // ===== RUNNING ORDER (SCHEDULE) =====
   const filledSchedule = scheduleRows.filter(r => r.time || r.activity || r.description);
   if (filledSchedule.length > 0) {
@@ -464,6 +444,26 @@ export const exportCallSheetToPDF = (
     yPosition = (doc as any).lastAutoTable.finalY + 4;
   }
 
+  // ===== REQUIREMENTS SECTION =====
+  if (requirements.length > 0) {
+    yPosition = drawSectionHeader(doc, 'REQUIREMENTS', yPosition, pageWidth);
+    
+    const reqData = requirements.map(r => [r.department, r.notes || '']);
+
+    autoTable(doc, {
+      startY: yPosition,
+      body: reqData,
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 40, fontStyle: 'bold', fillColor: [245, 245, 245] },
+        1: { cellWidth: 142 },
+      },
+    });
+    
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+  
   // ===== NOTES & SAFETY =====
   const notesPairs: [string, string][] = [
     ['Safety Briefing / Bulletin', callSheet.safety_briefing || ''],
