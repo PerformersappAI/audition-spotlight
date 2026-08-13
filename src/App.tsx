@@ -207,6 +207,7 @@ const AppContent = () => (
           <Route path="/library/recoupment-waterfall-schedule" element={<ToolGate><RecoupmentWaterfall /></ToolGate>} />
           <Route path="/library/deferred-compensation-agreement" element={<ToolGate><DeferredCompensationAgreement /></ToolGate>} />
           <Route path="/library/executive-producer-agreement" element={<ToolGate><ExecutiveProducerAgreement /></ToolGate>} />
+          <Route path="/library/co-production-agreement" element={<ToolGate><CoProductionAgreement /></ToolGate>} />
 
 
 
