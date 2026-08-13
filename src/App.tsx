@@ -139,6 +139,8 @@ import LoanOutAgreement from "./pages/agreements/LoanOutAgreement";
 import KitBoxRentalAgreement from "./pages/agreements/KitBoxRentalAgreement";
 import InternVolunteerAgreement from "./pages/agreements/InternVolunteerAgreement";
 import ParentalGuardianConsentMinor from "./pages/agreements/ParentalGuardianConsentMinor";
+import AdultTalentRelease from "./pages/agreements/AdultTalentRelease";
+
 
 
 
@@ -254,6 +256,8 @@ const AppContent = () => (
           <Route path="/library/kit-box-rental-agreement" element={<ToolGate><KitBoxRentalAgreement /></ToolGate>} />
           <Route path="/library/intern-volunteer-agreement" element={<ToolGate><InternVolunteerAgreement /></ToolGate>} />
           <Route path="/library/parental-guardian-consent-minor" element={<ToolGate><ParentalGuardianConsentMinor /></ToolGate>} />
+          <Route path="/library/adult-talent-release" element={<ToolGate><AdultTalentRelease /></ToolGate>} />
+
 
 
 
