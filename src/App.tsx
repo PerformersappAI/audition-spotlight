@@ -127,6 +127,7 @@ import DayOutOfDays from "./pages/agreements/DayOutOfDays";
 import ShotList from "./pages/agreements/ShotList";
 import StoryboardTemplate from "./pages/agreements/StoryboardTemplate";
 import BudgetTopSheet from "./pages/agreements/BudgetTopSheet";
+import DetailedBudget from "./pages/agreements/DetailedBudget";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -224,6 +225,7 @@ const AppContent = () => (
           <Route path="/library/shot-list" element={<ToolGate><ShotList /></ToolGate>} />
           <Route path="/library/storyboard-template" element={<ToolGate><StoryboardTemplate /></ToolGate>} />
           <Route path="/library/budget-top-sheet" element={<ToolGate><BudgetTopSheet /></ToolGate>} />
+          <Route path="/library/detailed-budget" element={<ToolGate><DetailedBudget /></ToolGate>} />
 
 
 
