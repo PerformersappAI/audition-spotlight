@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { Fragment, useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import ToolTopBar from "@/components/ToolTopBar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -367,8 +367,8 @@ const BudgetTopSheet = () => {
                   <table className="w-full text-xs border-collapse mt-2">
                     <tbody>
                       {sections.map((section, si) => (
-                        <>
-                          <tr key={`s-${si}`} className="bg-muted/60">
+                        <Fragment key={`s-${si}`}>
+                          <tr className="bg-muted/60">
                             <td className="px-2 py-1 font-bold">{section.name}</td>
                             <td className="px-2 py-1 font-bold text-right tabular-nums">
                               {money(subtotals[si])}
@@ -382,7 +382,7 @@ const BudgetTopSheet = () => {
                               </td>
                             </tr>
                           ))}
-                        </>
+                        </Fragment>
                       ))}
 
                       <tr className="border-t-2 border-border">
