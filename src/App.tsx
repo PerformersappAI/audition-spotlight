@@ -107,6 +107,8 @@ import SceneBeatPage from "./pages/SceneBeatPage";
 import OptionPurchaseAgreement from "./pages/agreements/OptionPurchaseAgreement";
 import LiteraryRightsOption from "./pages/agreements/LiteraryRightsOption";
 import WriterAgreement from "./pages/agreements/WriterAgreement";
+import LifeRightsAgreement from "./pages/agreements/LifeRightsAgreement";
+
 
 
 import ToolGate from "@/components/ToolGate";
@@ -174,6 +176,7 @@ const AppContent = () => (
       <Route path="/library/option-purchase-agreement" element={<ToolGate><OptionPurchaseAgreement /></ToolGate>} />
       <Route path="/library/literary-rights-option-agreement" element={<ToolGate><LiteraryRightsOption /></ToolGate>} />
       <Route path="/library/writer-agreement-work-for-hire" element={<ToolGate><WriterAgreement /></ToolGate>} />
+      <Route path="/library/life-rights-agreement" element={<ToolGate><LifeRightsAgreement /></ToolGate>} />
 
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
