@@ -43,7 +43,38 @@ export interface CallSheetData {
   current_script?: string;
   unit_base?: string;
   unit_base_address?: string;
+  // Expanded professional template fields (form + PDF only; not persisted)
+  block_focus?: string;
+  total_pages?: string;
+  gate_access_code?: string;
+  truck_parking?: string;
+  emergency_numbers?: string;
+  on_set_medic?: string;
+  map_link?: string;
+  precipitation?: string;
+  wind?: string;
+  second_meal_time?: string;
+  sound_hard_out_time?: string;
+  safety_briefing?: string;
+  walkie_channels?: string;
+  general_notes?: string;
+  key_contacts?: string;
+  next_day_label?: string;
 }
+
+export interface CallSheetScheduleRow {
+  time?: string;
+  activity?: string;
+  description?: string;
+}
+
+export interface CallSheetAdvanceRow {
+  scene_number?: string;
+  set_description?: string;
+  day_night?: string;
+  cast?: string;
+}
+
 
 export interface CallSheetScene {
   id?: string;
