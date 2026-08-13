@@ -9,7 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { AlertTriangle, Download, Printer, RotateCcw } from "lucide-react";
+import { AlertTriangle, Download, Loader2, Printer, RotateCcw, Sparkles } from "lucide-react";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
+import { toast } from "sonner";
 
 interface OptionAgreementForm {
   effective_date: string;
@@ -82,6 +84,31 @@ const OptionPurchaseAgreement = () => {
 
   const set = <K extends keyof OptionAgreementForm>(key: K, value: OptionAgreementForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+
+  const [legalizing, setLegalizing] = useState<"property_description" | "contingent_comp" | null>(null);
+
+  const legalize = async (field: "property_description" | "contingent_comp", context: string) => {
+    const value = form[field].trim();
+    if (!value) return;
+    setLegalizing(field);
+    try {
+      const res = await aiInvoke<{ text?: string; error?: string }>("legalize-text", {
+        body: { text: value, context },
+      });
+      if (res?.text) {
+        set(field, res.text);
+        toast.success("Clause rewritten");
+      } else {
+        toast.error(res?.error || "No text returned");
+      }
+    } catch (err) {
+      if (!(err instanceof InsufficientCreditsError)) {
+        toast.error(err instanceof Error ? err.message : "Something went wrong");
+      }
+    } finally {
+      setLegalizing(null);
+    }
+  };
 
   const v = (value: string, placeholder: string) => (value.trim() ? value.trim() : `[${placeholder}]`);
 
@@ -366,7 +393,7 @@ const OptionPurchaseAgreement = () => {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {["Screenplay", "Book/Novel", "Article", "Life Story", "Other"].map((t) => (
+                      {["Screenplay", "Completed Film", "Book/Novel", "Article", "Life Story"].map((t) => (
                         <SelectItem key={t} value={t}>
                           {t}
                         </SelectItem>
@@ -394,6 +421,21 @@ const OptionPurchaseAgreement = () => {
                     value={form.property_description}
                     onChange={(e) => set("property_description", e.target.value)}
                   />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                    disabled={!form.property_description.trim() || legalizing === "property_description"}
+                    onClick={() => legalize("property_description", "Property Description")}
+                  >
+                    {legalizing === "property_description" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Make Professional
+                  </Button>
                 </div>
               </CardContent>
             </Card>
@@ -473,6 +515,21 @@ const OptionPurchaseAgreement = () => {
                     value={form.contingent_comp}
                     onChange={(e) => set("contingent_comp", e.target.value)}
                   />
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="mt-2"
+                    disabled={!form.contingent_comp.trim() || legalizing === "contingent_comp"}
+                    onClick={() => legalize("contingent_comp", "Contingent Compensation")}
+                  >
+                    {legalizing === "contingent_comp" ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                      <Sparkles className="mr-2 h-4 w-4" />
+                    )}
+                    Make Professional
+                  </Button>
                 </div>
               </CardContent>
             </Card>
