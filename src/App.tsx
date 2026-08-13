@@ -119,6 +119,7 @@ import RecoupmentWaterfall from "./pages/agreements/RecoupmentWaterfall";
 import DeferredCompensationAgreement from "./pages/agreements/DeferredCompensationAgreement";
 import ExecutiveProducerAgreement from "./pages/agreements/ExecutiveProducerAgreement";
 import CoProductionAgreement from "./pages/agreements/CoProductionAgreement";
+import ScriptBreakdownSheet from "./pages/agreements/ScriptBreakdownSheet";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -208,6 +209,7 @@ const AppContent = () => (
           <Route path="/library/deferred-compensation-agreement" element={<ToolGate><DeferredCompensationAgreement /></ToolGate>} />
           <Route path="/library/executive-producer-agreement" element={<ToolGate><ExecutiveProducerAgreement /></ToolGate>} />
           <Route path="/library/co-production-agreement" element={<ToolGate><CoProductionAgreement /></ToolGate>} />
+          <Route path="/library/script-breakdown-sheet" element={<ToolGate><ScriptBreakdownSheet /></ToolGate>} />
 
 
 
