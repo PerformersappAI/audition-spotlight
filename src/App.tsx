@@ -105,6 +105,7 @@ import MoviePage from "./pages/MoviePage";
 import ShotBeatPage from "./pages/ShotBeatPage";
 import SceneBeatPage from "./pages/SceneBeatPage";
 import OptionPurchaseAgreement from "./pages/agreements/OptionPurchaseAgreement";
+import LiteraryRightsOption from "./pages/agreements/LiteraryRightsOption";
 
 import ToolGate from "@/components/ToolGate";
 
@@ -169,6 +170,7 @@ const AppContent = () => (
       <Route path="/submit" element={<ToolGate><MultiStepForm /></ToolGate>} />
       <Route path="/library" element={<ToolGate><DocsLibrary /></ToolGate>} />
       <Route path="/library/option-purchase-agreement" element={<ToolGate><OptionPurchaseAgreement /></ToolGate>} />
+      <Route path="/library/literary-rights-option-agreement" element={<ToolGate><LiteraryRightsOption /></ToolGate>} />
           <Route path="/consulting" element={<Navigate to="/" replace />} />
           <Route path="/membership" element={<Membership />} />
           <Route path="/training" element={<Navigate to="/" replace />} />
