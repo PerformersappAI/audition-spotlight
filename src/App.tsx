@@ -120,6 +120,7 @@ import DeferredCompensationAgreement from "./pages/agreements/DeferredCompensati
 import ExecutiveProducerAgreement from "./pages/agreements/ExecutiveProducerAgreement";
 import CoProductionAgreement from "./pages/agreements/CoProductionAgreement";
 import ScriptBreakdownSheet from "./pages/agreements/ScriptBreakdownSheet";
+import StripboardProductionBoard from "./pages/agreements/StripboardProductionBoard";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -210,6 +211,7 @@ const AppContent = () => (
           <Route path="/library/executive-producer-agreement" element={<ToolGate><ExecutiveProducerAgreement /></ToolGate>} />
           <Route path="/library/co-production-agreement" element={<ToolGate><CoProductionAgreement /></ToolGate>} />
           <Route path="/library/script-breakdown-sheet" element={<ToolGate><ScriptBreakdownSheet /></ToolGate>} />
+          <Route path="/library/stripboard-production-board" element={<ToolGate><StripboardProductionBoard /></ToolGate>} />
 
 
 
