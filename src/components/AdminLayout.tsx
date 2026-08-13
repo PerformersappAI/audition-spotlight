@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { 
   Shield, 
   Users, 
+  UserCheck,
   Film, 
   Trophy, 
   FileText, 
@@ -80,6 +81,7 @@ const AdminLayout = ({ children, title }: AdminLayoutProps) => {
     { path: '/admin/homepage', label: 'Homepage', icon: LayoutDashboard },
     { path: '/admin/blog', label: 'Blog', icon: Newspaper },
     { path: '/admin/users', label: 'Users', icon: Users },
+    { path: '/admin/members', label: 'Members', icon: UserCheck },
     { path: '/admin/auditions', label: 'Auditions', icon: Film },
     { path: '/admin/projects', label: 'Projects', icon: FileText },
     { path: '/admin/festivals', label: 'Festivals', icon: Trophy },
