@@ -67,7 +67,7 @@ const documentBundles = [
       { id: "12", title: "Financing Term Sheet", description: "Summarize key investment terms before drafting final documents", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/financing-term-sheet" },
       { id: "13", title: "Recoupment / Waterfall Schedule", description: "Map the order and priority of revenue distribution", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/recoupment-waterfall-schedule" },
       { id: "14", title: "Deferred Compensation Agreement", description: "Defer talent and crew payments until the project earns revenue", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/deferred-compensation-agreement" },
-      { id: "15", title: "Executive Producer Agreement", description: "Define the role, credit, and compensation of an executive producer", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "15", title: "Executive Producer Agreement", description: "Define the role, credit, and compensation of an executive producer", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/executive-producer-agreement" },
       { id: "16", title: "Co-Production Agreement", description: "Set terms between two or more production companies", category: "financing_business", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },
