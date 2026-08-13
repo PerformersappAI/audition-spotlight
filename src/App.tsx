@@ -115,6 +115,7 @@ import NonDisclosureAgreement from "./pages/agreements/NonDisclosureAgreement";
 import LLCOperatingAgreement from "./pages/agreements/LLCOperatingAgreement";
 import InvestorAgreement from "./pages/agreements/InvestorAgreement";
 import FinancingTermSheet from "./pages/agreements/FinancingTermSheet";
+import RecoupmentWaterfall from "./pages/agreements/RecoupmentWaterfall";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -200,6 +201,7 @@ const AppContent = () => (
           <Route path="/library/llc-operating-agreement" element={<ToolGate><LLCOperatingAgreement /></ToolGate>} />
           <Route path="/library/investor-agreement" element={<ToolGate><InvestorAgreement /></ToolGate>} />
           <Route path="/library/financing-term-sheet" element={<ToolGate><FinancingTermSheet /></ToolGate>} />
+          <Route path="/library/recoupment-waterfall-schedule" element={<ToolGate><RecoupmentWaterfall /></ToolGate>} />
 
 
 
