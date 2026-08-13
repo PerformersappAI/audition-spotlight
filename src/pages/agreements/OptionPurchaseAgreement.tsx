@@ -366,7 +366,7 @@ const OptionPurchaseAgreement = () => {
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
                     <SelectContent>
-                      {["Screenplay", "Book/Novel", "Article", "Life Story", "Other"].map((t) => (
+                      {["Screenplay", "Completed Film", "Book/Novel", "Article", "Life Story"].map((t) => (
                         <SelectItem key={t} value={t}>
                           {t}
                         </SelectItem>
