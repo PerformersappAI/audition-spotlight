@@ -150,7 +150,7 @@ const documentBundles = [
     icon: ClipboardList,
     description: "Daily paperwork, timecards, camera logs, and safety forms",
     documents: [
-      { id: "50", title: "Daily Production Report (DPR)", description: "Summary of scenes shot, crew, and daily notes", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "50", title: "Daily Production Report (DPR)", description: "Summary of scenes shot, crew, and daily notes", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/daily-production-report" },
       { id: "51", title: "Crew Timecard / Time Report", description: "Record crew hours, meals, and overtime", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "52", title: "Camera Report", description: "Log roll numbers, footage, and technical notes for each day", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "53", title: "Sound Report", description: "Log sound files, takes, and audio notes for each day", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },

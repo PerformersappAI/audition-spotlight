@@ -152,6 +152,7 @@ import LocationScoutReport from "./pages/agreements/LocationScoutReport";
 import TechScoutSurvey from "./pages/agreements/TechScoutSurvey";
 import PermitApplicationChecklist from "./pages/agreements/PermitApplicationChecklist";
 import FilmOfficeCoverLetter from "./pages/agreements/FilmOfficeCoverLetter";
+import DailyProductionReport from "./pages/agreements/DailyProductionReport";
 
 
 
@@ -294,6 +295,7 @@ const AppContent = () => (
           <Route path="/library/tech-scout-survey" element={<ToolGate><TechScoutSurvey /></ToolGate>} />
           <Route path="/library/permit-application-checklist" element={<ToolGate><PermitApplicationChecklist /></ToolGate>} />
           <Route path="/library/film-office-cover-letter" element={<ToolGate><FilmOfficeCoverLetter /></ToolGate>} />
+          <Route path="/library/daily-production-report" element={<ToolGate><DailyProductionReport /></ToolGate>} />
 
 
 
