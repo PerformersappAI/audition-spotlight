@@ -135,6 +135,8 @@ import DirectorAgreement from "./pages/agreements/DirectorAgreement";
 import ProducerAgreement from "./pages/agreements/ProducerAgreement";
 import CinematographerAgreement from "./pages/agreements/CinematographerAgreement";
 import IndependentContractorAgreement from "./pages/agreements/IndependentContractorAgreement";
+import LoanOutAgreement from "./pages/agreements/LoanOutAgreement";
+
 
 
 
@@ -242,6 +244,8 @@ const AppContent = () => (
           <Route path="/library/producer-agreement" element={<ToolGate><ProducerAgreement /></ToolGate>} />
           <Route path="/library/cinematographer-agreement" element={<ToolGate><CinematographerAgreement /></ToolGate>} />
           <Route path="/library/independent-contractor-agreement" element={<ToolGate><IndependentContractorAgreement /></ToolGate>} />
+          <Route path="/library/loan-out-agreement" element={<ToolGate><LoanOutAgreement /></ToolGate>} />
+
 
 
 
