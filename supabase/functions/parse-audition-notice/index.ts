@@ -35,7 +35,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY is not configured');
     }
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + AUDITION_NOTICE_PROMPT;;
+    const systemPrompt = CORE_BRAIN + "\n\n" + AUDITION_NOTICE_PROMPT;
 
     const userPrompt = `Extract audition notice details from this text and return ONLY valid JSON with these exact fields:
 

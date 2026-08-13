@@ -64,7 +64,7 @@ serve(async (req) => {
 
     console.log(`extract-scenes: user=${user.id}, script length=${scriptText.length}`);
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + EXTRACT_SCENES_PROMPT;;
+    const systemPrompt = CORE_BRAIN + "\n\n" + EXTRACT_SCENES_PROMPT;
 
     const userPrompt = `Split this screenplay into scenes AND extract the cast.
 

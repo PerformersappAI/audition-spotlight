@@ -45,7 +45,7 @@ serve(async (req) => {
     console.log('📄 Received text length:', text.length);
     console.log('📄 First 500 characters:', text.substring(0, 500));
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + CALL_SHEET_PROMPT;;
+    const systemPrompt = CORE_BRAIN + "\n\n" + CALL_SHEET_PROMPT;
 
     const userContent = `Extract all information from this call sheet:\n\n${text}`;
 

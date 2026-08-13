@@ -13,7 +13,7 @@ import {
   estimateUsd,
 } from "../_shared/credits.ts";
 
-const SAG_AFTRA_KNOWLEDGE = CORE_BRAIN + "\n\n" + CONTRACT_ASSISTANT_PROMPT;;
+const SAG_AFTRA_KNOWLEDGE = CORE_BRAIN + "\n\n" + CONTRACT_ASSISTANT_PROMPT;
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {

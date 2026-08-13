@@ -391,7 +391,7 @@ Examples: ${knowledge.examples}`;
       }).filter(Boolean).join('\n\n');
     }
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + SCENE_ANALYSIS_PROMPT(directorContext);;
+    const systemPrompt = CORE_BRAIN + "\n\n" + SCENE_ANALYSIS_PROMPT(directorContext);
 
     const userPrompt = `Analyze THIS SPECIFIC SCENE in detail:
 

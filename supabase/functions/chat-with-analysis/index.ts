@@ -67,7 +67,7 @@ serve(async (req) => {
     }
 
     // Build context for the AI
-    let contextPrompt = CORE_BRAIN + "\n\n" + SCENE_CHAT_PROMPT(SCENE_ANALYSIS_FRAMEWORK);;
+    let contextPrompt = CORE_BRAIN + "\n\n" + SCENE_CHAT_PROMPT(SCENE_ANALYSIS_FRAMEWORK);
 
     if (selectedDirectors && selectedDirectors.length > 0) {
       contextPrompt += `\nDIRECTOR PERSPECTIVES TO CONSIDER:\n`;

@@ -55,7 +55,7 @@ serve(async (req) => {
       throw new Error('LOVABLE_API_KEY not configured');
     }
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + STORYBOARD_SHOTS_PROMPT;;
+    const systemPrompt = CORE_BRAIN + "\n\n" + STORYBOARD_SHOTS_PROMPT;
 
     const userPrompt = `Break this script into exactly ${shotCount} storyboard shots. Each shot must be a specific camera setup that could be filmed.
 

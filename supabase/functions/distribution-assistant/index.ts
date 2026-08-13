@@ -13,7 +13,7 @@ import {
   estimateUsd,
 } from "../_shared/credits.ts";
 
-const SYSTEM_PROMPT = CORE_BRAIN + "\n\n" + DISTRIBUTION_ASSISTANT_PROMPT;;
+const SYSTEM_PROMPT = CORE_BRAIN + "\n\n" + DISTRIBUTION_ASSISTANT_PROMPT;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

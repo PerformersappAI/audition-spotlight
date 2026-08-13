@@ -8,7 +8,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const SYSTEM_PROMPT = CORE_BRAIN + "\n\n" + BLOG_ARTICLE_PROMPT;;
+const SYSTEM_PROMPT = CORE_BRAIN + "\n\n" + BLOG_ARTICLE_PROMPT;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });

@@ -63,7 +63,7 @@ const FIELD_ALIASES: Record<string, GenerationType> = {
 // Shared craft rules taught to the model on every call.
 // Distilled from SBS Scripted Pitch Deck Guide + Micah Haley's framework
 // + the canonical 10-slide pitch-deck taxonomy.
-const CRAFT_RULES = CORE_BRAIN + "\n\n" + PITCH_DECK_PROMPT;;
+const CRAFT_RULES = CORE_BRAIN + "\n\n" + PITCH_DECK_PROMPT;
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {

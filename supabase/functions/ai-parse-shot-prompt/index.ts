@@ -48,7 +48,7 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = CORE_BRAIN + "\n\n" + SHOT_PROMPT_PARSER_PROMPT;;
+    const systemPrompt = CORE_BRAIN + "\n\n" + SHOT_PROMPT_PARSER_PROMPT;
 
     const userPrompt = `Parse this shot description: "${prompt}"
 
