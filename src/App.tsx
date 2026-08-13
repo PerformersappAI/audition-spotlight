@@ -133,6 +133,8 @@ import CastDealMemo from "./pages/agreements/CastDealMemo";
 import CrewDealMemo from "./pages/agreements/CrewDealMemo";
 import DirectorAgreement from "./pages/agreements/DirectorAgreement";
 import ProducerAgreement from "./pages/agreements/ProducerAgreement";
+import CinematographerAgreement from "./pages/agreements/CinematographerAgreement";
+
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -236,6 +238,8 @@ const AppContent = () => (
           <Route path="/library/crew-deal-memo" element={<ToolGate><CrewDealMemo /></ToolGate>} />
           <Route path="/library/director-agreement" element={<ToolGate><DirectorAgreement /></ToolGate>} />
           <Route path="/library/producer-agreement" element={<ToolGate><ProducerAgreement /></ToolGate>} />
+          <Route path="/library/cinematographer-agreement" element={<ToolGate><CinematographerAgreement /></ToolGate>} />
+
 
 
 
