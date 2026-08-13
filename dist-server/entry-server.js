@@ -3287,7 +3287,7 @@ const NeonCube = ({
   }
 );
 const HomeMarketing = () => {
-  const sceneAnalysis = { title: "Scene Analysis", to: "/scene-analysis", cta: "Let's Go", img: imgSceneAnalysis };
+  const sceneAnalysis = { title: "Movie in a Box", to: "/movie-in-a-box", cta: "Let's Go", img: imgSceneAnalysis };
   const storyboard = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboard };
   const pitchDeck = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
@@ -4446,9 +4446,9 @@ const GROUPS$1 = [
     label: "Production Office",
     rows: [
       { cols: 3, tools: [
-        { title: "Calendar", to: "/calendar", theme: "violet" },
+        { title: "Project Intake Form", to: "/submit", theme: "violet" },
         { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
-        { title: "Project Intake Form", to: "/submit", theme: "violet" }
+        { title: "Calendar", to: "/calendar", theme: "violet" }
       ] },
       { cols: 2, tools: [
         { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
