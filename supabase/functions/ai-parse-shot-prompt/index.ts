@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { CORE_BRAIN } from "../_shared/prompts/core.ts";
+import { SHOT_PROMPT_PARSER_PROMPT } from "../_shared/prompts/shot-prompt-parser.ts";
 import {
   corsHeaders,
   authenticateUser,
@@ -46,12 +48,7 @@ serve(async (req) => {
       );
     }
 
-    const systemPrompt = `You are a cinematography expert helping parse shot descriptions into structured data.
-Extract detailed information from natural language descriptions and format them professionally.
-If information isn't mentioned in the user's prompt, preserve the existing values from the shot.
-NEVER use placeholder text like "[RECOMMEND SOMETHING]" - either keep the existing value or provide a real suggestion.
-When making suggestions, be specific and creative based on the context of the shot.
-Use proper cinematography terminology.`;
+    const systemPrompt = CORE_BRAIN + "\n\n" + SHOT_PROMPT_PARSER_PROMPT;;
 
     const userPrompt = `Parse this shot description: "${prompt}"
 

@@ -2,6 +2,7 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { authenticateUser, serverCalculateCost, ensureBalance, charge, insufficientCreditsBody, unauthorizedBody, logUsage, estimateUsd } from "../_shared/credits.ts";
 
+import { PARSE_DOCUMENT_PDF_PROMPT, PARSE_DOCUMENT_IMAGE_PROMPT } from "../_shared/prompts/parse-document.ts";
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -69,42 +70,7 @@ serve(async (req) => {
         // Convert data to base64 data URL
         const base64Data = fileData.startsWith('data:') ? fileData : `data:${mimeType};base64,${fileData}`;
 
-        const prompt = isPDF
-          ? `You are a comprehensive document OCR system. Extract ALL text content from this document with COMPLETE accuracy.
-
-CRITICAL INSTRUCTIONS - Extract EVERYTHING:
-1. Transcribe EVERY word, number, symbol, and text element visible
-2. Include ALL production information: names, titles, roles, departments
-3. Extract ALL contact information: phone numbers, emails, addresses  
-4. Capture ALL scheduling data: times, dates, locations, durations
-5. Preserve ALL tabular data: cast lists, crew lists, scene breakdowns, equipment lists
-6. Include ALL metadata: production company, project names, day numbers, dates
-7. Maintain document structure: headers, sections, tables, lists, notes
-8. DO NOT filter based on content type - extract scripts, call sheets, schedules, forms equally
-9. DO NOT remove anything - extract production documents completely
-10. Clean OCR artifacts but preserve all legitimate content
-
-For call sheets specifically, ensure you extract:
-- Production company, project name, shoot date, day number
-- All crew positions and names (director, producers, ADs, etc.)
-- Complete cast list with character names and call times
-- Full scene breakdown with numbers, descriptions, locations
-- Background actors with quantities and call times
-- All timing information (call times, meals, wrap)
-- Weather, location addresses, contact numbers
-
-Return the complete extracted text exactly as it appears. Include EVERY field and EVERY section.`
-          : `Extract all readable text from this image using OCR.
-
-Instructions:
-1. Accurately transcribe all visible text
-2. Preserve layout and structure where possible
-3. Handle any handwriting if present
-4. Clean up any OCR artifacts
-5. If there are multiple sections or columns, transcribe them in logical reading order
-6. Return plain text without markdown formatting
-
-Return only the extracted text without any commentary.`;
+        const prompt = isPDF ? PARSE_DOCUMENT_PDF_PROMPT : PARSE_DOCUMENT_IMAGE_PROMPT;
 
         const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
           method: 'POST',
