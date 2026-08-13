@@ -269,6 +269,31 @@ const OptionPurchaseAgreement = () => {
           </p>
         </div>
 
+        <section className="max-w-3xl mx-auto mb-10">
+          <div className="grid md:grid-cols-2 md:divide-x divide-border gap-8 md:gap-0">
+            <div className="md:pr-10 space-y-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-primary">
+                Who It's For
+              </h2>
+              <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-disc list-inside">
+                <li>Producers optioning a script, book, article, or true story.</li>
+                <li>Writers, authors, and rights-holders granting those rights.</li>
+                <li>Anyone adapting material they don't yet own.</li>
+              </ul>
+            </div>
+            <div className="md:pl-10 space-y-4">
+              <h2 className="text-xs font-semibold uppercase tracking-widest text-primary">
+                What It's For
+              </h2>
+              <ul className="space-y-2 text-sm text-muted-foreground leading-relaxed list-disc list-inside">
+                <li>Secures the rights to a story before you commit to buying them.</li>
+                <li>Reserves it now, with the purchase price agreed up front.</li>
+                <li>Grants the exclusive right to develop and pitch the project.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <Alert className="mb-8 border-amber-500/50 bg-amber-500/10">
           <AlertTriangle className="h-4 w-4 text-amber-500" />
           <AlertDescription className="text-amber-200">
