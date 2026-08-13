@@ -46,7 +46,7 @@ const documentBundles = [
     documents: [
       { id: "1", title: "Option / Purchase Agreement", description: "Acquire rights to a screenplay, book, or life story", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/option-purchase-agreement" },
       { id: "2", title: "Literary Rights Option Agreement", description: "Option literary material for a set period and price", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/literary-rights-option-agreement" },
-      { id: "3", title: "Writer Agreement (Work-for-Hire)", description: "Hire a writer to create original material for the project", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "3", title: "Writer Agreement (Work-for-Hire)", description: "Hire a writer to create original material for the project", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/writer-agreement-work-for-hire" },
       { id: "4", title: "Life Rights Agreement", description: "Secure permission to portray a person's life story", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "5", title: "Collaboration Agreement", description: "Define ownership and duties between creative partners", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "6", title: "Certificate of Authorship", description: "Confirm chain of title and original authorship", category: "development_rights", format: "PDF + Word", size: "Fillable", premium: true },
