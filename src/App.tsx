@@ -148,6 +148,7 @@ import InterviewSubjectRelease from "./pages/agreements/InterviewSubjectRelease"
 import CrowdNoticeSignage from "./pages/agreements/CrowdNoticeSignage";
 import LocationAgreement from "./pages/agreements/LocationAgreement";
 import PropertyRelease from "./pages/agreements/PropertyRelease";
+import LocationScoutReport from "./pages/agreements/LocationScoutReport";
 
 
 
@@ -285,6 +286,7 @@ const AppContent = () => (
           <Route path="/library/crowd-notice-signage" element={<ToolGate><CrowdNoticeSignage /></ToolGate>} />
           <Route path="/library/location-agreement" element={<ToolGate><LocationAgreement /></ToolGate>} />
           <Route path="/library/property-release" element={<ToolGate><PropertyRelease /></ToolGate>} />
+          <Route path="/library/location-scout-report" element={<ToolGate><LocationScoutReport /></ToolGate>} />
 
 
 
