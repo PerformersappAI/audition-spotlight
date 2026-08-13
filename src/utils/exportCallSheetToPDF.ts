@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew, CallSheetBackground, CallSheetBreak, CallSheetRequirement } from '@/hooks/useCallSheets';
+import type { CallSheetData, CallSheetScene, CallSheetCast, CallSheetCrew, CallSheetBackground, CallSheetBreak, CallSheetRequirement, CallSheetScheduleRow, CallSheetAdvanceRow } from '@/hooks/useCallSheets';
 
 // Helper to format time for display
 const formatTime = (time: string | undefined): string => {
@@ -45,7 +45,9 @@ export const exportCallSheetToPDF = (
   background: CallSheetBackground[],
   breaks: CallSheetBreak[] = [],
   requirements: CallSheetRequirement[] = [],
-  logo?: CallSheetLogo | null
+  logo?: CallSheetLogo | null,
+  scheduleRows: CallSheetScheduleRow[] = [],
+  advanceRows: CallSheetAdvanceRow[] = []
 ) => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.width;
@@ -256,8 +258,37 @@ export const exportCallSheetToPDF = (
     },
   });
   
-  yPosition = (doc as any).lastAutoTable.finalY + 4;
-  
+  yPosition = (doc as any).lastAutoTable.finalY + 2;
+
+  // ===== EXTENDED PRODUCTION DETAIL ROWS =====
+  const detailPairs: [string, string][] = [
+    ['Block / Focus', callSheet.block_focus || ''],
+    ['Total Pages', callSheet.total_pages || ''],
+    ['Gate / Access Code', callSheet.gate_access_code || ''],
+    ['Truck / Picture-Car Parking', callSheet.truck_parking || ''],
+    ['Emergency Numbers', callSheet.emergency_numbers || ''],
+    ['On-Set Medic / First Aid', callSheet.on_set_medic || ''],
+    ['Map / Directions', callSheet.map_link || ''],
+    ['Precipitation', callSheet.precipitation || ''],
+    ['Wind', callSheet.wind || ''],
+    ['2nd Meal', callSheet.second_meal_time ? formatTime(callSheet.second_meal_time) : ''],
+    ['Sound Hard-Out', callSheet.sound_hard_out_time ? formatTime(callSheet.sound_hard_out_time) : ''],
+  ].filter(([, v]) => Boolean(v)) as [string, string][];
+
+  if (detailPairs.length > 0) {
+    autoTable(doc, {
+      startY: yPosition,
+      body: detailPairs.map(([k, v]) => [k, v]),
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold', fillColor: [245, 245, 245] },
+        1: { cellWidth: 132 },
+      },
+    });
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+
   // ===== DAY SCHEDULE TABLE =====
   const dayHeader = callSheet.day_number 
     ? `DAY ${callSheet.day_number} - ${dateText}` 
@@ -326,30 +357,32 @@ export const exportCallSheetToPDF = (
     member.costume_time ? formatTime(member.costume_time) : '',
     member.travel_time ? formatTime(member.travel_time) : '',
     member.on_set_time ? formatTime(member.on_set_time) : (member.call_time ? formatTime(member.call_time) : ''),
+    member.wrap_time ? formatTime(member.wrap_time) : '',
   ]);
   
   // Add empty rows to reach minimum of 7 rows
   while (castData.length < 7) {
-    castData.push([String(castData.length + 1), '', '', '', '', '', '', '', '']);
+    castData.push([String(castData.length + 1), '', '', '', '', '', '', '', '', '']);
   }
 
   autoTable(doc, {
     startY: yPosition,
-    head: [['ID', 'Artiste', 'Character', 'SWF', 'P/UP', 'M-UP', 'Cost', 'Travel', 'On Set']],
+    head: [['ID', 'Artiste', 'Character', 'SWF', 'P/UP', 'M-UP', 'Cost', 'Travel', 'On Set', 'Wrap']],
     body: castData,
     theme: 'grid',
     styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
     headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
     columnStyles: {
-      0: { cellWidth: 12 },
-      1: { cellWidth: 32 },
-      2: { cellWidth: 32 },
-      3: { cellWidth: 18 },
-      4: { cellWidth: 18 },
-      5: { cellWidth: 18 },
-      6: { cellWidth: 18 },
-      7: { cellWidth: 18 },
-      8: { cellWidth: 18 },
+      0: { cellWidth: 10 },
+      1: { cellWidth: 30 },
+      2: { cellWidth: 30 },
+      3: { cellWidth: 14 },
+      4: { cellWidth: 16 },
+      5: { cellWidth: 16 },
+      6: { cellWidth: 16 },
+      7: { cellWidth: 16 },
+      8: { cellWidth: 16 },
+      9: { cellWidth: 18 },
     },
   });
   
@@ -367,22 +400,24 @@ export const exportCallSheetToPDF = (
       item.costume_time ? formatTime(item.costume_time) : '',
       item.travel_time ? formatTime(item.travel_time) : '',
       item.on_set_time ? formatTime(item.on_set_time) : '',
+      item.holding_area || '',
     ]);
 
     autoTable(doc, {
       startY: yPosition,
-      head: [['Description', 'Call', 'Make Up', 'Costume', 'Travel', 'On Set']],
+      head: [['Description', 'Call', 'Make Up', 'Costume', 'Travel', 'On Set', 'Holding']],
       body: bgData,
       theme: 'grid',
       styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
       headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
       columnStyles: {
-        0: { cellWidth: 72 },
-        1: { cellWidth: 22 },
-        2: { cellWidth: 22 },
-        3: { cellWidth: 22 },
-        4: { cellWidth: 22 },
-        5: { cellWidth: 22 },
+        0: { cellWidth: 57 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 25 },
       },
     });
     
@@ -409,6 +444,89 @@ export const exportCallSheetToPDF = (
     yPosition = (doc as any).lastAutoTable.finalY + 4;
   }
   
+  // ===== RUNNING ORDER (SCHEDULE) =====
+  const filledSchedule = scheduleRows.filter(r => r.time || r.activity || r.description);
+  if (filledSchedule.length > 0) {
+    yPosition = drawSectionHeader(doc, 'SCHEDULE / RUNNING ORDER', yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      head: [['Time', 'Scene / Activity', 'Description']],
+      body: filledSchedule.map(r => [r.time || '', r.activity || '', r.description || '']),
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 55 },
+        2: { cellWidth: 102 },
+      },
+    });
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+
+  // ===== NOTES & SAFETY =====
+  const notesPairs: [string, string][] = [
+    ['Safety Briefing / Bulletin', callSheet.safety_briefing || ''],
+    ['Walkie Channels', callSheet.walkie_channels || ''],
+    ['General Notes', callSheet.general_notes || ''],
+  ].filter(([, v]) => Boolean(v)) as [string, string][];
+
+  if (notesPairs.length > 0) {
+    yPosition = drawSectionHeader(doc, 'NOTES & SAFETY', yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      body: notesPairs.map(([k, v]) => [k, v]),
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: 'bold', fillColor: [245, 245, 245] },
+        1: { cellWidth: 132 },
+      },
+    });
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+
+  // ===== ADVANCE SCHEDULE =====
+  const filledAdvance = advanceRows.filter(r => r.scene_number || r.set_description || r.day_night || r.cast);
+  if (filledAdvance.length > 0 || callSheet.next_day_label) {
+    yPosition = drawSectionHeader(
+      doc,
+      `ADVANCE SCHEDULE${callSheet.next_day_label ? ' - ' + callSheet.next_day_label.toUpperCase() : ''}`,
+      yPosition,
+      pageWidth
+    );
+    autoTable(doc, {
+      startY: yPosition,
+      head: [['Scene #', 'Set', 'D/N', 'Cast']],
+      body: filledAdvance.length > 0
+        ? filledAdvance.map(r => [r.scene_number || '', r.set_description || '', r.day_night || '', r.cast || ''])
+        : [['', 'TBD', '', '']],
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: 'bold', fontSize: 7 },
+      columnStyles: {
+        0: { cellWidth: 22 },
+        1: { cellWidth: 90 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 50 },
+      },
+    });
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+
+  // ===== KEY CONTACTS =====
+  if (callSheet.key_contacts) {
+    yPosition = drawSectionHeader(doc, 'KEY CONTACTS', yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      body: [[callSheet.key_contacts]],
+      theme: 'grid',
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: { 0: { cellWidth: 182 } },
+    });
+    yPosition = (doc as any).lastAutoTable.finalY + 4;
+  }
+
   // ===== CREW SECTION (New Page) =====
   if (crew.length > 0) {
     doc.addPage();
