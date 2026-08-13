@@ -97,7 +97,7 @@ const documentBundles = [
     icon: Users,
     description: "Engagement memos and agreements for key above- and below-the-line talent",
     documents: [
-      { id: "27", title: "Cast Deal Memo", description: "Summarize terms for a cast member's engagement", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "27", title: "Cast Deal Memo", description: "Summarize terms for a cast member's engagement", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/cast-deal-memo" },
       { id: "28", title: "Crew Deal Memo", description: "Summarize terms for a crew member's engagement", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "29", title: "Director Agreement", description: "Define the director's services, compensation, and final cut", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "30", title: "Producer Agreement", description: "Define the producer's duties, fees, and credit", category: "cast_crew_deals", format: "PDF + Word", size: "Fillable", premium: true },
