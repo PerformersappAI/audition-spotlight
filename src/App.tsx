@@ -150,6 +150,8 @@ import LocationAgreement from "./pages/agreements/LocationAgreement";
 import PropertyRelease from "./pages/agreements/PropertyRelease";
 import LocationScoutReport from "./pages/agreements/LocationScoutReport";
 import TechScoutSurvey from "./pages/agreements/TechScoutSurvey";
+import PermitApplicationChecklist from "./pages/agreements/PermitApplicationChecklist";
+
 
 
 
