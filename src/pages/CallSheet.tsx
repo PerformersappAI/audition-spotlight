@@ -404,6 +404,20 @@ const CallSheet = () => {
               sunset_time: clean(data.sunset_time) || prev.sunset_time,
               executive_producers: Array.isArray(data.executive_producers) ? data.executive_producers : prev.executive_producers,
               producers: Array.isArray(data.producers) ? data.producers : prev.producers,
+              // New general fields from the parse-call-sheet brain
+              block_focus: clean(data.block_focus) || prev.block_focus,
+              total_pages: clean(data.total_pages) || prev.total_pages,
+              gate_access_code: clean(data.gate_code) || prev.gate_access_code,
+              truck_parking: clean(data.truck_parking) || prev.truck_parking,
+              emergency_numbers: clean(data.emergency_numbers) || prev.emergency_numbers,
+              on_set_medic: clean(data.on_set_medic) || prev.on_set_medic,
+              map_link: clean(data.map_link) || prev.map_link,
+              precipitation: clean(data.precipitation) || prev.precipitation,
+              wind: clean(data.wind) || prev.wind,
+              second_meal_time: to24h(data.second_meal) || prev.second_meal_time,
+              sound_hard_out_time: to24h(data.sound_out) || prev.sound_hard_out_time,
+              key_contacts: clean(data.key_contacts) || prev.key_contacts,
+              next_day_label: clean(data.advance_label) || prev.next_day_label,
             }));
 
             // Populate scenes
@@ -438,6 +452,7 @@ const CallSheet = () => {
                 costume_time: to24h(c.costume_time),
                 travel_time: to24h(c.travel_time),
                 on_set_time: to24h(c.on_set_time),
+                wrap_time: to24h(c.wrap_time),
               })));
             }
 
@@ -465,6 +480,34 @@ const CallSheet = () => {
                 costume_time: to24h(b.costume_time),
                 travel_time: to24h(b.travel_time),
                 on_set_time: to24h(b.on_set_time),
+                holding_area: clean(b.holding_area),
+              })));
+            }
+
+            // Populate schedule rows
+            if (Array.isArray(data.schedule) && data.schedule.length > 0) {
+              setScheduleRows(data.schedule.map((r: any) => ({
+                time: to24h(r.time),
+                activity: clean(r.activity),
+                description: clean(r.description),
+              })));
+            }
+
+            // Populate requirements rows
+            if (Array.isArray(data.requirements) && data.requirements.length > 0) {
+              setRequirements(data.requirements.map((r: any) => ({
+                department: clean(r.department),
+                notes: clean(r.notes),
+              })));
+            }
+
+            // Populate advance rows
+            if (Array.isArray(data.advance) && data.advance.length > 0) {
+              setAdvanceRows(data.advance.map((r: any) => ({
+                scene_number: clean(r.scene_number),
+                set_description: clean(r.set),
+                day_night: clean(r.day_night),
+                cast: clean(r.cast),
               })));
             }
 
