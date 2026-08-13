@@ -233,6 +233,7 @@ const AppContent = () => (
           <Route path="/library/crew-contact-list" element={<ToolGate><CrewContactList /></ToolGate>} />
           <Route path="/library/cast-deal-memo" element={<ToolGate><CastDealMemo /></ToolGate>} />
           <Route path="/library/crew-deal-memo" element={<ToolGate><CrewDealMemo /></ToolGate>} />
+          <Route path="/library/director-agreement" element={<ToolGate><DirectorAgreement /></ToolGate>} />
 
 
 
