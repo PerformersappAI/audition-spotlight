@@ -139,7 +139,7 @@ const documentBundles = [
       { id: "45", title: "Property Release Form", description: "Release for filming specific props, buildings, or artwork", category: "locations", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/property-release" },
       { id: "46", title: "Location Scout Report", description: "Record scouting notes, photos, and logistical considerations", category: "locations", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/location-scout-report" },
       { id: "47", title: "Tech Scout / Location Survey", description: "Technical checklist for power, access, and sound at a location", category: "locations", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/tech-scout-survey" },
-      { id: "48", title: "Permit Application Checklist", description: "Checklist for preparing city, park, or federal permits", category: "locations", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "48", title: "Permit Application Checklist", description: "Checklist for preparing city, park, or federal permits", category: "locations", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/permit-application-checklist" },
       { id: "49", title: "Film Office Cover Letter", description: "Introductory letter to a film office or permitting agency", category: "locations", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },
