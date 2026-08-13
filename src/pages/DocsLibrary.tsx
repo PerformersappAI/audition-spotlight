@@ -78,7 +78,7 @@ const documentBundles = [
     icon: Calendar,
     description: "Breakdown, boards, schedules, and crew paperwork for prep",
     documents: [
-      { id: "17", title: "Script Breakdown Sheet", description: "Identify every element required for each scene", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "17", title: "Script Breakdown Sheet", description: "Identify every element required for each scene", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/script-breakdown-sheet" },
       { id: "18", title: "Stripboard / Production Board", description: "Organize scenes into shooting strips by location and time", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "19", title: "One-Line Schedule", description: "High-level overview of each shooting day and scene", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "20", title: "Shooting Schedule", description: "Detailed day-by-day shooting plan for the production", category: "preproduction_scheduling", format: "PDF + Word", size: "Fillable", premium: true },
