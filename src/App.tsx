@@ -136,6 +136,8 @@ import ProducerAgreement from "./pages/agreements/ProducerAgreement";
 import CinematographerAgreement from "./pages/agreements/CinematographerAgreement";
 import IndependentContractorAgreement from "./pages/agreements/IndependentContractorAgreement";
 import LoanOutAgreement from "./pages/agreements/LoanOutAgreement";
+import KitBoxRentalAgreement from "./pages/agreements/KitBoxRentalAgreement";
+
 
 
 
@@ -245,6 +247,11 @@ const AppContent = () => (
           <Route path="/library/cinematographer-agreement" element={<ToolGate><CinematographerAgreement /></ToolGate>} />
           <Route path="/library/independent-contractor-agreement" element={<ToolGate><IndependentContractorAgreement /></ToolGate>} />
           <Route path="/library/loan-out-agreement" element={<ToolGate><LoanOutAgreement /></ToolGate>} />
+          <Route path="/library/kit-box-rental-agreement" element={<ToolGate><KitBoxRentalAgreement /></ToolGate>} />
+
+
+
+
 
 
 
