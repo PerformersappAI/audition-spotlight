@@ -130,6 +130,7 @@ import BudgetTopSheet from "./pages/agreements/BudgetTopSheet";
 import DetailedBudget from "./pages/agreements/DetailedBudget";
 import CrewContactList from "./pages/agreements/CrewContactList";
 import CastDealMemo from "./pages/agreements/CastDealMemo";
+import CrewDealMemo from "./pages/agreements/CrewDealMemo";
 
 import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
@@ -230,6 +231,7 @@ const AppContent = () => (
           <Route path="/library/detailed-budget" element={<ToolGate><DetailedBudget /></ToolGate>} />
           <Route path="/library/crew-contact-list" element={<ToolGate><CrewContactList /></ToolGate>} />
           <Route path="/library/cast-deal-memo" element={<ToolGate><CastDealMemo /></ToolGate>} />
+          <Route path="/library/crew-deal-memo" element={<ToolGate><CrewDealMemo /></ToolGate>} />
 
 
 
