@@ -146,6 +146,8 @@ import DepictionAppearanceRelease from "./pages/agreements/DepictionAppearanceRe
 import PersonalRelease from "./pages/agreements/PersonalRelease";
 import InterviewSubjectRelease from "./pages/agreements/InterviewSubjectRelease";
 import CrowdNoticeSignage from "./pages/agreements/CrowdNoticeSignage";
+import LocationAgreement from "./pages/agreements/LocationAgreement";
+
 
 
 
@@ -279,6 +281,8 @@ const AppContent = () => (
           <Route path="/library/personal-release" element={<ToolGate><PersonalRelease /></ToolGate>} />
           <Route path="/library/interview-subject-release" element={<ToolGate><InterviewSubjectRelease /></ToolGate>} />
           <Route path="/library/crowd-notice-signage" element={<ToolGate><CrowdNoticeSignage /></ToolGate>} />
+          <Route path="/library/location-agreement" element={<ToolGate><LocationAgreement /></ToolGate>} />
+
 
 
 
