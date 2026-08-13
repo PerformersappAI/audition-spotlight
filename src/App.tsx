@@ -142,6 +142,12 @@ import ParentalGuardianConsentMinor from "./pages/agreements/ParentalGuardianCon
 import AdultTalentRelease from "./pages/agreements/AdultTalentRelease";
 import BackgroundExtraRelease from "./pages/agreements/BackgroundExtraRelease";
 import MinorTalentRelease from "./pages/agreements/MinorTalentRelease";
+import DepictionAppearanceRelease from "./pages/agreements/DepictionAppearanceRelease";
+
+
+
+
+
 
 
 
@@ -263,6 +269,7 @@ const AppContent = () => (
           <Route path="/library/adult-talent-release" element={<ToolGate><AdultTalentRelease /></ToolGate>} />
           <Route path="/library/background-extra-release" element={<ToolGate><BackgroundExtraRelease /></ToolGate>} />
           <Route path="/library/minor-talent-release" element={<ToolGate><MinorTalentRelease /></ToolGate>} />
+          <Route path="/library/depiction-appearance-release" element={<ToolGate><DepictionAppearanceRelease /></ToolGate>} />
 
 
 
