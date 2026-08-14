@@ -5,7 +5,7 @@ var _a, _b;
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
-import React__default, { Component, createContext, useState, useEffect, useContext, useMemo } from "react";
+import React__default, { Component, createContext, useState, useEffect, useContext, useMemo, useCallback } from "react";
 import { UNSAFE_invariant, UNSAFE_warning, resolveTo, UNSAFE_getResolveToMatches, Action, parsePath, stripBasename, joinPaths, matchRoutes, isRouteErrorResponse, createPath, matchPath } from "@remix-run/router";
 import fastCompare from "react-fast-compare";
 import invariant from "invariant";
@@ -95,7 +95,7 @@ function useHref(to, _temp) {
   ) : UNSAFE_invariant(false) : void 0;
   let {
     basename,
-    navigator
+    navigator: navigator2
   } = React.useContext(NavigationContext);
   let {
     hash,
@@ -108,7 +108,7 @@ function useHref(to, _temp) {
   if (basename !== "/") {
     joinedPathname = pathname === "/" ? basename : joinPaths([basename, pathname]);
   }
-  return navigator.createHref({
+  return navigator2.createHref({
     pathname: joinedPathname,
     search,
     hash
@@ -150,7 +150,7 @@ function useNavigateUnstable() {
   let {
     basename,
     future,
-    navigator
+    navigator: navigator2
   } = React.useContext(NavigationContext);
   let {
     matches
@@ -170,15 +170,15 @@ function useNavigateUnstable() {
     process.env.NODE_ENV !== "production" ? UNSAFE_warning(activeRef.current, navigateEffectWarning) : void 0;
     if (!activeRef.current) return;
     if (typeof to === "number") {
-      navigator.go(to);
+      navigator2.go(to);
       return;
     }
     let path = resolveTo(to, JSON.parse(routePathnamesJson), locationPathname, options.relative === "path");
     if (dataRouterContext == null && basename !== "/") {
       path.pathname = path.pathname === "/" ? basename : joinPaths([basename, path.pathname]);
     }
-    (!!options.replace ? navigator.replace : navigator.push)(path, options.state, options);
-  }, [basename, navigator, routePathnamesJson, locationPathname, dataRouterContext]);
+    (!!options.replace ? navigator2.replace : navigator2.push)(path, options.state, options);
+  }, [basename, navigator2, routePathnamesJson, locationPathname, dataRouterContext]);
   return navigate;
 }
 function useParams() {
@@ -215,7 +215,7 @@ function useRoutesImpl(routes, locationArg, dataRouterState, future) {
     "useRoutes() may be used only in the context of a <Router> component."
   ) : UNSAFE_invariant(false) : void 0;
   let {
-    navigator
+    navigator: navigator2
   } = React.useContext(NavigationContext);
   let {
     matches: parentMatches
@@ -260,12 +260,12 @@ function useRoutesImpl(routes, locationArg, dataRouterState, future) {
     pathname: joinPaths([
       parentPathnameBase,
       // Re-encode pathnames that were decoded inside matchRoutes
-      navigator.encodeLocation ? navigator.encodeLocation(match.pathname).pathname : match.pathname
+      navigator2.encodeLocation ? navigator2.encodeLocation(match.pathname).pathname : match.pathname
     ]),
     pathnameBase: match.pathnameBase === "/" ? parentPathnameBase : joinPaths([
       parentPathnameBase,
       // Re-encode pathnames that were decoded inside matchRoutes
-      navigator.encodeLocation ? navigator.encodeLocation(match.pathnameBase).pathname : match.pathnameBase
+      navigator2.encodeLocation ? navigator2.encodeLocation(match.pathnameBase).pathname : match.pathnameBase
     ])
   })), parentMatches, dataRouterState, future);
   if (locationArg && renderedMatches) {
@@ -614,7 +614,7 @@ function Router(_ref5) {
     children = null,
     location: locationProp,
     navigationType = Action.Pop,
-    navigator,
+    navigator: navigator2,
     static: staticProp = false,
     future
   } = _ref5;
@@ -622,12 +622,12 @@ function Router(_ref5) {
   let basename = basenameProp.replace(/^\/*/, "/");
   let navigationContext = React.useMemo(() => ({
     basename,
-    navigator,
+    navigator: navigator2,
     static: staticProp,
     future: _extends$1({
       v7_relativeSplatPath: false
     }, future)
-  }), [basename, future, navigator, staticProp]);
+  }), [basename, future, navigator2, staticProp]);
   if (typeof locationProp === "string") {
     locationProp = parsePath(locationProp);
   }
@@ -973,13 +973,13 @@ const NavLink = /* @__PURE__ */ React.forwardRef(function NavLinkWithRef(_ref8, 
   let location = useLocation();
   let routerState = React.useContext(DataRouterStateContext);
   let {
-    navigator,
+    navigator: navigator2,
     basename
   } = React.useContext(NavigationContext);
   let isTransitioning = routerState != null && // Conditional usage is OK here because the usage of a data router is static
   // eslint-disable-next-line react-hooks/rules-of-hooks
   useViewTransitionState(path) && viewTransition === true;
-  let toPathname = navigator.encodeLocation ? navigator.encodeLocation(path).pathname : path.pathname;
+  let toPathname = navigator2.encodeLocation ? navigator2.encodeLocation(path).pathname : path.pathname;
   let locationPathname = location.pathname;
   let nextLocationPathname = routerState && routerState.navigation && routerState.navigation.location ? routerState.navigation.location.pathname : null;
   if (!caseSensitive) {
@@ -2751,7 +2751,7 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$a = "#00d4aa";
+const TEAL$b = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
 const VIOLET$1 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
@@ -2830,7 +2830,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$a}, ${VIOLET$1})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$b}, ${VIOLET$1})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -2874,9 +2874,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$a },
+                    style: { backgroundColor: TEAL$b },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$a,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$b,
                     children: "Get Started"
                   }
                 )
@@ -3022,7 +3022,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$a },
+                      style: { backgroundColor: TEAL$b },
                       children: "Get Started"
                     }
                   )
@@ -3209,12 +3209,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$9 = "#00d4aa";
+const TEAL$a = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$9, borderColor: `${TEAL$9}66` },
+    style: { color: TEAL$a, borderColor: `${TEAL$a}66` },
     children: label
   }
 );
@@ -3230,7 +3230,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$9,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$a,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3393,7 +3393,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$8 = "#00d4aa";
+const TEAL$9 = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3497,7 +3497,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$8, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$9, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3513,7 +3513,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$8 : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$9 : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3592,7 +3592,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$8 }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3600,7 +3600,7 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
 const inputStyle = {
   width: "100%",
@@ -3614,7 +3614,7 @@ const inputStyle = {
   outline: "none",
   boxSizing: "border-box"
 };
-const labelStyle$1 = {
+const labelStyle$2 = {
   display: "block",
   fontSize: 11,
   fontWeight: 700,
@@ -3625,7 +3625,7 @@ const labelStyle$1 = {
 };
 function Field$1({ label, children }) {
   return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 18 }, children: [
-    /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: label }),
+    /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: label }),
     children
   ] });
 }
@@ -3699,7 +3699,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$8 }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3732,13 +3732,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$7 }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$8 }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$7,
+        background: TEAL$8,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3751,7 +3751,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$8 }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3782,11 +3782,11 @@ function Contact() {
       /* @__PURE__ */ jsx("div", { style: { textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 6, marginBottom: 28 }, children: "We'll get back to you within 24 hours" }),
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "First Name" }),
+          /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "First Name" }),
           /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Last Name" }),
+          /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "Last Name" }),
           /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
@@ -3811,7 +3811,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$7,
+            background: TEAL$8,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3827,7 +3827,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$6 = "#00d4aa";
+const TEAL$7 = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -3921,7 +3921,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$6,
+        color: TEAL$7,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -3960,7 +3960,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$6 : "#fff",
+                color: isOpen ? TEAL$7 : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -3981,7 +3981,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$6 : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$7 : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4010,7 +4010,7 @@ function FAQ() {
     ] })
   ] });
 }
-const TEAL$5 = "#00d4aa";
+const TEAL$6 = "#00d4aa";
 const SECTIONS$1 = [
   {
     h: "The short version",
@@ -4094,7 +4094,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$5,
+            color: TEAL$6,
             marginBottom: 14
           },
           children: "Legal"
@@ -4199,7 +4199,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$5, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$6, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4212,7 +4212,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$4 = "#00d4aa";
+const TEAL$5 = "#00d4aa";
 const SECTIONS = [
   {
     h: "You own your work",
@@ -4296,7 +4296,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$4,
+            color: TEAL$5,
             marginBottom: 14
           },
           children: "Legal"
@@ -4401,7 +4401,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$4, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$5, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4714,7 +4714,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$3 = "#00d4aa";
+const TEAL$4 = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -4784,7 +4784,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$3 },
+        style: { color: TEAL$4 },
         children: "AI Recut"
       }
     ),
@@ -4792,7 +4792,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$3,
+        stroke: TEAL$4,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -4810,8 +4810,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$3}`,
-          color: TEAL$3,
+          border: `1px solid ${TEAL$4}`,
+          color: TEAL$4,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -4849,7 +4849,7 @@ function Recut() {
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$3, color: "#0a0a12" },
+            style: { background: TEAL$4, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -4917,7 +4917,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$3}`,
+              border: `2px dashed ${TEAL$4}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -4935,7 +4935,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$3, color: "#0a0a12" },
+                  style: { background: TEAL$4, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -4950,7 +4950,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$3 },
+              style: { color: TEAL$4 },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -6002,7 +6002,7 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
     ] }, t.name)) })
   ] })
 ] });
-const TEAL$2 = "#00d4aa";
+const TEAL$3 = "#00d4aa";
 const VIOLET = "#a855f7";
 function AddCreditsCard({ className = "", showMembershipLink = true }) {
   const [buying, setBuying] = useState(false);
@@ -6027,7 +6027,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       "div",
       {
         className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-        style: { background: `linear-gradient(135deg, ${TEAL$2}, ${VIOLET})` },
+        style: { background: `linear-gradient(135deg, ${TEAL$3}, ${VIOLET})` },
         children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
       }
     ),
@@ -6040,7 +6040,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         onClick: handleBuy,
         disabled: buying,
         className: "text-black font-semibold",
-        style: { backgroundColor: TEAL$2 },
+        style: { backgroundColor: TEAL$3 },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
           "Buy More Credits — $10 for 30 Credits"
@@ -7158,7 +7158,7 @@ function EducationModules() {
     ] })
   ] });
 }
-const TEAL$1 = "#00d4aa";
+const TEAL$2 = "#00d4aa";
 const BG = "#0a0a12";
 const SURFACE = "#12121f";
 const SURFACE2 = "#16162a";
@@ -7202,7 +7202,7 @@ function ChapterCard({ ch }) {
     position: "relative",
     transition: "all 0.2s"
   }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$1, opacity: 0.8 }, children: ch.stage }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$2, opacity: 0.8 }, children: ch.stage }),
     /* @__PURE__ */ jsxs("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: [
       "Chapter ",
       ch.n
@@ -7233,7 +7233,7 @@ function RobertsFilmmaking() {
     ),
     /* @__PURE__ */ jsx("style", { children: `
         .rf-card:hover { border-color: rgba(0,212,170,0.4) !important; background: ${SURFACE2} !important; transform: translateY(-2px); }
-        .rf-card:hover .rf-arrow { color: ${TEAL$1} !important; }
+        .rf-card:hover .rf-arrow { color: ${TEAL$2} !important; }
         .rf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .rf-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 980px) { .rf-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -7254,13 +7254,13 @@ function RobertsFilmmaking() {
         filter: "blur(90px)",
         opacity: 0.16,
         pointerEvents: "none",
-        background: `radial-gradient(ellipse at center, ${TEAL$1} 0%, transparent 70%)`
+        background: `radial-gradient(ellipse at center, ${TEAL$2} 0%, transparent 70%)`
       } }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative", maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$1, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$2, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
         /* @__PURE__ */ jsxs("h1", { style: { fontFamily: "'Fraunces', serif", fontSize: "clamp(40px,7vw,64px)", lineHeight: 1.04, margin: 0, maxWidth: 760, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }, children: [
           "Filmmaking by ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Will Roberts" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$2 }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 26, display: "inline-flex", gap: 10, alignItems: "center" }, children: [
@@ -7268,9 +7268,9 @@ function RobertsFilmmaking() {
             width: 38,
             height: 38,
             borderRadius: "50%",
-            border: `2px solid ${TEAL$1}`,
+            border: `2px solid ${TEAL$2}`,
             background: "rgba(0,212,170,0.12)",
-            color: TEAL$1,
+            color: TEAL$2,
             fontSize: 13,
             fontWeight: 700,
             display: "flex",
@@ -7291,19 +7291,19 @@ function RobertsFilmmaking() {
         fontSize: 21,
         color: "rgba(255,255,255,0.78)",
         lineHeight: 1.6,
-        borderLeft: `3px solid ${TEAL$1}`,
+        borderLeft: `3px solid ${TEAL$2}`,
         paddingLeft: 24,
         margin: 0
       }, children: `"I've spent thirty-five years and sixty-plus credits learning how this is really done. This is everything I'd tell you if we sat down together — from the spark of an idea to the day strangers finally watch your film."` }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 20, fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75 }, children: "This free guide walks through every stage of making an independent film: development, producing, budgeting, crew, pre-production, directing, working with actors, cinematography, the shoot, post-production, festivals, distribution, streaming, marketing, and building a lasting career. Practical, specific, no fluff. Read it in order, or jump to the chapter you need right now." })
     ] }),
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "56px 24px 80px" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$1, marginBottom: 8 }, children: "The Complete Guide" }),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$2, marginBottom: 8 }, children: "The Complete Guide" }),
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 36px", fontWeight: 700 }, children: "All 17 Chapters" }),
       /* @__PURE__ */ jsx("div", { className: "rf-grid", children: CHAPTERS.map((ch) => /* @__PURE__ */ jsx(ChapterCard, { ch }, ch.n)) })
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "32px 24px" }, children: /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 56, justifyContent: "center" }, children: STATS.map((s) => /* @__PURE__ */ jsxs("div", { style: { textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$1 }, children: s.num }),
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$2 }, children: s.num }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: s.label })
     ] }, s.label)) }) }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "64px 24px" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 760, margin: "0 auto", display: "flex", gap: 48, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7321,19 +7321,19 @@ function RobertsFilmmaking() {
         textAlign: "center",
         border: `1px solid ${BORDER}`
       }, children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$1 } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$2 } }),
         /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.15 }, children: [
           "The Indie Filmmaker's ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Complete Guide" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$2 }, children: "Complete Guide" })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$1, margin: "10px auto" } }),
+        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$2, margin: "10px auto" } }),
         /* @__PURE__ */ jsx("div", { style: { fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.6)" }, children: "By Will Roberts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 240 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$1, marginBottom: 12 }, children: "Free Download" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$2, marginBottom: 12 }, children: "Free Download" }),
         /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 16px", fontWeight: 700 }, children: [
           "Take the whole guide with you — ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "free PDF" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$2 }, children: "free PDF" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 28px" }, children: "All 17 chapters in a single PDF — every stage of making an independent film, from the first idea to distribution, distilled and ready to reference. No sign-up." }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7341,7 +7341,7 @@ function RobertsFilmmaking() {
             height: 50,
             padding: "0 28px",
             borderRadius: 9999,
-            background: TEAL$1,
+            background: TEAL$2,
             color: "#000",
             fontWeight: 700,
             display: "inline-flex",
@@ -7355,7 +7355,7 @@ function RobertsFilmmaking() {
     /* @__PURE__ */ jsxs("section", { style: { padding: "64px 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 30, margin: 0, fontWeight: 700 }, children: [
         "Stop reading about it. ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Start making it." })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$2 }, children: "Start making it." })
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
@@ -7363,7 +7363,7 @@ function RobertsFilmmaking() {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
-          background: TEAL$1,
+          background: TEAL$2,
           color: "#000",
           fontWeight: 700,
           display: "inline-flex",
@@ -12605,6 +12605,320 @@ function Marketing() {
     }
   );
 }
+const TEAL$1 = "#00d4aa";
+const inputBase$1 = {
+  width: "100%",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid #1e1e35",
+  borderRadius: 10,
+  padding: "12px 14px",
+  fontSize: 14,
+  color: "#fff",
+  fontFamily: "inherit",
+  outline: "none",
+  boxSizing: "border-box"
+};
+const labelStyle$1 = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 700,
+  color: "rgba(255,255,255,0.35)",
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  marginBottom: 8
+};
+const cardStyle = {
+  background: "#0d0d1a",
+  border: "1px solid #1e1e35",
+  borderRadius: 20,
+  padding: 28,
+  marginBottom: 24
+};
+const makeSlug = () => {
+  const alphabet = "abcdefghijkmnopqrstuvwxyz23456789";
+  const bytes = new Uint8Array(8);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => alphabet[b % alphabet.length]).join("");
+};
+const csvCell = (v) => `"${(v ?? "").replace(/"/g, '""')}"`;
+function ContactCastCrew() {
+  const { user } = useAuth();
+  const { toast: toast2 } = useToast();
+  const [form, setForm] = useState(null);
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [notifyEmail, setNotifyEmail] = useState("");
+  const [productionName, setProductionName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const loadContacts = useCallback(async (formId) => {
+    const { data } = await supabase.from("cast_crew_contacts").select("*").eq("form_id", formId).order("created_at", { ascending: false });
+    setContacts(data ?? []);
+  }, []);
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    (async () => {
+      setLoading(true);
+      const { data: existing } = await supabase.from("cast_crew_forms").select("id, slug, production_name, notify_email").eq("owner_user_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
+      let row = existing;
+      if (!row) {
+        const { data: created, error } = await supabase.from("cast_crew_forms").insert({
+          owner_user_id: user.id,
+          slug: makeSlug(),
+          notify_email: user.email ?? ""
+        }).select("id, slug, production_name, notify_email").single();
+        if (error) {
+          toast2({ title: "Could not create your form", description: error.message, variant: "destructive" });
+          if (active) setLoading(false);
+          return;
+        }
+        row = created;
+      }
+      if (!active) return;
+      setForm(row);
+      setNotifyEmail(row.notify_email ?? "");
+      setProductionName(row.production_name ?? "");
+      await loadContacts(row.id);
+      if (active) setLoading(false);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [user, loadContacts, toast2]);
+  const shareUrl = form ? `https://filmmakergenius.com/f/${form.slug}` : "";
+  const copyLink = async () => {
+    if (!shareUrl) return;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2e3);
+    } catch {
+      toast2({ title: "Copy failed", description: "Select the link and copy it manually." });
+    }
+  };
+  const saveSettings = async () => {
+    if (!form) return;
+    if (!notifyEmail.trim()) {
+      toast2({ title: "Notification email required", variant: "destructive" });
+      return;
+    }
+    setSaving(true);
+    const { error } = await supabase.from("cast_crew_forms").update({
+      notify_email: notifyEmail.trim(),
+      production_name: productionName.trim() || null
+    }).eq("id", form.id);
+    setSaving(false);
+    if (error) {
+      toast2({ title: "Save failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    toast2({ title: "Saved", description: "Your form settings are updated." });
+  };
+  const exportCsv = () => {
+    const headers = [
+      "First Name",
+      "Last Name",
+      "Phone",
+      "Email",
+      "Instagram",
+      "Job / Position",
+      "Specified Role",
+      "Character Name",
+      "Type",
+      "Notes",
+      "Submitted"
+    ];
+    const rows = contacts.map(
+      (c) => [
+        c.first_name,
+        c.last_name,
+        c.phone,
+        c.email,
+        c.instagram_handle,
+        c.job_position,
+        c.other_role,
+        c.character_name,
+        c.actor_type,
+        c.notes,
+        new Date(c.created_at).toLocaleString()
+      ].map(csvCell).join(",")
+    );
+    const csv = [headers.map(csvCell).join(","), ...rows].join("\n");
+    const url2 = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    const a = document.createElement("a");
+    a.href = url2;
+    a.download = `cast-crew-contacts-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url2);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh" }, children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Contact Cast & Crew — Filmmaker Genius",
+        description: "Collect cast and crew contact details with your own shareable production form and email notifications.",
+        canonical: "https://filmmakergenius.com/contact-cast-crew"
+      }
+    ),
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx("style", { children: `
+        .ccc-input:focus { border-color: rgba(0,212,170,0.5) !important; }
+        .ccc-btn:hover { filter: brightness(1.08); }
+        .ccc-two { display: grid; grid-template-columns: 1fr; gap: 14px; }
+        @media (min-width: 640px) { .ccc-two { grid-template-columns: 1fr 1fr; } }
+        .ccc-h1 { font-size: 34px; }
+        @media (min-width: 640px) { .ccc-h1 { font-size: 44px; } }
+      ` }),
+    /* @__PURE__ */ jsxs("section", { style: { maxWidth: 900, margin: "0 auto", padding: "48px 24px 96px" }, children: [
+      /* @__PURE__ */ jsxs("h1", { className: "ccc-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
+        "Contact ",
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Cast & Crew" })
+      ] }),
+      /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 620 }, children: "Share one link with your cast and crew. Every submission lands in your private list and gets emailed to you." }),
+      loading ? /* @__PURE__ */ jsx("div", { style: { marginTop: 40, display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx("div", { className: "h-8 w-8 animate-spin rounded-full border-2 border-t-transparent", style: { borderColor: TEAL$1, borderTopColor: "transparent" } }) }) : !form ? /* @__PURE__ */ jsx("div", { style: { ...cardStyle, marginTop: 32 }, children: /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.6)" }, children: "We couldn't load your form. Please refresh the page." }) }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsxs("div", { style: { ...cardStyle, marginTop: 32 }, children: [
+          /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Your shareable form link" }),
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+            /* @__PURE__ */ jsx("input", { readOnly: true, className: "ccc-input", style: { ...inputBase$1, flex: "1 1 260px" }, value: shareUrl, onFocus: (e) => e.currentTarget.select() }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: "ccc-btn",
+                onClick: copyLink,
+                style: {
+                  height: 46,
+                  padding: "0 22px",
+                  borderRadius: 10,
+                  background: TEAL$1,
+                  color: "#000",
+                  fontWeight: 700,
+                  fontSize: 14,
+                  border: "none",
+                  cursor: "pointer",
+                  fontFamily: "inherit"
+                },
+                children: copied ? "Copied" : "Copy link"
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx("p", { style: { marginTop: 12, marginBottom: 0, fontSize: 13, color: "rgba(255,255,255,0.35)" }, children: "Anyone with this link can submit their details. No login needed on their end." })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: cardStyle, children: [
+          /* @__PURE__ */ jsxs("div", { className: "ccc-two", children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Send notifications to" }),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "email",
+                  className: "ccc-input",
+                  style: inputBase$1,
+                  value: notifyEmail,
+                  onChange: (e) => setNotifyEmail(e.target.value),
+                  placeholder: "you@example.com"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Production name (optional)" }),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  className: "ccc-input",
+                  style: inputBase$1,
+                  value: productionName,
+                  onChange: (e) => setProductionName(e.target.value),
+                  placeholder: "e.g. Midnight Reel"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              className: "ccc-btn",
+              onClick: saveSettings,
+              disabled: saving,
+              style: {
+                marginTop: 18,
+                height: 46,
+                padding: "0 24px",
+                borderRadius: 10,
+                background: "rgba(0,212,170,0.12)",
+                border: "1px solid rgba(0,212,170,0.35)",
+                color: TEAL$1,
+                fontWeight: 700,
+                fontSize: 14,
+                cursor: saving ? "wait" : "pointer",
+                fontFamily: "inherit"
+              },
+              children: saving ? "Saving…" : "Save settings"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: cardStyle, children: [
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 18 }, children: [
+            /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, margin: 0, fontWeight: 700 }, children: [
+              "Collected contacts",
+              " ",
+              /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.3)", fontSize: 16, fontFamily: "inherit" }, children: [
+                "(",
+                contacts.length,
+                ")"
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                className: "ccc-btn",
+                onClick: exportCsv,
+                disabled: contacts.length === 0,
+                style: {
+                  height: 42,
+                  padding: "0 20px",
+                  borderRadius: 10,
+                  background: "rgba(255,255,255,0.06)",
+                  border: "1px solid #1e1e35",
+                  color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : "#fff",
+                  fontWeight: 700,
+                  fontSize: 13,
+                  cursor: contacts.length === 0 ? "not-allowed" : "pointer",
+                  fontFamily: "inherit"
+                },
+                children: "Export CSV"
+              }
+            )
+          ] }),
+          contacts.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }, children: "No submissions yet. Share your link above and they'll show up here." }) : /* @__PURE__ */ jsx("div", { style: { display: "grid", gap: 12 }, children: contacts.map((c) => /* @__PURE__ */ jsxs("div", { style: { background: "rgba(255,255,255,0.03)", border: "1px solid #1e1e35", borderRadius: 14, padding: 18 }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }, children: [
+              /* @__PURE__ */ jsxs("div", { style: { fontSize: 16, fontWeight: 700 }, children: [
+                c.first_name,
+                " ",
+                c.last_name
+              ] }),
+              /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.3)" }, children: new Date(c.created_at).toLocaleDateString() })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { style: { marginTop: 6, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TEAL$1 }, children: [
+              c.job_position === "Other" && c.other_role ? c.other_role : c.job_position,
+              c.character_name ? ` · ${c.character_name}` : "",
+              c.actor_type ? ` · ${c.actor_type}` : ""
+            ] }),
+            /* @__PURE__ */ jsxs("div", { style: { marginTop: 10, fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }, children: [
+              c.email && /* @__PURE__ */ jsx("div", { children: c.email }),
+              c.phone && /* @__PURE__ */ jsx("div", { children: c.phone }),
+              c.instagram_handle && /* @__PURE__ */ jsx("div", { children: c.instagram_handle }),
+              c.notes && /* @__PURE__ */ jsx("div", { style: { marginTop: 8, color: "rgba(255,255,255,0.45)" }, children: c.notes })
+            ] })
+          ] }, c.id)) })
+        ] })
+      ] })
+    ] })
+  ] });
+}
 const TEAL = "#00d4aa";
 const inputBase = {
   width: "100%",
@@ -12663,7 +12977,10 @@ function Field({
     children
   ] });
 }
-function ContactCastCrew() {
+function PublicCastCrewForm() {
+  const { slug } = useParams();
+  const [productionName, setProductionName] = useState(null);
+  const [formMissing, setFormMissing] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [phone, setPhone] = useState("");
@@ -12675,11 +12992,29 @@ function ContactCastCrew() {
   const [type, setType] = useState("Principal");
   const [notes, setNotes] = useState("");
   const [honeypot, setHoneypot] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const isActorLike = job === "Actor" || job === "Background / Extra";
   const isOther = job === "Other";
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (!slug) return;
+    let active = true;
+    (async () => {
+      const { data, error: fnError } = await supabase.functions.invoke(
+        "submit-cast-crew-contact",
+        { body: { slug, lookup_only: true, website: "" } }
+      );
+      if (!active) return;
+      if (fnError) return;
+      const name = data == null ? void 0 : data.production_name;
+      if (name) setProductionName(name);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [slug]);
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
     if (honeypot) return;
@@ -12691,7 +13026,41 @@ function ContactCastCrew() {
       setError("Please specify your role.");
       return;
     }
-    setSubmitted(true);
+    setSubmitting(true);
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke(
+        "submit-cast-crew-contact",
+        {
+          body: {
+            slug,
+            first_name: firstName,
+            last_name: lastName,
+            phone,
+            email,
+            instagram_handle: instagram || null,
+            job_position: job,
+            other_role: isOther ? otherRole : null,
+            character_name: isActorLike ? characterName || null : null,
+            actor_type: isActorLike ? type : null,
+            notes: notes || null,
+            website: honeypot
+          }
+        }
+      );
+      if (fnError || (data == null ? void 0 : data.error)) {
+        if ((data == null ? void 0 : data.error) === "Form not found") {
+          setFormMissing(true);
+          return;
+        }
+        setError("Something went wrong. Please try again.");
+        return;
+      }
+      setSubmitted(true);
+    } catch {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh" }, children: [
     /* @__PURE__ */ jsx(
@@ -12699,7 +13068,7 @@ function ContactCastCrew() {
       {
         title: "Cast & Crew Contact Form — Filmmaker Genius",
         description: "Join the production list. Share your contact info, role, and availability for cast and crew opportunities.",
-        canonical: "https://filmmakergenius.com/contact-cast-crew"
+        canonical: `https://filmmakergenius.com/f/${slug ?? ""}`
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -12707,6 +13076,8 @@ function ContactCastCrew() {
         @media (min-width: 640px) { .ccc-h1 { font-size: 52px; } }
         .ccc-input:focus { border-color: rgba(0,212,170,0.5) !important; }
         .ccc-btn:hover { background: #00f0c0 !important; }
+        .ccc-grid { display: grid; grid-template-columns: 1fr; gap: 14px; margin-bottom: 18px; }
+        @media (min-width: 560px) { .ccc-grid { grid-template-columns: 1fr 1fr; } }
       ` }),
     /* @__PURE__ */ jsxs("section", { style: { position: "relative", overflow: "hidden", padding: "72px 24px 40px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsx(
@@ -12727,6 +13098,7 @@ function ContactCastCrew() {
         }
       ),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
+        productionName && /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL, marginBottom: 12 }, children: productionName }),
         /* @__PURE__ */ jsxs("h1", { className: "ccc-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Cast & Crew ",
           /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "Contact Form" })
@@ -12734,7 +13106,10 @@ function ContactCastCrew() {
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 560, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Add yourself to the production list. Tell us who you are, what you do, and how to reach you." })
       ] })
     ] }),
-    /* @__PURE__ */ jsx("section", { style: { maxWidth: 680, margin: "0 auto 96px", padding: "0 24px" }, children: submitted ? /* @__PURE__ */ jsxs(
+    /* @__PURE__ */ jsx("section", { style: { maxWidth: 680, margin: "0 auto 96px", padding: "0 24px" }, children: formMissing ? /* @__PURE__ */ jsxs("div", { style: { background: "#0d0d1a", border: "1px solid #1e1e35", borderRadius: 16, padding: "32px 24px", textAlign: "center" }, children: [
+      /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, margin: 0 }, children: "This form isn't available." }),
+      /* @__PURE__ */ jsx("p", { style: { marginTop: 10, color: "rgba(255,255,255,0.5)" }, children: "Double-check the link with the production you're contacting." })
+    ] }) : submitted ? /* @__PURE__ */ jsxs(
       "div",
       {
         style: {
@@ -12766,72 +13141,25 @@ function ContactCastCrew() {
           children: error
         }
       ),
-      /* @__PURE__ */ jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }, children: [
+      /* @__PURE__ */ jsxs("div", { className: "ccc-grid", children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsxs("label", { style: labelStyle, children: [
             "First Name",
             /* @__PURE__ */ jsx("span", { style: { color: TEAL, marginLeft: 4 }, children: "*" })
           ] }),
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "ccc-input",
-              style: inputBase,
-              value: firstName,
-              onChange: (e) => setFirstName(e.target.value),
-              placeholder: "Jane"
-            }
-          )
+          /* @__PURE__ */ jsx("input", { className: "ccc-input", style: inputBase, value: firstName, onChange: (e) => setFirstName(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsxs("label", { style: labelStyle, children: [
             "Last Name",
             /* @__PURE__ */ jsx("span", { style: { color: TEAL, marginLeft: 4 }, children: "*" })
           ] }),
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              className: "ccc-input",
-              style: inputBase,
-              value: lastName,
-              onChange: (e) => setLastName(e.target.value),
-              placeholder: "Smith"
-            }
-          )
+          /* @__PURE__ */ jsx("input", { className: "ccc-input", style: inputBase, value: lastName, onChange: (e) => setLastName(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field, { label: "Phone Number", required: true, children: /* @__PURE__ */ jsx(
-        "input",
-        {
-          type: "tel",
-          className: "ccc-input",
-          style: inputBase,
-          value: phone,
-          onChange: (e) => setPhone(e.target.value),
-          placeholder: "(555) 123-4567"
-        }
-      ) }),
-      /* @__PURE__ */ jsx(Field, { label: "Email Address", required: true, children: /* @__PURE__ */ jsx(
-        "input",
-        {
-          type: "email",
-          className: "ccc-input",
-          style: inputBase,
-          value: email,
-          onChange: (e) => setEmail(e.target.value),
-          placeholder: "jane@example.com"
-        }
-      ) }),
-      /* @__PURE__ */ jsx(Field, { label: "Instagram Handle", children: /* @__PURE__ */ jsx(
-        "input",
-        {
-          className: "ccc-input",
-          style: inputBase,
-          value: instagram,
-          onChange: (e) => setInstagram(e.target.value),
-          placeholder: "@username"
-        }
-      ) }),
+      /* @__PURE__ */ jsx(Field, { label: "Phone Number", required: true, children: /* @__PURE__ */ jsx("input", { type: "tel", className: "ccc-input", style: inputBase, value: phone, onChange: (e) => setPhone(e.target.value), placeholder: "(555) 123-4567" }) }),
+      /* @__PURE__ */ jsx(Field, { label: "Email Address", required: true, children: /* @__PURE__ */ jsx("input", { type: "email", className: "ccc-input", style: inputBase, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field, { label: "Instagram Handle", children: /* @__PURE__ */ jsx("input", { className: "ccc-input", style: inputBase, value: instagram, onChange: (e) => setInstagram(e.target.value), placeholder: "@username" }) }),
       /* @__PURE__ */ jsx(Field, { label: "Job / Position on the Film", required: true, children: /* @__PURE__ */ jsxs(
         "select",
         {
@@ -12845,16 +13173,7 @@ function ContactCastCrew() {
           ]
         }
       ) }),
-      isOther && /* @__PURE__ */ jsx(Field, { label: "Please specify your role", required: true, children: /* @__PURE__ */ jsx(
-        "input",
-        {
-          className: "ccc-input",
-          style: inputBase,
-          value: otherRole,
-          onChange: (e) => setOtherRole(e.target.value),
-          placeholder: "e.g. Drone Operator"
-        }
-      ) }),
+      isOther && /* @__PURE__ */ jsx(Field, { label: "Please specify your role", required: true, children: /* @__PURE__ */ jsx("input", { className: "ccc-input", style: inputBase, value: otherRole, onChange: (e) => setOtherRole(e.target.value), placeholder: "e.g. Drone Operator" }) }),
       isActorLike && /* @__PURE__ */ jsxs(
         "div",
         {
@@ -12866,16 +13185,7 @@ function ContactCastCrew() {
             marginBottom: 18
           },
           children: [
-            /* @__PURE__ */ jsx(Field, { label: "Character / Role Name", children: /* @__PURE__ */ jsx(
-              "input",
-              {
-                className: "ccc-input",
-                style: inputBase,
-                value: characterName,
-                onChange: (e) => setCharacterName(e.target.value),
-                placeholder: "e.g. Detective Miller"
-              }
-            ) }),
+            /* @__PURE__ */ jsx(Field, { label: "Character / Role Name", children: /* @__PURE__ */ jsx("input", { className: "ccc-input", style: inputBase, value: characterName, onChange: (e) => setCharacterName(e.target.value), placeholder: "e.g. Detective Miller" }) }),
             /* @__PURE__ */ jsx(Field, { label: "Type", children: /* @__PURE__ */ jsxs(
               "select",
               {
@@ -12904,13 +13214,14 @@ function ContactCastCrew() {
       ) }),
       /* @__PURE__ */ jsxs("div", { style: { display: "none" }, "aria-hidden": "true", children: [
         /* @__PURE__ */ jsx("label", { children: "Do not fill this field" }),
-        /* @__PURE__ */ jsx("input", { type: "text", tabIndex: -1, autoComplete: "off", value: honeypot, onChange: (e) => setHoneypot(e.target.value) })
+        /* @__PURE__ */ jsx("input", { type: "text", tabIndex: -1, autoComplete: "off", name: "website", value: honeypot, onChange: (e) => setHoneypot(e.target.value) })
       ] }),
       /* @__PURE__ */ jsx(
         "button",
         {
           type: "submit",
           className: "ccc-btn",
+          disabled: submitting,
           style: {
             width: "100%",
             height: 50,
@@ -12920,12 +13231,13 @@ function ContactCastCrew() {
             fontWeight: 700,
             fontSize: 15,
             border: "none",
-            cursor: "pointer",
+            cursor: submitting ? "wait" : "pointer",
+            opacity: submitting ? 0.7 : 1,
             fontFamily: "inherit",
             marginTop: 8,
             transition: "background 0.2s"
           },
-          children: "Join Production List"
+          children: submitting ? "Submitting…" : "Join Production List"
         }
       )
     ] }) })
@@ -12964,7 +13276,8 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsx(Launch, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/marketing", element: /* @__PURE__ */ jsx(Marketing, {}) }),
-  /* @__PURE__ */ jsx(Route, { path: "/contact-cast-crew", element: /* @__PURE__ */ jsx(ContactCastCrew, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/contact-cast-crew", element: /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ContactCastCrew, {}) }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/f/:slug", element: /* @__PURE__ */ jsx(PublicCastCrewForm, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(NotFound, {}) })
 ] }) });
 async function preloadForUrl(url2) {
