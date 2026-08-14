@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
 import SceneBuilder from "@/components/SceneBuilder";

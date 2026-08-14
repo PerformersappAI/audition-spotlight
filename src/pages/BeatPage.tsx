@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 
 const slugify = (s: string) =>
   s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");

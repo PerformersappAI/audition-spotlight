@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 import godfatherPoster from "@/assets/godfather-poster.png.asset.json";
 import lambsPoster from "@/assets/lambs-poster.png.asset.json";
