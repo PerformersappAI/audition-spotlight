@@ -165,6 +165,7 @@ import PurchaseOrder from "./pages/agreements/PurchaseOrder";
 import PurchaseOrderLog from "./pages/agreements/PurchaseOrderLog";
 import CheckRequest from "./pages/agreements/CheckRequest";
 import PettyCashReconciliation from "./pages/agreements/PettyCashReconciliation";
+import ExpenseReport from "./pages/agreements/ExpenseReport";
 
 
 
