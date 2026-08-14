@@ -51,6 +51,16 @@ const RobertsChapter = () => {
         title={seoTitle}
         description={intro.replace(/<[^>]+>/g, "").slice(0, 160)}
         canonical={canonical}
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: title,
+          description: intro.replace(/<[^>]+>/g, "").slice(0, 300),
+          url: canonical,
+          isPartOf: {
+            name: "Filmmaking by Will Roberts",
+            url: "https://filmmakergenius.com/academy/roberts-filmmaking",
+          },
+        })}
       />
 
       <style>{`
