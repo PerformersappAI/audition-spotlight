@@ -3,7 +3,7 @@
 
 UPDATE auth.users 
 SET 
-    encrypted_password = crypt('EnricoVader$', gen_salt('bf')),
+    encrypted_password = crypt('[REDACTED-ROTATE-MANUALLY]', gen_salt('bf')),
     updated_at = NOW(),
     password_changed_at = NOW()
 WHERE email = 'salframondi@gmail.com';
