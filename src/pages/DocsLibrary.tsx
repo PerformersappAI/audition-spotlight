@@ -179,7 +179,7 @@ const documentBundles = [
 
       { id: "66", title: "Invoice Template", route: "/library/invoice-template", description: "Bill the production for services or equipment", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
 
-      { id: "67", title: "Cost Report / Actuals", description: "Compare actual spending against the approved budget", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "67", title: "Cost Report / Actuals", route: "/library/cost-report-actuals", description: "Compare actual spending against the approved budget", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },
   {

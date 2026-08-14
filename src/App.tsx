@@ -169,6 +169,8 @@ import ExpenseReport from "./pages/agreements/ExpenseReport";
 import MileageLog from "./pages/agreements/MileageLog";
 import CreditCardLog from "./pages/agreements/CreditCardLog";
 import InvoiceTemplate from "./pages/agreements/InvoiceTemplate";
+import CostReportActuals from "./pages/agreements/CostReportActuals";
+
 
 
 
@@ -338,6 +340,8 @@ const AppContent = () => (
           <Route path="/library/mileage-log" element={<ToolGate><MileageLog /></ToolGate>} />
           <Route path="/library/credit-card-log" element={<ToolGate><CreditCardLog /></ToolGate>} />
           <Route path="/library/invoice-template" element={<ToolGate><InvoiceTemplate /></ToolGate>} />
+          <Route path="/library/cost-report-actuals" element={<ToolGate><CostReportActuals /></ToolGate>} />
+
 
 
 
