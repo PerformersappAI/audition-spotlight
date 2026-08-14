@@ -119,6 +119,7 @@ export default function CoursePage() {
             </span>
             <h1 className="cp-h1">{course.title}</h1>
             <p style={{ marginTop: 18, fontSize: 17, color: "rgba(255,255,255,.55)", lineHeight: 1.55, maxWidth: 560 }}>{course.subtitle}</p>
+            <AcademyByline />
             <div style={{ marginTop: 22, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, fontSize: 13, color: "rgba(255,255,255,.5)" }}>
               <span>{course.level}</span>
               <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,.3)" }} />
