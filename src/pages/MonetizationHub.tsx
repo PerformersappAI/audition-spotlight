@@ -51,7 +51,8 @@ export default function MonetizationHub({ hubKey }: Props) {
       <section style={{ maxWidth: 1120, margin: "0 auto", padding: "48px 20px", borderBottom: "1px solid #1e1e35", marginBottom: 48 }}>
         <div style={{ display: "inline-flex", background: `rgba(${accentRgb},0.1)`, border: `1px solid rgba(${accentRgb},0.25)`, color: accent, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "4px 12px", borderRadius: 999, marginBottom: 20 }}>Monetization</div>
         <h1 className="mh-h1" style={{ fontFamily: "'Fraunces', serif", fontSize: 56, lineHeight: 1.02, marginBottom: 16, color: "#fff" }}>{title}</h1>
-        <p style={{ fontSize: 18, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 680, marginBottom: 28 }}>{sub}</p>
+        <p style={{ fontSize: 18, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 680, marginBottom: 12 }}>{sub}</p>
+        <AcademyByline style={{ margin: "0 0 24px" }} />
         <div style={{ display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }}>
           {stats.map((s, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 14 }}>
