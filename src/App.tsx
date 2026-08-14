@@ -164,6 +164,7 @@ import SafetyMeetingAcknowledgement from "./pages/agreements/SafetyMeetingAcknow
 import PurchaseOrder from "./pages/agreements/PurchaseOrder";
 import PurchaseOrderLog from "./pages/agreements/PurchaseOrderLog";
 import CheckRequest from "./pages/agreements/CheckRequest";
+import PettyCashReconciliation from "./pages/agreements/PettyCashReconciliation";
 
 
 
@@ -325,6 +326,7 @@ const AppContent = () => (
           <Route path="/library/purchase-order" element={<ToolGate><PurchaseOrder /></ToolGate>} />
           <Route path="/library/purchase-order-log" element={<ToolGate><PurchaseOrderLog /></ToolGate>} />
           <Route path="/library/check-request" element={<ToolGate><CheckRequest /></ToolGate>} />
+          <Route path="/library/petty-cash-reconciliation" element={<ToolGate><PettyCashReconciliation /></ToolGate>} />
 
 
 
