@@ -240,6 +240,17 @@ export default function MoviePage() {
         description={`How ${movie.title} maps to the ${movie.structureName} structure, beat by beat.`}
         canonical={`https://filmmakergenius.com/movie-in-a-box/movie/${slug}`}
         type="article"
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: `${movie.title} — ${movie.structureName} Breakdown`,
+          description: `How ${movie.title} maps to the ${movie.structureName} structure, beat by beat.`,
+          url: `https://filmmakergenius.com/movie-in-a-box/movie/${slug}`,
+          isPartOf: {
+            type: "Article",
+            name: movie.structureName,
+            url: `https://filmmakergenius.com/movie-in-a-box/${movie.structureKey}/structure`,
+          },
+        })}
       />
 
       <div className="border-b border-white/10 bg-[#0c0e13]/95">
