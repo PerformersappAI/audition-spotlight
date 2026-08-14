@@ -169,7 +169,8 @@ const documentBundles = [
     description: "Purchase orders, expenses, invoices, and cost tracking",
     documents: [
       { id: "59", title: "Purchase Order", description: "Authorize a purchase for the production", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/purchase-order" },
-      { id: "60", title: "Purchase Order Log", description: "Track all purchase orders and their status", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "60", title: "Purchase Order Log", description: "Track all purchase orders and their status", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/purchase-order-log" },
+
       { id: "61", title: "Check Request", description: "Request a check payment for a vendor or crew member", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "62", title: "Petty Cash Envelope / Reconciliation", description: "Log and reconcile small cash expenditures", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "63", title: "Expense Report", description: "Reimburse production-related expenses", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
