@@ -235,7 +235,7 @@ const documentBundles = [
     icon: Megaphone,
     description: "Press kits, posters, festival submissions, and promotional materials",
     documents: [
-      { id: "86", title: "EPK Template — Feature", description: "Complete electronic press kit for a feature film", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "86", title: "EPK Template — Feature", route: "/library/epk-feature", description: "Complete electronic press kit for a feature film", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "87", title: "EPK Template — Short", description: "Electronic press kit tailored for a short film", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "88", title: "One-Sheet / Poster Template", description: "Marketing poster layout with key art and credits", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "89", title: "Press Release Template", description: "Announcement template for festival, press, or release", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
