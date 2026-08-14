@@ -91,6 +91,7 @@ import RobertsFilmmaking from "./pages/RobertsFilmmaking";
 import RobertsChapter from "./pages/RobertsChapter";
 import GreenLightEngine from "./pages/GreenLightEngine";
 import GleTier from "./pages/GleTier";
+import GlePlatformPage from "./pages/GlePlatformPage";
 import GleNiche from "./pages/GleNiche";
 import GleNichePage from "./pages/GleNichePage";
 import MonetizationHub from "./pages/MonetizationHub";
@@ -510,6 +511,7 @@ const AppContent = () => (
           <Route path="/green-light-engine/niche" element={<GleNiche />} />
           <Route path="/green-light-engine/niche/:slug" element={<GleNichePage />} />
           <Route path="/green-light-engine/:tier" element={<GleTier />} />
+          <Route path="/green-light-engine/:tier/:platform" element={<GlePlatformPage />} />
           <Route path="/academy/:courseSlug" element={<CoursePage />} />
           <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
           <Route path="/about" element={<About />} />

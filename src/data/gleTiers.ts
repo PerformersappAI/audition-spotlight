@@ -6,6 +6,7 @@ export type GlePlatform = {
   name: string;
   desc: string;
   pill?: string;
+  slug?: string;
 };
 
 export type GleTier = {
@@ -25,9 +26,9 @@ export const gleTiers: Record<string, GleTier> = {
     title: "Major Streamers",
     sub: "The biggest global platforms. Highest technical bar and a distributor required — pick one to see exactly what it takes.",
     platforms: [
-      { logoText: "N", logoBg: "#e50914", name: "Netflix", desc: "Direct licensing only. Top specs — 4K, IMF, Dolby Atmos, approved cameras. Needs a distributor." },
+      { logoText: "N", logoBg: "#e50914", name: "Netflix", slug: "netflix", desc: "Direct licensing only. Top specs — 4K, IMF, Dolby Atmos, approved cameras. Needs a distributor." },
       { logoText: "a", logoBg: "#00a8e1", name: "Amazon Prime Video", desc: "SVOD + rent/buy. Reachable via aggregator or distributor. Huge global reach." },
-      { logoText: "h", logoBg: "#1ce783", logoColor: "#0b0f12", name: "Hulu", desc: "SVOD / AVOD (US). Indie access through a distributor." },
+      { logoText: "h", logoBg: "#1ce783", logoColor: "#0b0f12", name: "Hulu", slug: "hulu", desc: "SVOD / AVOD (US). Indie access through a distributor." },
       { logoText: "", logoBg: "#333", logoBorder: "#555", name: "Apple TV / iTunes", desc: "Rent/buy (TVOD). Reached via aggregators like Bitmax or Quiver." },
       { logoText: "D", logoBg: "#113ccf", name: "Disney+", desc: "Studio-owned. Effectively closed to indies — included for completeness." },
       { logoText: "M", logoBg: "#7b2ff7", name: "Max", desc: "SVOD (Warner/HBO). Indie access through a distributor." },

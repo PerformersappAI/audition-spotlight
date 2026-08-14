@@ -74,17 +74,25 @@ export default function GleTier() {
         </div>
 
         <div className="gle-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
-          {platforms.map((p, i) => (
-            <a key={i} href="#" className="gle-card" style={{ background: "#1c2228", border: "1px solid #2c3440", borderRadius: 14, padding: "20px 18px", display: "block", textDecoration: "none", color: "#fff" }}>
+          {platforms.map((p, i) => {
+            const cardStyle = { background: "#1c2228", border: "1px solid #2c3440", borderRadius: 14, padding: "20px 18px", display: "block", textDecoration: "none", color: "#fff" } as const;
+            const inner = (
+              <>
               {p.pill && (
                 <div style={{ display: "inline-block", fontSize: 10, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", background: "rgba(0,224,84,0.16)", color: "#00e054", padding: "3px 8px", borderRadius: 6, marginBottom: 8 }}>{p.pill}</div>
               )}
               <div style={{ width: 46, height: 46, borderRadius: 11, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 900, fontSize: 20, marginBottom: 14, background: p.logoBg, color: p.logoColor || "#fff", border: p.logoBorder ? `1px solid ${p.logoBorder}` : undefined }}>{p.logoText}</div>
               <h2 style={{ fontSize: 16, marginBottom: 7 }}>{p.name}</h2>
               <p className="gle-card-desc" style={{ color: "#9ab1c2", fontSize: 12.5, lineHeight: 1.55, marginBottom: 14, minHeight: 54 }}>{p.desc}</p>
-              <span style={{ fontWeight: 800, fontSize: 13, color: accent }}>Start →</span>
-            </a>
-          ))}
+                <span style={{ fontWeight: 800, fontSize: 13, color: accent }}>Start →</span>
+              </>
+            );
+            return p.slug ? (
+              <Link key={i} to={`/green-light-engine/${tier}/${p.slug}`} className="gle-card" style={cardStyle}>{inner}</Link>
+            ) : (
+              <a key={i} href="#" className="gle-card" style={cardStyle}>{inner}</a>
+            );
+          })}
         </div>
       </main>
     </div>
