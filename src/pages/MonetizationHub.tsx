@@ -1,5 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import { monetizationHubs } from "@/data/monetizationHubs";
 
 interface Props {

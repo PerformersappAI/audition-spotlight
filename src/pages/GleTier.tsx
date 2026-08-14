@@ -1,5 +1,6 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import { gleTiers } from "@/data/gleTiers";
 
 export default function GleTier() {
