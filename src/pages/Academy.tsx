@@ -199,6 +199,7 @@ export default function Academy() {
           <p style={{
             marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.55)",
           }}>Ebooks, distribution guides, and education modules for independent filmmakers</p>
+          <AcademyByline style={{ textAlign: "center" }} />
         </div>
 
         {/* TABS */}
