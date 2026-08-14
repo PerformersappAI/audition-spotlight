@@ -194,6 +194,7 @@ import OneSheetPoster from "./pages/agreements/OneSheetPoster";
 import PressRelease from "./pages/agreements/PressRelease";
 import DirectorsStatement from "./pages/agreements/DirectorsStatement";
 import SynopsisTemplate from "./pages/agreements/SynopsisTemplate";
+import CastCrewBio from "./pages/agreements/CastCrewBio";
 
 
 
@@ -406,6 +407,7 @@ const AppContent = () => (
           <Route path="/library/press-release" element={<ToolGate><PressRelease /></ToolGate>} />
           <Route path="/library/directors-statement" element={<ToolGate><DirectorsStatement /></ToolGate>} />
           <Route path="/library/synopsis" element={<ToolGate><SynopsisTemplate /></ToolGate>} />
+          <Route path="/library/cast-crew-bio" element={<ToolGate><CastCrewBio /></ToolGate>} />
 
 
 

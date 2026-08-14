@@ -241,7 +241,7 @@ const documentBundles = [
       { id: "89", title: "Press Release Template", route: "/library/press-release", description: "Announcement template for festival, press, or release", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "90", title: "Director's Statement", route: "/library/directors-statement", description: "Template for the director's festival or press statement", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "91", title: "Synopsis (Short & Long)", route: "/library/synopsis", description: "Short and long-form synopsis templates for marketing", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
-      { id: "92", title: "Cast / Crew Bio Template", description: "Bio template for key cast and crew members", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "92", title: "Cast / Crew Bio Template", description: "Bio template for key cast and crew members", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/cast-crew-bio" },
       { id: "93", title: "Festival Cover Letter", description: "Professional cover letter for festival submissions", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "94", title: "Festival Q&A Template", description: "Frequently asked festival questions and sample answers", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
     ]
