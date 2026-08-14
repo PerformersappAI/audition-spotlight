@@ -1339,6 +1339,7 @@ export default function CourseChapter() {
           <div>
             <div style={{ fontWeight: 700, color: "#fff", fontSize: 14 }}>Will Roberts</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)" }}>Working filmmaker · Written from the set</div>
+            <AcademyByline style={{ margin: "2px 0 0", fontSize: 12 }} />
           </div>
         </div>
 
