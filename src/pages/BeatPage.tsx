@@ -1101,6 +1101,7 @@ export default function BeatPage() {
             {struct.name} · Beat {idx + 1}
           </div>
           <h1 className="font-serif text-4xl font-bold tracking-tight mt-2 text-foreground">{beatName}</h1>
+          <AcademyByline variant="tokens" />
           {beat && (
             <div className="mt-3.5 flex flex-wrap gap-2">
               <span className="text-[11px] rounded-full px-2.5 py-[3px]" style={{ color, border: `1px solid ${color}66`, backgroundColor: `${color}14` }}>{beat.actChip}</span>
