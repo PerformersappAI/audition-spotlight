@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 // Client-side loader: dynamic per-course imports (one chunk per course).
 // The SSR entry pre-populates this loader's cache before renderToString,
 // so getCourse() returns the course synchronously during prerendering.
