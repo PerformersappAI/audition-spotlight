@@ -189,7 +189,7 @@ const documentBundles = [
     icon: Music,
     description: "Music licenses, composer deals, cue sheets, and clearance logs",
     documents: [
-      { id: "68", title: "Music License (template)", description: "License a song or master recording for the project", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "68", title: "Music License (template)", description: "License a song or master recording for the project", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/music-license-sync" },
       { id: "69", title: "Composer Agreement", description: "Engage a composer to write original score", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "70", title: "Music Cue Sheet", description: "List every music cue with timing and rights holder", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "71", title: "Musician / Session Release", description: "Release for recording session musicians and vocalists", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
