@@ -178,6 +178,10 @@ import MaterialsArtworkRelease from "./pages/agreements/MaterialsArtworkRelease"
 import ProductPlacementRelease from "./pages/agreements/ProductPlacementRelease";
 import ClearanceLog from "./pages/agreements/ClearanceLog";
 import PostSchedule from "./pages/agreements/PostSchedule";
+import EditorAgreement from "./pages/agreements/EditorAgreement";
+
+
+
 
 
 
@@ -363,6 +367,10 @@ const AppContent = () => (
           <Route path="/library/product-placement-release" element={<ToolGate><ProductPlacementRelease /></ToolGate>} />
           <Route path="/library/clearance-log" element={<ToolGate><ClearanceLog /></ToolGate>} />
           <Route path="/library/post-schedule" element={<ToolGate><PostSchedule /></ToolGate>} />
+          <Route path="/library/editor-agreement" element={<ToolGate><EditorAgreement /></ToolGate>} />
+
+
+
 
 
 
