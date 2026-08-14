@@ -54,7 +54,7 @@ export default function Festivals() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('film_festivals')
+        .from('film_festivals_public')
         .select(`
           id,
           name,
