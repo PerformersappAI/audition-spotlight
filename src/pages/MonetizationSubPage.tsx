@@ -131,7 +131,8 @@ export default function MonetizationSubPage({ group }: Props) {
         <div style={{ padding: "48px 0", borderBottom: "1px solid #1e1e35", marginBottom: entry.warning ? 32 : 48 }}>
           <div style={{ display: "inline-flex", alignItems: "center", background: `rgba(${ar},0.1)`, border: `1px solid rgba(${ar},0.25)`, color: ac, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "4px 12px", borderRadius: 9999, marginBottom: 20 }}>{entry.catPill}</div>
           <h1 className="msub-h1" style={{ fontFamily: "'Fraunces', serif", fontSize: 48, lineHeight: 1.05, marginBottom: 16 }}>{entry.title}</h1>
-          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 660, marginBottom: 24 }}>{entry.intro}</p>
+          <p style={{ fontSize: 17, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 660, marginBottom: 10 }}>{entry.intro}</p>
+          <AcademyByline style={{ margin: "0 0 20px" }} />
           <div style={{ display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }}>
             {entry.stats.map((s, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 14 }}>
