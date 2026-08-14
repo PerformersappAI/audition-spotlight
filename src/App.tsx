@@ -173,6 +173,7 @@ import CostReportActuals from "./pages/agreements/CostReportActuals";
 import MusicLicenseSync from "./pages/agreements/MusicLicenseSync";
 import MusicCueSheet from "./pages/agreements/MusicCueSheet";
 import ComposerAgreement from "./pages/agreements/ComposerAgreement";
+import MusicianSessionRelease from "./pages/agreements/MusicianSessionRelease";
 
 
 
@@ -347,6 +348,7 @@ const AppContent = () => (
           <Route path="/library/music-license-sync" element={<ToolGate><MusicLicenseSync /></ToolGate>} />
           <Route path="/library/music-cue-sheet" element={<ToolGate><MusicCueSheet /></ToolGate>} />
           <Route path="/library/composer-agreement" element={<ToolGate><ComposerAgreement /></ToolGate>} />
+          <Route path="/library/musician-session-release" element={<ToolGate><MusicianSessionRelease /></ToolGate>} />
 
 
 
