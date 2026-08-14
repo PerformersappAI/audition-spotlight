@@ -299,6 +299,7 @@ export default function MoviePage() {
           <h1 className="mt-2 text-4xl font-bold tracking-tight" style={{ color: movie.color }}>{movie.title}</h1>
           <span className="mt-4 block h-[2px] w-10 rounded-full" style={{ backgroundColor: movie.color, opacity: 0.7 }} />
           <span className="mt-4 text-xs text-foreground/50">This film is our guide to the {movie.structureName} structure.</span>
+          <AcademyByline variant="tokens" />
           <div className="mt-6 flex flex-col items-center gap-2">
             <div className="flex flex-row items-center justify-center gap-2">
               {Array.from({ length: movie.oscars }).map((_, i) => (<Oscar key={i} />))}
