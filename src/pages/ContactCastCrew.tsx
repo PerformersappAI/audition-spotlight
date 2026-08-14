@@ -86,6 +86,8 @@ export default function ContactCastCrew() {
   const [productionName, setProductionName] = useState("");
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [emailing, setEmailing] = useState(false);
+
 
   const loadContacts = useCallback(async (formId: string) => {
     const { data } = await supabase
