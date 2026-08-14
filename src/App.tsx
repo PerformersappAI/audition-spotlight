@@ -177,6 +177,10 @@ import MusicianSessionRelease from "./pages/agreements/MusicianSessionRelease";
 import MaterialsArtworkRelease from "./pages/agreements/MaterialsArtworkRelease";
 import ProductPlacementRelease from "./pages/agreements/ProductPlacementRelease";
 import ClearanceLog from "./pages/agreements/ClearanceLog";
+import PostSchedule from "./pages/agreements/PostSchedule";
+
+
+
 
 
 
@@ -358,6 +362,10 @@ const AppContent = () => (
           <Route path="/library/materials-artwork-release" element={<ToolGate><MaterialsArtworkRelease /></ToolGate>} />
           <Route path="/library/product-placement-release" element={<ToolGate><ProductPlacementRelease /></ToolGate>} />
           <Route path="/library/clearance-log" element={<ToolGate><ClearanceLog /></ToolGate>} />
+          <Route path="/library/post-schedule" element={<ToolGate><PostSchedule /></ToolGate>} />
+
+
+
 
 
 

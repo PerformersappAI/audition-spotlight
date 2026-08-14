@@ -205,7 +205,7 @@ const documentBundles = [
     icon: Film,
     description: "Editing, VFX, deliverables, and final quality-control paperwork",
     documents: [
-      { id: "75", title: "Post Schedule", description: "Schedule editing, sound, VFX, and color milestones", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "75", title: "Post Schedule", route: "/library/post-schedule", description: "Schedule editing, sound, VFX, and color milestones", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "76", title: "Editor Agreement", description: "Engage an editor and define cut delivery terms", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "77", title: "VFX Shot List / Turnover", description: "List and describe every visual effects shot needed", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "78", title: "Deliverables Checklist", description: "List of final deliverables for festivals and distributors", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
