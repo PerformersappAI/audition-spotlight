@@ -55,7 +55,7 @@ export default function Auditions() {
   const fetchAuditions = async () => {
     try {
       const { data, error } = await supabase
-        .from("audition_notices")
+        .from("audition_notices_public")
         .select("*")
         .eq("status", "active")
         .order("created_at", { ascending: false });
