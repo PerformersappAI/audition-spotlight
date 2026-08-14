@@ -225,7 +225,7 @@ const documentBundles = [
       { id: "83", title: "Delivery Schedule", route: "/library/delivery-schedule", description: "Timeline for delivering all required elements", category: "delivery_distribution", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "84", title: "Sales Agent Agreement (template)", description: "Engage a sales agent to represent the film", category: "delivery_distribution", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/sales-agent-agreement" },
 
-      { id: "85", title: "Distribution Agreement (template)", description: "License the film to a distributor for a territory or platform", category: "delivery_distribution", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "85", title: "Distribution Agreement (template)", route: "/library/distribution-agreement", description: "License the film to a distributor for a territory or platform", category: "delivery_distribution", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },
   {
