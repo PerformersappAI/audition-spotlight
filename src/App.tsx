@@ -192,6 +192,7 @@ import EpkFeature from "./pages/agreements/EpkFeature";
 import EpkShort from "./pages/agreements/EpkShort";
 import OneSheetPoster from "./pages/agreements/OneSheetPoster";
 import PressRelease from "./pages/agreements/PressRelease";
+import DirectorsStatement from "./pages/agreements/DirectorsStatement";
 
 
 
@@ -402,6 +403,7 @@ const AppContent = () => (
           <Route path="/library/epk-short" element={<ToolGate><EpkShort /></ToolGate>} />
           <Route path="/library/one-sheet-poster" element={<ToolGate><OneSheetPoster /></ToolGate>} />
           <Route path="/library/press-release" element={<ToolGate><PressRelease /></ToolGate>} />
+          <Route path="/library/directors-statement" element={<ToolGate><DirectorsStatement /></ToolGate>} />
 
 
 
