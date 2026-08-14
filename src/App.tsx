@@ -186,6 +186,7 @@ import CcslList from "./pages/agreements/CcslList";
 import CreditsTitleList from "./pages/agreements/CreditsTitleList";
 import DistributionPackageChecklist from "./pages/agreements/DistributionPackageChecklist";
 import DeliverySchedule from "./pages/agreements/DeliverySchedule";
+import SalesAgentAgreement from "./pages/agreements/SalesAgentAgreement";
 
 
 
@@ -388,6 +389,7 @@ const AppContent = () => (
           <Route path="/library/credits-title-list" element={<ToolGate><CreditsTitleList /></ToolGate>} />
           <Route path="/library/distribution-package-checklist" element={<ToolGate><DistributionPackageChecklist /></ToolGate>} />
           <Route path="/library/delivery-schedule" element={<ToolGate><DeliverySchedule /></ToolGate>} />
+          <Route path="/library/sales-agent-agreement" element={<ToolGate><SalesAgentAgreement /></ToolGate>} />
 
 
 
