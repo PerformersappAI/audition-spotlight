@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 // Per-course dynamic loader — see src/pages/CourseChapter.tsx for the SSR /
 // client cache contract that keeps this synchronous on first render.
 import { getCourse, loadCourse } from "@/data/courses/loader";
