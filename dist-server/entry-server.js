@@ -6788,6 +6788,109 @@ const BlogPost = () => {
     ] }) })
   ] });
 };
+const ACADEMY_AUTHOR = {
+  "@type": "Person",
+  name: "Will Roberts",
+  url: "https://filmmakergenius.com/about"
+};
+const ACADEMY_PUBLISHER = {
+  "@type": "Organization",
+  name: "Filmmaker Genius",
+  url: "https://filmmakergenius.com",
+  logo: {
+    "@type": "ImageObject",
+    url: "https://filmmakergenius.com/og-image.jpg"
+  }
+};
+const ACADEMY_PUBLISHED = "2025-09-01";
+const ACADEMY_MODIFIED = "2026-08-14";
+function academyJsonLd({
+  type = "Article",
+  headline,
+  description,
+  url: url2,
+  datePublished = ACADEMY_PUBLISHED,
+  dateModified = ACADEMY_MODIFIED,
+  isPartOf,
+  extra
+}) {
+  const node = {
+    "@context": "https://schema.org",
+    "@type": type,
+    headline,
+    name: headline,
+    description,
+    url: url2,
+    mainEntityOfPage: { "@type": "WebPage", "@id": url2 },
+    author: ACADEMY_AUTHOR,
+    creator: ACADEMY_AUTHOR,
+    publisher: ACADEMY_PUBLISHER,
+    datePublished,
+    dateModified,
+    inLanguage: "en"
+  };
+  if (type === "Course") {
+    node.provider = ACADEMY_PUBLISHER;
+  }
+  if (isPartOf) {
+    node.isPartOf = {
+      "@type": isPartOf.type || "Course",
+      name: isPartOf.name,
+      url: isPartOf.url
+    };
+  }
+  return extra ? { ...node, ...extra } : node;
+}
+function formatAcademyDate(iso) {
+  const d = /* @__PURE__ */ new Date(`${iso}T00:00:00Z`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    timeZone: "UTC"
+  });
+}
+function AcademyByline({
+  updated = ACADEMY_MODIFIED,
+  variant = "inline",
+  className,
+  style
+}) {
+  const label = /* @__PURE__ */ jsxs(Fragment, { children: [
+    "By",
+    " ",
+    /* @__PURE__ */ jsx(
+      "a",
+      {
+        href: "/about",
+        rel: "author",
+        style: variant === "inline" ? { color: "inherit", textDecoration: "none", fontWeight: 600 } : void 0,
+        className: variant === "tokens" ? "font-semibold text-foreground/80 no-underline hover:underline" : void 0,
+        children: "Will Roberts"
+      }
+    ),
+    " ",
+    "— updated ",
+    formatAcademyDate(updated)
+  ] });
+  if (variant === "tokens") {
+    return /* @__PURE__ */ jsx("p", { className: className ?? "mt-3 text-xs text-foreground/50", style, children: label });
+  }
+  return /* @__PURE__ */ jsx(
+    "p",
+    {
+      className,
+      style: {
+        margin: "14px 0 0",
+        fontSize: 13,
+        color: "rgba(255,255,255,0.45)",
+        ...style
+      },
+      children: label
+    }
+  );
+}
 const THEMES = {
   edu: {
     grad: "linear-gradient(135deg, #120a25 0%, #1e1040 100%)",
@@ -6938,14 +7041,22 @@ function Academy() {
         title: "Academy — 62 Free Courses for Indie Filmmakers | Filmmaker Genius",
         description: "Filmmaker Genius Academy: 62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization.",
         canonical: "https://filmmakergenius.com/academy",
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" }
-          ]
-        }
+        jsonLd: [
+          academyJsonLd({
+            type: "LearningResource",
+            headline: "Filmmaker Genius Academy",
+            description: "62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization.",
+            url: "https://filmmakergenius.com/academy"
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" }
+            ]
+          }
+        ]
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -6969,7 +7080,8 @@ function Academy() {
           marginTop: 16,
           fontSize: 17,
           color: "rgba(255,255,255,0.55)"
-        }, children: "Ebooks, distribution guides, and education modules for independent filmmakers" })
+        }, children: "Ebooks, distribution guides, and education modules for independent filmmakers" }),
+        /* @__PURE__ */ jsx(AcademyByline, { style: { textAlign: "center" } })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 40, justifyContent: "center" }, children: TABS.map((tab) => {
         const isActive = tab === active;
@@ -7356,15 +7468,26 @@ function RobertsFilmmaking() {
         title: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
         description: "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release. By Will Roberts.",
         canonical: "https://filmmakergenius.com/academy/roberts-filmmaking",
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" }
-          ]
-        }
+        jsonLd: [
+          academyJsonLd({
+            type: "Course",
+            headline: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
+            description: "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release.",
+            url: "https://filmmakergenius.com/academy/roberts-filmmaking",
+            extra: {
+              hasCourseInstance: { "@type": "CourseInstance", courseMode: "online" }
+            }
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" }
+            ]
+          }
+        ]
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -7399,6 +7522,7 @@ function RobertsFilmmaking() {
           /* @__PURE__ */ jsx("span", { style: { color: TEAL$3 }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
+        /* @__PURE__ */ jsx(AcademyByline, {}),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 26, display: "inline-flex", gap: 10, alignItems: "center" }, children: [
           /* @__PURE__ */ jsx("div", { style: {
             width: 38,
@@ -8573,7 +8697,17 @@ const RobertsChapter = () => {
           {
             title: seoTitle,
             description: intro.replace(/<[^>]+>/g, "").slice(0, 160),
-            canonical
+            canonical,
+            jsonLd: academyJsonLd({
+              type: "Article",
+              headline: title,
+              description: intro.replace(/<[^>]+>/g, "").slice(0, 300),
+              url: canonical,
+              isPartOf: {
+                name: "Filmmaking by Will Roberts",
+                url: "https://filmmakergenius.com/academy/roberts-filmmaking"
+              }
+            })
           }
         ),
         /* @__PURE__ */ jsx("style", { children: `
@@ -8710,7 +8844,8 @@ const RobertsChapter = () => {
               },
               dangerouslySetInnerHTML: { __html: intro }
             }
-          )
+          ),
+          /* @__PURE__ */ jsx(AcademyByline, {})
         ] }),
         /* @__PURE__ */ jsx("div", { style: { maxWidth: 760, margin: "0 auto", padding: "0 24px 40px" }, children: /* @__PURE__ */ jsxs(
           "div",
@@ -9165,7 +9300,13 @@ function MonetizationHub({ hubKey }) {
       {
         title: `${title} — Filmmaker Genius Academy`,
         description: sub,
-        canonical
+        canonical,
+        jsonLd: academyJsonLd({
+          type: "Article",
+          headline: title,
+          description: sub,
+          url: canonical
+        })
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -9187,7 +9328,8 @@ function MonetizationHub({ hubKey }) {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "48px 20px", borderBottom: "1px solid #1e1e35", marginBottom: 48 }, children: [
       /* @__PURE__ */ jsx("div", { style: { display: "inline-flex", background: `rgba(${accentRgb},0.1)`, border: `1px solid rgba(${accentRgb},0.25)`, color: accent, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "4px 12px", borderRadius: 999, marginBottom: 20 }, children: "Monetization" }),
       /* @__PURE__ */ jsx("h1", { className: "mh-h1", style: { fontFamily: "'Fraunces', serif", fontSize: 56, lineHeight: 1.02, marginBottom: 16, color: "#fff" }, children: title }),
-      /* @__PURE__ */ jsx("p", { style: { fontSize: 18, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 680, marginBottom: 28 }, children: sub }),
+      /* @__PURE__ */ jsx("p", { style: { fontSize: 18, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 680, marginBottom: 12 }, children: sub }),
+      /* @__PURE__ */ jsx(AcademyByline, { style: { margin: "0 0 24px" } }),
       /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 14, flexWrap: "wrap", alignItems: "center" }, children: stats.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 14 }, children: [
         /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: [
           s.hi && /* @__PURE__ */ jsxs("span", { style: { color: accent, fontWeight: 600 }, children: [
@@ -10187,7 +10329,18 @@ function MonetizationSubPage({ group }) {
       {
         title: `${entry.title} — ${entry.groupTitle} | Filmmaker Genius Academy`,
         description: `${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300),
-        canonical
+        canonical,
+        jsonLd: academyJsonLd({
+          type: "Article",
+          headline: entry.title,
+          description: `${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300),
+          url: canonical,
+          isPartOf: {
+            type: "Article",
+            name: entry.groupTitle,
+            url: `https://filmmakergenius.com${entry.groupPath}`
+          }
+        })
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10233,7 +10386,8 @@ function MonetizationSubPage({ group }) {
       /* @__PURE__ */ jsxs("div", { style: { padding: "48px 0", borderBottom: "1px solid #1e1e35", marginBottom: entry.warning ? 32 : 48 }, children: [
         /* @__PURE__ */ jsx("div", { style: { display: "inline-flex", alignItems: "center", background: `rgba(${ar},0.1)`, border: `1px solid rgba(${ar},0.25)`, color: ac, fontSize: 11, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "4px 12px", borderRadius: 9999, marginBottom: 20 }, children: entry.catPill }),
         /* @__PURE__ */ jsx("h1", { className: "msub-h1", style: { fontFamily: "'Fraunces', serif", fontSize: 48, lineHeight: 1.05, marginBottom: 16 }, children: entry.title }),
-        /* @__PURE__ */ jsx("p", { style: { fontSize: 17, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 660, marginBottom: 24 }, children: entry.intro }),
+        /* @__PURE__ */ jsx("p", { style: { fontSize: 17, color: "rgba(255,255,255,0.5)", lineHeight: 1.6, maxWidth: 660, marginBottom: 10 }, children: entry.intro }),
+        /* @__PURE__ */ jsx(AcademyByline, { style: { margin: "0 0 20px" } }),
         /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap" }, children: entry.stats.map((s, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 14 }, children: [
           /* @__PURE__ */ jsxs("span", { style: { fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: [
             s.hi && /* @__PURE__ */ jsxs("span", { style: { color: ac, fontWeight: 600 }, children: [
@@ -10310,15 +10464,23 @@ function GreenLightEngine() {
             title: "Green Light Engine — Where to Place Your Indie Film",
             description: "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
             canonical: "https://filmmakergenius.com/green-light-engine",
-            jsonLd: {
-              "@context": "https://schema.org",
-              "@type": "BreadcrumbList",
-              itemListElement: [
-                { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-                { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-                { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" }
-              ]
-            }
+            jsonLd: [
+              academyJsonLd({
+                type: "Article",
+                headline: "Green Light Engine — Where to Place Your Indie Film",
+                description: "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
+                url: "https://filmmakergenius.com/green-light-engine"
+              }),
+              {
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+                  { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+                  { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" }
+                ]
+              }
+            ]
           }
         ),
         /* @__PURE__ */ jsxs(
@@ -10375,6 +10537,7 @@ function GreenLightEngine() {
                   children: "Pick a tier to see the platforms your film could reach — then we walk you through exactly how to get there."
                 }
               ),
+              /* @__PURE__ */ jsx(AcademyByline, { style: { margin: "-28px 0 32px", textAlign: "center", color: "rgba(255,255,255,0.4)" } }),
               /* @__PURE__ */ jsx(
                 "div",
                 {
@@ -10668,17 +10831,26 @@ function GleNichePage() {
         title: `${title} — Niche Streaming Platforms | Filmmaker Genius`,
         description: sub,
         canonical,
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
-            { "@type": "ListItem", position: 4, name: "Niche & Identity", item: "https://filmmakergenius.com/green-light-engine/niche" },
-            { "@type": "ListItem", position: 5, name: title, item: canonical }
-          ]
-        }
+        jsonLd: [
+          academyJsonLd({
+            type: "Article",
+            headline: `${title} — Niche Streaming Platforms`,
+            description: sub,
+            url: canonical,
+            isPartOf: { type: "Article", name: "Green Light Engine", url: "https://filmmakergenius.com/green-light-engine" }
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+              { "@type": "ListItem", position: 4, name: "Niche & Identity", item: "https://filmmakergenius.com/green-light-engine/niche" },
+              { "@type": "ListItem", position: 5, name: title, item: canonical }
+            ]
+          }
+        ]
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10702,7 +10874,8 @@ function GleNichePage() {
       /* @__PURE__ */ jsxs("div", { style: { textAlign: "center", marginBottom: 34 }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: accent }, children: "Niche & Identity" }),
         /* @__PURE__ */ jsx("h1", { style: { fontSize: 30, margin: "8px 0 10px" }, children: title }),
-        /* @__PURE__ */ jsx("p", { style: { color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }, children: sub })
+        /* @__PURE__ */ jsx("p", { style: { color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }, children: sub }),
+        /* @__PURE__ */ jsx(AcademyByline, { style: { color: "rgba(255,255,255,0.4)" } })
       ] }),
       /* @__PURE__ */ jsx("div", { className: "gle-grid", style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, children: platforms.map((p, i) => /* @__PURE__ */ jsxs("a", { href: "#", className: "gle-card", style: { background: "#1c2228", border: "1px solid #2c3440", borderRadius: 14, padding: "20px 18px", display: "block", textDecoration: "none", color: "#fff" }, children: [
         p.pill && /* @__PURE__ */ jsx("div", { style: { display: "inline-block", fontSize: 10, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", background: "rgba(0,224,84,0.16)", color: "#00e054", padding: "3px 8px", borderRadius: 6, marginBottom: 8 }, children: p.pill }),
@@ -10808,16 +10981,25 @@ function GleTier() {
         title: `${title} — Green Light Engine | Filmmaker Genius`,
         description: sub,
         canonical,
-        jsonLd: {
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
-            { "@type": "ListItem", position: 4, name: title, item: canonical }
-          ]
-        }
+        jsonLd: [
+          academyJsonLd({
+            type: "Article",
+            headline: `${title} — Green Light Engine`,
+            description: sub,
+            url: canonical,
+            isPartOf: { type: "Article", name: "Green Light Engine", url: "https://filmmakergenius.com/green-light-engine" }
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+              { "@type": "ListItem", position: 4, name: title, item: canonical }
+            ]
+          }
+        ]
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -10839,7 +11021,8 @@ function GleTier() {
       /* @__PURE__ */ jsxs("div", { style: { textAlign: "center", marginBottom: 34 }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: accent }, children: label }),
         /* @__PURE__ */ jsx("h1", { style: { fontSize: 30, margin: "8px 0 10px" }, children: title }),
-        /* @__PURE__ */ jsx("p", { style: { color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }, children: sub })
+        /* @__PURE__ */ jsx("p", { style: { color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }, children: sub }),
+        /* @__PURE__ */ jsx(AcademyByline, { style: { color: "rgba(255,255,255,0.4)" } })
       ] }),
       /* @__PURE__ */ jsx("div", { className: "gle-grid", style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, children: platforms.map((p, i) => /* @__PURE__ */ jsxs("a", { href: "#", className: "gle-card", style: { background: "#1c2228", border: "1px solid #2c3440", borderRadius: 14, padding: "20px 18px", display: "block", textDecoration: "none", color: "#fff" }, children: [
         p.pill && /* @__PURE__ */ jsx("div", { style: { display: "inline-block", fontSize: 10, fontWeight: 800, letterSpacing: "0.06em", textTransform: "uppercase", background: "rgba(0,224,84,0.16)", color: "#00e054", padding: "3px 8px", borderRadius: 6, marginBottom: 8 }, children: p.pill }),
@@ -10973,23 +11156,19 @@ function CoursePage() {
         description: course.seoDesc,
         canonical: `https://filmmakergenius.com/academy/${course.slug}`,
         jsonLd: [
-          {
-            "@context": "https://schema.org",
-            "@type": "Course",
-            name: course.title,
+          academyJsonLd({
+            type: "Course",
+            headline: course.title,
             description: course.seoDesc,
             url: `https://filmmakergenius.com/academy/${course.slug}`,
-            provider: {
-              "@type": "Organization",
-              name: "Filmmaker Genius",
-              sameAs: "https://filmmakergenius.com"
-            },
-            hasCourseInstance: {
-              "@type": "CourseInstance",
-              courseMode: "online",
-              courseWorkload: course.readTime
+            extra: {
+              hasCourseInstance: {
+                "@type": "CourseInstance",
+                courseMode: "online",
+                courseWorkload: course.readTime
+              }
             }
-          },
+          }),
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
@@ -11031,6 +11210,7 @@ function CoursePage() {
         /* @__PURE__ */ jsx("span", { style: { display: "inline-block", background: "rgba(0,212,170,.1)", border: "1px solid rgba(0,212,170,.25)", color: "#00d4aa", fontSize: 12, fontWeight: 600, padding: "4px 12px", borderRadius: 999, marginBottom: 20 }, children: course.categoryLabel }),
         /* @__PURE__ */ jsx("h1", { className: "cp-h1", children: course.title }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 18, fontSize: 17, color: "rgba(255,255,255,.55)", lineHeight: 1.55, maxWidth: 560 }, children: course.subtitle }),
+        /* @__PURE__ */ jsx(AcademyByline, {}),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 22, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, fontSize: 13, color: "rgba(255,255,255,.5)" }, children: [
           /* @__PURE__ */ jsx("span", { children: course.level }),
           /* @__PURE__ */ jsx("span", { style: { width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,.3)" } }),
@@ -12430,24 +12610,16 @@ function CourseChapter() {
         description: chapter.seoDesc || `${chapter.title} — a chapter from the ${course.title} course on Filmmaker Genius Academy.`,
         canonical: `https://filmmakergenius.com/academy/${course.slug}/${chapter.slug}`,
         jsonLd: [
-          {
-            "@context": "https://schema.org",
-            "@type": "Article",
+          academyJsonLd({
+            type: "Article",
             headline: chapter.title,
             description: chapter.seoDesc || `${chapter.title} — a chapter from ${course.title}.`,
-            author: { "@type": "Person", name: "Will Roberts" },
-            publisher: {
-              "@type": "Organization",
-              name: "Filmmaker Genius",
-              logo: { "@type": "ImageObject", url: "https://filmmakergenius.com/og-image.jpg" }
-            },
             url: `https://filmmakergenius.com/academy/${course.slug}/${chapter.slug}`,
             isPartOf: {
-              "@type": "Course",
               name: course.title,
               url: `https://filmmakergenius.com/academy/${course.slug}`
             }
-          },
+          }),
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
@@ -12495,7 +12667,8 @@ function CourseChapter() {
         /* @__PURE__ */ jsx("div", { style: { width: 42, height: 42, borderRadius: "50%", background: "linear-gradient(135deg,#00d4aa 0%,#0a7a63 100%)", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, fontSize: 13, color: "#031418" }, children: "WR" }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("div", { style: { fontWeight: 700, color: "#fff", fontSize: 14 }, children: "Will Roberts" }),
-          /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,.5)" }, children: "Working filmmaker · Written from the set" })
+          /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,.5)" }, children: "Working filmmaker · Written from the set" }),
+          /* @__PURE__ */ jsx(AcademyByline, { style: { margin: "2px 0 0", fontSize: 12 } })
         ] })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { position: "relative", width: "100%", paddingTop: "56.25%", background: "linear-gradient(135deg,#071820 0%,#0a2a30 100%)", border: "1px solid rgba(0,212,170,.2)", borderRadius: 16, overflow: "hidden", marginBottom: 38 }, children: /* @__PURE__ */ jsxs("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }, children: [
