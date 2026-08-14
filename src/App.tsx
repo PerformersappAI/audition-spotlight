@@ -169,6 +169,8 @@ import ExpenseReport from "./pages/agreements/ExpenseReport";
 import MileageLog from "./pages/agreements/MileageLog";
 import CreditCardLog from "./pages/agreements/CreditCardLog";
 import InvoiceTemplate from "./pages/agreements/InvoiceTemplate";
+import CostReportActuals from "./pages/agreements/CostReportActuals";
+
 
 
 
