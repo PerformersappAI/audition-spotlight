@@ -60,8 +60,8 @@ const Dashboard = () => {
         .from('applications')
         .select(`
           *,
-          projects (title, project_type),
-          film_festivals (name)
+          projects_public (title, project_type),
+          film_festivals_public (name)
         `)
         .eq('applicant_user_id', user.id)
         .order('applied_at', { ascending: false });
