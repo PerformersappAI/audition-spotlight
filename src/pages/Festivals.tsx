@@ -41,10 +41,10 @@ export default function Festivals() {
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [tierFilter, setTierFilter] = useState("");
-  const [genreFilter, setGenreFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [tierFilter, setTierFilter] = useState("all");
+  const [genreFilter, setGenreFilter] = useState("all");
 
   useEffect(() => {
     fetchFestivals();
@@ -136,14 +136,14 @@ export default function Festivals() {
                          festival.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          festival.description.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesLocation = !locationFilter || festival.location.toLowerCase().includes(locationFilter.toLowerCase());
-    const matchesStatus = !statusFilter || 
+    const matchesLocation = locationFilter === "all" || festival.location.toLowerCase().includes(locationFilter.toLowerCase());
+    const matchesStatus = statusFilter === "all" || 
       (statusFilter === 'open' && isSubmissionOpen(festival.submission_deadline)) ||
       (statusFilter === 'upcoming' && isUpcoming(festival.start_date)) ||
       (statusFilter === 'early' && festival.early_deadline && isSubmissionOpen(festival.early_deadline));
     
-    const matchesTier = !tierFilter || festival.festival_tier === tierFilter;
-    const matchesGenre = !genreFilter || (festival.genres && festival.genres.includes(genreFilter));
+    const matchesTier = tierFilter === "all" || festival.festival_tier === tierFilter;
+    const matchesGenre = genreFilter === "all" || (festival.genres && festival.genres.includes(genreFilter));
 
     return matchesSearch && matchesLocation && matchesStatus && matchesTier && matchesGenre;
   });
