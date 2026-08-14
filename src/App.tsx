@@ -163,6 +163,7 @@ import AccidentIncidentReport from "./pages/agreements/AccidentIncidentReport";
 import SafetyMeetingAcknowledgement from "./pages/agreements/SafetyMeetingAcknowledgement";
 import PurchaseOrder from "./pages/agreements/PurchaseOrder";
 import PurchaseOrderLog from "./pages/agreements/PurchaseOrderLog";
+import CheckRequest from "./pages/agreements/CheckRequest";
 
 
 
@@ -323,6 +324,7 @@ const AppContent = () => (
           <Route path="/library/safety-meeting-acknowledgement" element={<ToolGate><SafetyMeetingAcknowledgement /></ToolGate>} />
           <Route path="/library/purchase-order" element={<ToolGate><PurchaseOrder /></ToolGate>} />
           <Route path="/library/purchase-order-log" element={<ToolGate><PurchaseOrderLog /></ToolGate>} />
+          <Route path="/library/check-request" element={<ToolGate><CheckRequest /></ToolGate>} />
 
 
 
