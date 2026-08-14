@@ -2751,7 +2751,7 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$9 = "#00d4aa";
+const TEAL$a = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
 const VIOLET$1 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
@@ -2830,7 +2830,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$9}, ${VIOLET$1})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$a}, ${VIOLET$1})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -2874,9 +2874,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$9 },
+                    style: { backgroundColor: TEAL$a },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$9,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$a,
                     children: "Get Started"
                   }
                 )
@@ -3022,7 +3022,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$9 },
+                      style: { backgroundColor: TEAL$a },
                       children: "Get Started"
                     }
                   )
@@ -3149,6 +3149,7 @@ const imgPitchDeck = "/assets/tool-pitch-deck-new-KGycKjNa.webp";
 const imgCallSheet = "/assets/tool-call-sheet-DQpWMo_S.webp";
 const imgAuditions = "/assets/tool-auditions-CAWKiQYv.webp";
 const imgCrewHire = "/assets/tool-crew-hire-C6wHLsjN.webp";
+const imgContactCastCrew = "/assets/tool-contact-cast-crew-DIccHi3t.webp";
 const version$4 = 1;
 const asset_id$4 = "5515411f-b226-45eb-a75f-d58c29bcf316";
 const project_id$4 = "2327b42e-2823-4633-a594-07a097a36c30";
@@ -3209,12 +3210,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$8 = "#00d4aa";
+const TEAL$9 = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$8, borderColor: `${TEAL$8}66` },
+    style: { color: TEAL$9, borderColor: `${TEAL$9}66` },
     children: label
   }
 );
@@ -3230,7 +3231,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$8,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$9,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3292,8 +3293,9 @@ const HomeMarketing = () => {
   const pitchDeck = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
-  const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
+  const contactCastCrew = { title: "Contact Cast & Crew", to: "/contact-cast-crew", cta: "Join", img: imgContactCastCrew };
+  const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
   const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url, fit: "contain" };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#000" }, className: "min-h-screen", children: [
@@ -3375,7 +3377,8 @@ const HomeMarketing = () => {
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
               /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "tall", className: "h-full" }) }),
               /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "tall", className: "h-full" }) }),
-              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) }),
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: contactCastCrew, aspect: "tall", className: "h-full" }) })
             ] })
           ] }) }),
           /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#39ff14", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
@@ -3393,7 +3396,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3497,7 +3500,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$7, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$8, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3513,7 +3516,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$7 : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$8 : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3592,7 +3595,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$8 }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3600,7 +3603,7 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$6 = "#00d4aa";
+const TEAL$7 = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
 const inputStyle = {
   width: "100%",
@@ -3614,7 +3617,7 @@ const inputStyle = {
   outline: "none",
   boxSizing: "border-box"
 };
-const labelStyle = {
+const labelStyle$1 = {
   display: "block",
   fontSize: 11,
   fontWeight: 700,
@@ -3623,9 +3626,9 @@ const labelStyle = {
   textTransform: "uppercase",
   marginBottom: 8
 };
-function Field({ label, children }) {
+function Field$1({ label, children }) {
   return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 18 }, children: [
-    /* @__PURE__ */ jsx("label", { style: labelStyle, children: label }),
+    /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: label }),
     children
   ] });
 }
@@ -3699,7 +3702,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3732,13 +3735,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$6 }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$7 }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$6,
+        background: TEAL$7,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3751,7 +3754,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3782,17 +3785,17 @@ function Contact() {
       /* @__PURE__ */ jsx("div", { style: { textAlign: "center", fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 6, marginBottom: 28 }, children: "We'll get back to you within 24 hours" }),
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: labelStyle, children: "First Name" }),
+          /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "First Name" }),
           /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: labelStyle, children: "Last Name" }),
+          /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Last Name" }),
           /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
-      /* @__PURE__ */ jsx(Field, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
-      /* @__PURE__ */ jsx(Field, { label: "Message", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsx(Field$1, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field$1, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
+      /* @__PURE__ */ jsx(Field$1, { label: "Message", children: /* @__PURE__ */ jsx(
         "textarea",
         {
           className: "contact-input",
@@ -3811,7 +3814,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$6,
+            background: TEAL$7,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3827,7 +3830,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$5 = "#00d4aa";
+const TEAL$6 = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -3921,7 +3924,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$5,
+        color: TEAL$6,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -3960,7 +3963,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$5 : "#fff",
+                color: isOpen ? TEAL$6 : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -3981,7 +3984,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$5 : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$6 : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4010,7 +4013,7 @@ function FAQ() {
     ] })
   ] });
 }
-const TEAL$4 = "#00d4aa";
+const TEAL$5 = "#00d4aa";
 const SECTIONS$1 = [
   {
     h: "The short version",
@@ -4094,7 +4097,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$4,
+            color: TEAL$5,
             marginBottom: 14
           },
           children: "Legal"
@@ -4199,7 +4202,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$4, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$5, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4212,7 +4215,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$3 = "#00d4aa";
+const TEAL$4 = "#00d4aa";
 const SECTIONS = [
   {
     h: "You own your work",
@@ -4296,7 +4299,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$3,
+            color: TEAL$4,
             marginBottom: 14
           },
           children: "Legal"
@@ -4401,7 +4404,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$3, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$4, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4713,7 +4716,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$2 = "#00d4aa";
+const TEAL$3 = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -4783,7 +4786,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$2 },
+        style: { color: TEAL$3 },
         children: "AI Recut"
       }
     ),
@@ -4791,7 +4794,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$2,
+        stroke: TEAL$3,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -4809,8 +4812,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$2}`,
-          color: TEAL$2,
+          border: `1px solid ${TEAL$3}`,
+          color: TEAL$3,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -4848,7 +4851,7 @@ function Recut() {
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$2, color: "#0a0a12" },
+            style: { background: TEAL$3, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -4916,7 +4919,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$2}`,
+              border: `2px dashed ${TEAL$3}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -4934,7 +4937,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$2, color: "#0a0a12" },
+                  style: { background: TEAL$3, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -4949,7 +4952,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$2 },
+              style: { color: TEAL$3 },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -6001,7 +6004,7 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
     ] }, t.name)) })
   ] })
 ] });
-const TEAL$1 = "#00d4aa";
+const TEAL$2 = "#00d4aa";
 const VIOLET = "#a855f7";
 function AddCreditsCard({ className = "", showMembershipLink = true }) {
   const [buying, setBuying] = useState(false);
@@ -6026,7 +6029,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       "div",
       {
         className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-        style: { background: `linear-gradient(135deg, ${TEAL$1}, ${VIOLET})` },
+        style: { background: `linear-gradient(135deg, ${TEAL$2}, ${VIOLET})` },
         children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
       }
     ),
@@ -6039,7 +6042,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         onClick: handleBuy,
         disabled: buying,
         className: "text-black font-semibold",
-        style: { backgroundColor: TEAL$1 },
+        style: { backgroundColor: TEAL$2 },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
           "Buy More Credits — $10 for 30 Credits"
@@ -7157,7 +7160,7 @@ function EducationModules() {
     ] })
   ] });
 }
-const TEAL = "#00d4aa";
+const TEAL$1 = "#00d4aa";
 const BG = "#0a0a12";
 const SURFACE = "#12121f";
 const SURFACE2 = "#16162a";
@@ -7201,7 +7204,7 @@ function ChapterCard({ ch }) {
     position: "relative",
     transition: "all 0.2s"
   }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL, opacity: 0.8 }, children: ch.stage }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$1, opacity: 0.8 }, children: ch.stage }),
     /* @__PURE__ */ jsxs("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: [
       "Chapter ",
       ch.n
@@ -7232,7 +7235,7 @@ function RobertsFilmmaking() {
     ),
     /* @__PURE__ */ jsx("style", { children: `
         .rf-card:hover { border-color: rgba(0,212,170,0.4) !important; background: ${SURFACE2} !important; transform: translateY(-2px); }
-        .rf-card:hover .rf-arrow { color: ${TEAL} !important; }
+        .rf-card:hover .rf-arrow { color: ${TEAL$1} !important; }
         .rf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .rf-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 980px) { .rf-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -7253,13 +7256,13 @@ function RobertsFilmmaking() {
         filter: "blur(90px)",
         opacity: 0.16,
         pointerEvents: "none",
-        background: `radial-gradient(ellipse at center, ${TEAL} 0%, transparent 70%)`
+        background: `radial-gradient(ellipse at center, ${TEAL$1} 0%, transparent 70%)`
       } }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative", maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$1, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
         /* @__PURE__ */ jsxs("h1", { style: { fontFamily: "'Fraunces', serif", fontSize: "clamp(40px,7vw,64px)", lineHeight: 1.04, margin: 0, maxWidth: 760, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }, children: [
           "Filmmaking by ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "Will Roberts" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 26, display: "inline-flex", gap: 10, alignItems: "center" }, children: [
@@ -7267,9 +7270,9 @@ function RobertsFilmmaking() {
             width: 38,
             height: 38,
             borderRadius: "50%",
-            border: `2px solid ${TEAL}`,
+            border: `2px solid ${TEAL$1}`,
             background: "rgba(0,212,170,0.12)",
-            color: TEAL,
+            color: TEAL$1,
             fontSize: 13,
             fontWeight: 700,
             display: "flex",
@@ -7290,19 +7293,19 @@ function RobertsFilmmaking() {
         fontSize: 21,
         color: "rgba(255,255,255,0.78)",
         lineHeight: 1.6,
-        borderLeft: `3px solid ${TEAL}`,
+        borderLeft: `3px solid ${TEAL$1}`,
         paddingLeft: 24,
         margin: 0
       }, children: `"I've spent thirty-five years and sixty-plus credits learning how this is really done. This is everything I'd tell you if we sat down together — from the spark of an idea to the day strangers finally watch your film."` }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 20, fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75 }, children: "This free guide walks through every stage of making an independent film: development, producing, budgeting, crew, pre-production, directing, working with actors, cinematography, the shoot, post-production, festivals, distribution, streaming, marketing, and building a lasting career. Practical, specific, no fluff. Read it in order, or jump to the chapter you need right now." })
     ] }),
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "56px 24px 80px" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL, marginBottom: 8 }, children: "The Complete Guide" }),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$1, marginBottom: 8 }, children: "The Complete Guide" }),
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 36px", fontWeight: 700 }, children: "All 17 Chapters" }),
       /* @__PURE__ */ jsx("div", { className: "rf-grid", children: CHAPTERS.map((ch) => /* @__PURE__ */ jsx(ChapterCard, { ch }, ch.n)) })
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "32px 24px" }, children: /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 56, justifyContent: "center" }, children: STATS.map((s) => /* @__PURE__ */ jsxs("div", { style: { textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL }, children: s.num }),
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$1 }, children: s.num }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: s.label })
     ] }, s.label)) }) }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "64px 24px" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 760, margin: "0 auto", display: "flex", gap: 48, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7320,19 +7323,19 @@ function RobertsFilmmaking() {
         textAlign: "center",
         border: `1px solid ${BORDER}`
       }, children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$1 } }),
         /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.15 }, children: [
           "The Indie Filmmaker's ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "Complete Guide" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Complete Guide" })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL, margin: "10px auto" } }),
+        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$1, margin: "10px auto" } }),
         /* @__PURE__ */ jsx("div", { style: { fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.6)" }, children: "By Will Roberts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 240 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL, marginBottom: 12 }, children: "Free Download" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$1, marginBottom: 12 }, children: "Free Download" }),
         /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 16px", fontWeight: 700 }, children: [
           "Take the whole guide with you — ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "free PDF" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "free PDF" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 28px" }, children: "All 17 chapters in a single PDF — every stage of making an independent film, from the first idea to distribution, distilled and ready to reference. No sign-up." }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7340,7 +7343,7 @@ function RobertsFilmmaking() {
             height: 50,
             padding: "0 28px",
             borderRadius: 9999,
-            background: TEAL,
+            background: TEAL$1,
             color: "#000",
             fontWeight: 700,
             display: "inline-flex",
@@ -7354,7 +7357,7 @@ function RobertsFilmmaking() {
     /* @__PURE__ */ jsxs("section", { style: { padding: "64px 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 30, margin: 0, fontWeight: 700 }, children: [
         "Stop reading about it. ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "Start making it." })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Start making it." })
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
@@ -7362,7 +7365,7 @@ function RobertsFilmmaking() {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
-          background: TEAL,
+          background: TEAL$1,
           color: "#000",
           fontWeight: 700,
           display: "inline-flex",
@@ -12604,6 +12607,332 @@ function Marketing() {
     }
   );
 }
+const TEAL = "#00d4aa";
+const inputBase = {
+  width: "100%",
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid #1e1e35",
+  borderRadius: 10,
+  padding: "12px 14px",
+  fontSize: 14,
+  color: "#fff",
+  fontFamily: "inherit",
+  outline: "none",
+  boxSizing: "border-box"
+};
+const labelStyle = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 700,
+  color: "rgba(255,255,255,0.35)",
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  marginBottom: 8
+};
+const JOB_OPTIONS = [
+  "Director",
+  "Producer",
+  "Executive Producer",
+  "1st Assistant Director",
+  "2nd Assistant Director",
+  "Director of Photography",
+  "Camera Operator",
+  "1st AC",
+  "Gaffer",
+  "Key Grip",
+  "Sound Mixer",
+  "Boom Operator",
+  "Production Designer",
+  "Art Director",
+  "Makeup Artist",
+  "Hair Stylist",
+  "Costume / Wardrobe",
+  "Actor",
+  "Background / Extra",
+  "Production Assistant",
+  "Other"
+];
+function Field({
+  label,
+  required,
+  children
+}) {
+  return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 18 }, children: [
+    /* @__PURE__ */ jsxs("label", { style: labelStyle, children: [
+      label,
+      required && /* @__PURE__ */ jsx("span", { style: { color: TEAL, marginLeft: 4 }, children: "*" })
+    ] }),
+    children
+  ] });
+}
+function ContactCastCrew() {
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [instagram, setInstagram] = useState("");
+  const [job, setJob] = useState("");
+  const [otherRole, setOtherRole] = useState("");
+  const [characterName, setCharacterName] = useState("");
+  const [type, setType] = useState("Principal");
+  const [notes, setNotes] = useState("");
+  const [honeypot, setHoneypot] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
+  const isActorLike = job === "Actor" || job === "Background / Extra";
+  const isOther = job === "Other";
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setError(null);
+    if (honeypot) return;
+    if (!firstName.trim() || !lastName.trim() || !phone.trim() || !email.trim() || !job) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    if (isOther && !otherRole.trim()) {
+      setError("Please specify your role.");
+      return;
+    }
+    setSubmitted(true);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh" }, children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Cast & Crew Contact Form — Filmmaker Genius",
+        description: "Join the production list. Share your contact info, role, and availability for cast and crew opportunities.",
+        canonical: "https://filmmakergenius.com/contact-cast-crew"
+      }
+    ),
+    /* @__PURE__ */ jsx("style", { children: `
+        .ccc-h1 { font-size: 40px; }
+        @media (min-width: 640px) { .ccc-h1 { font-size: 52px; } }
+        .ccc-input:focus { border-color: rgba(0,212,170,0.5) !important; }
+        .ccc-btn:hover { background: #00f0c0 !important; }
+      ` }),
+    /* @__PURE__ */ jsxs("section", { style: { position: "relative", overflow: "hidden", padding: "72px 24px 40px", textAlign: "center" }, children: [
+      /* @__PURE__ */ jsx(
+        "div",
+        {
+          style: {
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: 700,
+            height: 500,
+            filter: "blur(80px)",
+            opacity: 0.13,
+            background: "radial-gradient(ellipse at center, rgba(0,212,170,0.6) 0%, transparent 70%)",
+            pointerEvents: "none"
+          }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
+        /* @__PURE__ */ jsxs("h1", { className: "ccc-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
+          "Cast & Crew ",
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL }, children: "Contact Form" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 560, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Add yourself to the production list. Tell us who you are, what you do, and how to reach you." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx("section", { style: { maxWidth: 680, margin: "0 auto 96px", padding: "0 24px" }, children: submitted ? /* @__PURE__ */ jsxs(
+      "div",
+      {
+        style: {
+          background: "rgba(0,212,170,0.08)",
+          border: "1px solid rgba(0,212,170,0.25)",
+          borderRadius: 16,
+          padding: "32px 24px",
+          textAlign: "center"
+        },
+        children: [
+          /* @__PURE__ */ jsx("div", { style: { fontSize: 42, marginBottom: 12 }, children: "✅" }),
+          /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, margin: 0, fontWeight: 700 }, children: "You're on the list." }),
+          /* @__PURE__ */ jsx("p", { style: { marginTop: 10, color: "rgba(255,255,255,0.55)", lineHeight: 1.6 }, children: "Thank you! Your information has been added to the production list." })
+        ]
+      }
+    ) : /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, style: { background: "#0d0d1a", border: "1px solid #1e1e35", borderRadius: 20, padding: 32 }, children: [
+      error && /* @__PURE__ */ jsx(
+        "div",
+        {
+          style: {
+            background: "rgba(239,68,68,0.1)",
+            border: "1px solid rgba(239,68,68,0.3)",
+            borderRadius: 10,
+            padding: "12px 14px",
+            marginBottom: 20,
+            fontSize: 14,
+            color: "#fca5a5"
+          },
+          children: error
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 18 }, children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsxs("label", { style: labelStyle, children: [
+            "First Name",
+            /* @__PURE__ */ jsx("span", { style: { color: TEAL, marginLeft: 4 }, children: "*" })
+          ] }),
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "ccc-input",
+              style: inputBase,
+              value: firstName,
+              onChange: (e) => setFirstName(e.target.value),
+              placeholder: "Jane"
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsxs("label", { style: labelStyle, children: [
+            "Last Name",
+            /* @__PURE__ */ jsx("span", { style: { color: TEAL, marginLeft: 4 }, children: "*" })
+          ] }),
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              className: "ccc-input",
+              style: inputBase,
+              value: lastName,
+              onChange: (e) => setLastName(e.target.value),
+              placeholder: "Smith"
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(Field, { label: "Phone Number", required: true, children: /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "tel",
+          className: "ccc-input",
+          style: inputBase,
+          value: phone,
+          onChange: (e) => setPhone(e.target.value),
+          placeholder: "(555) 123-4567"
+        }
+      ) }),
+      /* @__PURE__ */ jsx(Field, { label: "Email Address", required: true, children: /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "email",
+          className: "ccc-input",
+          style: inputBase,
+          value: email,
+          onChange: (e) => setEmail(e.target.value),
+          placeholder: "jane@example.com"
+        }
+      ) }),
+      /* @__PURE__ */ jsx(Field, { label: "Instagram Handle", children: /* @__PURE__ */ jsx(
+        "input",
+        {
+          className: "ccc-input",
+          style: inputBase,
+          value: instagram,
+          onChange: (e) => setInstagram(e.target.value),
+          placeholder: "@username"
+        }
+      ) }),
+      /* @__PURE__ */ jsx(Field, { label: "Job / Position on the Film", required: true, children: /* @__PURE__ */ jsxs(
+        "select",
+        {
+          className: "ccc-input",
+          style: { ...inputBase, appearance: "none", cursor: "pointer" },
+          value: job,
+          onChange: (e) => setJob(e.target.value),
+          children: [
+            /* @__PURE__ */ jsx("option", { value: "", disabled: true, style: { background: "#0d0d1a", color: "#fff" }, children: "Select a role" }),
+            JOB_OPTIONS.map((opt) => /* @__PURE__ */ jsx("option", { value: opt, style: { background: "#0d0d1a", color: "#fff" }, children: opt }, opt))
+          ]
+        }
+      ) }),
+      isOther && /* @__PURE__ */ jsx(Field, { label: "Please specify your role", required: true, children: /* @__PURE__ */ jsx(
+        "input",
+        {
+          className: "ccc-input",
+          style: inputBase,
+          value: otherRole,
+          onChange: (e) => setOtherRole(e.target.value),
+          placeholder: "e.g. Drone Operator"
+        }
+      ) }),
+      isActorLike && /* @__PURE__ */ jsxs(
+        "div",
+        {
+          style: {
+            background: "rgba(0,212,170,0.05)",
+            border: "1px solid rgba(0,212,170,0.15)",
+            borderRadius: 14,
+            padding: 20,
+            marginBottom: 18
+          },
+          children: [
+            /* @__PURE__ */ jsx(Field, { label: "Character / Role Name", children: /* @__PURE__ */ jsx(
+              "input",
+              {
+                className: "ccc-input",
+                style: inputBase,
+                value: characterName,
+                onChange: (e) => setCharacterName(e.target.value),
+                placeholder: "e.g. Detective Miller"
+              }
+            ) }),
+            /* @__PURE__ */ jsx(Field, { label: "Type", children: /* @__PURE__ */ jsxs(
+              "select",
+              {
+                className: "ccc-input",
+                style: { ...inputBase, appearance: "none", cursor: "pointer" },
+                value: type,
+                onChange: (e) => setType(e.target.value),
+                children: [
+                  /* @__PURE__ */ jsx("option", { value: "Principal", style: { background: "#0d0d1a", color: "#fff" }, children: "Principal" }),
+                  /* @__PURE__ */ jsx("option", { value: "Background / Extra", style: { background: "#0d0d1a", color: "#fff" }, children: "Background / Extra" })
+                ]
+              }
+            ) })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx(Field, { label: "Notes / Additional Comments", children: /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          className: "ccc-input",
+          style: { ...inputBase, minHeight: 120, resize: "vertical" },
+          value: notes,
+          onChange: (e) => setNotes(e.target.value),
+          placeholder: "Availability, gear you bring, union status, links to reels, etc."
+        }
+      ) }),
+      /* @__PURE__ */ jsxs("div", { style: { display: "none" }, "aria-hidden": "true", children: [
+        /* @__PURE__ */ jsx("label", { children: "Do not fill this field" }),
+        /* @__PURE__ */ jsx("input", { type: "text", tabIndex: -1, autoComplete: "off", value: honeypot, onChange: (e) => setHoneypot(e.target.value) })
+      ] }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          type: "submit",
+          className: "ccc-btn",
+          style: {
+            width: "100%",
+            height: 50,
+            borderRadius: 12,
+            background: TEAL,
+            color: "#000",
+            fontWeight: 700,
+            fontSize: 15,
+            border: "none",
+            cursor: "pointer",
+            fontFamily: "inherit",
+            marginTop: 8,
+            transition: "background 0.2s"
+          },
+          children: "Join Production List"
+        }
+      )
+    ] }) })
+  ] });
+}
 const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE__ */ jsxs(Routes, { children: [
   /* @__PURE__ */ jsx(Route, { path: "/", element: /* @__PURE__ */ jsx(HomeMarketing, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/about", element: /* @__PURE__ */ jsx(About, {}) }),
@@ -12637,6 +12966,7 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsx(Launch, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/marketing", element: /* @__PURE__ */ jsx(Marketing, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/contact-cast-crew", element: /* @__PURE__ */ jsx(ContactCastCrew, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "*", element: /* @__PURE__ */ jsx(NotFound, {}) })
 ] }) });
 async function preloadForUrl(url2) {

@@ -1,0 +1,32 @@
+-- 1) Remove anonymous direct access to the audition_notices base table
+DROP POLICY IF EXISTS "Public can view active audition notices" ON public.audition_notices;
+REVOKE ALL ON public.audition_notices FROM anon;
+
+-- 2) Public browsing goes through a definer view limited to active notices, no contact fields
+CREATE OR REPLACE VIEW public.audition_notices_public
+WITH (security_invoker = false, security_barrier = true) AS
+SELECT id, user_id, project_name, project_type, union_status, producer, director,
+  casting_director, line_producer, first_ad, additional_credits, audition_date,
+  shoot_start_date, shoot_end_date, location, role_name, role_description,
+  character_background, ethnicity_requirement, age_range, gender_preference, work_type,
+  rate_of_pay, work_dates, work_location, storyline, genre, submission_deadline,
+  materials_required, special_instructions, allow_online_demo, status, created_at,
+  updated_at, logline, synopsis, shoot_city, shoot_country, audition_window,
+  callback_dates, self_tape_deadline, location_type, travel_lodging, travel_details,
+  compensation_type, compensation_rate, usage_terms, agent_fee_included, conflicts,
+  has_nudity, has_intimacy, has_violence, safety_details, has_minors, headshot_url,
+  resume_url, slate_link, reel_link, additional_materials, posting_targets, visibility,
+  production_company, director_cd, website
+FROM public.audition_notices
+WHERE status = 'active';
+
+GRANT SELECT ON public.audition_notices_public TO anon, authenticated;
+
+-- 3) Certificates storage: only the owning user (own folder) or service role may upload
+DROP POLICY IF EXISTS "Service can insert certificates" ON storage.objects;
+CREATE POLICY "Users can upload own certificates"
+ON storage.objects FOR INSERT TO authenticated
+WITH CHECK (bucket_id = 'certificates' AND (storage.foldername(name))[1] = auth.uid()::text);
+CREATE POLICY "Service role manages certificates"
+ON storage.objects FOR ALL TO service_role
+USING (bucket_id = 'certificates') WITH CHECK (bucket_id = 'certificates');
