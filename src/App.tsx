@@ -326,6 +326,7 @@ const AppContent = () => (
           <Route path="/library/purchase-order" element={<ToolGate><PurchaseOrder /></ToolGate>} />
           <Route path="/library/purchase-order-log" element={<ToolGate><PurchaseOrderLog /></ToolGate>} />
           <Route path="/library/check-request" element={<ToolGate><CheckRequest /></ToolGate>} />
+          <Route path="/library/petty-cash-reconciliation" element={<ToolGate><PettyCashReconciliation /></ToolGate>} />
 
 
 
