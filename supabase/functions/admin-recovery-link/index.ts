@@ -9,8 +9,9 @@ Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
 
   const secret = req.headers.get('x-admin-secret');
-  const expected = Deno.env.get('ADMIN_RECOVERY_SECRET') ?? 'fmg_recovery_2026_owner_only';
-  if (secret !== expected) {
+  const expected = Deno.env.get('ADMIN_RECOVERY_SECRET');
+  // No fallback: if the secret is not configured, the endpoint is disabled.
+  if (!expected || !secret || secret !== expected) {
     return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
   }
 
