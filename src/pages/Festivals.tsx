@@ -309,7 +309,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Location" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Location</SelectItem>
+                  <SelectItem value="all">Any Location</SelectItem>
                   {getUniqueLocations().map(location => (
                     <SelectItem key={location} value={location}>{location}</SelectItem>
                   ))}
@@ -320,7 +320,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Tier" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Tier</SelectItem>
+                  <SelectItem value="all">Any Tier</SelectItem>
                   {getUniqueTiers().map(tier => (
                     <SelectItem key={tier} value={tier}>{tier}</SelectItem>
                   ))}
@@ -331,7 +331,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Genre" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Genre</SelectItem>
+                  <SelectItem value="all">Any Genre</SelectItem>
                   {getUniqueGenres().map(genre => (
                     <SelectItem key={genre} value={genre}>{genre}</SelectItem>
                   ))}
@@ -342,7 +342,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Status</SelectItem>
+                  <SelectItem value="all">Any Status</SelectItem>
                   <SelectItem value="open">Submissions Open</SelectItem>
                   <SelectItem value="early">Early Bird</SelectItem>
                   <SelectItem value="upcoming">Upcoming</SelectItem>
