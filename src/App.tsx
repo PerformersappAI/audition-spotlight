@@ -158,6 +158,8 @@ import CameraReport from "./pages/agreements/CameraReport";
 import SoundReport from "./pages/agreements/SoundReport";
 import ContinuityReport from "./pages/agreements/ContinuityReport";
 import BackgroundVoucher from "./pages/agreements/BackgroundVoucher";
+import EquipmentInventory from "./pages/agreements/EquipmentInventory";
+
 
 
 
@@ -311,6 +313,8 @@ const AppContent = () => (
           <Route path="/library/sound-report" element={<ToolGate><SoundReport /></ToolGate>} />
           <Route path="/library/continuity-report" element={<ToolGate><ContinuityReport /></ToolGate>} />
           <Route path="/library/background-voucher" element={<ToolGate><BackgroundVoucher /></ToolGate>} />
+          <Route path="/library/equipment-inventory" element={<ToolGate><EquipmentInventory /></ToolGate>} />
+
 
 
 
