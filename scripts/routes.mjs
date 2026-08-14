@@ -43,7 +43,12 @@ const staticRoutes = [
 staticRoutes.forEach((r) => set.add(r));
 
 for (const key of Object.keys(robertsChapters)) set.add(`/academy/roberts-filmmaking/${key}`);
-for (const key of Object.keys(gleTiers)) set.add(`/green-light-engine/${key}`);
+for (const key of Object.keys(gleTiers)) {
+  set.add(`/green-light-engine/${key}`);
+  for (const p of gleTiers[key].platforms) {
+    if (p.slug) set.add(`/green-light-engine/${key}/${p.slug}`);
+  }
+}
 for (const key of Object.keys(gleNiche)) set.add(`/green-light-engine/niche/${key}`);
 for (const key of Object.keys(monetizationHubs)) set.add(`/academy/${key}`);
 for (const key of Object.keys(monetizationSub)) {
