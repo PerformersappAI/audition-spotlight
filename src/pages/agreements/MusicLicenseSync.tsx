@@ -135,6 +135,9 @@ const MusicLicenseSync = () => {
 
   const v = (value: string, placeholder: string) => (value.trim() ? value.trim() : `[${placeholder}]`);
 
+  // Strips trailing sentence punctuation so template sentences never double up on periods.
+  const s = (value: string, placeholder: string) => v(value, placeholder).replace(/[.;,]+$/, "");
+
   const intro = `This Music License / Synchronization Agreement ("Agreement") is entered into as of ${v(
     formatDate(form.effective_date),
     "effective date"
@@ -180,7 +183,7 @@ const MusicLicenseSync = () => {
       },
       {
         heading: "Use in Project",
-        body: `The Project is a ${v(form.project_type, "project type")}. The work shall be used as follows: ${v(
+        body: `The Project is a ${v(form.project_type, "project type")}. The work shall be used as follows: ${s(
           form.scene_use,
           "how the music is used"
         )}. The approximate duration of use is ${v(form.duration_used, "duration used")}.`,
@@ -202,7 +205,7 @@ const MusicLicenseSync = () => {
         body: `In consideration of the rights granted herein, Licensee shall pay Licensor a license fee of ${v(
           form.license_fee,
           "license fee (USD)"
-        )}. Payment terms: ${v(form.payment_terms, "payment terms")}.${
+        )}. Payment terms: ${s(form.payment_terms, "payment terms")}.${
           form.mfn
             ? " This license is granted on a Most-Favored-Nations (MFN) basis with all other music licenses granted for the Project."
             : ""
