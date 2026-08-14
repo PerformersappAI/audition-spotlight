@@ -73,15 +73,27 @@ export default function RobertsFilmmaking() {
         title="Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide"
         description="A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release. By Will Roberts."
         canonical="https://filmmakergenius.com/academy/roberts-filmmaking"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" },
-          ],
-        }}
+        jsonLd={[
+          academyJsonLd({
+            type: "Course",
+            headline: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
+            description:
+              "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release.",
+            url: "https://filmmakergenius.com/academy/roberts-filmmaking",
+            extra: {
+              hasCourseInstance: { "@type": "CourseInstance", courseMode: "online" },
+            },
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" },
+            ],
+          },
+        ]}
       />
 
       <style>{`
