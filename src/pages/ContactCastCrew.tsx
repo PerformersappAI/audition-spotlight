@@ -218,6 +218,41 @@ export default function ContactCastCrew() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadPdf = () => {
+    exportCastCrewReportToPDF({ productionName, contacts });
+    toast({ title: "Report downloaded", description: "Your cast & crew contact sheet PDF is ready." });
+  };
+
+  const emailPdf = async () => {
+    if (!form) return;
+    setEmailing(true);
+    try {
+      const pdfBase64 = castCrewReportBase64({ productionName, contacts });
+      const { data, error } = await supabase.functions.invoke("send-cast-crew-report", {
+        body: {
+          formId: form.id,
+          pdfBase64,
+          fileName: reportFileName(productionName),
+          contactCount: contacts.length,
+        },
+      });
+      if (error) throw error;
+      toast({
+        title: "Report emailed",
+        description: `Sent to ${(data as { sentTo?: string })?.sentTo ?? notifyEmail}.`,
+      });
+    } catch (err) {
+      toast({
+        title: "Could not email the report",
+        description: err instanceof Error ? err.message : "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setEmailing(false);
+    }
+  };
+
+
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh" }}>
       <Seo
