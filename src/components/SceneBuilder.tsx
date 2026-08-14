@@ -33,9 +33,9 @@ const M: Beat[] = [
 function slugify(s: string) { return s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
 
 export default function SceneBuilder({ structureKey, sel, onToggle }: { structureKey: string; sel: FwKey[]; onToggle: (k: FwKey) => void }) {
-  const [scenes, setScenes] = useState<Record<string, unknown[]>>({});
+  const [scenes, setScenes] = useState<Record<number, { slug: string; action: string }[]>>({});
   useEffect(() => {
-    const read = () => { try { const s = localStorage.getItem("mib-scene-dev"); setScenes(s ? JSON.parse(s) : {}); } catch { setScenes({}); } };
+    const read = () => { try { const s = localStorage.getItem("mib-scenes"); setScenes(s ? JSON.parse(s) : {}); } catch { setScenes({}); } };
     read();
     window.addEventListener("mib-scenes-change", read);
     window.addEventListener("storage", read);
@@ -73,7 +73,7 @@ export default function SceneBuilder({ structureKey, sel, onToggle }: { structur
               <div className="flex flex-col gap-2">
                 {g.items.map(({ b, i }) => {
                   const chips = fws.filter((k) => b.fw[k]);
-                  const count = (scenes[slugify(b.t)] || []).length;
+                  const count = (scenes[i] || []).length;
                   return (
                     <Link key={b.t + i} to={`/movie-in-a-box/${structureKey}/scene/${slugify(b.t)}`} className="block rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 hover:border-white/25 hover:bg-white/[0.04] transition-colors">
                       <div className="flex items-center gap-2">
