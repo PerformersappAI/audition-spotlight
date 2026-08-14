@@ -20,6 +20,12 @@ export default function MonetizationHub({ hubKey }: Props) {
         title={`${title} — Filmmaker Genius Academy`}
         description={sub}
         canonical={canonical}
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: title,
+          description: sub,
+          url: canonical,
+        })}
       />
 
       <style>{`
