@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 
 const TEAL = "#00d4aa";
 const BG = "#0a0a12";
@@ -73,15 +74,27 @@ export default function RobertsFilmmaking() {
         title="Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide"
         description="A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release. By Will Roberts."
         canonical="https://filmmakergenius.com/academy/roberts-filmmaking"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" },
-          ],
-        }}
+        jsonLd={[
+          academyJsonLd({
+            type: "Course",
+            headline: "Filmmaking by Will Roberts: The Complete Indie Filmmaker's Guide",
+            description:
+              "A free 17-chapter guide to making an independent film — from idea and script through crew, production, editing, distribution, and release.",
+            url: "https://filmmakergenius.com/academy/roberts-filmmaking",
+            extra: {
+              hasCourseInstance: { "@type": "CourseInstance", courseMode: "online" },
+            },
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "The Roberts Filmmaking Method", item: "https://filmmakergenius.com/academy/roberts-filmmaking" },
+            ],
+          },
+        ]}
       />
 
       <style>{`
@@ -114,6 +127,7 @@ export default function RobertsFilmmaking() {
           <p style={{ marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
             The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen.
           </p>
+          <AcademyByline />
           <div style={{ marginTop: 26, display: "inline-flex", gap: 10, alignItems: "center" }}>
             <div style={{
               width: 38, height: 38, borderRadius: "50%",

@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 // Per-course dynamic loader — see src/pages/CourseChapter.tsx for the SSR /
 // client cache contract that keeps this synchronous on first render.
 import { getCourse, loadCourse } from "@/data/courses/loader";
@@ -57,23 +58,19 @@ export default function CoursePage() {
         description={course.seoDesc}
         canonical={`https://filmmakergenius.com/academy/${course.slug}`}
         jsonLd={[
-          {
-            "@context": "https://schema.org",
-            "@type": "Course",
-            name: course.title,
+          academyJsonLd({
+            type: "Course",
+            headline: course.title,
             description: course.seoDesc,
             url: `https://filmmakergenius.com/academy/${course.slug}`,
-            provider: {
-              "@type": "Organization",
-              name: "Filmmaker Genius",
-              sameAs: "https://filmmakergenius.com",
+            extra: {
+              hasCourseInstance: {
+                "@type": "CourseInstance",
+                courseMode: "online",
+                courseWorkload: course.readTime,
+              },
             },
-            hasCourseInstance: {
-              "@type": "CourseInstance",
-              courseMode: "online",
-              courseWorkload: course.readTime,
-            },
-          },
+          }),
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
@@ -122,6 +119,7 @@ export default function CoursePage() {
             </span>
             <h1 className="cp-h1">{course.title}</h1>
             <p style={{ marginTop: 18, fontSize: 17, color: "rgba(255,255,255,.55)", lineHeight: 1.55, maxWidth: 560 }}>{course.subtitle}</p>
+            <AcademyByline />
             <div style={{ marginTop: 22, display: "flex", flexWrap: "wrap", alignItems: "center", gap: 10, fontSize: 13, color: "rgba(255,255,255,.5)" }}>
               <span>{course.level}</span>
               <span style={{ width: 3, height: 3, borderRadius: "50%", background: "rgba(255,255,255,.3)" }} />

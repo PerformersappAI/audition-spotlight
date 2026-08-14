@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 // Client-side loader: dynamic per-course imports (one chunk per course).
 // The SSR entry pre-populates this loader's cache before renderToString,
 // so getCourse() returns the course synchronously during prerendering.
@@ -1278,24 +1279,16 @@ export default function CourseChapter() {
         description={chapter.seoDesc || `${chapter.title} — a chapter from the ${course.title} course on Filmmaker Genius Academy.`}
         canonical={`https://filmmakergenius.com/academy/${course.slug}/${chapter.slug}`}
         jsonLd={[
-          {
-            "@context": "https://schema.org",
-            "@type": "Article",
+          academyJsonLd({
+            type: "Article",
             headline: chapter.title,
             description: chapter.seoDesc || `${chapter.title} — a chapter from ${course.title}.`,
-            author: { "@type": "Person", name: "Will Roberts" },
-            publisher: {
-              "@type": "Organization",
-              name: "Filmmaker Genius",
-              logo: { "@type": "ImageObject", url: "https://filmmakergenius.com/og-image.jpg" },
-            },
             url: `https://filmmakergenius.com/academy/${course.slug}/${chapter.slug}`,
             isPartOf: {
-              "@type": "Course",
               name: course.title,
               url: `https://filmmakergenius.com/academy/${course.slug}`,
             },
-          },
+          }),
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
@@ -1346,6 +1339,7 @@ export default function CourseChapter() {
           <div>
             <div style={{ fontWeight: 700, color: "#fff", fontSize: 14 }}>Will Roberts</div>
             <div style={{ fontSize: 12, color: "rgba(255,255,255,.5)" }}>Working filmmaker · Written from the set</div>
+            <AcademyByline style={{ margin: "2px 0 0", fontSize: 12 }} />
           </div>
         </div>
 

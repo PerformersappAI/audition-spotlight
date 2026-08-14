@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import gladiatorPoster from "@/assets/gladiator-poster.png.asset.json";
 import godfatherPoster from "@/assets/godfather-poster.png.asset.json";
 import lambsPoster from "@/assets/lambs-poster.png.asset.json";
@@ -239,6 +240,17 @@ export default function MoviePage() {
         description={`How ${movie.title} maps to the ${movie.structureName} structure, beat by beat.`}
         canonical={`https://filmmakergenius.com/movie-in-a-box/movie/${slug}`}
         type="article"
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: `${movie.title} — ${movie.structureName} Breakdown`,
+          description: `How ${movie.title} maps to the ${movie.structureName} structure, beat by beat.`,
+          url: `https://filmmakergenius.com/movie-in-a-box/movie/${slug}`,
+          isPartOf: {
+            type: "Article",
+            name: movie.structureName,
+            url: `https://filmmakergenius.com/movie-in-a-box/${movie.structureKey}/structure`,
+          },
+        })}
       />
 
       <div className="border-b border-white/10 bg-[#0c0e13]/95">
@@ -287,6 +299,7 @@ export default function MoviePage() {
           <h1 className="mt-2 text-4xl font-bold tracking-tight" style={{ color: movie.color }}>{movie.title}</h1>
           <span className="mt-4 block h-[2px] w-10 rounded-full" style={{ backgroundColor: movie.color, opacity: 0.7 }} />
           <span className="mt-4 text-xs text-foreground/50">This film is our guide to the {movie.structureName} structure.</span>
+          <AcademyByline variant="tokens" />
           <div className="mt-6 flex flex-col items-center gap-2">
             <div className="flex flex-row items-center justify-center gap-2">
               {Array.from({ length: movie.oscars }).map((_, i) => (<Oscar key={i} />))}

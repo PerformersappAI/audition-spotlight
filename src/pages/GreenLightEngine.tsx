@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 
 type Tier = {
   to: string;
@@ -67,15 +68,24 @@ export default function GreenLightEngine() {
         title="Green Light Engine — Where to Place Your Indie Film"
         description="Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services."
         canonical="https://filmmakergenius.com/green-light-engine"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
-          ],
-        }}
+        jsonLd={[
+          academyJsonLd({
+            type: "Article",
+            headline: "Green Light Engine — Where to Place Your Indie Film",
+            description:
+              "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
+            url: "https://filmmakergenius.com/green-light-engine",
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+            ],
+          },
+        ]}
       />
 
       <nav
@@ -128,6 +138,7 @@ export default function GreenLightEngine() {
           Pick a tier to see the platforms your film could reach — then we walk you
           through exactly how to get there.
         </p>
+        <AcademyByline style={{ margin: "-28px 0 32px", textAlign: "center", color: "rgba(255,255,255,0.4)" }} />
 
         <div
           className="gle-grid-square"

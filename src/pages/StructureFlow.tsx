@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, Navigate, useNavigate } from "react-router-dom";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import Seo from "@/components/Seo";
 import BeatsBuilder from "@/components/BeatsBuilder";
 import SceneBuilder from "@/components/SceneBuilder";
@@ -314,6 +315,12 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         description={subtitle}
         canonical={`https://filmmakergenius.com/movie-in-a-box/${structureKey}/${activeStop}`}
         type="website"
+        jsonLd={academyJsonLd({
+          type: "LearningResource",
+          headline: `${title} — ${stopLabel}`,
+          description: subtitle,
+          url: `https://filmmakergenius.com/movie-in-a-box/${structureKey}/${activeStop}`,
+        })}
       />
 
       <nav
@@ -427,9 +434,10 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
               <p className="mx-auto max-w-[600px] text-foreground/70 text-lg leading-relaxed mb-3">
                 {DATA[structureKey].lead}
               </p>
-              <p className="text-sm text-foreground/50 mb-10">
+              <p className="text-sm text-foreground/50 mb-2">
                 {DATA[structureKey].tag}
               </p>
+              <AcademyByline variant="tokens" className="mb-10 text-xs text-foreground/50" />
             </div>
 
             {DIAGRAM_MODE[structureKey] === "line" ? (

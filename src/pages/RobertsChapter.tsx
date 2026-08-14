@@ -1,5 +1,6 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import { robertsChapters } from "@/data/robertsChapters";
 
 const RobertsChapter = () => {
@@ -51,6 +52,16 @@ const RobertsChapter = () => {
         title={seoTitle}
         description={intro.replace(/<[^>]+>/g, "").slice(0, 160)}
         canonical={canonical}
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: title,
+          description: intro.replace(/<[^>]+>/g, "").slice(0, 300),
+          url: canonical,
+          isPartOf: {
+            name: "Filmmaking by Will Roberts",
+            url: "https://filmmakergenius.com/academy/roberts-filmmaking",
+          },
+        })}
       />
 
       <style>{`
@@ -176,6 +187,7 @@ const RobertsChapter = () => {
           }}
           dangerouslySetInnerHTML={{ __html: intro }}
         />
+        <AcademyByline />
       </header>
 
       {/* Video slot */}

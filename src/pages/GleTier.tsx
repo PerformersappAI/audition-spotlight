@@ -1,5 +1,6 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import { gleTiers } from "@/data/gleTiers";
 
 export default function GleTier() {
@@ -26,16 +27,25 @@ export default function GleTier() {
         title={`${title} — Green Light Engine | Filmmaker Genius`}
         description={sub}
         canonical={canonical}
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-            { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
-            { "@type": "ListItem", position: 4, name: title, item: canonical },
-          ],
-        }}
+        jsonLd={[
+          academyJsonLd({
+            type: "Article",
+            headline: `${title} — Green Light Engine`,
+            description: sub,
+            url: canonical,
+            isPartOf: { type: "Article", name: "Green Light Engine", url: "https://filmmakergenius.com/green-light-engine" },
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+              { "@type": "ListItem", position: 3, name: "Green Light Engine", item: "https://filmmakergenius.com/green-light-engine" },
+              { "@type": "ListItem", position: 4, name: title, item: canonical },
+            ],
+          },
+        ]}
       />
 
       <style>{`
@@ -60,6 +70,7 @@ export default function GleTier() {
           <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: accent }}>{label}</div>
           <h1 style={{ fontSize: 30, margin: "8px 0 10px" }}>{title}</h1>
           <p style={{ color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>{sub}</p>
+          <AcademyByline style={{ color: "rgba(255,255,255,0.4)" }} />
         </div>
 
         <div className="gle-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>

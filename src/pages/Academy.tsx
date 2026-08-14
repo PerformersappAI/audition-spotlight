@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
@@ -160,14 +161,23 @@ export default function Academy() {
         title="Academy — 62 Free Courses for Indie Filmmakers | Filmmaker Genius"
         description="Filmmaker Genius Academy: 62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization."
         canonical="https://filmmakergenius.com/academy"
-        jsonLd={{
-          "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
-          itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
-            { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
-          ],
-        }}
+        jsonLd={[
+          academyJsonLd({
+            type: "LearningResource",
+            headline: "Filmmaker Genius Academy",
+            description:
+              "62 free courses covering screenwriting, directing, producing, cinematography, editing, sound, distribution, and monetization.",
+            url: "https://filmmakergenius.com/academy",
+          }),
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: "https://filmmakergenius.com/" },
+              { "@type": "ListItem", position: 2, name: "Academy", item: "https://filmmakergenius.com/academy" },
+            ],
+          },
+        ]}
       />
       <style>{`
         .ac-h1 { font-size: 52px; }
@@ -189,6 +199,7 @@ export default function Academy() {
           <p style={{
             marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.55)",
           }}>Ebooks, distribution guides, and education modules for independent filmmakers</p>
+          <AcademyByline style={{ textAlign: "center" }} />
         </div>
 
         {/* TABS */}
