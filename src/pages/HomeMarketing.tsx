@@ -8,6 +8,7 @@ import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/tool-auditions.webp";
 import imgCrewHire from "@/assets/tool-crew-hire.webp";
+import imgContactCastCrew from "@/assets/tool-contact-cast-crew.webp";
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 import imgMarketingInABox from "@/assets/Marketing_in_a_Box.png.asset.json";
 import imgGreenLightEngine from "@/assets/green-light-engine.png.asset.json";
@@ -110,8 +111,9 @@ const HomeMarketing = () => {
   const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
   const callSheet: Card = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
-  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
+  const contactCastCrew: Card = { title: "Contact Cast & Crew", to: "/contact-cast-crew", cta: "Join", img: imgContactCastCrew };
+  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
   const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url, fit: "contain" };
 
@@ -196,6 +198,9 @@ const HomeMarketing = () => {
                 </div>
                 <div className="flex-1 [&>a>div:first-child]:!min-h-0">
                   <ToolCard card={crewHire} aspect="tall" className="h-full" />
+                </div>
+                <div className="flex-1 [&>a>div:first-child]:!min-h-0">
+                  <ToolCard card={contactCastCrew} aspect="tall" className="h-full" />
                 </div>
               </div>
             </div>
