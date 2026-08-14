@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import Storyboarding from "./Storyboarding";
 
 export default function StoryboardingRoute() {
@@ -16,6 +17,7 @@ export default function StoryboardingRoute() {
   return (
     <>
       <ToolTopBar />
+      <ToolLead path="/storyboarding" />
       <Storyboarding />
     </>
   );

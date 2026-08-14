@@ -27,6 +27,16 @@ import CoursePage from "./pages/CoursePage";
 import CourseChapter from "./pages/CourseChapter";
 import NotFound from "./pages/NotFound";
 import Launch from "./pages/Launch";
+import MovieInABox from "./pages/MovieInABox";
+import ScriptAnalysis from "./pages/ScriptAnalysis";
+import SceneAnalysis from "./pages/SceneAnalysis";
+import StoryboardingRoute from "./pages/StoryboardingRoute";
+import CallSheet from "./pages/CallSheet";
+import PitchDeckMaker from "./pages/PitchDeckMaker";
+import ContractAssistant from "./pages/ContractAssistant";
+import FundingStrategy from "./pages/FundingStrategy";
+import DistributionReadiness from "./pages/DistributionReadiness";
+import TableRead from "./pages/TableRead";
 import Marketing from "./pages/Marketing";
 import ContactCastCrew from "./pages/ContactCastCrew";
 import PublicCastCrewForm from "./pages/PublicCastCrewForm";
@@ -125,6 +135,7 @@ import SynopsisTemplate from "./pages/agreements/SynopsisTemplate";
 import CastCrewBio from "./pages/agreements/CastCrewBio";
 import FestivalCoverLetter from "./pages/agreements/FestivalCoverLetter";
 import FestivalQA from "./pages/agreements/FestivalQA";
+import { ToolSeo } from "@/components/ToolSeo";
 
 
 export const AppRoutes = () => (
@@ -160,7 +171,17 @@ export const AppRoutes = () => (
       <Route path="/green-light-engine/:tier" element={<GleTier />} />
       <Route path="/academy/:courseSlug" element={<CoursePage />} />
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
-      <Route path="/launch" element={<Launch />} />
+      <Route path="/launch" element={<><ToolSeo path="/launch" /><Launch /></>} />
+      <Route path="/movie-in-a-box" element={<MovieInABox />} />
+      <Route path="/script-analysis" element={<><ToolSeo path="/script-analysis" /><ToolGate><ScriptAnalysis /></ToolGate></>} />
+      <Route path="/scene-analysis" element={<><ToolSeo path="/scene-analysis" /><ToolGate><SceneAnalysis /></ToolGate></>} />
+      <Route path="/storyboarding" element={<><ToolSeo path="/storyboarding" /><ToolGate><StoryboardingRoute /></ToolGate></>} />
+      <Route path="/call-sheet" element={<><ToolSeo path="/call-sheet" /><ToolGate><CallSheet /></ToolGate></>} />
+      <Route path="/pitch-deck" element={<><ToolSeo path="/pitch-deck" /><ToolGate><PitchDeckMaker /></ToolGate></>} />
+      <Route path="/contract-assistant" element={<><ToolSeo path="/contract-assistant" /><ToolGate><ContractAssistant /></ToolGate></>} />
+      <Route path="/funding-strategy" element={<><ToolSeo path="/funding-strategy" /><ToolGate><FundingStrategy /></ToolGate></>} />
+      <Route path="/distribution-readiness" element={<><ToolSeo path="/distribution-readiness" /><ToolGate><DistributionReadiness /></ToolGate></>} />
+      <Route path="/table-read" element={<><ToolSeo path="/table-read" /><ToolGate><TableRead /></ToolGate></>} />
       <Route path="/marketing" element={<Marketing />} />
       <Route path="/contact-cast-crew" element={<ToolGate><ContactCastCrew /></ToolGate>} />
       <Route path="/f/:slug" element={<PublicCastCrewForm />} />

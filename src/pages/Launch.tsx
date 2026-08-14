@@ -120,6 +120,15 @@ export default function Launch() {
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', sans-serif" }}>
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "72px 24px 80px" }}>
+        <h1 style={{ fontSize: 34, margin: "0 0 14px", fontWeight: 700 }}>Launch your film</h1>
+        <p style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.65, maxWidth: 760, margin: "0 0 32px" }}>
+          Launching an indie film comes down to two decisions: how you market it and where
+          it lives. Start with Marketing in a Box to build the trailer beats, poster,
+          synopsis and social kit that buyers and audiences expect, then run the Green
+          Light Engine to shortlist the platforms that actually license films at your
+          budget and genre. Do both before you submit anywhere — a film with a package
+          outperforms a film with only a link.
+        </p>
         <SuperstarDestroyerCard />
         <div style={{ marginTop: 16 }}>
           <GreenLightEngineCard />
@@ -127,4 +136,5 @@ export default function Launch() {
       </div>
     </div>
   );
+
 }

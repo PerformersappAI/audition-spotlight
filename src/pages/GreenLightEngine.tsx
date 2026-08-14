@@ -65,8 +65,8 @@ export default function GreenLightEngine() {
       }}
     >
       <Seo
-        title="Green Light Engine — Where to Place Your Indie Film"
-        description="Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services."
+        title="Where to Distribute Your Indie Film | Filmmaker Genius"
+        description="Match your indie film to the right home: Tier 1 streamers, curated platforms, low-barrier AVOD and FAST channels, and identity-driven niche services."
         canonical="https://filmmakergenius.com/green-light-engine"
         jsonLd={[
           academyJsonLd({
@@ -135,8 +135,11 @@ export default function GreenLightEngine() {
             lineHeight: 1.6,
           }}
         >
-          Pick a tier to see the platforms your film could reach — then we walk you
-          through exactly how to get there.
+          There is no single streaming buyer for an indie film — there are tiers, and
+          your budget, cast and genre decide which tier will even read your email. Pick
+          the tier that matches your film and we walk you through the realistic terms,
+          gatekeepers and steps to get there.
+
         </p>
         <AcademyByline style={{ margin: "-28px 0 32px", textAlign: "center", color: "rgba(255,255,255,0.4)" }} />
 

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import Seo from "@/components/Seo";
 import { toast } from "sonner";
 import horizontalAsset from "@/assets/recut-horizontal.webp.asset.json";
@@ -128,6 +129,7 @@ export default function Recut() {
         type="website"
       />
       <ToolTopBar />
+      <ToolLead path="/recut" />
 
       <main className="mx-auto px-6 py-14" style={{ maxWidth: 900, fontFamily: "'Inter Tight', sans-serif" }}>
         {/* Hero */}

@@ -197,8 +197,10 @@ export default function Academy() {
             fontWeight: 700, lineHeight: 1.05, margin: 0,
           }}>Academy</h1>
           <p style={{
-            marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.55)",
-          }}>Ebooks, distribution guides, and education modules for independent filmmakers</p>
+            marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)",
+            maxWidth: 760, margin: "16px auto 0", lineHeight: 1.65, textAlign: "left",
+          }}>Learning to make films independently means learning five jobs: writing, directing, producing, post and selling the finished film. The Academy teaches them in that order across 62 free courses — story structure and screenwriting, directing actors and coverage, budgeting and scheduling, editing and sound, then festival strategy, distribution and monetization. Start with the phase you are stuck in; every course is broken into short chapters with concrete takeaways.</p>
+
           <AcademyByline style={{ textAlign: "center" }} />
         </div>
 

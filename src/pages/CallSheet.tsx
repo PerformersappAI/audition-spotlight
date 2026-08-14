@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -633,6 +634,7 @@ const CallSheet = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
       <ToolTopBar />
+      <ToolLead path="/call-sheet" />
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="flex items-center justify-between mb-8">
           <div>

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -637,6 +638,7 @@ export default function DistributionReadiness() {
   return (
     <div className="min-h-screen bg-background">
       <ToolTopBar />
+      <ToolLead path="/distribution-readiness" />
       <div className="container mx-auto px-6 py-8 max-w-5xl">
         {/* Header */}
         <div className="mb-8">
