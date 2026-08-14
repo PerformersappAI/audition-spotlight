@@ -18,6 +18,7 @@ const staticRoutes = [
   "/launch",
   "/marketing",
   "/crew-hire",
+  "/contact-cast-crew",
   "/blog",
   "/privacy",
   "/terms",
