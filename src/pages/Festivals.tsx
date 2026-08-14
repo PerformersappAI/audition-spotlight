@@ -41,10 +41,10 @@ export default function Festivals() {
   const [festivals, setFestivals] = useState<Festival[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
-  const [tierFilter, setTierFilter] = useState("");
-  const [genreFilter, setGenreFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [tierFilter, setTierFilter] = useState("all");
+  const [genreFilter, setGenreFilter] = useState("all");
 
   useEffect(() => {
     fetchFestivals();
@@ -136,14 +136,14 @@ export default function Festivals() {
                          festival.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          festival.description.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesLocation = !locationFilter || festival.location.toLowerCase().includes(locationFilter.toLowerCase());
-    const matchesStatus = !statusFilter || 
+    const matchesLocation = locationFilter === "all" || festival.location.toLowerCase().includes(locationFilter.toLowerCase());
+    const matchesStatus = statusFilter === "all" || 
       (statusFilter === 'open' && isSubmissionOpen(festival.submission_deadline)) ||
       (statusFilter === 'upcoming' && isUpcoming(festival.start_date)) ||
       (statusFilter === 'early' && festival.early_deadline && isSubmissionOpen(festival.early_deadline));
     
-    const matchesTier = !tierFilter || festival.festival_tier === tierFilter;
-    const matchesGenre = !genreFilter || (festival.genres && festival.genres.includes(genreFilter));
+    const matchesTier = tierFilter === "all" || festival.festival_tier === tierFilter;
+    const matchesGenre = genreFilter === "all" || (festival.genres && festival.genres.includes(genreFilter));
 
     return matchesSearch && matchesLocation && matchesStatus && matchesTier && matchesGenre;
   });
@@ -309,7 +309,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Location" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Location</SelectItem>
+                  <SelectItem value="all">Any Location</SelectItem>
                   {getUniqueLocations().map(location => (
                     <SelectItem key={location} value={location}>{location}</SelectItem>
                   ))}
@@ -320,7 +320,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Tier" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Tier</SelectItem>
+                  <SelectItem value="all">Any Tier</SelectItem>
                   {getUniqueTiers().map(tier => (
                     <SelectItem key={tier} value={tier}>{tier}</SelectItem>
                   ))}
@@ -331,7 +331,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Genre" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Genre</SelectItem>
+                  <SelectItem value="all">Any Genre</SelectItem>
                   {getUniqueGenres().map(genre => (
                     <SelectItem key={genre} value={genre}>{genre}</SelectItem>
                   ))}
@@ -342,7 +342,7 @@ export default function Festivals() {
                   <SelectValue placeholder="Any Status" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">Any Status</SelectItem>
+                  <SelectItem value="all">Any Status</SelectItem>
                   <SelectItem value="open">Submissions Open</SelectItem>
                   <SelectItem value="early">Early Bird</SelectItem>
                   <SelectItem value="upcoming">Upcoming</SelectItem>
