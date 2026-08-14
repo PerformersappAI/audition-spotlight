@@ -193,7 +193,7 @@ const documentBundles = [
       { id: "69", title: "Composer Agreement", description: "Engage a composer to write original score", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/composer-agreement" },
       { id: "70", title: "Music Cue Sheet", description: "List every music cue with timing and rights holder", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/music-cue-sheet" },
       { id: "71", title: "Musician / Session Release", description: "Release for recording session musicians and vocalists", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/musician-session-release" },
-      { id: "72", title: "Materials / Artwork Release", description: "Clear artwork, photos, or archival materials used on screen", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "72", title: "Materials / Artwork Release", description: "Clear artwork, photos, or archival materials used on screen", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/materials-artwork-release" },
       { id: "73", title: "Product Placement Release", description: "Permission to feature a branded product or logo", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "74", title: "Clearance Log", description: "Track all clearance items and their status", category: "music_clearances", format: "PDF + Word", size: "Fillable", premium: true },
     ]
