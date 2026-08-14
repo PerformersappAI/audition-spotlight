@@ -73,14 +73,14 @@ export default function TableReadShared() {
             </CardContent>
           </Card>
         )}
-        {read && read.audio_url && (
+        {read && audioUrl && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white">{read.title}</CardTitle>
               <p className="text-sm text-gray-400">{read.character_count} characters · {read.line_count} lines</p>
             </CardHeader>
             <CardContent>
-              <audio controls src={read.audio_url} className="w-full" />
+              <audio controls src={audioUrl} className="w-full" />
               <p className="text-xs text-gray-500 mt-4">Made with Filmmaker Genius — Table Read.</p>
             </CardContent>
           </Card>
