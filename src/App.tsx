@@ -168,6 +168,8 @@ import PettyCashReconciliation from "./pages/agreements/PettyCashReconciliation"
 import ExpenseReport from "./pages/agreements/ExpenseReport";
 import MileageLog from "./pages/agreements/MileageLog";
 import CreditCardLog from "./pages/agreements/CreditCardLog";
+import InvoiceTemplate from "./pages/agreements/InvoiceTemplate";
+
 
 
 
@@ -335,6 +337,8 @@ const AppContent = () => (
           <Route path="/library/expense-report" element={<ToolGate><ExpenseReport /></ToolGate>} />
           <Route path="/library/mileage-log" element={<ToolGate><MileageLog /></ToolGate>} />
           <Route path="/library/credit-card-log" element={<ToolGate><CreditCardLog /></ToolGate>} />
+          <Route path="/library/invoice-template" element={<ToolGate><InvoiceTemplate /></ToolGate>} />
+
 
 
 
