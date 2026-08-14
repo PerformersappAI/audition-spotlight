@@ -372,26 +372,70 @@ export default function ContactCastCrew() {
                   Collected contacts{" "}
                   <span style={{ color: "rgba(255,255,255,0.3)", fontSize: 16, fontFamily: "inherit" }}>({contacts.length})</span>
                 </h2>
-                <button
-                  type="button"
-                  className="ccc-btn"
-                  onClick={exportCsv}
-                  disabled={contacts.length === 0}
-                  style={{
-                    height: 42,
-                    padding: "0 20px",
-                    borderRadius: 10,
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid #1e1e35",
-                    color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : "#fff",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: contacts.length === 0 ? "not-allowed" : "pointer",
-                    fontFamily: "inherit",
-                  }}
-                >
-                  Export CSV
-                </button>
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                  <button
+                    type="button"
+                    className="ccc-btn"
+                    onClick={downloadPdf}
+                    disabled={contacts.length === 0}
+                    style={{
+                      height: 42,
+                      padding: "0 20px",
+                      borderRadius: 10,
+                      background: TEAL,
+                      border: "none",
+                      color: "#000",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      opacity: contacts.length === 0 ? 0.4 : 1,
+                      cursor: contacts.length === 0 ? "not-allowed" : "pointer",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    Download PDF report
+                  </button>
+                  <button
+                    type="button"
+                    className="ccc-btn"
+                    onClick={emailPdf}
+                    disabled={contacts.length === 0 || emailing}
+                    style={{
+                      height: 42,
+                      padding: "0 20px",
+                      borderRadius: 10,
+                      background: "rgba(0,212,170,0.12)",
+                      border: "1px solid rgba(0,212,170,0.35)",
+                      color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : TEAL,
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: contacts.length === 0 ? "not-allowed" : emailing ? "wait" : "pointer",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    {emailing ? "Sending…" : "Email me the report"}
+                  </button>
+                  <button
+                    type="button"
+                    className="ccc-btn"
+                    onClick={exportCsv}
+                    disabled={contacts.length === 0}
+                    style={{
+                      height: 42,
+                      padding: "0 20px",
+                      borderRadius: 10,
+                      background: "rgba(255,255,255,0.06)",
+                      border: "1px solid #1e1e35",
+                      color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : "#fff",
+                      fontWeight: 700,
+                      fontSize: 13,
+                      cursor: contacts.length === 0 ? "not-allowed" : "pointer",
+                      fontFamily: "inherit",
+                    }}
+                  >
+                    Export CSV
+                  </button>
+                </div>
+
               </div>
 
               {contacts.length === 0 ? (
