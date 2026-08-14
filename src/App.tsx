@@ -157,6 +157,8 @@ import CrewTimecard from "./pages/agreements/CrewTimecard";
 import CameraReport from "./pages/agreements/CameraReport";
 import SoundReport from "./pages/agreements/SoundReport";
 import ContinuityReport from "./pages/agreements/ContinuityReport";
+import BackgroundVoucher from "./pages/agreements/BackgroundVoucher";
+
 
 
 
@@ -308,6 +310,8 @@ const AppContent = () => (
           <Route path="/library/camera-report" element={<ToolGate><CameraReport /></ToolGate>} />
           <Route path="/library/sound-report" element={<ToolGate><SoundReport /></ToolGate>} />
           <Route path="/library/continuity-report" element={<ToolGate><ContinuityReport /></ToolGate>} />
+          <Route path="/library/background-voucher" element={<ToolGate><BackgroundVoucher /></ToolGate>} />
+
 
 
 
