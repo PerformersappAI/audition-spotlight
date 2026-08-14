@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Headphones, Upload, Users, Wand2, Play, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
@@ -76,6 +77,7 @@ export default function TableRead() {
   return (
     <div className="min-h-screen bg-gray-950">
       <ToolTopBar />
+      <ToolLead path="/table-read" />
       <div className="border-b border-gray-800 bg-gray-900/50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center gap-4">

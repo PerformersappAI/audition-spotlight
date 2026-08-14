@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -550,6 +551,7 @@ const ScriptAnalysis = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <ToolTopBar />
+      <ToolLead path="/script-analysis" />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-7xl mx-auto relative">
 

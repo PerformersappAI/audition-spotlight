@@ -5,12 +5,12 @@ var _a, _b;
 import { jsx, jsxs, Fragment } from "react/jsx-runtime";
 import { renderToString } from "react-dom/server";
 import * as React from "react";
-import React__default, { Component, createContext, useState, useEffect, useContext, useMemo, useCallback, useRef, Fragment as Fragment$1 } from "react";
+import React__default, { Component, createContext, useState, useEffect, useContext, useMemo, useRef, useCallback, Fragment as Fragment$1 } from "react";
 import { UNSAFE_invariant, UNSAFE_getResolveToMatches, UNSAFE_warning, resolveTo, joinPaths, Action, parsePath, stripBasename, matchRoutes, isRouteErrorResponse, createPath, matchPath } from "@remix-run/router";
 import fastCompare from "react-fast-compare";
 import invariant from "invariant";
 import shallowEqual from "shallowequal";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useQuery, QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, Search, FileText, Download, Calendar, UserCheck, ClipboardList, Calculator, Music, Film, Truck, Megaphone, AlertTriangle, Sparkles, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, User, FileImage, Link2, Clapperboard, FilePlus2, ChevronLeft, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, Search, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -27,10 +27,22 @@ import * as SeparatorPrimitive from "@radix-ui/react-separator";
 import * as SwitchPrimitives from "@radix-ui/react-switch";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import * as ProgressPrimitive from "@radix-ui/react-progress";
 import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
+import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
 import * as CheckboxPrimitive from "@radix-ui/react-checkbox";
+import { formatDistanceToNow } from "date-fns";
+import * as SliderPrimitive from "@radix-ui/react-slider";
+import GIF from "gif.js";
+import autoTable from "jspdf-autotable";
+import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
+import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
+import DOMPurify from "dompurify";
+import lamejs from "@breezystack/lamejs";
 /**
  * React Router v6.30.1
  *
@@ -2590,6 +2602,9 @@ DropdownMenuSeparator.displayName = DropdownMenuPrimitive.Separator.displayName;
 const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
 const SITE_NAME = "Filmmaker Genius";
 const BRAND_SUFFIXES = [
+  " | Filmmaking by Will Roberts",
+  " — Filmmaking by Will Roberts",
+  " | Filmmaker Genius Academy",
   " | Filmmaker Genius",
   " — Filmmaker Genius Academy",
   " — Filmmaker Genius"
@@ -2598,12 +2613,25 @@ const TITLE_MAX = 60;
 const DESC_MAX = 160;
 const DESC_SOFT = 148;
 function normalizeTitle(raw2) {
-  const t = (raw2 || "").trim();
+  let t = (raw2 || "").trim();
   if (!t || t.length <= TITLE_MAX) return t;
   for (const suffix of BRAND_SUFFIXES) {
     if (t.endsWith(suffix)) {
       const stripped = t.slice(0, -suffix.length).trim().replace(/[—\-|]\s*$/, "").trim();
-      if (stripped.length > 0) return stripped;
+      if (stripped.length > 0) {
+        t = stripped;
+        break;
+      }
+    }
+  }
+  if (t.length > TITLE_MAX) {
+    const pipe = t.lastIndexOf(" | ");
+    if (pipe >= 24) t = t.slice(0, pipe).trim();
+  }
+  if (t.length > TITLE_MAX) {
+    for (const sep of [": ", " — ", " - "]) {
+      const i = t.indexOf(sep);
+      if (i >= 24 && i <= TITLE_MAX) return t.slice(0, i).trim();
     }
   }
   return t;
@@ -2943,9 +2971,9 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$c = "#00d4aa";
+const TEAL$d = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
-const VIOLET$1 = "#a855f7";
+const VIOLET$2 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
 const GlobalLayout = ({ children }) => {
   var _a2, _b2, _c, _d;
@@ -3023,7 +3051,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$c}, ${VIOLET$1})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$d}, ${VIOLET$2})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -3053,9 +3081,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/crew-hire",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-white transition-colors",
-                    style: { backgroundColor: VIOLET$1 },
+                    style: { backgroundColor: VIOLET$2 },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = VIOLET_HOVER,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = VIOLET$1,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = VIOLET$2,
                     children: "Crew Jobs"
                   }
                 ),
@@ -3067,9 +3095,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$c },
+                    style: { backgroundColor: TEAL$d },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$c,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$d,
                     children: "Get Started"
                   }
                 )
@@ -3196,7 +3224,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/crew-hire",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-white text-center",
-                      style: { backgroundColor: VIOLET$1 },
+                      style: { backgroundColor: VIOLET$2 },
                       children: "Crew Jobs"
                     }
                   ),
@@ -3215,7 +3243,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$c },
+                      style: { backgroundColor: TEAL$d },
                       children: "Get Started"
                     }
                   )
@@ -3345,12 +3373,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$b = "#00d4aa";
+const TEAL$c = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$b, borderColor: `${TEAL$b}66` },
+    style: { color: TEAL$c, borderColor: `${TEAL$c}66` },
     children: label
   }
 );
@@ -3366,7 +3394,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$b,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$c,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3529,7 +3557,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$a = "#00d4aa";
+const TEAL$b = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3633,7 +3661,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$a, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$b, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3649,7 +3677,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$a : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$b : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3728,7 +3756,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$b }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3736,9 +3764,9 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$9 = "#00d4aa";
+const TEAL$a = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
-const inputStyle = {
+const inputStyle$1 = {
   width: "100%",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid #1e1e35",
@@ -3759,7 +3787,7 @@ const labelStyle$2 = {
   textTransform: "uppercase",
   marginBottom: 8
 };
-function Field$1({ label, children }) {
+function Field$4({ label, children }) {
   return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 18 }, children: [
     /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: label }),
     children
@@ -3835,7 +3863,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3868,13 +3896,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$9 }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$a }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$9,
+        background: TEAL$a,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3887,7 +3915,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3919,20 +3947,20 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "First Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$1, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "Last Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$1, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field$1, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
-      /* @__PURE__ */ jsx(Field$1, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
-      /* @__PURE__ */ jsx(Field$1, { label: "Message", children: /* @__PURE__ */ jsx(
+      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$1, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$1, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Message", children: /* @__PURE__ */ jsx(
         "textarea",
         {
           className: "contact-input",
-          style: { ...inputStyle, minHeight: 130, resize: "vertical" },
+          style: { ...inputStyle$1, minHeight: 130, resize: "vertical" },
           value: message,
           onChange: (e) => setMessage(e.target.value),
           placeholder: "Tell us more about your inquiry..."
@@ -3947,7 +3975,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$9,
+            background: TEAL$a,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3963,7 +3991,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$8 = "#00d4aa";
+const TEAL$9 = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -4057,7 +4085,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$8,
+        color: TEAL$9,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -4096,7 +4124,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$8 : "#fff",
+                color: isOpen ? TEAL$9 : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -4117,7 +4145,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$8 : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$9 : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4146,7 +4174,7 @@ function FAQ() {
     ] })
   ] });
 }
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const SECTIONS$4 = [
   {
     h: "The short version",
@@ -4230,7 +4258,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$7,
+            color: TEAL$8,
             marginBottom: 14
           },
           children: "Legal"
@@ -4335,7 +4363,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$7, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$8, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4348,7 +4376,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$6 = "#00d4aa";
+const TEAL$7 = "#00d4aa";
 const SECTIONS$3 = [
   {
     h: "You own your work",
@@ -4432,7 +4460,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$6,
+            color: TEAL$7,
             marginBottom: 14
           },
           children: "Legal"
@@ -4537,7 +4565,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$6, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$7, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4688,8 +4716,8 @@ function Toolbox() {
     /* @__PURE__ */ jsx(
       Seo,
       {
-        title: "Toolbox — Every Indie Film Tool in One Place | Filmmaker Genius",
-        description: "The Filmmaker Genius Toolbox: script analysis, storyboards, pitch decks, call sheets, casting, breakdowns, and distribution tools — grouped by production phase.",
+        title: "Indie Film Production Tools | Filmmaker Genius",
+        description: "Every indie film tool in one place: script analysis, storyboards, shot lists, call sheets, pitch decks, funding briefs and distribution prep, grouped by phase.",
         canonical: "https://filmmakergenius.com/toolbox"
       }
     ),
@@ -4718,9 +4746,13 @@ function Toolbox() {
         }, children: "Filmmaker Tools" }),
         /* @__PURE__ */ jsx("p", { style: {
           marginTop: 16,
-          fontSize: 17,
-          color: "rgba(255,255,255,0.55)"
-        }, children: "AI-powered tools for every stage of your production" })
+          fontSize: 16,
+          color: "rgba(255,255,255,0.6)",
+          maxWidth: 720,
+          margin: "16px auto 0",
+          lineHeight: 1.65,
+          textAlign: "left"
+        }, children: "Every indie film needs the same handful of documents: a script breakdown, a shot list, a call sheet, a pitch deck, a funding brief and a deliverables checklist. These tools generate all of them from your own script and project details, so you skip the blank page. Pick the phase you are in — pre-production, production, post, release or distribution — and open the tool that matches today's problem." })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 40, justifyContent: "center" }, children: TABS$1.map((tab) => {
         const isActive = tab === active;
@@ -4810,6 +4842,107 @@ function ToolTopBar() {
     }
   );
 }
+const toolSeo = {
+  "/toolbox": {
+    title: "Indie Film Production Tools | Filmmaker Genius",
+    description: "Every indie film tool in one place: script analysis, storyboards, shot lists, call sheets, pitch decks, funding briefs and distribution prep, grouped by phase.",
+    lead: "Every indie film needs the same handful of documents: a script breakdown, a shot list, a call sheet, a pitch deck, a funding brief and a deliverables checklist. The Toolbox generates all of them from your own script and project details, so you skip the blank page. Pick the phase you are in below — pre-production, production, post, release or distribution — and open the tool that matches today's problem."
+  },
+  "/launch": {
+    title: "Film Marketing & Distribution Launch | Filmmaker Genius",
+    description: "Launch your finished film: build a marketing campaign in a box, then match the film to the streaming, festival and AVOD homes most likely to license it.",
+    lead: "Launching an indie film comes down to two decisions: how you market it and where it lives. Start with Marketing in a Box to build the trailer beats, poster, synopsis and social kit buyers and audiences expect, then run the Green Light Engine to shortlist the platforms that actually license films at your budget and genre. Do both before you submit anywhere — a film with a package outperforms a film with only a link."
+  },
+  "/movie-in-a-box": {
+    title: "Story Structure Templates for Screenwriters | Filmmaker Genius",
+    description: "Pick a proven story structure — three-act, Save the Cat, Hero's Journey, sequence method — and build your film beat by beat with prompts for every beat.",
+    lead: "The fastest way to outline a film is to start from a structure that already works, then fill in its beats with your story. Choose a template below — three-act, Save the Cat, the Hero's Journey or the sequence method — and Movie in a Box walks you beat by beat, explaining what each beat has to accomplish before you write it. You end with an outline you can take straight into a first draft."
+  },
+  "/green-light-engine": {
+    title: "Where to Distribute Your Indie Film | Filmmaker Genius",
+    description: "Match your indie film to the right home: Tier 1 streamers, curated platforms, low-barrier AVOD and FAST channels, and identity-driven niche services.",
+    lead: "There is no single streaming buyer for an indie film — there are tiers, and your budget, cast and genre decide which tier will even read your email. The Green Light Engine sorts platforms into Tier 1 majors, curated mid-tier services, low-barrier AVOD/FAST channels and niche identity-driven audiences, with the realistic terms and expectations for each. Start at the tier that matches your film, not the one that matches your ambition."
+  },
+  "/recut": {
+    title: "Turn Your Film Into Vertical Shorts | Filmmaker Genius",
+    description: "Recut reframes your finished feature or short into native 9:16 vertical episodes, so a film that already played can find a second, mobile-first audience.",
+    lead: "A finished film that has already toured festivals can earn a second audience as vertical shorts. Recut takes your existing cut, reframes it to native 9:16 and breaks it into short episodic chapters with hooks in the first three seconds. You approve every cut before publishing, so the vertical version still looks like your film."
+  },
+  "/crew-hire": {
+    title: "Hire Film Crew & Find Paid Crew Work | Filmmaker Genius",
+    description: "Post a paid crew call or find work on indie productions — camera, sound, grip, electric, art, and production roles, with rates and dates stated up front.",
+    lead: "Hiring crew for an indie shoot works best when the post states role, dates, rate and location up front — vague calls get vague applicants. Post a crew call here and it goes out to camera, sound, grip, electric, art and production people looking for paid indie work. If you are crew, browse open calls and apply directly to the production."
+  },
+  "/marketing": {
+    title: "Film Marketing in a Box: Trailer, Poster, Kit | Filmmaker Genius",
+    description: "Build the marketing package every indie film needs: trailer beats, poster and key art, one-line and long synopsis, press notes, and a social launch kit.",
+    lead: "Marketing an indie film means assembling one package and reusing it everywhere: a trailer cut to three beats, key art that reads at thumbnail size, a one-line and a paragraph synopsis, press notes with your bio and credits, and a social kit of stills and clips. Build that package before your first festival submission or platform pitch, because programmers and buyers judge the package first. Everything below produces those assets from your film's own material."
+  },
+  "/script-analysis": {
+    title: "AI Script Analysis & Coverage Report | Filmmaker Genius",
+    description: "Upload a screenplay and get structural coverage: act breaks, character arcs, emotional beats, pacing problems, and notes in a named director's style.",
+    lead: "Script coverage answers one question: does the story work on the page before you spend money shooting it. Paste or upload your screenplay and this tool maps act breaks, character arcs, emotional beats and pacing dips, then flags the scenes that stall. You can also request the notes in the sensibility of a specific director to pressure-test tone."
+  },
+  "/scene-analysis": {
+    title: "Scene Breakdown & Shot List Generator | Filmmaker Genius",
+    description: "Paste one scene and get a working shot list: coverage plan, camera angles, character beats, and per-shot durations you can hand to your crew on the day.",
+    lead: "A shot list is built scene by scene: read the scene for its dramatic turn, decide the coverage that reveals that turn, then order the shots for the day. Paste a single scene here and you get a numbered shot list with angles, characters in frame, key visual elements and estimated durations. Edit any shot, then export the list as a PDF your AD and DP can shoot from."
+  },
+  "/storyboarding": {
+    title: "AI Storyboard Generator for Filmmakers | Filmmaker Genius",
+    description: "Turn a scene into a storyboard: automatic shot breakdown, consistent character and style references, frame-by-frame images, and PDF or animatic export.",
+    lead: "Storyboarding starts with a shot breakdown, not with drawing — decide the shots, then visualize them. This tool splits your scene into shots, holds your characters and art style consistent across every frame, and generates each panel so the boards read as one film. Export the finished boards as a PDF or play them back as a timed animatic."
+  },
+  "/call-sheet": {
+    title: "How to Make a Film Call Sheet | Filmmaker Genius",
+    description: "A call sheet lists date, crew call, shooting call, scenes, cast times, locations, weather and hospital. Build one here, or upload last one to auto-fill.",
+    lead: "A call sheet is the one-page contract for a shoot day: production and date, general crew call and shooting call, the scenes and pages to be shot, per-person cast and crew times, locations with parking, meal breaks, weather, and the nearest hospital. Fill in the fields below and export a professional PDF, or upload an existing call sheet and let the parser pre-fill it for you. Send it the night before, and put the day's advance schedule at the bottom."
+  },
+  "/pitch-deck": {
+    title: "How to Make a Film Pitch Deck | Filmmaker Genius",
+    description: "A film pitch deck needs logline, synopsis, tone, characters, visual style, comparables, market and team. Build all eight sections and export a PDF deck.",
+    lead: "A film pitch deck is eight things in order: title and logline, synopsis, director's vision and tone, key characters, visual style, comparable titles with their results, the market and audience, and the team. This builder walks each section, drafts the copy from your logline, and generates poster and mood imagery so the deck looks financed before it is. Export as a PDF you can attach to an investor or sales agent email."
+  },
+  "/contract-assistant": {
+    title: "SAG-AFTRA Low Budget Agreement Guide | Filmmaker Genius",
+    description: "Find which SAG-AFTRA agreement fits your film — Short Project, Ultra Low, Modified Low, Low Budget — with rate tiers, thresholds and paperwork explained.",
+    lead: "SAG-AFTRA sorts indie films into budget tiers, and your budget and runtime decide which agreement you can sign: Short Project, Student, Ultra Low Budget, Modified Low Budget or Low Budget, each with its own day rate, cast requirements and paperwork. Enter your budget, runtime, cast size and locations and this assistant explains the tier you fall into and what signing it obliges you to do. It is educational guidance only — confirm terms with SAG-AFTRA and a production attorney before you sign."
+  },
+  "/funding-strategy": {
+    title: "How to Fund a Short or Indie Film | Filmmaker Genius",
+    description: "Build a funding plan from real sources: equity, grants, tax incentives, crowdfunding, brand tie-ins and pre-sales — then export an investor-ready brief.",
+    lead: "Indie films are almost never funded from one source: a realistic plan stacks equity from private investors, soft money from grants and regional tax incentives, crowdfunding, in-kind support and, where possible, pre-sales. Answer the questions below about budget, genre, territory and attachments and this tool assembles the stack that fits your project, with the ask and use-of-funds spelled out. Export it as a funding brief you can send to investors or attach to a grant application."
+  },
+  "/distribution-readiness": {
+    title: "Film Deliverables & Distribution Checklist | Filmmaker Genius",
+    description: "Check whether your film is deliverable-ready: masters, closed captions, M&E stems, E&O insurance, chain of title, artwork and platform-specific specs.",
+    lead: "A distributor cannot release a film without its deliverables: a spec-compliant master, closed captions and subtitles, M&E and stems, chain of title, E&O insurance, artwork and metadata. This ten-step assessment walks each requirement, scores your readiness and hard-stops on the items that will block a release outright. Export the report as a PDF checklist for your post supervisor and sales agent."
+  },
+  "/table-read": {
+    title: "AI Table Read for Your Screenplay | Filmmaker Genius",
+    description: "Hear your script performed: upload a screenplay, cast a distinct voice per character, and generate a scene-by-scene table read you can share as audio.",
+    lead: "A table read exists to catch what silent reading hides — unsayable lines, scenes that run long, characters who all sound the same. Upload your screenplay, assign a distinct voice to each character, and this tool performs the script scene by scene as sharable audio. Listen for the places you skip ahead; those are the cuts."
+  }
+};
+const SITE = "https://filmmakergenius.com";
+function ToolSeo({ path }) {
+  const entry = toolSeo[path];
+  if (!entry) return null;
+  return /* @__PURE__ */ jsx(
+    Seo,
+    {
+      title: entry.title,
+      description: entry.description,
+      canonical: `${SITE}${path}`,
+      type: "website"
+    }
+  );
+}
+function ToolLead({ path }) {
+  const entry = toolSeo[path];
+  if (!entry) return null;
+  return /* @__PURE__ */ jsx("div", { className: "mx-auto w-full max-w-3xl px-6 pt-6", children: /* @__PURE__ */ jsx("p", { className: "text-sm leading-relaxed text-muted-foreground", children: entry.lead }) });
+}
 const version$1 = 1;
 const asset_id$1 = "2bd2ea98-aa51-4963-8169-cf64cf447f96";
 const project_id$1 = "2327b42e-2823-4633-a594-07a097a36c30";
@@ -4850,7 +4983,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$5 = "#00d4aa";
+const TEAL$6 = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -4920,7 +5053,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$5 },
+        style: { color: TEAL$6 },
         children: "AI Recut"
       }
     ),
@@ -4928,7 +5061,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$5,
+        stroke: TEAL$6,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -4946,8 +5079,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$5}`,
-          color: TEAL$5,
+          border: `1px solid ${TEAL$6}`,
+          color: TEAL$6,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -4979,13 +5112,14 @@ function Recut() {
       }
     ),
     /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/recut" }),
     /* @__PURE__ */ jsxs("main", { className: "mx-auto px-6 py-14", style: { maxWidth: 900, fontFamily: "'Inter Tight', sans-serif" }, children: [
       /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
         /* @__PURE__ */ jsx(
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$5, color: "#0a0a12" },
+            style: { background: TEAL$6, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -5053,7 +5187,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$5}`,
+              border: `2px dashed ${TEAL$6}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -5071,7 +5205,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$5, color: "#0a0a12" },
+                  style: { background: TEAL$6, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -5086,7 +5220,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$5 },
+              style: { color: TEAL$6 },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -5396,7 +5530,7 @@ const createEmptyRole = () => ({
   gear_required: "",
   union_required: false
 });
-const initialFormData = {
+const initialFormData$1 = {
   project_title: "",
   project_type: "",
   production_company: "",
@@ -5461,7 +5595,7 @@ const departments = [
   "Other"
 ];
 function CrewHire() {
-  const [formData, setFormData] = useState(initialFormData);
+  const [formData, setFormData] = useState(initialFormData$1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast: toast2 } = useToast();
   const updateFormData = (field, value) => {
@@ -5533,7 +5667,7 @@ function CrewHire() {
         description: "Your crew call has been submitted successfully."
       });
       setIsSubmitting(false);
-      setFormData(initialFormData);
+      setFormData(initialFormData$1);
     }, 1e3);
   };
   return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
@@ -5547,6 +5681,7 @@ function CrewHire() {
       }
     ),
     /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/crew-hire" }),
     /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-6 py-8 max-w-4xl", children: [
       /* @__PURE__ */ jsxs("div", { className: "text-center mb-8", children: [
         /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3 mb-4", children: [
@@ -6138,8 +6273,8 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
     ] }, t.name)) })
   ] })
 ] });
-const TEAL$4 = "#00d4aa";
-const VIOLET = "#a855f7";
+const TEAL$5 = "#00d4aa";
+const VIOLET$1 = "#a855f7";
 function AddCreditsCard({ className = "", showMembershipLink = true }) {
   const [buying, setBuying] = useState(false);
   const handleBuy = async () => {
@@ -6163,7 +6298,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       "div",
       {
         className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-        style: { background: `linear-gradient(135deg, ${TEAL$4}, ${VIOLET})` },
+        style: { background: `linear-gradient(135deg, ${TEAL$5}, ${VIOLET$1})` },
         children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
       }
     ),
@@ -6176,7 +6311,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         onClick: handleBuy,
         disabled: buying,
         className: "text-black font-semibold",
-        style: { backgroundColor: TEAL$4 },
+        style: { backgroundColor: TEAL$5 },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
           "Buy More Credits — $10 for 30 Credits"
@@ -7078,9 +7213,13 @@ function Academy() {
         }, children: "Academy" }),
         /* @__PURE__ */ jsx("p", { style: {
           marginTop: 16,
-          fontSize: 17,
-          color: "rgba(255,255,255,0.55)"
-        }, children: "Ebooks, distribution guides, and education modules for independent filmmakers" }),
+          fontSize: 16,
+          color: "rgba(255,255,255,0.6)",
+          maxWidth: 760,
+          margin: "16px auto 0",
+          lineHeight: 1.65,
+          textAlign: "left"
+        }, children: "Learning to make films independently means learning five jobs: writing, directing, producing, post and selling the finished film. The Academy teaches them in that order across 62 free courses — story structure and screenwriting, directing actors and coverage, budgeting and scheduling, editing and sound, then festival strategy, distribution and monetization. Start with the phase you are stuck in; every course is broken into short chapters with concrete takeaways." }),
         /* @__PURE__ */ jsx(AcademyByline, { style: { textAlign: "center" } })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 40, justifyContent: "center" }, children: TABS.map((tab) => {
@@ -7406,7 +7545,7 @@ function EducationModules() {
     ] })
   ] });
 }
-const TEAL$3 = "#00d4aa";
+const TEAL$4 = "#00d4aa";
 const BG = "#0a0a12";
 const SURFACE = "#12121f";
 const SURFACE2 = "#16162a";
@@ -7450,7 +7589,7 @@ function ChapterCard({ ch }) {
     position: "relative",
     transition: "all 0.2s"
   }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$3, opacity: 0.8 }, children: ch.stage }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$4, opacity: 0.8 }, children: ch.stage }),
     /* @__PURE__ */ jsxs("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: [
       "Chapter ",
       ch.n
@@ -7492,7 +7631,7 @@ function RobertsFilmmaking() {
     ),
     /* @__PURE__ */ jsx("style", { children: `
         .rf-card:hover { border-color: rgba(0,212,170,0.4) !important; background: ${SURFACE2} !important; transform: translateY(-2px); }
-        .rf-card:hover .rf-arrow { color: ${TEAL$3} !important; }
+        .rf-card:hover .rf-arrow { color: ${TEAL$4} !important; }
         .rf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .rf-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 980px) { .rf-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -7513,13 +7652,13 @@ function RobertsFilmmaking() {
         filter: "blur(90px)",
         opacity: 0.16,
         pointerEvents: "none",
-        background: `radial-gradient(ellipse at center, ${TEAL$3} 0%, transparent 70%)`
+        background: `radial-gradient(ellipse at center, ${TEAL$4} 0%, transparent 70%)`
       } }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative", maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$3, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$4, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
         /* @__PURE__ */ jsxs("h1", { style: { fontFamily: "'Fraunces', serif", fontSize: "clamp(40px,7vw,64px)", lineHeight: 1.04, margin: 0, maxWidth: 760, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }, children: [
           "Filmmaking by ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$3 }, children: "Will Roberts" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$4 }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
         /* @__PURE__ */ jsx(AcademyByline, {}),
@@ -7528,9 +7667,9 @@ function RobertsFilmmaking() {
             width: 38,
             height: 38,
             borderRadius: "50%",
-            border: `2px solid ${TEAL$3}`,
+            border: `2px solid ${TEAL$4}`,
             background: "rgba(0,212,170,0.12)",
-            color: TEAL$3,
+            color: TEAL$4,
             fontSize: 13,
             fontWeight: 700,
             display: "flex",
@@ -7551,19 +7690,19 @@ function RobertsFilmmaking() {
         fontSize: 21,
         color: "rgba(255,255,255,0.78)",
         lineHeight: 1.6,
-        borderLeft: `3px solid ${TEAL$3}`,
+        borderLeft: `3px solid ${TEAL$4}`,
         paddingLeft: 24,
         margin: 0
       }, children: `"I've spent thirty-five years and sixty-plus credits learning how this is really done. This is everything I'd tell you if we sat down together — from the spark of an idea to the day strangers finally watch your film."` }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 20, fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75 }, children: "This free guide walks through every stage of making an independent film: development, producing, budgeting, crew, pre-production, directing, working with actors, cinematography, the shoot, post-production, festivals, distribution, streaming, marketing, and building a lasting career. Practical, specific, no fluff. Read it in order, or jump to the chapter you need right now." })
     ] }),
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "56px 24px 80px" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$3, marginBottom: 8 }, children: "The Complete Guide" }),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$4, marginBottom: 8 }, children: "The Complete Guide" }),
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 36px", fontWeight: 700 }, children: "All 17 Chapters" }),
       /* @__PURE__ */ jsx("div", { className: "rf-grid", children: CHAPTERS.map((ch) => /* @__PURE__ */ jsx(ChapterCard, { ch }, ch.n)) })
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "32px 24px" }, children: /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 56, justifyContent: "center" }, children: STATS.map((s) => /* @__PURE__ */ jsxs("div", { style: { textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$3 }, children: s.num }),
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$4 }, children: s.num }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: s.label })
     ] }, s.label)) }) }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "64px 24px" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 760, margin: "0 auto", display: "flex", gap: 48, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7581,19 +7720,19 @@ function RobertsFilmmaking() {
         textAlign: "center",
         border: `1px solid ${BORDER}`
       }, children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$3 } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$4 } }),
         /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.15 }, children: [
           "The Indie Filmmaker's ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$3 }, children: "Complete Guide" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$4 }, children: "Complete Guide" })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$3, margin: "10px auto" } }),
+        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$4, margin: "10px auto" } }),
         /* @__PURE__ */ jsx("div", { style: { fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.6)" }, children: "By Will Roberts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 240 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$3, marginBottom: 12 }, children: "Free Download" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$4, marginBottom: 12 }, children: "Free Download" }),
         /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 16px", fontWeight: 700 }, children: [
           "Take the whole guide with you — ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$3 }, children: "free PDF" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$4 }, children: "free PDF" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 28px" }, children: "All 17 chapters in a single PDF — every stage of making an independent film, from the first idea to distribution, distilled and ready to reference. No sign-up." }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7601,7 +7740,7 @@ function RobertsFilmmaking() {
             height: 50,
             padding: "0 28px",
             borderRadius: 9999,
-            background: TEAL$3,
+            background: TEAL$4,
             color: "#000",
             fontWeight: 700,
             display: "inline-flex",
@@ -7615,7 +7754,7 @@ function RobertsFilmmaking() {
     /* @__PURE__ */ jsxs("section", { style: { padding: "64px 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 30, margin: 0, fontWeight: 700 }, children: [
         "Stop reading about it. ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$3 }, children: "Start making it." })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$4 }, children: "Start making it." })
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
@@ -7623,7 +7762,7 @@ function RobertsFilmmaking() {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
-          background: TEAL$3,
+          background: TEAL$4,
           color: "#000",
           fontWeight: 700,
           display: "inline-flex",
@@ -10461,8 +10600,8 @@ function GreenLightEngine() {
         /* @__PURE__ */ jsx(
           Seo,
           {
-            title: "Green Light Engine — Where to Place Your Indie Film",
-            description: "Match your indie film to the right streaming home: Tier 1 majors, curated platforms, low-barrier AVOD/FAST, and identity-driven niche services.",
+            title: "Where to Distribute Your Indie Film | Filmmaker Genius",
+            description: "Match your indie film to the right home: Tier 1 streamers, curated platforms, low-barrier AVOD and FAST channels, and identity-driven niche services.",
             canonical: "https://filmmakergenius.com/green-light-engine",
             jsonLd: [
               academyJsonLd({
@@ -10534,7 +10673,7 @@ function GreenLightEngine() {
                     margin: "0 auto 40px",
                     lineHeight: 1.6
                   },
-                  children: "Pick a tier to see the platforms your film could reach — then we walk you through exactly how to get there."
+                  children: "There is no single streaming buyer for an indie film — there are tiers, and your budget, cast and genre decide which tier will even read your email. Pick the tier that matches your film and we walk you through the realistic terms, gatekeepers and steps to get there."
                 }
               ),
               /* @__PURE__ */ jsx(AcademyByline, { style: { margin: "-28px 0 32px", textAlign: "center", color: "rgba(255,255,255,0.4)" } }),
@@ -12869,15 +13008,16373 @@ function Launch() {
     window.scrollTo(0, 0);
   }, []);
   return /* @__PURE__ */ jsx("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', sans-serif" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "72px 24px 80px" }, children: [
+    /* @__PURE__ */ jsx("h1", { style: { fontSize: 34, margin: "0 0 14px", fontWeight: 700 }, children: "Launch your film" }),
+    /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.65, maxWidth: 760, margin: "0 0 32px" }, children: "Launching an indie film comes down to two decisions: how you market it and where it lives. Start with Marketing in a Box to build the trailer beats, poster, synopsis and social kit that buyers and audiences expect, then run the Green Light Engine to shortlist the platforms that actually license films at your budget and genre. Do both before you submit anywhere — a film with a package outperforms a film with only a link." }),
     /* @__PURE__ */ jsx(SuperstarDestroyerCard, {}),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 16 }, children: /* @__PURE__ */ jsx(GreenLightEngineCard, {}) })
   ] }) });
+}
+const GOLD = "#d4a017";
+const VIOLET = "#a855f7";
+const ROSE = "#fb7185";
+const TEAL$3 = "#2bd1c0";
+const cards = [
+  {
+    key: "three-act",
+    to: "/movie-in-a-box/three-act/structure",
+    title: "Three-Act",
+    count: "3 acts",
+    description: "Beginning, middle, end — in a 1 / 2 / 1 rhythm. The foundation under everything. Simple and flexible.",
+    bestFor: "Best for almost anything",
+    accent: VIOLET,
+    diagram: ThreeActDiagram
+  },
+  {
+    key: "save-the-cat",
+    to: "/movie-in-a-box/save-the-cat/structure",
+    title: "Save the Cat",
+    count: "15 beats",
+    description: "Turn-by-turn directions. Fifteen clear beats, each with a job. The most guidance of any structure.",
+    bestFor: "Best for your first film",
+    accent: GOLD,
+    diagram: SaveTheCatDiagram
+  },
+  {
+    key: "heros-journey",
+    to: "/movie-in-a-box/heros-journey/structure",
+    title: "Hero's Journey",
+    count: "12 stages",
+    description: "The classic myth: an ordinary hero is called to adventure, faces an ordeal, and returns transformed.",
+    bestFor: "Best for epic & transformation",
+    accent: ROSE,
+    diagram: HerosJourneyDiagram
+  },
+  {
+    key: "story-circle",
+    to: "/movie-in-a-box/story-circle/structure",
+    title: "Story Circle",
+    count: "8 steps",
+    description: "Eight plain words — you, need, go, search, find, take, return, change. The quickest way to a complete story.",
+    bestFor: "Best for character-driven stories",
+    accent: TEAL$3,
+    diagram: StoryCircleDiagram
+  }
+];
+function isSaveTheCat(accent) {
+  return accent.toLowerCase() === GOLD.toLowerCase();
+}
+function MovieInABox() {
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Story Structure Templates for Screenwriters | Filmmaker Genius",
+        description: "Pick a proven story structure — three-act, Save the Cat, Hero's Journey or the sequence method — and build your film beat by beat with prompts for every beat.",
+        canonical: "https://filmmakergenius.com/movie-in-a-box",
+        type: "website"
+      }
+    ),
+    /* @__PURE__ */ jsx("section", { className: "min-h-[calc(100vh-96px)] flex items-center justify-center bg-background px-4 py-16", children: /* @__PURE__ */ jsxs("div", { className: "w-full max-w-[780px] mx-auto", children: [
+      /* @__PURE__ */ jsxs("div", { className: "text-center mb-8", children: [
+        /* @__PURE__ */ jsxs("h1", { className: "text-4xl sm:text-5xl font-bold tracking-tight text-foreground", children: [
+          "Movie in a ",
+          /* @__PURE__ */ jsx("span", { className: "text-gold", children: "Box" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-base text-foreground/60 mt-4 leading-relaxed", children: "The fastest way to outline a film is to start from a structure that already works, then fill in its beats with your story. Pick a template below — three-act, Save the Cat, the Hero's Journey or the sequence method — and Movie in a Box walks you beat by beat, explaining what each beat has to accomplish before you write it." })
+      ] }),
+      /* @__PURE__ */ jsxs(
+        Link,
+        {
+          to: "/movie-in-a-box/compare",
+          "aria-label": "Compare all four story structures side by side",
+          className: "group relative flex flex-col items-center text-center rounded-xl bg-[#161a21] border border-white/25 px-6 py-8 sm:py-10 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-white/45 mb-8",
+          style: {
+            boxShadow: "0 0 20px rgba(255,255,255,0.10)"
+          },
+          onMouseEnter: (e) => {
+            e.currentTarget.style.boxShadow = "0 0 34px rgba(255,255,255,0.20)";
+          },
+          onMouseLeave: (e) => {
+            e.currentTarget.style.boxShadow = "0 0 20px rgba(255,255,255,0.10)";
+          },
+          children: [
+            /* @__PURE__ */ jsx("div", { className: "w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0 mb-4", children: /* @__PURE__ */ jsx(
+              BarChart3,
+              {
+                className: "w-8 h-8 text-foreground",
+                strokeWidth: 1.8
+              }
+            ) }),
+            /* @__PURE__ */ jsx("h2", { className: "text-2xl sm:text-3xl font-bold text-foreground tracking-tight", children: "Compare all four side by side" }),
+            /* @__PURE__ */ jsx("p", { className: "text-base text-foreground/70 mt-2 max-w-md", children: "See the same story through every lens — the best place to start." }),
+            /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 mt-4", children: [
+              { color: VIOLET, label: "Three-Act" },
+              { color: GOLD, label: "Save the Cat" },
+              { color: ROSE, label: "Hero's Journey" },
+              { color: TEAL$3, label: "Story Circle" }
+            ].map((dot) => /* @__PURE__ */ jsx(
+              "span",
+              {
+                className: "w-2.5 h-2.5 rounded-full",
+                style: { backgroundColor: dot.color },
+                "aria-label": dot.label
+              },
+              dot.label
+            )) }),
+            /* @__PURE__ */ jsxs("span", { className: "mt-5 inline-flex items-center gap-2 text-sm font-semibold text-foreground/90 transition-colors group-hover:text-foreground", children: [
+              "Start here",
+              /* @__PURE__ */ jsxs(
+                "svg",
+                {
+                  width: "18",
+                  height: "18",
+                  viewBox: "0 0 24 24",
+                  fill: "none",
+                  stroke: "currentColor",
+                  strokeWidth: "2",
+                  strokeLinecap: "round",
+                  strokeLinejoin: "round",
+                  className: "transition-transform group-hover:translate-x-1",
+                  children: [
+                    /* @__PURE__ */ jsx("path", { d: "M5 12h14" }),
+                    /* @__PURE__ */ jsx("path", { d: "m12 5 7 7-7 7" })
+                  ]
+                }
+              )
+            ] })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-[18px]", children: cards.map((card) => {
+        const Diagram = card.diagram;
+        const isGold = isSaveTheCat(card.accent);
+        return /* @__PURE__ */ jsxs(
+          Link,
+          {
+            to: card.to,
+            "aria-label": `Select ${card.title}`,
+            className: "group relative rounded-xl bg-[#161a21] p-[22px] text-left flex flex-col gap-3 transition-all duration-300 cursor-pointer hover:-translate-y-0.5",
+            style: {
+              border: `1px solid ${card.accent}73`,
+              boxShadow: isGold ? `0 0 18px ${card.accent}40` : `0 0 14px ${card.accent}26`,
+              ["--accent"]: card.accent
+            },
+            onMouseEnter: (e) => {
+              e.currentTarget.style.boxShadow = isGold ? `0 0 34px ${card.accent}73` : `0 0 26px ${card.accent}4D`;
+              e.currentTarget.style.border = `1px solid ${card.accent}CC`;
+            },
+            onMouseLeave: (e) => {
+              e.currentTarget.style.boxShadow = isGold ? `0 0 18px ${card.accent}40` : `0 0 14px ${card.accent}26`;
+              e.currentTarget.style.border = `1px solid ${card.accent}73`;
+            },
+            children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsx("h3", { className: "text-[19px] font-semibold text-foreground", children: card.title }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm text-foreground/40", children: card.count })
+              ] }),
+              /* @__PURE__ */ jsx("div", { className: "bg-[#0c0e13] rounded-lg p-4", children: /* @__PURE__ */ jsx(Diagram, { accent: card.accent }) }),
+              /* @__PURE__ */ jsx("p", { className: "text-sm text-foreground/60 leading-snug", children: card.description }),
+              /* @__PURE__ */ jsx(
+                "span",
+                {
+                  className: "inline-flex items-center self-start px-2.5 py-1 rounded-full text-xs font-medium mt-1",
+                  style: {
+                    color: card.accent,
+                    backgroundColor: `${card.accent}1E`,
+                    border: `1px solid ${card.accent}59`
+                  },
+                  children: card.bestFor
+                }
+              )
+            ]
+          },
+          card.key
+        );
+      }) }),
+      /* @__PURE__ */ jsxs(
+        Link,
+        {
+          to: "/movie-in-a-box/engine-room",
+          "aria-label": "Open the Engine Room to choose your AI tools",
+          className: "group relative flex items-center gap-5 rounded-xl bg-[#161a21] border border-white/25 px-6 py-5 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:border-white/45 mt-[18px]",
+          style: { boxShadow: "0 0 20px rgba(255,255,255,0.10)" },
+          onMouseEnter: (e) => {
+            e.currentTarget.style.boxShadow = "0 0 34px rgba(255,255,255,0.20)";
+          },
+          onMouseLeave: (e) => {
+            e.currentTarget.style.boxShadow = "0 0 20px rgba(255,255,255,0.10)";
+          },
+          children: [
+            /* @__PURE__ */ jsx("div", { className: "w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center flex-shrink-0", children: /* @__PURE__ */ jsx(SlidersHorizontal, { className: "w-6 h-6 text-foreground", strokeWidth: 1.8 }) }),
+            /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsx("h2", { className: "text-xl sm:text-2xl font-bold text-foreground tracking-tight", children: "The Engine Room" }),
+              /* @__PURE__ */ jsx("p", { className: "text-sm text-foreground/70 mt-1", children: "Choose the AI tools that build your movie — pick a budget tier, or hand-pick every piece." })
+            ] }),
+            /* @__PURE__ */ jsxs("span", { className: "hidden sm:inline-flex items-center gap-2 text-sm font-semibold text-foreground/90 transition-colors group-hover:text-foreground flex-shrink-0", children: [
+              "Set up",
+              /* @__PURE__ */ jsxs("svg", { width: "18", height: "18", viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "2", strokeLinecap: "round", strokeLinejoin: "round", className: "transition-transform group-hover:translate-x-1", children: [
+                /* @__PURE__ */ jsx("path", { d: "M5 12h14" }),
+                /* @__PURE__ */ jsx("path", { d: "m12 5 7 7-7 7" })
+              ] })
+            ] })
+          ]
+        }
+      )
+    ] }) })
+  ] });
+}
+function SaveTheCatDiagram({ accent }) {
+  const dots = [16, 38, 64, 88, 118, 152, 182, 210, 236, 266, 300];
+  const large = [64, 236];
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      viewBox: "0 0 320 24",
+      className: "w-full h-6",
+      preserveAspectRatio: "xMidYMid meet",
+      children: [
+        /* @__PURE__ */ jsx(
+          "line",
+          {
+            x1: "10",
+            y1: "12",
+            x2: "310",
+            y2: "12",
+            stroke: accent,
+            strokeOpacity: "0.35",
+            strokeWidth: "2"
+          }
+        ),
+        dots.map((x, i) => /* @__PURE__ */ jsx(
+          "circle",
+          {
+            cx: x,
+            cy: "12",
+            r: large.includes(x) ? 3.5 : 2,
+            fill: accent
+          },
+          i
+        ))
+      ]
+    }
+  );
+}
+function ThreeActDiagram({ accent }) {
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      viewBox: "0 0 320 24",
+      className: "w-full h-6",
+      preserveAspectRatio: "xMidYMid meet",
+      children: [
+        /* @__PURE__ */ jsx(
+          "rect",
+          {
+            x: "8",
+            y: "8",
+            width: "70",
+            height: "8",
+            rx: "4",
+            fill: accent,
+            fillOpacity: "0.2",
+            stroke: accent,
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "rect",
+          {
+            x: "92",
+            y: "6",
+            width: "136",
+            height: "12",
+            rx: "6",
+            fill: accent,
+            fillOpacity: "0.2",
+            stroke: accent,
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "rect",
+          {
+            x: "242",
+            y: "8",
+            width: "70",
+            height: "8",
+            rx: "4",
+            fill: accent,
+            fillOpacity: "0.2",
+            stroke: accent,
+            strokeWidth: "1"
+          }
+        ),
+        /* @__PURE__ */ jsx("circle", { cx: "80", cy: "12", r: "2.5", fill: accent }),
+        /* @__PURE__ */ jsx("circle", { cx: "232", cy: "12", r: "2.5", fill: accent }),
+        /* @__PURE__ */ jsx("circle", { cx: "160", cy: "4", r: "2.5", fill: accent })
+      ]
+    }
+  );
+}
+function HerosJourneyDiagram({ accent }) {
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      viewBox: "0 0 320 32",
+      className: "w-full h-6",
+      preserveAspectRatio: "xMidYMid meet",
+      children: [
+        /* @__PURE__ */ jsx(
+          "line",
+          {
+            x1: "10",
+            y1: "16",
+            x2: "118",
+            y2: "16",
+            stroke: accent,
+            strokeOpacity: "0.45",
+            strokeWidth: "1.5",
+            strokeDasharray: "4 3"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "line",
+          {
+            x1: "202",
+            y1: "16",
+            x2: "310",
+            y2: "16",
+            stroke: accent,
+            strokeOpacity: "0.45",
+            strokeWidth: "1.5",
+            strokeDasharray: "4 3"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          "circle",
+          {
+            cx: "160",
+            cy: "16",
+            r: "13",
+            fill: "none",
+            stroke: accent,
+            strokeOpacity: "0.6",
+            strokeWidth: "1.5"
+          }
+        ),
+        /* @__PURE__ */ jsx("circle", { cx: "160", cy: "3", r: "2.5", fill: accent }),
+        /* @__PURE__ */ jsx("circle", { cx: "173", cy: "16", r: "2.5", fill: accent }),
+        /* @__PURE__ */ jsx("circle", { cx: "160", cy: "29", r: "2.5", fill: accent }),
+        /* @__PURE__ */ jsx("circle", { cx: "147", cy: "16", r: "2.5", fill: accent })
+      ]
+    }
+  );
+}
+function StoryCircleDiagram({ accent }) {
+  const cx = 160;
+  const cy = 16;
+  const r = 13;
+  const dots = 8;
+  return /* @__PURE__ */ jsxs(
+    "svg",
+    {
+      viewBox: "0 0 320 32",
+      className: "w-full h-6",
+      preserveAspectRatio: "xMidYMid meet",
+      children: [
+        /* @__PURE__ */ jsx(
+          "circle",
+          {
+            cx,
+            cy,
+            r,
+            fill: "none",
+            stroke: accent,
+            strokeWidth: "1.5"
+          }
+        ),
+        Array.from({ length: dots }).map((_, i) => {
+          const angle = i * 2 * Math.PI / dots - Math.PI / 2;
+          return /* @__PURE__ */ jsx(
+            "circle",
+            {
+              cx: cx + r * Math.cos(angle),
+              cy: cy + r * Math.sin(angle),
+              r: "2.5",
+              fill: accent
+            },
+            i
+          );
+        })
+      ]
+    }
+  );
+}
+const ScrollArea = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(ScrollAreaPrimitive.Root, { ref, className: cn("relative overflow-hidden", className), ...props, children: [
+  /* @__PURE__ */ jsx(ScrollAreaPrimitive.Viewport, { className: "h-full w-full rounded-[inherit]", children }),
+  /* @__PURE__ */ jsx(ScrollBar, {}),
+  /* @__PURE__ */ jsx(ScrollAreaPrimitive.Corner, {})
+] }));
+ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
+const ScrollBar = React.forwardRef(({ className, orientation = "vertical", ...props }, ref) => /* @__PURE__ */ jsx(
+  ScrollAreaPrimitive.ScrollAreaScrollbar,
+  {
+    ref,
+    orientation,
+    className: cn(
+      "flex touch-none select-none transition-colors",
+      orientation === "vertical" && "h-full w-2.5 border-l border-l-transparent p-[1px]",
+      orientation === "horizontal" && "h-2.5 flex-col border-t border-t-transparent p-[1px]",
+      className
+    ),
+    ...props,
+    children: /* @__PURE__ */ jsx(ScrollAreaPrimitive.ScrollAreaThumb, { className: "relative flex-1 rounded-full bg-border" })
+  }
+));
+ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
+const Accordion = AccordionPrimitive.Root;
+const AccordionItem = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AccordionPrimitive.Item, { ref, className: cn("border-b", className), ...props }));
+AccordionItem.displayName = "AccordionItem";
+const AccordionTrigger = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(AccordionPrimitive.Header, { className: "flex", children: /* @__PURE__ */ jsxs(
+  AccordionPrimitive.Trigger,
+  {
+    ref,
+    className: cn(
+      "flex flex-1 items-center justify-between py-4 font-medium transition-all hover:underline [&[data-state=open]>svg]:rotate-180",
+      className
+    ),
+    ...props,
+    children: [
+      children,
+      /* @__PURE__ */ jsx(ChevronDown, { className: "h-4 w-4 shrink-0 transition-transform duration-200" })
+    ]
+  }
+) }));
+AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName;
+const AccordionContent = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsx(
+  AccordionPrimitive.Content,
+  {
+    ref,
+    className: "overflow-hidden text-sm transition-all data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+    ...props,
+    children: /* @__PURE__ */ jsx("div", { className: cn("pb-4 pt-0", className), children })
+  }
+));
+AccordionContent.displayName = AccordionPrimitive.Content.displayName;
+const Dialog = DialogPrimitive.Root;
+const DialogTrigger = DialogPrimitive.Trigger;
+const DialogPortal = DialogPrimitive.Portal;
+const DialogOverlay = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  DialogPrimitive.Overlay,
+  {
+    ref,
+    className: cn(
+      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    ),
+    ...props
+  }
+));
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+const DialogContent = React.forwardRef(({ className, children, ...props }, ref) => /* @__PURE__ */ jsxs(DialogPortal, { children: [
+  /* @__PURE__ */ jsx(DialogOverlay, {}),
+  /* @__PURE__ */ jsxs(
+    DialogPrimitive.Content,
+    {
+      ref,
+      className: cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        className
+      ),
+      ...props,
+      children: [
+        children,
+        /* @__PURE__ */ jsxs(DialogPrimitive.Close, { className: "absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity data-[state=open]:bg-accent data-[state=open]:text-muted-foreground hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none", children: [
+          /* @__PURE__ */ jsx(X, { className: "h-4 w-4" }),
+          /* @__PURE__ */ jsx("span", { className: "sr-only", children: "Close" })
+        ] })
+      ]
+    }
+  )
+] }));
+DialogContent.displayName = DialogPrimitive.Content.displayName;
+const DialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
+DialogHeader.displayName = "DialogHeader";
+const DialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  DialogPrimitive.Title,
+  {
+    ref,
+    className: cn("text-lg font-semibold leading-none tracking-tight", className),
+    ...props
+  }
+));
+DialogTitle.displayName = DialogPrimitive.Title.displayName;
+const DialogDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(DialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
+DialogDescription.displayName = DialogPrimitive.Description.displayName;
+class InsufficientCreditsError extends Error {
+  constructor(required, available) {
+    super("Insufficient credits");
+    __publicField(this, "required");
+    __publicField(this, "available");
+    this.name = "InsufficientCreditsError";
+    this.required = required;
+    this.available = available;
+  }
+}
+const listeners = /* @__PURE__ */ new Set();
+function publishBalance(available) {
+  if (typeof available !== "number" || Number.isNaN(available)) return;
+  listeners.forEach((fn) => {
+    try {
+      fn(available);
+    } catch {
+    }
+  });
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("credits:updated", { detail: { available } }));
+  }
+}
+function goToRefill() {
+  if (typeof window === "undefined") return;
+  if (window.location.pathname !== "/refill") {
+    window.location.href = "/refill";
+  }
+}
+async function aiInvoke(functionName, options = {}) {
+  const { body, redirectOnPaywall = true } = options;
+  const { data, error } = await supabase.functions.invoke(functionName, {
+    body
+  });
+  if (error) {
+    const res = error == null ? void 0 : error.context;
+    if (res && typeof res.json === "function") {
+      let payload = null;
+      try {
+        payload = await res.clone().json();
+      } catch {
+      }
+      if (res.status === 402 || (payload == null ? void 0 : payload.error) === "Insufficient credits") {
+        const required = Number((payload == null ? void 0 : payload.required) ?? 0);
+        const available = Number((payload == null ? void 0 : payload.available) ?? 0);
+        publishBalance(available);
+        toast$1.error("You're out of credits — top up to continue", {
+          description: required > 0 ? `This action needs ${required} credit${required === 1 ? "" : "s"}. You have ${available}.` : void 0,
+          action: { label: "Top up", onClick: goToRefill }
+        });
+        if (redirectOnPaywall) setTimeout(goToRefill, 800);
+        throw new InsufficientCreditsError(required, available);
+      }
+      if (res.status === 401) {
+        toast$1.error("Please sign in to use this tool");
+        throw new Error("Unauthorized");
+      }
+      if (payload == null ? void 0 : payload.error) {
+        throw new Error(payload.error);
+      }
+    }
+    throw error;
+  }
+  publishBalance(data == null ? void 0 : data.available_credits);
+  return data;
+}
+async function aiInvokeSafe(functionName, options = {}) {
+  try {
+    const data = await aiInvoke(functionName, options);
+    return { data, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+}
+const useOCRUpload = () => {
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [currentStage, setCurrentStage] = useState("idle");
+  const [progress, setProgress] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [currentFileName, setCurrentFileName] = useState("");
+  const [currentFileSize, setCurrentFileSize] = useState(0);
+  const uploadStatusRef = useRef({});
+  const processingTimeouts = useRef({});
+  const timerRef = useRef(null);
+  const startTimeRef = useRef(0);
+  useEffect(() => {
+    if (isProcessing) {
+      startTimeRef.current = Date.now();
+      setElapsedTime(0);
+      timerRef.current = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - startTimeRef.current) / 1e3));
+      }, 1e3);
+    } else {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+      setElapsedTime(0);
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+      }
+    };
+  }, [isProcessing]);
+  const generateFileKey = (file) => {
+    return `${file.name}-${file.size}-${file.lastModified}`;
+  };
+  const cleanupOldEntries = useCallback(() => {
+    const now = Date.now();
+    const CLEANUP_THRESHOLD = 5 * 60 * 1e3;
+    Object.keys(uploadStatusRef.current).forEach((key) => {
+      if (now - uploadStatusRef.current[key].timestamp > CLEANUP_THRESHOLD) {
+        delete uploadStatusRef.current[key];
+        if (processingTimeouts.current[key]) {
+          clearTimeout(processingTimeouts.current[key]);
+          delete processingTimeouts.current[key];
+        }
+      }
+    });
+  }, []);
+  const processFile = useCallback(async (file, onSuccess, onError) => {
+    const fileKey = generateFileKey(file);
+    cleanupOldEntries();
+    const existingStatus = uploadStatusRef.current[fileKey];
+    if (existingStatus) {
+      switch (existingStatus.status) {
+        case "processing":
+          toast({
+            title: "File Already Processing",
+            description: `${file.name} is already being processed. Please wait...`,
+            variant: "default"
+          });
+          return;
+        case "done":
+          if (existingStatus.result) {
+            console.log("Using cached result for:", fileKey);
+            onSuccess(existingStatus.result);
+            return;
+          }
+          break;
+        case "error":
+          delete uploadStatusRef.current[fileKey];
+          break;
+      }
+    }
+    try {
+      uploadStatusRef.current[fileKey] = {
+        status: "processing",
+        timestamp: Date.now()
+      };
+      setCurrentFileName(file.name);
+      setCurrentFileSize(file.size);
+      setIsProcessing(true);
+      setCurrentStage("reading");
+      setProgress(5);
+      if (file.type === "text/plain" || file.type === "text/csv") {
+        setProgress(50);
+        const text = await file.text();
+        setProgress(90);
+        const result = { text, type: file.type === "text/csv" ? "csv" : "text" };
+        uploadStatusRef.current[fileKey] = {
+          status: "done",
+          result,
+          timestamp: Date.now()
+        };
+        setCurrentStage("complete");
+        setProgress(100);
+        onSuccess(result);
+        toast({
+          title: "Success",
+          description: `${file.type === "text/csv" ? "CSV" : "Text"} file loaded successfully`
+        });
+        setTimeout(() => {
+          setIsProcessing(false);
+          setCurrentStage("idle");
+          setProgress(0);
+          setCurrentFileName("");
+          setCurrentFileSize(0);
+        }, 1500);
+      } else if (file.type === "application/pdf" || file.type === "image/jpeg" || file.type === "image/jpg" || file.type === "image/png" || file.type === "application/vnd.ms-excel" || file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet") {
+        setProgress(10);
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+          var _a2;
+          try {
+            setCurrentStage("uploading");
+            setProgress(20);
+            const base64Data = (_a2 = e.target) == null ? void 0 : _a2.result;
+            const base64Content = base64Data.split(",")[1];
+            setProgress(30);
+            console.log(`[OCR] Processing file: ${file.name} (key: ${fileKey})`);
+            setCurrentStage("processing");
+            setProgress(40);
+            let data;
+            try {
+              data = await aiInvoke("parse-document", {
+                body: {
+                  fileData: base64Content,
+                  fileName: file.name,
+                  mimeType: file.type,
+                  idempotencyKey: fileKey
+                  // Add idempotency key
+                }
+              });
+            } catch (err) {
+              console.error("[OCR] Document parsing error:", err);
+              uploadStatusRef.current[fileKey] = {
+                status: "error",
+                timestamp: Date.now()
+              };
+              if (!(err instanceof InsufficientCreditsError)) {
+                const errorMessage = err instanceof Error ? err.message : String(err);
+                if (errorMessage.includes("temporarily overloaded") || errorMessage.includes("try again")) {
+                  toast({
+                    title: "Service Temporarily Unavailable",
+                    description: "AI service is busy. Please try uploading again in a few moments.",
+                    variant: "destructive"
+                  });
+                } else if (errorMessage.includes("Invalid MIME type") || errorMessage.includes("image types")) {
+                  toast({
+                    title: "PDF Processing Issue",
+                    description: "Trying alternative PDF processing method. Please wait...",
+                    variant: "default"
+                  });
+                } else {
+                  toast({
+                    title: "PDF Processing Failed",
+                    description: errorMessage.length > 100 ? "Unable to process PDF file. Please try a different file." : errorMessage,
+                    variant: "destructive"
+                  });
+                }
+              }
+              onError == null ? void 0 : onError(err instanceof Error ? err.message : String(err));
+              setIsProcessing(false);
+              setCurrentStage("idle");
+              setProgress(0);
+              setCurrentFileName("");
+              setCurrentFileSize(0);
+              return;
+            }
+            setProgress(70);
+            if ((data == null ? void 0 : data.text) && data.text.trim()) {
+              console.log(`[OCR] Successfully processed: ${file.name}`);
+              setCurrentStage("extracting");
+              setProgress(85);
+              uploadStatusRef.current[fileKey] = {
+                status: "done",
+                result: data,
+                timestamp: Date.now()
+              };
+              setCurrentStage("complete");
+              setProgress(100);
+              onSuccess(data);
+              toast({
+                title: "Success",
+                description: file.type === "application/pdf" ? "PDF text extracted successfully!" : "Image text extracted successfully!"
+              });
+              setTimeout(() => {
+                setIsProcessing(false);
+                setCurrentStage("idle");
+                setProgress(0);
+                setCurrentFileName("");
+                setCurrentFileSize(0);
+              }, 1500);
+            } else {
+              const errorMsg = file.type === "application/pdf" ? "No readable text found in PDF. Please check if the file contains text or try a different format." : "No readable text found in image. Please check if the image contains text or try a different file.";
+              uploadStatusRef.current[fileKey] = {
+                status: "error",
+                timestamp: Date.now()
+              };
+              toast({
+                title: "No Text Found",
+                description: errorMsg,
+                variant: "destructive"
+              });
+              onError == null ? void 0 : onError(errorMsg);
+              setIsProcessing(false);
+              setCurrentStage("idle");
+              setProgress(0);
+              setCurrentFileName("");
+              setCurrentFileSize(0);
+            }
+          } catch (parseError) {
+            console.error("[OCR] Error in PDF processing:", parseError);
+            uploadStatusRef.current[fileKey] = {
+              status: "error",
+              timestamp: Date.now()
+            };
+            const errorMsg = parseError instanceof Error ? parseError.message : file.type === "application/pdf" ? "Failed to extract text from PDF" : "Failed to extract text from image";
+            toast({
+              title: "Processing Error",
+              description: errorMsg,
+              variant: "destructive"
+            });
+            onError == null ? void 0 : onError(errorMsg);
+            setIsProcessing(false);
+            setCurrentStage("idle");
+            setProgress(0);
+            setCurrentFileName("");
+            setCurrentFileSize(0);
+          }
+        };
+        reader.onerror = () => {
+          uploadStatusRef.current[fileKey] = {
+            status: "error",
+            timestamp: Date.now()
+          };
+          toast({
+            title: "File Read Error",
+            description: file.type === "application/pdf" ? "Failed to read PDF file" : "Failed to read image file",
+            variant: "destructive"
+          });
+          onError == null ? void 0 : onError(file.type === "application/pdf" ? "Failed to read PDF file" : "Failed to read image file");
+          setIsProcessing(false);
+          setCurrentStage("idle");
+          setProgress(0);
+          setCurrentFileName("");
+          setCurrentFileSize(0);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        const errorMsg = "Unsupported file type. Please upload PDF, image (PNG/JPEG), text, CSV, or Excel files.";
+        uploadStatusRef.current[fileKey] = {
+          status: "error",
+          timestamp: Date.now()
+        };
+        toast({
+          title: "Unsupported File Type",
+          description: errorMsg,
+          variant: "destructive"
+        });
+        onError == null ? void 0 : onError(errorMsg);
+        setIsProcessing(false);
+        setCurrentStage("idle");
+        setProgress(0);
+        setCurrentFileName("");
+        setCurrentFileSize(0);
+      }
+    } catch (error) {
+      console.error("[OCR] Error processing file:", error);
+      uploadStatusRef.current[fileKey] = {
+        status: "error",
+        timestamp: Date.now()
+      };
+      const errorMsg = error instanceof Error ? error.message : "Failed to process file";
+      toast({
+        title: "Processing Error",
+        description: errorMsg,
+        variant: "destructive"
+      });
+      onError == null ? void 0 : onError(errorMsg);
+      setIsProcessing(false);
+      setCurrentStage("idle");
+      setProgress(0);
+      setCurrentFileName("");
+      setCurrentFileSize(0);
+    }
+  }, [cleanupOldEntries]);
+  const getUploadStatus = useCallback(() => {
+    return { ...uploadStatusRef.current };
+  }, []);
+  const clearFileStatus = useCallback((file) => {
+    const fileKey = generateFileKey(file);
+    delete uploadStatusRef.current[fileKey];
+  }, []);
+  return {
+    processFile,
+    isProcessing,
+    currentStage,
+    elapsedTime,
+    progress,
+    currentFileName,
+    currentFileSize,
+    getUploadStatus,
+    clearFileStatus
+  };
+};
+const useScriptAnalysis = () => {
+  const { userProfile } = useAuth();
+  const [analyses, setAnalyses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchAnalyses = async () => {
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.from("script_analyses").select("*").order("created_at", { ascending: false });
+      if (error) {
+        console.error("Error fetching analyses:", error);
+        toast$1.error("Failed to load script analyses");
+        return;
+      }
+      const transformedAnalyses = (data || []).map((row) => ({
+        id: row.id,
+        user_id: row.user_id,
+        script_text: row.script_text,
+        genre: row.genre,
+        tone: row.tone,
+        selected_directors: row.selected_directors,
+        character_count: row.character_count,
+        analysis_result: row.analysis_result,
+        confidence_score: row.confidence_score,
+        is_validated: row.is_validated,
+        created_at: row.created_at,
+        updated_at: row.updated_at
+      }));
+      setAnalyses(transformedAnalyses);
+    } catch (error) {
+      console.error("Error fetching analyses:", error);
+      toast$1.error("Failed to load script analyses");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const saveAnalysis = async (scriptText, genre, tone, selectedDirectors, analysisResult, confidenceScore = 0.5) => {
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      toast$1.error("Please log in to save analyses");
+      return null;
+    }
+    try {
+      const characterCount = (scriptText.match(/^[A-Z][A-Z\s]+$/gm) || []).length;
+      const { data, error } = await supabase.from("script_analyses").insert({
+        user_id: userProfile.user_id,
+        script_text: scriptText,
+        genre,
+        tone,
+        selected_directors: selectedDirectors,
+        character_count: characterCount,
+        analysis_result: analysisResult,
+        confidence_score: confidenceScore,
+        is_validated: false
+      }).select().single();
+      if (error) {
+        console.error("Error saving analysis:", error);
+        toast$1.error("Failed to save analysis");
+        return null;
+      }
+      if (data) {
+        const transformedAnalysis = {
+          id: data.id,
+          user_id: data.user_id,
+          script_text: data.script_text,
+          genre: data.genre,
+          tone: data.tone,
+          selected_directors: data.selected_directors,
+          character_count: data.character_count,
+          analysis_result: data.analysis_result,
+          confidence_score: data.confidence_score,
+          is_validated: data.is_validated,
+          created_at: data.created_at,
+          updated_at: data.updated_at
+        };
+        setAnalyses((prev) => [transformedAnalysis, ...prev]);
+        toast$1.success("Analysis saved successfully");
+        return transformedAnalysis;
+      }
+    } catch (error) {
+      console.error("Error saving analysis:", error);
+      toast$1.error("Failed to save analysis");
+    }
+    return null;
+  };
+  const deleteAnalysis = async (id) => {
+    try {
+      const { error } = await supabase.from("script_analyses").delete().eq("id", id);
+      if (error) {
+        console.error("Error deleting analysis:", error);
+        toast$1.error("Failed to delete analysis");
+        return;
+      }
+      setAnalyses((prev) => prev.filter((analysis) => analysis.id !== id));
+      toast$1.success("Analysis deleted successfully");
+    } catch (error) {
+      console.error("Error deleting analysis:", error);
+      toast$1.error("Failed to delete analysis");
+    }
+  };
+  useEffect(() => {
+    fetchAnalyses();
+  }, [userProfile == null ? void 0 : userProfile.user_id]);
+  return {
+    analyses,
+    loading,
+    saveAnalysis,
+    deleteAnalysis,
+    refetch: fetchAnalyses
+  };
+};
+function useAcademyCourses(filters) {
+  return useQuery({
+    queryKey: ["academy-courses", filters],
+    queryFn: async () => {
+      let query = supabase.from("academy_courses").select("*").order("order_index", { ascending: true });
+      if (filters == null ? void 0 : filters.category) {
+        query = query.eq("category", filters.category);
+      }
+      if (filters == null ? void 0 : filters.level) {
+        query = query.eq("level", filters.level);
+      }
+      if (filters == null ? void 0 : filters.relatedTool) {
+        query = query.eq("related_tool", filters.relatedTool);
+      }
+      if (filters == null ? void 0 : filters.search) {
+        query = query.or(`title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`);
+      }
+      const { data, error } = await query;
+      if (error) throw error;
+      return data;
+    }
+  });
+}
+const TOOL_CATEGORY_MAP = {
+  "script-analysis": ["Pre-Production", "Post-Production"],
+  "storyboarding": ["Pre-Production", "Production"],
+  "scene-analysis": ["Production", "Pre-Production"],
+  "video-evaluation": ["Post-Production", "Production"]
+};
+function ToolPageRecommendations({
+  toolName,
+  category,
+  maxCourses = 3
+}) {
+  const relevantCategories = category ? [category] : TOOL_CATEGORY_MAP[toolName] || [];
+  const { data: courses2, isLoading } = useAcademyCourses({
+    category: relevantCategories[0]
+  });
+  if (isLoading || !courses2 || courses2.length === 0) {
+    return null;
+  }
+  const filteredCourses = relevantCategories.length > 1 ? courses2.filter((course) => relevantCategories.includes(course.category || "")) : courses2;
+  const displayCourses = filteredCourses.slice(0, maxCourses);
+  if (displayCourses.length === 0) {
+    return null;
+  }
+  return /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/20 bg-gradient-to-br from-background to-primary/5", children: [
+    /* @__PURE__ */ jsxs(CardHeader, { children: [
+      /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
+        /* @__PURE__ */ jsx(GraduationCap, { className: "h-5 w-5 text-primary" }),
+        "Level Up Your Skills"
+      ] }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Learn the professional techniques behind this tool" })
+    ] }),
+    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
+      displayCourses.map((course) => /* @__PURE__ */ jsx(
+        Link,
+        {
+          to: `/training/${course.id}`,
+          className: "block group",
+          children: /* @__PURE__ */ jsxs("div", { className: "flex gap-3 p-3 rounded-lg border bg-background hover:bg-accent transition-colors", children: [
+            course.thumbnail_url && /* @__PURE__ */ jsx(
+              "img",
+              {
+                src: course.thumbnail_url,
+                alt: course.title,
+                className: "w-16 h-16 object-cover rounded"
+              }
+            ),
+            /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+              /* @__PURE__ */ jsx("h4", { className: "font-semibold text-sm mb-1 group-hover:text-primary transition-colors line-clamp-1", children: course.title }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-xs text-muted-foreground mb-1", children: [
+                /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "text-xs", children: course.category }),
+                /* @__PURE__ */ jsx("span", { children: "•" }),
+                /* @__PURE__ */ jsxs("span", { children: [
+                  course.duration_hours,
+                  "h"
+                ] }),
+                course.level && /* @__PURE__ */ jsxs(Fragment, { children: [
+                  /* @__PURE__ */ jsx("span", { children: "•" }),
+                  /* @__PURE__ */ jsx("span", { children: course.level })
+                ] })
+              ] }),
+              course.description && /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground line-clamp-2", children: course.description })
+            ] }),
+            /* @__PURE__ */ jsx(ArrowRight, { className: "h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors self-center" })
+          ] })
+        },
+        course.id
+      )),
+      /* @__PURE__ */ jsx(Button, { asChild: true, variant: "outline", className: "w-full", size: "sm", children: /* @__PURE__ */ jsxs(Link, { to: "/training", children: [
+        "Browse All Courses",
+        /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4 ml-2" })
+      ] }) })
+    ] })
+  ] });
+}
+const Progress = React.forwardRef(({ className, value, ...props }, ref) => /* @__PURE__ */ jsx(
+  ProgressPrimitive.Root,
+  {
+    ref,
+    className: cn("relative h-4 w-full overflow-hidden rounded-full bg-secondary", className),
+    ...props,
+    children: /* @__PURE__ */ jsx(
+      ProgressPrimitive.Indicator,
+      {
+        className: "h-full w-full flex-1 bg-primary transition-all",
+        style: { transform: `translateX(-${100 - (value || 0)}%)` }
+      }
+    )
+  }
+));
+Progress.displayName = ProgressPrimitive.Root.displayName;
+const stageConfig = {
+  reading: { icon: FileText, text: "Reading PDF file...", color: "text-blue-500" },
+  uploading: { icon: Upload, text: "Uploading to server...", color: "text-blue-500" },
+  processing: { icon: Loader2, text: "Processing document...", color: "text-purple-500" },
+  extracting: { icon: FileText, text: "Extracting text content...", color: "text-orange-500" },
+  complete: { icon: CheckCircle, text: "Complete! Loading script...", color: "text-green-500" }
+};
+const PDFUploadProgress = ({
+  fileName,
+  fileSize,
+  stage,
+  elapsedTime,
+  progress
+}) => {
+  const StageIcon = stageConfig[stage].icon;
+  const formatFileSize = (bytes) => {
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  };
+  return /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 min-w-0 flex-1", children: [
+        /* @__PURE__ */ jsx("div", { className: cn(
+          "flex-shrink-0 p-2 rounded-lg bg-primary/10",
+          stage === "complete" && "bg-green-500/10"
+        ), children: /* @__PURE__ */ jsx(StageIcon, { className: cn(
+          "h-6 w-6",
+          stageConfig[stage].color,
+          (stage === "processing" || stage === "uploading") && "animate-spin"
+        ) }) }),
+        /* @__PURE__ */ jsxs("div", { className: "min-w-0 flex-1", children: [
+          /* @__PURE__ */ jsx("p", { className: "font-medium text-sm truncate", children: fileName }),
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: formatFileSize(fileSize) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0", children: [
+        /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }),
+        /* @__PURE__ */ jsxs("span", { className: "font-mono", children: [
+          elapsedTime,
+          "s"
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+      /* @__PURE__ */ jsx(
+        Progress,
+        {
+          value: progress,
+          className: "h-2 bg-secondary"
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-sm", children: [
+        /* @__PURE__ */ jsx("span", { className: cn("font-medium", stageConfig[stage].color), children: stageConfig[stage].text }),
+        /* @__PURE__ */ jsxs("span", { className: "text-muted-foreground font-mono", children: [
+          progress,
+          "%"
+        ] })
+      ] })
+    ] }),
+    elapsedTime > 30 && stage !== "complete" && /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-xs text-orange-500 bg-orange-500/10 px-3 py-2 rounded-md", children: [
+      /* @__PURE__ */ jsx(Clock, { className: "h-3 w-3" }),
+      /* @__PURE__ */ jsx("span", { children: "Large file processing in progress. This may take a minute..." })
+    ] })
+  ] }) });
+};
+const ScriptAnalysis = () => {
+  var _a2;
+  useNavigate();
+  const { userProfile } = useAuth();
+  const { analyses, loading, saveAnalysis, deleteAnalysis } = useScriptAnalysis();
+  const [currentScript, setCurrentScript] = useState({
+    scriptText: "",
+    genre: "",
+    tone: ""
+  });
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisElapsedTime, setAnalysisElapsedTime] = useState(0);
+  const {
+    processFile,
+    isProcessing: isProcessingFile,
+    currentStage,
+    currentFileName,
+    currentFileSize,
+    elapsedTime,
+    progress
+  } = useOCRUpload();
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [selectedDirectors, setSelectedDirectors] = useState([]);
+  useState("");
+  useState(false);
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
+  const chatInputRef = useRef(null);
+  const [characterNotes, setCharacterNotes] = useState({});
+  const [editingCharacter, setEditingCharacter] = useState(null);
+  const [noteDialogOpen, setNoteDialogOpen] = useState(false);
+  const genres = [
+    "Drama",
+    "Comedy",
+    "Action",
+    "Thriller",
+    "Horror",
+    "Romance",
+    "Sci-Fi",
+    "Fantasy",
+    "Mystery",
+    "Documentary",
+    "Musical"
+  ];
+  const tones = [
+    "Serious",
+    "Light-hearted",
+    "Dark",
+    "Uplifting",
+    "Suspenseful",
+    "Melancholic",
+    "Energetic",
+    "Intimate",
+    "Epic",
+    "Mysterious"
+  ];
+  const directors = [
+    "Christopher Nolan",
+    "Steven Spielberg",
+    "Quentin Tarantino",
+    "Denis Villeneuve",
+    "Greta Gerwig",
+    "Jordan Peele"
+  ];
+  useEffect(() => {
+    if (!isAnalyzing) return;
+    const interval = setInterval(() => {
+      setAnalysisElapsedTime((prev) => prev + 1);
+    }, 1e3);
+    return () => clearInterval(interval);
+  }, [isAnalyzing]);
+  const handleFileUpload = async (event) => {
+    var _a3;
+    const file = (_a3 = event.target.files) == null ? void 0 : _a3[0];
+    if (!file) return;
+    await processFile(
+      file,
+      (result) => {
+        setCurrentScript((prev) => ({ ...prev, scriptText: result.text }));
+        toast$1.success(`Extracted ${result.text.length} characters from "${file.name}". Please review the text before analyzing.`);
+      },
+      (error) => {
+        console.error("File processing error:", error);
+      }
+    );
+  };
+  const analyzeScript = async () => {
+    if (!currentScript.scriptText.trim()) {
+      toast$1.error("Please enter script text or upload a file to analyze");
+      return;
+    }
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      toast$1.error("Please log in to analyze scripts");
+      return;
+    }
+    setIsAnalyzing(true);
+    setAnalysisElapsedTime(0);
+    let data;
+    try {
+      data = await aiInvoke("analyze-script", {
+        body: {
+          scriptText: currentScript.scriptText,
+          genre: currentScript.genre,
+          tone: currentScript.tone,
+          selectedDirectors
+        }
+      });
+    } catch (error) {
+      if (error instanceof InsufficientCreditsError) return;
+      console.error("Script analysis error:", error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes("temporarily overloaded") || errorMessage.includes("try again") || errorMessage.includes("Rate limit")) {
+        toast$1.error("AI service is temporarily busy. Please try analyzing again in a few moments.");
+      } else {
+        toast$1.error(`Failed to analyze script: ${errorMessage}`);
+      }
+      setIsAnalyzing(false);
+      setAnalysisElapsedTime(0);
+      return;
+    }
+    try {
+      if (data == null ? void 0 : data.analysis) {
+        const savedAnalysis = await saveAnalysis(
+          currentScript.scriptText,
+          currentScript.genre,
+          currentScript.tone,
+          selectedDirectors,
+          data.analysis,
+          data.confidenceScore || 0.5
+        );
+        if (savedAnalysis) {
+          setSelectedAnalysis({
+            id: savedAnalysis.id,
+            scriptText: savedAnalysis.script_text,
+            genre: savedAnalysis.genre || "",
+            tone: savedAnalysis.tone || "",
+            characterCount: savedAnalysis.character_count,
+            selectedDirectors: savedAnalysis.selected_directors || [],
+            analysisResult: savedAnalysis.analysis_result,
+            confidenceScore: savedAnalysis.confidence_score,
+            isAiGenerated: data.isAiGenerated,
+            createdAt: new Date(savedAnalysis.created_at)
+          });
+          toast$1.success("Your script has been analyzed with AI insights and saved");
+        }
+      }
+    } catch (error) {
+      console.error("Error analyzing script:", error);
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast$1.error("Failed to analyze script. Please try again.");
+      }
+    } finally {
+      setIsAnalyzing(false);
+      setAnalysisElapsedTime(0);
+    }
+  };
+  const getDifficultyColor = (level) => {
+    switch (level) {
+      case "Beginner":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "Intermediate":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "Advanced":
+        return "bg-red-100 text-red-800 border-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
+  const exportAnalysisToPDF = () => {
+    var _a3, _b2;
+    if (!(selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult)) return;
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text("Script Analysis Report", margin, yPosition);
+    yPosition += 15;
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Characters: ${selectedAnalysis.characterCount}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Difficulty: ${selectedAnalysis.analysisResult.difficultyLevel}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Estimated Duration: ${selectedAnalysis.analysisResult.estimatedDuration}`, margin, yPosition);
+    yPosition += 15;
+    if (selectedAnalysis.analysisResult.sceneSynopsis) {
+      pdf.setFontSize(14);
+      pdf.text("Scene Synopsis", margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      const synopsisLines = pdf.splitTextToSize(selectedAnalysis.analysisResult.sceneSynopsis, pageWidth - 2 * margin);
+      pdf.text(synopsisLines, margin, yPosition);
+      yPosition += synopsisLines.length * 5 + 10;
+    }
+    if (((_a3 = selectedAnalysis.analysisResult.castOfCharacters) == null ? void 0 : _a3.length) > 0) {
+      pdf.setFontSize(14);
+      pdf.text("Cast of Characters", margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      selectedAnalysis.analysisResult.castOfCharacters.forEach((character) => {
+        const characterText = `${character.name} (${character.role}): ${character.description}`;
+        const lines = pdf.splitTextToSize(characterText, pageWidth - 2 * margin);
+        pdf.text(lines, margin, yPosition);
+        yPosition += lines.length * 5 + 3;
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      });
+      yPosition += 10;
+    }
+    if (((_b2 = selectedAnalysis.analysisResult.characterDescriptions) == null ? void 0 : _b2.length) > 0) {
+      if (yPosition > 200) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+      pdf.setFontSize(14);
+      pdf.text("Character Analysis", margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      selectedAnalysis.analysisResult.characterDescriptions.forEach((character) => {
+        pdf.setFontSize(12);
+        pdf.text(character.name, margin, yPosition);
+        yPosition += 7;
+        pdf.setFontSize(10);
+        const personalityLines = pdf.splitTextToSize(`• Personality: ${character.personality}`, pageWidth - 2 * margin);
+        pdf.text(personalityLines, margin, yPosition);
+        yPosition += personalityLines.length * 5;
+        const motivationLines = pdf.splitTextToSize(`• Motivation: ${character.motivation}`, pageWidth - 2 * margin);
+        pdf.text(motivationLines, margin, yPosition);
+        yPosition += motivationLines.length * 5;
+        const arcLines = pdf.splitTextToSize(`• Arc Trajectory: ${character.arcTrajectory}`, pageWidth - 2 * margin);
+        pdf.text(arcLines, margin, yPosition);
+        yPosition += arcLines.length * 5 + 8;
+        if (yPosition > 280) {
+          pdf.addPage();
+          yPosition = margin;
+        }
+      });
+      yPosition += 10;
+    }
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Emotional Beats", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.emotionalBeats.forEach((beat, index) => {
+      const lines = pdf.splitTextToSize(`${index + 1}. ${beat}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+    });
+    yPosition += 10;
+    pdf.setFontSize(14);
+    pdf.text("Character Motivations", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.characterMotivations.forEach((motivation, index) => {
+      const lines = pdf.splitTextToSize(`• ${motivation}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+    });
+    yPosition += 10;
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Director Notes", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.directorNotes.forEach((note, index) => {
+      const lines = pdf.splitTextToSize(`• ${note}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Casting Tips", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.castingTips.forEach((tip, index) => {
+      const lines = pdf.splitTextToSize(`• ${tip}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Technical Requirements", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.technicalRequirements.forEach((req, index) => {
+      const lines = pdf.splitTextToSize(`• ${req}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    pdf.save(`script-analysis-${selectedAnalysis.genre || "untitled"}-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.pdf`);
+    toast$1.success("Script analysis has been exported successfully");
+  };
+  const sendChatMessage = async () => {
+    if (!chatInput.trim()) return;
+    const userMessage = { role: "user", content: chatInput };
+    const newMessages = [...chatMessages, userMessage];
+    setChatMessages(newMessages);
+    setChatInput("");
+    setChatLoading(true);
+    try {
+      const data = await aiInvoke("chat-with-analysis", {
+        body: {
+          messages: newMessages,
+          scriptText: currentScript.scriptText,
+          genre: currentScript.genre,
+          tone: currentScript.tone,
+          selectedDirectors,
+          analysisResult: selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult
+        }
+      });
+      const assistantMessage = {
+        role: "assistant",
+        content: data.choices[0].message.content
+      };
+      setChatMessages([...newMessages, assistantMessage]);
+      setTimeout(() => {
+        var _a3;
+        (_a3 = chatInputRef.current) == null ? void 0 : _a3.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }, 100);
+    } catch (error) {
+      console.error("Chat error:", error);
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast$1.error("Failed to get response");
+      }
+    } finally {
+      setChatLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/script-analysis" }),
+    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto relative", children: [
+      /* @__PURE__ */ jsxs("div", { className: "text-center mb-8", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3 mb-4", children: [
+          /* @__PURE__ */ jsx(Brain, { className: "h-8 w-8 text-primary" }),
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold text-foreground", children: "Script Analysis" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-lg text-muted-foreground max-w-2xl mx-auto", children: "Upload your script or paste text to get AI-powered analysis for character development, emotional beats, and director's insights." }),
+        /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mt-2", children: "We only allow scene by scene analyzing and not full scripts." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+          /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" }),
+            "Script Input"
+          ] }) }),
+          /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "script-file", children: "Upload Script File (PDF or Text)" }),
+              /* @__PURE__ */ jsx("div", { className: "flex items-center gap-4", children: /* @__PURE__ */ jsx(
+                Input,
+                {
+                  id: "script-file",
+                  type: "file",
+                  accept: ".pdf,.txt",
+                  onChange: handleFileUpload,
+                  disabled: isProcessingFile,
+                  className: "file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                }
+              ) }),
+              isProcessingFile && currentFileName && /* @__PURE__ */ jsx(
+                PDFUploadProgress,
+                {
+                  fileName: currentFileName,
+                  fileSize: currentFileSize,
+                  stage: currentStage,
+                  elapsedTime,
+                  progress
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2 p-3 bg-muted/30 rounded-lg border border-muted", children: [
+              /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" }),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground leading-relaxed", children: "Your privacy matters. We will never use your scripts, images, likeness, voiceover, or any creative work for training, marketing, or any other purpose. Your content remains yours." })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "script-text", children: "Or paste your script text here" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "script-text",
+                  placeholder: "Enter your script text here...",
+                  value: currentScript.scriptText,
+                  onChange: (e) => setCurrentScript((prev) => ({ ...prev, scriptText: e.target.value })),
+                  className: "min-h-[300px] resize-none"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Genre" }),
+                /* @__PURE__ */ jsxs(Select, { value: currentScript.genre, onValueChange: (value) => setCurrentScript((prev) => ({ ...prev, genre: value })), children: [
+                  /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select genre" }) }),
+                  /* @__PURE__ */ jsx(SelectContent, { children: genres.map((genre) => /* @__PURE__ */ jsx(SelectItem, { value: genre, children: genre }, genre)) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Tone" }),
+                /* @__PURE__ */ jsxs(Select, { value: currentScript.tone, onValueChange: (value) => setCurrentScript((prev) => ({ ...prev, tone: value })), children: [
+                  /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select tone" }) }),
+                  /* @__PURE__ */ jsx(SelectContent, { children: tones.map((tone) => /* @__PURE__ */ jsx(SelectItem, { value: tone, children: tone }, tone)) })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Director Inspiration (Optional)" }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Select directors whose styles should inspire the analysis" }),
+                /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: directors.map((director) => /* @__PURE__ */ jsx(
+                  Badge,
+                  {
+                    variant: selectedDirectors.includes(director) ? "default" : "outline",
+                    className: "cursor-pointer hover:bg-primary/10",
+                    onClick: () => {
+                      setSelectedDirectors(
+                        (prev) => prev.includes(director) ? prev.filter((d) => d !== director) : [...prev, director]
+                      );
+                    },
+                    children: director
+                  },
+                  director
+                )) })
+              ] })
+            ] }),
+            isAnalyzing && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
+                  /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-purple-500/10", children: /* @__PURE__ */ jsx(Brain, { className: "h-6 w-6 text-purple-500 animate-pulse" }) }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-medium text-sm", children: "Analyzing your script with AI..." }),
+                    /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "This may take 30-60 seconds. Please standby." })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0", children: [
+                  /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsxs("span", { className: "font-mono", children: [
+                    analysisElapsedTime,
+                    "s"
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-purple-500" }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Processing..." })
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(
+              Button,
+              {
+                onClick: analyzeScript,
+                disabled: isAnalyzing || isProcessingFile,
+                className: "w-full",
+                size: "lg",
+                children: isAnalyzing ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                  /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                  "Analyzing Script..."
+                ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                  /* @__PURE__ */ jsx(Brain, { className: "mr-2 h-4 w-4" }),
+                  "Analyze Script"
+                ] })
+              }
+            )
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recent Analyses" }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: analyses.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center py-8", children: "No analyses yet. Upload a script to get started!" }) : /* @__PURE__ */ jsx("div", { className: "space-y-4", children: analyses.slice(0, 5).map((analysis) => {
+              var _a3, _b2;
+              return /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: `p-4 rounded-lg border cursor-pointer transition-colors ${(selectedAnalysis == null ? void 0 : selectedAnalysis.id) === analysis.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`,
+                  onClick: () => {
+                    setSelectedAnalysis({
+                      id: analysis.id,
+                      scriptText: analysis.script_text,
+                      genre: analysis.genre || "",
+                      tone: analysis.tone || "",
+                      characterCount: analysis.character_count,
+                      selectedDirectors: analysis.selected_directors || [],
+                      analysisResult: analysis.analysis_result,
+                      confidenceScore: analysis.confidence_score || 0.5,
+                      isAiGenerated: true,
+                      createdAt: new Date(analysis.created_at)
+                    });
+                    setCurrentScript({
+                      scriptText: analysis.script_text,
+                      genre: analysis.genre || "",
+                      tone: analysis.tone || ""
+                    });
+                    setSelectedDirectors(analysis.selected_directors || []);
+                  },
+                  children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                      /* @__PURE__ */ jsx("span", { className: "font-medium text-sm", children: analysis.genre || "No Genre" }),
+                      /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(((_a3 = analysis.analysis_result) == null ? void 0 : _a3.difficultyLevel) || "Beginner"), children: ((_b2 = analysis.analysis_result) == null ? void 0 : _b2.difficultyLevel) || "Beginner" })
+                    ] }),
+                    /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground line-clamp-2", children: [
+                      analysis.script_text.substring(0, 100),
+                      "..."
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-xs text-muted-foreground", children: [
+                      /* @__PURE__ */ jsxs("span", { children: [
+                        analysis.character_count,
+                        " characters"
+                      ] }),
+                      /* @__PURE__ */ jsx("span", { children: new Date(analysis.created_at).toLocaleDateString() })
+                    ] })
+                  ] })
+                },
+                analysis.id
+              );
+            }) }) })
+          ] }),
+          /* @__PURE__ */ jsx(
+            ToolPageRecommendations,
+            {
+              toolName: "script-analysis",
+              maxCourses: 2
+            }
+          )
+        ] })
+      ] }),
+      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) && /* @__PURE__ */ jsx("div", { className: "mt-8", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+        /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+          /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(Brain, { className: "h-5 w-5" }),
+            "Analysis Results"
+          ] }),
+          /* @__PURE__ */ jsxs(Button, { onClick: exportAnalysisToPDF, size: "sm", variant: "outline", children: [
+            /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+            "Export PDF"
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs(CardContent, { children: [
+          selectedAnalysis.scriptText && /* @__PURE__ */ jsx("div", { className: "mb-6 p-4 bg-muted/30 rounded-lg border border-border", children: /* @__PURE__ */ jsx(Accordion, { type: "single", collapsible: true, children: /* @__PURE__ */ jsxs(AccordionItem, { value: "scene-text", className: "border-none", children: [
+            /* @__PURE__ */ jsx(AccordionTrigger, { className: "hover:no-underline py-2", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-lg font-semibold", children: [
+              /* @__PURE__ */ jsx(FileText, { className: "h-4 w-4" }),
+              "Extracted Scene Text (OCR Result)"
+            ] }) }),
+            /* @__PURE__ */ jsx(AccordionContent, { children: /* @__PURE__ */ jsx("pre", { className: "whitespace-pre-wrap text-sm text-foreground/80 max-h-[300px] overflow-y-auto p-3 bg-background rounded border mt-2", children: selectedAnalysis.scriptText }) })
+          ] }) }) }),
+          ((_a2 = selectedAnalysis.analysisResult.sceneSynopsis) == null ? void 0 : _a2.toLowerCase().includes("don't have")) && /* @__PURE__ */ jsxs("div", { className: "mb-6 p-5 bg-destructive/10 rounded-lg border-2 border-destructive/30", children: [
+            /* @__PURE__ */ jsxs("h3", { className: "text-xl font-bold flex items-center gap-2 mb-3 text-destructive", children: [
+              /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5" }),
+              "Analysis Issue"
+            ] }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm mb-4", children: "The AI couldn't properly analyze this scene. This usually happens when:" }),
+            /* @__PURE__ */ jsxs("ul", { className: "list-disc list-inside text-sm space-y-1 mb-4 text-muted-foreground", children: [
+              /* @__PURE__ */ jsx("li", { children: "The OCR extraction didn't capture the text correctly" }),
+              /* @__PURE__ */ jsx("li", { children: "The uploaded file was an image/scan with poor quality" }),
+              /* @__PURE__ */ jsx("li", { children: "The script format wasn't recognized" })
+            ] }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: 'Check the "Extracted Scene Text" section above to verify what was captured, then edit it in the input area and re-analyze.' })
+          ] }),
+          selectedAnalysis.analysisResult.sceneSynopsis && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") && /* @__PURE__ */ jsxs("div", { className: "mb-6 p-5 bg-primary/10 rounded-lg border-2 border-primary/30", children: [
+            /* @__PURE__ */ jsx("h3", { className: "text-xl font-bold flex items-center gap-2 mb-3 text-foreground", children: "📖 Scene Summary" }),
+            /* @__PURE__ */ jsx("p", { className: "text-base leading-relaxed", children: selectedAnalysis.analysisResult.sceneSynopsis })
+          ] }),
+          selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && /* @__PURE__ */ jsxs("div", { className: "mb-6 p-4 bg-accent/30 rounded-lg border border-accent", children: [
+            /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold flex items-center gap-2 mb-3 text-foreground", children: [
+              /* @__PURE__ */ jsx(Users, { className: "h-4 w-4" }),
+              "Characters in This Scene"
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "flex gap-3 overflow-x-auto pb-2", children: selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => /* @__PURE__ */ jsxs(
+              "div",
+              {
+                className: "flex-shrink-0 px-4 py-3 bg-background rounded-md border border-border/50 min-w-[240px] space-y-1",
+                children: [
+                  /* @__PURE__ */ jsx("div", { className: "font-semibold text-base mb-1", children: character.name }),
+                  /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: character.objective || character.role })
+                ]
+              },
+              index
+            )) })
+          ] }),
+          selectedAnalysis.analysisResult.sceneSynopsis && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("please paste") && /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-accent/30 border-accent", children: [
+            /* @__PURE__ */ jsxs(CardHeader, { children: [
+              /* @__PURE__ */ jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Lightbulb, { className: "h-4 w-4" }),
+                "Quick Director Questions"
+              ] }),
+              /* @__PURE__ */ jsx(CardDescription, { className: "text-sm", children: "Click any question to explore this aspect of your scene" })
+            ] }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-2", children: [
+              "What is the primary dramatic purpose of this scene?",
+              "How do power dynamics shift between characters?",
+              "What visual language best serves the emotional truth?",
+              "Where should the camera be to maximize impact?",
+              "What key moments anchor this scene's arc?"
+            ].map((question, idx) => /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: () => {
+                  setChatInput(question);
+                },
+                className: "w-full text-left p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-colors text-sm",
+                children: question
+              },
+              idx
+            )) })
+          ] }) }),
+          /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-card border-2 border-primary shadow-lg shadow-primary/10", children: [
+            /* @__PURE__ */ jsxs(CardHeader, { className: "bg-primary/20 border-b-2 border-primary/50", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(MessageSquare, { className: "h-6 w-6 text-primary" }),
+                /* @__PURE__ */ jsx(CardTitle, { className: "text-lg font-bold text-primary", children: "💬 Ask About Your Scene" })
+              ] }),
+              /* @__PURE__ */ jsx(CardDescription, { className: "text-sm text-foreground/80", children: "Ask me anything about your scene, characters, or directorial approach!" })
+            ] }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "p-0", children: [
+              /* @__PURE__ */ jsx(ScrollArea, { className: "h-[300px] p-4", children: chatMessages.length === 0 ? /* @__PURE__ */ jsxs("div", { className: "text-center text-muted-foreground py-8", children: [
+                /* @__PURE__ */ jsx(MessageSquare, { className: "h-12 w-12 mx-auto mb-3 opacity-50" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: "Type a question below or click one of the quick questions above" })
+              ] }) : /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                chatMessages.map((msg, idx) => /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: `flex ${msg.role === "user" ? "justify-end" : "justify-start"}`,
+                    children: /* @__PURE__ */ jsx(
+                      "div",
+                      {
+                        className: `max-w-[80%] rounded-lg px-4 py-2 ${msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"}`,
+                        children: /* @__PURE__ */ jsx("p", { className: "text-sm whitespace-pre-wrap", children: msg.content })
+                      }
+                    )
+                  },
+                  idx
+                )),
+                chatLoading && /* @__PURE__ */ jsx("div", { className: "flex justify-start", children: /* @__PURE__ */ jsx("div", { className: "bg-muted rounded-lg px-4 py-2", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-1", children: [
+                  /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-foreground/50 rounded-full animate-bounce" }),
+                  /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.2s]" }),
+                  /* @__PURE__ */ jsx("div", { className: "w-2 h-2 bg-foreground/50 rounded-full animate-bounce [animation-delay:0.4s]" })
+                ] }) }) })
+              ] }) }),
+              /* @__PURE__ */ jsx("div", { ref: chatInputRef, className: "border-t border-border p-4", children: /* @__PURE__ */ jsxs(
+                "form",
+                {
+                  onSubmit: (e) => {
+                    e.preventDefault();
+                    sendChatMessage();
+                  },
+                  className: "flex gap-2",
+                  children: [
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        value: chatInput,
+                        onChange: (e) => setChatInput(e.target.value),
+                        placeholder: "Ask about characters, pacing, visuals...",
+                        disabled: chatLoading,
+                        className: "flex-1"
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(Button, { type: "submit", disabled: chatLoading || !chatInput.trim(), size: "icon", children: /* @__PURE__ */ jsx(Send, { className: "w-4 h-4" }) })
+                  ]
+                }
+              ) })
+            ] })
+          ] }) }),
+          selectedAnalysis.analysisResult.castOfCharacters && selectedAnalysis.analysisResult.castOfCharacters.length > 0 && /* @__PURE__ */ jsxs("div", { className: "mb-6 border-t border-border pt-6", children: [
+            /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold flex items-center gap-2 mb-2", children: "🎭 Cast of Characters" }),
+            /* @__PURE__ */ jsxs("p", { className: "text-sm text-muted-foreground mb-4", children: [
+              "Please fill in any particular notes about the actor type you want, or the current actor you have, with a brief description for each character. Click the ",
+              /* @__PURE__ */ jsx(Pencil, { className: "inline h-3 w-3" }),
+              " pencil icon to add notes."
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => /* @__PURE__ */ jsx(Card$1, { className: "border border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between mb-2", children: [
+                /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm", children: character.name }),
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-xs", children: character.role }),
+                  /* @__PURE__ */ jsxs(Dialog, { open: noteDialogOpen && (editingCharacter == null ? void 0 : editingCharacter.name) === character.name, onOpenChange: (open) => {
+                    setNoteDialogOpen(open);
+                    if (!open) setEditingCharacter(null);
+                  }, children: [
+                    /* @__PURE__ */ jsx(DialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx(
+                      Button,
+                      {
+                        variant: "ghost",
+                        size: "sm",
+                        className: "h-7 w-7 p-0",
+                        onClick: () => {
+                          setEditingCharacter({
+                            name: character.name,
+                            notes: characterNotes[character.name] || ""
+                          });
+                          setNoteDialogOpen(true);
+                        },
+                        children: /* @__PURE__ */ jsx(Pencil, { className: "h-3 w-3" })
+                      }
+                    ) }),
+                    /* @__PURE__ */ jsxs(DialogContent, { children: [
+                      /* @__PURE__ */ jsx(DialogHeader, { children: /* @__PURE__ */ jsxs(DialogTitle, { children: [
+                        "Director Notes: ",
+                        character.name
+                      ] }) }),
+                      /* @__PURE__ */ jsxs("div", { className: "space-y-4 py-4", children: [
+                        /* @__PURE__ */ jsx(
+                          Textarea,
+                          {
+                            placeholder: "Add your director notes for this character...",
+                            value: (editingCharacter == null ? void 0 : editingCharacter.notes) || "",
+                            onChange: (e) => setEditingCharacter((prev) => prev ? { ...prev, notes: e.target.value } : null),
+                            rows: 6
+                          }
+                        ),
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            onClick: () => {
+                              if (editingCharacter) {
+                                setCharacterNotes((prev) => ({
+                                  ...prev,
+                                  [editingCharacter.name]: editingCharacter.notes
+                                }));
+                                toast$1.success("Director notes saved");
+                              }
+                              setNoteDialogOpen(false);
+                              setEditingCharacter(null);
+                            },
+                            className: "w-full",
+                            children: "Save Notes"
+                          }
+                        )
+                      ] })
+                    ] })
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mb-2", children: character.description }),
+              characterNotes[character.name] && /* @__PURE__ */ jsxs("div", { className: "mt-3 pt-3 border-t border-border", children: [
+                /* @__PURE__ */ jsx("p", { className: "text-xs font-medium mb-1", children: "Director Notes:" }),
+                /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground whitespace-pre-wrap", children: characterNotes[character.name] })
+              ] })
+            ] }) }, index)) })
+          ] }),
+          /* @__PURE__ */ jsx("div", { className: "space-y-4", children: /* @__PURE__ */ jsxs(Accordion, { type: "multiple", defaultValue: ["emotional-beats", "director-notes", "character-motivations", "casting-tips", "technical-requirements", "key-moments"], className: "space-y-4", children: [
+            selectedAnalysis.analysisResult.emotionalBeats && selectedAnalysis.analysisResult.emotionalBeats.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "emotional-beats", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "🎭" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Emotional Beats" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Opening establishes character and world" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-4 pt-2", children: selectedAnalysis.analysisResult.emotionalBeats.map((beat, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-4", children: [
+                /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 w-8 h-8 rounded-full bg-cyan-100 text-cyan-700 flex items-center justify-center text-sm font-medium", children: index + 1 }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm pt-1", children: beat })
+              ] }, index)) }) })
+            ] }),
+            selectedAnalysis.analysisResult.directorNotes && selectedAnalysis.analysisResult.directorNotes.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "director-notes", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "🎬" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Director's Notes" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Focus on visual storytelling over exposition" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pt-2", children: selectedAnalysis.analysisResult.directorNotes.map((note, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-3", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary mt-1", children: "•" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: note })
+              ] }, index)) }) })
+            ] }),
+            selectedAnalysis.analysisResult.characterMotivations && selectedAnalysis.analysisResult.characterMotivations.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "character-motivations", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-red-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "🎯" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Character Motivations" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Protagonist driven by clear goal or need" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pt-2", children: selectedAnalysis.analysisResult.characterMotivations.map((motivation, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-3", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary mt-1", children: "•" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: motivation })
+              ] }, index)) }) })
+            ] }),
+            selectedAnalysis.analysisResult.castingTips && selectedAnalysis.analysisResult.castingTips.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "casting-tips", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "👥" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Casting Tips" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Look for actors who can convey subtext" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pt-2", children: selectedAnalysis.analysisResult.castingTips.map((tip, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-3", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary mt-1", children: "•" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: tip })
+              ] }, index)) }) })
+            ] }),
+            selectedAnalysis.analysisResult.technicalRequirements && selectedAnalysis.analysisResult.technicalRequirements.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "technical-requirements", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "⚙️" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Technical Requirements" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Standard lighting and camera equipment" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pt-2", children: selectedAnalysis.analysisResult.technicalRequirements.map((req, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-3", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary mt-1", children: "•" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: req })
+              ] }, index)) }) })
+            ] }),
+            selectedAnalysis.analysisResult.keyMoments && selectedAnalysis.analysisResult.keyMoments.length > 0 && /* @__PURE__ */ jsxs(AccordionItem, { value: "key-moments", className: "border rounded-lg bg-card", children: [
+              /* @__PURE__ */ jsx(AccordionTrigger, { className: "px-6 hover:no-underline", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center", children: /* @__PURE__ */ jsx("span", { className: "text-xl", children: "⭐" }) }),
+                /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "Key Moments" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Opening hook" })
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(AccordionContent, { className: "px-6 pb-6", children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pt-2", children: selectedAnalysis.analysisResult.keyMoments.map((moment, index) => /* @__PURE__ */ jsxs("div", { className: "flex gap-3", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary mt-1", children: "•" }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm", children: moment })
+              ] }, index)) }) })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.characterCount }),
+              /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Characters" })
+            ] }) }),
+            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.analysisResult.estimatedDuration }),
+              /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Est. Duration" })
+            ] }) }),
+            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(selectedAnalysis.analysisResult.difficultyLevel), children: selectedAnalysis.analysisResult.difficultyLevel }),
+              /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mt-1", children: "Difficulty" })
+            ] }) }),
+            selectedAnalysis.analysisResult.directorInsights && selectedAnalysis.analysisResult.directorInsights.length > 0 && /* @__PURE__ */ jsxs("div", { className: "space-y-4 col-span-1 md:col-span-2", children: [
+              /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold flex items-center gap-2", children: "🎬 Director Insights" }),
+              /* @__PURE__ */ jsx("div", { className: "grid gap-3", children: selectedAnalysis.analysisResult.directorInsights.map((insight, index) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3 p-3 bg-primary/5 rounded-lg", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary font-semibold min-w-[2rem] text-center", children: index + 1 }),
+                /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground flex-1", children: insight })
+              ] }, index)) })
+            ] })
+          ] }),
+          selectedAnalysis.selectedDirectors && selectedAnalysis.selectedDirectors.length > 0 && /* @__PURE__ */ jsxs("div", { className: "mt-6 p-4 bg-muted/50 rounded-lg", children: [
+            /* @__PURE__ */ jsx("h4", { className: "font-medium mb-2", children: "Analysis inspired by:" }),
+            /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: selectedAnalysis.selectedDirectors.map((director) => /* @__PURE__ */ jsx(Badge, { variant: "secondary", children: director }, director)) })
+          ] })
+        ] })
+      ] }) })
+    ] }) })
+  ] });
+};
+const Tabs = TabsPrimitive.Root;
+const TabsList = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  TabsPrimitive.List,
+  {
+    ref,
+    className: cn(
+      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
+      className
+    ),
+    ...props
+  }
+));
+TabsList.displayName = TabsPrimitive.List.displayName;
+const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  TabsPrimitive.Trigger,
+  {
+    ref,
+    className: cn(
+      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+      className
+    ),
+    ...props
+  }
+));
+TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
+const TabsContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  TabsPrimitive.Content,
+  {
+    ref,
+    className: cn(
+      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      className
+    ),
+    ...props
+  }
+));
+TabsContent.displayName = TabsPrimitive.Content.displayName;
+const SceneAnalysis = () => {
+  useAuth();
+  const { toast: toast2 } = useToast();
+  const [analyses, setAnalyses] = useState([]);
+  const [currentScene, setCurrentScene] = useState({
+    sceneText: "",
+    genre: "",
+    tone: ""
+  });
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [selectedAnalysis, setSelectedAnalysis] = useState(null);
+  const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
+  const genres = [
+    "Drama",
+    "Comedy",
+    "Action",
+    "Thriller",
+    "Horror",
+    "Romance",
+    "Sci-Fi",
+    "Fantasy",
+    "Mystery",
+    "Documentary",
+    "Musical"
+  ];
+  const tones = [
+    "Serious",
+    "Light-hearted",
+    "Dark",
+    "Uplifting",
+    "Suspenseful",
+    "Melancholic",
+    "Energetic",
+    "Intimate",
+    "Epic",
+    "Mysterious"
+  ];
+  const analyzeScene = async () => {
+    if (!currentScene.sceneText.trim()) {
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter scene text to analyze"
+      });
+      return;
+    }
+    setIsAnalyzing(true);
+    setTimeout(() => {
+      const newAnalysis = {
+        id: Date.now().toString(),
+        sceneText: currentScene.sceneText,
+        genre: currentScene.genre,
+        tone: currentScene.tone,
+        characterCount: countCharacters(currentScene.sceneText),
+        analysisResult: generateMockAnalysis(currentScene),
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      setAnalyses((prev) => [newAnalysis, ...prev]);
+      setSelectedAnalysis(newAnalysis);
+      setIsAnalyzing(false);
+      toast2({
+        title: "Analysis Complete",
+        description: "Your scene has been analyzed successfully"
+      });
+    }, 3e3);
+  };
+  const countCharacters = (text) => {
+    const characterNames = text.match(/^[A-Z][A-Z\s]+$/gm) || [];
+    return new Set(characterNames.map((name) => name.trim())).size;
+  };
+  const generateMockAnalysis = (scene) => {
+    const shotCount = Math.max(3, Math.min(8, Math.floor(scene.sceneText.length / 200)));
+    const shots = [];
+    for (let i = 1; i <= shotCount; i++) {
+      const shotTypes = ["Wide Shot", "Medium Shot", "Close-up", "Over-the-shoulder", "Point of view"];
+      const cameraAngles = ["Eye level", "High angle", "Low angle", "Dutch angle"];
+      shots.push({
+        shotNumber: i,
+        description: `Shot ${i}: ${scene.genre === "Action" ? "Dynamic movement sequence" : scene.tone === "Intimate" ? "Character emotional moment" : "Key narrative beat"}`,
+        cameraAngle: `${shotTypes[Math.floor(Math.random() * shotTypes.length)]} - ${cameraAngles[Math.floor(Math.random() * cameraAngles.length)]}`,
+        characters: [`Character ${Math.floor(Math.random() * 3) + 1}`],
+        visualElements: scene.genre === "Horror" ? "Dark lighting, shadows" : scene.genre === "Comedy" ? "Bright, colorful setting" : scene.tone === "Epic" ? "Dramatic wide landscape" : "Natural lighting, realistic setting",
+        duration: `${Math.floor(Math.random() * 10) + 5} seconds`
+      });
+    }
+    return {
+      emotionalBeats: [
+        "Opening tension builds as protagonist faces internal conflict",
+        "Mid-point revelation changes character perspective",
+        "Climactic confrontation tests character growth",
+        "Resolution brings emotional catharsis"
+      ],
+      characterMotivations: [
+        "Protagonist seeks redemption for past mistakes",
+        "Antagonist driven by fear of losing control",
+        "Supporting character provides moral compass"
+      ],
+      directorNotes: [
+        "Focus on close-ups during emotional beats",
+        "Use lighting to reflect character's internal state",
+        "Consider handheld camera for intimate moments",
+        "Establish clear geography in opening shots"
+      ],
+      castingTips: [
+        "Protagonist needs strong emotional range",
+        "Look for natural chemistry between leads",
+        "Supporting cast should complement lead energy",
+        "Consider age-appropriate casting for believability"
+      ],
+      technicalRequirements: [
+        "Intimate lighting setup for dramatic scenes",
+        "Multiple camera angles for dialogue scenes",
+        "Sound design crucial for atmosphere",
+        "Practical locations preferred over studio"
+      ],
+      estimatedDuration: scene.genre === "Comedy" ? "3-5 minutes" : "5-8 minutes",
+      difficultyLevel: scene.tone === "Epic" || scene.genre === "Action" ? "Advanced" : scene.genre === "Drama" || scene.tone === "Suspenseful" ? "Intermediate" : "Beginner",
+      keyMoments: [
+        "Character introduction and setup",
+        "Inciting incident",
+        "Point of no return",
+        "Climax and resolution"
+      ],
+      shots
+    };
+  };
+  const generateStoryboard = async () => {
+    var _a2;
+    if (!((_a2 = selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) == null ? void 0 : _a2.shots)) return;
+    setGeneratingStoryboard(true);
+    try {
+      const data = await aiInvoke("generate-storyboard", {
+        body: {
+          shots: selectedAnalysis.analysisResult.shots,
+          sceneDetails: {
+            genre: selectedAnalysis.genre,
+            tone: selectedAnalysis.tone,
+            sceneText: selectedAnalysis.sceneText.substring(0, 500)
+          }
+        }
+      });
+      if (data == null ? void 0 : data.storyboard) {
+        const updatedAnalysis = {
+          ...selectedAnalysis,
+          storyboard: data.storyboard
+        };
+        setAnalyses((prev) => prev.map((a) => a.id === selectedAnalysis.id ? updatedAnalysis : a));
+        setSelectedAnalysis(updatedAnalysis);
+        toast2({
+          title: "Storyboard Generated!",
+          description: "Visual storyboard frames have been created successfully"
+        });
+      }
+    } catch (error) {
+      console.error("Error generating storyboard:", error);
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast2({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to generate storyboard. Please try again."
+        });
+      }
+    } finally {
+      setGeneratingStoryboard(false);
+    }
+  };
+  const getDifficultyColor = (level) => {
+    switch (level) {
+      case "Beginner":
+        return "bg-green-100 text-green-800 border-green-300";
+      case "Intermediate":
+        return "bg-yellow-100 text-yellow-800 border-yellow-300";
+      case "Advanced":
+        return "bg-red-100 text-red-800 border-red-300";
+      default:
+        return "bg-gray-100 text-gray-800 border-gray-300";
+    }
+  };
+  const exportSceneAnalysisToPDF = async () => {
+    if (!(selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult)) return;
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text("Scene Analysis Report", margin, yPosition);
+    yPosition += 15;
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Characters: ${selectedAnalysis.characterCount}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Difficulty: ${selectedAnalysis.analysisResult.difficultyLevel}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Estimated Duration: ${selectedAnalysis.analysisResult.estimatedDuration}`, margin, yPosition);
+    yPosition += 15;
+    pdf.setFontSize(14);
+    pdf.text("Scene Text Preview", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(9);
+    const scenePreview = selectedAnalysis.sceneText.substring(0, 500) + (selectedAnalysis.sceneText.length > 500 ? "..." : "");
+    const sceneLines = pdf.splitTextToSize(scenePreview, pageWidth - 2 * margin);
+    pdf.text(sceneLines, margin, yPosition);
+    yPosition += sceneLines.length * 4 + 10;
+    pdf.setFontSize(14);
+    pdf.text("Emotional Beats", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.emotionalBeats.forEach((beat, index) => {
+      const lines = pdf.splitTextToSize(`${index + 1}. ${beat}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    yPosition += 10;
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Character Motivations", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.characterMotivations.forEach((motivation) => {
+      const lines = pdf.splitTextToSize(`• ${motivation}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    yPosition += 10;
+    if (yPosition > 250) {
+      pdf.addPage();
+      yPosition = margin;
+    }
+    pdf.setFontSize(14);
+    pdf.text("Director Notes", margin, yPosition);
+    yPosition += 10;
+    pdf.setFontSize(10);
+    selectedAnalysis.analysisResult.directorNotes.forEach((note) => {
+      const lines = pdf.splitTextToSize(`• ${note}`, pageWidth - 2 * margin);
+      pdf.text(lines, margin, yPosition);
+      yPosition += lines.length * 5;
+      if (yPosition > 280) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+    });
+    pdf.save(`scene-analysis-${selectedAnalysis.genre || "untitled"}-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.pdf`);
+    toast2({
+      title: "PDF Exported",
+      description: "Scene analysis has been exported successfully"
+    });
+  };
+  const exportStoryboardToPDF = async () => {
+    if (!(selectedAnalysis == null ? void 0 : selectedAnalysis.storyboard)) return;
+    const pdf = new jsPDF();
+    const pageWidth = pdf.internal.pageSize.width;
+    const margin = 20;
+    let yPosition = margin;
+    pdf.setFontSize(20);
+    pdf.setTextColor(40, 40, 40);
+    pdf.text("Storyboard Report", margin, yPosition);
+    yPosition += 15;
+    pdf.setFontSize(12);
+    pdf.text(`Genre: ${selectedAnalysis.genre}`, margin, yPosition);
+    yPosition += 7;
+    pdf.text(`Tone: ${selectedAnalysis.tone}`, margin, yPosition);
+    yPosition += 15;
+    for (const frame of selectedAnalysis.storyboard) {
+      if (yPosition > 200) {
+        pdf.addPage();
+        yPosition = margin;
+      }
+      pdf.setFontSize(14);
+      pdf.text(`Shot ${frame.shotNumber}`, margin, yPosition);
+      yPosition += 10;
+      pdf.setFontSize(10);
+      pdf.text(`Camera: ${frame.cameraAngle}`, margin, yPosition);
+      yPosition += 7;
+      pdf.text(`Characters: ${frame.characters.join(", ")}`, margin, yPosition);
+      yPosition += 7;
+      const descLines = pdf.splitTextToSize(`Description: ${frame.description}`, pageWidth - 2 * margin);
+      pdf.text(descLines, margin, yPosition);
+      yPosition += descLines.length * 5;
+      const visualLines = pdf.splitTextToSize(`Visual Elements: ${frame.visualElements}`, pageWidth - 2 * margin);
+      pdf.text(visualLines, margin, yPosition);
+      yPosition += visualLines.length * 5 + 10;
+      if (frame.imageData) {
+        try {
+          pdf.addImage(frame.imageData, "JPEG", margin, yPosition, 80, 60);
+          yPosition += 70;
+        } catch (error) {
+          console.error("Error adding image to PDF:", error);
+        }
+      }
+      yPosition += 10;
+    }
+    pdf.save(`storyboard-${selectedAnalysis.genre || "untitled"}-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.pdf`);
+    toast2({
+      title: "PDF Exported",
+      description: "Storyboard has been exported successfully"
+    });
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/scene-analysis" }),
+    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between", children: /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("h1", { className: "text-3xl font-bold flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Brain, { className: "h-8 w-8" }),
+          "Scene Analysis"
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Analyze scripts for casting, direction, and production insights" })
+      ] }) }),
+      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Scene Input" }) }),
+          /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "scene-text", children: "Scene Text" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "scene-text",
+                  placeholder: "Paste your scene text here...",
+                  value: currentScene.sceneText,
+                  onChange: (e) => setCurrentScene((prev) => ({ ...prev, sceneText: e.target.value })),
+                  className: "min-h-[200px]"
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx(Label, { children: "Genre" }),
+                /* @__PURE__ */ jsxs(Select, { value: currentScene.genre, onValueChange: (value) => setCurrentScene((prev) => ({ ...prev, genre: value })), children: [
+                  /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select genre" }) }),
+                  /* @__PURE__ */ jsx(SelectContent, { children: genres.map((genre) => /* @__PURE__ */ jsx(SelectItem, { value: genre, children: genre }, genre)) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx(Label, { children: "Tone" }),
+                /* @__PURE__ */ jsxs(Select, { value: currentScene.tone, onValueChange: (value) => setCurrentScene((prev) => ({ ...prev, tone: value })), children: [
+                  /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select tone" }) }),
+                  /* @__PURE__ */ jsx(SelectContent, { children: tones.map((tone) => /* @__PURE__ */ jsx(SelectItem, { value: tone, children: tone }, tone)) })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx(
+              Button,
+              {
+                onClick: analyzeScene,
+                disabled: isAnalyzing,
+                className: "w-full",
+                size: "lg",
+                children: isAnalyzing ? "Analyzing..." : "Analyze Scene"
+              }
+            )
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recent Analyses" }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: analyses.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center py-8", children: "No analyses yet. Start by analyzing a scene!" }) : /* @__PURE__ */ jsx("div", { className: "space-y-3", children: analyses.slice(0, 5).map((analysis) => {
+              var _a2, _b2;
+              return /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: `p-3 rounded-lg border cursor-pointer transition-colors ${(selectedAnalysis == null ? void 0 : selectedAnalysis.id) === analysis.id ? "border-primary bg-primary/5" : "border-border hover:border-primary/50"}`,
+                  onClick: () => setSelectedAnalysis(analysis),
+                  children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                      /* @__PURE__ */ jsx("span", { className: "font-medium text-sm", children: analysis.genre || "No Genre" }),
+                      /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(((_a2 = analysis.analysisResult) == null ? void 0 : _a2.difficultyLevel) || "Beginner"), children: ((_b2 = analysis.analysisResult) == null ? void 0 : _b2.difficultyLevel) || "Beginner" })
+                    ] }),
+                    /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground line-clamp-2", children: [
+                      analysis.sceneText.substring(0, 80),
+                      "..."
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-xs text-muted-foreground", children: [
+                      /* @__PURE__ */ jsxs("span", { children: [
+                        analysis.characterCount,
+                        " characters"
+                      ] }),
+                      /* @__PURE__ */ jsx("span", { children: analysis.createdAt.toLocaleDateString() })
+                    ] })
+                  ] })
+                },
+                analysis.id
+              );
+            }) }) })
+          ] }),
+          /* @__PURE__ */ jsx(
+            ToolPageRecommendations,
+            {
+              toolName: "scene-analysis",
+              maxCourses: 2
+            }
+          )
+        ] })
+      ] }),
+      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) ? /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+          /* @__PURE__ */ jsx(CardTitle, { children: "Analysis Results" }),
+          /* @__PURE__ */ jsxs(Button, { onClick: exportSceneAnalysisToPDF, size: "sm", variant: "outline", children: [
+            /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+            "Export Analysis PDF"
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs(Tabs, { defaultValue: "overview", className: "w-full", children: [
+          /* @__PURE__ */ jsxs(TabsList, { className: "grid w-full grid-cols-5", children: [
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "overview", children: "Overview" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "directing", children: "Directing" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "casting", children: "Casting" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "technical", children: "Technical" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "storyboard", children: "Storyboard" })
+          ] }),
+          /* @__PURE__ */ jsxs(TabsContent, { value: "overview", className: "mt-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Target, { className: "h-5 w-5" }),
+                  "Emotional Beats"
+                ] }),
+                /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.emotionalBeats.map((beat, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+                  /* @__PURE__ */ jsx("span", { className: "bg-primary text-primary-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-medium mt-0.5", children: index + 1 }),
+                  /* @__PURE__ */ jsx("span", { className: "text-sm", children: beat })
+                ] }, index)) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Users, { className: "h-5 w-5" }),
+                  "Character Motivations"
+                ] }),
+                /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.characterMotivations.map((motivation, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+                  /* @__PURE__ */ jsx("span", { className: "text-primary", children: "•" }),
+                  /* @__PURE__ */ jsx("span", { className: "text-sm", children: motivation })
+                ] }, index)) })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-1 md:grid-cols-3 gap-4", children: [
+              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+                /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.characterCount }),
+                /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Characters" })
+              ] }) }),
+              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+                /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.analysisResult.estimatedDuration }),
+                /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Duration" })
+              ] }) }),
+              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+                /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(selectedAnalysis.analysisResult.difficultyLevel), children: selectedAnalysis.analysisResult.difficultyLevel }),
+                /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mt-1", children: "Difficulty" })
+              ] }) })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "directing", className: "mt-6", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-6", children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
+                "Director's Notes"
+              ] }),
+              /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.directorNotes.map((note, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary", children: "•" }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm", children: note })
+              ] }, index)) })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Star, { className: "h-5 w-5" }),
+                "Key Moments"
+              ] }),
+              /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.keyMoments.map((moment, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+                /* @__PURE__ */ jsx("span", { className: "text-primary", children: "•" }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm", children: moment })
+              ] }, index)) })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "casting", className: "mt-6", children: /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(Users, { className: "h-5 w-5" }),
+              "Casting Tips"
+            ] }),
+            /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.castingTips.map((tip, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+              /* @__PURE__ */ jsx("span", { className: "text-primary", children: "•" }),
+              /* @__PURE__ */ jsx("span", { className: "text-sm", children: tip })
+            ] }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "technical", className: "mt-6", children: /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-3 flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(Lightbulb, { className: "h-5 w-5" }),
+              "Technical Requirements"
+            ] }),
+            /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: selectedAnalysis.analysisResult.technicalRequirements.map((req, index) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2", children: [
+              /* @__PURE__ */ jsx("span", { className: "text-primary", children: "•" }),
+              /* @__PURE__ */ jsx("span", { className: "text-sm", children: req })
+            ] }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "storyboard", className: "mt-6", children: /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
+                "Shot Breakdown"
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    onClick: generateStoryboard,
+                    disabled: generatingStoryboard,
+                    size: "sm",
+                    children: generatingStoryboard ? "Generating..." : "Generate Visual Storyboard"
+                  }
+                ),
+                (selectedAnalysis == null ? void 0 : selectedAnalysis.storyboard) && /* @__PURE__ */ jsxs(Button, { onClick: exportStoryboardToPDF, size: "sm", variant: "outline", children: [
+                  /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                  "Export Storyboard PDF"
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: selectedAnalysis.analysisResult.shots.map((shot) => /* @__PURE__ */ jsxs(Card$1, { className: "border border-border", children: [
+              /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
+                  "Shot ",
+                  shot.shotNumber
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 text-sm text-muted-foreground", children: [
+                  /* @__PURE__ */ jsx(Clock, { className: "h-3 w-3" }),
+                  shot.duration
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Description" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.description })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Camera Angle" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.cameraAngle })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Visual Elements" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: Array.isArray(shot.visualElements) ? shot.visualElements.filter(Boolean).join(" · ") : shot.visualElements })
+                ] })
+              ] })
+            ] }, shot.shotNumber)) }),
+            selectedAnalysis.storyboard && /* @__PURE__ */ jsxs("div", { className: "mt-8", children: [
+              /* @__PURE__ */ jsxs("h3", { className: "text-lg font-semibold mb-4 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" }),
+                "Visual Storyboard"
+              ] }),
+              /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: selectedAnalysis.storyboard.map((frame) => /* @__PURE__ */ jsx(Card$1, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                  /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
+                    "Frame ",
+                    frame.shotNumber
+                  ] }),
+                  frame.generatedAt && /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: new Date(frame.generatedAt).toLocaleTimeString() })
+                ] }),
+                frame.imageData ? /* @__PURE__ */ jsx("div", { className: "aspect-video bg-muted rounded-lg overflow-hidden", children: /* @__PURE__ */ jsx(
+                  "img",
+                  {
+                    src: frame.imageData,
+                    alt: `Storyboard frame ${frame.shotNumber}`,
+                    className: "w-full h-full object-cover"
+                  }
+                ) }) : /* @__PURE__ */ jsx("div", { className: "aspect-video bg-muted rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                  /* @__PURE__ */ jsx(Video, { className: "h-8 w-8 mx-auto mb-2 text-muted-foreground" }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Frame generating..." })
+                ] }) }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: frame.description }),
+                  /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: frame.cameraAngle })
+                ] })
+              ] }) }, frame.shotNumber)) })
+            ] })
+          ] }) })
+        ] }) })
+      ] }) : /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "text-center py-12", children: [
+        /* @__PURE__ */ jsx(Brain, { className: "h-12 w-12 mx-auto mb-4 text-muted-foreground" }),
+        /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold mb-2", children: "No Analysis Selected" }),
+        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Analyze a scene or select from your recent analyses to see detailed results" })
+      ] }) })
+    ] }) })
+  ] });
+};
+const AlertDialog = AlertDialogPrimitive.Root;
+const AlertDialogTrigger = AlertDialogPrimitive.Trigger;
+const AlertDialogPortal = AlertDialogPrimitive.Portal;
+const AlertDialogOverlay = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  AlertDialogPrimitive.Overlay,
+  {
+    className: cn(
+      "fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      className
+    ),
+    ...props,
+    ref
+  }
+));
+AlertDialogOverlay.displayName = AlertDialogPrimitive.Overlay.displayName;
+const AlertDialogContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxs(AlertDialogPortal, { children: [
+  /* @__PURE__ */ jsx(AlertDialogOverlay, {}),
+  /* @__PURE__ */ jsx(
+    AlertDialogPrimitive.Content,
+    {
+      ref,
+      className: cn(
+        "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg",
+        className
+      ),
+      ...props
+    }
+  )
+] }));
+AlertDialogContent.displayName = AlertDialogPrimitive.Content.displayName;
+const AlertDialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col space-y-2 text-center sm:text-left", className), ...props });
+AlertDialogHeader.displayName = "AlertDialogHeader";
+const AlertDialogFooter = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
+AlertDialogFooter.displayName = "AlertDialogFooter";
+const AlertDialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Title, { ref, className: cn("text-lg font-semibold", className), ...props }));
+AlertDialogTitle.displayName = AlertDialogPrimitive.Title.displayName;
+const AlertDialogDescription = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Description, { ref, className: cn("text-sm text-muted-foreground", className), ...props }));
+AlertDialogDescription.displayName = AlertDialogPrimitive.Description.displayName;
+const AlertDialogAction = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(AlertDialogPrimitive.Action, { ref, className: cn(buttonVariants(), className), ...props }));
+AlertDialogAction.displayName = AlertDialogPrimitive.Action.displayName;
+const AlertDialogCancel = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  AlertDialogPrimitive.Cancel,
+  {
+    ref,
+    className: cn(buttonVariants({ variant: "outline" }), "mt-2 sm:mt-0", className),
+    ...props
+  }
+));
+AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
+const mapRow = (row) => ({
+  id: row.id,
+  user_id: row.user_id,
+  script_text: row.script_text,
+  genre: row.genre,
+  tone: row.tone,
+  character_count: row.character_count,
+  shots: Array.isArray(row.shots) ? row.shots : null,
+  storyboard_frames: Array.isArray(row.storyboard_frames) ? row.storyboard_frames : null,
+  is_complete: row.is_complete,
+  created_at: row.created_at,
+  updated_at: row.updated_at,
+  character_definitions: Array.isArray(row.character_definitions) ? row.character_definitions : [],
+  style_reference_prompt: row.style_reference_prompt || "",
+  project_title: row.project_title ?? null,
+  thumbnail_url: row.thumbnail_url ?? null,
+  art_style: row.art_style ?? null,
+  aspect_ratio: row.aspect_ratio ?? null,
+  scene_count: row.scene_count ?? 0,
+  frame_count: row.frame_count ?? 0,
+  cast_data: Array.isArray(row.cast_data) ? row.cast_data : [],
+  animatic_url: row.animatic_url ?? null
+});
+const useStoryboardProjects = () => {
+  const { userProfile } = useAuth();
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchProjects = async () => {
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      setLoading(false);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.from("storyboard_projects").select("*").order("updated_at", { ascending: false });
+      if (error) {
+        console.error("Error fetching projects:", error);
+        toast$1.error("Failed to load storyboard projects");
+        return;
+      }
+      setProjects((data || []).map(mapRow));
+    } catch (error) {
+      console.error("Error fetching projects:", error);
+      toast$1.error("Failed to load storyboard projects");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const saveProject = async (scriptText, genre, tone, shots, characterDefinitions, styleReferencePrompt, extras) => {
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      toast$1.error("Please log in to save projects");
+      return null;
+    }
+    try {
+      const characterCount = (scriptText.match(/^[A-Z][A-Z\s]+$/gm) || []).length;
+      const insertPayload = {
+        user_id: userProfile.user_id,
+        script_text: scriptText,
+        genre,
+        tone,
+        character_count: characterCount,
+        shots,
+        storyboard_frames: null,
+        is_complete: false,
+        character_definitions: characterDefinitions || [],
+        style_reference_prompt: styleReferencePrompt || ""
+      };
+      if (extras == null ? void 0 : extras.project_title) insertPayload.project_title = extras.project_title;
+      if (extras == null ? void 0 : extras.art_style) insertPayload.art_style = extras.art_style;
+      if (extras == null ? void 0 : extras.aspect_ratio) insertPayload.aspect_ratio = extras.aspect_ratio;
+      if (typeof (extras == null ? void 0 : extras.scene_count) === "number") insertPayload.scene_count = extras.scene_count;
+      if (extras == null ? void 0 : extras.cast_data) insertPayload.cast_data = extras.cast_data;
+      const { data, error } = await supabase.from("storyboard_projects").insert(insertPayload).select().single();
+      if (error) {
+        console.error("Error saving project:", error);
+        toast$1.error("Failed to save project");
+        return null;
+      }
+      if (data) {
+        const transformed = mapRow(data);
+        setProjects((prev) => [transformed, ...prev]);
+        toast$1.success("Project saved successfully");
+        return transformed;
+      }
+    } catch (error) {
+      console.error("Error saving project:", error);
+      toast$1.error("Failed to save project");
+    }
+    return null;
+  };
+  const updateProject = async (id, updates) => {
+    try {
+      const dbUpdates = {};
+      if (updates.shots) dbUpdates.shots = updates.shots;
+      if (updates.storyboard_frames) dbUpdates.storyboard_frames = updates.storyboard_frames;
+      if (updates.is_complete !== void 0) dbUpdates.is_complete = updates.is_complete;
+      if (updates.genre) dbUpdates.genre = updates.genre;
+      if (updates.tone) dbUpdates.tone = updates.tone;
+      if (updates.character_definitions) dbUpdates.character_definitions = updates.character_definitions;
+      if (updates.style_reference_prompt !== void 0)
+        dbUpdates.style_reference_prompt = updates.style_reference_prompt;
+      if (updates.project_title !== void 0) dbUpdates.project_title = updates.project_title;
+      if (updates.thumbnail_url !== void 0) dbUpdates.thumbnail_url = updates.thumbnail_url;
+      if (updates.art_style !== void 0) dbUpdates.art_style = updates.art_style;
+      if (updates.aspect_ratio !== void 0) dbUpdates.aspect_ratio = updates.aspect_ratio;
+      if (updates.scene_count !== void 0) dbUpdates.scene_count = updates.scene_count;
+      if (updates.frame_count !== void 0) dbUpdates.frame_count = updates.frame_count;
+      if (updates.cast_data !== void 0) dbUpdates.cast_data = updates.cast_data;
+      if (updates.animatic_url !== void 0) dbUpdates.animatic_url = updates.animatic_url;
+      const { data, error } = await supabase.from("storyboard_projects").update(dbUpdates).eq("id", id).select().single();
+      if (error) {
+        console.error("Error updating project:", error);
+        toast$1.error("Failed to update project");
+        return null;
+      }
+      if (data) {
+        const transformed = mapRow(data);
+        setProjects((prev) => prev.map((p) => p.id === id ? transformed : p));
+        return transformed;
+      }
+    } catch (error) {
+      console.error("Error updating project:", error);
+      toast$1.error("Failed to update project");
+    }
+    return null;
+  };
+  const renameProject = async (id, newTitle) => {
+    const trimmed = newTitle.trim();
+    if (!trimmed) return null;
+    return updateProject(id, { project_title: trimmed });
+  };
+  const deleteProject = async (id) => {
+    try {
+      const { error } = await supabase.from("storyboard_projects").delete().eq("id", id);
+      if (error) {
+        console.error("Error deleting project:", error);
+        toast$1.error("Failed to delete project");
+        return;
+      }
+      setProjects((prev) => prev.filter((project) => project.id !== id));
+      toast$1.success("Project deleted");
+    } catch (error) {
+      console.error("Error deleting project:", error);
+      toast$1.error("Failed to delete project");
+    }
+  };
+  useEffect(() => {
+    fetchProjects();
+  }, [userProfile == null ? void 0 : userProfile.user_id]);
+  return {
+    projects,
+    loading,
+    saveProject,
+    updateProject,
+    renameProject,
+    deleteProject,
+    refetch: fetchProjects
+  };
+};
+const styleComic = "/assets/style-comic-q1fKnR4U.jpg";
+const styleCinematic = "/assets/style-cinematic-Dj1LAAko.jpg";
+const stylePencil = "/assets/style-pencil-B8lkxw0S.jpg";
+const style3D = "/assets/style-3d-BWuEKjWQ.jpg";
+const styleWatercolor = "/assets/style-watercolor-DfeknzxL.jpg";
+const styleCharcoal = "/assets/style-charcoal-Qhx8p3gD.jpg";
+const styleAnime = "/assets/style-anime-DlIPYTyu.jpg";
+const styleVector = "/assets/style-vector-DEzhTUbR.jpg";
+const styleNoir = "/assets/style-noir-DzskZy-t.jpg";
+const styleStick = "/assets/style-stick-BNpPBfDh.jpg";
+const styleGraphicNovel = "/assets/style-graphic-novel-CXIwnc9i.jpg";
+const artStyles = [
+  {
+    id: "comic",
+    name: "Comic Book",
+    description: "Bold lines and colors",
+    promptModifier: "comic book illustration style, bold ink lines, dynamic colors, graphic novel aesthetic",
+    thumbnail: styleComic
+  },
+  {
+    id: "cinematic",
+    name: "Cinematic Photo",
+    description: "Photorealistic film look",
+    promptModifier: "cinematic photograph, 35mm film, photorealistic, movie still",
+    thumbnail: styleCinematic
+  },
+  {
+    id: "soft-pencil",
+    name: "Soft Pencil",
+    description: "Gentle pencil sketch",
+    promptModifier: "soft pencil sketch, graphite drawing, subtle shading, artistic sketch",
+    thumbnail: stylePencil
+  },
+  {
+    id: "animation-3d",
+    name: "Animation 3D",
+    description: "Pixar-style rendering",
+    promptModifier: "3D animated style, Pixar aesthetic, smooth rendering, vibrant colors",
+    thumbnail: style3D
+  },
+  {
+    id: "watercolor",
+    name: "Watercolor Paint",
+    description: "Flowing watercolor art",
+    promptModifier: "watercolor painting, flowing colors, artistic brushstrokes, painted illustration",
+    thumbnail: styleWatercolor
+  },
+  {
+    id: "charcoal",
+    name: "Charcoal Sketch",
+    description: "Traditional charcoal art",
+    promptModifier: "charcoal drawing, dramatic shading, textured strokes, monochrome sketch",
+    thumbnail: styleCharcoal
+  },
+  {
+    id: "anime",
+    name: "Dark Anime",
+    description: "Manga-style illustration",
+    promptModifier: "dark anime illustration, manga style, dramatic lighting, Japanese animation aesthetic",
+    thumbnail: styleAnime
+  },
+  {
+    id: "vector",
+    name: "Flat Vector",
+    description: "Clean graphic design",
+    promptModifier: "flat vector illustration, minimalist design, clean shapes, graphic design style",
+    thumbnail: styleVector
+  },
+  {
+    id: "noir",
+    name: "Film Noir",
+    description: "High contrast B&W",
+    promptModifier: "film noir aesthetic, high contrast black and white, dramatic shadows, classic cinema",
+    thumbnail: styleNoir
+  },
+  {
+    id: "stick-figure",
+    name: "Stick Figure",
+    description: "Simple line art",
+    promptModifier: "stick figure illustration, simple line drawing, minimalist sketch, basic shapes",
+    thumbnail: styleStick
+  },
+  {
+    id: "graphic-novel",
+    name: "Graphic Novel",
+    description: "Detailed comic art",
+    promptModifier: "graphic novel illustration, detailed ink work, sequential art, professional comic book style",
+    thumbnail: styleGraphicNovel
+  },
+  {
+    id: "camera-diagram",
+    name: "Camera Diagrams",
+    description: "Shot planning visuals",
+    promptModifier: "technical cinematography diagram, clean line art illustration showing camera positions and shot framing, educational storyboard style, top-down and side-view camera setup diagrams, simple black and white line drawing, film school instructional diagram, labeled camera angles, showing both camera placement and resulting shot, minimalist technical illustration",
+    thumbnail: null
+  },
+  {
+    id: "custom",
+    name: "Custom Style",
+    description: "Define your own style",
+    promptModifier: "",
+    thumbnail: null
+  }
+];
+function ArtStyleSelector({
+  selectedStyle,
+  customStylePrompt,
+  onStyleChange,
+  onCustomPromptChange
+}) {
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+    /* @__PURE__ */ jsxs("div", { className: "mb-3", children: [
+      /* @__PURE__ */ jsx("h3", { className: "text-base font-semibold mb-1", children: "Choose Art Style" }),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Select a visual style for your storyboard frames" })
+    ] }),
+    /* @__PURE__ */ jsx("div", { className: "flex gap-3 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory scrollbar-thin", children: artStyles.map((style) => /* @__PURE__ */ jsx(
+      Card$1,
+      {
+        className: `flex-shrink-0 w-[140px] cursor-pointer transition-all hover:scale-105 relative ${selectedStyle === style.id ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-border"}`,
+        onClick: () => onStyleChange(style.id),
+        children: /* @__PURE__ */ jsxs(CardContent, { className: "p-2", children: [
+          style.thumbnail ? /* @__PURE__ */ jsx("div", { className: "w-full h-20 rounded-md overflow-hidden mb-1.5 bg-muted", children: /* @__PURE__ */ jsx(
+            "img",
+            {
+              src: style.thumbnail,
+              alt: style.name,
+              className: "w-full h-full object-cover"
+            }
+          ) }) : /* @__PURE__ */ jsx("div", { className: "w-full h-20 rounded-md bg-muted flex items-center justify-center mb-1.5", children: /* @__PURE__ */ jsx("span", { className: "text-2xl", children: "✨" }) }),
+          /* @__PURE__ */ jsx("div", { className: "text-center", children: /* @__PURE__ */ jsx("p", { className: "text-xs font-medium truncate", children: style.name }) }),
+          selectedStyle === style.id && /* @__PURE__ */ jsx("div", { className: "absolute top-1 right-1 bg-primary text-primary-foreground rounded-full p-0.5", children: /* @__PURE__ */ jsx(Check$1, { className: "h-3 w-3" }) })
+        ] })
+      },
+      style.id
+    )) }),
+    selectedStyle === "custom" && /* @__PURE__ */ jsxs("div", { className: "space-y-2 mt-4", children: [
+      /* @__PURE__ */ jsx(Label, { htmlFor: "custom-style", children: "Custom Style Description" }),
+      /* @__PURE__ */ jsx(
+        Textarea,
+        {
+          id: "custom-style",
+          placeholder: "Describe the visual style you want (e.g., 'oil painting with impressionist brushstrokes', 'retro 80s animation', 'minimalist line art')",
+          value: customStylePrompt,
+          onChange: (e) => onCustomPromptChange(e.target.value),
+          rows: 3
+        }
+      ),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Describe the artistic style, medium, and aesthetic for your storyboard frames" })
+    ] })
+  ] });
+}
+const buildCharacterPromptDescription = (c) => {
+  const parts = [];
+  const demo = [];
+  if (c.gender) demo.push(c.gender);
+  if (c.ageRange) demo.push(`${c.ageRange}`);
+  if (c.ethnicity) demo.push(c.ethnicity);
+  if (demo.length) parts.push(demo.join(", "));
+  if (c.build) parts.push(`${c.build} build`);
+  if (c.hair) parts.push(`hair: ${c.hair}`);
+  if (c.distinctiveFeatures) parts.push(`distinctive features: ${c.distinctiveFeatures}`);
+  if (c.description) parts.push(c.description);
+  if (c.traits) parts.push(c.traits);
+  return parts.filter(Boolean).join(". ");
+};
+const alertVariants = cva(
+  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
+  {
+    variants: {
+      variant: {
+        default: "bg-background text-foreground",
+        destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive"
+      }
+    },
+    defaultVariants: {
+      variant: "default"
+    }
+  }
+);
+const Alert = React.forwardRef(({ className, variant, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, role: "alert", className: cn(alertVariants({ variant }), className), ...props }));
+Alert.displayName = "Alert";
+const AlertTitle = React.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("h5", { ref, className: cn("mb-1 font-medium leading-none tracking-tight", className), ...props })
+);
+AlertTitle.displayName = "AlertTitle";
+const AlertDescription = React.forwardRef(
+  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("text-sm [&_p]:leading-relaxed", className), ...props })
+);
+AlertDescription.displayName = "AlertDescription";
+const StyleReferenceInput = ({ value, onChange }) => {
+  return /* @__PURE__ */ jsxs(Card$1, { className: "border-border/50", children: [
+    /* @__PURE__ */ jsxs(CardHeader, { children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(Palette, { className: "h-5 w-5 text-primary" }),
+        /* @__PURE__ */ jsx(CardTitle, { children: "Style Reference (Optional but Recommended)" })
+      ] }),
+      /* @__PURE__ */ jsx(CardDescription, { children: "Provide a detailed description of the artistic style you want maintained across ALL panels. This helps ensure visual consistency." })
+    ] }),
+    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx(Label, { htmlFor: "style-reference", children: "Detailed Style Description" }),
+        /* @__PURE__ */ jsx(
+          Textarea,
+          {
+            id: "style-reference",
+            placeholder: "Example: Hand-drawn comic book style with bold black ink outlines, vibrant flat colors, minimal shading, dynamic action lines, classic 1960s Marvel Comics aesthetic with halftone dot patterns for depth...",
+            value,
+            onChange: (e) => onChange(e.target.value),
+            className: "min-h-[120px]"
+          }
+        ),
+        /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Include: artistic medium, line style, color treatment, shading technique, specific era or artist influence" })
+      ] }),
+      /* @__PURE__ */ jsxs(Alert, { children: [
+        /* @__PURE__ */ jsx(AlertCircle, { className: "h-4 w-4" }),
+        /* @__PURE__ */ jsxs(AlertDescription, { className: "text-sm", children: [
+          /* @__PURE__ */ jsx("strong", { children: "Note:" }),
+          " AI image generation produces variations between panels even with detailed prompts. Character definitions and style references improve consistency but cannot guarantee identical visual treatment. Consider this tool for pre-visualization and concept development."
+        ] })
+      ] })
+    ] })
+  ] });
+};
+const StyleReferenceUpload = ({
+  styleImageUrl,
+  onStyleImageChange,
+  onStyleDescriptionGenerated
+}) => {
+  const { toast: toast2 } = useToast();
+  const [isUploading, setIsUploading] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const handleUpload = async (e) => {
+    var _a2;
+    const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast2({
+        title: "Invalid file",
+        description: "Please upload an image file",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast2({
+        title: "File too large",
+        description: "Please upload an image under 5MB",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsUploading(true);
+    try {
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        var _a3;
+        const base64Data = (_a3 = event.target) == null ? void 0 : _a3.result;
+        onStyleImageChange(base64Data);
+        setIsAnalyzing(true);
+        try {
+          const data = await aiInvoke("analyze-style-reference", {
+            body: { imageData: base64Data }
+          });
+          if (data == null ? void 0 : data.styleDescription) {
+            onStyleDescriptionGenerated == null ? void 0 : onStyleDescriptionGenerated(data.styleDescription);
+            toast2({
+              title: "Style Analyzed",
+              description: "We've extracted the visual style from your reference image."
+            });
+          }
+        } catch (err) {
+          console.warn("Style analysis failed, using image only:", err);
+        } finally {
+          setIsAnalyzing(false);
+        }
+        setIsUploading(false);
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast2({
+        title: "Upload failed",
+        description: "Failed to process the image",
+        variant: "destructive"
+      });
+      setIsUploading(false);
+    }
+  };
+  const removeImage = () => {
+    onStyleImageChange(void 0);
+    onStyleDescriptionGenerated == null ? void 0 : onStyleDescriptionGenerated("");
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: "border-border/50", children: [
+    /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(ImageIcon, { className: "h-5 w-5 text-primary" }),
+        /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: "Style Reference Image" })
+      ] }),
+      /* @__PURE__ */ jsx(CardDescription, { className: "text-xs", children: "Upload an image with the visual style you want to match. The AI will analyze and replicate this aesthetic." })
+    ] }),
+    /* @__PURE__ */ jsxs(CardContent, { children: [
+      styleImageUrl ? /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: styleImageUrl,
+            alt: "Style reference",
+            className: "w-full h-40 object-cover rounded-lg border border-border"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          Button,
+          {
+            variant: "destructive",
+            size: "icon",
+            className: "absolute top-2 right-2 h-8 w-8",
+            onClick: removeImage,
+            children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+          }
+        ),
+        isAnalyzing && /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-background/80 flex items-center justify-center rounded-lg", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm", children: [
+          /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }),
+          "Analyzing style..."
+        ] }) })
+      ] }) : /* @__PURE__ */ jsxs("div", { className: "border-2 border-dashed border-border rounded-lg p-6 text-center", children: [
+        /* @__PURE__ */ jsx(
+          Input,
+          {
+            type: "file",
+            accept: "image/*",
+            className: "hidden",
+            id: "style-reference-upload",
+            onChange: handleUpload,
+            disabled: isUploading
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          Label,
+          {
+            htmlFor: "style-reference-upload",
+            className: "cursor-pointer flex flex-col items-center gap-3",
+            children: [
+              isUploading ? /* @__PURE__ */ jsx(Loader2, { className: "h-10 w-10 text-muted-foreground animate-spin" }) : /* @__PURE__ */ jsx(Upload, { className: "h-10 w-10 text-muted-foreground" }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("p", { className: "text-sm font-medium", children: isUploading ? "Uploading..." : "Upload reference image" }),
+                /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-1", children: "PNG, JPG up to 5MB" })
+              ] })
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-3", children: "Examples: movie stills, artwork, illustrations, or any image with a visual style you love" })
+    ] })
+  ] });
+};
+const Checkbox = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
+  CheckboxPrimitive.Root,
+  {
+    ref,
+    className: cn(
+      "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+      className
+    ),
+    ...props,
+    children: /* @__PURE__ */ jsx(CheckboxPrimitive.Indicator, { className: cn("flex items-center justify-center text-current"), children: /* @__PURE__ */ jsx(Check$1, { className: "h-4 w-4" }) })
+  }
+));
+Checkbox.displayName = CheckboxPrimitive.Root.displayName;
+const hashScenes = (scenes) => {
+  const seed = scenes.map((s) => `${s.sceneNumber}:${s.heading}`).join("|");
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = h * 31 + seed.charCodeAt(i) | 0;
+  return `storyboard_scene_sel_${h}`;
+};
+const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
+  const storageKey = useMemo(() => hashScenes(scenes), [scenes]);
+  const [selectedNumbers, setSelectedNumbers] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        const arr = JSON.parse(saved);
+        const valid = arr.filter((n) => scenes.some((s) => s.sceneNumber === n));
+        if (valid.length > 0) return new Set(valid);
+      }
+    } catch {
+    }
+    return new Set(scenes.map((s) => s.sceneNumber));
+  });
+  const [shotOverrides, setShotOverrides] = useState(/* @__PURE__ */ new Map());
+  useEffect(() => {
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(Array.from(selectedNumbers)));
+    } catch {
+    }
+  }, [selectedNumbers, storageKey]);
+  const toggle = (n) => {
+    setSelectedNumbers((prev) => {
+      const next = new Set(prev);
+      if (next.has(n)) next.delete(n);
+      else next.add(n);
+      return next;
+    });
+  };
+  const selectAll = () => setSelectedNumbers(new Set(scenes.map((s) => s.sceneNumber)));
+  const selectNone = () => setSelectedNumbers(/* @__PURE__ */ new Set());
+  const updateShots = (sceneNumber, value) => {
+    const n = parseInt(value, 10);
+    setShotOverrides((prev) => {
+      const next = new Map(prev);
+      if (Number.isFinite(n) && n > 0) next.set(sceneNumber, Math.min(20, Math.max(1, n)));
+      else next.delete(sceneNumber);
+      return next;
+    });
+  };
+  const selected = scenes.filter((s) => selectedNumbers.has(s.sceneNumber));
+  const totalShots = selected.reduce(
+    (sum, s) => sum + (shotOverrides.get(s.sceneNumber) ?? s.estimatedShots),
+    0
+  );
+  const handleConfirm = () => {
+    const enriched = selected.map((s) => ({
+      ...s,
+      estimatedShots: shotOverrides.get(s.sceneNumber) ?? s.estimatedShots
+    }));
+    onConfirm(enriched);
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+    /* @__PURE__ */ jsxs(CardHeader, { children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-3", children: [
+        /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Film, { className: "h-5 w-5" }),
+          "Select Scenes to Storyboard"
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Button, { variant: "outline", size: "sm", onClick: selectAll, disabled: isProcessing, children: "Select All" }),
+          /* @__PURE__ */ jsx(Button, { variant: "outline", size: "sm", onClick: selectNone, disabled: isProcessing, children: "Clear" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mt-2", children: "Pick the scenes that matter for your storyboard. Only selected scenes will be broken into shots — saves time and cost." }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 mt-2 text-xs text-primary/80", children: [
+        /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+        /* @__PURE__ */ jsx("span", { children: "Tip: Selecting fewer scenes = fewer credits used." })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-3", children: scenes.map((scene) => {
+        const isSelected = selectedNumbers.has(scene.sceneNumber);
+        const shotCount = shotOverrides.get(scene.sceneNumber) ?? scene.estimatedShots;
+        return /* @__PURE__ */ jsx(
+          Card$1,
+          {
+            className: `border transition-colors cursor-pointer ${isSelected ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`,
+            onClick: () => !isProcessing && toggle(scene.sceneNumber),
+            children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
+                /* @__PURE__ */ jsx(
+                  Checkbox,
+                  {
+                    checked: isSelected,
+                    onCheckedChange: () => toggle(scene.sceneNumber),
+                    disabled: isProcessing,
+                    className: "mt-1",
+                    onClick: (e) => e.stopPropagation()
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 flex-wrap mb-1", children: [
+                    /* @__PURE__ */ jsxs(Badge, { variant: "secondary", className: "text-xs", children: [
+                      "Scene ",
+                      scene.sceneNumber
+                    ] }),
+                    scene.intExt && scene.intExt !== "UNKNOWN" && /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-xs", children: scene.intExt }),
+                    scene.dayNight && scene.dayNight !== "UNKNOWN" && /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-xs", children: scene.dayNight })
+                  ] }),
+                  /* @__PURE__ */ jsx("h4", { className: "font-semibold text-sm leading-tight truncate", children: scene.heading })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground leading-relaxed", children: scene.summary }),
+              /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-3 text-xs text-muted-foreground", children: [
+                scene.location && /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ jsx(MapPin, { className: "h-3 w-3" }),
+                  scene.location
+                ] }),
+                scene.characters.length > 0 && /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ jsx(Users, { className: "h-3 w-3" }),
+                  scene.characters.slice(0, 3).join(", "),
+                  scene.characters.length > 3 && ` +${scene.characters.length - 3}`
+                ] })
+              ] }),
+              isSelected && /* @__PURE__ */ jsxs(
+                "div",
+                {
+                  className: "flex items-center gap-2 pt-2 border-t border-border",
+                  onClick: (e) => e.stopPropagation(),
+                  children: [
+                    /* @__PURE__ */ jsx(Camera, { className: "h-3 w-3 text-muted-foreground" }),
+                    /* @__PURE__ */ jsx(Label, { htmlFor: `shots-${scene.sceneNumber}`, className: "text-xs whitespace-nowrap", children: "Shots:" }),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        id: `shots-${scene.sceneNumber}`,
+                        type: "number",
+                        min: 1,
+                        max: 20,
+                        value: shotCount,
+                        onChange: (e) => updateShots(scene.sceneNumber, e.target.value),
+                        className: "h-7 w-16 text-xs",
+                        disabled: isProcessing
+                      }
+                    )
+                  ]
+                }
+              )
+            ] })
+          },
+          scene.sceneNumber
+        );
+      }) }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between pt-4 border-t border-border flex-wrap gap-3", children: [
+        /* @__PURE__ */ jsxs("div", { className: "text-sm text-muted-foreground", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: selected.length }),
+          " of ",
+          scenes.length,
+          " scenes selected",
+          selected.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            " · approx ",
+            /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: totalShots }),
+            " shots"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+          /* @__PURE__ */ jsx(Button, { variant: "outline", onClick: onCancel, disabled: isProcessing, children: "Back" }),
+          /* @__PURE__ */ jsx(
+            Button,
+            {
+              onClick: handleConfirm,
+              disabled: selected.length === 0 || isProcessing,
+              children: isProcessing ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                "Building Shot List..."
+              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                "Build Shot List",
+                /* @__PURE__ */ jsx(ArrowRight, { className: "ml-2 h-4 w-4" })
+              ] })
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground text-center", children: "Next step: review and edit the shot list before any images are generated." })
+    ] })
+  ] });
+};
+const STEPS$3 = [
+  { num: 1, label: "Select Scenes" },
+  { num: 1.5, label: "Cast References", optional: true },
+  { num: 2, label: "Review Shot List" },
+  { num: 3, label: "Generate" }
+];
+const stepDisplayNumber = (num2, idx) => idx + 1;
+const StepIndicator = ({ currentStep }) => {
+  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$3.map((step, idx) => {
+    const isActive = step.num === currentStep;
+    const isComplete = step.num < currentStep;
+    return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 sm:gap-4", children: [
+      /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: cn(
+            "flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs sm:text-sm font-medium transition-colors",
+            isActive && "border-primary bg-primary/10 text-primary",
+            isComplete && "border-primary/40 bg-primary/5 text-foreground",
+            !isActive && !isComplete && "border-border bg-surface text-muted-foreground",
+            step.optional && !isActive && "border-dashed"
+          ),
+          children: [
+            /* @__PURE__ */ jsx(
+              "span",
+              {
+                className: cn(
+                  "flex items-center justify-center h-5 w-5 rounded-full text-[10px] font-bold",
+                  isActive && "bg-primary text-primary-foreground",
+                  isComplete && "bg-primary/30 text-foreground",
+                  !isActive && !isComplete && "bg-muted text-muted-foreground"
+                ),
+                children: isComplete ? /* @__PURE__ */ jsx(Check$1, { className: "h-3 w-3" }) : stepDisplayNumber(step.num, idx)
+              }
+            ),
+            /* @__PURE__ */ jsxs("span", { className: "whitespace-nowrap", children: [
+              step.label,
+              step.optional && /* @__PURE__ */ jsx("span", { className: "ml-1 text-[10px] opacity-70", children: "(optional)" })
+            ] })
+          ]
+        }
+      ),
+      idx < STEPS$3.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
+    ] }, step.num);
+  }) });
+};
+function exportShotListPDF(shots, options = {}) {
+  const pdf = new jsPDF({ orientation: "landscape", unit: "mm", format: "letter" });
+  const pageWidth = pdf.internal.pageSize.width;
+  const pageHeight = pdf.internal.pageSize.height;
+  const margin = 12;
+  const contentWidth = pageWidth - margin * 2;
+  const projectTitle = (options.projectTitle || options.title || "Shot List").trim();
+  const dateStr = (/* @__PURE__ */ new Date()).toLocaleDateString(void 0, {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+  let y = margin;
+  pdf.setFont("helvetica", "bold");
+  pdf.setFontSize(18);
+  pdf.setTextColor(20, 20, 20);
+  pdf.text(projectTitle, margin, y + 2);
+  pdf.setFont("helvetica", "normal");
+  pdf.setFontSize(10);
+  pdf.setTextColor(110, 110, 110);
+  pdf.text("FilmmakerGenius.com", pageWidth - margin, y, { align: "right" });
+  pdf.setFontSize(8);
+  pdf.text("Where Genius Meets the Silver Screen", pageWidth - margin, y + 4, { align: "right" });
+  y += 8;
+  pdf.setFontSize(10);
+  pdf.setTextColor(80, 80, 80);
+  const sceneCount = options.sceneCount ?? new Set(shots.map((s) => s.sceneNumber).filter(Boolean)).size;
+  const metaParts = [
+    `Generated: ${dateStr}`,
+    sceneCount > 0 ? `Scenes: ${sceneCount}` : null,
+    `Frames: ${shots.length}`,
+    options.genre ? `Genre: ${options.genre}` : null,
+    options.tone ? `Tone: ${options.tone}` : null
+  ].filter(Boolean);
+  pdf.text(metaParts.join("  •  "), margin, y + 2);
+  y += 6;
+  pdf.setDrawColor(200, 200, 200);
+  pdf.setLineWidth(0.3);
+  pdf.line(margin, y, pageWidth - margin, y);
+  y += 4;
+  const cols = [
+    { label: "#", width: 10 },
+    { label: "INT/EXT", width: 18 },
+    { label: "Location", width: 42 },
+    { label: "Time", width: 16 },
+    { label: "Action", width: 78 },
+    { label: "Shot Type", width: 40 },
+    { label: "Camera Move", width: 0 }
+    // fill remainder
+  ];
+  const fixedWidth = cols.reduce((sum, c) => sum + c.width, 0);
+  cols[cols.length - 1].width = contentWidth - fixedWidth;
+  const drawHeader = () => {
+    pdf.setFillColor(28, 28, 32);
+    pdf.rect(margin, y, contentWidth, 8, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(10);
+    let x = margin + 2;
+    cols.forEach((c) => {
+      pdf.text(c.label, x, y + 5.5);
+      x += c.width;
+    });
+    y += 8;
+    pdf.setTextColor(30, 30, 30);
+    pdf.setFont("helvetica", "normal");
+  };
+  drawHeader();
+  const FOOTER_RESERVE = 12;
+  pdf.setFontSize(11);
+  shots.forEach((shot, idx) => {
+    const action = shot.action || shot.visualDescription || shot.description || "—";
+    const row = [
+      String(shot.shotNumber ?? idx + 1),
+      (shot.intExt || "—").toUpperCase(),
+      shot.location || "—",
+      (shot.dayNight || "—").toUpperCase(),
+      action,
+      shot.shotType || shot.cameraAngle || "—",
+      shot.cameraMovement || "Static"
+    ];
+    const wrapped = row.map(
+      (text, i) => pdf.splitTextToSize(text, cols[i].width - 3)
+    );
+    const lineCount = Math.max(...wrapped.map((w) => w.length));
+    const rowHeight = Math.max(8, lineCount * 4.6 + 2);
+    if (y + rowHeight > pageHeight - FOOTER_RESERVE) {
+      pdf.addPage();
+      y = margin;
+      drawHeader();
+    }
+    if (idx % 2 === 0) {
+      pdf.setFillColor(245, 246, 248);
+      pdf.rect(margin, y, contentWidth, rowHeight, "F");
+    }
+    let x = margin + 2;
+    pdf.setTextColor(30, 30, 30);
+    wrapped.forEach((lines, i) => {
+      pdf.text(lines, x, y + 5);
+      x += cols[i].width;
+    });
+    y += rowHeight;
+  });
+  const pageCount = pdf.getNumberOfPages();
+  for (let i = 1; i <= pageCount; i++) {
+    pdf.setPage(i);
+    pdf.setFontSize(8);
+    pdf.setTextColor(140, 140, 140);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(
+      "Generated by FilmmakerGenius.com",
+      margin,
+      pageHeight - 5
+    );
+    pdf.text(
+      `Page ${i} of ${pageCount}`,
+      pageWidth - margin,
+      pageHeight - 5,
+      { align: "right" }
+    );
+  }
+  const safeTitle = projectTitle.replace(/\.[^.]+$/, "").replace(/[^a-z0-9]+/gi, "_").replace(/^_+|_+$/g, "").slice(0, 60) || "ShotList";
+  const isoDate = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
+  pdf.save(`${safeTitle}_ShotList_${isoDate}.pdf`);
+}
+function Skeleton({ className, ...props }) {
+  return /* @__PURE__ */ jsx("div", { className: cn("animate-pulse rounded-md bg-muted", className), ...props });
+}
+const ART_STYLE_LABELS = {
+  comic: "Comic Book",
+  noir: "Film Noir",
+  anime: "Anime",
+  realistic: "Realistic",
+  watercolor: "Watercolor",
+  sketch: "Pencil Sketch",
+  cinematic: "Cinematic"
+};
+const RecentProjectsGrid = ({
+  projects,
+  selectedId,
+  onOpen,
+  onDelete,
+  onRename,
+  onViewAll,
+  totalCount,
+  limit = 6,
+  loading = false,
+  emptyHint = "No projects yet — upload a script above to get started!",
+  compact = false
+}) => {
+  const [editingId, setEditingId] = useState(null);
+  const [draftTitle, setDraftTitle] = useState("");
+  const gridClass = compact ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
+  if (loading) {
+    return /* @__PURE__ */ jsx("div", { className: gridClass, children: Array.from({ length: compact ? 2 : 3 }).map((_, i) => /* @__PURE__ */ jsxs(Card$1, { className: "overflow-hidden", children: [
+      /* @__PURE__ */ jsx(Skeleton, { className: "aspect-video w-full" }),
+      /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-2", children: [
+        /* @__PURE__ */ jsx(Skeleton, { className: "h-4 w-3/4" }),
+        /* @__PURE__ */ jsx(Skeleton, { className: "h-3 w-1/2" }),
+        /* @__PURE__ */ jsx(Skeleton, { className: "h-8 w-full" })
+      ] })
+    ] }, i)) });
+  }
+  if (projects.length === 0) {
+    return /* @__PURE__ */ jsxs("div", { className: "text-center py-8 px-4 border-2 border-dashed border-border rounded-lg", children: [
+      /* @__PURE__ */ jsx(Film, { className: "h-8 w-8 mx-auto text-muted-foreground mb-2" }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: emptyHint }),
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-1 text-xs text-primary mt-2", children: [
+        /* @__PURE__ */ jsx(ArrowUp, { className: "h-3 w-3" }),
+        /* @__PURE__ */ jsx("span", { children: "Upload a script above to begin" })
+      ] })
+    ] });
+  }
+  const visible = projects.slice(0, limit);
+  const total = totalCount ?? projects.length;
+  const hasMore = total > limit;
+  const startEdit = (p, e) => {
+    e.stopPropagation();
+    setEditingId(p.id);
+    setDraftTitle(p.project_title || "");
+  };
+  const commitEdit = (id) => {
+    const trimmed = draftTitle.trim();
+    if (trimmed && onRename) onRename(id, trimmed);
+    setEditingId(null);
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsx("div", { className: gridClass, children: visible.map((p) => {
+      const title = p.project_title || (p.genre ? `${p.genre} project` : "Untitled storyboard");
+      const sceneCount = p.scene_count ?? 0;
+      const frameCount = p.frame_count ?? (Array.isArray(p.storyboard_frames) ? p.storyboard_frames.filter((f) => f.imageData).length : 0);
+      let relativeDate = "";
+      try {
+        relativeDate = formatDistanceToNow(new Date(p.created_at), { addSuffix: true });
+      } catch {
+        relativeDate = new Date(p.created_at).toLocaleDateString();
+      }
+      const isActive = selectedId === p.id;
+      const styleLabel = p.art_style ? ART_STYLE_LABELS[p.art_style] || p.art_style : null;
+      const isEditing = editingId === p.id;
+      return /* @__PURE__ */ jsxs(
+        Card$1,
+        {
+          className: `overflow-hidden border transition-colors ${isActive ? "border-primary ring-1 ring-primary/30" : "border-border hover:border-primary/50"}`,
+          children: [
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                onClick: () => onOpen(p),
+                className: "block w-full text-left",
+                children: /* @__PURE__ */ jsxs("div", { className: "aspect-video bg-muted/40 relative overflow-hidden", children: [
+                  p.thumbnail_url ? /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      src: p.thumbnail_url,
+                      alt: `${title} thumbnail`,
+                      className: "w-full h-full object-cover",
+                      loading: "lazy"
+                    }
+                  ) : /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx(Image$1, { className: "h-8 w-8" }) }),
+                  p.is_complete && /* @__PURE__ */ jsx(Badge, { className: "absolute top-2 right-2", variant: "secondary", children: "Complete" }),
+                  p.animatic_url && /* @__PURE__ */ jsx(Badge, { className: "absolute bottom-2 left-2 bg-primary/90 text-primary-foreground", children: "▶ Animatic ready" })
+                ] })
+              }
+            ),
+            /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-2", children: [
+              /* @__PURE__ */ jsx("div", { className: "flex items-start justify-between gap-2", children: isEditing ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 flex-1", children: [
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    value: draftTitle,
+                    onChange: (e) => setDraftTitle(e.target.value),
+                    onClick: (e) => e.stopPropagation(),
+                    onKeyDown: (e) => {
+                      if (e.key === "Enter") commitEdit(p.id);
+                      if (e.key === "Escape") setEditingId(null);
+                    },
+                    autoFocus: true,
+                    className: "h-7 text-sm"
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "icon",
+                    variant: "ghost",
+                    className: "h-7 w-7",
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      commitEdit(p.id);
+                    },
+                    "aria-label": "Save title",
+                    children: /* @__PURE__ */ jsx(Check$1, { className: "h-3.5 w-3.5" })
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "icon",
+                    variant: "ghost",
+                    className: "h-7 w-7",
+                    onClick: (e) => {
+                      e.stopPropagation();
+                      setEditingId(null);
+                    },
+                    "aria-label": "Cancel",
+                    children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+                  }
+                )
+              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(
+                  "h3",
+                  {
+                    className: "font-semibold text-sm truncate flex-1",
+                    title,
+                    children: title
+                  }
+                ),
+                onRename && /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "icon",
+                    variant: "ghost",
+                    className: "h-6 w-6 shrink-0",
+                    onClick: (e) => startEdit(p, e),
+                    "aria-label": "Rename project",
+                    children: /* @__PURE__ */ jsx(Pencil, { className: "h-3 w-3 text-muted-foreground" })
+                  }
+                )
+              ] }) }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-xs text-muted-foreground flex-wrap", children: [
+                /* @__PURE__ */ jsx("span", { children: relativeDate }),
+                /* @__PURE__ */ jsx("span", { children: "•" }),
+                /* @__PURE__ */ jsxs("span", { children: [
+                  sceneCount,
+                  " scene",
+                  sceneCount === 1 ? "" : "s"
+                ] }),
+                /* @__PURE__ */ jsx("span", { children: "•" }),
+                /* @__PURE__ */ jsxs("span", { children: [
+                  frameCount,
+                  " frame",
+                  frameCount === 1 ? "" : "s"
+                ] })
+              ] }),
+              styleLabel && /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-[10px] py-0 px-2", children: styleLabel }) }),
+              /* @__PURE__ */ jsxs("div", { className: "flex gap-2 pt-1", children: [
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    size: "sm",
+                    variant: "default",
+                    className: "flex-1",
+                    onClick: () => onOpen(p),
+                    children: "Open"
+                  }
+                ),
+                /* @__PURE__ */ jsxs(AlertDialog, { children: [
+                  /* @__PURE__ */ jsx(AlertDialogTrigger, { asChild: true, children: /* @__PURE__ */ jsx(
+                    Button,
+                    {
+                      size: "icon",
+                      variant: "ghost",
+                      "aria-label": "Delete project",
+                      children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4 text-destructive" })
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsxs(AlertDialogContent, { children: [
+                    /* @__PURE__ */ jsxs(AlertDialogHeader, { children: [
+                      /* @__PURE__ */ jsx(AlertDialogTitle, { children: "Delete this project?" }),
+                      /* @__PURE__ */ jsxs(AlertDialogDescription, { children: [
+                        '"',
+                        title,
+                        '" and all of its generated frames will be permanently removed. This cannot be undone.'
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs(AlertDialogFooter, { children: [
+                      /* @__PURE__ */ jsx(AlertDialogCancel, { children: "Cancel" }),
+                      /* @__PURE__ */ jsx(
+                        AlertDialogAction,
+                        {
+                          className: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+                          onClick: () => onDelete(p.id),
+                          children: "Delete"
+                        }
+                      )
+                    ] })
+                  ] })
+                ] })
+              ] })
+            ] })
+          ]
+        },
+        p.id
+      );
+    }) }),
+    hasMore && onViewAll && /* @__PURE__ */ jsx("div", { className: "text-center", children: /* @__PURE__ */ jsxs(Button, { variant: "link", size: "sm", onClick: onViewAll, children: [
+      "View all projects (",
+      total,
+      ") →"
+    ] }) })
+  ] });
+};
+const UpgradeBanner = ({
+  message,
+  ctaLabel = "See plans",
+  className,
+  dismissible = true
+}) => {
+  const [dismissed, setDismissed] = useState(false);
+  if (dismissed) return null;
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      className: cn(
+        "flex items-center gap-3 rounded-lg border border-primary/30 bg-primary/5 px-4 py-2 text-sm",
+        className
+      ),
+      children: [
+        /* @__PURE__ */ jsx(Sparkles, { className: "h-4 w-4 shrink-0 text-primary" }),
+        /* @__PURE__ */ jsx("span", { className: "flex-1 text-foreground", children: message }),
+        /* @__PURE__ */ jsx(Button, { asChild: true, size: "sm", variant: "default", className: "h-7", children: /* @__PURE__ */ jsx(Link, { to: "/membership", children: ctaLabel }) }),
+        dismissible && /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setDismissed(true),
+            className: "text-muted-foreground hover:text-foreground",
+            "aria-label": "Dismiss",
+            children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+          }
+        )
+      ]
+    }
+  );
+};
+const CastTab = ({
+  cast,
+  onGenerateReference,
+  onGenerateAllMissing,
+  onUploadReferencePhoto,
+  generatingNames,
+  isBulkGenerating,
+  framesUsageByName
+}) => {
+  const [confirmRegenName, setConfirmRegenName] = useState(null);
+  const [zoomImage, setZoomImage] = useState(null);
+  const fileInputRefs = useRef({});
+  if (!cast || cast.length === 0) {
+    return /* @__PURE__ */ jsxs("div", { className: "text-center py-10 px-4 border-2 border-dashed border-border rounded-lg", children: [
+      /* @__PURE__ */ jsx(UserCircle2, { className: "h-10 w-10 mx-auto text-muted-foreground mb-2" }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "No cast extracted for this project yet." }),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-1", children: "Process a script through the Detailed Breakdown flow to populate the cast." })
+    ] });
+  }
+  const initials = (name) => name.split(/\s+/).map((p) => p[0]).filter(Boolean).slice(0, 2).join("").toUpperCase();
+  const missingCount = cast.filter((c) => !c.reference_image_url).length;
+  const isGenerating = (name) => (generatingNames == null ? void 0 : generatingNames.has(name)) ?? false;
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-3", children: [
+    /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-2", children: [
+      /* @__PURE__ */ jsxs("h3", { className: "font-semibold text-base flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(UserCircle2, { className: "h-5 w-5 text-primary" }),
+        "Cast (",
+        cast.length,
+        ")"
+      ] }),
+      onGenerateAllMissing && missingCount > 0 && /* @__PURE__ */ jsxs(
+        Button,
+        {
+          size: "sm",
+          variant: "outline",
+          onClick: () => onGenerateAllMissing(),
+          disabled: isBulkGenerating,
+          children: [
+            isBulkGenerating ? /* @__PURE__ */ jsx(Loader2, { className: "h-3.5 w-3.5 mr-1.5 animate-spin" }) : /* @__PURE__ */ jsx(Wand2, { className: "h-3.5 w-3.5 mr-1.5" }),
+            "Generate All Missing (",
+            missingCount,
+            " ",
+            /* @__PURE__ */ jsx(Coins, { className: "h-3 w-3 mx-1" }),
+            ")"
+          ]
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Reference images keep characters consistent across every generated frame. All portraits are framed three-quarter length (mid-thigh up). 1 credit per character. Upload a photo to lock in a real cast member's face." }),
+    /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: cast.map((member) => {
+      const busy = isGenerating(member.name);
+      const hasRef = !!member.reference_image_url;
+      const usedInFrames = (framesUsageByName == null ? void 0 : framesUsageByName[member.name]) ?? 0;
+      return /* @__PURE__ */ jsx(Card$1, { className: "border-border overflow-hidden", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex gap-4", children: [
+        /* @__PURE__ */ jsxs("div", { className: "shrink-0", children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => hasRef && setZoomImage({ url: member.reference_image_url, name: member.name }),
+              className: `relative block w-28 h-40 rounded-md border border-border overflow-hidden bg-muted group ${hasRef ? "cursor-zoom-in" : "cursor-default"}`,
+              "aria-label": hasRef ? `Enlarge ${member.name}` : `${member.name} (no portrait yet)`,
+              children: hasRef ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(
+                  "img",
+                  {
+                    src: member.reference_image_url,
+                    alt: `${member.name} reference`,
+                    className: "w-full h-full object-cover",
+                    loading: "lazy"
+                  }
+                ),
+                /* @__PURE__ */ jsx("div", { className: "absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100", children: /* @__PURE__ */ jsx(ZoomIn, { className: "h-5 w-5 text-white" }) })
+              ] }) : /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center bg-primary/10 text-primary text-xl font-semibold", children: initials(member.name) || "?" })
+            }
+          ),
+          hasRef && /* @__PURE__ */ jsx("p", { className: "text-[10px] text-muted-foreground text-center mt-1", children: "Click to enlarge" })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-0 space-y-2", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-2", children: [
+            /* @__PURE__ */ jsx("h4", { className: "font-semibold text-sm truncate", children: member.name }),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-end gap-1", children: [
+              /* @__PURE__ */ jsxs(Badge, { variant: "outline", className: "text-[10px]", children: [
+                member.appears_in_scenes.length,
+                " scene",
+                member.appears_in_scenes.length === 1 ? "" : "s"
+              ] }),
+              usedInFrames > 0 && /* @__PURE__ */ jsxs(Badge, { variant: "secondary", className: "text-[10px]", children: [
+                "Used in ",
+                usedInFrames,
+                " frame",
+                usedInFrames === 1 ? "" : "s"
+              ] })
+            ] })
+          ] }),
+          member.description && /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground leading-snug line-clamp-3", children: member.description }),
+          member.appears_in_scenes.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-1", children: [
+            member.appears_in_scenes.slice(0, 8).map((n) => /* @__PURE__ */ jsxs(
+              Badge,
+              {
+                variant: "secondary",
+                className: "text-[10px] px-1.5 py-0",
+                children: [
+                  "S",
+                  n
+                ]
+              },
+              n
+            )),
+            member.appears_in_scenes.length > 8 && /* @__PURE__ */ jsxs(Badge, { variant: "secondary", className: "text-[10px] px-1.5 py-0", children: [
+              "+",
+              member.appears_in_scenes.length - 8
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-1.5 pt-1", children: [
+            onGenerateReference && (hasRef ? /* @__PURE__ */ jsxs(
+              AlertDialog,
+              {
+                open: confirmRegenName === member.name,
+                onOpenChange: (open) => setConfirmRegenName(open ? member.name : null),
+                children: [
+                  /* @__PURE__ */ jsx(AlertDialogTrigger, { asChild: true, children: /* @__PURE__ */ jsxs(
+                    Button,
+                    {
+                      size: "sm",
+                      variant: "outline",
+                      disabled: busy,
+                      className: "w-full",
+                      children: [
+                        busy ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 mr-1 animate-spin" }) : /* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3 mr-1" }),
+                        "Regenerate (1 credit)"
+                      ]
+                    }
+                  ) }),
+                  /* @__PURE__ */ jsxs(AlertDialogContent, { children: [
+                    /* @__PURE__ */ jsxs(AlertDialogHeader, { children: [
+                      /* @__PURE__ */ jsxs(AlertDialogTitle, { children: [
+                        "Regenerate ",
+                        member.name,
+                        "?"
+                      ] }),
+                      /* @__PURE__ */ jsx(AlertDialogDescription, { children: "This will replace the existing reference image and cost 1 credit." })
+                    ] }),
+                    /* @__PURE__ */ jsxs(AlertDialogFooter, { children: [
+                      /* @__PURE__ */ jsx(AlertDialogCancel, { children: "Cancel" }),
+                      /* @__PURE__ */ jsx(
+                        AlertDialogAction,
+                        {
+                          onClick: async () => {
+                            setConfirmRegenName(null);
+                            await onGenerateReference(member.name);
+                          },
+                          children: "Regenerate"
+                        }
+                      )
+                    ] })
+                  ] })
+                ]
+              }
+            ) : /* @__PURE__ */ jsxs(
+              Button,
+              {
+                size: "sm",
+                variant: "default",
+                disabled: busy,
+                onClick: () => onGenerateReference(member.name),
+                className: "w-full",
+                children: [
+                  busy ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 mr-1 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3 mr-1" }),
+                  "Generate Portrait (1 credit)"
+                ]
+              }
+            )),
+            onUploadReferencePhoto && /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  ref: (el) => fileInputRefs.current[member.name] = el,
+                  type: "file",
+                  accept: "image/png,image/jpeg,image/webp",
+                  className: "hidden",
+                  onChange: async (e) => {
+                    var _a2;
+                    const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+                    if (file) await onUploadReferencePhoto(member.name, file);
+                    e.target.value = "";
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsxs(
+                Button,
+                {
+                  size: "sm",
+                  variant: "ghost",
+                  disabled: busy,
+                  onClick: () => {
+                    var _a2;
+                    return (_a2 = fileInputRefs.current[member.name]) == null ? void 0 : _a2.click();
+                  },
+                  className: "w-full text-xs",
+                  title: "Upload a real photo of the cast member — the AI will use it as the face for this character",
+                  children: [
+                    /* @__PURE__ */ jsx(Upload, { className: "h-3 w-3 mr-1" }),
+                    hasRef ? "Use a real photo instead" : "Browse cast photo (1 credit)"
+                  ]
+                }
+              )
+            ] })
+          ] })
+        ] })
+      ] }) }, member.name);
+    }) }),
+    /* @__PURE__ */ jsx(Dialog, { open: !!zoomImage, onOpenChange: (open) => !open && setZoomImage(null), children: /* @__PURE__ */ jsxs(DialogContent, { className: "max-w-2xl p-2 bg-background", children: [
+      /* @__PURE__ */ jsx(DialogTitle, { className: "sr-only", children: zoomImage == null ? void 0 : zoomImage.name }),
+      zoomImage && /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx(
+          "img",
+          {
+            src: zoomImage.url,
+            alt: zoomImage.name,
+            className: "w-full h-auto rounded-md max-h-[80vh] object-contain"
+          }
+        ),
+        /* @__PURE__ */ jsx("p", { className: "text-center text-sm font-medium", children: zoomImage.name })
+      ] })
+    ] }) })
+  ] });
+};
+const Slider = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsxs(
+  SliderPrimitive.Root,
+  {
+    ref,
+    className: cn("relative flex w-full touch-none select-none items-center", className),
+    ...props,
+    children: [
+      /* @__PURE__ */ jsx(SliderPrimitive.Track, { className: "relative h-2 w-full grow overflow-hidden rounded-full bg-secondary", children: /* @__PURE__ */ jsx(SliderPrimitive.Range, { className: "absolute h-full bg-primary" }) }),
+      /* @__PURE__ */ jsx(SliderPrimitive.Thumb, { className: "block h-5 w-5 rounded-full border-2 border-primary bg-background ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" })
+    ]
+  }
+));
+Slider.displayName = SliderPrimitive.Root.displayName;
+const GIF_WORKER_URL = "/gif.worker.js";
+const DEFAULT_DURATION = 3;
+const MIN_DURATION = 0.5;
+const MAX_DURATION = 10;
+const parseAspect = (ratio) => {
+  switch (ratio) {
+    case "9:16":
+      return { w: 540, h: 960 };
+    case "1:1":
+      return { w: 720, h: 720 };
+    case "4:3":
+      return { w: 800, h: 600 };
+    case "16:9":
+    default:
+      return { w: 960, h: 540 };
+  }
+};
+const formatDuration$1 = (seconds) => {
+  const m = Math.floor(seconds / 60);
+  const s = Math.round(seconds % 60);
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+};
+const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAnimaticUrl, isPaidUser = false, onAnimaticSaved }) => {
+  const { user } = useAuth();
+  const { toast: toast2 } = useToast();
+  const canvasRef = useRef(null);
+  const previewRafRef = useRef(null);
+  const dragIndexRef = useRef(null);
+  const usableFrames = useMemo(() => frames.filter((f) => !!f.imageData), [frames]);
+  const [timeline, setTimeline] = useState([]);
+  const [transition, setTransition] = useState("none");
+  const [showHeadings, setShowHeadings] = useState(false);
+  const [bulkDuration, setBulkDuration] = useState(DEFAULT_DURATION);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeOpacity, setActiveOpacity] = useState(1);
+  const [isExporting, setIsExporting] = useState(false);
+  const [exportProgress, setExportProgress] = useState(0);
+  const [animaticUrl, setAnimaticUrl] = useState(existingAnimaticUrl ?? null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  useEffect(() => {
+    setAnimaticUrl(existingAnimaticUrl ?? null);
+  }, [existingAnimaticUrl]);
+  useEffect(() => {
+    setTimeline(
+      usableFrames.map((f, idx) => ({
+        ...f,
+        id: `${f.shotNumber}-${idx}`,
+        duration: DEFAULT_DURATION
+      }))
+    );
+    setActiveIndex(0);
+  }, [usableFrames]);
+  const totalDuration = useMemo(
+    () => timeline.reduce((sum, f) => sum + f.duration, 0),
+    [timeline]
+  );
+  const dims = useMemo(() => parseAspect(aspectRatio), [aspectRatio]);
+  const updateDuration = (id, value) => {
+    setTimeline(
+      (prev) => prev.map((f) => f.id === id ? { ...f, duration: Math.max(MIN_DURATION, Math.min(MAX_DURATION, value)) } : f)
+    );
+  };
+  const applyToAll = () => {
+    setTimeline((prev) => prev.map((f) => ({ ...f, duration: bulkDuration })));
+  };
+  const handleDragStart = (idx) => {
+    dragIndexRef.current = idx;
+  };
+  const handleDragOver = (e) => e.preventDefault();
+  const handleDrop = (idx) => {
+    const from = dragIndexRef.current;
+    dragIndexRef.current = null;
+    if (from === null || from === idx) return;
+    setTimeline((prev) => {
+      const next = [...prev];
+      const [moved] = next.splice(from, 1);
+      next.splice(idx, 0, moved);
+      return next;
+    });
+  };
+  const stopPreview = useCallback(() => {
+    if (previewRafRef.current) {
+      cancelAnimationFrame(previewRafRef.current);
+      previewRafRef.current = null;
+    }
+    setIsPlaying(false);
+    setActiveOpacity(1);
+  }, []);
+  useEffect(() => () => stopPreview(), [stopPreview]);
+  const startPreview = useCallback(() => {
+    if (timeline.length === 0) return;
+    setIsPlaying(true);
+    setActiveIndex(0);
+    let frameIdx = 0;
+    let frameStart = performance.now();
+    const tick = (now) => {
+      const current = timeline[frameIdx];
+      if (!current) {
+        stopPreview();
+        return;
+      }
+      const elapsed = (now - frameStart) / 1e3;
+      if (transition !== "none" && elapsed > current.duration - 0.3) {
+        const t = Math.max(0, Math.min(1, (current.duration - elapsed) / 0.3));
+        setActiveOpacity(transition === "fade" ? t : t);
+      } else {
+        setActiveOpacity(1);
+      }
+      if (elapsed >= current.duration) {
+        frameIdx += 1;
+        if (frameIdx >= timeline.length) {
+          stopPreview();
+          return;
+        }
+        setActiveIndex(frameIdx);
+        frameStart = now;
+      }
+      previewRafRef.current = requestAnimationFrame(tick);
+    };
+    previewRafRef.current = requestAnimationFrame(tick);
+  }, [timeline, transition, stopPreview]);
+  const loadImage = (src) => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error(`Failed to load frame image`));
+    img.src = src;
+  });
+  const drawFrame = (ctx, img, heading, opacity) => {
+    ctx.fillStyle = "#000";
+    ctx.fillRect(0, 0, dims.w, dims.h);
+    const scale = Math.max(dims.w / img.width, dims.h / img.height);
+    const w = img.width * scale;
+    const h = img.height * scale;
+    const x = (dims.w - w) / 2;
+    const y = (dims.h - h) / 2;
+    ctx.globalAlpha = opacity;
+    ctx.drawImage(img, x, y, w, h);
+    ctx.globalAlpha = 1;
+    if (showHeadings && heading) {
+      const barH = Math.round(dims.h * 0.09);
+      ctx.fillStyle = "rgba(0,0,0,0.65)";
+      ctx.fillRect(0, dims.h - barH, dims.w, barH);
+      ctx.fillStyle = "#fff";
+      ctx.font = `${Math.round(barH * 0.45)}px sans-serif`;
+      ctx.textBaseline = "middle";
+      ctx.fillText(heading, 24, dims.h - barH / 2, dims.w - 48);
+    }
+  };
+  const handleExportGIF = async () => {
+    if (timeline.length === 0) return;
+    setIsExporting(true);
+    setExportProgress(0);
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = dims.w;
+      canvas.height = dims.h;
+      const ctx = canvas.getContext("2d");
+      const gif = new GIF({
+        workers: 2,
+        quality: 10,
+        width: dims.w,
+        height: dims.h,
+        workerScript: GIF_WORKER_URL
+      });
+      const stepMs = 100;
+      let totalSec = 0;
+      const maxFrames = Math.min(timeline.length, 30);
+      for (let i = 0; i < maxFrames; i++) {
+        const tf = timeline[i];
+        if (totalSec >= 15) break;
+        const img = await loadImage(tf.imageData);
+        const fullSteps = Math.max(1, Math.round(tf.duration * 1e3 / stepMs));
+        const transitionSteps = transition !== "none" ? 3 : 0;
+        const holdSteps = Math.max(1, fullSteps - transitionSteps);
+        for (let s = 0; s < holdSteps; s++) {
+          if (totalSec >= 15) break;
+          drawFrame(ctx, img, tf.sceneHeading, 1);
+          gif.addFrame(ctx, { copy: true, delay: stepMs });
+          totalSec += stepMs / 1e3;
+        }
+        if (transitionSteps > 0 && i < timeline.length - 1) {
+          for (let s = transitionSteps; s > 0 && totalSec < 15; s--) {
+            const opacity = s / transitionSteps;
+            drawFrame(ctx, img, tf.sceneHeading, opacity);
+            gif.addFrame(ctx, { copy: true, delay: stepMs });
+            totalSec += stepMs / 1e3;
+          }
+        }
+        setExportProgress(Math.round((i + 1) / timeline.length * 70));
+      }
+      gif.on("progress", (p) => {
+        setExportProgress(70 + Math.round(p * 30));
+      });
+      gif.on("finished", async (blob) => {
+        const url2 = URL.createObjectURL(blob);
+        const safeTitle = (projectTitle || "animatic").replace(/[^a-z0-9]+/gi, "_").toLowerCase();
+        const a = document.createElement("a");
+        a.href = url2;
+        a.download = `${safeTitle}_animatic.gif`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url2);
+        if ((user == null ? void 0 : user.id) && projectId) {
+          try {
+            const path = `${user.id}/${projectId}-${Date.now()}.gif`;
+            const { error: upErr } = await supabase.storage.from("storyboard-animatics").upload(path, blob, { contentType: "image/gif", upsert: true });
+            if (upErr) throw upErr;
+            const { data: pub } = supabase.storage.from("storyboard-animatics").getPublicUrl(path);
+            const publicUrl = pub.publicUrl;
+            await supabase.from("storyboard_projects").update({ animatic_url: publicUrl }).eq("id", projectId);
+            setAnimaticUrl(publicUrl);
+            onAnimaticSaved == null ? void 0 : onAnimaticSaved(publicUrl);
+          } catch (e) {
+            console.warn("Animatic upload failed (download still succeeded)", e);
+          }
+        }
+        setIsExporting(false);
+        setExportProgress(0);
+        toast2({ title: "GIF ready", description: "Your animatic was downloaded." });
+      });
+      gif.on("abort", () => {
+        setIsExporting(false);
+        setExportProgress(0);
+      });
+      gif.render();
+    } catch (err) {
+      console.error("GIF export failed", err);
+      setIsExporting(false);
+      setExportProgress(0);
+      toast2({
+        title: "Export failed",
+        description: err instanceof Error ? err.message : "Try again.",
+        variant: "destructive"
+      });
+    }
+  };
+  if (usableFrames.length === 0) {
+    return /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-8 text-center space-y-3", children: [
+      /* @__PURE__ */ jsx(Film, { className: "h-10 w-10 mx-auto text-muted-foreground" }),
+      /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "No frames available" }),
+      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Generate storyboard frames first, then come back here to assemble an animatic." })
+    ] }) });
+  }
+  const activeFrame = timeline[activeIndex];
+  return /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsxs("h3", { className: "font-semibold flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(Film, { className: "h-4 w-4 text-primary" }),
+            "Animatic Preview"
+          ] }),
+          /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground", children: [
+            "In-browser preview · Total ",
+            formatDuration$1(totalDuration),
+            " · ",
+            timeline.length,
+            " frame",
+            timeline.length === 1 ? "" : "s"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs(Button, { onClick: isPlaying ? stopPreview : startPreview, size: "sm", variant: "secondary", children: [
+          isPlaying ? /* @__PURE__ */ jsx(Pause, { className: "h-4 w-4 mr-2" }) : /* @__PURE__ */ jsx(Play, { className: "h-4 w-4 mr-2" }),
+          isPlaying ? "Pause" : "Play"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: "relative w-full bg-black rounded-lg overflow-hidden mx-auto",
+          style: { aspectRatio: `${dims.w} / ${dims.h}`, maxWidth: 720 },
+          children: [
+            (activeFrame == null ? void 0 : activeFrame.imageData) ? /* @__PURE__ */ jsx(
+              "img",
+              {
+                src: activeFrame.imageData,
+                alt: `Frame ${activeIndex + 1}`,
+                className: "absolute inset-0 w-full h-full object-cover transition-opacity",
+                style: { opacity: activeOpacity }
+              }
+            ) : /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx(Image$1, { className: "h-8 w-8" }) }),
+            showHeadings && (activeFrame == null ? void 0 : activeFrame.sceneHeading) && /* @__PURE__ */ jsx("div", { className: "absolute bottom-0 left-0 right-0 bg-black/65 text-white px-4 py-2 text-sm", children: activeFrame.sceneHeading })
+          ]
+        }
+      )
+    ] }) }),
+    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+      /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsx(Label, { children: "Transition" }),
+          /* @__PURE__ */ jsxs(Select, { value: transition, onValueChange: (v2) => setTransition(v2), children: [
+            /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, {}) }),
+            /* @__PURE__ */ jsxs(SelectContent, { children: [
+              /* @__PURE__ */ jsx(SelectItem, { value: "none", children: "None (hard cut)" }),
+              /* @__PURE__ */ jsx(SelectItem, { value: "dissolve", children: "Dissolve (0.3s)" }),
+              /* @__PURE__ */ jsx(SelectItem, { value: "fade", children: "Fade to black" })
+            ] })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          /* @__PURE__ */ jsxs(Label, { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsx("span", { children: "Show scene headings" }),
+            /* @__PURE__ */ jsx(Switch, { checked: showHeadings, onCheckedChange: setShowHeadings })
+          ] }),
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Overlays each frame's scene heading as a lower-third caption." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+          /* @__PURE__ */ jsxs(Label, { children: [
+            "Apply duration to all: ",
+            bulkDuration.toFixed(1),
+            "s"
+          ] }),
+          /* @__PURE__ */ jsx(Button, { size: "sm", variant: "outline", onClick: applyToAll, children: "Apply to all" })
+        ] }),
+        /* @__PURE__ */ jsx(
+          Slider,
+          {
+            value: [bulkDuration],
+            min: MIN_DURATION,
+            max: MAX_DURATION,
+            step: 0.5,
+            onValueChange: (v2) => setBulkDuration(v2[0])
+          }
+        )
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+        /* @__PURE__ */ jsx("h3", { className: "font-semibold text-sm", children: "Timeline" }),
+        /* @__PURE__ */ jsxs(Badge, { variant: "outline", className: "text-xs", children: [
+          "Total: ",
+          formatDuration$1(totalDuration)
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "overflow-x-auto", children: /* @__PURE__ */ jsx("div", { className: "flex gap-3 pb-2 min-w-max", children: timeline.map((f, idx) => /* @__PURE__ */ jsxs(
+        "div",
+        {
+          draggable: true,
+          onDragStart: () => handleDragStart(idx),
+          onDragOver: handleDragOver,
+          onDrop: () => handleDrop(idx),
+          className: `w-36 shrink-0 border rounded-md bg-card cursor-move ${idx === activeIndex ? "ring-2 ring-primary" : ""}`,
+          onClick: () => {
+            stopPreview();
+            setActiveIndex(idx);
+          },
+          children: [
+            /* @__PURE__ */ jsxs("div", { className: "aspect-video bg-muted rounded-t-md overflow-hidden relative", children: [
+              f.imageData ? /* @__PURE__ */ jsx("img", { src: f.imageData, alt: `Frame ${idx + 1}`, className: "w-full h-full object-cover" }) : /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center text-muted-foreground", children: /* @__PURE__ */ jsx(Image$1, { className: "h-5 w-5" }) }),
+              /* @__PURE__ */ jsxs("div", { className: "absolute top-1 left-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded flex items-center gap-1", children: [
+                /* @__PURE__ */ jsx(GripVertical, { className: "h-3 w-3" }),
+                "#",
+                idx + 1
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "p-2 space-y-1", children: [
+              /* @__PURE__ */ jsx(Label, { className: "text-[10px] text-muted-foreground", children: "Duration (s)" }),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "number",
+                  min: MIN_DURATION,
+                  max: MAX_DURATION,
+                  step: 0.5,
+                  value: f.duration,
+                  onChange: (e) => updateDuration(f.id, parseFloat(e.target.value) || DEFAULT_DURATION),
+                  onClick: (e) => e.stopPropagation(),
+                  className: "w-full bg-background border border-input rounded px-2 py-1 text-xs"
+                }
+              )
+            ] })
+          ]
+        },
+        f.id
+      )) }) })
+    ] }) }),
+    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsxs("h3", { className: "font-semibold flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 text-primary" }),
+            "Export Animatic"
+          ] }),
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "GIF export runs in your browser · max 15s · 10fps · 30 frames max" }),
+          timeline.length > 30 && /* @__PURE__ */ jsx("p", { className: "text-xs text-destructive mt-1", children: "GIF export is limited to the first 30 frames. For longer projects, trim the timeline." })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
+          isPaidUser ? /* @__PURE__ */ jsx(
+            Button,
+            {
+              onClick: () => setConfirmOpen(true),
+              disabled: isExporting || timeline.length === 0,
+              children: isExporting ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 mr-2 animate-spin" }),
+                "Exporting… ",
+                exportProgress,
+                "%"
+              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                "Export as GIF (2 credits)"
+              ] })
+            }
+          ) : /* @__PURE__ */ jsxs(Button, { variant: "outline", disabled: true, title: "GIF export available on Creator plan and above", children: [
+            /* @__PURE__ */ jsx(Lock, { className: "h-4 w-4 mr-2" }),
+            "Export as GIF (Creator+)"
+          ] }),
+          /* @__PURE__ */ jsxs(
+            Button,
+            {
+              variant: "outline",
+              disabled: true,
+              title: "MP4 export coming soon — upgrade to Pro when available",
+              children: [
+                /* @__PURE__ */ jsx(Lock, { className: "h-4 w-4 mr-2" }),
+                "Export as MP4 (soon)"
+              ]
+            }
+          ),
+          animaticUrl && projectId && /* @__PURE__ */ jsxs(
+            Button,
+            {
+              variant: "secondary",
+              onClick: async () => {
+                const link = `${window.location.origin}/animatic/${projectId}`;
+                try {
+                  await navigator.clipboard.writeText(link);
+                  toast2({ title: "Share link copied", description: link });
+                } catch {
+                  toast2({ title: "Share link", description: link });
+                }
+              },
+              children: [
+                /* @__PURE__ */ jsx(Share2, { className: "h-4 w-4 mr-2" }),
+                "Copy Share Link"
+              ]
+            }
+          )
+        ] })
+      ] }),
+      animaticUrl && /* @__PURE__ */ jsxs("div", { className: "text-xs text-muted-foreground", children: [
+        "▶ Animatic ready ·",
+        " ",
+        /* @__PURE__ */ jsx("a", { href: animaticUrl, target: "_blank", rel: "noreferrer", className: "text-primary underline", children: "view saved GIF" })
+      ] }),
+      isExporting && /* @__PURE__ */ jsx("div", { className: "w-full h-1.5 bg-muted rounded overflow-hidden", children: /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: "h-full bg-primary transition-all",
+          style: { width: `${exportProgress}%` }
+        }
+      ) })
+    ] }) }),
+    /* @__PURE__ */ jsx(AlertDialog, { open: confirmOpen, onOpenChange: setConfirmOpen, children: /* @__PURE__ */ jsxs(AlertDialogContent, { children: [
+      /* @__PURE__ */ jsxs(AlertDialogHeader, { children: [
+        /* @__PURE__ */ jsx(AlertDialogTitle, { children: "Export animatic as GIF?" }),
+        /* @__PURE__ */ jsx(AlertDialogDescription, { children: "This will use 2 credits. The GIF will download and a public share link will be saved to this project." })
+      ] }),
+      /* @__PURE__ */ jsxs(AlertDialogFooter, { children: [
+        /* @__PURE__ */ jsx(AlertDialogCancel, { children: "Cancel" }),
+        /* @__PURE__ */ jsx(
+          AlertDialogAction,
+          {
+            onClick: () => {
+              setConfirmOpen(false);
+              handleExportGIF();
+            },
+            children: "Export"
+          }
+        )
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsx("canvas", { ref: canvasRef, className: "hidden" })
+  ] });
+};
+const CREDITS_PER_FRAME = 1;
+const SHOT_TYPES = ["Wide Shot", "Medium Shot", "Close-Up", "Over-the-Shoulder", "POV", "Two-Shot", "Insert"];
+const CAMERA_MOVEMENTS = ["Static", "Pan", "Tilt", "Dolly In", "Dolly Out", "Handheld", "Crane"];
+const Storyboarding = () => {
+  var _a2, _b2, _c, _d, _e, _f, _g, _h;
+  const { userProfile } = useAuth();
+  const { toast: toast2 } = useToast();
+  const navigate = useNavigate();
+  const { projects, loading, saveProject, updateProject, renameProject, deleteProject, refetch } = useStoryboardProjects();
+  const [currentProject, setCurrentProject] = useState({
+    scriptText: "",
+    scriptFileName: "",
+    genre: "",
+    tone: "",
+    artStyle: "comic",
+    customStylePrompt: "",
+    aspectRatio: "16:9",
+    characterDefinitions: [],
+    styleReferencePrompt: "",
+    styleReferenceImage: ""
+    // Actual base64 image URL for style reference
+  });
+  const [isProcessingScript, setIsProcessingScript] = useState(false);
+  const [processingElapsedTime, setProcessingElapsedTime] = useState(0);
+  const {
+    processFile,
+    isProcessing: isProcessingFile,
+    currentStage,
+    elapsedTime,
+    progress,
+    currentFileName,
+    currentFileSize
+  } = useOCRUpload();
+  const [selectedProject, setSelectedProject] = useState(null);
+  useState([]);
+  const [generatingStoryboard, setGeneratingStoryboard] = useState(false);
+  const [generatingElapsedTime, setGeneratingElapsedTime] = useState(0);
+  const [editingShot, setEditingShot] = useState(null);
+  const [editValues, setEditValues] = useState({});
+  const [editingFrame, setEditingFrame] = useState(null);
+  const [frameEditValues, setFrameEditValues] = useState({});
+  useState(null);
+  const [generatingFrames, setGeneratingFrames] = useState(/* @__PURE__ */ new Set());
+  const [frameErrors, setFrameErrors] = useState(/* @__PURE__ */ new Map());
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showGlossary, setShowGlossary] = useState(false);
+  useState(false);
+  const [aiPrompt, setAiPrompt] = useState(/* @__PURE__ */ new Map());
+  const [isParsingPrompt, setIsParsingPrompt] = useState(/* @__PURE__ */ new Map());
+  const [frameStyles, setFrameStyles] = useState(/* @__PURE__ */ new Map());
+  const [frameAngles, setFrameAngles] = useState(/* @__PURE__ */ new Map());
+  const cinematicAnglePresets = [
+    "Eye Level — Medium Shot",
+    "Close-Up",
+    "Extreme Close-Up",
+    "Medium Close-Up",
+    "Medium Shot",
+    "Medium Wide Shot",
+    "Wide Shot",
+    "Extreme Wide Shot / Establishing",
+    "Low Angle",
+    "High Angle",
+    "Bird's Eye / Top Down",
+    "Worm's Eye",
+    "Dutch Angle",
+    "Over-the-Shoulder",
+    "POV (Point of View)",
+    "Two-Shot",
+    "Insert Shot"
+  ];
+  const [extractedScenes, setExtractedScenes] = useState(null);
+  const [extractedCast, setExtractedCast] = useState([]);
+  const [isExtractingScenes, setIsExtractingScenes] = useState(false);
+  const [pendingScenes, setPendingScenes] = useState(null);
+  const [castReviewActive, setCastReviewActive] = useState(false);
+  const [generatingCastNames, setGeneratingCastNames] = useState(/* @__PURE__ */ new Set());
+  const [isBulkCastGenerating, setIsBulkCastGenerating] = useState(false);
+  const [titleDraft, setTitleDraft] = useState("");
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [showGenerateConfirm, setShowGenerateConfirm] = useState(false);
+  const { credits, deductCredits } = useCredits();
+  useEffect(() => {
+    if (!isProcessingScript) return;
+    const interval = setInterval(() => {
+      setProcessingElapsedTime((prev) => prev + 1);
+    }, 1e3);
+    return () => clearInterval(interval);
+  }, [isProcessingScript]);
+  useEffect(() => {
+    if (!generatingStoryboard) return;
+    const interval = setInterval(() => {
+      setGeneratingElapsedTime((prev) => prev + 1);
+    }, 1e3);
+    return () => clearInterval(interval);
+  }, [generatingStoryboard]);
+  const detailedFlowActive = isExtractingScenes || !!extractedScenes || castReviewActive || !!selectedProject && (((_a2 = selectedProject.shots) == null ? void 0 : _a2.length) ?? 0) > 0;
+  const currentStep = (() => {
+    if (extractedScenes && !selectedProject && !castReviewActive) return 1;
+    if (castReviewActive) return 1.5;
+    if (selectedProject && (!selectedProject.storyboard || selectedProject.storyboard.every((f) => !f.imageData))) return 2;
+    return 3;
+  })();
+  useEffect(() => {
+    if (!(selectedProject == null ? void 0 : selectedProject.id) || !selectedProject.shots) return;
+    if (selectedProject.id.startsWith("quick-")) return;
+    const handle = setTimeout(() => {
+      updateProject(selectedProject.id, { shots: selectedProject.shots });
+    }, 800);
+    return () => clearTimeout(handle);
+  }, [JSON.stringify(selectedProject == null ? void 0 : selectedProject.shots), selectedProject == null ? void 0 : selectedProject.id]);
+  const totalShotsForGen = ((_b2 = selectedProject == null ? void 0 : selectedProject.shots) == null ? void 0 : _b2.length) ?? 0;
+  const hasStyleRef = !!currentProject.styleReferenceImage;
+  const creditsPerFrame = CREDITS_PER_FRAME + (hasStyleRef ? 1 : 0);
+  const frameCreditsTotal = totalShotsForGen * creditsPerFrame;
+  const projectCast = (selectedProject == null ? void 0 : selectedProject.cast) || extractedCast;
+  const missingCastRefCount = projectCast.filter((c) => !c.reference_image_url).length;
+  const estimatedCredits = frameCreditsTotal;
+  const availableCredits = (credits == null ? void 0 : credits.available_credits) ?? 0;
+  const remainingAfter = availableCredits - estimatedCredits;
+  const insufficientCredits = remainingAfter < 0;
+  const lowBalanceWarning = !insufficientCredits && remainingAfter < 5;
+  const creditsShort = insufficientCredits ? Math.abs(remainingAfter) : 0;
+  const selectedArtStyleName = ((_c = artStyles.find((s) => s.id === currentProject.artStyle)) == null ? void 0 : _c.name) || currentProject.artStyle;
+  const framesUsageByName = {};
+  ((selectedProject == null ? void 0 : selectedProject.shots) || []).forEach((s) => {
+    (s.characters || []).forEach((n) => {
+      framesUsageByName[n] = (framesUsageByName[n] || 0) + 1;
+    });
+  });
+  const handleApproveAndGenerate = () => {
+    setShowGenerateConfirm(false);
+    if (!(selectedProject == null ? void 0 : selectedProject.storyboard) || selectedProject.storyboard.length === 0) {
+      initializeStoryboard().then(() => {
+        setTimeout(() => generateAllFrames(), 300);
+      });
+    } else {
+      generateAllFrames();
+    }
+  };
+  const handleBackToSceneSelector = async () => {
+    var _a3;
+    if (!selectedProject) return;
+    setIsExtractingScenes(true);
+    try {
+      const data = await aiInvoke("extract-scenes", {
+        body: { scriptText: selectedProject.scriptText }
+      });
+      if ((_a3 = data == null ? void 0 : data.scenes) == null ? void 0 : _a3.length) {
+        setExtractedScenes(data.scenes);
+        if (Array.isArray(data.cast)) setExtractedCast(data.cast);
+        setSelectedProject(null);
+      }
+    } catch (err) {
+      console.error(err);
+      toast2({ variant: "destructive", title: "Couldn't reload scenes", description: "Please try again." });
+    } finally {
+      setIsExtractingScenes(false);
+    }
+  };
+  const handleDownloadShotListPDF = () => {
+    var _a3, _b3;
+    if (!((_a3 = selectedProject == null ? void 0 : selectedProject.shots) == null ? void 0 : _a3.length)) return;
+    const projectTitle = selectedProject.projectTitle || ((_b3 = currentProject.scriptFileName) == null ? void 0 : _b3.replace(/\.[^.]+$/, "")) || `${selectedProject.genre || "Storyboard"} Shot List`;
+    const sceneByNum = /* @__PURE__ */ new Map();
+    (extractedScenes || []).forEach((s) => sceneByNum.set(s.sceneNumber, s));
+    const enrichedShots = selectedProject.shots.map((s) => {
+      const scene = s.sceneNumber ? sceneByNum.get(s.sceneNumber) : void 0;
+      return {
+        ...s,
+        intExt: s.intExt || (scene == null ? void 0 : scene.intExt),
+        dayNight: s.dayNight || (scene == null ? void 0 : scene.dayNight),
+        location: s.location || (scene == null ? void 0 : scene.location)
+      };
+    });
+    exportShotListPDF(enrichedShots, {
+      projectTitle,
+      genre: selectedProject.genre,
+      tone: selectedProject.tone,
+      sceneCount: extractedScenes == null ? void 0 : extractedScenes.length
+    });
+    toast2({ title: "Shot list exported", description: "PDF downloaded." });
+  };
+  const handleFileUpload = async (event) => {
+    var _a3;
+    const file = (_a3 = event.target.files) == null ? void 0 : _a3[0];
+    if (!file) return;
+    setCurrentProject((prev) => ({ ...prev, scriptFileName: file.name }));
+    await processFile(
+      file,
+      (result) => {
+        setCurrentProject((prev) => ({ ...prev, scriptText: result.text }));
+      },
+      (error) => {
+        console.error("File processing error:", error);
+      }
+    );
+  };
+  const createStoryboard = async () => {
+    if (!currentProject.scriptText.trim()) {
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter script text or upload a file to create storyboard"
+      });
+      return;
+    }
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) {
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Please log in to create storyboards"
+      });
+      return;
+    }
+    setIsExtractingScenes(true);
+    setExtractedScenes(null);
+    try {
+      toast2({
+        title: "Reading Script",
+        description: "Identifying scenes so you can pick which ones to storyboard..."
+      });
+      const { data, error } = await aiInvokeSafe("extract-scenes", {
+        body: { scriptText: currentProject.scriptText }
+      });
+      if (error) {
+        console.error("extract-scenes error:", error);
+        toast2({
+          variant: "destructive",
+          title: "Couldn't read scenes",
+          description: error.message || "Try again or paste a longer script."
+        });
+        return;
+      }
+      if (!(data == null ? void 0 : data.scenes) || !Array.isArray(data.scenes) || data.scenes.length === 0) {
+        toast2({
+          variant: "destructive",
+          title: "No scenes found",
+          description: "Couldn't detect scenes in this script. Try adding scene headings (INT./EXT.)."
+        });
+        return;
+      }
+      setExtractedScenes(data.scenes);
+      if (Array.isArray(data.cast)) setExtractedCast(data.cast);
+      toast2({
+        title: `Found ${data.scenes.length} scene${data.scenes.length === 1 ? "" : "s"}`,
+        description: "Pick which scenes to include in the storyboard."
+      });
+    } catch (err) {
+      console.error("Error extracting scenes:", err);
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to read scenes. Please try again."
+      });
+    } finally {
+      setIsExtractingScenes(false);
+    }
+  };
+  const handleScenesConfirmed = (selectedScenes) => {
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) return;
+    if (selectedScenes.length === 0) return;
+    setPendingScenes(selectedScenes);
+    setCastReviewActive(true);
+  };
+  const proceedToShotList = async () => {
+    var _a3;
+    if (!(userProfile == null ? void 0 : userProfile.user_id)) return;
+    const selectedScenes = pendingScenes;
+    if (!selectedScenes || selectedScenes.length === 0) return;
+    setIsProcessingScript(true);
+    setProcessingElapsedTime(0);
+    setCastReviewActive(false);
+    try {
+      const focusedScript = selectedScenes.map((s) => `${s.heading}
+
+${s.text}`).join("\n\n---\n\n");
+      const targetShotCount = selectedScenes.reduce(
+        (sum, s) => sum + (s.estimatedShots || 4),
+        0
+      );
+      const { data, error } = await aiInvokeSafe("analyze-shots", {
+        body: {
+          scriptText: focusedScript,
+          genre: currentProject.genre,
+          tone: currentProject.tone,
+          shotCount: Math.max(2, Math.min(40, targetShotCount))
+        }
+      });
+      if (!(data == null ? void 0 : data.shots)) throw new Error("Invalid response from analyze-shots");
+      const shots = data.shots;
+      const defaultTitle = ((_a3 = currentProject.scriptFileName) == null ? void 0 : _a3.replace(/\.[^.]+$/, "")) || `${currentProject.genre || "Storyboard"} – ${(/* @__PURE__ */ new Date()).toLocaleDateString()}`;
+      const savedProject = await saveProject(
+        focusedScript,
+        currentProject.genre,
+        currentProject.tone,
+        shots,
+        currentProject.characterDefinitions,
+        currentProject.styleReferencePrompt,
+        {
+          project_title: defaultTitle,
+          art_style: currentProject.artStyle,
+          aspect_ratio: currentProject.aspectRatio,
+          scene_count: selectedScenes.length,
+          cast_data: extractedCast
+        }
+      );
+      if (savedProject) {
+        const localProject = {
+          id: savedProject.id,
+          scriptText: savedProject.script_text,
+          genre: savedProject.genre || "",
+          tone: savedProject.tone || "",
+          characterCount: savedProject.character_count,
+          shots: savedProject.shots || [],
+          storyboard: savedProject.storyboard_frames || void 0,
+          createdAt: new Date(savedProject.created_at),
+          projectTitle: savedProject.project_title || defaultTitle,
+          cast: savedProject.cast_data || extractedCast
+        };
+        setSelectedProject(localProject);
+        setTitleDraft(localProject.projectTitle || "");
+        setExtractedScenes(null);
+        setPendingScenes(null);
+        toast2({
+          title: "Shot List Ready",
+          description: `${shots.length} shots created from ${selectedScenes.length} scene${selectedScenes.length === 1 ? "" : "s"}. Review and edit before generating images.`
+        });
+      }
+    } catch (error) {
+      console.error("Error building shot list:", error);
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to build shot list. Please try again."
+      });
+    } finally {
+      setIsProcessingScript(false);
+      setProcessingElapsedTime(0);
+    }
+  };
+  const skipCastReview = () => {
+    proceedToShotList();
+  };
+  const persistCast = async (nextCast) => {
+    setExtractedCast(nextCast);
+    if ((selectedProject == null ? void 0 : selectedProject.id) && !selectedProject.id.startsWith("quick-")) {
+      await updateProject(selectedProject.id, { cast_data: nextCast });
+      setSelectedProject((prev) => prev ? { ...prev, cast: nextCast } : prev);
+    }
+  };
+  const generateCastReferenceImage = async (name) => {
+    var _a3, _b3;
+    const cast = (selectedProject == null ? void 0 : selectedProject.cast) || extractedCast;
+    const member = cast.find((c) => c.name === name);
+    if (!member) return;
+    if (!credits || credits.available_credits < 1) {
+      toast2({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: "Reference images cost 1 credit each."
+      });
+      return;
+    }
+    setGeneratingCastNames((prev) => new Set(prev).add(name));
+    try {
+      const styleName = ((_a3 = artStyles.find((s) => s.id === currentProject.artStyle)) == null ? void 0 : _a3.name) || currentProject.artStyle || "cinematic";
+      const styleModifier = ((_b3 = artStyles.find((s) => s.id === currentProject.artStyle)) == null ? void 0 : _b3.promptModifier) || styleName;
+      const matchingDef = currentProject.characterDefinitions.find(
+        (d) => d.name.toLowerCase() === member.name.toLowerCase()
+      );
+      const enrichedDesc = matchingDef ? buildCharacterPromptDescription(matchingDef) : member.description || member.name;
+      const prompt = `Three-quarter length character reference (mid-thigh to top of head), ${enrichedDesc}. Neutral confident pose, facing camera, simple atmospheric background, ${styleName} style, consistent with storyboard visual language. ${styleModifier}`;
+      const { data, error } = await aiInvokeSafe("generate-character-portrait", {
+        body: {
+          characterName: member.name,
+          characterDescription: prompt,
+          characterRole: "storyboard cast member",
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : void 0,
+          projectTitle: (selectedProject == null ? void 0 : selectedProject.projectTitle) || currentProject.scriptFileName
+        }
+      });
+      if (error) {
+        const ctx = error.context;
+        let parsed = null;
+        try {
+          if (ctx == null ? void 0 : ctx.body) parsed = typeof ctx.body === "string" ? JSON.parse(ctx.body) : ctx.body;
+        } catch {
+        }
+        const msg = (parsed == null ? void 0 : parsed.error) || (error == null ? void 0 : error.message) || "Image generation failed";
+        throw new Error(msg);
+      }
+      if (!(data == null ? void 0 : data.imageUrl)) throw new Error((data == null ? void 0 : data.error) || "No image returned");
+      const ok = await deductCredits(1, `Cast reference: ${member.name}`);
+      if (!ok) {
+        toast2({ variant: "destructive", title: "Credit deduction failed" });
+        return;
+      }
+      const nextCast = cast.map(
+        (c) => c.name === name ? { ...c, reference_image_url: data.imageUrl } : c
+      );
+      await persistCast(nextCast);
+      toast2({
+        title: "Reference image ready",
+        description: `${member.name}'s reference will now drive every frame they appear in.`
+      });
+    } catch (err) {
+      console.error("Cast reference error:", err);
+      toast2({
+        variant: "destructive",
+        title: "Couldn't generate reference",
+        description: (err == null ? void 0 : err.message) || "Please try again."
+      });
+    } finally {
+      setGeneratingCastNames((prev) => {
+        const next = new Set(prev);
+        next.delete(name);
+        return next;
+      });
+    }
+  };
+  const generateAllMissingCastReferences = async () => {
+    const cast = (selectedProject == null ? void 0 : selectedProject.cast) || extractedCast;
+    const missing = cast.filter((c) => !c.reference_image_url);
+    if (missing.length === 0) return;
+    if (!credits || credits.available_credits < missing.length) {
+      toast2({
+        variant: "destructive",
+        title: "Not enough credits",
+        description: `You need ${missing.length} credits to generate ${missing.length} references.`
+      });
+      return;
+    }
+    setIsBulkCastGenerating(true);
+    for (const member of missing) {
+      await generateCastReferenceImage(member.name);
+      await new Promise((r) => setTimeout(r, 500));
+    }
+  };
+  const uploadCastReferencePhoto = async (name, file) => {
+    var _a3, _b3;
+    const cast = (selectedProject == null ? void 0 : selectedProject.cast) || extractedCast;
+    const member = cast.find((c) => c.name === name);
+    if (!member) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast2({ variant: "destructive", title: "File too large", description: "Please upload an image under 5MB." });
+      return;
+    }
+    if (!credits || credits.available_credits < 1) {
+      toast2({ variant: "destructive", title: "Not enough credits", description: "Generating from a photo costs 1 credit." });
+      return;
+    }
+    setGeneratingCastNames((prev) => new Set(prev).add(name));
+    try {
+      const ext = file.name.split(".").pop() || "png";
+      const path = `cast-refs/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("storyboard-characters").upload(path, file);
+      if (upErr) throw upErr;
+      const { data: { publicUrl } } = supabase.storage.from("storyboard-characters").getPublicUrl(path);
+      const styleName = ((_a3 = artStyles.find((s) => s.id === currentProject.artStyle)) == null ? void 0 : _a3.name) || currentProject.artStyle || "cinematic";
+      const styleModifier = ((_b3 = artStyles.find((s) => s.id === currentProject.artStyle)) == null ? void 0 : _b3.promptModifier) || styleName;
+      const { data, error } = await aiInvokeSafe("generate-character-portrait", {
+        body: {
+          characterName: member.name,
+          characterDescription: `Three-quarter length portrait. ${member.description || member.name}.`,
+          characterRole: "storyboard cast member",
+          referencePhotoUrl: publicUrl,
+          styleDescription: styleModifier,
+          genre: currentProject.genre ? [currentProject.genre] : void 0,
+          projectTitle: (selectedProject == null ? void 0 : selectedProject.projectTitle) || currentProject.scriptFileName
+        }
+      });
+      if (error) {
+        const ctx = error.context;
+        let parsed = null;
+        try {
+          if (ctx == null ? void 0 : ctx.body) parsed = typeof ctx.body === "string" ? JSON.parse(ctx.body) : ctx.body;
+        } catch {
+        }
+        throw new Error((parsed == null ? void 0 : parsed.error) || (error == null ? void 0 : error.message) || "Image generation failed");
+      }
+      if (!(data == null ? void 0 : data.imageUrl)) throw new Error((data == null ? void 0 : data.error) || "No image returned");
+      const ok = await deductCredits(1, `Cast reference (photo): ${member.name}`);
+      if (!ok) {
+        toast2({ variant: "destructive", title: "Credit deduction failed" });
+        return;
+      }
+      const nextCast = cast.map((c) => c.name === name ? { ...c, reference_image_url: data.imageUrl } : c);
+      await persistCast(nextCast);
+      toast2({ title: "Portrait ready", description: `${member.name}'s likeness is locked in from your photo.` });
+    } catch (err) {
+      console.error("Cast photo upload error:", err);
+      toast2({ variant: "destructive", title: "Couldn't generate from photo", description: (err == null ? void 0 : err.message) || "Please try again." });
+    } finally {
+      setGeneratingCastNames((prev) => {
+        const n = new Set(prev);
+        n.delete(name);
+        return n;
+      });
+    }
+  };
+  const cancelSceneSelection = () => {
+    setExtractedScenes(null);
+    setPendingScenes(null);
+    setCastReviewActive(false);
+  };
+  const createQuickStoryboard = async () => {
+    if (!currentProject.scriptText.trim()) {
+      toast2({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter script text or upload a file"
+      });
+      return;
+    }
+    if (!currentProject.genre) {
+      setCurrentProject((p) => ({ ...p, genre: "Drama" }));
+    }
+    if (!currentProject.tone) {
+      setCurrentProject((p) => ({ ...p, tone: "Cinematic" }));
+    }
+    setGeneratingStoryboard(true);
+    setGeneratingElapsedTime(0);
+    try {
+      toast2({
+        title: "Generating Quick Storyboard",
+        description: "Creating storyboard panels with sketch-style visuals..."
+      });
+      const selectedArtStyle = artStyles.find((s) => s.id === currentProject.artStyle);
+      const stylePrompt = currentProject.artStyle === "custom" ? currentProject.customStylePrompt : (selectedArtStyle == null ? void 0 : selectedArtStyle.promptModifier) || "";
+      const characterImages = currentProject.characterDefinitions.filter((c) => c.imageUrl).map((c) => ({ name: c.name, imageUrl: c.imageUrl }));
+      const { data, error } = await aiInvokeSafe("generate-storyboard-simple", {
+        body: {
+          scene_text: currentProject.scriptText,
+          style: stylePrompt,
+          characterImages,
+          styleReferenceImage: currentProject.styleReferenceImage
+        }
+      });
+      if (error) {
+        console.error("Error calling generate-storyboard-simple:", error);
+        throw error;
+      }
+      if (!data || !data.panels) {
+        throw new Error("Invalid response from storyboard generation");
+      }
+      console.log(`Generated ${data.panels.length} panels`);
+      const storyboardFrames = data.panels.map((panel) => ({
+        shotNumber: panel.shot_id,
+        description: panel.description,
+        cameraAngle: "medium shot",
+        characters: [],
+        visualElements: "",
+        scriptSegment: "",
+        dialogueLines: [],
+        sceneAction: panel.description,
+        imageData: `data:image/png;base64,${panel.image_b64}`,
+        generatedAt: (/* @__PURE__ */ new Date()).toISOString()
+      }));
+      const tempProject = {
+        id: "quick-" + Date.now(),
+        scriptText: currentProject.scriptText,
+        genre: currentProject.genre,
+        tone: currentProject.tone,
+        characterCount: 0,
+        shots: data.panels.map((panel, index) => ({
+          shotNumber: panel.shot_id,
+          description: panel.description,
+          cameraAngle: "medium shot",
+          characters: [],
+          visualElements: "",
+          duration: "5s",
+          scriptSegment: "",
+          dialogueLines: [],
+          sceneAction: panel.description
+        })),
+        storyboard: storyboardFrames,
+        createdAt: /* @__PURE__ */ new Date()
+      };
+      setSelectedProject(tempProject);
+      toast2({
+        title: "Quick Storyboard Complete",
+        description: `Generated ${data.panels.length} storyboard panels!`
+      });
+    } catch (error) {
+      console.error("Error creating quick storyboard:", error);
+      toast2({
+        title: "Error",
+        description: "Failed to generate storyboard. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingStoryboard(false);
+      setGeneratingElapsedTime(0);
+    }
+  };
+  const initializeStoryboard = async () => {
+    if (!selectedProject || !selectedProject.shots) return;
+    const emptyFrames = selectedProject.shots.map((shot) => ({
+      ...shot,
+      imageData: void 0,
+      generatedAt: void 0
+    }));
+    const updatedProject = await updateProject(selectedProject.id, {
+      storyboard_frames: emptyFrames
+    });
+    if (updatedProject) {
+      const localProject = {
+        id: updatedProject.id,
+        scriptText: updatedProject.script_text,
+        genre: updatedProject.genre || "",
+        tone: updatedProject.tone || "",
+        characterCount: updatedProject.character_count,
+        shots: updatedProject.shots || [],
+        storyboard: updatedProject.storyboard_frames || void 0,
+        createdAt: new Date(updatedProject.created_at)
+      };
+      setSelectedProject(localProject);
+      toast2({
+        title: "Storyboard Ready",
+        description: "Click 'Generate Frame' on individual shots or 'Generate All Frames' to create visuals."
+      });
+    }
+  };
+  const startEditingShot = (shot) => {
+    setEditingShot(shot.shotNumber);
+    setEditValues(shot);
+  };
+  const cancelEditingShot = () => {
+    setEditingShot(null);
+    setEditValues({});
+  };
+  const saveEditedShot = async () => {
+    var _a3;
+    if (!selectedProject || !editingShot) return;
+    const updatedShots = (_a3 = selectedProject.shots) == null ? void 0 : _a3.map(
+      (shot) => shot.shotNumber === editingShot ? { ...shot, ...editValues } : shot
+    );
+    if (updatedShots) {
+      const updatedProject = await updateProject(selectedProject.id, {
+        shots: updatedShots
+      });
+      if (updatedProject) {
+        const localProject = {
+          id: updatedProject.id,
+          scriptText: updatedProject.script_text,
+          genre: updatedProject.genre || "",
+          tone: updatedProject.tone || "",
+          characterCount: updatedProject.character_count,
+          shots: updatedProject.shots || [],
+          storyboard: updatedProject.storyboard_frames || void 0,
+          createdAt: new Date(updatedProject.created_at)
+        };
+        setSelectedProject(localProject);
+        setEditingShot(null);
+        setEditValues({});
+        toast2({
+          title: "Shot Updated",
+          description: "Shot has been updated successfully"
+        });
+      }
+    }
+  };
+  const parseAIPrompt = async (shotNumber, prompt) => {
+    var _a3, _b3, _c2, _d2;
+    if (!selectedProject || !prompt.trim()) return;
+    const currentShot = selectedProject.shots.find((s) => s.shotNumber === shotNumber);
+    if (!currentShot) return;
+    setIsParsingPrompt((prev) => new Map(prev).set(shotNumber, true));
+    try {
+      const { data, error } = await aiInvokeSafe("ai-parse-shot-prompt", {
+        body: {
+          prompt: prompt.trim(),
+          existingShot: currentShot
+        }
+      });
+      if (error) {
+        console.error("AI parsing error:", error);
+        if (((_a3 = error.message) == null ? void 0 : _a3.includes("Rate limit")) || ((_b3 = error.message) == null ? void 0 : _b3.includes("429"))) {
+          toast2({
+            title: "Rate limit exceeded",
+            description: "Please wait a moment and try again.",
+            variant: "destructive"
+          });
+        } else if (((_c2 = error.message) == null ? void 0 : _c2.includes("402")) || ((_d2 = error.message) == null ? void 0 : _d2.toLowerCase().includes("ai credits"))) {
+          toast2({
+            title: "AI service temporarily unavailable",
+            description: "The AI image service has hit its workspace limit. This is not your account credits — please contact support so we can top up the AI balance.",
+            variant: "destructive"
+          });
+        } else {
+          toast2({
+            title: "AI parsing failed",
+            description: "Failed to parse your prompt. Please try again.",
+            variant: "destructive"
+          });
+        }
+        return;
+      }
+      if (data == null ? void 0 : data.parsedShot) {
+        setEditValues(data.parsedShot);
+        const updatedFields = Object.keys(data.parsedShot).filter(
+          (key) => data.parsedShot[key] !== currentShot[key]
+        ).length;
+        setAiPrompt((prev) => {
+          const newMap = new Map(prev);
+          newMap.delete(shotNumber);
+          return newMap;
+        });
+        toast2({
+          title: "✓ Shot details auto-filled!",
+          description: `Updated ${updatedFields} field${updatedFields !== 1 ? "s" : ""} from your prompt.`
+        });
+      }
+    } catch (error) {
+      console.error("Error calling AI parse function:", error);
+      toast2({
+        title: "Failed to parse prompt",
+        description: "An error occurred. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsParsingPrompt((prev) => new Map(prev).set(shotNumber, false));
+    }
+  };
+  const startEditingFrame = (frame) => {
+    setEditingFrame(frame.shotNumber);
+    setFrameEditValues(frame);
+  };
+  const cancelEditingFrame = () => {
+    setEditingFrame(null);
+    setFrameEditValues({});
+  };
+  const saveEditedFrame = async () => {
+    if (!selectedProject || !editingFrame || !selectedProject.storyboard) return;
+    const updatedStoryboard = selectedProject.storyboard.map(
+      (frame) => frame.shotNumber === editingFrame ? { ...frame, ...frameEditValues } : frame
+    );
+    const updatedProject = await updateProject(selectedProject.id, {
+      storyboard_frames: updatedStoryboard
+    });
+    if (updatedProject) {
+      const localProject = {
+        id: updatedProject.id,
+        scriptText: updatedProject.script_text,
+        genre: updatedProject.genre || "",
+        tone: updatedProject.tone || "",
+        characterCount: updatedProject.character_count,
+        shots: updatedProject.shots || [],
+        storyboard: updatedProject.storyboard_frames || void 0,
+        createdAt: new Date(updatedProject.created_at)
+      };
+      setSelectedProject(localProject);
+      setEditingFrame(null);
+      setFrameEditValues({});
+      toast2({
+        title: "Frame Updated",
+        description: "Storyboard frame has been updated successfully"
+      });
+    }
+  };
+  const addNewShot = async (insertAfterShotNumber) => {
+    if (!selectedProject) return;
+    const shots = selectedProject.shots || [];
+    const newShot = {
+      shotNumber: shots.length + 1,
+      description: "",
+      cameraAngle: "Medium Shot",
+      characters: [],
+      visualElements: "",
+      duration: "3-5s",
+      scriptSegment: "",
+      dialogueLines: [],
+      sceneAction: "",
+      visualDescription: "",
+      location: "",
+      action: "",
+      emotionalTone: "",
+      shotType: "Medium Shot",
+      lighting: "",
+      keyProps: "",
+      dialogue: ""
+    };
+    let updatedShots;
+    if (insertAfterShotNumber !== void 0) {
+      const insertIndex = shots.findIndex((s) => s.shotNumber === insertAfterShotNumber);
+      updatedShots = [
+        ...shots.slice(0, insertIndex + 1),
+        newShot,
+        ...shots.slice(insertIndex + 1)
+      ];
+    } else {
+      updatedShots = [...shots, newShot];
+    }
+    updatedShots = updatedShots.map((shot, index) => ({
+      ...shot,
+      shotNumber: index + 1
+    }));
+    try {
+      const updatedProject = await updateProject(selectedProject.id, {
+        shots: updatedShots
+      });
+      if (updatedProject) {
+        const localProject = {
+          id: updatedProject.id,
+          scriptText: updatedProject.script_text,
+          genre: updatedProject.genre || "",
+          tone: updatedProject.tone || "",
+          characterCount: updatedProject.character_count,
+          shots: updatedProject.shots || [],
+          storyboard: updatedProject.storyboard_frames || void 0,
+          createdAt: new Date(updatedProject.created_at)
+        };
+        setSelectedProject(localProject);
+        const newShotNumber = insertAfterShotNumber !== void 0 ? insertAfterShotNumber + 1 : updatedShots.length;
+        setEditingShot(newShotNumber);
+        toast2({
+          title: "Shot Added",
+          description: `New shot ${newShotNumber} added successfully`
+        });
+      }
+    } catch (error) {
+      console.error("Error adding shot:", error);
+      toast2({
+        title: "Error",
+        description: "Failed to add shot",
+        variant: "destructive"
+      });
+    }
+  };
+  const deleteShot = async (shotNumber) => {
+    if (!selectedProject) return;
+    const shots = selectedProject.shots || [];
+    if (shots.length <= 1) {
+      toast2({ variant: "destructive", title: "Can't delete", description: "You need at least one shot." });
+      return;
+    }
+    const remaining = shots.filter((s) => s.shotNumber !== shotNumber).map((s, i) => ({ ...s, shotNumber: i + 1 }));
+    const remainingFrames = (selectedProject.storyboard || []).filter((f) => f.shotNumber !== shotNumber).map((f, i) => ({ ...f, shotNumber: i + 1 }));
+    try {
+      const updated = await updateProject(selectedProject.id, {
+        shots: remaining,
+        storyboard_frames: remainingFrames
+      });
+      if (updated) {
+        const localProject = {
+          id: updated.id,
+          scriptText: updated.script_text,
+          genre: updated.genre || "",
+          tone: updated.tone || "",
+          characterCount: updated.character_count,
+          shots: updated.shots || [],
+          storyboard: updated.storyboard_frames || void 0,
+          createdAt: new Date(updated.created_at)
+        };
+        setSelectedProject(localProject);
+        if (editingShot === shotNumber) setEditingShot(null);
+        toast2({ title: "Shot deleted", description: `Shot ${shotNumber} removed and remaining shots renumbered.` });
+      }
+    } catch (e) {
+      console.error("Error deleting shot:", e);
+      toast2({ variant: "destructive", title: "Error", description: "Failed to delete shot" });
+    }
+  };
+  const handleImageUpload = async (shotNumber, event) => {
+    var _a3;
+    const file = (_a3 = event.target.files) == null ? void 0 : _a3[0];
+    if (!file || !selectedProject) return;
+    if (!file.type.startsWith("image/")) {
+      toast2({
+        title: "Invalid File",
+        description: "Please upload an image file (PNG, JPEG, etc.)",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast2({
+        title: "File Too Large",
+        description: "Image must be smaller than 10MB",
+        variant: "destructive"
+      });
+      return;
+    }
+    try {
+      setGeneratingFrames((prev) => /* @__PURE__ */ new Set([...prev, shotNumber]));
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        var _a4;
+        const base64Data = (_a4 = e.target) == null ? void 0 : _a4.result;
+        const shot = selectedProject.shots.find((s) => s.shotNumber === shotNumber);
+        if (!shot) return;
+        const newFrame = {
+          ...shot,
+          imageData: base64Data,
+          generatedAt: (/* @__PURE__ */ new Date()).toISOString()
+        };
+        const updatedStoryboard = [...selectedProject.storyboard || []];
+        const existingIndex = updatedStoryboard.findIndex((f) => f.shotNumber === shotNumber);
+        if (existingIndex >= 0) {
+          updatedStoryboard[existingIndex] = newFrame;
+        } else {
+          updatedStoryboard.push(newFrame);
+        }
+        const updatedProject = await updateProject(selectedProject.id, {
+          storyboard_frames: updatedStoryboard
+        });
+        if (updatedProject) {
+          setSelectedProject({
+            ...selectedProject,
+            storyboard: updatedProject.storyboard_frames || void 0
+          });
+        }
+        toast2({
+          title: "Image Uploaded",
+          description: `Frame ${shotNumber} has been updated with your image.`
+        });
+        setGeneratingFrames((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(shotNumber);
+          return newSet;
+        });
+      };
+      reader.onerror = () => {
+        toast2({
+          title: "Upload Failed",
+          description: "Failed to read the image file.",
+          variant: "destructive"
+        });
+        setGeneratingFrames((prev) => {
+          const newSet = new Set(prev);
+          newSet.delete(shotNumber);
+          return newSet;
+        });
+      };
+      reader.readAsDataURL(file);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast2({
+        title: "Upload Failed",
+        description: "An error occurred while uploading the image.",
+        variant: "destructive"
+      });
+      setGeneratingFrames((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(shotNumber);
+        return newSet;
+      });
+    }
+    event.target.value = "";
+  };
+  const generateSingleFrame = async (shotNumber) => {
+    if (!selectedProject || !selectedProject.shots) return;
+    const shot = selectedProject.shots.find((s) => s.shotNumber === shotNumber);
+    if (!shot) return;
+    try {
+      setGeneratingFrames((prev) => /* @__PURE__ */ new Set([...prev, shotNumber]));
+      setFrameErrors((prev) => {
+        const newErrors = new Map(prev);
+        newErrors.delete(shotNumber);
+        return newErrors;
+      });
+      console.log(`Generating frame ${shotNumber}`);
+      const frameSpecificStyle = frameStyles.get(shotNumber) || currentProject.artStyle;
+      const selectedArtStyle = artStyles.find((s) => s.id === frameSpecificStyle);
+      const stylePrompt = frameSpecificStyle === "custom" ? currentProject.customStylePrompt : (selectedArtStyle == null ? void 0 : selectedArtStyle.promptModifier) || "black and white storyboard frame, hand-drawn sketch";
+      const projectCastForFrame = selectedProject.cast || [];
+      const characterDescriptions = shot.characters.map((charName) => {
+        const def = currentProject.characterDefinitions.find(
+          (c) => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (def) {
+          let desc = `${def.name}: ${buildCharacterPromptDescription(def)}`;
+          if (def.imageUrl) {
+            desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
+          }
+          return desc;
+        }
+        const castMember = projectCastForFrame.find(
+          (c) => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (castMember) {
+          let desc = `Character: ${castMember.name} — ${castMember.description}. Maintain consistent appearance with established character design.`;
+          if (castMember.reference_image_url) {
+            desc += ` [REFERENCE IMAGE PROVIDED - Match this character's appearance exactly]`;
+          }
+          return desc;
+        }
+        return null;
+      }).filter(Boolean).join("\n");
+      const characterImagesMap = /* @__PURE__ */ new Map();
+      shot.characters.forEach((charName) => {
+        const def = currentProject.characterDefinitions.find(
+          (c) => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (def == null ? void 0 : def.imageUrl) {
+          characterImagesMap.set(def.name.toLowerCase(), { name: def.name, imageUrl: def.imageUrl });
+          return;
+        }
+        const castMember = projectCastForFrame.find(
+          (c) => c.name.toLowerCase() === charName.toLowerCase()
+        );
+        if (castMember == null ? void 0 : castMember.reference_image_url) {
+          characterImagesMap.set(castMember.name.toLowerCase(), {
+            name: castMember.name,
+            imageUrl: castMember.reference_image_url
+          });
+        }
+      });
+      const characterImages = Array.from(characterImagesMap.values());
+      const angleOverride = frameAngles.get(shotNumber);
+      const shotForGen = angleOverride ? { ...shot, cameraAngle: angleOverride, shotType: angleOverride } : shot;
+      const { data: frameData, error } = await aiInvokeSafe("generate-single-frame", {
+        body: {
+          shot: shotForGen,
+          artStyle: stylePrompt,
+          aspectRatio: currentProject.aspectRatio || "16:9",
+          characterDescriptions,
+          characterImages,
+          styleReference: currentProject.styleReferencePrompt,
+          styleReferenceImage: currentProject.styleReferenceImage
+        }
+      });
+      if (error) {
+        console.error(`Frame ${shotNumber} generation error:`, error);
+        setFrameErrors((prev) => new Map(prev.set(shotNumber, `Function error: ${error.message || "Failed to invoke edge function"}`)));
+        return;
+      }
+      if (!frameData || !frameData.imageData) {
+        const errorMsg = "Invalid response from frame generation service";
+        console.error(errorMsg, { frameData });
+        setFrameErrors((prev) => new Map(prev.set(shotNumber, errorMsg)));
+        return;
+      }
+      if (frameData.error) {
+        console.warn(`Frame ${shotNumber} generated with fallback:`, frameData.error);
+      }
+      console.log(`Frame ${shotNumber} generated successfully`);
+      const newFrame = {
+        ...shot,
+        imageData: frameData.imageData,
+        generatedAt: frameData.generatedAt || (/* @__PURE__ */ new Date()).toISOString()
+      };
+      let updatedStoryboard;
+      if (selectedProject.storyboard) {
+        const existingIndex = selectedProject.storyboard.findIndex((f) => f.shotNumber === shotNumber);
+        if (existingIndex >= 0) {
+          updatedStoryboard = selectedProject.storyboard.map(
+            (frame) => frame.shotNumber === shotNumber ? newFrame : frame
+          );
+        } else {
+          updatedStoryboard = [...selectedProject.storyboard, newFrame];
+        }
+      } else {
+        updatedStoryboard = [newFrame];
+      }
+      if (!selectedProject.storyboard) {
+        const emptyFrames = selectedProject.shots.map((shot2) => ({
+          ...shot2,
+          imageData: void 0,
+          generatedAt: void 0
+        }));
+        updatedStoryboard.splice(0, 1, ...emptyFrames.map(
+          (frame) => frame.shotNumber === shotNumber ? newFrame : frame
+        ));
+      }
+      const updatedProject = {
+        ...selectedProject,
+        storyboard: updatedStoryboard
+      };
+      const dbUpdatedProject = await updateProject(selectedProject.id, {
+        storyboard_frames: updatedStoryboard
+      });
+      if (dbUpdatedProject) {
+        setSelectedProject({
+          ...selectedProject,
+          storyboard: updatedStoryboard
+        });
+        console.log(`Frame ${shotNumber} generated and state updated`);
+      }
+      toast2({
+        title: "Frame generated!",
+        description: `Frame ${shotNumber} created successfully.`
+      });
+    } catch (error) {
+      console.error(`Error generating frame ${shotNumber}:`, error);
+      setFrameErrors((prev) => new Map([...prev, [shotNumber, error instanceof Error ? error.message : "Generation failed"]]));
+      toast2({
+        title: "Frame generation failed",
+        description: `Failed to generate frame ${shotNumber}. Please try again.`,
+        variant: "destructive"
+      });
+    } finally {
+      setGeneratingFrames((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(shotNumber);
+        return newSet;
+      });
+    }
+  };
+  const generateAllFrames = async () => {
+    var _a3, _b3;
+    if (!selectedProject || !selectedProject.shots) return;
+    setIsGenerating(true);
+    const ungenerated = selectedProject.shots.filter((shot) => {
+      var _a4;
+      const existingFrame = (_a4 = selectedProject.storyboard) == null ? void 0 : _a4.find((f) => f.shotNumber === shot.shotNumber);
+      return !(existingFrame == null ? void 0 : existingFrame.imageData);
+    });
+    toast2({
+      title: "Generating storyboard",
+      description: `Processing ${ungenerated.length} frames sequentially...`
+    });
+    for (const shot of ungenerated) {
+      await generateSingleFrame(shot.shotNumber);
+      await new Promise((resolve) => setTimeout(resolve, 1e3));
+    }
+    if (selectedProject) {
+      await refetch();
+      const refreshedProject = projects.find((p) => p.id === selectedProject.id);
+      if (refreshedProject) {
+        const frames = refreshedProject.storyboard_frames || [];
+        const firstFrameImg = (_a3 = frames.find((f) => f.imageData)) == null ? void 0 : _a3.imageData;
+        const generatedCount = frames.filter((f) => f.imageData).length;
+        const allDone = generatedCount > 0 && generatedCount === (((_b3 = refreshedProject.shots) == null ? void 0 : _b3.length) || 0);
+        if (allDone) {
+          await updateProject(selectedProject.id, {
+            is_complete: true,
+            thumbnail_url: firstFrameImg,
+            frame_count: generatedCount
+          });
+        }
+        setSelectedProject({
+          id: refreshedProject.id,
+          scriptText: refreshedProject.script_text,
+          genre: refreshedProject.genre || "",
+          tone: refreshedProject.tone || "",
+          characterCount: refreshedProject.character_count,
+          shots: refreshedProject.shots || [],
+          storyboard: refreshedProject.storyboard_frames || void 0,
+          createdAt: new Date(refreshedProject.created_at),
+          projectTitle: refreshedProject.project_title || void 0,
+          cast: refreshedProject.cast_data || []
+        });
+        console.log("All frames generated, state refreshed from database");
+      }
+    }
+    setIsGenerating(false);
+    toast2({
+      title: "Storyboard complete!",
+      description: `All ${ungenerated.length} frames generated successfully.`
+    });
+  };
+  const glossaryTerms = {
+    "Shot Types": [
+      { term: "Wide Shot (WS)", description: "Shows the full subject and surroundings, establishing location and context" },
+      { term: "Medium Shot (MS)", description: "Shows subject from waist up, balancing character and environment" },
+      { term: "Close-up (CU)", description: "Tight shot focusing on subject's face or important details" },
+      { term: "Extreme Close-up (ECU)", description: "Very tight shot on specific detail like eyes or hands" },
+      { term: "Long Shot (LS)", description: "Subject appears small in frame, emphasizes environment" },
+      { term: "Medium Close-up (MCU)", description: "Shows subject from chest up, more intimate than medium shot" }
+    ],
+    "Camera Angles": [
+      { term: "Eye Level", description: "Camera at subject's eye level, neutral and natural perspective" },
+      { term: "High Angle", description: "Camera above subject, makes subject appear vulnerable or small" },
+      { term: "Low Angle", description: "Camera below subject, makes subject appear powerful or imposing" },
+      { term: "Dutch Angle", description: "Tilted camera creating unease or disorientation" },
+      { term: "Bird's Eye", description: "Directly overhead view, shows full spatial relationships" },
+      { term: "Worm's Eye", description: "Extreme low angle from ground level looking up" }
+    ],
+    "Camera Movement": [
+      { term: "Pan", description: "Horizontal camera movement, following action or revealing space" },
+      { term: "Tilt", description: "Vertical camera movement up or down" },
+      { term: "Zoom", description: "Lens adjustment to move closer or further from subject" },
+      { term: "Dolly/Track", description: "Physical camera movement toward or away from subject" },
+      { term: "Steadicam", description: "Smooth handheld movement following subject" },
+      { term: "Crane/Jib", description: "Elevated camera movement, often sweeping motions" }
+    ]
+  };
+  const exportStoryboardToPDF = async () => {
+    if (!(selectedProject == null ? void 0 : selectedProject.storyboard)) return;
+    const pdf = new jsPDF("landscape", "mm", "a4");
+    const pageWidth = pdf.internal.pageSize.width;
+    const pageHeight = pdf.internal.pageSize.height;
+    const margin = 10;
+    const shotsPerRow = 4;
+    const shotsPerPage = 8;
+    const cellWidth = (pageWidth - margin * (shotsPerRow + 1)) / shotsPerRow;
+    const cellHeight = (pageHeight - margin * 3) / 2;
+    const imageHeight = cellHeight * 0.65;
+    const noteHeight = cellHeight * 0.35;
+    pdf.setFontSize(24);
+    pdf.setTextColor(40, 40, 40);
+    const title = "Storyboard";
+    const titleWidth = pdf.getTextWidth(title);
+    pdf.text(title, (pageWidth - titleWidth) / 2, 20);
+    pdf.setFontSize(12);
+    const projectInfo = `${selectedProject.genre ? selectedProject.genre : ""} ${selectedProject.tone ? "- " + selectedProject.tone : ""}`.trim();
+    if (projectInfo) {
+      const infoWidth = pdf.getTextWidth(projectInfo);
+      pdf.text(projectInfo, (pageWidth - infoWidth) / 2, 30);
+    }
+    const frames = selectedProject.storyboard;
+    for (let i = 0; i < frames.length; i += shotsPerPage) {
+      if (i > 0 || frames.length > 0) {
+        pdf.addPage("landscape");
+      }
+      const pageFrames = frames.slice(i, i + shotsPerPage);
+      pageFrames.forEach((frame, index) => {
+        const row = Math.floor(index / shotsPerRow);
+        const col = index % shotsPerRow;
+        const x = margin + col * (cellWidth + margin);
+        const y = margin + row * (cellHeight + margin);
+        pdf.setDrawColor(200, 200, 200);
+        pdf.setLineWidth(0.5);
+        pdf.rect(x, y, cellWidth, cellHeight);
+        if (frame.imageData) {
+          try {
+            const imgWidth = cellWidth - 4;
+            const imgHeight = imageHeight - 4;
+            pdf.addImage(frame.imageData, "JPEG", x + 2, y + 2, imgWidth, imgHeight);
+          } catch (error) {
+            console.error("Error adding image to PDF:", error);
+            pdf.setFillColor(240, 240, 240);
+            pdf.rect(x + 2, y + 2, cellWidth - 4, imageHeight - 4, "F");
+          }
+        } else {
+          pdf.setFillColor(240, 240, 240);
+          pdf.rect(x + 2, y + 2, cellWidth - 4, imageHeight - 4, "F");
+        }
+        const shotNumY = y + imageHeight + 4;
+        pdf.setFontSize(11);
+        pdf.setFont(void 0, "bold");
+        pdf.setTextColor(0, 0, 0);
+        pdf.text(`Shot ${frame.shotNumber}`, x + 3, shotNumY);
+        pdf.setFont(void 0, "normal");
+        pdf.setFontSize(8);
+        pdf.setTextColor(60, 60, 60);
+        const noteY = shotNumY + 4;
+        const noteWidth = cellWidth - 6;
+        let noteText = `Note: ${frame.description}`;
+        if (frame.cameraAngle) {
+          noteText += ` (${frame.cameraAngle})`;
+        }
+        const lines = pdf.splitTextToSize(noteText, noteWidth);
+        const maxLines = Math.floor((noteHeight - 8) / 3);
+        const displayLines = lines.slice(0, maxLines);
+        displayLines.forEach((line, lineIndex) => {
+          pdf.text(line, x + 3, noteY + lineIndex * 3);
+        });
+      });
+    }
+    pdf.save(`storyboard-${selectedProject.genre || "untitled"}-${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.pdf`);
+    toast2({
+      title: "PDF Exported",
+      description: "Storyboard exported in grid format"
+    });
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-br from-background via-background to-primary/5", children: [
+    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsxs("div", { className: "max-w-7xl mx-auto", children: [
+      /* @__PURE__ */ jsxs("div", { className: "text-center mb-8", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3 mb-4", children: [
+          /* @__PURE__ */ jsx(Video, { className: "h-8 w-8 text-primary" }),
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold text-foreground", children: "Storyboarding" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-lg text-muted-foreground max-w-2xl mx-auto", children: "Transform your script into visual storyboards with AI-generated shot breakdowns and visual frame references." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+          /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
+            "Script Upload"
+          ] }) }),
+          /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "storyboard-file", children: "Upload Script File (PDF or Text)" }),
+              /* @__PURE__ */ jsx("div", { className: "flex items-center gap-4", children: /* @__PURE__ */ jsx(
+                Input,
+                {
+                  id: "storyboard-file",
+                  type: "file",
+                  accept: ".pdf,.txt",
+                  onChange: handleFileUpload,
+                  disabled: isProcessingFile,
+                  className: "file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary file:text-primary-foreground hover:file:bg-primary/90"
+                }
+              ) })
+            ] }),
+            isProcessingFile && currentFileName && /* @__PURE__ */ jsx(
+              PDFUploadProgress,
+              {
+                fileName: currentFileName,
+                fileSize: currentFileSize,
+                stage: currentStage,
+                elapsedTime,
+                progress
+              }
+            ),
+            /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2 p-3 bg-muted/30 rounded-lg border border-muted", children: [
+              /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4 text-muted-foreground mt-0.5 flex-shrink-0" }),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground leading-relaxed", children: "Your privacy matters. We will never use your scripts, images, likeness, voiceover, or any creative work for training, marketing, or any other purpose. Your content remains yours." })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "storyboard-text", children: "Or paste your script text here" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "storyboard-text",
+                  placeholder: "Enter your script text here...",
+                  value: currentProject.scriptText,
+                  onChange: (e) => setCurrentProject((prev) => ({ ...prev, scriptText: e.target.value })),
+                  className: "min-h-[300px] resize-none"
+                }
+              ),
+              selectedProject && /* @__PURE__ */ jsxs(
+                Button,
+                {
+                  onClick: async () => {
+                    if (!selectedProject) return;
+                    try {
+                      const updatedProject = await updateProject(selectedProject.id, {
+                        script_text: currentProject.scriptText
+                      });
+                      if (updatedProject) {
+                        const localProject = {
+                          id: updatedProject.id,
+                          scriptText: updatedProject.script_text,
+                          genre: updatedProject.genre || "",
+                          tone: updatedProject.tone || "",
+                          characterCount: updatedProject.character_count || 0,
+                          shots: updatedProject.shots ? updatedProject.shots : [],
+                          storyboard: updatedProject.storyboard_frames ? updatedProject.storyboard_frames : void 0,
+                          createdAt: new Date(updatedProject.created_at)
+                        };
+                        setSelectedProject(localProject);
+                        toast2({
+                          title: "Script saved",
+                          description: "Your script changes have been saved successfully."
+                        });
+                      }
+                    } catch (error) {
+                      console.error("Error saving script:", error);
+                      toast2({
+                        title: "Error",
+                        description: "Failed to save script changes. Please try again.",
+                        variant: "destructive"
+                      });
+                    }
+                  },
+                  className: "w-full",
+                  variant: "default",
+                  disabled: !selectedProject,
+                  children: [
+                    /* @__PURE__ */ jsx(Save, { className: "h-4 w-4 mr-2" }),
+                    "Save Script"
+                  ]
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx(
+              ArtStyleSelector,
+              {
+                selectedStyle: currentProject.artStyle,
+                customStylePrompt: currentProject.customStylePrompt,
+                onStyleChange: (styleId) => setCurrentProject((prev) => ({ ...prev, artStyle: styleId })),
+                onCustomPromptChange: (prompt) => setCurrentProject((prev) => ({ ...prev, customStylePrompt: prompt }))
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              StyleReferenceUpload,
+              {
+                styleImageUrl: currentProject.styleReferenceImage,
+                onStyleImageChange: (url2) => setCurrentProject((prev) => ({ ...prev, styleReferenceImage: url2 || "" })),
+                onStyleDescriptionGenerated: (description) => {
+                  if (description && !currentProject.styleReferencePrompt) {
+                    setCurrentProject((prev) => ({ ...prev, styleReferencePrompt: description }));
+                  }
+                }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              StyleReferenceInput,
+              {
+                value: currentProject.styleReferencePrompt,
+                onChange: (value) => setCurrentProject((prev) => ({ ...prev, styleReferencePrompt: value }))
+              }
+            ),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Aspect Ratio" }),
+              /* @__PURE__ */ jsxs(Select, { value: currentProject.aspectRatio, onValueChange: (value) => setCurrentProject((prev) => ({ ...prev, aspectRatio: value })), children: [
+                /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select format" }) }),
+                /* @__PURE__ */ jsxs(SelectContent, { children: [
+                  /* @__PURE__ */ jsx(SelectItem, { value: "16:9", children: "16:9 (Film/Commercial)" }),
+                  /* @__PURE__ */ jsx(SelectItem, { value: "9:16", children: "9:16 (Vertical/Social)" })
+                ] })
+              ] })
+            ] }),
+            isProcessingScript && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
+                  /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-blue-500/10", children: /* @__PURE__ */ jsx(Camera, { className: "h-6 w-6 text-blue-500 animate-pulse" }) }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-medium text-sm", children: "Processing your script..." }),
+                    /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "This may take 30-60 seconds. Please standby." })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0", children: [
+                  /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsxs("span", { className: "font-mono", children: [
+                    processingElapsedTime,
+                    "s"
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-blue-500" }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Creating shot breakdown..." })
+              ] })
+            ] }) }),
+            generatingStoryboard && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
+                  /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-green-500/10", children: /* @__PURE__ */ jsx(Video, { className: "h-6 w-6 text-green-500 animate-pulse" }) }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-medium text-sm", children: "Generating storyboard with AI..." }),
+                    /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "This may take 30-60 seconds. Please standby." })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground flex-shrink-0", children: [
+                  /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsxs("span", { className: "font-mono", children: [
+                    generatingElapsedTime,
+                    "s"
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-green-500" }),
+                /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Creating visual frames..." })
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: [
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  onClick: createStoryboard,
+                  disabled: isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes,
+                  size: "lg",
+                  variant: "default",
+                  children: isExtractingScenes ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                    "Reading Scenes..."
+                  ] }) : isProcessingScript ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                    "Building Shot List..."
+                  ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Camera, { className: "mr-2 h-4 w-4" }),
+                    "Detailed Breakdown"
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  onClick: createQuickStoryboard,
+                  disabled: isProcessingScript || isProcessingFile || generatingStoryboard || isExtractingScenes || !!extractedScenes,
+                  size: "lg",
+                  variant: "secondary",
+                  children: generatingStoryboard ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                    "Generating..."
+                  ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Video, { className: "mr-2 h-4 w-4" }),
+                    "Quick Storyboard"
+                  ] })
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs text-muted-foreground text-center space-y-1", children: [
+              /* @__PURE__ */ jsxs("p", { children: [
+                /* @__PURE__ */ jsx("strong", { children: "Detailed Breakdown:" }),
+                " Pick scenes → review shot list → generate frames (recommended, lowest cost)"
+              ] }),
+              /* @__PURE__ */ jsxs("p", { children: [
+                /* @__PURE__ */ jsx("strong", { children: "Quick Storyboard:" }),
+                " Skips scene selection — generates all frames immediately (higher cost)"
+              ] })
+            ] })
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(BookOpen, { className: "h-4 w-4" }),
+                "Filmmaker's Glossary"
+              ] }),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  variant: "ghost",
+                  size: "sm",
+                  onClick: () => setShowGlossary(!showGlossary),
+                  children: showGlossary ? "Hide" : "Show"
+                }
+              )
+            ] }) }),
+            showGlossary && /* @__PURE__ */ jsx(CardContent, { className: "max-h-80 overflow-y-auto", children: /* @__PURE__ */ jsx("div", { className: "space-y-4", children: Object.entries(glossaryTerms).map(([category, terms]) => /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("h4", { className: "font-semibold text-sm mb-2 text-primary", children: category }),
+              /* @__PURE__ */ jsx("div", { className: "space-y-2", children: terms.map((item, index) => /* @__PURE__ */ jsxs("div", { className: "text-xs", children: [
+                /* @__PURE__ */ jsx("div", { className: "font-medium text-foreground", children: item.term }),
+                /* @__PURE__ */ jsx("div", { className: "text-muted-foreground", children: item.description })
+              ] }, index)) })
+            ] }, category)) }) })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: "Recent Projects" }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
+              RecentProjectsGrid,
+              {
+                projects,
+                totalCount: projects.length,
+                limit: 6,
+                loading,
+                selectedId: selectedProject == null ? void 0 : selectedProject.id,
+                compact: true,
+                onRename: (id, newTitle) => renameProject(id, newTitle),
+                onViewAll: () => navigate("/dashboard?tab=storyboards"),
+                onOpen: (p) => {
+                  setSelectedProject({
+                    id: p.id,
+                    scriptText: p.script_text,
+                    genre: p.genre || "",
+                    tone: p.tone || "",
+                    characterCount: p.character_count,
+                    shots: p.shots || [],
+                    storyboard: p.storyboard_frames || void 0,
+                    createdAt: new Date(p.created_at),
+                    projectTitle: p.project_title || void 0,
+                    cast: p.cast_data || []
+                  });
+                  setTitleDraft(p.project_title || "");
+                },
+                onDelete: (id) => {
+                  deleteProject(id);
+                  if ((selectedProject == null ? void 0 : selectedProject.id) === id) setSelectedProject(null);
+                }
+              }
+            ) })
+          ] }),
+          /* @__PURE__ */ jsx(
+            ToolPageRecommendations,
+            {
+              toolName: "storyboarding",
+              maxCourses: 2
+            }
+          )
+        ] })
+      ] }),
+      detailedFlowActive && /* @__PURE__ */ jsxs("div", { className: "mt-8", children: [
+        /* @__PURE__ */ jsx(
+          UpgradeBanner,
+          {
+            message: "Unlock unlimited projects, GIF export, character consistency, and shot list PDF on Creator — $19/mo.",
+            ctaLabel: "See plans",
+            className: "mb-4"
+          }
+        ),
+        /* @__PURE__ */ jsx(StepIndicator, { currentStep })
+      ] }),
+      extractedScenes && extractedScenes.length > 0 && !castReviewActive && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx(
+        SceneSelector,
+        {
+          scenes: extractedScenes,
+          onConfirm: handleScenesConfirmed,
+          onCancel: cancelSceneSelection,
+          isProcessing: isProcessingScript || isExtractingScenes
+        }
+      ) }),
+      castReviewActive && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/30 bg-primary/5", children: [
+        /* @__PURE__ */ jsxs(CardHeader, { children: [
+          /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
+            /* @__PURE__ */ jsx(UserCircle2, { className: "h-5 w-5 text-primary" }),
+            "Review Your Cast"
+          ] }),
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Generate reference images now to keep characters looking the same across every frame. Optional — you can always do this later." })
+        ] }),
+        /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-2 text-sm", children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: extractedCast.length }),
+              " ",
+              "character",
+              extractedCast.length === 1 ? "" : "s",
+              " found ·",
+              " ",
+              /* @__PURE__ */ jsx("span", { className: "font-medium text-foreground", children: extractedCast.filter((c) => !c.reference_image_url).length }),
+              " ",
+              "missing references"
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "text-xs text-muted-foreground", children: [
+              "Estimated total: ",
+              extractedCast.filter((c) => !c.reference_image_url).length,
+              " credit",
+              extractedCast.filter((c) => !c.reference_image_url).length === 1 ? "" : "s"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(
+            CastTab,
+            {
+              cast: extractedCast,
+              onGenerateReference: generateCastReferenceImage,
+              onUploadReferencePhoto: uploadCastReferencePhoto,
+              onGenerateAllMissing: generateAllMissingCastReferences,
+              generatingNames: generatingCastNames,
+              isBulkGenerating: isBulkCastGenerating
+            }
+          ),
+          /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-border", children: [
+            /* @__PURE__ */ jsx(Button, { variant: "ghost", size: "sm", onClick: skipCastReview, disabled: isProcessingScript, children: "Skip this step →" }),
+            /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+              /* @__PURE__ */ jsx(Button, { variant: "outline", size: "sm", onClick: cancelSceneSelection, disabled: isProcessingScript, children: "← Back" }),
+              /* @__PURE__ */ jsxs(Button, { size: "sm", onClick: proceedToShotList, disabled: isProcessingScript, children: [
+                isProcessingScript ? /* @__PURE__ */ jsx(Loader2, { className: "h-3.5 w-3.5 mr-1.5 animate-spin" }) : null,
+                "Continue to Shot List →"
+              ] })
+            ] })
+          ] })
+        ] })
+      ] }) }),
+      selectedProject && !extractedScenes && /* @__PURE__ */ jsxs("div", { className: "mt-4 space-y-6", children: [
+        /* @__PURE__ */ jsx(Card$1, { className: "border-primary/20", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex items-center gap-3 flex-wrap", children: [
+          /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5 text-primary shrink-0" }),
+          isEditingTitle ? /* @__PURE__ */ jsx(
+            Input,
+            {
+              autoFocus: true,
+              value: titleDraft,
+              onChange: (e) => setTitleDraft(e.target.value),
+              onBlur: async () => {
+                setIsEditingTitle(false);
+                const next = titleDraft.trim();
+                if (!selectedProject.id || selectedProject.id.startsWith("quick-")) return;
+                if (!next || next === (selectedProject.projectTitle || "")) return;
+                await renameProject(selectedProject.id, next);
+                setSelectedProject((prev) => prev ? { ...prev, projectTitle: next } : prev);
+              },
+              onKeyDown: (e) => {
+                if (e.key === "Enter") e.target.blur();
+                if (e.key === "Escape") {
+                  setTitleDraft(selectedProject.projectTitle || "");
+                  setIsEditingTitle(false);
+                }
+              },
+              className: "flex-1 min-w-[200px] text-lg font-semibold",
+              placeholder: "Untitled storyboard"
+            }
+          ) : /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: () => {
+                var _a3;
+                setTitleDraft(selectedProject.projectTitle || ((_a3 = currentProject.scriptFileName) == null ? void 0 : _a3.replace(/\.[^.]+$/, "")) || "");
+                setIsEditingTitle(true);
+              },
+              className: "flex-1 min-w-[200px] text-left text-lg font-semibold hover:text-primary transition-colors flex items-center gap-2 group",
+              children: [
+                /* @__PURE__ */ jsx("span", { className: "truncate", children: selectedProject.projectTitle || ((_d = currentProject.scriptFileName) == null ? void 0 : _d.replace(/\.[^.]+$/, "")) || "Untitled storyboard" }),
+                /* @__PURE__ */ jsx(Pencil, { className: "h-3.5 w-3.5 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" })
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsxs(Badge, { variant: "outline", className: "text-xs", children: [
+            ((_e = selectedProject.shots) == null ? void 0 : _e.length) ?? 0,
+            " shot",
+            (((_f = selectedProject.shots) == null ? void 0 : _f.length) ?? 0) === 1 ? "" : "s"
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs(Tabs, { defaultValue: "shots", className: "w-full", children: [
+          /* @__PURE__ */ jsxs(TabsList, { children: [
+            /* @__PURE__ */ jsxs(TabsTrigger, { value: "shots", children: [
+              /* @__PURE__ */ jsx(Camera, { className: "h-4 w-4 mr-1.5" }),
+              "Shot List"
+            ] }),
+            /* @__PURE__ */ jsxs(TabsTrigger, { value: "cast", children: [
+              /* @__PURE__ */ jsx(UserCircle2, { className: "h-4 w-4 mr-1.5" }),
+              "Cast ",
+              ((_g = selectedProject.cast) == null ? void 0 : _g.length) ? `(${selectedProject.cast.length})` : ""
+            ] }),
+            /* @__PURE__ */ jsxs(TabsTrigger, { value: "animatic", children: [
+              /* @__PURE__ */ jsx(Film, { className: "h-4 w-4 mr-1.5" }),
+              "Animatic"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "cast", className: "mt-4", children: /* @__PURE__ */ jsx(
+            CastTab,
+            {
+              cast: selectedProject.cast || [],
+              onGenerateReference: generateCastReferenceImage,
+              onUploadReferencePhoto: uploadCastReferencePhoto,
+              onGenerateAllMissing: generateAllMissingCastReferences,
+              generatingNames: generatingCastNames,
+              isBulkGenerating: isBulkCastGenerating,
+              framesUsageByName
+            }
+          ) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "animatic", className: "mt-4", children: /* @__PURE__ */ jsx(
+            AnimaticTab,
+            {
+              frames: (selectedProject.storyboard || []).map((f) => ({
+                shotNumber: f.shotNumber,
+                imageData: f.imageData,
+                description: f.description,
+                sceneHeading: f.sceneHeading || f.location || f.description
+              })),
+              aspectRatio: selectedProject.aspectRatio,
+              projectTitle: selectedProject.projectTitle || ((_h = currentProject.scriptFileName) == null ? void 0 : _h.replace(/\.[^.]+$/, "")),
+              projectId: selectedProject.id && !selectedProject.id.startsWith("quick-") ? selectedProject.id : void 0,
+              existingAnimaticUrl: selectedProject.animaticUrl ?? null,
+              isPaidUser: ((credits == null ? void 0 : credits.available_credits) ?? 0) > 0,
+              onAnimaticSaved: async (url2) => {
+                await deductCredits(2, "Animatic GIF export");
+                setSelectedProject((prev) => prev ? { ...prev, animaticUrl: url2 } : prev);
+              }
+            }
+          ) }),
+          /* @__PURE__ */ jsxs(TabsContent, { value: "shots", className: "mt-4 space-y-6", children: [
+            (!selectedProject.storyboard || selectedProject.storyboard.every((f) => !f.imageData)) && /* @__PURE__ */ jsx(
+              Card$1,
+              {
+                className: `border ${insufficientCredits ? "border-destructive/50 bg-destructive/5" : lowBalanceWarning ? "border-yellow-500/40 bg-yellow-500/5" : "border-primary/30 bg-primary/5"}`,
+                children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-start justify-between gap-3", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "flex-1 min-w-[220px]", children: [
+                      /* @__PURE__ */ jsxs("h3", { className: "font-semibold text-sm flex items-center gap-2", children: [
+                        /* @__PURE__ */ jsx(Camera, { className: "h-4 w-4 text-primary" }),
+                        "Step 2: Review Shot List"
+                      ] }),
+                      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-1", children: "Edit any shot below, then approve to generate frames." })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                      /* @__PURE__ */ jsxs(Button, { variant: "outline", size: "sm", onClick: handleBackToSceneSelector, disabled: isExtractingScenes, children: [
+                        isExtractingScenes ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 mr-2 animate-spin" }) : /* @__PURE__ */ jsx(ArrowLeft, { className: "h-4 w-4 mr-2" }),
+                        "Back to Scenes"
+                      ] }),
+                      /* @__PURE__ */ jsxs(Button, { variant: "outline", size: "sm", onClick: handleDownloadShotListPDF, children: [
+                        /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                        "Shot List PDF"
+                      ] }),
+                      /* @__PURE__ */ jsxs(
+                        Button,
+                        {
+                          size: "sm",
+                          onClick: () => setShowGenerateConfirm(true),
+                          disabled: totalShotsForGen === 0 || isGenerating || insufficientCredits,
+                          children: [
+                            /* @__PURE__ */ jsx(Camera, { className: "h-4 w-4 mr-2" }),
+                            "Approve & Generate →"
+                          ]
+                        }
+                      )
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2 border-t border-border/50", children: [
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("div", { className: "text-muted-foreground", children: "Estimated" }),
+                      /* @__PURE__ */ jsxs("div", { className: "font-semibold text-foreground text-sm", children: [
+                        estimatedCredits,
+                        " credit",
+                        estimatedCredits === 1 ? "" : "s"
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { className: "text-[10px] text-muted-foreground", children: [
+                        totalShotsForGen,
+                        " × ",
+                        creditsPerFrame,
+                        "/frame"
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("div", { className: "text-muted-foreground", children: "Your balance" }),
+                      /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground text-sm", children: availableCredits })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("div", { className: "text-muted-foreground", children: "After generation" }),
+                      /* @__PURE__ */ jsx(
+                        "div",
+                        {
+                          className: `font-semibold text-sm ${insufficientCredits ? "text-destructive" : lowBalanceWarning ? "text-yellow-500" : "text-foreground"}`,
+                          children: remainingAfter
+                        }
+                      )
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("div", { className: "text-muted-foreground", children: "Style" }),
+                      /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground text-sm truncate", children: selectedArtStyleName }),
+                      hasStyleRef && /* @__PURE__ */ jsx("div", { className: "text-[10px] text-primary", children: "+1 cr/frame (ref image)" })
+                    ] })
+                  ] }),
+                  hasStyleRef && /* @__PURE__ */ jsx("p", { className: "text-[11px] text-muted-foreground italic", children: "Style reference adds 1 credit per frame for enhanced accuracy." }),
+                  insufficientCredits && /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-2 p-2 rounded-md bg-destructive/10 border border-destructive/30", children: [
+                    /* @__PURE__ */ jsxs("span", { className: "text-xs text-destructive font-medium", children: [
+                      "Insufficient credits. You need ",
+                      creditsShort,
+                      " more credit",
+                      creditsShort === 1 ? "" : "s",
+                      "."
+                    ] }),
+                    /* @__PURE__ */ jsx(Button, { size: "sm", variant: "destructive", onClick: () => navigate("/membership"), children: "Get Credits →" })
+                  ] }),
+                  lowBalanceWarning && !insufficientCredits && /* @__PURE__ */ jsx("p", { className: "text-[11px] text-yellow-500", children: "Running low on credits — consider topping up after this generation." })
+                ] })
+              }
+            ),
+            /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+              /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-2", children: [
+                /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Camera, { className: "h-5 w-5" }),
+                  "Shot Breakdown"
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+                  /* @__PURE__ */ jsxs(Button, { variant: "outline", size: "sm", onClick: handleDownloadShotListPDF, children: [
+                    /* @__PURE__ */ jsx(Download, { className: "mr-2 h-4 w-4" }),
+                    "Shot List PDF"
+                  ] }),
+                  /* @__PURE__ */ jsxs(
+                    Button,
+                    {
+                      onClick: initializeStoryboard,
+                      disabled: selectedProject.storyboard && selectedProject.storyboard.length > 0,
+                      variant: "outline",
+                      size: "sm",
+                      children: [
+                        /* @__PURE__ */ jsx(Video, { className: "mr-2 h-4 w-4" }),
+                        "Initialize Frames"
+                      ]
+                    }
+                  ),
+                  selectedProject.storyboard && selectedProject.storyboard.length > 0 && /* @__PURE__ */ jsx(
+                    Button,
+                    {
+                      onClick: generateAllFrames,
+                      disabled: isGenerating,
+                      variant: "default",
+                      size: "sm",
+                      children: isGenerating ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+                        "Generating..."
+                      ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsx(Camera, { className: "mr-2 h-4 w-4" }),
+                        "Generate All Frames"
+                      ] })
+                    }
+                  )
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsxs(CardContent, { children: [
+                /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: selectedProject.shots.map((shot) => {
+                  var _a3, _b3;
+                  return /* @__PURE__ */ jsxs(Card$1, { className: "border border-border", children: [
+                    /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                      /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
+                        "Shot ",
+                        shot.shotNumber
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
+                          /* @__PURE__ */ jsx(
+                            Button,
+                            {
+                              size: "sm",
+                              variant: "ghost",
+                              onClick: saveEditedShot,
+                              className: "h-6 w-6 p-0",
+                              children: /* @__PURE__ */ jsx(Save, { className: "h-3 w-3" })
+                            }
+                          ),
+                          /* @__PURE__ */ jsx(
+                            Button,
+                            {
+                              size: "sm",
+                              variant: "ghost",
+                              onClick: cancelEditingShot,
+                              className: "h-6 w-6 p-0",
+                              children: /* @__PURE__ */ jsx(X, { className: "h-3 w-3" })
+                            }
+                          )
+                        ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                          /* @__PURE__ */ jsx(
+                            Button,
+                            {
+                              size: "sm",
+                              variant: "ghost",
+                              onClick: () => startEditingShot(shot),
+                              className: "h-6 w-6 p-0",
+                              title: "Edit shot",
+                              children: /* @__PURE__ */ jsx(Edit2, { className: "h-3 w-3" })
+                            }
+                          ),
+                          /* @__PURE__ */ jsx(
+                            Button,
+                            {
+                              size: "sm",
+                              variant: "ghost",
+                              onClick: () => {
+                                if (confirm(`Delete Shot ${shot.shotNumber}? This cannot be undone.`)) {
+                                  deleteShot(shot.shotNumber);
+                                }
+                              },
+                              className: "h-6 w-6 p-0 text-destructive hover:text-destructive hover:bg-destructive/10",
+                              title: "Delete shot",
+                              children: /* @__PURE__ */ jsx(Trash2, { className: "h-3 w-3" })
+                            }
+                          )
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1 text-sm text-muted-foreground", children: [
+                          /* @__PURE__ */ jsx(Clock, { className: "h-3 w-3" }),
+                          editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                            Input,
+                            {
+                              value: editValues.duration || shot.duration,
+                              onChange: (e) => setEditValues((prev) => ({ ...prev, duration: e.target.value })),
+                              className: "h-5 w-16 text-xs"
+                            }
+                          ) : shot.duration
+                        ] })
+                      ] })
+                    ] }) }),
+                    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
+                      shot.characters && shot.characters.length > 0 && /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-1.5 -mt-1", children: [
+                        /* @__PURE__ */ jsx("span", { className: "text-[10px] uppercase tracking-wide text-muted-foreground", children: "In scene:" }),
+                        shot.characters.map((c, i) => {
+                          const known = (selectedProject.cast || []).find(
+                            (m) => m.name.toLowerCase() === String(c).toLowerCase()
+                          );
+                          return /* @__PURE__ */ jsx(
+                            Badge,
+                            {
+                              variant: known ? "default" : "outline",
+                              className: "text-[10px] px-1.5 py-0",
+                              title: (known == null ? void 0 : known.description) || void 0,
+                              children: c
+                            },
+                            `${shot.shotNumber}-char-${i}`
+                          );
+                        })
+                      ] }),
+                      editingShot === shot.shotNumber && /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsxs("div", { className: "bg-primary/5 p-3 rounded-lg border border-primary/20", children: [
+                          /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-2 mb-2", children: [
+                            /* @__PURE__ */ jsx(Sparkles, { className: "h-4 w-4 text-primary mt-0.5" }),
+                            /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                              /* @__PURE__ */ jsx(Label, { className: "text-sm font-medium", children: "AI Shot Assistant" }),
+                              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Describe what you want and AI will fill the fields below" })
+                            ] })
+                          ] }),
+                          /* @__PURE__ */ jsx(
+                            Textarea,
+                            {
+                              placeholder: "e.g., 'Close-up of Sarah looking worried in dimly lit kitchen, dramatic side lighting, 3-4 seconds'",
+                              value: aiPrompt.get(shot.shotNumber) || "",
+                              onChange: (e) => setAiPrompt(new Map(aiPrompt).set(shot.shotNumber, e.target.value)),
+                              className: "text-sm mb-2",
+                              rows: 3
+                            }
+                          ),
+                          /* @__PURE__ */ jsx(
+                            Button,
+                            {
+                              size: "sm",
+                              onClick: () => parseAIPrompt(shot.shotNumber, aiPrompt.get(shot.shotNumber) || ""),
+                              disabled: !((_a3 = aiPrompt.get(shot.shotNumber)) == null ? void 0 : _a3.trim()) || isParsingPrompt.get(shot.shotNumber),
+                              className: "w-full",
+                              children: isParsingPrompt.get(shot.shotNumber) ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                                /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 mr-2 animate-spin" }),
+                                "Parsing..."
+                              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                                /* @__PURE__ */ jsx(Wand2, { className: "h-3 w-3 mr-2" }),
+                                "Auto-Fill Fields"
+                              ] })
+                            }
+                          )
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { className: "relative my-4", children: [
+                          /* @__PURE__ */ jsx("div", { className: "absolute inset-0 flex items-center", children: /* @__PURE__ */ jsx("span", { className: "w-full border-t" }) }),
+                          /* @__PURE__ */ jsx("div", { className: "relative flex justify-center text-xs uppercase", children: /* @__PURE__ */ jsx("span", { className: "bg-background px-2 text-muted-foreground", children: "Or edit manually" }) })
+                        ] })
+                      ] }),
+                      shot.visualDescription && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Visual Description" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Textarea,
+                          {
+                            value: editValues.visualDescription || shot.visualDescription,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, visualDescription: e.target.value })),
+                            className: "text-sm min-h-[80px]"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.visualDescription })
+                      ] }),
+                      shot.location && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Location" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.location || shot.location,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, location: e.target.value })),
+                            className: "text-sm"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.location })
+                      ] }),
+                      shot.action && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Action" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.action || shot.action,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, action: e.target.value })),
+                            className: "text-sm"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.action })
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-2", children: [
+                        /* @__PURE__ */ jsxs("div", { children: [
+                          /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Shot Type" }),
+                          editingShot === shot.shotNumber ? /* @__PURE__ */ jsxs(
+                            Select,
+                            {
+                              value: editValues.shotType || shot.shotType || "",
+                              onValueChange: (v2) => setEditValues((prev) => ({ ...prev, shotType: v2 })),
+                              children: [
+                                /* @__PURE__ */ jsx(SelectTrigger, { className: "text-sm h-9", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select..." }) }),
+                                /* @__PURE__ */ jsx(SelectContent, { children: SHOT_TYPES.map((t) => /* @__PURE__ */ jsx(SelectItem, { value: t, children: t }, t)) })
+                              ]
+                            }
+                          ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.shotType || shot.cameraAngle })
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { children: [
+                          /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Camera Movement" }),
+                          editingShot === shot.shotNumber ? /* @__PURE__ */ jsxs(
+                            Select,
+                            {
+                              value: editValues.cameraMovement || shot.cameraMovement || "Static",
+                              onValueChange: (v2) => setEditValues((prev) => ({ ...prev, cameraMovement: v2 })),
+                              children: [
+                                /* @__PURE__ */ jsx(SelectTrigger, { className: "text-sm h-9", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select..." }) }),
+                                /* @__PURE__ */ jsx(SelectContent, { children: CAMERA_MOVEMENTS.map((t) => /* @__PURE__ */ jsx(SelectItem, { value: t, children: t }, t)) })
+                              ]
+                            }
+                          ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.cameraMovement || "Static" })
+                        ] })
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Camera Angle" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.cameraAngle || shot.cameraAngle,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, cameraAngle: e.target.value })),
+                            className: "text-sm",
+                            placeholder: "e.g., Eye level, Low angle"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.cameraAngle })
+                      ] }),
+                      shot.lighting && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Lighting" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.lighting || shot.lighting,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, lighting: e.target.value })),
+                            className: "text-sm"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.lighting })
+                      ] }),
+                      shot.emotionalTone && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Emotional Tone" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.emotionalTone || shot.emotionalTone,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, emotionalTone: e.target.value })),
+                            className: "text-sm"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.emotionalTone })
+                      ] }),
+                      shot.keyProps && /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Key Props" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: editValues.keyProps || shot.keyProps,
+                            onChange: (e) => setEditValues((prev) => ({ ...prev, keyProps: e.target.value })),
+                            className: "text-sm"
+                          }
+                        ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: shot.keyProps })
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1", children: "Characters" }),
+                        editingShot === shot.shotNumber ? /* @__PURE__ */ jsx(
+                          Input,
+                          {
+                            value: ((_b3 = editValues.characters) == null ? void 0 : _b3.join(", ")) || shot.characters.join(", "),
+                            onChange: (e) => setEditValues((prev) => ({
+                              ...prev,
+                              characters: e.target.value.split(",").map((s) => s.trim()).filter((s) => s)
+                            })),
+                            className: "text-sm",
+                            placeholder: "Enter characters separated by commas"
+                          }
+                        ) : /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-1", children: shot.characters.map((character, index) => /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-xs", children: character }, index)) })
+                      ] }),
+                      shot.dialogue && shot.dialogue !== "None" && /* @__PURE__ */ jsxs("div", { className: "border-t pt-3", children: [
+                        /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm mb-1 text-primary", children: "Dialogue" }),
+                        /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground bg-primary/10 p-2 rounded", children: shot.dialogue })
+                      ] }),
+                      /* @__PURE__ */ jsx("div", { className: "pt-3 mt-3 border-t", children: /* @__PURE__ */ jsxs(
+                        Button,
+                        {
+                          variant: "outline",
+                          size: "sm",
+                          onClick: () => addNewShot(shot.shotNumber),
+                          className: "w-full",
+                          children: [
+                            /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                            "Insert Shot Below"
+                          ]
+                        }
+                      ) })
+                    ] })
+                  ] }, shot.shotNumber);
+                }) }),
+                /* @__PURE__ */ jsx("div", { className: "mt-4 flex justify-center", children: /* @__PURE__ */ jsxs(
+                  Button,
+                  {
+                    variant: "outline",
+                    onClick: () => addNewShot(),
+                    className: "w-full max-w-md",
+                    children: [
+                      /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                      "Add Another Shot"
+                    ]
+                  }
+                ) })
+              ] })
+            ] }),
+            selectedProject.shots && selectedProject.shots.length > 0 && /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+              /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
+                  "Visual Storyboard"
+                ] }),
+                /* @__PURE__ */ jsxs(Button, { onClick: exportStoryboardToPDF, size: "sm", variant: "outline", children: [
+                  /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                  "Export PDF"
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: selectedProject.shots.map((shot) => {
+                var _a3;
+                const frame = (_a3 = selectedProject.storyboard) == null ? void 0 : _a3.find((f) => f.shotNumber === shot.shotNumber);
+                const isGenerating2 = generatingFrames.has(shot.shotNumber);
+                const error = frameErrors.get(shot.shotNumber);
+                return /* @__PURE__ */ jsx(Card$1, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                    /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
+                      "Frame ",
+                      shot.shotNumber
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                      !(frame == null ? void 0 : frame.imageData) && !isGenerating2 && !error && /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsxs(
+                          Select,
+                          {
+                            value: frameStyles.get(shot.shotNumber) || currentProject.artStyle,
+                            onValueChange: (value) => {
+                              setFrameStyles((prev) => new Map(prev).set(shot.shotNumber, value));
+                            },
+                            children: [
+                              /* @__PURE__ */ jsx(SelectTrigger, { className: "h-6 w-[140px] text-xs", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Visual Style" }) }),
+                              /* @__PURE__ */ jsx(SelectContent, { children: artStyles.map((style) => /* @__PURE__ */ jsx(SelectItem, { value: style.id, className: "text-xs", children: style.name }, style.id)) })
+                            ]
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs(
+                          Button,
+                          {
+                            size: "sm",
+                            onClick: () => generateSingleFrame(shot.shotNumber),
+                            className: "h-6 px-2 text-xs",
+                            children: [
+                              /* @__PURE__ */ jsx(Camera, { className: "h-3 w-3 mr-1" }),
+                              "Generate"
+                            ]
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+                          /* @__PURE__ */ jsx(
+                            Input,
+                            {
+                              type: "file",
+                              accept: "image/*",
+                              onChange: (e) => handleImageUpload(shot.shotNumber, e),
+                              className: "hidden",
+                              id: `upload-frame-${shot.shotNumber}`
+                            }
+                          ),
+                          /* @__PURE__ */ jsx(
+                            Label,
+                            {
+                              htmlFor: `upload-frame-${shot.shotNumber}`,
+                              className: "cursor-pointer",
+                              children: /* @__PURE__ */ jsx(
+                                Button,
+                                {
+                                  type: "button",
+                                  size: "sm",
+                                  variant: "outline",
+                                  className: "h-6 px-2 text-xs",
+                                  asChild: true,
+                                  children: /* @__PURE__ */ jsxs("span", { children: [
+                                    /* @__PURE__ */ jsx(Upload, { className: "h-3 w-3 mr-1" }),
+                                    "Upload"
+                                  ] })
+                                }
+                              )
+                            }
+                          )
+                        ] })
+                      ] }),
+                      editingFrame === shot.shotNumber ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            size: "sm",
+                            variant: "ghost",
+                            onClick: saveEditedFrame,
+                            className: "h-6 w-6 p-0",
+                            children: /* @__PURE__ */ jsx(Save, { className: "h-3 w-3" })
+                          }
+                        ),
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            size: "sm",
+                            variant: "ghost",
+                            onClick: cancelEditingFrame,
+                            className: "h-6 w-6 p-0",
+                            children: /* @__PURE__ */ jsx(X, { className: "h-3 w-3" })
+                          }
+                        )
+                      ] }) : /* @__PURE__ */ jsx("div", { className: "flex items-center gap-1", children: (frame == null ? void 0 : frame.imageData) && /* @__PURE__ */ jsxs(Fragment, { children: [
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            size: "sm",
+                            variant: "ghost",
+                            onClick: () => startEditingFrame({ ...shot, ...frame }),
+                            className: "h-6 w-6 p-0",
+                            children: /* @__PURE__ */ jsx(Edit2, { className: "h-3 w-3" })
+                          }
+                        ),
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            size: "sm",
+                            variant: "ghost",
+                            onClick: () => generateSingleFrame(shot.shotNumber),
+                            disabled: isGenerating2,
+                            className: "h-6 w-6 p-0",
+                            children: isGenerating2 ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3" })
+                          }
+                        )
+                      ] }) }),
+                      (frame == null ? void 0 : frame.generatedAt) && /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: new Date(frame.generatedAt).toLocaleTimeString() }),
+                      isGenerating2 && /* @__PURE__ */ jsx("span", { className: "text-xs text-blue-600", children: "Generating..." }),
+                      error && /* @__PURE__ */ jsx("span", { className: "text-xs text-red-600", children: "Failed" })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "bg-muted rounded-lg overflow-hidden border border-border aspect-video", children: [
+                    (frame == null ? void 0 : frame.imageData) ? /* @__PURE__ */ jsx(
+                      "img",
+                      {
+                        src: frame.imageData,
+                        alt: `Storyboard frame ${shot.shotNumber}: ${shot.description}`,
+                        className: "w-full h-full object-cover",
+                        onError: (e) => {
+                          var _a4;
+                          console.error("Failed to load storyboard image:", frame.imageData);
+                          e.currentTarget.style.display = "none";
+                          (_a4 = e.currentTarget.nextElementSibling) == null ? void 0 : _a4.classList.remove("hidden");
+                        }
+                      }
+                    ) : isGenerating2 ? /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                      /* @__PURE__ */ jsx(Loader2, { className: "h-8 w-8 mx-auto mb-2 text-muted-foreground animate-spin" }),
+                      /* @__PURE__ */ jsxs("p", { className: "text-sm text-muted-foreground", children: [
+                        "Generating frame ",
+                        shot.shotNumber,
+                        "..."
+                      ] })
+                    ] }) }) : error ? /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center bg-red-50", children: /* @__PURE__ */ jsxs("div", { className: "text-center px-4", children: [
+                      /* @__PURE__ */ jsx(AlertCircle, { className: "h-8 w-8 mx-auto mb-2 text-red-500" }),
+                      /* @__PURE__ */ jsx("p", { className: "text-sm font-medium text-red-600 mb-1", children: "Generation failed" }),
+                      error.includes("policy") && /* @__PURE__ */ jsx("p", { className: "text-xs text-red-500 mb-2", children: "Content policy violation. Try adjusting the scene description." }),
+                      /* @__PURE__ */ jsx(
+                        Button,
+                        {
+                          size: "sm",
+                          variant: "outline",
+                          onClick: () => generateSingleFrame(shot.shotNumber),
+                          className: "mt-2",
+                          children: "Retry"
+                        }
+                      )
+                    ] }) }) : /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                      /* @__PURE__ */ jsx(Camera, { className: "h-8 w-8 mx-auto mb-2 text-muted-foreground" }),
+                      /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mb-2", children: "Click Generate to create frame" }),
+                      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "or Upload your own image" })
+                    ] }) }),
+                    /* @__PURE__ */ jsx("div", { className: "hidden w-full h-full flex items-center justify-center bg-muted", children: /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                      /* @__PURE__ */ jsx(Camera, { className: "h-6 w-6 mx-auto mb-2 text-muted-foreground" }),
+                      /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Frame preview unavailable" })
+                    ] }) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1", children: "Description" }),
+                      editingFrame === shot.shotNumber ? /* @__PURE__ */ jsx(
+                        Textarea,
+                        {
+                          value: frameEditValues.description || shot.description,
+                          onChange: (e) => setFrameEditValues((prev) => ({ ...prev, description: e.target.value })),
+                          className: "text-xs min-h-[50px]"
+                        }
+                      ) : /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: shot.description })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1", children: "Camera Angle" }),
+                      editingFrame === shot.shotNumber ? /* @__PURE__ */ jsx(
+                        Input,
+                        {
+                          value: frameEditValues.cameraAngle || shot.cameraAngle,
+                          onChange: (e) => setFrameEditValues((prev) => ({ ...prev, cameraAngle: e.target.value })),
+                          className: "text-xs"
+                        }
+                      ) : /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: shot.cameraAngle })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1", children: "Cinematic Angle Preset" }),
+                      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-1", children: [
+                        /* @__PURE__ */ jsxs(
+                          Select,
+                          {
+                            value: frameAngles.get(shot.shotNumber) || "",
+                            onValueChange: (value) => {
+                              setFrameAngles((prev) => new Map(prev).set(shot.shotNumber, value));
+                            },
+                            children: [
+                              /* @__PURE__ */ jsx(SelectTrigger, { className: "h-7 text-xs flex-1", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Override angle…" }) }),
+                              /* @__PURE__ */ jsx(SelectContent, { children: cinematicAnglePresets.map((preset) => /* @__PURE__ */ jsx(SelectItem, { value: preset, className: "text-xs", children: preset }, preset)) })
+                            ]
+                          }
+                        ),
+                        /* @__PURE__ */ jsx(
+                          Button,
+                          {
+                            size: "sm",
+                            variant: "outline",
+                            disabled: isGenerating2 || !frameAngles.get(shot.shotNumber),
+                            onClick: () => generateSingleFrame(shot.shotNumber),
+                            className: "h-7 px-2 text-xs",
+                            title: "Regenerate with selected angle",
+                            children: isGenerating2 ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3" })
+                          }
+                        )
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1", children: "Visual Elements" }),
+                      editingFrame === shot.shotNumber ? /* @__PURE__ */ jsx(
+                        Textarea,
+                        {
+                          value: frameEditValues.visualElements || shot.visualElements,
+                          onChange: (e) => setFrameEditValues((prev) => ({ ...prev, visualElements: e.target.value })),
+                          className: "text-xs min-h-[40px]"
+                        }
+                      ) : /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: Array.isArray(shot.visualElements) ? shot.visualElements.filter(Boolean).join(" · ") : shot.visualElements })
+                    ] }),
+                    shot.scriptSegment && /* @__PURE__ */ jsxs("div", { className: "border-t pt-2", children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1 text-primary", children: "Script Context" }),
+                      /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground bg-secondary/30 p-2 rounded italic", children: [
+                        '"',
+                        shot.scriptSegment,
+                        '"'
+                      ] })
+                    ] }),
+                    shot.dialogueLines && shot.dialogueLines.length > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("h4", { className: "font-medium text-xs mb-1 text-primary", children: "Dialogue" }),
+                      /* @__PURE__ */ jsx("div", { className: "space-y-1", children: shot.dialogueLines.slice(0, 2).map((dialogue, index) => /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground bg-primary/10 p-1 rounded", children: dialogue }, index)) })
+                    ] }),
+                    editingFrame === shot.shotNumber && (frame == null ? void 0 : frame.imageData) && /* @__PURE__ */ jsx(
+                      Button,
+                      {
+                        size: "sm",
+                        onClick: () => generateSingleFrame(shot.shotNumber),
+                        disabled: isGenerating2,
+                        className: "w-full mt-2",
+                        children: isGenerating2 ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                          /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-3 w-3 animate-spin" }),
+                          "Regenerating..."
+                        ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                          /* @__PURE__ */ jsx(RefreshCw, { className: "mr-2 h-3 w-3" }),
+                          "Regenerate Frame"
+                        ] })
+                      }
+                    )
+                  ] })
+                ] }) }, shot.shotNumber);
+              }) }) })
+            ] }),
+            selectedProject.storyboard && selectedProject.storyboard.some((f) => f.imageData) && /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+              /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-2", children: [
+                /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
+                  "Frames Gallery"
+                ] }),
+                /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground", children: [
+                  selectedProject.storyboard.filter((f) => f.imageData).length,
+                  " of ",
+                  selectedProject.storyboard.length,
+                  " frames generated"
+                ] })
+              ] }) }),
+              /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4", children: selectedProject.storyboard.map((frame) => {
+                const shot = selectedProject.shots.find((s) => s.shotNumber === frame.shotNumber);
+                const description = (shot == null ? void 0 : shot.visualDescription) || (shot == null ? void 0 : shot.description) || frame.description || "";
+                const shotType = (shot == null ? void 0 : shot.shotType) || (shot == null ? void 0 : shot.cameraAngle) || "";
+                const cameraMove = (shot == null ? void 0 : shot.cameraMovement) || "";
+                return /* @__PURE__ */ jsxs(
+                  "div",
+                  {
+                    className: "rounded-lg border border-border bg-card overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow",
+                    children: [
+                      /* @__PURE__ */ jsx("div", { className: "px-3 py-2 border-b border-border bg-muted/40", children: /* @__PURE__ */ jsxs("p", { className: "text-sm font-semibold text-foreground", children: [
+                        "Frame ",
+                        frame.shotNumber
+                      ] }) }),
+                      /* @__PURE__ */ jsx("div", { className: "aspect-video bg-muted overflow-hidden", children: frame.imageData ? /* @__PURE__ */ jsx(
+                        "img",
+                        {
+                          src: frame.imageData,
+                          alt: `Frame ${frame.shotNumber}`,
+                          className: "w-full h-full object-cover",
+                          loading: "lazy"
+                        }
+                      ) : /* @__PURE__ */ jsx("div", { className: "w-full h-full flex items-center justify-center text-xs text-muted-foreground", children: "Not generated" }) }),
+                      /* @__PURE__ */ jsxs("div", { className: "p-3 space-y-2 flex-1", children: [
+                        description && /* @__PURE__ */ jsx("p", { className: "text-xs text-foreground leading-relaxed line-clamp-4", children: description }),
+                        /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-1 pt-1", children: [
+                          shotType && /* @__PURE__ */ jsxs(Badge, { variant: "secondary", className: "text-[10px]", children: [
+                            /* @__PURE__ */ jsx(Camera, { className: "h-3 w-3 mr-1" }),
+                            shotType
+                          ] }),
+                          cameraMove && /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-[10px]", children: cameraMove })
+                        ] })
+                      ] })
+                    ]
+                  },
+                  `gallery-${frame.shotNumber}`
+                );
+              }) }) })
+            ] })
+          ] })
+        ] })
+      ] })
+    ] }) }),
+    /* @__PURE__ */ jsx(AlertDialog, { open: showGenerateConfirm, onOpenChange: setShowGenerateConfirm, children: /* @__PURE__ */ jsxs(
+      AlertDialogContent,
+      {
+        className: "sm:max-w-md max-sm:top-auto max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-t-2xl max-sm:rounded-b-none max-sm:w-full max-sm:max-w-full",
+        children: [
+          /* @__PURE__ */ jsxs(AlertDialogHeader, { children: [
+            /* @__PURE__ */ jsx(AlertDialogTitle, { children: "Ready to Generate?" }),
+            /* @__PURE__ */ jsx(AlertDialogDescription, { children: "Review the details below before we use your credits." })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "space-y-3 text-sm", children: [
+            /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-3 p-3 rounded-lg bg-muted/40 border border-border/50", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Frames to generate" }),
+                /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground", children: totalShotsForGen })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Frames cost" }),
+                /* @__PURE__ */ jsxs("div", { className: "font-semibold text-foreground", children: [
+                  frameCreditsTotal,
+                  " credit",
+                  frameCreditsTotal === 1 ? "" : "s"
+                ] }),
+                missingCastRefCount > 0 && /* @__PURE__ */ jsxs("div", { className: "text-[10px] text-muted-foreground mt-0.5", children: [
+                  "+ ",
+                  missingCastRefCount,
+                  " optional cast ref",
+                  missingCastRefCount === 1 ? "" : "s"
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Your balance" }),
+                /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground", children: availableCredits })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Remaining after" }),
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: `font-semibold ${insufficientCredits ? "text-destructive" : lowBalanceWarning ? "text-yellow-500" : "text-foreground"}`,
+                    children: remainingAfter
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Style" }),
+                /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground truncate", children: selectedArtStyleName })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "text-xs text-muted-foreground", children: "Aspect ratio" }),
+                /* @__PURE__ */ jsx("div", { className: "font-semibold text-foreground", children: currentProject.aspectRatio })
+              ] })
+            ] }),
+            hasStyleRef && /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground italic", children: "Style reference image active — adds 1 credit per frame." }),
+            insufficientCredits && /* @__PURE__ */ jsxs("div", { className: "p-3 rounded-md bg-destructive/10 border border-destructive/30 flex flex-wrap items-center justify-between gap-2", children: [
+              /* @__PURE__ */ jsxs("span", { className: "text-xs text-destructive font-medium", children: [
+                "Need ",
+                creditsShort,
+                " more credit",
+                creditsShort === 1 ? "" : "s",
+                " to generate."
+              ] }),
+              /* @__PURE__ */ jsx(Button, { size: "sm", variant: "destructive", onClick: () => {
+                setShowGenerateConfirm(false);
+                navigate("/membership");
+              }, children: "Get Credits →" })
+            ] }),
+            lowBalanceWarning && !insufficientCredits && /* @__PURE__ */ jsx("p", { className: "text-xs text-yellow-500", children: "Running low on credits." })
+          ] }),
+          /* @__PURE__ */ jsxs(AlertDialogFooter, { children: [
+            /* @__PURE__ */ jsx(AlertDialogCancel, { children: "Cancel" }),
+            /* @__PURE__ */ jsx(AlertDialogAction, { onClick: handleApproveAndGenerate, disabled: insufficientCredits, children: "Confirm & Generate →" })
+          ] })
+        ]
+      }
+    ) })
+  ] });
+};
+function StoryboardingRoute() {
+  const { loading } = useAuth();
+  if (loading) {
+    return /* @__PURE__ */ jsx("div", { className: "flex min-h-[60vh] items-center justify-center", children: /* @__PURE__ */ jsx("div", { className: "h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" }) });
+  }
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/storyboarding" }),
+    /* @__PURE__ */ jsx(Storyboarding, {})
+  ] });
+}
+const sanitizeValue = (value, isTimeField = false) => {
+  if (value === "null" || value === "NULL" || value === "" || value === void 0) {
+    return null;
+  }
+  if (isTimeField && value !== null) {
+    const timeValue = String(value);
+    if (/^\d{1,2}:\d{2}(:\d{2})?$/.test(timeValue)) {
+      return timeValue;
+    }
+    return null;
+  }
+  return value;
+};
+const sanitizeCallSheetData = (data) => {
+  const timeFields = ["general_crew_call", "shooting_call", "lunch_time", "courtesy_breakfast_time", "wrap_time"];
+  const sanitized = {};
+  for (const [key, value] of Object.entries(data)) {
+    if (key === "id") continue;
+    sanitized[key] = sanitizeValue(value, timeFields.includes(key));
+  }
+  return sanitized;
+};
+const sanitizeCastData = (cast) => {
+  const timeFields = ["pickup_time", "call_time", "set_ready_time"];
+  return cast.map((member) => {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(member)) {
+      if (key === "id") continue;
+      sanitized[key] = sanitizeValue(value, timeFields.includes(key));
+    }
+    return sanitized;
+  });
+};
+const sanitizeCrewData = (crew) => {
+  return crew.map((member) => {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(member)) {
+      if (key === "id") continue;
+      sanitized[key] = sanitizeValue(value, key === "call_time");
+    }
+    return sanitized;
+  });
+};
+const sanitizeBackgroundData = (background) => {
+  return background.map((item) => {
+    const sanitized = {};
+    for (const [key, value] of Object.entries(item)) {
+      if (key === "id") continue;
+      sanitized[key] = sanitizeValue(value, key === "call_time");
+    }
+    return sanitized;
+  });
+};
+const useCallSheets = () => {
+  const [callSheets, setCallSheets] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const fetchCallSheets = async () => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      const { data, error } = await supabase.from("call_sheets").select("*").eq("user_id", user.id).order("shoot_date", { ascending: false });
+      if (error) throw error;
+      setCallSheets(data || []);
+    } catch (error) {
+      console.error("Error fetching call sheets:", error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch call sheets",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+  const saveCallSheet = async (callSheetData, scenes, cast, crew, background, breaks = [], requirements = [], _scheduleRows = [], _advanceRows = []) => {
+    try {
+      console.log("🚀 Starting call sheet save...", { callSheetData, scenesCount: scenes.length, castCount: cast.length });
+      const { data: { user } } = await supabase.auth.getUser();
+      console.log("👤 User check:", user ? `Logged in as ${user.id}` : "Not logged in");
+      if (!user) throw new Error("Not authenticated");
+      const sanitizedCallSheet = sanitizeCallSheetData(callSheetData);
+      const sanitizedCast = sanitizeCastData(cast);
+      const sanitizedCrew = sanitizeCrewData(crew);
+      const sanitizedBackground = sanitizeBackgroundData(background);
+      console.log("💾 Inserting call sheet to database...");
+      const { data: callSheet, error: callSheetError } = await supabase.from("call_sheets").insert({
+        production_company: sanitizedCallSheet.production_company || "",
+        project_name: sanitizedCallSheet.project_name || "",
+        shoot_date: sanitizedCallSheet.shoot_date || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+        day_number: sanitizedCallSheet.day_number,
+        total_days: sanitizedCallSheet.total_days,
+        script_color: sanitizedCallSheet.script_color,
+        schedule_color: sanitizedCallSheet.schedule_color,
+        general_crew_call: sanitizedCallSheet.general_crew_call,
+        shooting_call: sanitizedCallSheet.shooting_call,
+        lunch_time: sanitizedCallSheet.lunch_time,
+        courtesy_breakfast_time: sanitizedCallSheet.courtesy_breakfast_time,
+        wrap_time: sanitizedCallSheet.wrap_time,
+        executive_producers: sanitizedCallSheet.executive_producers,
+        producers: sanitizedCallSheet.producers,
+        director: sanitizedCallSheet.director,
+        associate_director: sanitizedCallSheet.associate_director,
+        line_producer: sanitizedCallSheet.line_producer,
+        upm: sanitizedCallSheet.upm,
+        production_office_address: sanitizedCallSheet.production_office_address,
+        shooting_location: sanitizedCallSheet.shooting_location,
+        location_address: sanitizedCallSheet.location_address,
+        crew_parking: sanitizedCallSheet.crew_parking,
+        basecamp: sanitizedCallSheet.basecamp,
+        nearest_hospital: sanitizedCallSheet.nearest_hospital,
+        hospital_address: sanitizedCallSheet.hospital_address,
+        weather_description: sanitizedCallSheet.weather_description,
+        high_temp: sanitizedCallSheet.high_temp,
+        low_temp: sanitizedCallSheet.low_temp,
+        sunrise_time: sanitizedCallSheet.sunrise_time,
+        sunset_time: sanitizedCallSheet.sunset_time,
+        dawn_time: sanitizedCallSheet.dawn_time,
+        twilight_time: sanitizedCallSheet.twilight_time,
+        lx_precall_time: sanitizedCallSheet.lx_precall_time,
+        unit_call_time: sanitizedCallSheet.unit_call_time,
+        current_schedule: sanitizedCallSheet.current_schedule,
+        current_script: sanitizedCallSheet.current_script,
+        unit_base: sanitizedCallSheet.unit_base,
+        unit_base_address: sanitizedCallSheet.unit_base_address,
+        user_id: user.id
+      }).select().single();
+      if (callSheetError) {
+        console.error("❌ Call sheet insert error:", callSheetError);
+        throw callSheetError;
+      }
+      console.log("✅ Call sheet inserted:", callSheet.id);
+      const callSheetId = callSheet.id;
+      if (scenes.length > 0) {
+        console.log(`📋 Inserting ${scenes.length} scenes...`);
+        const scenesWithId = scenes.map((scene, index) => ({
+          scene_number: scene.scene_number || "",
+          pages: scene.pages,
+          set_description: scene.set_description || "",
+          day_night: scene.day_night,
+          cast_ids: scene.cast_ids,
+          notes: scene.notes,
+          location: scene.location,
+          start_time: scene.start_time,
+          int_ext: scene.int_ext,
+          call_sheet_id: callSheetId,
+          order_index: index
+        }));
+        const { error: scenesError } = await supabase.from("call_sheet_scenes").insert(scenesWithId);
+        if (scenesError) {
+          console.error("❌ Scenes insert error:", scenesError);
+          throw scenesError;
+        }
+        console.log("✅ Scenes inserted");
+      }
+      if (sanitizedCast.length > 0) {
+        console.log(`👥 Inserting ${sanitizedCast.length} cast members...`);
+        const castWithId = sanitizedCast.map((member, index) => ({
+          character_name: member.character_name || "",
+          actor_name: member.actor_name || "",
+          status: member.status,
+          pickup_time: member.pickup_time,
+          call_time: member.call_time,
+          set_ready_time: member.set_ready_time,
+          special_instructions: member.special_instructions,
+          cast_id: member.cast_id,
+          swf: member.swf,
+          makeup_time: member.makeup_time,
+          costume_time: member.costume_time,
+          travel_time: member.travel_time,
+          on_set_time: member.on_set_time,
+          call_sheet_id: callSheetId,
+          order_index: index
+        }));
+        const { error: castError } = await supabase.from("call_sheet_cast").insert(castWithId);
+        if (castError) {
+          console.error("❌ Cast insert error:", castError);
+          throw castError;
+        }
+        console.log("✅ Cast inserted");
+      }
+      if (sanitizedCrew.length > 0) {
+        console.log(`🎬 Inserting ${sanitizedCrew.length} crew members...`);
+        const crewWithId = sanitizedCrew.map((member, index) => ({
+          department: member.department || "",
+          title: member.title || "",
+          name: member.name || "",
+          call_time: member.call_time,
+          call_sheet_id: callSheetId,
+          order_index: index
+        }));
+        const { error: crewError } = await supabase.from("call_sheet_crew").insert(crewWithId);
+        if (crewError) {
+          console.error("❌ Crew insert error:", crewError);
+          throw crewError;
+        }
+        console.log("✅ Crew inserted");
+      }
+      if (sanitizedBackground.length > 0) {
+        console.log(`🎭 Inserting ${sanitizedBackground.length} background performers...`);
+        const backgroundWithId = sanitizedBackground.map((item) => ({
+          description: item.description || "",
+          quantity: item.quantity,
+          call_time: item.call_time,
+          notes: item.notes,
+          call_sheet_id: callSheetId
+        }));
+        const { error: backgroundError } = await supabase.from("call_sheet_background").insert(backgroundWithId);
+        if (backgroundError) {
+          console.error("❌ Background insert error:", backgroundError);
+          throw backgroundError;
+        }
+        console.log("✅ Background inserted");
+      }
+      if (breaks.length > 0) {
+        console.log(`⏸️ Inserting ${breaks.length} breaks...`);
+        const breaksWithId = breaks.map((item) => ({
+          break_type: item.break_type,
+          after_scene_index: item.after_scene_index,
+          call_sheet_id: callSheetId
+        }));
+        const { error: breaksError } = await supabase.from("call_sheet_breaks").insert(breaksWithId);
+        if (breaksError) {
+          console.error("❌ Breaks insert error:", breaksError);
+          throw breaksError;
+        }
+        console.log("✅ Breaks inserted");
+      }
+      if (requirements.length > 0) {
+        console.log(`📋 Inserting ${requirements.length} requirements...`);
+        const reqWithId = requirements.map((item, index) => ({
+          department: item.department,
+          notes: item.notes,
+          order_index: index,
+          call_sheet_id: callSheetId
+        }));
+        const { error: reqError } = await supabase.from("call_sheet_requirements").insert(reqWithId);
+        if (reqError) {
+          console.error("❌ Requirements insert error:", reqError);
+          throw reqError;
+        }
+        console.log("✅ Requirements inserted");
+      }
+      console.log("🎉 Call sheet saved successfully! ID:", callSheetId);
+      toast({
+        title: "Success",
+        description: "Call sheet saved successfully!"
+      });
+      await fetchCallSheets();
+      return callSheetId;
+    } catch (error) {
+      console.error("❌ Error saving call sheet:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save call sheet. Please try again.",
+        variant: "destructive"
+      });
+      throw error;
+    }
+  };
+  useEffect(() => {
+    fetchCallSheets();
+  }, []);
+  return {
+    callSheets,
+    loading,
+    saveCallSheet,
+    refetch: fetchCallSheets
+  };
+};
+const formatTime = (time) => {
+  if (!time) return "";
+  if (time.includes("AM") || time.includes("PM")) return time;
+  const [hours, minutes] = time.split(":");
+  const h = parseInt(hours);
+  const ampm = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 || 12;
+  return `${hour12}:${minutes} ${ampm}`;
+};
+const drawSectionHeader = (doc, text, yPosition, pageWidth) => {
+  doc.setFillColor(200, 200, 200);
+  doc.rect(14, yPosition - 5, pageWidth - 28, 8, "F");
+  doc.setDrawColor(0, 0, 0);
+  doc.setLineWidth(0.3);
+  doc.rect(14, yPosition - 5, pageWidth - 28, 8);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10);
+  doc.setTextColor(0, 0, 0);
+  doc.text(text, 16, yPosition);
+  return yPosition + 6;
+};
+const exportCallSheetToPDF = (callSheet, scenes, cast, crew, background, breaks = [], requirements = [], logo, scheduleRows = [], advanceRows = []) => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const margin = 14;
+  let logoW = 0;
+  let logoH = 0;
+  const logoBand = 18;
+  if ((logo == null ? void 0 : logo.dataUrl) && logo.width > 0 && logo.height > 0) {
+    const maxH = 14;
+    const maxW = 60;
+    const scale = Math.min(maxH / logo.height, maxW / logo.width);
+    logoW = logo.width * scale;
+    logoH = logo.height * scale;
+  }
+  let yPosition = logoW ? 12 + logoBand : 12;
+  const leftColWidth = 55;
+  const centerColWidth = 80;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(8);
+  doc.setTextColor(0, 0, 0);
+  let leftY = yPosition;
+  if (callSheet.director) {
+    doc.text("Director:", margin, leftY);
+    doc.setFont("helvetica", "normal");
+    doc.text(callSheet.director, margin + 18, leftY);
+    leftY += 5;
+  }
+  doc.setFont("helvetica", "bold");
+  if (callSheet.executive_producers && callSheet.executive_producers.length > 0) {
+    doc.text("Exec Producer(s):", margin, leftY);
+    doc.setFont("helvetica", "normal");
+    const epText = callSheet.executive_producers.join(", ");
+    const epLines = doc.splitTextToSize(epText, leftColWidth - 2);
+    doc.text(epLines, margin, leftY + 4);
+    leftY += 4 + epLines.length * 4;
+  }
+  const centerX = margin + leftColWidth;
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(14);
+  const titleMaxWidth = centerColWidth - 6;
+  const projectTitle = (callSheet.project_name || "UNTITLED PRODUCTION").toUpperCase();
+  const titleLines = doc.splitTextToSize(projectTitle, titleMaxWidth);
+  const titleLineHeight = 5.5;
+  doc.text(titleLines, centerX + centerColWidth / 2, yPosition, {
+    align: "center",
+    lineHeightFactor: 1.1
+  });
+  const subtitleY = yPosition + Math.max(7, titleLines.length * titleLineHeight + 1.5);
+  doc.setFontSize(11);
+  const dayNum = callSheet.day_number ? ` DAY ${callSheet.day_number}` : "";
+  doc.text(`CALLSHEET:${dayNum}`, centerX + centerColWidth / 2, subtitleY, { align: "center" });
+  doc.setFontSize(10);
+  const parseLocalDate = (raw2) => {
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((raw2 || "").trim());
+    return m ? new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])) : new Date(raw2);
+  };
+  const dateText = parseLocalDate(callSheet.shoot_date).toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).toUpperCase();
+  const dateY = subtitleY + 6;
+  doc.text(dateText, centerX + centerColWidth / 2, dateY, { align: "center" });
+  const rightX = margin + leftColWidth + centerColWidth;
+  let rightY = yPosition;
+  doc.setFontSize(7);
+  doc.setFont("helvetica", "normal");
+  if (callSheet.lx_precall_time) {
+    doc.text(`LX Precall: ${formatTime(callSheet.lx_precall_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(12);
+  const unitCallTime = callSheet.unit_call_time || callSheet.general_crew_call || "TBD";
+  doc.text(`Unit Call: ${formatTime(unitCallTime)}`, rightX, rightY + 2);
+  rightY += 8;
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(7);
+  if (callSheet.courtesy_breakfast_time) {
+    doc.text(`Breakfast at Base: ${formatTime(callSheet.courtesy_breakfast_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  if (callSheet.lunch_time) {
+    doc.text(`Lunch: ${formatTime(callSheet.lunch_time)}`, rightX, rightY);
+    rightY += 4;
+  }
+  const wrapTime = callSheet.wrap_time || "TBD";
+  doc.text(`Est. Wrap: ${formatTime(wrapTime)}`, rightX, rightY);
+  yPosition = Math.max(leftY, rightY, dateY + 3) + 4;
+  doc.setLineWidth(0.5);
+  doc.line(margin, yPosition, pageWidth - margin, yPosition);
+  yPosition += 4;
+  yPosition = drawSectionHeader(doc, "KEY PERSONNEL", yPosition, pageWidth);
+  const keyPersonnel = [
+    { role: "Director", name: callSheet.director || "", phone: "", offSet: "" },
+    { role: "Production Manager", name: callSheet.line_producer || "", phone: "", offSet: "" },
+    { role: "1st AD", name: callSheet.associate_director || "", phone: "", offSet: "" },
+    { role: "UPM", name: callSheet.upm || "", phone: "", offSet: "" }
+  ];
+  const keyCrewRoles = ["Camera", "DOP", "Director of Photography", "Production Coordinator", "2nd AD"];
+  crew.forEach((member) => {
+    if (keyCrewRoles.some((role) => member.title.toLowerCase().includes(role.toLowerCase()))) {
+      keyPersonnel.push({ role: member.title, name: member.name, phone: member.phone || "", offSet: member.off_set || "" });
+    }
+  });
+  autoTable(doc, {
+    startY: yPosition,
+    head: [["Role", "Name", "Mobile", "Off Set"]],
+    body: keyPersonnel.slice(0, 8).map((p) => [p.role, p.name, p.phone, p.offSet]),
+    theme: "grid",
+    styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 8 },
+    columnStyles: {
+      0: { cellWidth: 40 },
+      1: { cellWidth: 55 },
+      2: { cellWidth: 40 },
+      3: { cellWidth: 47 }
+    }
+  });
+  yPosition = doc.lastAutoTable.finalY + 4;
+  const weatherTemp = callSheet.high_temp ? `${callSheet.high_temp}°C` : "";
+  const weatherInfo = [weatherTemp, callSheet.weather_description].filter(Boolean).join(" ");
+  const sunInfo = [
+    callSheet.sunrise_time ? `Sunrise: ${callSheet.sunrise_time}` : "",
+    callSheet.sunset_time ? `Sunset: ${callSheet.sunset_time}` : ""
+  ].filter(Boolean).join(" / ");
+  autoTable(doc, {
+    startY: yPosition,
+    body: [[
+      `Weather: ${weatherInfo || "TBD"}`,
+      sunInfo || "Sun times TBD",
+      `Schedule: ${callSheet.current_schedule || callSheet.schedule_color || "White"}`,
+      `Script: ${callSheet.current_script || callSheet.script_color || "White"}`
+    ]],
+    theme: "grid",
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    columnStyles: {
+      0: { cellWidth: 50 },
+      1: { cellWidth: 50 },
+      2: { cellWidth: 42 },
+      3: { cellWidth: 40 }
+    }
+  });
+  yPosition = doc.lastAutoTable.finalY + 2;
+  const locationInfo = callSheet.shooting_location ? `${callSheet.shooting_location}${callSheet.location_address ? " - " + callSheet.location_address : ""}` : "TBD";
+  const unitBaseInfo = callSheet.unit_base ? `${callSheet.unit_base}${callSheet.unit_base_address ? " - " + callSheet.unit_base_address : ""}` : callSheet.basecamp || "TBD";
+  autoTable(doc, {
+    startY: yPosition,
+    body: [[
+      `Location: ${locationInfo}`,
+      `Unit Base: ${unitBaseInfo}`
+    ]],
+    theme: "grid",
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    columnStyles: {
+      0: { cellWidth: 96 },
+      1: { cellWidth: 86 }
+    }
+  });
+  yPosition = doc.lastAutoTable.finalY + 2;
+  const detailPairs = [
+    ["Block / Focus", callSheet.block_focus || ""],
+    ["Total Pages", callSheet.total_pages || ""],
+    ["Gate / Access Code", callSheet.gate_access_code || ""],
+    ["Truck / Picture-Car Parking", callSheet.truck_parking || ""],
+    ["Emergency Numbers", callSheet.emergency_numbers || ""],
+    ["On-Set Medic / First Aid", callSheet.on_set_medic || ""],
+    ["Map / Directions", callSheet.map_link || ""],
+    ["Precipitation", callSheet.precipitation || ""],
+    ["Wind", callSheet.wind || ""],
+    ["2nd Meal", callSheet.second_meal_time ? formatTime(callSheet.second_meal_time) : ""],
+    ["Sound Hard-Out", callSheet.sound_hard_out_time ? formatTime(callSheet.sound_hard_out_time) : ""]
+  ].filter(([, v2]) => Boolean(v2));
+  if (detailPairs.length > 0) {
+    autoTable(doc, {
+      startY: yPosition,
+      body: detailPairs.map(([k, v2]) => [k, v2]),
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: "bold", fillColor: [245, 245, 245] },
+        1: { cellWidth: 132 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  const dayHeader = callSheet.day_number ? `DAY ${callSheet.day_number} - ${dateText}` : dateText;
+  yPosition = drawSectionHeader(doc, dayHeader, yPosition, pageWidth);
+  const scheduleData = [];
+  scenes.forEach((scene, index) => {
+    var _a2, _b2, _c, _d;
+    scheduleData.push([
+      scene.location || "",
+      scene.scene_number,
+      scene.int_ext || (((_a2 = scene.day_night) == null ? void 0 : _a2.includes("INT")) ? "INT" : ((_b2 = scene.day_night) == null ? void 0 : _b2.includes("EXT")) ? "EXT" : ""),
+      scene.set_description,
+      ((_c = scene.day_night) == null ? void 0 : _c.replace("INT", "").replace("EXT", "").trim()) || "",
+      scene.start_time ? formatTime(scene.start_time) : "",
+      ((_d = scene.cast_ids) == null ? void 0 : _d.join(", ")) || "",
+      scene.notes || ""
+    ]);
+    const breakAfter = breaks.find((b) => b.after_scene_index === index);
+    if (breakAfter) {
+      const breakLabel = breakAfter.break_type === "short_break" ? "SHORT BREAK" : breakAfter.break_type === "lunch" ? "LUNCH" : "DINNER";
+      scheduleData.push([
+        { content: breakLabel, styles: { fontStyle: "bold", fillColor: [230, 230, 230] } },
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]);
+    }
+  });
+  autoTable(doc, {
+    startY: yPosition,
+    head: [["Location", "Scene", "Int/Ext", "Synopsis", "Day/Night", "Est. Start", "Cast", "Notes"]],
+    body: scheduleData.length > 0 ? scheduleData : [["", "", "", "No scenes scheduled", "", "", "", ""]],
+    theme: "grid",
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: 28 },
+      1: { cellWidth: 16 },
+      2: { cellWidth: 16 },
+      3: { cellWidth: 45 },
+      4: { cellWidth: 18 },
+      5: { cellWidth: 20 },
+      6: { cellWidth: 20 },
+      7: { cellWidth: 19 }
+    }
+  });
+  yPosition = doc.lastAutoTable.finalY + 4;
+  yPosition = drawSectionHeader(doc, "ARTISTE", yPosition, pageWidth);
+  const castData = cast.map((member, idx) => [
+    (idx + 1).toString(),
+    member.actor_name,
+    member.character_name,
+    member.swf || member.status || "",
+    member.pickup_time ? formatTime(member.pickup_time) : "",
+    member.makeup_time ? formatTime(member.makeup_time) : "",
+    member.costume_time ? formatTime(member.costume_time) : "",
+    member.travel_time ? formatTime(member.travel_time) : "",
+    member.on_set_time ? formatTime(member.on_set_time) : member.call_time ? formatTime(member.call_time) : "",
+    member.wrap_time ? formatTime(member.wrap_time) : ""
+  ]);
+  while (castData.length < 7) {
+    castData.push([String(castData.length + 1), "", "", "", "", "", "", "", "", ""]);
+  }
+  autoTable(doc, {
+    startY: yPosition,
+    head: [["ID", "Artiste", "Character", "SWF", "P/UP", "M-UP", "Cost", "Travel", "On Set", "Wrap"]],
+    body: castData,
+    theme: "grid",
+    styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+    headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 7 },
+    columnStyles: {
+      0: { cellWidth: 10 },
+      1: { cellWidth: 30 },
+      2: { cellWidth: 30 },
+      3: { cellWidth: 14 },
+      4: { cellWidth: 16 },
+      5: { cellWidth: 16 },
+      6: { cellWidth: 16 },
+      7: { cellWidth: 16 },
+      8: { cellWidth: 16 },
+      9: { cellWidth: 18 }
+    }
+  });
+  yPosition = doc.lastAutoTable.finalY + 4;
+  if (background.length > 0) {
+    const totalBG = background.reduce((sum, b) => sum + (b.quantity || 1), 0);
+    yPosition = drawSectionHeader(doc, `SUPPORTING ARTISTS (TOTAL = ${totalBG})`, yPosition, pageWidth);
+    const bgData = background.map((item) => [
+      `${item.quantity || 1}x ${item.description}`,
+      item.call_time ? formatTime(item.call_time) : "",
+      item.makeup_time ? formatTime(item.makeup_time) : "",
+      item.costume_time ? formatTime(item.costume_time) : "",
+      item.travel_time ? formatTime(item.travel_time) : "",
+      item.on_set_time ? formatTime(item.on_set_time) : "",
+      item.holding_area || ""
+    ]);
+    autoTable(doc, {
+      startY: yPosition,
+      head: [["Description", "Call", "Make Up", "Costume", "Travel", "On Set", "Holding"]],
+      body: bgData,
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 7 },
+      columnStyles: {
+        0: { cellWidth: 57 },
+        1: { cellWidth: 20 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 20 },
+        4: { cellWidth: 20 },
+        5: { cellWidth: 20 },
+        6: { cellWidth: 25 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  const filledSchedule = scheduleRows.filter((r) => r.time || r.activity || r.description);
+  if (filledSchedule.length > 0) {
+    yPosition = drawSectionHeader(doc, "SCHEDULE / RUNNING ORDER", yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      head: [["Time", "Scene / Activity", "Description"]],
+      body: filledSchedule.map((r) => [r.time || "", r.activity || "", r.description || ""]),
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 7 },
+      columnStyles: {
+        0: { cellWidth: 25 },
+        1: { cellWidth: 55 },
+        2: { cellWidth: 102 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  if (requirements.length > 0) {
+    yPosition = drawSectionHeader(doc, "REQUIREMENTS", yPosition, pageWidth);
+    const reqData = requirements.map((r) => [r.department, r.notes || ""]);
+    autoTable(doc, {
+      startY: yPosition,
+      body: reqData,
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 40, fontStyle: "bold", fillColor: [245, 245, 245] },
+        1: { cellWidth: 142 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  const notesPairs = [
+    ["Safety Briefing / Bulletin", callSheet.safety_briefing || ""],
+    ["Walkie Channels", callSheet.walkie_channels || ""],
+    ["General Notes", callSheet.general_notes || ""]
+  ].filter(([, v2]) => Boolean(v2));
+  if (notesPairs.length > 0) {
+    yPosition = drawSectionHeader(doc, "NOTES & SAFETY", yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      body: notesPairs.map(([k, v2]) => [k, v2]),
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: {
+        0: { cellWidth: 50, fontStyle: "bold", fillColor: [245, 245, 245] },
+        1: { cellWidth: 132 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  const filledAdvance = advanceRows.filter((r) => r.scene_number || r.set_description || r.day_night || r.cast);
+  if (filledAdvance.length > 0 || callSheet.next_day_label) {
+    yPosition = drawSectionHeader(
+      doc,
+      `ADVANCE SCHEDULE${callSheet.next_day_label ? " - " + callSheet.next_day_label.toUpperCase() : ""}`,
+      yPosition,
+      pageWidth
+    );
+    autoTable(doc, {
+      startY: yPosition,
+      head: [["Scene #", "Set", "D/N", "Cast"]],
+      body: filledAdvance.length > 0 ? filledAdvance.map((r) => [r.scene_number || "", r.set_description || "", r.day_night || "", r.cast || ""]) : [["", "TBD", "", ""]],
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 7 },
+      columnStyles: {
+        0: { cellWidth: 22 },
+        1: { cellWidth: 90 },
+        2: { cellWidth: 20 },
+        3: { cellWidth: 50 }
+      }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  if (callSheet.key_contacts) {
+    yPosition = drawSectionHeader(doc, "KEY CONTACTS", yPosition, pageWidth);
+    autoTable(doc, {
+      startY: yPosition,
+      body: [[callSheet.key_contacts]],
+      theme: "grid",
+      styles: { fontSize: 7, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      columnStyles: { 0: { cellWidth: 182 } }
+    });
+    yPosition = doc.lastAutoTable.finalY + 4;
+  }
+  if (crew.length > 0) {
+    doc.addPage();
+    yPosition = logoW ? 15 + logoBand : 15;
+    yPosition = drawSectionHeader(doc, "CREW", yPosition, pageWidth);
+    const departments2 = {};
+    crew.forEach((member) => {
+      const dept = member.department || "General";
+      if (!departments2[dept]) departments2[dept] = [];
+      departments2[dept].push(member);
+    });
+    const crewData = [];
+    Object.entries(departments2).forEach(([dept, members]) => {
+      members.forEach((member, idx) => {
+        crewData.push([
+          idx === 0 ? dept : "",
+          member.title,
+          member.name,
+          member.call_time ? formatTime(member.call_time) : ""
+        ]);
+      });
+    });
+    autoTable(doc, {
+      startY: yPosition,
+      head: [["Department", "Title", "Name", "Call Time"]],
+      body: crewData,
+      theme: "grid",
+      styles: { fontSize: 8, cellPadding: 2, lineColor: [0, 0, 0], lineWidth: 0.2 },
+      headStyles: { fillColor: [180, 180, 180], textColor: [0, 0, 0], fontStyle: "bold", fontSize: 8 },
+      columnStyles: {
+        0: { cellWidth: 40, fontStyle: "bold", fillColor: [250, 250, 250] },
+        1: { cellWidth: 50 },
+        2: { cellWidth: 55 },
+        3: { cellWidth: 37 }
+      }
+    });
+  }
+  const pageCount = doc.internal.pages.length - 1;
+  for (let i = 1; i <= pageCount; i++) {
+    doc.setPage(i);
+    if ((logo == null ? void 0 : logo.dataUrl) && logoW && logoH) {
+      try {
+        const fmt = logo.dataUrl.includes("image/png") ? "PNG" : "JPEG";
+        doc.addImage(logo.dataUrl, fmt, (pageWidth - logoW) / 2, 4, logoW, logoH);
+      } catch (e) {
+        console.error("Failed to add logo to PDF", e);
+      }
+    }
+    doc.setFontSize(7);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 100, 100);
+    doc.text(`Page ${i} of ${pageCount}`, pageWidth / 2, doc.internal.pageSize.height - 8, { align: "center" });
+    doc.setFont("helvetica", "bold");
+    doc.text("SAFETY FIRST | NO FORCED CALLS | NO SMOKING ON SET", pageWidth / 2, doc.internal.pageSize.height - 4, { align: "center" });
+  }
+  const fileName = `CallSheet_${callSheet.project_name.replace(/[^a-z0-9]/gi, "_")}_${callSheet.shoot_date}.pdf`;
+  doc.save(fileName);
+};
+const CallSheet = () => {
+  const navigate = useNavigate();
+  const { saveCallSheet } = useCallSheets();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isParsingData, setIsParsingData] = useState(false);
+  const [logo, setLogo] = useState(null);
+  const {
+    processFile,
+    isProcessing: isProcessingFile,
+    currentStage,
+    currentFileName,
+    currentFileSize,
+    elapsedTime,
+    progress
+  } = useOCRUpload();
+  const [formData, setFormData] = useState({
+    production_company: "",
+    project_name: "",
+    shoot_date: "",
+    day_number: "",
+    script_color: "White",
+    schedule_color: "White",
+    general_crew_call: "",
+    shooting_call: "",
+    lunch_time: "",
+    courtesy_breakfast_time: "",
+    wrap_time: "",
+    director: "",
+    line_producer: "",
+    upm: "",
+    associate_director: "",
+    shooting_location: "",
+    location_address: "",
+    crew_parking: "",
+    basecamp: "",
+    nearest_hospital: "",
+    hospital_address: "",
+    weather_description: "",
+    high_temp: "",
+    low_temp: "",
+    sunrise_time: "",
+    sunset_time: "",
+    executive_producers: [],
+    producers: [],
+    // New fields
+    lx_precall_time: "",
+    unit_call_time: "",
+    current_schedule: "",
+    current_script: "",
+    unit_base: "",
+    unit_base_address: "",
+    // Expanded professional template
+    block_focus: "",
+    total_pages: "",
+    gate_access_code: "",
+    truck_parking: "",
+    emergency_numbers: "",
+    on_set_medic: "",
+    map_link: "",
+    precipitation: "",
+    wind: "",
+    second_meal_time: "",
+    sound_hard_out_time: "",
+    safety_briefing: "",
+    walkie_channels: "",
+    general_notes: "",
+    key_contacts: "",
+    next_day_label: ""
+  });
+  const [scenes, setScenes] = useState([{
+    scene_number: "",
+    pages: "",
+    set_description: "",
+    day_night: "",
+    cast_ids: [],
+    notes: "",
+    location: "",
+    start_time: "",
+    int_ext: ""
+  }]);
+  const [cast, setCast] = useState([{
+    character_name: "",
+    actor_name: "",
+    cast_id: "",
+    status: "",
+    pickup_time: "",
+    call_time: "",
+    set_ready_time: "",
+    special_instructions: "",
+    swf: "",
+    makeup_time: "",
+    costume_time: "",
+    travel_time: "",
+    on_set_time: "",
+    wrap_time: ""
+  }]);
+  const [crew, setCrew] = useState([{
+    department: "",
+    title: "",
+    name: "",
+    call_time: "",
+    phone: "",
+    off_set: ""
+  }]);
+  const [background, setBackground] = useState([{
+    quantity: void 0,
+    description: "",
+    call_time: "",
+    notes: "",
+    makeup_time: "",
+    costume_time: "",
+    travel_time: "",
+    on_set_time: "",
+    holding_area: ""
+  }]);
+  const [breaks, setBreaks] = useState([]);
+  const [requirements, setRequirements] = useState([{ department: "", notes: "" }]);
+  const [scheduleRows, setScheduleRows] = useState([{ time: "", activity: "", description: "" }]);
+  const [advanceRows, setAdvanceRows] = useState([{ scene_number: "", set_description: "", day_night: "", cast: "" }]);
+  const addScheduleRow = () => setScheduleRows([...scheduleRows, { time: "", activity: "", description: "" }]);
+  const removeScheduleRow = (index) => setScheduleRows(scheduleRows.filter((_, i) => i !== index));
+  const updateScheduleRow = (index, field, value) => {
+    const updated = [...scheduleRows];
+    updated[index] = { ...updated[index], [field]: value };
+    setScheduleRows(updated);
+  };
+  const addAdvanceRow = () => setAdvanceRows([...advanceRows, { scene_number: "", set_description: "", day_night: "", cast: "" }]);
+  const removeAdvanceRow = (index) => setAdvanceRows(advanceRows.filter((_, i) => i !== index));
+  const updateAdvanceRow = (index, field, value) => {
+    const updated = [...advanceRows];
+    updated[index] = { ...updated[index], [field]: value };
+    setAdvanceRows(updated);
+  };
+  const updateField = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+  const to24h = (raw2) => {
+    var _a2;
+    if (typeof raw2 !== "string") return "";
+    const s = raw2.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    const m = s.match(/^(\d{1,2})\s*[:.h]?\s*(\d{2})?\s*(a\.?m\.?|p\.?m\.?)?$/i);
+    if (!m) return "";
+    let h = parseInt(m[1], 10);
+    const min = m[2] ? parseInt(m[2], 10) : 0;
+    const mer = (_a2 = m[3]) == null ? void 0 : _a2.toLowerCase().replace(/\./g, "");
+    if (mer === "pm" && h < 12) h += 12;
+    if (mer === "am" && h === 12) h = 0;
+    if (h > 23 || min > 59) return "";
+    return `${String(h).padStart(2, "0")}:${String(min).padStart(2, "0")}`;
+  };
+  const toISODate = (raw2) => {
+    if (typeof raw2 !== "string") return "";
+    const s = raw2.trim();
+    if (!s || s.toLowerCase() === "null") return "";
+    if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    const dmy = s.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/);
+    if (dmy) return `${dmy[3]}-${dmy[2].padStart(2, "0")}-${dmy[1].padStart(2, "0")}`;
+    const parsed = new Date(s);
+    if (!isNaN(parsed.getTime())) {
+      const y = parsed.getFullYear();
+      const m = String(parsed.getMonth() + 1).padStart(2, "0");
+      const d = String(parsed.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+    return "";
+  };
+  const extractShootDate = (raw2, sourceText) => {
+    const weekdayNumbers = {
+      sunday: 0,
+      monday: 1,
+      tuesday: 2,
+      wednesday: 3,
+      thursday: 4,
+      friday: 5,
+      saturday: 6
+    };
+    const headerDate = sourceText.match(
+      /\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday)\b\s*,?\s*(\d{1,2})[./-](\d{1,2})[./-](\d{4})/i
+    );
+    if (headerDate) {
+      const expectedWeekday = weekdayNumbers[headerDate[1].toLowerCase()];
+      const first = Number(headerDate[2]);
+      const second = Number(headerDate[3]);
+      const year = Number(headerDate[4]);
+      const candidates = [
+        { month: first, day: second },
+        { month: second, day: first }
+      ];
+      for (const candidate of candidates) {
+        const date = new Date(year, candidate.month - 1, candidate.day);
+        const isValid = candidate.month >= 1 && candidate.month <= 12 && candidate.day >= 1 && candidate.day <= 31 && date.getFullYear() === year && date.getMonth() === candidate.month - 1 && date.getDate() === candidate.day;
+        if (isValid && date.getDay() === expectedWeekday) {
+          return `${year}-${String(candidate.month).padStart(2, "0")}-${String(candidate.day).padStart(2, "0")}`;
+        }
+      }
+    }
+    return toISODate(raw2);
+  };
+  const clean = (raw2) => {
+    if (typeof raw2 !== "string") return "";
+    const s = raw2.trim();
+    return !s || s.toLowerCase() === "null" || s.toLowerCase() === "unknown" ? "" : s;
+  };
+  const addScene = () => {
+    setScenes([...scenes, {
+      scene_number: "",
+      pages: "",
+      set_description: "",
+      day_night: "",
+      cast_ids: [],
+      notes: "",
+      location: "",
+      start_time: "",
+      int_ext: ""
+    }]);
+  };
+  const removeScene = (index) => {
+    setScenes(scenes.filter((_, i) => i !== index));
+  };
+  const updateScene = (index, field, value) => {
+    const updated = [...scenes];
+    updated[index] = { ...updated[index], [field]: value };
+    setScenes(updated);
+  };
+  const addCast = () => {
+    setCast([...cast, {
+      character_name: "",
+      actor_name: "",
+      cast_id: "",
+      status: "",
+      pickup_time: "",
+      call_time: "",
+      set_ready_time: "",
+      special_instructions: "",
+      swf: "",
+      makeup_time: "",
+      costume_time: "",
+      travel_time: "",
+      on_set_time: "",
+      wrap_time: ""
+    }]);
+  };
+  const removeCast = (index) => {
+    setCast(cast.filter((_, i) => i !== index));
+  };
+  const updateCast = (index, field, value) => {
+    const updated = [...cast];
+    updated[index] = { ...updated[index], [field]: value };
+    setCast(updated);
+  };
+  const addCrew = () => {
+    setCrew([...crew, {
+      department: "",
+      title: "",
+      name: "",
+      call_time: "",
+      phone: "",
+      off_set: ""
+    }]);
+  };
+  const removeCrew = (index) => {
+    setCrew(crew.filter((_, i) => i !== index));
+  };
+  const updateCrew = (index, field, value) => {
+    const updated = [...crew];
+    updated[index] = { ...updated[index], [field]: value };
+    setCrew(updated);
+  };
+  const addBackground = () => {
+    setBackground([...background, {
+      quantity: void 0,
+      description: "",
+      call_time: "",
+      notes: "",
+      makeup_time: "",
+      costume_time: "",
+      travel_time: "",
+      on_set_time: "",
+      holding_area: ""
+    }]);
+  };
+  const addRequirement = () => {
+    setRequirements([...requirements, { department: "", notes: "" }]);
+  };
+  const removeRequirement = (index) => {
+    setRequirements(requirements.filter((_, i) => i !== index));
+  };
+  const updateRequirement = (index, field, value) => {
+    const updated = [...requirements];
+    updated[index] = { ...updated[index], [field]: value };
+    setRequirements(updated);
+  };
+  const handleFileUpload = async (event) => {
+    var _a2;
+    const file = (_a2 = event.target.files) == null ? void 0 : _a2[0];
+    if (!file) return;
+    if (!file.type.includes("pdf")) {
+      toast({
+        title: "Invalid File",
+        description: "Please upload a PDF file.",
+        variant: "destructive"
+      });
+      return;
+    }
+    await processFile(
+      file,
+      async (result) => {
+        setIsParsingData(true);
+        try {
+          const data = await aiInvoke("parse-call-sheet", {
+            body: { text: result.text }
+          });
+          if (data) {
+            const crewCall = to24h(data.general_crew_call) || to24h(data.shooting_call);
+            setFormData((prev) => ({
+              ...prev,
+              production_company: clean(data.production_company) || prev.production_company,
+              project_name: clean(data.project_name) || prev.project_name,
+              shoot_date: extractShootDate(data.shoot_date, result.text) || prev.shoot_date,
+              day_number: clean(data.day_number) || prev.day_number,
+              script_color: clean(data.script_color) || prev.script_color,
+              schedule_color: clean(data.schedule_color) || prev.schedule_color,
+              general_crew_call: crewCall || prev.general_crew_call,
+              unit_call_time: crewCall || prev.unit_call_time,
+              shooting_call: to24h(data.shooting_call) || prev.shooting_call,
+              lunch_time: to24h(data.lunch_time) || prev.lunch_time,
+              courtesy_breakfast_time: to24h(data.courtesy_breakfast_time) || prev.courtesy_breakfast_time,
+              wrap_time: to24h(data.wrap_time) || prev.wrap_time,
+              director: clean(data.director) || prev.director,
+              associate_director: clean(data.associate_director) || prev.associate_director,
+              line_producer: clean(data.line_producer) || prev.line_producer,
+              upm: clean(data.upm) || prev.upm,
+              shooting_location: clean(data.shooting_location) || prev.shooting_location,
+              location_address: clean(data.location_address) || prev.location_address,
+              crew_parking: clean(data.crew_parking) || prev.crew_parking,
+              basecamp: clean(data.basecamp) || prev.basecamp,
+              nearest_hospital: clean(data.nearest_hospital) || prev.nearest_hospital,
+              hospital_address: clean(data.hospital_address) || prev.hospital_address,
+              weather_description: clean(data.weather_description) || prev.weather_description,
+              high_temp: clean(data.high_temp) || prev.high_temp,
+              low_temp: clean(data.low_temp) || prev.low_temp,
+              sunrise_time: clean(data.sunrise_time) || prev.sunrise_time,
+              sunset_time: clean(data.sunset_time) || prev.sunset_time,
+              executive_producers: Array.isArray(data.executive_producers) ? data.executive_producers : prev.executive_producers,
+              producers: Array.isArray(data.producers) ? data.producers : prev.producers,
+              // New general fields from the parse-call-sheet brain
+              block_focus: clean(data.block_focus) || prev.block_focus,
+              total_pages: clean(data.total_pages) || prev.total_pages,
+              gate_access_code: clean(data.gate_code) || prev.gate_access_code,
+              truck_parking: clean(data.truck_parking) || prev.truck_parking,
+              emergency_numbers: clean(data.emergency_numbers) || prev.emergency_numbers,
+              on_set_medic: clean(data.on_set_medic) || prev.on_set_medic,
+              map_link: clean(data.map_link) || prev.map_link,
+              precipitation: clean(data.precipitation) || prev.precipitation,
+              wind: clean(data.wind) || prev.wind,
+              second_meal_time: to24h(data.second_meal) || prev.second_meal_time,
+              sound_hard_out_time: to24h(data.sound_out) || prev.sound_hard_out_time,
+              key_contacts: clean(data.key_contacts) || prev.key_contacts,
+              next_day_label: clean(data.advance_label) || prev.next_day_label
+            }));
+            if (data.scenes && data.scenes.length > 0) {
+              setScenes(data.scenes.map((s) => ({
+                ...s,
+                scene_number: clean(s.scene_number),
+                set_description: clean(s.set_description),
+                location: clean(s.location),
+                notes: clean(s.notes),
+                pages: clean(s.pages),
+                day_night: clean(s.day_night),
+                cast_ids: Array.isArray(s.cast_ids) ? s.cast_ids : [],
+                start_time: to24h(s.start_time),
+                int_ext: clean(s.int_ext)
+              })));
+            }
+            if (data.cast && data.cast.length > 0) {
+              setCast(data.cast.map((c) => ({
+                ...c,
+                character_name: clean(c.character_name),
+                actor_name: clean(c.actor_name),
+                cast_id: clean(c.cast_id),
+                status: clean(c.status),
+                special_instructions: clean(c.special_instructions),
+                pickup_time: to24h(c.pickup_time),
+                call_time: to24h(c.call_time),
+                set_ready_time: to24h(c.set_ready_time),
+                makeup_time: to24h(c.makeup_time),
+                costume_time: to24h(c.costume_time),
+                travel_time: to24h(c.travel_time),
+                on_set_time: to24h(c.on_set_time),
+                wrap_time: to24h(c.wrap_time)
+              })));
+            }
+            if (data.crew && data.crew.length > 0) {
+              setCrew(data.crew.map((c) => ({
+                ...c,
+                department: clean(c.department),
+                title: clean(c.title),
+                name: clean(c.name),
+                phone: clean(c.phone),
+                off_set: clean(c.off_set),
+                call_time: to24h(c.call_time)
+              })));
+            }
+            if (data.background && data.background.length > 0) {
+              setBackground(data.background.map((b) => ({
+                ...b,
+                description: clean(b.description),
+                notes: clean(b.notes),
+                call_time: to24h(b.call_time),
+                makeup_time: to24h(b.makeup_time),
+                costume_time: to24h(b.costume_time),
+                travel_time: to24h(b.travel_time),
+                on_set_time: to24h(b.on_set_time),
+                holding_area: clean(b.holding_area)
+              })));
+            }
+            if (Array.isArray(data.schedule) && data.schedule.length > 0) {
+              setScheduleRows(data.schedule.map((r) => ({
+                time: to24h(r.time),
+                activity: clean(r.activity),
+                description: clean(r.description)
+              })));
+            }
+            if (Array.isArray(data.requirements) && data.requirements.length > 0) {
+              setRequirements(data.requirements.map((r) => ({
+                department: clean(r.department),
+                notes: clean(r.notes)
+              })));
+            }
+            if (Array.isArray(data.advance) && data.advance.length > 0) {
+              setAdvanceRows(data.advance.map((r) => ({
+                scene_number: clean(r.scene_number),
+                set_description: clean(r.set),
+                day_night: clean(r.day_night),
+                cast: clean(r.cast)
+              })));
+            }
+            toast({
+              title: "Success",
+              description: "Call sheet data extracted successfully."
+            });
+          }
+        } catch (error) {
+          console.error("Call sheet parsing error:", error);
+          if (!(error instanceof InsufficientCreditsError)) {
+            toast({
+              title: "Parsing Failed",
+              description: error instanceof Error ? error.message : "Failed to parse call sheet",
+              variant: "destructive"
+            });
+          }
+        } finally {
+          setIsParsingData(false);
+        }
+      },
+      (error) => {
+        console.error("PDF processing error:", error);
+        toast({
+          title: "Upload Failed",
+          description: error,
+          variant: "destructive"
+        });
+      }
+    );
+    event.target.value = "";
+  };
+  const handleSubmit = async (e) => {
+    console.log("💾 Submit button clicked");
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      console.log("📝 Form data:", {
+        formData,
+        scenesCount: scenes.length,
+        castCount: cast.length,
+        crewCount: crew.length,
+        backgroundCount: background.length,
+        breaksCount: breaks.length,
+        requirementsCount: requirements.length
+      });
+      await saveCallSheet(formData, scenes, cast, crew, background, breaks, requirements.filter((r) => r.department || r.notes), scheduleRows, advanceRows);
+      console.log("✅ Save successful, navigating to dashboard...");
+      toast({
+        title: "Success!",
+        description: "Call sheet saved successfully."
+      });
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("❌ Error in handleSubmit:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to save call sheet.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("callsheet_logo");
+      if (stored) setLogo(JSON.parse(stored));
+    } catch {
+    }
+  }, []);
+  const handleLogoUpload = (e) => {
+    var _a2;
+    const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Invalid file", description: "Please choose a PNG or JPG image.", variant: "destructive" });
+      return;
+    }
+    if (file.size > 3 * 1024 * 1024) {
+      toast({ title: "Image too large", description: "Logos must be under 3MB.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result);
+      const img = new Image();
+      img.onload = () => {
+        const next = { dataUrl, width: img.naturalWidth, height: img.naturalHeight };
+        setLogo(next);
+        try {
+          localStorage.setItem("callsheet_logo", JSON.stringify(next));
+        } catch {
+        }
+        toast({ title: "Logo added", description: "It will appear at the top of every PDF page." });
+      };
+      img.onerror = () => toast({ title: "Error", description: "Could not read that image.", variant: "destructive" });
+      img.src = dataUrl;
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+  const removeLogo = () => {
+    setLogo(null);
+    localStorage.removeItem("callsheet_logo");
+  };
+  const handleDownloadPDF = () => {
+    exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements.filter((r) => r.department || r.notes), logo, scheduleRows, advanceRows);
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-b from-background via-background to-secondary/20", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/call-sheet" }),
+    /* @__PURE__ */ jsxs("div", { className: "max-w-6xl mx-auto px-4 py-12", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-8", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold text-white", children: "Call Sheet Generator" }),
+          /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mt-2", children: "Create professional production call sheets with smart OCR" })
+        ] }),
+        /* @__PURE__ */ jsx(Film, { className: "h-12 w-12 text-primary" })
+      ] }),
+      (isProcessingFile || isParsingData) && /* @__PURE__ */ jsx(Card$1, { className: "mb-6", children: /* @__PURE__ */ jsxs(CardContent, { className: "py-6", children: [
+        isProcessingFile && /* @__PURE__ */ jsx(
+          PDFUploadProgress,
+          {
+            fileName: currentFileName,
+            fileSize: currentFileSize,
+            stage: currentStage,
+            elapsedTime,
+            progress
+          }
+        ),
+        isParsingData && /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3", children: [
+          /* @__PURE__ */ jsx(Loader2, { className: "h-6 w-6 animate-spin text-primary" }),
+          /* @__PURE__ */ jsx("p", { className: "text-lg", children: "Extracting structured data..." })
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
+          "Upload Existing Call Sheet"
+        ] }) }),
+        /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "border-2 border-dashed border-border rounded-lg p-8 text-center hover:border-primary/50 transition-colors", children: [
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              type: "file",
+              accept: ".pdf,.jpg,.jpeg,.png,.xls,.xlsx",
+              onChange: handleFileUpload,
+              disabled: isProcessingFile || isParsingData,
+              className: "hidden",
+              id: "file-upload"
+            }
+          ),
+          /* @__PURE__ */ jsxs(Label, { htmlFor: "file-upload", className: "cursor-pointer", children: [
+            /* @__PURE__ */ jsx(Upload, { className: "h-12 w-12 mx-auto mb-4 text-muted-foreground" }),
+            /* @__PURE__ */ jsx("p", { className: "text-lg font-medium mb-2", children: "Click to upload or drag and drop" }),
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "PDF, JPG, PNG, or Excel files (Max 20MB)" })
+          ] })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
+          "Production Logo"
+        ] }) }),
+        /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-col sm:flex-row sm:items-center gap-4", children: [
+          /* @__PURE__ */ jsx("div", { className: "flex h-20 w-40 shrink-0 items-center justify-center rounded-lg border border-dashed border-border bg-muted/30 p-2", children: logo ? /* @__PURE__ */ jsx("img", { src: logo.dataUrl, alt: "Production logo preview", className: "max-h-full max-w-full object-contain" }) : /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: "No logo" }) }),
+          /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+            /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mb-3", children: "Browse for your logo (PNG or JPG, under 3MB). It prints centered at the top of every page of the exported PDF." }),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2", children: [
+              /* @__PURE__ */ jsx(
+                Input,
+                {
+                  type: "file",
+                  accept: "image/png,image/jpeg",
+                  onChange: handleLogoUpload,
+                  className: "hidden",
+                  id: "logo-upload"
+                }
+              ),
+              /* @__PURE__ */ jsx(Button, { type: "button", variant: "secondary", asChild: true, children: /* @__PURE__ */ jsx(Label, { htmlFor: "logo-upload", className: "cursor-pointer", children: logo ? "Replace Logo" : "Browse for Logo" }) }),
+              logo && /* @__PURE__ */ jsxs(Button, { type: "button", variant: "ghost", onClick: removeLogo, children: [
+                /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4 mr-2" }),
+                "Remove"
+              ] })
+            ] })
+          ] })
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, children: [
+        /* @__PURE__ */ jsxs(Tabs, { defaultValue: "general", className: "space-y-6", children: [
+          /* @__PURE__ */ jsxs(TabsList, { className: "flex h-auto w-full flex-wrap justify-start gap-1", children: [
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "general", children: "General" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "scenes", children: "Scenes" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "cast", children: "Cast" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "crew", children: "Crew" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "background", children: "Background" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "schedule", children: "Schedule" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "requirements", children: "Requirements" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "notes", children: "Notes & Safety" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "advance", children: "Advance" }),
+            /* @__PURE__ */ jsx(TabsTrigger, { value: "contacts", children: "Contacts" })
+          ] }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "general", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "General Information" }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Production Company *" }),
+                  /* @__PURE__ */ jsx(Input, { required: true, value: formData.production_company, onChange: (e) => updateField("production_company", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Project Name *" }),
+                  /* @__PURE__ */ jsx(Input, { required: true, value: formData.project_name, onChange: (e) => updateField("project_name", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-3 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Shoot Date *" }),
+                  /* @__PURE__ */ jsx(Input, { type: "date", required: true, value: formData.shoot_date, onChange: (e) => updateField("shoot_date", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Day Number" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "Day 1 of 30", value: formData.day_number, onChange: (e) => updateField("day_number", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Script Color" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.script_color, onChange: (e) => updateField("script_color", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Block / Focus" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "The Getaway Block", value: formData.block_focus, onChange: (e) => updateField("block_focus", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Total Pages" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "4 3/8", value: formData.total_pages, onChange: (e) => updateField("total_pages", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-5 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "LX Precall" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.lx_precall_time, onChange: (e) => updateField("lx_precall_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Unit Call" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.unit_call_time, onChange: (e) => updateField("unit_call_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Breakfast" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.courtesy_breakfast_time, onChange: (e) => updateField("courtesy_breakfast_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Lunch" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.lunch_time, onChange: (e) => updateField("lunch_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Est. Wrap" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.wrap_time, onChange: (e) => updateField("wrap_time", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "2nd Meal" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.second_meal_time, onChange: (e) => updateField("second_meal_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Sound Hard-Out" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: formData.sound_hard_out_time, onChange: (e) => updateField("sound_hard_out_time", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Director" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.director, onChange: (e) => updateField("director", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "1st AD" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.associate_director, onChange: (e) => updateField("associate_director", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Line Producer/PM" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.line_producer, onChange: (e) => updateField("line_producer", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "UPM" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.upm, onChange: (e) => updateField("upm", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Shooting Location" }),
+                /* @__PURE__ */ jsx(Input, { value: formData.shooting_location, onChange: (e) => updateField("shooting_location", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Location Address" }),
+                /* @__PURE__ */ jsx(Textarea, { rows: 2, value: formData.location_address, onChange: (e) => updateField("location_address", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Gate / Access Code" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.gate_access_code, onChange: (e) => updateField("gate_access_code", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Map / Directions Link" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.map_link, onChange: (e) => updateField("map_link", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Unit Base" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.unit_base, onChange: (e) => updateField("unit_base", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Unit Base Address" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.unit_base_address, onChange: (e) => updateField("unit_base_address", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Crew Parking" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.crew_parking, onChange: (e) => updateField("crew_parking", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Basecamp" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.basecamp, onChange: (e) => updateField("basecamp", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Truck / Picture-Car Parking" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.truck_parking, onChange: (e) => updateField("truck_parking", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Nearest Hospital" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.nearest_hospital, onChange: (e) => updateField("nearest_hospital", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Hospital Address" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.hospital_address, onChange: (e) => updateField("hospital_address", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Emergency Numbers" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "Ambulance / Police / Fire", value: formData.emergency_numbers, onChange: (e) => updateField("emergency_numbers", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "On-Set Medic / First Aid" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.on_set_medic, onChange: (e) => updateField("on_set_medic", e.target.value) })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Weather Description" }),
+                /* @__PURE__ */ jsx(Input, { value: formData.weather_description, onChange: (e) => updateField("weather_description", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "High Temp" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.high_temp, onChange: (e) => updateField("high_temp", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Low Temp" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.low_temp, onChange: (e) => updateField("low_temp", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Sunrise" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.sunrise_time, onChange: (e) => updateField("sunrise_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Sunset" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.sunset_time, onChange: (e) => updateField("sunset_time", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Precipitation" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.precipitation, onChange: (e) => updateField("precipitation", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Wind" }),
+                  /* @__PURE__ */ jsx(Input, { value: formData.wind, onChange: (e) => updateField("wind", e.target.value) })
+                ] })
+              ] })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "scenes", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Scenes" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addScene, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Scene"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: scenes.map((scene, index) => {
+              var _a2;
+              return /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-4", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
+                    /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx(Label, { children: "Scene #" }),
+                      /* @__PURE__ */ jsx(Input, { value: scene.scene_number, onChange: (e) => updateScene(index, "scene_number", e.target.value) })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx(Label, { children: "Pages" }),
+                      /* @__PURE__ */ jsx(Input, { value: scene.pages, onChange: (e) => updateScene(index, "pages", e.target.value) })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx(Label, { children: "D/N" }),
+                      /* @__PURE__ */ jsx(Input, { value: scene.day_night, onChange: (e) => updateScene(index, "day_night", e.target.value) })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                      /* @__PURE__ */ jsx(Label, { children: "Cast IDs" }),
+                      /* @__PURE__ */ jsx(Input, { placeholder: "1, 2, 3", value: (_a2 = scene.cast_ids) == null ? void 0 : _a2.join(", "), onChange: (e) => updateScene(index, "cast_ids", e.target.value.split(",").map((s) => s.trim())) })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Set & Description" }),
+                    /* @__PURE__ */ jsx(Textarea, { rows: 2, value: scene.set_description, onChange: (e) => updateScene(index, "set_description", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Location" }),
+                    /* @__PURE__ */ jsx(Input, { value: scene.location, onChange: (e) => updateScene(index, "location", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Notes" }),
+                    /* @__PURE__ */ jsx(Textarea, { rows: 2, value: scene.notes, onChange: (e) => updateScene(index, "notes", e.target.value) })
+                  ] })
+                ] }),
+                scenes.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeScene(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+              ] }) }) }, index);
+            }) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "cast", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Cast" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCast, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Cast Member"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: cast.map((member, index) => /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Cast ID" }),
+                    /* @__PURE__ */ jsx(Input, { value: member.cast_id, onChange: (e) => updateCast(index, "cast_id", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Character" }),
+                    /* @__PURE__ */ jsx(Input, { value: member.character_name, onChange: (e) => updateCast(index, "character_name", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Actor" }),
+                    /* @__PURE__ */ jsx(Input, { value: member.actor_name, onChange: (e) => updateCast(index, "actor_name", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Status" }),
+                    /* @__PURE__ */ jsx(Input, { placeholder: "W/SW", value: member.status, onChange: (e) => updateCast(index, "status", e.target.value) })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Pickup Time" }),
+                    /* @__PURE__ */ jsx(Input, { type: "time", value: member.pickup_time, onChange: (e) => updateCast(index, "pickup_time", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Call Time" }),
+                    /* @__PURE__ */ jsx(Input, { type: "time", value: member.call_time, onChange: (e) => updateCast(index, "call_time", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Set Ready" }),
+                    /* @__PURE__ */ jsx(Input, { type: "time", value: member.set_ready_time, onChange: (e) => updateCast(index, "set_ready_time", e.target.value) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Wrap Time" }),
+                    /* @__PURE__ */ jsx(Input, { type: "time", value: member.wrap_time, onChange: (e) => updateCast(index, "wrap_time", e.target.value) })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Special Instructions" }),
+                  /* @__PURE__ */ jsx(Textarea, { rows: 2, value: member.special_instructions, onChange: (e) => updateCast(index, "special_instructions", e.target.value) })
+                ] })
+              ] }),
+              cast.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeCast(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+            ] }) }) }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "crew", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Crew" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCrew, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Crew Member"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: crew.map((member, index) => /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex-1 grid grid-cols-4 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Department" }),
+                  /* @__PURE__ */ jsx(Input, { value: member.department, onChange: (e) => updateCrew(index, "department", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Title" }),
+                  /* @__PURE__ */ jsx(Input, { value: member.title, onChange: (e) => updateCrew(index, "title", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Name" }),
+                  /* @__PURE__ */ jsx(Input, { value: member.name, onChange: (e) => updateCrew(index, "name", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Call Time" }),
+                  /* @__PURE__ */ jsx(Input, { type: "time", value: member.call_time, onChange: (e) => updateCrew(index, "call_time", e.target.value) })
+                ] })
+              ] }),
+              crew.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeCrew(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+            ] }) }) }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "background", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Background Actors" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addBackground, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Background"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: background.map((item, index) => /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-5 gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Quantity" }),
+                /* @__PURE__ */ jsx(Input, { type: "number", value: item.quantity || "", onChange: (e) => {
+                  const updated = [...background];
+                  updated[index].quantity = parseInt(e.target.value) || void 0;
+                  setBackground(updated);
+                } })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Description" }),
+                /* @__PURE__ */ jsx(Input, { value: item.description, onChange: (e) => {
+                  const updated = [...background];
+                  updated[index].description = e.target.value;
+                  setBackground(updated);
+                } })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Call Time" }),
+                /* @__PURE__ */ jsx(Input, { type: "time", value: item.call_time, onChange: (e) => {
+                  const updated = [...background];
+                  updated[index].call_time = e.target.value;
+                  setBackground(updated);
+                } })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Holding Area" }),
+                /* @__PURE__ */ jsx(Input, { value: item.holding_area, onChange: (e) => {
+                  const updated = [...background];
+                  updated[index].holding_area = e.target.value;
+                  setBackground(updated);
+                } })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Notes" }),
+                /* @__PURE__ */ jsx(Input, { value: item.notes, onChange: (e) => {
+                  const updated = [...background];
+                  updated[index].notes = e.target.value;
+                  setBackground(updated);
+                } })
+              ] })
+            ] }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "schedule", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Schedule / Running Order" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addScheduleRow, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Row"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: scheduleRows.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex items-end gap-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "w-32 space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Time" }),
+                /* @__PURE__ */ jsx(Input, { placeholder: "07:00", value: row.time, onChange: (e) => updateScheduleRow(index, "time", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "w-56 space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Scene / Activity" }),
+                /* @__PURE__ */ jsx(Input, { placeholder: "Sc. 14 / Company Move", value: row.activity, onChange: (e) => updateScheduleRow(index, "activity", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Description" }),
+                /* @__PURE__ */ jsx(Input, { value: row.description, onChange: (e) => updateScheduleRow(index, "description", e.target.value) })
+              ] }),
+              scheduleRows.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeScheduleRow(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+            ] }, index)) })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "requirements", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Department Requirements" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addRequirement, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Requirement"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              requirements.length === 0 && /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "No requirements yet. Add a row to note department needs and atmosphere." }),
+              requirements.map((req, index) => /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "w-56 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Department" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "Props / SFX / Stunts", value: req.department, onChange: (e) => updateRequirement(index, "department", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Notes" }),
+                  /* @__PURE__ */ jsx(Textarea, { rows: 2, value: req.notes, onChange: (e) => updateRequirement(index, "notes", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", className: "mt-8", onClick: () => removeRequirement(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+              ] }, index))
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "notes", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Notes & Safety" }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Mandatory Safety Briefing / Bulletin" }),
+                /* @__PURE__ */ jsx(Textarea, { rows: 4, value: formData.safety_briefing, onChange: (e) => updateField("safety_briefing", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Walkie-Talkie Channels" }),
+                /* @__PURE__ */ jsx(Input, { placeholder: "1 Production / 2 Camera / 3 Grip", value: formData.walkie_channels, onChange: (e) => updateField("walkie_channels", e.target.value) })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "General Notes / Boilerplate" }),
+                /* @__PURE__ */ jsx(Textarea, { rows: 4, value: formData.general_notes, onChange: (e) => updateField("general_notes", e.target.value) })
+              ] })
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "advance", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+              /* @__PURE__ */ jsx(CardTitle, { children: "Advance Schedule" }),
+              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addAdvanceRow, size: "sm", children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                "Add Row"
+              ] })
+            ] }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Next Day Label" }),
+                /* @__PURE__ */ jsx(Input, { placeholder: "Day 4 - Fri, Aug 14", value: formData.next_day_label, onChange: (e) => updateField("next_day_label", e.target.value) })
+              ] }),
+              advanceRows.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex items-end gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "w-28 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Scene #" }),
+                  /* @__PURE__ */ jsx(Input, { value: row.scene_number, onChange: (e) => updateAdvanceRow(index, "scene_number", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Set" }),
+                  /* @__PURE__ */ jsx(Input, { value: row.set_description, onChange: (e) => updateAdvanceRow(index, "set_description", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "w-24 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "D/N" }),
+                  /* @__PURE__ */ jsx(Input, { value: row.day_night, onChange: (e) => updateAdvanceRow(index, "day_night", e.target.value) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "w-40 space-y-2", children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Cast" }),
+                  /* @__PURE__ */ jsx(Input, { placeholder: "1, 2, 5", value: row.cast, onChange: (e) => updateAdvanceRow(index, "cast", e.target.value) })
+                ] }),
+                advanceRows.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeAdvanceRow(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
+              ] }, index))
+            ] })
+          ] }) }),
+          /* @__PURE__ */ jsx(TabsContent, { value: "contacts", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Key Contacts" }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Key Contacts" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  rows: 8,
+                  placeholder: "Director - Name - 555-0100\n1st AD - Name - 555-0101\n2nd AD - Name - 555-0102\nUPM - Name - 555-0103\nLine Producer - Name - 555-0104\nProduction Line - 555-0105",
+                  value: formData.key_contacts,
+                  onChange: (e) => updateField("key_contacts", e.target.value)
+                }
+              )
+            ] }) })
+          ] }) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex gap-4 mt-6", children: [
+          /* @__PURE__ */ jsx(Button, { type: "submit", disabled: isSubmitting, className: "flex-1", children: isSubmitting ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(Loader2, { className: "mr-2 h-4 w-4 animate-spin" }),
+            "Saving..."
+          ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(Save, { className: "mr-2 h-4 w-4" }),
+            "Save Call Sheet"
+          ] }) }),
+          /* @__PURE__ */ jsxs(Button, { type: "button", variant: "outline", onClick: handleDownloadPDF, children: [
+            /* @__PURE__ */ jsx(Download, { className: "mr-2 h-4 w-4" }),
+            "Download PDF"
+          ] })
+        ] })
+      ] })
+    ] })
+  ] });
+};
+const MAX_THEMES = 6;
+const MAX_CHARACTERS = 4;
+const Field$3 = ({
+  label,
+  children,
+  hint
+}) => /* @__PURE__ */ jsxs("div", { children: [
+  /* @__PURE__ */ jsxs("label", { className: "mb-1.5 flex items-center justify-between text-xs font-medium uppercase tracking-wider text-zinc-400", children: [
+    /* @__PURE__ */ jsx("span", { children: label }),
+    hint && /* @__PURE__ */ jsx("span", { className: "text-[10px] normal-case tracking-normal text-zinc-600", children: hint })
+  ] }),
+  children
+] });
+const GhostAIButton$1 = ({
+  onClick,
+  loading,
+  label
+}) => /* @__PURE__ */ jsxs(
+  "button",
+  {
+    type: "button",
+    onClick,
+    disabled: loading,
+    className: "mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+    style: { borderColor: "#f5a623", height: "28px" },
+    children: [
+      loading ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+      "✦ ",
+      label
+    ]
+  }
+);
+const Step2Story = ({ data, update }) => {
+  const [isExpandingSynopsis, setIsExpandingSynopsis] = useState(false);
+  const [isGeneratingVision, setIsGeneratingVision] = useState(false);
+  const [isGeneratingNorthStar, setIsGeneratingNorthStar] = useState(false);
+  const [isGeneratingWorld, setIsGeneratingWorld] = useState(false);
+  const [isGeneratingEpisodes, setIsGeneratingEpisodes] = useState(false);
+  const [themeInput, setThemeInput] = useState("");
+  const themes = data.themes ?? [];
+  const characters = data.characters ?? [];
+  const episodes = data.episodes ?? [];
+  const isSeries = data.projectType === "tv_series" || data.projectType === "mini_series";
+  const callAI = async (field, setLoading, targetKey, successMsg) => {
+    setLoading(true);
+    try {
+      const result = await aiInvoke("generate-pitch-content", {
+        body: {
+          field,
+          context: {
+            projectTitle: data.projectTitle,
+            projectType: data.projectType,
+            genre: data.genre,
+            targetRating: data.targetRating,
+            logline: data.logline,
+            synopsis: data.synopsis,
+            toneMood: data.toneMood,
+            themes: data.themes,
+            shootingLocations: data.shootingLocations
+          }
+        }
+      });
+      if ((result == null ? void 0 : result.content) !== void 0) {
+        update(targetKey, result.content);
+        toast$1.success(successMsg);
+      }
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Generation failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleExpandSynopsis = () => {
+    var _a2;
+    if (!((_a2 = data.logline) == null ? void 0 : _a2.trim())) {
+      toast$1.error("Write a logline in Step 1 first");
+      return;
+    }
+    callAI("synopsis", setIsExpandingSynopsis, "synopsis", "Synopsis expanded");
+  };
+  const handleGenerateVision = () => {
+    var _a2, _b2;
+    if (!((_a2 = data.logline) == null ? void 0 : _a2.trim()) && !((_b2 = data.synopsis) == null ? void 0 : _b2.trim())) {
+      toast$1.error("Add a logline or synopsis first");
+      return;
+    }
+    callAI("directorVision", setIsGeneratingVision, "directorVision", "Vision generated");
+  };
+  const handleGenerateNorthStar = () => {
+    var _a2, _b2;
+    if (!((_a2 = data.logline) == null ? void 0 : _a2.trim()) && !((_b2 = data.synopsis) == null ? void 0 : _b2.trim())) {
+      toast$1.error("Add a logline or synopsis first");
+      return;
+    }
+    callAI("northStar", setIsGeneratingNorthStar, "northStar", "North Star generated");
+  };
+  const handleGenerateWorld = () => {
+    var _a2, _b2;
+    if (!((_a2 = data.synopsis) == null ? void 0 : _a2.trim()) && !((_b2 = data.logline) == null ? void 0 : _b2.trim())) {
+      toast$1.error("Add a synopsis or logline first");
+      return;
+    }
+    callAI("worldSetting", setIsGeneratingWorld, "worldSetting", "World statement generated");
+  };
+  const handleGenerateEpisodes = async () => {
+    var _a2;
+    if (!((_a2 = data.synopsis) == null ? void 0 : _a2.trim())) {
+      toast$1.error("Write a synopsis first so episodes can build on it");
+      return;
+    }
+    setIsGeneratingEpisodes(true);
+    try {
+      const result = await aiInvoke("generate-pitch-content", {
+        body: {
+          field: "episodes",
+          context: {
+            projectTitle: data.projectTitle,
+            projectType: data.projectType,
+            genre: data.genre,
+            logline: data.logline,
+            synopsis: data.synopsis,
+            toneMood: data.toneMood,
+            episodeCount: episodes.length || 6
+          }
+        }
+      });
+      const arr = (result == null ? void 0 : result.episodes) || (result == null ? void 0 : result.content);
+      if (Array.isArray(arr)) {
+        update("episodes", arr.map((e) => ({
+          title: String(e.title || ""),
+          logline: String(e.logline || e.summary || "")
+        })));
+        toast$1.success("Episodes generated");
+      }
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate episodes");
+    } finally {
+      setIsGeneratingEpisodes(false);
+    }
+  };
+  const addTheme = () => {
+    const t = themeInput.trim();
+    if (!t) return;
+    if (themes.length >= MAX_THEMES) {
+      toast$1.error(`Max ${MAX_THEMES} themes`);
+      return;
+    }
+    if (themes.includes(t)) {
+      setThemeInput("");
+      return;
+    }
+    update("themes", [...themes, t]);
+    setThemeInput("");
+  };
+  const removeTheme = (t) => {
+    update(
+      "themes",
+      themes.filter((x) => x !== t)
+    );
+  };
+  const onThemeKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTheme();
+    } else if (e.key === "Backspace" && !themeInput && themes.length) {
+      update("themes", themes.slice(0, -1));
+    }
+  };
+  const addCharacter = () => {
+    if (characters.length >= MAX_CHARACTERS) {
+      toast$1.error(`Max ${MAX_CHARACTERS} characters at this step`);
+      return;
+    }
+    update("characters", [...characters, { name: "", role: "" }]);
+  };
+  const updateCharacter = (i, key, value) => {
+    const next = characters.map((c, idx) => idx === i ? { ...c, [key]: value } : c);
+    update("characters", next);
+  };
+  const removeCharacter = (i) => {
+    update("characters", characters.filter((_, idx) => idx !== i));
+  };
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-mono text-xs tracking-widest text-[#f5a623]", children: "02 — STORY" }),
+      /* @__PURE__ */ jsx("h2", { className: "mt-1 text-xl font-semibold text-white", children: "Shape the narrative" }),
+      /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-zinc-500", children: "Synopsis, vision, and the people who carry your story." })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-5", children: [
+      /* @__PURE__ */ jsxs(Field$3, { label: "Synopsis", children: [
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            value: data.synopsis ?? "",
+            onChange: (e) => update("synopsis", e.target.value),
+            placeholder: "Tell your story in 300-500 words...",
+            rows: 6,
+            className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+            style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          GhostAIButton$1,
+          {
+            onClick: handleExpandSynopsis,
+            loading: isExpandingSynopsis,
+            label: "Expand from Logline"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs(Field$3, { label: "Director's Vision", children: [
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            value: data.directorVision ?? "",
+            onChange: (e) => update("directorVision", e.target.value),
+            placeholder: "Describe your creative vision...",
+            rows: 4,
+            className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+            style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          GhostAIButton$1,
+          {
+            onClick: handleGenerateVision,
+            loading: isGeneratingVision,
+            label: "Generate Vision"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs(Field$3, { label: "North Star", hint: "Why this story · Why you · Why now", children: [
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            value: data.northStar ?? "",
+            onChange: (e) => update("northStar", e.target.value),
+            placeholder: "The single emotional truth at the heart of your project.",
+            rows: 3,
+            className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+            style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          GhostAIButton$1,
+          {
+            onClick: handleGenerateNorthStar,
+            loading: isGeneratingNorthStar,
+            label: "Generate North Star"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs(Field$3, { label: "World & Setting", hint: "The location is a character", children: [
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            value: data.worldSetting ?? "",
+            onChange: (e) => update("worldSetting", e.target.value),
+            placeholder: "Why must this story be set HERE? What does the place do to your characters?",
+            rows: 3,
+            className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+            style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          GhostAIButton$1,
+          {
+            onClick: handleGenerateWorld,
+            loading: isGeneratingWorld,
+            label: "Generate World Statement"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx(Field$3, { label: "Tone & Mood", children: /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "text",
+          value: data.toneMood ?? "",
+          onChange: (e) => update("toneMood", e.target.value),
+          placeholder: "e.g. Dark and haunting with moments of grace",
+          className: "w-full rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+          style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+        }
+      ) }),
+      isSeries && /* @__PURE__ */ jsx(Field$3, { label: "Episode Breakdown", hint: `${episodes.length} episode${episodes.length === 1 ? "" : "s"}`, children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        episodes.map((ep, i) => /* @__PURE__ */ jsxs("div", { className: "rounded-md border p-2", style: { backgroundColor: "#1a1a26", borderColor: "#22222e" }, children: [
+          /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsxs("span", { className: "font-mono text-[10px] text-[#f5a623]", children: [
+              "EP ",
+              String(i + 1).padStart(2, "0")
+            ] }),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "text",
+                value: ep.title,
+                onChange: (e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, title: e.target.value } : x)),
+                placeholder: "Episode title",
+                className: "flex-1 rounded bg-[#12121a] px-2 py-1 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                onClick: () => update("episodes", episodes.filter((_, idx) => idx !== i)),
+                className: "text-zinc-500 hover:text-red-400",
+                "aria-label": "Remove episode",
+                children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+              }
+            )
+          ] }),
+          /* @__PURE__ */ jsx(
+            "textarea",
+            {
+              value: ep.logline,
+              onChange: (e) => update("episodes", episodes.map((x, idx) => idx === i ? { ...x, logline: e.target.value } : x)),
+              placeholder: "Episode logline (2-3 sentences)",
+              rows: 2,
+              className: "mt-2 w-full resize-none rounded bg-[#12121a] px-2 py-1.5 text-xs text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+            }
+          )
+        ] }, i)),
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: () => update("episodes", [...episodes, { title: "", logline: "" }]),
+              className: "flex flex-1 items-center justify-center gap-2 rounded-md border border-dashed py-2 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]",
+              style: { borderColor: "#2a2a36" },
+              children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+                " Add Episode"
+              ]
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            GhostAIButton$1,
+            {
+              onClick: handleGenerateEpisodes,
+              loading: isGeneratingEpisodes,
+              label: "Generate Breakdown"
+            }
+          )
+        ] })
+      ] }) }),
+      /* @__PURE__ */ jsx(Field$3, { label: "Key Themes", hint: `${themes.length}/${MAX_THEMES}`, children: /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: "flex flex-wrap items-center gap-2 rounded-md border p-2 focus-within:border-[#f5a623]",
+          style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" },
+          children: [
+            themes.map((t) => /* @__PURE__ */ jsxs(
+              "span",
+              {
+                className: "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs",
+                style: {
+                  backgroundColor: "#f5a623",
+                  color: "#000",
+                  fontWeight: 600,
+                  boxShadow: "0 0 12px rgba(245,166,35,0.35)"
+                },
+                children: [
+                  t,
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => removeTheme(t),
+                      className: "opacity-70 hover:opacity-100",
+                      "aria-label": `Remove ${t}`,
+                      children: /* @__PURE__ */ jsx(X, { className: "h-3 w-3" })
+                    }
+                  )
+                ]
+              },
+              t
+            )),
+            themes.length < MAX_THEMES && /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "text",
+                value: themeInput,
+                onChange: (e) => setThemeInput(e.target.value),
+                onKeyDown: onThemeKeyDown,
+                onBlur: addTheme,
+                placeholder: themes.length ? "Add another…" : "Type a theme and press Enter",
+                className: "min-w-[140px] flex-1 bg-transparent px-1 py-0.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none"
+              }
+            )
+          ]
+        }
+      ) }),
+      /* @__PURE__ */ jsx(Field$3, { label: "Main Characters", hint: `${characters.length}/${MAX_CHARACTERS}`, children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        characters.map((c, i) => /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "grid grid-cols-[1fr_1.6fr_auto] gap-2 rounded-md border p-2",
+            style: { backgroundColor: "#1a1a26", borderColor: "#22222e" },
+            children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "text",
+                  value: c.name,
+                  onChange: (e) => updateCharacter(i, "name", e.target.value),
+                  placeholder: "Character name",
+                  className: "rounded border-none bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "text",
+                  value: c.role,
+                  onChange: (e) => updateCharacter(i, "role", e.target.value),
+                  placeholder: "Role / one-line description",
+                  className: "rounded border-none bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => removeCharacter(i),
+                  className: "flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white",
+                  "aria-label": "Remove character",
+                  children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+                }
+              )
+            ]
+          },
+          i
+        )),
+        characters.length < MAX_CHARACTERS && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: addCharacter,
+            className: "flex w-full items-center justify-center gap-2 rounded-md border border-dashed py-2.5 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]",
+            style: { borderColor: "#2a2a36" },
+            children: [
+              /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+              "Add Character"
+            ]
+          }
+        )
+      ] }) })
+    ] })
+  ] });
+};
+const STYLE_TEMPLATES = [
+  { id: "epic", label: "Epic/Cinematic", from: "#000000", to: "#d4af37" },
+  { id: "faith", label: "Faith/Inspirational", from: "#0a1f44", to: "#e0a458" },
+  { id: "noir", label: "Thriller/Noir", from: "#000000", to: "#8b0000" },
+  { id: "scifi", label: "Sci-Fi", from: "#0a1f44", to: "#00d4ff" },
+  { id: "western", label: "Western", from: "#3b1f0a", to: "#f5a623" },
+  { id: "drama", label: "Drama", from: "#1a1a1a", to: "#9ca3af" },
+  { id: "horror", label: "Horror", from: "#000000", to: "#990000" },
+  { id: "comedy", label: "Comedy", from: "#1a1a1a", to: "#fde047" },
+  { id: "documentary", label: "Documentary", from: "#1e293b", to: "#f1f5f9" },
+  { id: "action", label: "Action", from: "#000000", to: "#ff6a00" }
+];
+const Step3CharactersVisuals = ({ data, update }) => {
+  const characters = data.characters || [];
+  const [generatingStyle, setGeneratingStyle] = useState(false);
+  const [generatingPoster, setGeneratingPoster] = useState(false);
+  const [generatingPortraitIdx, setGeneratingPortraitIdx] = useState(null);
+  const setCharacters = (next) => update("characters", next);
+  const addCharacter = () => {
+    if (characters.length >= 4) {
+      toast$1.error("Maximum 4 characters");
+      return;
+    }
+    setCharacters([...characters, { name: "", role: "", description: "" }]);
+  };
+  const updateChar = (i, key, value) => {
+    const next = [...characters];
+    next[i] = { ...next[i], [key]: value };
+    setCharacters(next);
+  };
+  const removeChar = (i) => {
+    setCharacters(characters.filter((_, idx) => idx !== i));
+  };
+  const handleGeneratePortrait = async (i) => {
+    var _a2;
+    const c = characters[i];
+    if (!((_a2 = c == null ? void 0 : c.name) == null ? void 0 : _a2.trim())) {
+      toast$1.error("Add a character name first");
+      return;
+    }
+    setGeneratingPortraitIdx(i);
+    try {
+      const { data: result, error } = await aiInvokeSafe(
+        "generate-character-portrait",
+        {
+          body: {
+            characterName: c.name,
+            characterRole: c.role,
+            characterDescription: c.description,
+            styleDescription: data.visualStyle,
+            genre: data.genre,
+            projectTitle: data.projectTitle
+          }
+        }
+      );
+      if (error) throw error;
+      const url2 = result == null ? void 0 : result.imageUrl;
+      if (url2) {
+        const next = [...characters];
+        next[i] = { ...next[i], portrait: url2 };
+        setCharacters(next);
+        toast$1.success(`Portrait generated for ${c.name}`);
+      } else {
+        toast$1.error("No portrait returned");
+      }
+    } catch (e) {
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate portrait");
+    } finally {
+      setGeneratingPortraitIdx(null);
+    }
+  };
+  const handleGenerateStyle = async () => {
+    if (!data.genre.length && !data.selectedTemplate) {
+      toast$1.error("Pick a genre or template first");
+      return;
+    }
+    setGeneratingStyle(true);
+    try {
+      const { data: result, error } = await aiInvokeSafe(
+        "generate-pitch-content",
+        {
+          body: {
+            field: "visualStyle",
+            context: {
+              projectTitle: data.projectTitle,
+              genre: data.genre,
+              logline: data.logline,
+              toneMood: data.toneMood,
+              template: data.selectedTemplate
+            }
+          }
+        }
+      );
+      if (error) throw error;
+      if (result == null ? void 0 : result.content) {
+        update("visualStyle", result.content);
+        toast$1.success("Style description generated");
+      }
+    } catch (e) {
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate style");
+    } finally {
+      setGeneratingStyle(false);
+    }
+  };
+  const handleGeneratePoster = async () => {
+    if (!data.projectTitle) {
+      toast$1.error("Add a project title first");
+      return;
+    }
+    setGeneratingPoster(true);
+    try {
+      const { data: result, error } = await aiInvokeSafe(
+        "generate-pitch-poster",
+        {
+          body: {
+            projectTitle: data.projectTitle,
+            genre: data.genre,
+            logline: data.logline,
+            visualStyle: data.visualStyle,
+            template: data.selectedTemplate
+          }
+        }
+      );
+      if (error) throw error;
+      const url2 = (result == null ? void 0 : result.imageUrl) || (result == null ? void 0 : result.posterUrl) || (result == null ? void 0 : result.url);
+      if (url2) {
+        update("posterImage", url2);
+        toast$1.success("Poster generated");
+      } else {
+        toast$1.error("No poster returned");
+      }
+    } catch (e) {
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate poster");
+    } finally {
+      setGeneratingPoster(false);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { children: [
+    /* @__PURE__ */ jsxs("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-mono text-xs tracking-widest text-[#f5a623]", children: "03 — CHARACTERS & VISUALS" }),
+      /* @__PURE__ */ jsx("h2", { className: "mt-1 text-xl font-semibold text-white", children: "Define the look & the cast" }),
+      /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-zinc-500", children: "Set the visual identity of your deck and introduce key roles." })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-8", children: [
+      /* @__PURE__ */ jsxs("section", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "mb-3 flex items-center justify-between", children: [
+          /* @__PURE__ */ jsx("label", { className: "text-xs font-medium uppercase tracking-wider text-zinc-400", children: "Characters" }),
+          /* @__PURE__ */ jsxs("span", { className: "text-xs text-zinc-600", children: [
+            characters.length,
+            "/4"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "space-y-3", children: characters.map((c, i) => /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "rounded-lg border p-3",
+            style: { backgroundColor: "#1a1a26", borderColor: "#22222e" },
+            children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
+              /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: "relative flex h-20 w-16 shrink-0 items-center justify-center overflow-hidden rounded-md border",
+                  style: { backgroundColor: "#0d0d18", borderColor: "#22222e" },
+                  children: c.portrait ? /* @__PURE__ */ jsx(
+                    "img",
+                    {
+                      src: c.portrait,
+                      alt: c.name || "Character portrait",
+                      className: "h-full w-full",
+                      style: { objectFit: "cover" }
+                    }
+                  ) : /* @__PURE__ */ jsx(User, { className: "h-6 w-6 text-zinc-600" })
+                }
+              ),
+              /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-2", children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: c.name,
+                      onChange: (e) => updateChar(i, "name", e.target.value),
+                      placeholder: "Character Name",
+                      className: "rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none",
+                      style: { backgroundColor: "#0d0d18", borderColor: "#22222e" }
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: c.role,
+                      onChange: (e) => updateChar(i, "role", e.target.value),
+                      placeholder: "Role (e.g. Protagonist)",
+                      className: "rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none",
+                      style: { backgroundColor: "#0d0d18", borderColor: "#22222e" }
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx(
+                  "textarea",
+                  {
+                    value: c.description,
+                    onChange: (e) => updateChar(i, "description", e.target.value),
+                    placeholder: "2–3 sentence description (essence, voice, contradiction)",
+                    rows: 2,
+                    className: "w-full resize-none rounded-md border px-3 py-2 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none",
+                    style: { backgroundColor: "#0d0d18", borderColor: "#22222e" }
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 gap-2 sm:grid-cols-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: c.externalGoal ?? "",
+                      onChange: (e) => updateChar(i, "externalGoal", e.target.value),
+                      placeholder: "External goal (what they want)",
+                      className: "rounded-md border px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none",
+                      style: { backgroundColor: "#0d0d18", borderColor: "#22222e" }
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: c.internalWound ?? "",
+                      onChange: (e) => updateChar(i, "internalWound", e.target.value),
+                      placeholder: "Internal wound (what blocks them)",
+                      className: "rounded-md border px-3 py-2 text-xs text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none",
+                      style: { backgroundColor: "#0d0d18", borderColor: "#22222e" }
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => handleGeneratePortrait(i),
+                    disabled: generatingPortraitIdx === i,
+                    className: "inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+                    style: { borderColor: "#f5a623", height: "26px" },
+                    children: [
+                      generatingPortraitIdx === i ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+                      c.portrait ? "Regenerate Portrait" : "Generate Portrait"
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  onClick: () => removeChar(i),
+                  "aria-label": "Remove character",
+                  className: "flex h-7 w-7 shrink-0 items-center justify-center rounded-md text-zinc-500 transition hover:bg-[#22222e] hover:text-red-400",
+                  children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+                }
+              )
+            ] })
+          },
+          i
+        )) }),
+        characters.length < 4 && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: addCharacter,
+            className: "mt-3 inline-flex items-center gap-1.5 rounded-md border border-dashed px-3 py-2 text-xs font-medium text-zinc-300 transition hover:border-[#f5a623] hover:text-[#f5a623]",
+            style: { borderColor: "#2a2a36" },
+            children: [
+              /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+              " Add Character"
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs("section", { children: [
+        /* @__PURE__ */ jsx("label", { className: "mb-3 block text-xs font-medium uppercase tracking-wider text-zinc-400", children: "Visual Style Template" }),
+        /* @__PURE__ */ jsx("div", { className: "flex gap-3 overflow-x-auto pb-2", children: STYLE_TEMPLATES.map((t) => {
+          const selected = data.selectedTemplate === t.id;
+          return /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: () => update("selectedTemplate", t.id),
+              className: "group shrink-0 overflow-hidden rounded-lg border-2 text-left transition",
+              style: {
+                width: "120px",
+                borderColor: selected ? "#f5a623" : "#22222e",
+                boxShadow: selected ? "0 0 16px rgba(245,166,35,0.4)" : "none"
+              },
+              children: [
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "h-20 w-full",
+                    style: {
+                      background: `linear-gradient(135deg, ${t.from} 0%, ${t.to} 100%)`
+                    }
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "px-2 py-2 text-xs font-medium",
+                    style: {
+                      backgroundColor: "#0d0d18",
+                      color: selected ? "#f5a623" : "#a1a1aa"
+                    },
+                    children: t.label
+                  }
+                )
+              ]
+            },
+            t.id
+          );
+        }) })
+      ] }),
+      /* @__PURE__ */ jsxs("section", { children: [
+        /* @__PURE__ */ jsx("label", { className: "mb-1.5 block text-xs font-medium uppercase tracking-wider text-zinc-400", children: "Visual Style Description" }),
+        /* @__PURE__ */ jsx(
+          "textarea",
+          {
+            value: data.visualStyle || "",
+            onChange: (e) => update("visualStyle", e.target.value),
+            placeholder: "Describe the look, palette, lighting and visual references for your project...",
+            rows: 4,
+            className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+            style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: handleGenerateStyle,
+            disabled: generatingStyle,
+            className: "mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+            style: { borderColor: "#f5a623", height: "28px" },
+            children: [
+              generatingStyle ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+              "✦ Generate Style Description"
+            ]
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs("section", { children: [
+        /* @__PURE__ */ jsx("label", { className: "mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-400", children: "Movie Poster" }),
+        data.posterImage ? /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "relative overflow-hidden rounded-lg border",
+            style: { borderColor: "#22222e" },
+            children: /* @__PURE__ */ jsx(
+              "img",
+              {
+                src: data.posterImage,
+                alt: "Generated poster",
+                className: "h-auto w-full"
+              }
+            )
+          }
+        ) : /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "flex aspect-[2/3] max-w-[200px] flex-col items-center justify-center rounded-lg border border-dashed text-zinc-600",
+            style: { backgroundColor: "#1a1a26", borderColor: "#2a2a36" },
+            children: [
+              /* @__PURE__ */ jsx(Image$1, { className: "h-8 w-8" }),
+              /* @__PURE__ */ jsx("p", { className: "mt-2 text-xs", children: "No poster yet" })
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: handleGeneratePoster,
+            disabled: generatingPoster,
+            className: "mt-3 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+            style: { borderColor: "#f5a623", height: "28px" },
+            children: [
+              generatingPoster ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+              "✦ Generate Poster"
+            ]
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+const MAX_COMPS = 3;
+const MAX_TEAM = 5;
+const BUDGET_RANGES$1 = [
+  "Under $100K",
+  "$100K–$500K",
+  "$500K–$5M",
+  "$5M–$20M",
+  "$20M+"
+];
+const UNION_OPTIONS$1 = ["SAG-AFTRA", "Non-Union", "Mixed", "TBD"];
+const EXPORT_OPTIONS = [
+  { id: "pdf", label: "PDF", icon: FileText },
+  { id: "pptx", label: "PPTX", icon: FileImage },
+  { id: "link", label: "Shareable Link", icon: Link2 }
+];
+const Field$2 = ({
+  label,
+  children,
+  hint
+}) => /* @__PURE__ */ jsxs("div", { children: [
+  /* @__PURE__ */ jsxs("label", { className: "mb-1.5 flex items-center justify-between text-xs font-medium uppercase tracking-wider text-zinc-400", children: [
+    /* @__PURE__ */ jsx("span", { children: label }),
+    hint && /* @__PURE__ */ jsx("span", { className: "text-[10px] normal-case tracking-normal text-zinc-600", children: hint })
+  ] }),
+  children
+] });
+const SectionHeader = ({ title, subtitle }) => /* @__PURE__ */ jsxs("div", { className: "mb-3 mt-2", children: [
+  /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-[#f5a623]", children: title }),
+  subtitle && /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-xs text-zinc-500", children: subtitle })
+] });
+const GhostAIButton = ({
+  onClick,
+  loading,
+  label
+}) => /* @__PURE__ */ jsxs(
+  "button",
+  {
+    type: "button",
+    onClick,
+    disabled: loading,
+    className: "mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+    style: { borderColor: "#f5a623", height: "28px" },
+    children: [
+      loading ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+      "✦ ",
+      label
+    ]
+  }
+);
+const inputStyle = { backgroundColor: "#1a1a26", borderColor: "#1a1a26" };
+const inputClass = "w-full rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]";
+const Step4MarketTeam = ({
+  data,
+  update,
+  exportFormats,
+  setExportFormats,
+  onGenerateDeck,
+  isGeneratingDeck
+}) => {
+  const [isSuggestingComps, setIsSuggestingComps] = useState(false);
+  const [isGeneratingStrategy, setIsGeneratingStrategy] = useState(false);
+  const comparables = data.comparables ?? [];
+  const team = data.teamMembers ?? [];
+  const addComp = () => {
+    if (comparables.length >= MAX_COMPS) {
+      toast$1.error(`Max ${MAX_COMPS} comparables`);
+      return;
+    }
+    update("comparables", [
+      ...comparables,
+      { title: "", year: "", revenue: "", why: "" }
+    ]);
+  };
+  const updateComp = (i, key, value) => {
+    update(
+      "comparables",
+      comparables.map((c, idx) => idx === i ? { ...c, [key]: value } : c)
+    );
+  };
+  const removeComp = (i) => {
+    update("comparables", comparables.filter((_, idx) => idx !== i));
+  };
+  const fetchPosterForComp = async (i) => {
+    var _a2;
+    const c = comparables[i];
+    if (!((_a2 = c == null ? void 0 : c.title) == null ? void 0 : _a2.trim())) return;
+    try {
+      const { data: result } = await supabase.functions.invoke("fetch-movie-poster", {
+        body: { title: c.title, year: c.year || void 0 }
+      });
+      if (result == null ? void 0 : result.posterUrl) {
+        update(
+          "comparables",
+          comparables.map(
+            (x, idx) => idx === i ? {
+              ...x,
+              posterUrl: result.posterUrl,
+              year: x.year || result.year || ""
+            } : x
+          )
+        );
+      }
+    } catch (e) {
+      console.error("Poster fetch failed:", e);
+    }
+  };
+  const handleSuggestComps = async () => {
+    var _a2, _b2;
+    if (!((_a2 = data.logline) == null ? void 0 : _a2.trim()) && !((_b2 = data.synopsis) == null ? void 0 : _b2.trim())) {
+      toast$1.error("Add a logline or synopsis first");
+      return;
+    }
+    setIsSuggestingComps(true);
+    try {
+      const { data: result, error } = await aiInvokeSafe(
+        "generate-pitch-content",
+        {
+          body: {
+            field: "comparables",
+            context: {
+              projectTitle: data.projectTitle,
+              projectType: data.projectType,
+              genre: data.genre,
+              logline: data.logline,
+              synopsis: data.synopsis,
+              toneMood: data.toneMood
+            }
+          }
+        }
+      );
+      if (error) throw error;
+      const content = result == null ? void 0 : result.content;
+      if (Array.isArray(content)) {
+        const mapped = content.slice(0, MAX_COMPS).map((c) => ({
+          title: c.title || "",
+          year: String(c.year || ""),
+          revenue: c.revenue || c.boxOffice || "",
+          why: c.why || c.whySimilar || c.reason || ""
+        }));
+        const withPosters = await Promise.all(
+          mapped.map(async (c) => {
+            try {
+              const { data: pr } = await supabase.functions.invoke("fetch-movie-poster", {
+                body: { title: c.title, year: c.year || void 0 }
+              });
+              return {
+                ...c,
+                posterUrl: (pr == null ? void 0 : pr.posterUrl) || void 0,
+                year: c.year || (pr == null ? void 0 : pr.year) || ""
+              };
+            } catch {
+              return c;
+            }
+          })
+        );
+        update("comparables", withPosters);
+        toast$1.success("Comparables suggested");
+      } else if (typeof content === "string" && content.trim()) {
+        const empty = comparables.findIndex((c) => !c.title && !c.why);
+        if (empty >= 0) {
+          updateComp(empty, "why", content);
+        } else if (comparables.length < MAX_COMPS) {
+          update("comparables", [
+            ...comparables,
+            { title: "", year: "", revenue: "", why: content }
+          ]);
+        }
+        toast$1.success("Suggestion added");
+      }
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to suggest comparables");
+    } finally {
+      setIsSuggestingComps(false);
+    }
+  };
+  const addTeam = () => {
+    if (team.length >= MAX_TEAM) {
+      toast$1.error(`Max ${MAX_TEAM} team members`);
+      return;
+    }
+    update("teamMembers", [...team, { name: "", role: "" }]);
+  };
+  const updateTeam = (i, key, value) => {
+    update(
+      "teamMembers",
+      team.map((t, idx) => idx === i ? { ...t, [key]: value } : t)
+    );
+  };
+  const removeTeam = (i) => {
+    update("teamMembers", team.filter((_, idx) => idx !== i));
+  };
+  const handleGenerateStrategy = async () => {
+    setIsGeneratingStrategy(true);
+    try {
+      const { data: result, error } = await aiInvokeSafe(
+        "generate-pitch-content",
+        {
+          body: {
+            field: "distributionPlan",
+            context: {
+              projectTitle: data.projectTitle,
+              projectType: data.projectType,
+              genre: data.genre,
+              targetRating: data.targetRating,
+              targetPlatforms: data.targetPlatforms,
+              logline: data.logline,
+              synopsis: data.synopsis,
+              budgetRange: data.budgetRange,
+              primaryDemographic: data.primaryDemographic
+            }
+          }
+        }
+      );
+      if (error) throw error;
+      if (result == null ? void 0 : result.content) {
+        update("distributionPlan", String(result.content));
+        toast$1.success("Strategy generated");
+      }
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate strategy");
+    } finally {
+      setIsGeneratingStrategy(false);
+    }
+  };
+  const toggleExport = (id) => {
+    if (exportFormats.includes(id)) {
+      setExportFormats(exportFormats.filter((f) => f !== id));
+    } else {
+      setExportFormats([...exportFormats, id]);
+    }
+  };
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsxs("div", { className: "mb-6", children: [
+      /* @__PURE__ */ jsx("p", { className: "font-mono text-xs tracking-widest text-[#f5a623]", children: "04 — MARKET & TEAM" }),
+      /* @__PURE__ */ jsx("h2", { className: "mt-1 text-xl font-semibold text-white", children: "Position the project" }),
+      /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-zinc-500", children: "Comparables, the people behind it, the budget, and how it gets to audiences." })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(
+          SectionHeader,
+          {
+            title: "Comparables",
+            subtitle: "Up to 3 films or shows that prove your market"
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          comparables.map((c, i) => /* @__PURE__ */ jsx(
+            "div",
+            {
+              className: "rounded-md border p-3",
+              style: { backgroundColor: "#1a1a26", borderColor: "#22222e" },
+              children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-3", children: [
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "flex h-[78px] w-[52px] shrink-0 items-center justify-center overflow-hidden rounded border bg-[#0d0d18] text-[10px] text-zinc-600",
+                    style: { borderColor: "#22222e" },
+                    children: c.posterUrl ? /* @__PURE__ */ jsx("img", { src: c.posterUrl, alt: c.title, className: "h-full w-full", style: { objectFit: "cover" } }) : /* @__PURE__ */ jsx("span", { children: "No poster" })
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-2", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-2 sm:grid-cols-[2fr_70px_1fr]", children: [
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "text",
+                        value: c.title,
+                        onChange: (e) => updateComp(i, "title", e.target.value),
+                        onBlur: () => fetchPosterForComp(i),
+                        placeholder: "Title (poster auto-fetches on blur)",
+                        className: "rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "text",
+                        value: c.year,
+                        onChange: (e) => updateComp(i, "year", e.target.value),
+                        onBlur: () => fetchPosterForComp(i),
+                        placeholder: "Year",
+                        className: "rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "text",
+                        value: c.revenue,
+                        onChange: (e) => updateComp(i, "revenue", e.target.value),
+                        placeholder: "Box Office / Revenue",
+                        className: "rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: c.why,
+                      onChange: (e) => updateComp(i, "why", e.target.value),
+                      placeholder: "Why it compares (one line)",
+                      className: "w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => removeComp(i),
+                    className: "flex h-8 w-8 flex-shrink-0 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white",
+                    "aria-label": "Remove comparable",
+                    children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+                  }
+                )
+              ] })
+            },
+            i
+          )),
+          comparables.length < MAX_COMPS && /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: addComp,
+              className: "flex w-full items-center justify-center gap-2 rounded-md border border-dashed py-2.5 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]",
+              style: { borderColor: "#2a2a36" },
+              children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+                "Add Comparable"
+              ]
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsx(
+          GhostAIButton,
+          {
+            onClick: handleSuggestComps,
+            loading: isSuggestingComps,
+            label: "Suggest Comps"
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(SectionHeader, { title: "Team", subtitle: "Up to 5 key people" }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+          team.map((m, i) => /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "space-y-2 rounded-md border p-3",
+              style: { backgroundColor: "#1a1a26", borderColor: "#22222e" },
+              children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[1fr_1fr_auto] gap-2", children: [
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: m.name,
+                      onChange: (e) => updateTeam(i, "name", e.target.value),
+                      placeholder: "Name",
+                      className: "rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "text",
+                      value: m.role,
+                      onChange: (e) => updateTeam(i, "role", e.target.value),
+                      placeholder: "Role / Title",
+                      className: "rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                    }
+                  ),
+                  /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => removeTeam(i),
+                      className: "flex h-8 w-8 items-center justify-center rounded text-zinc-500 hover:bg-[#12121a] hover:text-white",
+                      "aria-label": "Remove team member",
+                      children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx(
+                  "input",
+                  {
+                    type: "url",
+                    value: m.imdbUrl ?? "",
+                    onChange: (e) => updateTeam(i, "imdbUrl", e.target.value),
+                    placeholder: "IMDb URL (optional)",
+                    className: "w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  "input",
+                  {
+                    type: "text",
+                    value: m.credits ?? "",
+                    onChange: (e) => updateTeam(i, "credits", e.target.value),
+                    placeholder: "Recent credits (e.g. The Northman, Foundation)",
+                    className: "w-full rounded bg-[#12121a] px-2 py-1.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:ring-1 focus:ring-[#f5a623]"
+                  }
+                )
+              ]
+            },
+            i
+          )),
+          team.length < MAX_TEAM && /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: addTeam,
+              className: "flex w-full items-center justify-center gap-2 rounded-md border border-dashed py-2.5 text-xs font-medium text-zinc-400 transition hover:border-[#f5a623] hover:text-[#f5a623]",
+              style: { borderColor: "#2a2a36" },
+              children: [
+                /* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+                "Add Team Member"
+              ]
+            }
+          )
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(SectionHeader, { title: "Budget & Production" }),
+        /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 gap-3 sm:grid-cols-2", children: [
+          /* @__PURE__ */ jsx(Field$2, { label: "Budget Range", children: /* @__PURE__ */ jsxs(
+            "select",
+            {
+              value: data.budgetRange ?? "",
+              onChange: (e) => update("budgetRange", e.target.value),
+              className: inputClass,
+              style: inputStyle,
+              children: [
+                /* @__PURE__ */ jsx("option", { value: "", disabled: true, children: "Select range" }),
+                BUDGET_RANGES$1.map((b) => /* @__PURE__ */ jsx("option", { value: b, children: b }, b))
+              ]
+            }
+          ) }),
+          /* @__PURE__ */ jsx(Field$2, { label: "Union Status", children: /* @__PURE__ */ jsxs(
+            "select",
+            {
+              value: data.unionStatus ?? "",
+              onChange: (e) => update("unionStatus", e.target.value),
+              className: inputClass,
+              style: inputStyle,
+              children: [
+                /* @__PURE__ */ jsx("option", { value: "", disabled: true, children: "Select status" }),
+                UNION_OPTIONS$1.map((u) => /* @__PURE__ */ jsx("option", { value: u, children: u }, u))
+              ]
+            }
+          ) }),
+          /* @__PURE__ */ jsx(Field$2, { label: "Shoot Location", children: /* @__PURE__ */ jsx(
+            "input",
+            {
+              type: "text",
+              value: data.shootingLocations ?? "",
+              onChange: (e) => update("shootingLocations", e.target.value),
+              placeholder: "e.g. Atlanta, GA",
+              className: inputClass,
+              style: inputStyle
+            }
+          ) }),
+          /* @__PURE__ */ jsx(Field$2, { label: "Production Timeline", children: /* @__PURE__ */ jsx(
+            "input",
+            {
+              type: "text",
+              value: data.timeline ?? "",
+              onChange: (e) => update("timeline", e.target.value),
+              placeholder: "e.g. Shoot Oct 2025, Release Spring 2026",
+              className: inputClass,
+              style: inputStyle
+            }
+          ) })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx(SectionHeader, { title: "Distribution" }),
+        /* @__PURE__ */ jsx(Field$2, { label: "Target Platforms", hint: "From Step 1", children: /* @__PURE__ */ jsx(
+          "div",
+          {
+            className: "flex min-h-[44px] flex-wrap gap-2 rounded-md border px-3 py-2",
+            style: { backgroundColor: "#1a1a26", borderColor: "#22222e" },
+            children: data.targetPlatforms.length ? data.targetPlatforms.map((p) => /* @__PURE__ */ jsx(
+              "span",
+              {
+                className: "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs",
+                style: {
+                  backgroundColor: "#f5a623",
+                  color: "#000",
+                  fontWeight: 600,
+                  boxShadow: "0 0 12px rgba(245,166,35,0.35)"
+                },
+                children: p
+              },
+              p
+            )) : /* @__PURE__ */ jsx("span", { className: "text-xs text-zinc-600", children: "No platforms selected — go back to Step 1 to add them." })
+          }
+        ) }),
+        /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsxs(Field$2, { label: "Distribution Plan", children: [
+          /* @__PURE__ */ jsx(
+            "textarea",
+            {
+              value: data.distributionPlan ?? "",
+              onChange: (e) => update("distributionPlan", e.target.value),
+              placeholder: "How will this project reach its audience? Festival circuit, streaming partners, theatrical, marketing approach…",
+              rows: 4,
+              className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+              style: inputStyle
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            GhostAIButton,
+            {
+              onClick: handleGenerateStrategy,
+              loading: isGeneratingStrategy,
+              label: "Generate Strategy"
+            }
+          )
+        ] }) }),
+        /* @__PURE__ */ jsxs("div", { className: "mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2", children: [
+          /* @__PURE__ */ jsx(Field$2, { label: "Primary Demographic", children: /* @__PURE__ */ jsx(
+            "input",
+            {
+              type: "text",
+              value: data.primaryDemographic ?? "",
+              onChange: (e) => update("primaryDemographic", e.target.value),
+              placeholder: "e.g. Adults 35-65, faith-based audiences",
+              className: inputClass,
+              style: inputStyle
+            }
+          ) }),
+          /* @__PURE__ */ jsx(Field$2, { label: "Investment Ask", children: /* @__PURE__ */ jsx(
+            "input",
+            {
+              type: "text",
+              value: data.investmentAsk ?? "",
+              onChange: (e) => update("investmentAsk", e.target.value),
+              placeholder: "e.g. Seeking $2M production financing",
+              className: inputClass,
+              style: inputStyle
+            }
+          ) })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsx(Field$2, { label: "Meeting / Booking URL", hint: "Used by the Ask slide CTA", children: /* @__PURE__ */ jsx(
+          "input",
+          {
+            type: "url",
+            value: data.meetingUrl ?? "",
+            onChange: (e) => update("meetingUrl", e.target.value),
+            placeholder: "e.g. https://calendly.com/yourname/intro",
+            className: inputClass,
+            style: inputStyle
+          }
+        ) }) })
+      ] }),
+      (() => {
+        const loglineWords = (data.logline || "").trim().split(/\s+/).filter(Boolean).length;
+        const chars = data.characters || [];
+        const charsWithGoals = chars.filter((c) => (c == null ? void 0 : c.externalGoal) && (c == null ? void 0 : c.internalWound)).length;
+        const compsWithPosters = comparables.filter((c) => c.title && c.posterUrl).length;
+        const checks = [
+          { ok: !!data.logline && loglineWords > 0 && loglineWords <= 30, label: `Logline ≤ 30 words`, hint: data.logline ? `${loglineWords} words` : "missing" },
+          { ok: !!data.synopsis && data.synopsis.length > 200, label: "Synopsis with hook + inciting incident", hint: data.synopsis ? `${data.synopsis.length} chars` : "missing" },
+          { ok: !!data.northStar && data.northStar.length > 50, label: "North Star defined" },
+          { ok: chars.length > 0 && charsWithGoals === chars.length, label: "Every character has goal + wound", hint: `${charsWithGoals}/${chars.length}` },
+          { ok: compsWithPosters >= 2, label: "≥ 2 comparables with posters", hint: `${compsWithPosters} so far` },
+          { ok: !!data.toneMood && !!data.visualStyle, label: "Tone & visual style filled" }
+        ];
+        const passing = checks.filter((c) => c.ok).length;
+        return /* @__PURE__ */ jsxs("div", { className: "rounded-lg border p-4", style: { borderColor: "#22222e", backgroundColor: "#0d0d18" }, children: [
+          /* @__PURE__ */ jsx(SectionHeader, { title: "Pitch Health", subtitle: `${passing}/${checks.length} industry essentials covered` }),
+          /* @__PURE__ */ jsx("ul", { className: "space-y-1.5", children: checks.map((c, i) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2 text-xs", children: [
+            /* @__PURE__ */ jsx("span", { style: { color: c.ok ? "#22c55e" : "#f5a623", marginTop: "1px" }, children: c.ok ? "●" : "○" }),
+            /* @__PURE__ */ jsxs("span", { style: { color: c.ok ? "#a1a1aa" : "#e4e4e7" }, children: [
+              c.label,
+              c.hint && /* @__PURE__ */ jsxs("span", { className: "ml-1.5 text-zinc-600", children: [
+                "— ",
+                c.hint
+              ] })
+            ] })
+          ] }, i)) })
+        ] });
+      })(),
+      /* @__PURE__ */ jsxs("div", { className: "rounded-lg border p-4", style: { borderColor: "#22222e", backgroundColor: "#0d0d18" }, children: [
+        /* @__PURE__ */ jsx(SectionHeader, { title: "Export Format" }),
+        /* @__PURE__ */ jsx("div", { className: "mb-4 grid grid-cols-3 gap-2", children: EXPORT_OPTIONS.map((opt) => {
+          const on = exportFormats.includes(opt.id);
+          const Icon = opt.icon;
+          return /* @__PURE__ */ jsxs(
+            "button",
+            {
+              type: "button",
+              onClick: () => toggleExport(opt.id),
+              className: "flex flex-col items-center justify-center gap-1.5 rounded-md border py-3 text-xs font-medium transition",
+              style: {
+                backgroundColor: on ? "#f5a623" : "#1a1a26",
+                borderColor: on ? "#f5a623" : "#2a2a36",
+                color: on ? "#000" : "#a1a1aa",
+                fontWeight: on ? 600 : 500,
+                boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none"
+              },
+              children: [
+                /* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }),
+                opt.label
+              ]
+            },
+            opt.id
+          );
+        }) }),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            type: "button",
+            onClick: onGenerateDeck,
+            disabled: isGeneratingDeck || exportFormats.length === 0,
+            className: "flex w-full items-center justify-center gap-2 rounded-md text-sm font-bold transition disabled:cursor-not-allowed disabled:opacity-40",
+            style: {
+              backgroundColor: "#f5a623",
+              color: "#000",
+              height: "56px",
+              boxShadow: "0 0 32px rgba(245,166,35,0.35)"
+            },
+            children: [
+              isGeneratingDeck ? /* @__PURE__ */ jsx(Loader2, { className: "h-5 w-5 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-5 w-5" }),
+              "✦ Generate Pitch Deck"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsx("p", { className: "mt-2 text-center text-[11px] text-zinc-500", children: "Uses 5 credits" })
+      ] })
+    ] })
+  ] });
+};
+const initialData$1 = {
+  projectTitle: "",
+  projectType: "",
+  logline: "",
+  genre: [],
+  targetRating: "",
+  targetPlatforms: []
+};
+const PROJECT_TYPES$7 = [
+  { value: "feature", label: "Feature Film" },
+  { value: "tv_series", label: "TV Series" },
+  { value: "mini_series", label: "Mini-Series" },
+  { value: "short", label: "Short Film" },
+  { value: "documentary", label: "Documentary" }
+];
+const GENRES = [
+  "Action",
+  "Drama",
+  "Thriller",
+  "Horror",
+  "Sci-Fi",
+  "Comedy",
+  "Faith/Inspirational",
+  "Western",
+  "Documentary",
+  "Animation"
+];
+const RATINGS = ["G", "PG", "PG-13", "R", "NR"];
+const PLATFORMS$2 = [
+  "TBN",
+  "Netflix",
+  "Amazon",
+  "Hulu",
+  "HBO Max",
+  "Apple TV+",
+  "Shudder",
+  "Theatrical",
+  "Film Festival"
+];
+const STEPS$2 = [
+  { num: "01", label: "The Pitch", icon: Film, hint: "Foundation" },
+  { num: "02", label: "Story", icon: BookOpen, hint: "Heart of it" },
+  { num: "03", label: "Characters & Visuals", icon: Users, hint: "Look & feel" },
+  { num: "04", label: "Market & Team", icon: Briefcase, hint: "The business" }
+];
+const PitchDeckMaker = () => {
+  var _a2, _b2, _c, _d;
+  const navigate = useNavigate();
+  const [data, setData] = useState(initialData$1);
+  const [currentStep, setCurrentStep] = useState(0);
+  const [isGeneratingLogline, setIsGeneratingLogline] = useState(false);
+  const [exportFormats, setExportFormats] = useState(["pdf"]);
+  const [isGeneratingDeck, setIsGeneratingDeck] = useState(false);
+  useEffect(() => {
+    const saved = localStorage.getItem("pitchDeckDraft");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        setData({ ...initialData$1, ...parsed });
+      } catch (e) {
+        console.error("Failed to load draft:", e);
+      }
+    }
+  }, []);
+  const update = (key, value) => {
+    setData((d) => ({ ...d, [key]: value }));
+  };
+  const toggleInArray = (key, value) => {
+    setData((d) => {
+      const current = d[key] || [];
+      const next = current.includes(value) ? current.filter((v2) => v2 !== value) : [...current, value];
+      return { ...d, [key]: next };
+    });
+  };
+  const handleSaveDraft = () => {
+    try {
+      localStorage.setItem("pitchDeckDraft", JSON.stringify(data));
+      toast$1.success("Draft saved");
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "QuotaExceededError") {
+        toast$1.error("Draft too large to save locally");
+      } else {
+        toast$1.error("Failed to save draft");
+      }
+    }
+  };
+  const handleNewDeck = () => {
+    const hasContent = data.projectTitle.trim().length > 0 || (data.logline ?? "").trim().length > 0 || (data.synopsis ?? "").trim().length > 0;
+    if (hasContent) {
+      const confirmed = window.confirm(
+        "Start a new pitch deck? This will clear the current draft. (Tip: hit Save Draft first if you want to keep it.)"
+      );
+      if (!confirmed) return;
+    }
+    try {
+      localStorage.removeItem("pitchDeckDraft");
+    } catch (e) {
+      console.error("Failed to clear draft:", e);
+    }
+    setData(initialData$1);
+    setCurrentStep(0);
+    setExportFormats(["pdf"]);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    toast$1.success("Started a fresh pitch deck");
+  };
+  const handleGenerateLogline = async () => {
+    if (!data.projectTitle && !data.genre.length) {
+      toast$1.error("Add a project title or genre first");
+      return;
+    }
+    setIsGeneratingLogline(true);
+    try {
+      const result = await aiInvoke("generate-pitch-content", {
+        body: {
+          field: "logline",
+          context: {
+            projectTitle: data.projectTitle,
+            projectType: data.projectType,
+            genre: data.genre,
+            targetRating: data.targetRating
+          }
+        }
+      });
+      if (result == null ? void 0 : result.content) {
+        update("logline", result.content);
+        toast$1.success("Logline generated");
+      }
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate logline");
+    } finally {
+      setIsGeneratingLogline(false);
+    }
+  };
+  const canAdvance = data.projectTitle.trim().length > 0 && data.projectType !== "";
+  const handleNext = () => {
+    if (currentStep === 0 && !canAdvance) {
+      toast$1.error("Add a project title and project type to continue");
+      return;
+    }
+    if (currentStep < STEPS$2.length - 1) {
+      handleSaveDraft();
+      setCurrentStep((s) => s + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } else {
+      toast$1.info("Step " + (currentStep + 2) + " coming soon");
+    }
+  };
+  const handleBack = () => {
+    if (currentStep > 0) {
+      setCurrentStep((s) => s - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+  const handleGenerateDeck = async () => {
+    if (exportFormats.length === 0) {
+      toast$1.error("Pick at least one export format");
+      return;
+    }
+    setIsGeneratingDeck(true);
+    try {
+      handleSaveDraft();
+      toast$1.success("Opening your pitch deck preview…");
+      navigate("/pitch-deck/preview");
+    } catch (e) {
+      console.error(e);
+      toast$1.error((e == null ? void 0 : e.message) || "Failed to generate deck");
+    } finally {
+      setIsGeneratingDeck(false);
+    }
+  };
+  const projectTypeLabel = ((_a2 = PROJECT_TYPES$7.find((p) => p.value === data.projectType)) == null ? void 0 : _a2.label) || "";
+  return /* @__PURE__ */ jsxs("div", { className: "relative min-h-screen overflow-hidden", style: { backgroundColor: "#08080d" }, children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/pitch-deck" }),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        "aria-hidden": "true",
+        className: "pointer-events-none fixed inset-0 z-0",
+        style: {
+          background: "radial-gradient(900px 500px at 12% -10%, rgba(245,166,35,0.14), transparent 60%), radial-gradient(700px 400px at 92% 8%, rgba(245,166,35,0.07), transparent 65%), radial-gradient(1200px 700px at 50% 110%, rgba(245,166,35,0.05), transparent 70%)"
+        }
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      "div",
+      {
+        "aria-hidden": "true",
+        className: "pointer-events-none fixed inset-0 z-0 opacity-[0.05] mix-blend-overlay",
+        style: {
+          backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`,
+          backgroundSize: "180px 180px"
+        }
+      }
+    ),
+    /* @__PURE__ */ jsxs("div", { className: "relative z-10", children: [
+      /* @__PURE__ */ jsxs(
+        "header",
+        {
+          className: "sticky top-0 z-20 border-b backdrop-blur-xl",
+          style: {
+            backgroundColor: "rgba(8,8,13,0.72)",
+            borderColor: "rgba(245,166,35,0.12)",
+            boxShadow: "0 1px 0 rgba(255,255,255,0.02), 0 12px 40px -20px rgba(0,0,0,0.8)"
+          },
+          children: [
+            /* @__PURE__ */ jsxs("div", { className: "mx-auto flex max-w-7xl items-center justify-between px-6 py-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4", children: [
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "flex h-10 w-10 items-center justify-center rounded-lg",
+                    style: {
+                      background: "linear-gradient(135deg, #f5a623 0%, #c8821a 100%)",
+                      boxShadow: "0 8px 24px -8px rgba(245,166,35,0.6), inset 0 1px 0 rgba(255,255,255,0.25)"
+                    },
+                    children: /* @__PURE__ */ jsx(Clapperboard, { className: "h-5 w-5 text-black" })
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("h1", { className: "text-base font-semibold tracking-tight text-white", children: "Pitch Deck Maker" }),
+                  /* @__PURE__ */ jsxs("p", { className: "text-[11px] uppercase tracking-[0.18em] text-zinc-500", children: [
+                    /* @__PURE__ */ jsxs("span", { className: "text-[#f5a623]", children: [
+                      "Step ",
+                      currentStep + 1
+                    ] }),
+                    /* @__PURE__ */ jsx("span", { className: "mx-1.5 text-zinc-700", children: "/" }),
+                    STEPS$2.length,
+                    " · ",
+                    STEPS$2[currentStep].label
+                  ] })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    onClick: handleNewDeck,
+                    className: "group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm font-medium text-zinc-200 transition-all duration-200 hover:-translate-y-px hover:border-[#f5a623] hover:text-white",
+                    style: {
+                      borderColor: "rgba(245,166,35,0.35)",
+                      background: "linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(245,166,35,0.04) 100%)",
+                      boxShadow: "0 6px 18px -10px rgba(245,166,35,0.5)"
+                    },
+                    title: "Clear the current draft and start fresh",
+                    children: [
+                      /* @__PURE__ */ jsx(FilePlus2, { className: "h-4 w-4 text-[#f5a623] transition-transform group-hover:rotate-3 group-hover:scale-110" }),
+                      /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: "New Pitch Deck" }),
+                      /* @__PURE__ */ jsx("span", { className: "sm:hidden", children: "New" })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    onClick: handleSaveDraft,
+                    className: "group inline-flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm text-zinc-300 transition-all duration-200 hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white",
+                    style: { borderColor: "rgba(245,166,35,0.18)", backgroundColor: "rgba(18,18,26,0.6)" },
+                    children: [
+                      /* @__PURE__ */ jsx(Save, { className: "h-4 w-4 transition-transform group-hover:scale-110" }),
+                      /* @__PURE__ */ jsx("span", { className: "hidden sm:inline", children: "Save Draft" })
+                    ]
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx("div", { className: "mx-auto max-w-7xl px-6 py-4", children: /* @__PURE__ */ jsx("div", { className: "flex items-center gap-2 overflow-x-auto md:gap-3", children: STEPS$2.map((s, i) => {
+              const Icon = s.icon;
+              const active = i === currentStep;
+              const completed = i < currentStep;
+              return /* @__PURE__ */ jsxs("div", { className: "flex flex-1 items-center gap-2 md:gap-3", children: [
+                /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    type: "button",
+                    onClick: () => completed && setCurrentStep(i),
+                    disabled: !completed && !active,
+                    className: "group flex min-w-0 flex-1 items-center gap-2.5 rounded-lg px-2.5 py-2 transition-all duration-200 disabled:cursor-default md:px-3",
+                    style: {
+                      backgroundColor: active ? "rgba(245,166,35,0.08)" : "transparent",
+                      border: active ? "1px solid rgba(245,166,35,0.35)" : "1px solid transparent",
+                      boxShadow: active ? "0 0 24px -10px rgba(245,166,35,0.6)" : "none"
+                    },
+                    children: [
+                      /* @__PURE__ */ jsx(
+                        "span",
+                        {
+                          className: "flex h-7 w-7 shrink-0 items-center justify-center rounded-md transition-all duration-200",
+                          style: {
+                            background: active ? "linear-gradient(135deg, #f5a623 0%, #c8821a 100%)" : completed ? "rgba(245,166,35,0.15)" : "rgba(255,255,255,0.04)",
+                            color: active ? "#000" : completed ? "#f5a623" : "#52525b",
+                            boxShadow: active ? "0 4px 14px -4px rgba(245,166,35,0.55), inset 0 1px 0 rgba(255,255,255,0.3)" : "none"
+                          },
+                          children: completed ? /* @__PURE__ */ jsx(Check$1, { className: "h-3.5 w-3.5" }) : /* @__PURE__ */ jsx(Icon, { className: "h-3.5 w-3.5" })
+                        }
+                      ),
+                      /* @__PURE__ */ jsxs("span", { className: "min-w-0 text-left", children: [
+                        /* @__PURE__ */ jsx(
+                          "span",
+                          {
+                            className: "block truncate text-xs font-medium md:text-[13px]",
+                            style: { color: active ? "#fff" : completed ? "#d4d4d8" : "#71717a" },
+                            children: s.label
+                          }
+                        ),
+                        /* @__PURE__ */ jsxs(
+                          "span",
+                          {
+                            className: "hidden font-mono text-[9px] uppercase tracking-[0.18em] md:block",
+                            style: { color: active ? "#f5a623" : "#52525b" },
+                            children: [
+                              s.num,
+                              " · ",
+                              s.hint
+                            ]
+                          }
+                        )
+                      ] })
+                    ]
+                  }
+                ),
+                i < STEPS$2.length - 1 && /* @__PURE__ */ jsx(
+                  "span",
+                  {
+                    className: "hidden h-px flex-1 md:block",
+                    style: {
+                      background: completed ? "linear-gradient(90deg, rgba(245,166,35,0.4), rgba(245,166,35,0.05))" : "rgba(255,255,255,0.04)"
+                    }
+                  }
+                )
+              ] }, s.num);
+            }) }) })
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx("main", { className: "mx-auto max-w-7xl px-6 py-8", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 gap-6 lg:grid-cols-5", children: [
+        /* @__PURE__ */ jsx("section", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(
+          "div",
+          {
+            className: "relative overflow-hidden rounded-2xl border p-7 backdrop-blur-sm",
+            style: {
+              background: "linear-gradient(160deg, rgba(24,24,34,0.95) 0%, rgba(14,14,22,0.95) 100%)",
+              borderColor: "rgba(245,166,35,0.14)",
+              boxShadow: "0 30px 80px -30px rgba(0,0,0,0.9), 0 1px 0 rgba(255,255,255,0.04) inset, 0 0 0 1px rgba(255,255,255,0.02) inset"
+            },
+            children: [
+              /* @__PURE__ */ jsx(
+                "div",
+                {
+                  "aria-hidden": "true",
+                  className: "absolute inset-x-0 top-0 h-px",
+                  style: {
+                    background: "linear-gradient(90deg, transparent, rgba(245,166,35,0.6), transparent)"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "div",
+                {
+                  "aria-hidden": "true",
+                  className: "pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full",
+                  style: {
+                    background: "radial-gradient(circle, rgba(245,166,35,0.18), transparent 70%)"
+                  }
+                }
+              ),
+              currentStep === 0 && /* @__PURE__ */ jsxs("div", { className: "relative mb-7", children: [
+                /* @__PURE__ */ jsx("p", { className: "font-mono text-[11px] tracking-[0.25em] text-[#f5a623]", children: "01 — THE PITCH" }),
+                /* @__PURE__ */ jsx("h2", { className: "mt-2 text-2xl font-semibold tracking-tight text-white", children: "Set the foundation" }),
+                /* @__PURE__ */ jsx("p", { className: "mt-1.5 text-sm text-zinc-500", children: "These core details shape every page of your deck." })
+              ] }),
+              currentStep === 0 && /* @__PURE__ */ jsxs("div", { className: "space-y-5", children: [
+                /* @__PURE__ */ jsx(Field$1, { label: "Project Title", required: true, children: /* @__PURE__ */ jsx(
+                  "input",
+                  {
+                    type: "text",
+                    value: data.projectTitle,
+                    onChange: (e) => update("projectTitle", e.target.value),
+                    placeholder: "The working title of your project",
+                    className: "w-full rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+                    style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+                  }
+                ) }),
+                /* @__PURE__ */ jsx(Field$1, { label: "Project Type", required: true, children: /* @__PURE__ */ jsxs(
+                  "select",
+                  {
+                    value: data.projectType,
+                    onChange: (e) => update("projectType", e.target.value),
+                    className: "w-full rounded-md border px-3 py-2.5 text-sm text-white focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+                    style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" },
+                    children: [
+                      /* @__PURE__ */ jsx("option", { value: "", disabled: true, children: "Select project type" }),
+                      PROJECT_TYPES$7.map((t) => /* @__PURE__ */ jsx("option", { value: t.value, children: t.label }, t.value))
+                    ]
+                  }
+                ) }),
+                /* @__PURE__ */ jsxs(Field$1, { label: "Logline", children: [
+                  /* @__PURE__ */ jsx(
+                    "textarea",
+                    {
+                      value: data.logline,
+                      onChange: (e) => update("logline", e.target.value),
+                      placeholder: "A one or two sentence summary of your story.",
+                      rows: 3,
+                      className: "w-full resize-none rounded-md border px-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+                      style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" }
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: handleGenerateLogline,
+                      disabled: isGeneratingLogline,
+                      className: "mt-2 inline-flex items-center gap-1.5 rounded-md border bg-transparent px-2.5 text-xs font-medium text-[#f5a623] transition hover:bg-[#f5a623]/10 disabled:opacity-50",
+                      style: { borderColor: "#f5a623", height: "28px" },
+                      children: [
+                        isGeneratingLogline ? /* @__PURE__ */ jsx(Loader2, { className: "h-3 w-3 animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }),
+                        "✦ Generate"
+                      ]
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsx(Field$1, { label: "Genre", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: GENRES.map((g) => {
+                  const on = data.genre.includes(g);
+                  return /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => toggleInArray("genre", g),
+                      className: "rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px",
+                      style: {
+                        backgroundColor: on ? "#f5a623" : "#1a1a26",
+                        borderColor: on ? "#f5a623" : "#2a2a36",
+                        color: on ? "#000000" : "#a1a1aa",
+                        fontWeight: on ? 600 : 400,
+                        boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none"
+                      },
+                      children: g
+                    },
+                    g
+                  );
+                }) }) }),
+                /* @__PURE__ */ jsx(Field$1, { label: "Target Rating", children: /* @__PURE__ */ jsxs(
+                  "select",
+                  {
+                    value: data.targetRating,
+                    onChange: (e) => update("targetRating", e.target.value),
+                    className: "w-full rounded-md border px-3 py-2.5 text-sm text-white focus:border-[#f5a623] focus:outline-none focus:ring-1 focus:ring-[#f5a623]",
+                    style: { backgroundColor: "#1a1a26", borderColor: "#1a1a26" },
+                    children: [
+                      /* @__PURE__ */ jsx("option", { value: "", disabled: true, children: "Select rating" }),
+                      RATINGS.map((r) => /* @__PURE__ */ jsx("option", { value: r, children: r }, r))
+                    ]
+                  }
+                ) }),
+                /* @__PURE__ */ jsx(Field$1, { label: "Target Platforms", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: PLATFORMS$2.map((p) => {
+                  const on = data.targetPlatforms.includes(p);
+                  return /* @__PURE__ */ jsx(
+                    "button",
+                    {
+                      type: "button",
+                      onClick: () => toggleInArray("targetPlatforms", p),
+                      className: "rounded-full border px-3 py-1.5 text-xs transition-all duration-200 hover:-translate-y-px",
+                      style: {
+                        backgroundColor: on ? "#f5a623" : "#1a1a26",
+                        borderColor: on ? "#f5a623" : "#2a2a36",
+                        color: on ? "#000000" : "#a1a1aa",
+                        fontWeight: on ? 600 : 400,
+                        boxShadow: on ? "0 0 12px rgba(245,166,35,0.35)" : "none"
+                      },
+                      children: p
+                    },
+                    p
+                  );
+                }) }) })
+              ] }),
+              currentStep === 1 && /* @__PURE__ */ jsx(Step2Story, { data, update }),
+              currentStep === 2 && /* @__PURE__ */ jsx(Step3CharactersVisuals, { data, update }),
+              currentStep === 3 && /* @__PURE__ */ jsx(
+                Step4MarketTeam,
+                {
+                  data,
+                  update,
+                  exportFormats,
+                  setExportFormats,
+                  onGenerateDeck: handleGenerateDeck,
+                  isGeneratingDeck
+                }
+              ),
+              /* @__PURE__ */ jsxs("div", { className: "relative mt-8 flex items-center gap-3 border-t pt-6", style: { borderColor: "rgba(245,166,35,0.1)" }, children: [
+                currentStep > 0 && /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    onClick: handleBack,
+                    className: "group flex items-center justify-center gap-2 rounded-lg border px-4 py-3 text-sm font-medium text-zinc-300 transition-all duration-200 hover:-translate-y-px hover:border-[#f5a623]/60 hover:bg-[#f5a623]/5 hover:text-white",
+                    style: { borderColor: "rgba(255,255,255,0.06)", backgroundColor: "rgba(26,26,38,0.6)" },
+                    children: [
+                      /* @__PURE__ */ jsx(ChevronLeft, { className: "h-4 w-4 transition-transform group-hover:-translate-x-0.5" }),
+                      "Back"
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    onClick: handleNext,
+                    disabled: currentStep === 0 && !canAdvance,
+                    className: "group relative flex flex-1 items-center justify-center gap-2 overflow-hidden rounded-lg py-3 text-sm font-semibold tracking-tight transition-all duration-200 hover:-translate-y-px disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-y-0",
+                    style: {
+                      background: "linear-gradient(135deg, #ffd27a 0%, #f5a623 45%, #c8821a 100%)",
+                      color: "#0a0a0f",
+                      boxShadow: currentStep === 0 && !canAdvance ? "none" : "0 12px 30px -10px rgba(245,166,35,0.55), 0 0 0 1px rgba(255,255,255,0.15) inset, 0 1px 0 rgba(255,255,255,0.4) inset"
+                    },
+                    children: [
+                      /* @__PURE__ */ jsx(
+                        "span",
+                        {
+                          "aria-hidden": "true",
+                          className: "pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/40 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                        }
+                      ),
+                      /* @__PURE__ */ jsx("span", { className: "relative", children: currentStep < STEPS$2.length - 1 ? `Next: ${STEPS$2[currentStep + 1].label}` : "Finish" }),
+                      /* @__PURE__ */ jsx(ChevronRight, { className: "relative h-4 w-4 transition-transform group-hover:translate-x-0.5" })
+                    ]
+                  }
+                )
+              ] })
+            ]
+          }
+        ) }),
+        /* @__PURE__ */ jsx("section", { className: "lg:col-span-3", children: /* @__PURE__ */ jsxs("div", { className: "lg:sticky lg:top-32", children: [
+          /* @__PURE__ */ jsxs("div", { className: "mb-3 flex items-center justify-between", children: [
+            /* @__PURE__ */ jsxs("p", { className: "flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] text-zinc-500", children: [
+              /* @__PURE__ */ jsx("span", { className: "inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-[#f5a623] shadow-[0_0_8px_rgba(245,166,35,0.8)]" }),
+              "Live Preview"
+            ] }),
+            /* @__PURE__ */ jsx("span", { className: "text-[11px] tracking-wide text-zinc-600", children: "Updates as you type" })
+          ] }),
+          /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "relative flex flex-col overflow-hidden rounded-2xl border",
+              style: {
+                background: "linear-gradient(180deg, #0d0d18 0%, #08080f 100%)",
+                borderColor: "rgba(245,166,35,0.15)",
+                minHeight: "calc(100vh - 220px)",
+                boxShadow: "0 40px 100px -40px rgba(0,0,0,0.95), 0 0 0 1px rgba(255,255,255,0.02) inset"
+              },
+              children: [
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "pointer-events-none absolute inset-0 z-10 mix-blend-overlay",
+                    style: {
+                      opacity: 0.12,
+                      backgroundImage: `url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")`,
+                      backgroundSize: "200px 200px"
+                    },
+                    "aria-hidden": "true"
+                  }
+                ),
+                /* @__PURE__ */ jsx(
+                  "div",
+                  {
+                    className: "relative aspect-[16/10] w-full",
+                    style: {
+                      background: "linear-gradient(135deg, #1a1a26 0%, #0a0a0f 60%, #1a1a26 100%)"
+                    },
+                    children: /* @__PURE__ */ jsxs("div", { className: "absolute inset-0 flex flex-col justify-end p-8", children: [
+                      projectTypeLabel && /* @__PURE__ */ jsxs("p", { className: "font-mono text-xs uppercase tracking-[0.2em] text-[#f5a623]", children: [
+                        projectTypeLabel,
+                        data.targetRating && /* @__PURE__ */ jsxs("span", { className: "ml-3 text-zinc-500", children: [
+                          "· Rated ",
+                          data.targetRating
+                        ] })
+                      ] }),
+                      /* @__PURE__ */ jsx("h3", { className: "mt-3 text-4xl font-bold leading-tight text-white", children: data.projectTitle || /* @__PURE__ */ jsx("span", { className: "text-zinc-700", children: "Your project title" }) }),
+                      data.genre.length > 0 && /* @__PURE__ */ jsx("div", { className: "mt-4 flex flex-wrap gap-2", children: data.genre.map((g) => /* @__PURE__ */ jsx(
+                        "span",
+                        {
+                          className: "rounded-full border px-2.5 py-0.5 text-xs text-zinc-300",
+                          style: {
+                            borderColor: "rgba(245,166,35,0.4)",
+                            backgroundColor: "rgba(245,166,35,0.08)"
+                          },
+                          children: g
+                        },
+                        g
+                      )) })
+                    ] })
+                  }
+                ),
+                currentStep === 0 && /* @__PURE__ */ jsxs("div", { className: "flex-1 p-8", children: [
+                  /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Logline" }),
+                  /* @__PURE__ */ jsx("p", { className: "mt-2 text-base leading-relaxed text-zinc-200", children: data.logline || /* @__PURE__ */ jsx("span", { className: "text-zinc-700", children: "Your one-line story hook will appear here as you write it." }) }),
+                  data.targetPlatforms.length > 0 && /* @__PURE__ */ jsxs("div", { className: "mt-6 border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Target Platforms" }),
+                    /* @__PURE__ */ jsx("div", { className: "mt-2 flex flex-wrap gap-2", children: data.targetPlatforms.map((p) => /* @__PURE__ */ jsx(
+                      "span",
+                      {
+                        className: "rounded-md px-2.5 py-1 text-xs text-zinc-300",
+                        style: { backgroundColor: "#1a1a26" },
+                        children: p
+                      },
+                      p
+                    )) })
+                  ] })
+                ] }),
+                currentStep === 1 && /* @__PURE__ */ jsxs("div", { className: "flex-1 p-8 space-y-6", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Synopsis" }),
+                    /* @__PURE__ */ jsx("p", { className: "mt-2 italic text-base leading-relaxed text-zinc-300 relative", children: data.synopsis ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                      /* @__PURE__ */ jsx("span", { children: data.synopsis.length > 150 ? data.synopsis.slice(0, 150) : data.synopsis }),
+                      data.synopsis.length > 150 && /* @__PURE__ */ jsx(
+                        "span",
+                        {
+                          style: {
+                            background: "linear-gradient(to right, transparent, #0d0d18)"
+                          },
+                          className: "ml-0 inline-block w-12 h-5 align-middle",
+                          children: "…"
+                        }
+                      )
+                    ] }) : /* @__PURE__ */ jsx("span", { className: "not-italic text-zinc-700", children: "Your synopsis preview will appear here." }) })
+                  ] }),
+                  data.toneMood && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Tone & Mood" }),
+                    /* @__PURE__ */ jsx(
+                      "span",
+                      {
+                        className: "mt-2 inline-block rounded-full px-3 py-1 text-xs",
+                        style: {
+                          backgroundColor: "#f5a623",
+                          color: "#000",
+                          fontWeight: 600,
+                          boxShadow: "0 0 12px rgba(245,166,35,0.35)"
+                        },
+                        children: data.toneMood
+                      }
+                    )
+                  ] }),
+                  (data.themes ?? []).length > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Themes" }),
+                    /* @__PURE__ */ jsx("div", { className: "mt-2 flex flex-wrap gap-2", children: (data.themes ?? []).map((t) => /* @__PURE__ */ jsx(
+                      "span",
+                      {
+                        className: "rounded-md px-2.5 py-1 text-xs text-zinc-300",
+                        style: { backgroundColor: "#1a1a26" },
+                        children: t
+                      },
+                      t
+                    )) })
+                  ] }),
+                  ((_b2 = data.characters) == null ? void 0 : _b2.length) ? /* @__PURE__ */ jsxs("div", { className: "border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Main Characters" }),
+                    /* @__PURE__ */ jsx("ul", { className: "mt-3 space-y-2", children: data.characters.map((c, i) => /* @__PURE__ */ jsxs(
+                      "li",
+                      {
+                        className: "flex items-baseline gap-3 border-l-2 pl-3",
+                        style: { borderColor: "#f5a623" },
+                        children: [
+                          /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-white", children: c.name || /* @__PURE__ */ jsx("span", { className: "text-zinc-700 font-normal", children: "Unnamed" }) }),
+                          c.role && /* @__PURE__ */ jsxs("span", { className: "text-xs text-zinc-400", children: [
+                            "— ",
+                            c.role
+                          ] })
+                        ]
+                      },
+                      i
+                    )) })
+                  ] }) : null
+                ] }),
+                currentStep === 2 && /* @__PURE__ */ jsxs("div", { className: "flex-1 p-8 space-y-6", children: [
+                  (() => {
+                    const tpl = STYLE_TEMPLATES.find((t) => t.id === data.selectedTemplate);
+                    return tpl ? /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Visual Template" }),
+                      /* @__PURE__ */ jsxs("div", { className: "mt-2 flex items-center gap-3", children: [
+                        /* @__PURE__ */ jsx(
+                          "div",
+                          {
+                            className: "h-3 w-32 rounded-full",
+                            style: {
+                              background: `linear-gradient(90deg, ${tpl.from} 0%, ${tpl.to} 100%)`,
+                              boxShadow: `0 0 18px ${tpl.to}55`
+                            }
+                          }
+                        ),
+                        /* @__PURE__ */ jsx("span", { className: "text-xs font-medium text-zinc-300", children: tpl.label })
+                      ] })
+                    ] }) : null;
+                  })(),
+                  data.visualStyle && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Visual Style" }),
+                    /* @__PURE__ */ jsx("p", { className: "mt-2 text-sm italic leading-relaxed text-zinc-300 line-clamp-4", children: data.visualStyle })
+                  ] }),
+                  ((_c = data.characters) == null ? void 0 : _c.length) ? /* @__PURE__ */ jsxs("div", { className: "border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Characters" }),
+                    /* @__PURE__ */ jsx("ul", { className: "mt-3 space-y-2", children: data.characters.map((c, i) => /* @__PURE__ */ jsxs(
+                      "li",
+                      {
+                        className: "border-l-2 pl-3",
+                        style: { borderColor: "#f5a623" },
+                        children: [
+                          /* @__PURE__ */ jsxs("div", { className: "flex items-baseline gap-2", children: [
+                            /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-white", children: c.name || /* @__PURE__ */ jsx("span", { className: "text-zinc-700 font-normal", children: "Unnamed" }) }),
+                            c.role && /* @__PURE__ */ jsxs("span", { className: "text-xs text-zinc-400", children: [
+                              "— ",
+                              c.role
+                            ] })
+                          ] }),
+                          c.description && /* @__PURE__ */ jsx("p", { className: "mt-0.5 text-xs text-zinc-500", children: c.description })
+                        ]
+                      },
+                      i
+                    )) })
+                  ] }) : null,
+                  data.posterImage && /* @__PURE__ */ jsxs("div", { className: "border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Poster" }),
+                    /* @__PURE__ */ jsx(
+                      "img",
+                      {
+                        src: data.posterImage,
+                        alt: "Poster preview",
+                        className: "mt-2 max-h-64 rounded-md border",
+                        style: { borderColor: "#22222e" }
+                      }
+                    )
+                  ] }),
+                  !data.selectedTemplate && !data.visualStyle && !data.posterImage && !((_d = data.characters) == null ? void 0 : _d.length) && /* @__PURE__ */ jsx("p", { className: "text-sm text-zinc-600", children: "Pick a template or add a character to see your visual identity here." })
+                ] }),
+                currentStep === 3 && /* @__PURE__ */ jsxs("div", { className: "flex-1 p-8 space-y-6", children: [
+                  data.logline && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Logline" }),
+                    /* @__PURE__ */ jsx("p", { className: "mt-1 text-sm text-zinc-300", children: data.logline })
+                  ] }),
+                  data.synopsis && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Synopsis" }),
+                    /* @__PURE__ */ jsx("p", { className: "mt-1 italic text-sm text-zinc-400 line-clamp-3", children: data.synopsis })
+                  ] }),
+                  (data.comparables ?? []).length > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Comparables" }),
+                    /* @__PURE__ */ jsx("ul", { className: "mt-2 space-y-1", children: (data.comparables ?? []).map((c, i) => /* @__PURE__ */ jsxs("li", { className: "text-sm text-zinc-300", children: [
+                      /* @__PURE__ */ jsx("span", { className: "font-semibold text-white", children: c.title || "—" }),
+                      c.year && /* @__PURE__ */ jsxs("span", { className: "text-zinc-500", children: [
+                        " (",
+                        c.year,
+                        ")"
+                      ] }),
+                      c.revenue && /* @__PURE__ */ jsxs("span", { className: "text-zinc-500", children: [
+                        " · ",
+                        c.revenue
+                      ] })
+                    ] }, i)) })
+                  ] }),
+                  (data.teamMembers ?? []).length > 0 && /* @__PURE__ */ jsxs("div", { className: "border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Team" }),
+                    /* @__PURE__ */ jsx("ul", { className: "mt-2 space-y-1", children: (data.teamMembers ?? []).map((m, i) => /* @__PURE__ */ jsxs("li", { className: "flex items-baseline gap-2 text-sm", children: [
+                      /* @__PURE__ */ jsx("span", { className: "font-semibold text-white", children: m.name || "—" }),
+                      m.role && /* @__PURE__ */ jsxs("span", { className: "text-xs text-zinc-400", children: [
+                        "— ",
+                        m.role
+                      ] })
+                    ] }, i)) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-3", children: [
+                    data.budgetRange && /* @__PURE__ */ jsxs(
+                      "span",
+                      {
+                        className: "inline-flex rounded-full px-3 py-1 text-xs",
+                        style: {
+                          backgroundColor: "#1a1a26",
+                          color: "#e4e4e7",
+                          border: "1px solid #2a2a36"
+                        },
+                        children: [
+                          "Budget · ",
+                          data.budgetRange
+                        ]
+                      }
+                    ),
+                    data.unionStatus && /* @__PURE__ */ jsx(
+                      "span",
+                      {
+                        className: "inline-flex rounded-full px-3 py-1 text-xs",
+                        style: {
+                          backgroundColor: "#1a1a26",
+                          color: "#e4e4e7",
+                          border: "1px solid #2a2a36"
+                        },
+                        children: data.unionStatus
+                      }
+                    ),
+                    data.timeline && /* @__PURE__ */ jsx("span", { className: "text-xs text-zinc-500", children: data.timeline })
+                  ] }),
+                  data.targetPlatforms.length > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Distribution" }),
+                    /* @__PURE__ */ jsx("div", { className: "mt-2 flex flex-wrap gap-2", children: data.targetPlatforms.map((p) => /* @__PURE__ */ jsx(
+                      "span",
+                      {
+                        className: "rounded-md px-2.5 py-1 text-xs text-zinc-300",
+                        style: { backgroundColor: "#1a1a26" },
+                        children: p
+                      },
+                      p
+                    )) })
+                  ] }),
+                  data.investmentAsk && /* @__PURE__ */ jsxs("div", { className: "mt-4 border-t pt-6", style: { borderColor: "#1a1a26" }, children: [
+                    /* @__PURE__ */ jsx("p", { className: "font-mono text-[10px] uppercase tracking-widest text-zinc-500", children: "Investment Ask" }),
+                    /* @__PURE__ */ jsx(
+                      "p",
+                      {
+                        className: "mt-2 text-2xl font-bold leading-tight",
+                        style: {
+                          color: "#f5a623",
+                          textShadow: "0 0 18px rgba(245,166,35,0.45)"
+                        },
+                        children: data.investmentAsk
+                      }
+                    )
+                  ] })
+                ] })
+              ]
+            }
+          )
+        ] }) })
+      ] }) })
+    ] })
+  ] });
+};
+const Field$1 = ({
+  label,
+  required,
+  children
+}) => /* @__PURE__ */ jsxs("div", { children: [
+  /* @__PURE__ */ jsxs("label", { className: "mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.16em] text-zinc-400", children: [
+    label,
+    required && /* @__PURE__ */ jsx(
+      "span",
+      {
+        className: "text-[#f5a623]",
+        style: { textShadow: "0 0 8px rgba(245,166,35,0.6)" },
+        children: "*"
+      }
+    )
+  ] }),
+  children
+] });
+const QUICK_TOPICS = [
+  { label: "Agreement Types", question: "Can you explain the different SAG-AFTRA agreement types and which one might be right for my production?" },
+  { label: "Current Rates", question: "What are the current SAG-AFTRA day rates and weekly rates for different budget tiers?" },
+  { label: "Becoming Signatory", question: "What's the process for becoming a SAG-AFTRA signatory producer? What documents do I need?" },
+  { label: "P&H Contributions", question: "What are Pension & Health contributions and when do I need to pay them?" },
+  { label: "Background Actors", question: "What are the rules and rates for hiring SAG-AFTRA background actors/extras?" },
+  { label: "Union Membership", question: "How can an actor join SAG-AFTRA? What is the Taft-Hartley process?" }
+];
+const AGREEMENT_RECOMMENDATIONS = [
+  {
+    name: "Student Film",
+    budgetRange: "$0 - $0",
+    description: "For accredited educational institutions",
+    requirements: "Must be enrolled student, educational use only"
+  },
+  {
+    name: "Micro-Budget",
+    budgetRange: "Under $20K",
+    description: "Ultra-small productions with deferred pay",
+    requirements: "No minimum rates, deferred compensation allowed"
+  },
+  {
+    name: "Ultra Low Budget",
+    budgetRange: "$20K - $300K",
+    description: "Most common for indie features",
+    requirements: "Day rate ~$214, 2 consecutive weeks max"
+  },
+  {
+    name: "Modified Low Budget",
+    budgetRange: "$300K - $700K",
+    description: "Mid-tier independent productions",
+    requirements: "Day rate ~$360, full P&H required"
+  },
+  {
+    name: "Low Budget",
+    budgetRange: "$700K - $2.6M",
+    description: "Professional indie productions",
+    requirements: "Day rate ~$504, standard union protections"
+  }
+];
+const REGIONAL_OFFICES = [
+  {
+    name: "Los Angeles",
+    phone: "(323) 954-1600",
+    email: "losangeles@sagaftra.org",
+    states: ["CA (Southern)"],
+    zipPrefixes: ["900", "901", "902", "903", "904", "905", "906", "907", "908", "910", "911", "912", "913", "914", "915", "916", "917", "918", "919", "920", "921", "922", "923", "924", "925", "926", "927", "928", "930", "931", "932", "933", "934", "935"]
+  },
+  {
+    name: "New York",
+    phone: "(212) 944-1030",
+    email: "newyork@sagaftra.org",
+    states: ["NY", "NJ", "CT"],
+    zipPrefixes: ["100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "112", "113", "114", "115", "116", "117", "118", "119", "070", "071", "072", "073", "074", "075", "076", "077", "078", "079", "060", "061", "062", "063", "064", "065", "066", "067", "068", "069"]
+  },
+  {
+    name: "Chicago",
+    phone: "(312) 573-8081",
+    email: "chicago@sagaftra.org",
+    states: ["IL", "WI", "IN", "MI", "MN"],
+    zipPrefixes: ["600", "601", "602", "603", "604", "605", "606", "607", "608", "609", "530", "531", "532", "534", "535", "537", "538", "539", "460", "461", "462", "463", "464", "465", "466", "467", "468", "469", "480", "481", "482", "483", "484", "485", "486", "487", "488", "489", "490", "491", "492", "493", "494", "495", "496", "497", "498", "499", "550", "551", "553", "554", "555", "556", "557", "558", "559", "560", "561", "562", "563", "564", "565", "566", "567"]
+  },
+  {
+    name: "San Francisco",
+    phone: "(415) 391-7510",
+    email: "sanfrancisco@sagaftra.org",
+    states: ["CA (Northern)", "NV", "HI"],
+    zipPrefixes: ["940", "941", "942", "943", "944", "945", "946", "947", "948", "949", "950", "951", "952", "953", "954", "955", "956", "957", "958", "959", "960", "961", "890", "891", "893", "894", "895", "896", "897", "898", "967", "968"]
+  },
+  {
+    name: "Atlanta",
+    phone: "(404) 239-0131",
+    email: "atlanta@sagaftra.org",
+    states: ["GA", "AL", "MS", "TN", "SC", "NC"],
+    zipPrefixes: ["300", "301", "302", "303", "304", "305", "306", "307", "308", "309", "310", "311", "312", "313", "314", "315", "316", "317", "318", "319", "350", "351", "352", "354", "355", "356", "357", "358", "359", "360", "361", "362", "363", "364", "365", "366", "367", "368", "369", "386", "387", "388", "389", "390", "391", "392", "394", "395", "396", "397", "370", "371", "372", "373", "374", "375", "376", "377", "378", "379", "380", "381", "382", "383", "384", "385", "290", "291", "292", "293", "294", "295", "296", "297", "298", "299", "270", "271", "272", "273", "274", "275", "276", "277", "278", "279", "280", "281", "282", "283", "284", "285", "286", "287", "288", "289"]
+  },
+  {
+    name: "Miami",
+    phone: "(305) 670-7677",
+    email: "miami@sagaftra.org",
+    states: ["FL", "PR", "VI"],
+    zipPrefixes: ["320", "321", "322", "323", "324", "325", "326", "327", "328", "329", "330", "331", "332", "333", "334", "335", "336", "337", "338", "339", "340", "341", "342", "344", "346", "347", "349", "006", "007", "008", "009"]
+  },
+  {
+    name: "Dallas-Fort Worth",
+    phone: "(214) 363-8300",
+    email: "dallas@sagaftra.org",
+    states: ["TX", "OK", "AR", "LA"],
+    zipPrefixes: ["750", "751", "752", "753", "754", "755", "756", "757", "758", "759", "760", "761", "762", "763", "764", "765", "766", "767", "768", "769", "770", "771", "772", "773", "774", "775", "776", "777", "778", "779", "780", "781", "782", "783", "784", "785", "786", "787", "788", "789", "790", "791", "792", "793", "794", "795", "796", "797", "798", "799", "730", "731", "734", "735", "736", "737", "738", "739", "740", "741", "743", "744", "745", "746", "747", "748", "749", "716", "717", "718", "719", "720", "721", "722", "723", "724", "725", "726", "727", "728", "729", "700", "701", "703", "704", "705", "706", "707", "708"]
+  },
+  {
+    name: "Boston",
+    phone: "(617) 262-8001",
+    email: "boston@sagaftra.org",
+    states: ["MA", "ME", "NH", "VT", "RI"],
+    zipPrefixes: ["010", "011", "012", "013", "014", "015", "016", "017", "018", "019", "020", "021", "022", "023", "024", "025", "026", "027", "039", "040", "041", "042", "043", "044", "045", "046", "047", "048", "049", "030", "031", "032", "033", "034", "035", "036", "037", "038", "050", "051", "052", "053", "054", "056", "057", "058", "059", "028", "029"]
+  },
+  {
+    name: "Seattle",
+    phone: "(206) 270-0493",
+    email: "seattle@sagaftra.org",
+    states: ["WA", "OR", "AK", "MT", "ID"],
+    zipPrefixes: ["980", "981", "982", "983", "984", "985", "986", "988", "989", "990", "991", "992", "993", "994", "970", "971", "972", "973", "974", "975", "976", "977", "978", "979", "995", "996", "997", "998", "999", "590", "591", "592", "593", "594", "595", "596", "597", "598", "599", "832", "833", "834", "835", "836", "837", "838"]
+  },
+  {
+    name: "Washington D.C. / Mid-Atlantic",
+    phone: "(301) 657-2560",
+    email: "washingtonmidatlantic@sagaftra.org",
+    states: ["DC", "MD", "VA", "WV", "DE", "PA"],
+    zipPrefixes: ["200", "201", "202", "203", "204", "205", "206", "207", "208", "209", "210", "211", "212", "214", "215", "216", "217", "218", "219", "220", "221", "222", "223", "224", "225", "226", "227", "228", "229", "230", "231", "232", "233", "234", "235", "236", "237", "238", "239", "240", "241", "242", "243", "244", "245", "246", "247", "248", "249", "250", "251", "252", "253", "254", "255", "256", "257", "258", "259", "260", "261", "262", "263", "264", "265", "266", "267", "268", "197", "198", "199", "150", "151", "152", "153", "154", "155", "156", "157", "158", "159", "160", "161", "162", "163", "164", "165", "166", "167", "168", "169", "170", "171", "172", "173", "174", "175", "176", "177", "178", "179", "180", "181", "182", "183", "184", "185", "186", "187", "188", "189", "190", "191", "192", "193", "194", "195", "196"]
+  },
+  {
+    name: "Arizona-Utah",
+    phone: "(602) 265-2712",
+    email: "arizona@sagaftra.org",
+    states: ["AZ", "UT", "NM", "CO"],
+    zipPrefixes: ["850", "851", "852", "853", "855", "856", "857", "859", "860", "863", "864", "865", "840", "841", "843", "844", "845", "846", "847", "870", "871", "872", "873", "874", "875", "876", "877", "878", "879", "880", "881", "882", "883", "884", "800", "801", "802", "803", "804", "805", "806", "807", "808", "809", "810", "811", "812", "813", "814", "815", "816"]
+  },
+  {
+    name: "National Office",
+    phone: "(855) 724-2387",
+    email: "info@sagaftra.org",
+    states: ["All other areas"],
+    zipPrefixes: []
+  }
+];
+function ContractAssistant() {
+  var _a2;
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: `Hello! I'm an AI assistant here to help you understand SAG-AFTRA and other union contracts for your film or TV production.
+
+**Important:** I am NOT affiliated with SAG-AFTRA or any union. I'm an educational tool to help you learn about:
+
+• **Agreement Types** - From Student Film to full Theatrical agreements
+• **Current Rates** - Day rates, weekly rates, and overtime rules  
+• **Becoming Signatory** - Step-by-step process to hire union talent
+• **P&H Contributions** - Pension & Health obligations
+• **Other Unions** - IATSE, DGA, WGA, and more
+
+For official guidance, you'll want to contact your regional SAG-AFTRA office directly. Enter your ZIP code on the right to find your local office.
+
+How can I help you get started?`
+    }
+  ]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+  const [zipCode, setZipCode] = useState("");
+  const [matchedOffice, setMatchedOffice] = useState(null);
+  const [projectDetails, setProjectDetails] = useState({
+    budget: "",
+    projectType: "",
+    runtime: "",
+    castSize: "",
+    location: "",
+    distribution: ""
+  });
+  const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const { toast: toast2 } = useToast();
+  const scrollToBottom = () => {
+    var _a3;
+    (_a3 = messagesEndRef.current) == null ? void 0 : _a3.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  };
+  useEffect(() => {
+    if (messages.length > 1) scrollToBottom();
+  }, [messages]);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const findOfficeByZip = (zip) => {
+    if (zip.length < 3) {
+      setMatchedOffice(null);
+      return;
+    }
+    const prefix = zip.substring(0, 3);
+    const office = REGIONAL_OFFICES.find((o) => o.zipPrefixes.includes(prefix));
+    setMatchedOffice(office || REGIONAL_OFFICES[REGIONAL_OFFICES.length - 1]);
+  };
+  useEffect(() => {
+    findOfficeByZip(zipCode);
+  }, [zipCode]);
+  const streamChat = useCallback(async (userMessages) => {
+    var _a3, _b2, _c;
+    const CHAT_URL2 = `${"https://bwrzcaxpiyhnidwjpapt.supabase.co"}/functions/v1/contract-assistant`;
+    const resp = await fetch(CHAT_URL2, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cnpjYXhwaXlobmlkd2pwYXB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzQ0MTQsImV4cCI6MjA3NDA1MDQxNH0.eYpQzQciIpNWFoYXHyvk4FcuDXfVGx8UTLu190TevPU"}`
+      },
+      body: JSON.stringify({
+        messages: userMessages,
+        projectDetails: projectDetails.budget ? projectDetails : null
+      })
+    });
+    if (resp.status === 429) {
+      throw new Error("Rate limits exceeded. Please wait a moment and try again.");
+    }
+    if (resp.status === 402) {
+      throw new Error("AI credits required. Please add funds to continue.");
+    }
+    if (!resp.ok || !resp.body) {
+      throw new Error("Failed to start chat stream");
+    }
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let textBuffer = "";
+    let assistantContent = "";
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      textBuffer += decoder.decode(value, { stream: true });
+      let newlineIndex;
+      while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+        let line = textBuffer.slice(0, newlineIndex);
+        textBuffer = textBuffer.slice(newlineIndex + 1);
+        if (line.endsWith("\r")) line = line.slice(0, -1);
+        if (line.startsWith(":") || line.trim() === "") continue;
+        if (!line.startsWith("data: ")) continue;
+        const jsonStr = line.slice(6).trim();
+        if (jsonStr === "[DONE]") break;
+        try {
+          const parsed = JSON.parse(jsonStr);
+          const content = (_c = (_b2 = (_a3 = parsed.choices) == null ? void 0 : _a3[0]) == null ? void 0 : _b2.delta) == null ? void 0 : _c.content;
+          if (content) {
+            assistantContent += content;
+            setMessages((prev) => {
+              const last = prev[prev.length - 1];
+              if ((last == null ? void 0 : last.role) === "assistant" && prev.length > 1) {
+                return prev.map(
+                  (m, i) => i === prev.length - 1 ? { ...m, content: assistantContent } : m
+                );
+              }
+              return [...prev, { role: "assistant", content: assistantContent }];
+            });
+          }
+        } catch {
+          textBuffer = line + "\n" + textBuffer;
+          break;
+        }
+      }
+    }
+  }, [projectDetails]);
+  const sendMessage = async (messageText) => {
+    if (!messageText.trim() || isLoading) return;
+    const userMessage = { role: "user", content: messageText };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setInput("");
+    setIsLoading(true);
+    try {
+      await streamChat(updatedMessages);
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast2({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to get response",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleQuickTopic = (question) => {
+    sendMessage(question);
+  };
+  const handleFileUpload = async (event) => {
+    var _a3;
+    const file = (_a3 = event.target.files) == null ? void 0 : _a3[0];
+    if (!file) return;
+    const allowedTypes = ["application/pdf", "text/plain", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    const allowedExtensions = [".pdf", ".txt", ".docx"];
+    const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf("."));
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      toast2({
+        title: "Unsupported File Type",
+        description: "Please upload a PDF, TXT, or DOCX file with your production information.",
+        variant: "destructive"
+      });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast2({
+        title: "File Too Large",
+        description: "Please upload a file smaller than 10MB.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsUploadingDoc(true);
+    try {
+      if (file.type === "text/plain" || fileExtension === ".txt") {
+        const text = await file.text();
+        const prompt = `I've uploaded my production information document. Please analyze it and extract any relevant details for recommending a SAG-AFTRA agreement:
+
+---
+${text.substring(0, 8e3)}
+---
+
+Based on this information, what SAG-AFTRA agreement would you recommend? What are the key requirements I should know about?`;
+        sendMessage(prompt);
+      } else {
+        const formData = new FormData();
+        formData.append("file", file);
+        const data = await aiInvoke("parse-document", {
+          body: formData
+        });
+        const extractedText = (data == null ? void 0 : data.text) || (data == null ? void 0 : data.content) || "";
+        if (!extractedText) {
+          throw new Error("Could not extract text from document");
+        }
+        const prompt = `I've uploaded my production information document. Please analyze it and extract any relevant details for recommending a SAG-AFTRA agreement:
+
+---
+${extractedText.substring(0, 8e3)}
+---
+
+Based on this information, what SAG-AFTRA agreement would you recommend? What are the key requirements I should know about?`;
+        sendMessage(prompt);
+      }
+      toast2({
+        title: "Document Uploaded",
+        description: "Analyzing your production information..."
+      });
+    } catch (error) {
+      console.error("Upload error:", error);
+      if (!(error instanceof InsufficientCreditsError)) {
+        toast2({
+          title: "Upload Failed",
+          description: error instanceof Error ? error.message : "Failed to process document",
+          variant: "destructive"
+        });
+      }
+    } finally {
+      setIsUploadingDoc(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+  const analyzeProject = () => {
+    if (!projectDetails.budget && !projectDetails.projectType) {
+      toast2({
+        title: "Missing Information",
+        description: "Please enter at least a budget or project type",
+        variant: "destructive"
+      });
+      return;
+    }
+    const analysisPrompt = `Based on my project details:
+- Budget: ${projectDetails.budget || "Not specified"}
+- Project Type: ${projectDetails.projectType || "Not specified"}
+- Runtime: ${projectDetails.runtime || "Not specified"} minutes
+- Cast Size: ${projectDetails.castSize || "Not specified"} performers
+- Location: ${projectDetails.location || "Not specified"}
+- Distribution: ${projectDetails.distribution || "Not specified"}
+
+What SAG-AFTRA agreement would you recommend? Please explain the requirements, costs, and steps to become signatory.`;
+    sendMessage(analysisPrompt);
+  };
+  const getSuggestedAgreement = () => {
+    var _a3;
+    const budget = parseFloat(((_a3 = projectDetails.budget) == null ? void 0 : _a3.replace(/[^0-9.]/g, "")) || "0");
+    if (budget === 0) return null;
+    if (budget < 2e4) return AGREEMENT_RECOMMENDATIONS[1];
+    if (budget < 3e5) return AGREEMENT_RECOMMENDATIONS[2];
+    if (budget < 7e5) return AGREEMENT_RECOMMENDATIONS[3];
+    if (budget < 26e5) return AGREEMENT_RECOMMENDATIONS[4];
+    return null;
+  };
+  const suggestedAgreement = getSuggestedAgreement();
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/contract-assistant" }),
+    /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-4 py-6", children: [
+      /* @__PURE__ */ jsxs(Alert, { className: "mb-6 border-amber-500/50 bg-amber-500/10", children: [
+        /* @__PURE__ */ jsx(ShieldAlert, { className: "h-5 w-5 text-amber-500" }),
+        /* @__PURE__ */ jsx(AlertTitle, { className: "text-amber-700 dark:text-amber-400", children: "Important Disclaimer" }),
+        /* @__PURE__ */ jsxs(AlertDescription, { className: "text-amber-700/90 dark:text-amber-400/90", children: [
+          /* @__PURE__ */ jsx("strong", { children: "This tool is NOT affiliated with, endorsed by, or connected to SAG-AFTRA or any labor union." }),
+          " We provide educational information only to help filmmakers understand union contracts. For official guidance, rates, and to become a signatory, you must contact SAG-AFTRA directly. Information may be outdated—always verify with official sources."
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "text-center mb-6", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3 mb-2", children: [
+          /* @__PURE__ */ jsx(FileText, { className: "h-10 w-10 text-primary" }),
+          /* @__PURE__ */ jsx("h1", { className: "text-3xl md:text-4xl font-bold", children: "Union Contract Assistant" })
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-lg max-w-2xl mx-auto", children: "Educational AI guidance for understanding SAG-AFTRA and other union contracts" })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$1, { className: "h-[calc(100vh-280px)] flex flex-col", children: [
+          /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+            /* @__PURE__ */ jsx(MessageCircle, { className: "h-5 w-5 text-primary" }),
+            /* @__PURE__ */ jsx(CardTitle, { children: "Chat with Contract Assistant" })
+          ] }) }),
+          /* @__PURE__ */ jsxs(CardContent, { className: "flex-1 flex flex-col overflow-hidden", children: [
+            /* @__PURE__ */ jsx(ScrollArea, { className: "flex-1 pr-4", children: /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+              messages.map((message, index) => /* @__PURE__ */ jsx(
+                "div",
+                {
+                  className: `flex ${message.role === "user" ? "justify-end" : "justify-start"}`,
+                  children: /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      className: `max-w-[85%] rounded-lg px-4 py-3 ${message.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`,
+                      children: /* @__PURE__ */ jsx("div", { className: "whitespace-pre-wrap text-sm leading-relaxed", children: message.content })
+                    }
+                  )
+                },
+                index
+              )),
+              isLoading && ((_a2 = messages[messages.length - 1]) == null ? void 0 : _a2.role) === "user" && /* @__PURE__ */ jsx("div", { className: "flex justify-start", children: /* @__PURE__ */ jsx("div", { className: "bg-muted rounded-lg px-4 py-3", children: /* @__PURE__ */ jsx(Loader2, { className: "h-5 w-5 animate-spin text-primary" }) }) }),
+              /* @__PURE__ */ jsx("div", { ref: messagesEndRef })
+            ] }) }),
+            /* @__PURE__ */ jsxs("div", { className: "py-3 border-t", children: [
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mb-2", children: "Quick Topics:" }),
+              /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: QUICK_TOPICS.map((topic, index) => /* @__PURE__ */ jsx(
+                Button,
+                {
+                  variant: "outline",
+                  size: "sm",
+                  onClick: () => handleQuickTopic(topic.question),
+                  disabled: isLoading,
+                  className: "text-xs",
+                  children: topic.label
+                },
+                index
+              )) })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "flex gap-2 pt-2", children: [
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  value: input,
+                  onChange: (e) => setInput(e.target.value),
+                  placeholder: "Ask about SAG-AFTRA agreements, rates, becoming signatory...",
+                  className: "min-h-[60px] resize-none",
+                  onKeyDown: (e) => {
+                    if (e.key === "Enter" && !e.shiftKey) {
+                      e.preventDefault();
+                      sendMessage(input);
+                    }
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  onClick: () => sendMessage(input),
+                  disabled: isLoading || !input.trim(),
+                  className: "px-4",
+                  children: /* @__PURE__ */ jsx(Send, { className: "h-4 w-4" })
+                }
+              )
+            ] })
+          ] })
+        ] }) }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/30", children: [
+            /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Building2, { className: "h-5 w-5 text-primary" }),
+                /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Find Your SAG-AFTRA Office" })
+              ] }),
+              /* @__PURE__ */ jsx(CardDescription, { children: "Enter your ZIP code to find your regional office" })
+            ] }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
+              /* @__PURE__ */ jsx(
+                Input,
+                {
+                  placeholder: "Enter ZIP code (e.g., 90028)",
+                  value: zipCode,
+                  onChange: (e) => setZipCode(e.target.value.replace(/\D/g, "").substring(0, 5)),
+                  maxLength: 5
+                }
+              ),
+              matchedOffice && /* @__PURE__ */ jsxs("div", { className: "p-3 bg-muted rounded-lg space-y-2", children: [
+                /* @__PURE__ */ jsxs("div", { className: "font-semibold flex items-center gap-2", children: [
+                  /* @__PURE__ */ jsx(MapPin, { className: "h-4 w-4 text-primary" }),
+                  matchedOffice.name,
+                  " Office"
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "text-sm space-y-1", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsx(Phone, { className: "h-3 w-3" }),
+                    /* @__PURE__ */ jsx("a", { href: `tel:${matchedOffice.phone}`, className: "text-primary hover:underline", children: matchedOffice.phone })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsx(MessageCircle, { className: "h-3 w-3" }),
+                    /* @__PURE__ */ jsx("a", { href: `mailto:${matchedOffice.email}`, className: "text-primary hover:underline text-xs", children: matchedOffice.email })
+                  ] }),
+                  /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground mt-2", children: [
+                    "Covers: ",
+                    matchedOffice.states.join(", ")
+                  ] })
+                ] })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5 text-primary" }),
+                /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Upload Production Info" })
+              ] }),
+              /* @__PURE__ */ jsx(CardDescription, { children: "Upload a PDF, TXT, or DOCX with your production details instead of filling forms" })
+            ] }),
+            /* @__PURE__ */ jsxs(CardContent, { children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  ref: fileInputRef,
+                  type: "file",
+                  accept: ".pdf,.txt,.docx",
+                  onChange: handleFileUpload,
+                  className: "hidden"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  variant: "outline",
+                  className: "w-full",
+                  onClick: () => {
+                    var _a3;
+                    return (_a3 = fileInputRef.current) == null ? void 0 : _a3.click();
+                  },
+                  disabled: isUploadingDoc || isLoading,
+                  children: isUploadingDoc ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 mr-2 animate-spin" }),
+                    "Processing..."
+                  ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Upload, { className: "h-4 w-4 mr-2" }),
+                    "Upload Document"
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-2 text-center", children: "Supports: Budget summaries, production bibles, project briefs" })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(Film, { className: "h-5 w-5 text-primary" }),
+              /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Or Enter Details Manually" })
+            ] }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxs(Label, { htmlFor: "budget", className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ jsx(DollarSign, { className: "h-3 w-3" }),
+                  " Budget"
+                ] }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "budget",
+                    placeholder: "e.g., $150,000",
+                    value: projectDetails.budget,
+                    onChange: (e) => setProjectDetails((prev) => ({ ...prev, budget: e.target.value }))
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "projectType", children: "Project Type" }),
+                /* @__PURE__ */ jsxs(
+                  Select,
+                  {
+                    value: projectDetails.projectType,
+                    onValueChange: (value) => setProjectDetails((prev) => ({ ...prev, projectType: value })),
+                    children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select type" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "feature", children: "Feature Film" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "short", children: "Short Film" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "tv-series", children: "TV Series" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "tv-movie", children: "TV Movie" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "web-series", children: "Web Series" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "commercial", children: "Commercial" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "music-video", children: "Music Video" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "documentary", children: "Documentary" })
+                      ] })
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-3", children: [
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsxs(Label, { htmlFor: "runtime", className: "flex items-center gap-1", children: [
+                    /* @__PURE__ */ jsx(Clock, { className: "h-3 w-3" }),
+                    " Runtime (min)"
+                  ] }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "runtime",
+                      type: "number",
+                      placeholder: "90",
+                      value: projectDetails.runtime,
+                      onChange: (e) => setProjectDetails((prev) => ({ ...prev, runtime: e.target.value }))
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                  /* @__PURE__ */ jsxs(Label, { htmlFor: "castSize", className: "flex items-center gap-1", children: [
+                    /* @__PURE__ */ jsx(Users, { className: "h-3 w-3" }),
+                    " Cast Size"
+                  ] }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "castSize",
+                      type: "number",
+                      placeholder: "10",
+                      value: projectDetails.castSize,
+                      onChange: (e) => setProjectDetails((prev) => ({ ...prev, castSize: e.target.value }))
+                    }
+                  )
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsxs(Label, { htmlFor: "location", className: "flex items-center gap-1", children: [
+                  /* @__PURE__ */ jsx(MapPin, { className: "h-3 w-3" }),
+                  " Location"
+                ] }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "location",
+                    placeholder: "e.g., Los Angeles, CA",
+                    value: projectDetails.location,
+                    onChange: (e) => setProjectDetails((prev) => ({ ...prev, location: e.target.value }))
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "distribution", children: "Distribution Plan" }),
+                /* @__PURE__ */ jsxs(
+                  Select,
+                  {
+                    value: projectDetails.distribution,
+                    onValueChange: (value) => setProjectDetails((prev) => ({ ...prev, distribution: value })),
+                    children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select plan" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "theatrical", children: "Theatrical Release" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "streaming", children: "Streaming Platform" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "festival", children: "Film Festival Circuit" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "broadcast", children: "Broadcast TV" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "digital", children: "Digital/VOD" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "undecided", children: "Undecided" })
+                      ] })
+                    ]
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs(
+                Button,
+                {
+                  onClick: analyzeProject,
+                  className: "w-full",
+                  disabled: isLoading,
+                  children: [
+                    /* @__PURE__ */ jsx(Sparkles, { className: "h-4 w-4 mr-2" }),
+                    "Analyze My Project"
+                  ]
+                }
+              )
+            ] })
+          ] }),
+          suggestedAgreement && /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/50 bg-primary/5", children: [
+            /* @__PURE__ */ jsx(CardHeader, { className: "pb-2", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(CheckCircle2, { className: "h-5 w-5 text-primary" }),
+              /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: "Suggested Agreement" })
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsx("span", { className: "font-semibold", children: suggestedAgreement.name }),
+                /* @__PURE__ */ jsx(Badge, { variant: "secondary", children: suggestedAgreement.budgetRange })
+              ] }),
+              /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: suggestedAgreement.description }),
+              /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: suggestedAgreement.requirements })
+            ] }) })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { className: "pb-2", children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(ExternalLink, { className: "h-4 w-4" }),
+              "Official SAG-AFTRA Resources"
+            ] }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(
+                "a",
+                {
+                  href: "https://www.sagaftra.org/production-center",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "block text-sm text-primary hover:underline",
+                  children: "Production Center →"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "a",
+                {
+                  href: "https://www.sagaftra.org/contracts-industry-resources",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "block text-sm text-primary hover:underline",
+                  children: "Contracts & Industry Resources →"
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "a",
+                {
+                  href: "https://www.sagaftra.org/signatory",
+                  target: "_blank",
+                  rel: "noopener noreferrer",
+                  className: "block text-sm text-primary hover:underline",
+                  children: "Become a Signatory →"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(Card$1, { className: "bg-muted/50 border-amber-500/30", children: /* @__PURE__ */ jsx(CardContent, { className: "pt-4", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2 text-xs text-muted-foreground", children: [
+            /* @__PURE__ */ jsx(AlertTriangle, { className: "h-4 w-4 flex-shrink-0 mt-0.5 text-amber-500" }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx("p", { className: "font-semibold text-foreground", children: "Legal Notice" }),
+              /* @__PURE__ */ jsxs("p", { children: [
+                "This AI assistant provides general educational information about union contracts. It is ",
+                /* @__PURE__ */ jsx("strong", { children: "not" }),
+                " affiliated with SAG-AFTRA, IATSE, DGA, WGA, or any labor organization."
+              ] }),
+              /* @__PURE__ */ jsxs("p", { children: [
+                "This is ",
+                /* @__PURE__ */ jsx("strong", { children: "not legal advice" }),
+                ". For binding information about rates, agreements, and signatory requirements, contact SAG-AFTRA directly or consult an entertainment attorney."
+              ] }),
+              /* @__PURE__ */ jsxs("p", { children: [
+                "Rates and requirements change periodically. Always verify current information at",
+                " ",
+                /* @__PURE__ */ jsx("a", { href: "https://www.sagaftra.org", target: "_blank", rel: "noopener noreferrer", className: "text-primary hover:underline", children: "sagaftra.org" })
+              ] })
+            ] })
+          ] }) }) })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+const RadioGroup = React.forwardRef(({ className, ...props }, ref) => {
+  return /* @__PURE__ */ jsx(RadioGroupPrimitive.Root, { className: cn("grid gap-2", className), ...props, ref });
+});
+RadioGroup.displayName = RadioGroupPrimitive.Root.displayName;
+const RadioGroupItem = React.forwardRef(({ className, ...props }, ref) => {
+  return /* @__PURE__ */ jsx(
+    RadioGroupPrimitive.Item,
+    {
+      ref,
+      className: cn(
+        "aspect-square h-4 w-4 rounded-full border border-primary text-primary ring-offset-background focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+        className
+      ),
+      ...props,
+      children: /* @__PURE__ */ jsx(RadioGroupPrimitive.Indicator, { className: "flex items-center justify-center", children: /* @__PURE__ */ jsx(Circle, { className: "h-2.5 w-2.5 fill-current text-current" }) })
+    }
+  );
+});
+RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName;
+const PROJECT_TYPE_LABELS = {
+  feature: "Feature Film",
+  short: "Short Film",
+  documentary: "Documentary",
+  tv_series: "TV Series",
+  web_series: "Web Series",
+  pilot: "TV Pilot"
+};
+const BUDGET_LABELS = {
+  micro: { label: "Micro Budget", range: "Under $50,000" },
+  low: { label: "Low Budget", range: "$50,000 - $250,000" },
+  mid_low: { label: "Mid-Low Budget", range: "$250,000 - $500,000" },
+  mid: { label: "Mid Budget", range: "$500,000 - $1,000,000" },
+  mid_high: { label: "Mid-High Budget", range: "$1M - $5M" },
+  high: { label: "High Budget", range: "$5M+" }
+};
+const TIMELINE_LABELS = {
+  immediate: "Immediate (within 3 months)",
+  short: "Short-term (6-12 months)",
+  medium: "Medium-term (1-2 years)",
+  development: "In Development"
+};
+const FUNDING_SOURCE_DETAILS = {
+  grants: {
+    label: "Grants & Fellowships",
+    description: "Non-repayable funding from foundations and arts organizations.",
+    tips: [
+      "Apply to Sundance Institute Documentary Fund (early deadlines)",
+      "Film Independent offers Fiscal Sponsorship for tax-deductible donations",
+      "Creative Capital awards up to $50,000 for bold projects",
+      "SFFILM Documentary Film Fund opens in summer"
+    ]
+  },
+  crowdfunding: {
+    label: "Crowdfunding",
+    description: "Community-supported funding through online platforms.",
+    tips: [
+      "Seed&Spark has 75% success rate (aim for 80% goal)",
+      "Kickstarter works best for high-concept projects with existing fanbase",
+      "Indiegogo offers Flexible Funding (keep what you raise)",
+      "Build your audience before launching your campaign"
+    ]
+  },
+  tax_incentives: {
+    label: "Tax Incentives & Rebates",
+    description: "Production rebates offered by states and countries to attract filming.",
+    tips: [
+      "Georgia: 20% credit for post-production (2026, $500k spend minimum)",
+      "Canary Islands: Up to 54% on first €1M of local spend",
+      "Illinois: 35% credit for local labor (extended through 2039)",
+      "You can 'loan' against expected rebates for upfront cash"
+    ]
+  },
+  investors: {
+    label: "Private Equity Investment",
+    description: "Capital from individuals or funds in exchange for ownership stake.",
+    tips: [
+      "Investors increasingly prefer 'Slates' (multiple films) to diversify risk",
+      "Prepare a detailed recoupment waterfall document",
+      "Consider offering Associate Producer or Executive Producer credits",
+      "Have an entertainment attorney review all investor agreements"
+    ]
+  },
+  presales: {
+    label: "Pre-Sales",
+    description: "Selling distribution rights to specific territories before production.",
+    tips: [
+      "Attach recognizable talent to increase pre-sale value",
+      "Major markets: Germany, France, UK, Japan, Australia",
+      "Work with an international sales agent",
+      "Pre-sales can trigger gap financing from banks"
+    ]
+  },
+  gap_financing: {
+    label: "Gap/Bridge Loans",
+    description: "Specialized loans against unsold territories or tax rebates.",
+    tips: [
+      "Entertainment Partners and similar lenders specialize in this",
+      "Typically covers 10-20% of unsold foreign territories",
+      "Requires strong pre-sales and/or tax incentive contracts",
+      "Interest rates are higher than traditional financing"
+    ]
+  },
+  studio: {
+    label: "Studio or Streamer Deal",
+    description: "Financing from major studios or streaming platforms.",
+    tips: [
+      "Requires established track record or major attachments",
+      "Consider negative pickup deals (studio buys finished film)",
+      "Streamers often want worldwide rights",
+      "Work with an agent or manager with studio relationships"
+    ]
+  },
+  self: {
+    label: "Self-Financed",
+    description: "Personal, family, or credit-based funding.",
+    tips: [
+      "Set a clear budget limit you can afford to lose",
+      "Consider as seed money to attract additional funding",
+      "Document all investments properly for tax purposes",
+      "Be cautious with credit card debt for filmmaking"
+    ]
+  }
+};
+const exportFundingStrategyToPDF = async (data) => {
+  const pdf = new jsPDF({
+    orientation: "portrait",
+    unit: "mm",
+    format: "a4"
+  });
+  const pageWidth = pdf.internal.pageSize.getWidth();
+  const pageHeight = pdf.internal.pageSize.getHeight();
+  const margin = 20;
+  const contentWidth = pageWidth - margin * 2;
+  let yPosition = margin;
+  const addNewPage = () => {
+    pdf.addPage();
+    yPosition = margin;
+  };
+  const checkPageBreak = (height) => {
+    if (yPosition + height > pageHeight - margin) {
+      addNewPage();
+    }
+  };
+  pdf.setFillColor(16, 185, 129);
+  pdf.rect(0, 0, pageWidth, 50, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(28);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("FUNDING STRATEGY BRIEF", pageWidth / 2, 30, { align: "center" });
+  yPosition = 70;
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(24);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(data.projectTitle || "Untitled Project", pageWidth / 2, yPosition, { align: "center" });
+  yPosition += 15;
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "normal");
+  pdf.setTextColor(100, 100, 100);
+  const typeGenre = [
+    PROJECT_TYPE_LABELS[data.projectType] || "",
+    data.genre
+  ].filter(Boolean).join(" • ");
+  if (typeGenre) {
+    pdf.text(typeGenre, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 12;
+  }
+  const budget = BUDGET_LABELS[data.budgetRange];
+  if (budget) {
+    pdf.setFontSize(16);
+    pdf.setTextColor(16, 185, 129);
+    pdf.setFont("helvetica", "bold");
+    pdf.text(`${budget.label} (${budget.range})`, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 20;
+  }
+  if (data.logline) {
+    yPosition += 10;
+    pdf.setTextColor(60, 60, 60);
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "italic");
+    const loglineLines = pdf.splitTextToSize(`"${data.logline}"`, contentWidth - 20);
+    pdf.text(loglineLines, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += loglineLines.length * 6 + 10;
+  }
+  yPosition += 10;
+  pdf.setFillColor(245, 245, 245);
+  pdf.roundedRect(margin, yPosition, contentWidth, 50, 3, 3, "F");
+  const metricsY = yPosition + 15;
+  const colWidth = contentWidth / 3;
+  pdf.setTextColor(100, 100, 100);
+  pdf.setFontSize(10);
+  pdf.text("TARGET RAISE", margin + colWidth * 0.5, metricsY, { align: "center" });
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(data.targetAmount || "TBD", margin + colWidth * 0.5, metricsY + 10, { align: "center" });
+  pdf.setTextColor(100, 100, 100);
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  pdf.text("SECURED", margin + colWidth * 1.5, metricsY, { align: "center" });
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(data.currentFunding || "$0", margin + colWidth * 1.5, metricsY + 10, { align: "center" });
+  pdf.setTextColor(100, 100, 100);
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  pdf.text("TIMELINE", margin + colWidth * 2.5, metricsY, { align: "center" });
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text(TIMELINE_LABELS[data.timeline] || "TBD", margin + colWidth * 2.5, metricsY + 10, { align: "center" });
+  yPosition += 60;
+  if (data.askingFor) {
+    yPosition += 10;
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "bold");
+    pdf.setTextColor(16, 185, 129);
+    pdf.text("SEEKING:", margin, yPosition);
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(data.askingFor, margin + 25, yPosition);
+    yPosition += 15;
+  }
+  const assets = [];
+  if (data.hasCompletedScript) assets.push("Completed Script");
+  if (data.hasDirector) assets.push("Attached Director");
+  if (data.hasProducer) assets.push("Attached Producer");
+  if (data.hasAttachedTalent) assets.push("Attached Talent");
+  if (data.hasPreviousCredits) assets.push("Proven Track Record");
+  if (assets.length > 0) {
+    pdf.setFontSize(12);
+    pdf.setFont("helvetica", "bold");
+    pdf.setTextColor(16, 185, 129);
+    pdf.text("PACKAGE INCLUDES:", margin, yPosition);
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFont("helvetica", "normal");
+    pdf.text(assets.join(" • "), margin + 45, yPosition);
+    yPosition += 15;
+  }
+  addNewPage();
+  pdf.setFillColor(16, 185, 129);
+  pdf.rect(0, 0, pageWidth, 25, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(18);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("RECOMMENDED FUNDING SOURCES", pageWidth / 2, 16, { align: "center" });
+  yPosition = 40;
+  if (data.selectedSources.length === 0) {
+    pdf.setTextColor(100, 100, 100);
+    pdf.setFontSize(12);
+    pdf.text("No funding sources selected.", margin, yPosition);
+  } else {
+    data.selectedSources.forEach((sourceId, index) => {
+      const source = FUNDING_SOURCE_DETAILS[sourceId];
+      if (!source) return;
+      checkPageBreak(60);
+      pdf.setFillColor(245, 245, 245);
+      pdf.roundedRect(margin, yPosition, contentWidth, 8, 2, 2, "F");
+      pdf.setTextColor(16, 185, 129);
+      pdf.setFontSize(14);
+      pdf.setFont("helvetica", "bold");
+      pdf.text(`${index + 1}. ${source.label}`, margin + 5, yPosition + 6);
+      yPosition += 14;
+      pdf.setTextColor(60, 60, 60);
+      pdf.setFontSize(11);
+      pdf.setFont("helvetica", "normal");
+      pdf.text(source.description, margin + 5, yPosition);
+      yPosition += 10;
+      pdf.setTextColor(0, 0, 0);
+      pdf.setFontSize(10);
+      source.tips.forEach((tip) => {
+        checkPageBreak(8);
+        pdf.text(`• ${tip}`, margin + 8, yPosition);
+        yPosition += 7;
+      });
+      yPosition += 10;
+    });
+  }
+  if (data.investorPitch) {
+    checkPageBreak(40);
+    yPosition += 10;
+    pdf.setFillColor(16, 185, 129);
+    pdf.rect(0, yPosition - 5, pageWidth, 20, "F");
+    pdf.setTextColor(255, 255, 255);
+    pdf.setFontSize(14);
+    pdf.setFont("helvetica", "bold");
+    pdf.text("WHY INVEST IN THIS PROJECT", pageWidth / 2, yPosition + 7, { align: "center" });
+    yPosition += 25;
+    pdf.setTextColor(0, 0, 0);
+    pdf.setFontSize(11);
+    pdf.setFont("helvetica", "normal");
+    const pitchLines = pdf.splitTextToSize(data.investorPitch, contentWidth);
+    pdf.text(pitchLines, margin, yPosition);
+    yPosition += pitchLines.length * 6 + 15;
+  }
+  addNewPage();
+  pdf.setFillColor(16, 185, 129);
+  pdf.rect(0, 0, pageWidth, 25, "F");
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFontSize(18);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("ESSENTIAL RESOURCES & NEXT STEPS", pageWidth / 2, 16, { align: "center" });
+  yPosition = 40;
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("Production Package Checklist", margin, yPosition);
+  yPosition += 10;
+  const checklist = [
+    { item: "Lookbook/Pitch Deck", desc: "Visual representation of tone and style" },
+    { item: "Finance Plan", desc: "Breakdown of funding sources and percentages" },
+    { item: "Recoupment Waterfall", desc: "Document showing investor payback order" },
+    { item: "Line-Item Budget", desc: "Professional cost breakdown" },
+    { item: "Production Schedule", desc: "Realistic timeline with milestones" }
+  ];
+  pdf.setFontSize(11);
+  checklist.forEach((item) => {
+    pdf.setFont("helvetica", "bold");
+    pdf.setTextColor(0, 0, 0);
+    pdf.text(`☐ ${item.item}`, margin + 5, yPosition);
+    pdf.setFont("helvetica", "normal");
+    pdf.setTextColor(100, 100, 100);
+    pdf.text(`- ${item.desc}`, margin + 60, yPosition);
+    yPosition += 8;
+  });
+  yPosition += 15;
+  pdf.setTextColor(0, 0, 0);
+  pdf.setFontSize(14);
+  pdf.setFont("helvetica", "bold");
+  pdf.text("2026 Funding Resources", margin, yPosition);
+  yPosition += 10;
+  const resources = [
+    "Sundance Institute: sundance.org/programs",
+    "Film Independent: filmindependent.org",
+    "Seed&Spark: seedandspark.com",
+    "IFP (Independent Filmmaker Project): ifp.org",
+    "Creative Capital: creative-capital.org"
+  ];
+  pdf.setFontSize(10);
+  pdf.setFont("helvetica", "normal");
+  resources.forEach((resource) => {
+    pdf.text(`• ${resource}`, margin + 5, yPosition);
+    yPosition += 7;
+  });
+  yPosition = pageHeight - 30;
+  pdf.setFillColor(240, 240, 240);
+  pdf.rect(0, yPosition - 5, pageWidth, 35, "F");
+  pdf.setTextColor(100, 100, 100);
+  pdf.setFontSize(9);
+  pdf.text(
+    "Generated by Filmmaker Genius • filmmakergenius.com",
+    pageWidth / 2,
+    yPosition + 5,
+    { align: "center" }
+  );
+  pdf.text(
+    `Created: ${(/* @__PURE__ */ new Date()).toLocaleDateString()}`,
+    pageWidth / 2,
+    yPosition + 12,
+    { align: "center" }
+  );
+  pdf.setFontSize(8);
+  pdf.text(
+    "This document is for informational purposes only. Consult with legal and financial professionals.",
+    pageWidth / 2,
+    yPosition + 20,
+    { align: "center" }
+  );
+  const filename = `${(data.projectTitle || "project").replace(/[^a-z0-9]/gi, "_")}_Funding_Strategy.pdf`;
+  pdf.save(filename);
+};
+const Collapsible = CollapsiblePrimitive.Root;
+const CollapsibleTrigger = CollapsiblePrimitive.CollapsibleTrigger;
+const CollapsibleContent = CollapsiblePrimitive.CollapsibleContent;
+const QUICK_QUESTIONS$1 = [
+  { label: "Help with grants", question: "What grants are available for independent films? How do I write a strong grant application?" },
+  { label: "Crowdfunding tips", question: "What makes a successful film crowdfunding campaign? What platforms work best?" },
+  { label: "Pitch to investors", question: "How do I pitch my film to private investors? What do they look for?" },
+  { label: "Explain recoupment", question: "How does recoupment work in film financing? Can you show a sample waterfall?" }
+];
+const CHAT_URL$1 = `${"https://bwrzcaxpiyhnidwjpapt.supabase.co"}/functions/v1/funding-assistant`;
+function formatMarkdown$1(text) {
+  if (!text) return "";
+  let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/^### (.+)$/gm, '<h4 class="font-semibold text-base mt-3 mb-1">$1</h4>').replace(/^## (.+)$/gm, '<h3 class="font-semibold text-lg mt-3 mb-1">$1</h3>').replace(/^# (.+)$/gm, '<h2 class="font-bold text-xl mt-4 mb-2">$1</h2>').replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>').replace(new RegExp("(?<!\\*)\\*([^*]+)\\*(?!\\*)", "g"), "<em>$1</em>").replace(/^[\-\*] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>').replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>').replace(/(<li class="ml-4 list-disc">.*<\/li>\n?)+/g, '<ul class="my-2 space-y-1">$&</ul>').replace(/(<li class="ml-4 list-decimal">.*<\/li>\n?)+/g, '<ol class="my-2 space-y-1">$&</ol>').replace(/`([^`]+)`/g, '<code class="bg-background/50 px-1 py-0.5 rounded text-xs">$1</code>').replace(/\n\n+/g, '</p><p class="mb-2">').replace(/\n/g, "<br/>");
+  if (!html.startsWith("<h") && !html.startsWith("<ul") && !html.startsWith("<ol")) {
+    html = '<p class="mb-2">' + html + "</p>";
+  }
+  return html;
+}
+function FundingChatAssistant({ context }) {
+  const [isOpen, setIsOpen] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+  useEffect(() => {
+    if (messages.length > 0 && scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+  const streamChat = async (userMessage) => {
+    var _a2, _b2, _c;
+    const userMsg = { role: "user", content: userMessage };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
+    setInput("");
+    let assistantContent = "";
+    try {
+      const response = await fetch(CHAT_URL$1, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cnpjYXhwaXlobmlkd2pwYXB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzQ0MTQsImV4cCI6MjA3NDA1MDQxNH0.eYpQzQciIpNWFoYXHyvk4FcuDXfVGx8UTLu190TevPU"}`
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMsg],
+          context
+        })
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to get response");
+      }
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+        let newlineIndex;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = (_c = (_b2 = (_a2 = parsed.choices) == null ? void 0 : _a2[0]) == null ? void 0 : _b2.delta) == null ? void 0 : _c.content;
+            if (content) {
+              assistantContent += content;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "assistant", content: assistantContent };
+                return updated;
+              });
+            }
+          } catch {
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast$1.error(error instanceof Error ? error.message : "Failed to get response");
+      setMessages((prev) => prev.filter((_, i) => i < prev.length - 1 || prev[i].content !== ""));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSend = () => {
+    if (!input.trim() || isLoading) return;
+    streamChat(input.trim());
+  };
+  const handleQuickQuestion = (question) => {
+    if (isLoading) return;
+    streamChat(question);
+  };
+  return /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border-2 border-emerald-500/30 rounded-lg overflow-hidden", children: /* @__PURE__ */ jsxs(Collapsible, { open: isOpen, onOpenChange: setIsOpen, children: [
+    /* @__PURE__ */ jsxs(CollapsibleTrigger, { className: "w-full flex items-center justify-between p-4 hover:bg-emerald-500/10 transition-colors", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx("div", { className: "p-1.5 bg-emerald-500/20 rounded-lg", children: /* @__PURE__ */ jsx(MessageCircle, { className: "h-5 w-5 text-emerald-500" }) }),
+        /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground block", children: "Funding Assistant" }),
+          /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: "Ask about grants, investors, crowdfunding..." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ChevronDown,
+        {
+          className: `h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs(CollapsibleContent, { children: [
+      messages.length === 0 && /* @__PURE__ */ jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: QUICK_QUESTIONS$1.map((q) => /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => handleQuickQuestion(q.question),
+          disabled: isLoading,
+          className: "text-xs px-3 py-1.5 rounded-full bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 transition-colors disabled:opacity-50",
+          children: [
+            /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3 inline mr-1" }),
+            q.label
+          ]
+        },
+        q.label
+      )) }) }),
+      messages.length > 0 && /* @__PURE__ */ jsx(ScrollArea, { className: "h-[300px] px-4", ref: scrollRef, children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pb-3", children: messages.map((msg, i) => /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: `text-sm rounded-lg p-3 ${msg.role === "user" ? "bg-emerald-500 text-white ml-6" : "bg-muted mr-4 prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground"}`,
+          children: msg.role === "user" ? msg.content : msg.content ? /* @__PURE__ */ jsx(
+            "div",
+            {
+              dangerouslySetInnerHTML: { __html: formatMarkdown$1(msg.content) },
+              className: "[&>p]:mb-2 [&>p:last-child]:mb-0 [&>h4]:text-foreground [&>h3]:text-foreground [&>h2]:text-foreground [&>ul]:my-2 [&>ol]:my-2 leading-relaxed"
+            }
+          ) : isLoading && i === messages.length - 1 && /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" })
+        },
+        i
+      )) }) }),
+      /* @__PURE__ */ jsx("div", { className: "p-4 pt-2 border-t border-border/50", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+        /* @__PURE__ */ jsx(
+          Input,
+          {
+            placeholder: "Ask about funding strategies...",
+            value: input,
+            onChange: (e) => setInput(e.target.value),
+            onKeyDown: (e) => e.key === "Enter" && handleSend(),
+            disabled: isLoading,
+            className: "bg-background"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          Button,
+          {
+            size: "icon",
+            onClick: handleSend,
+            disabled: !input.trim() || isLoading,
+            className: "bg-emerald-500 hover:bg-emerald-600",
+            children: isLoading ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx(Send, { className: "h-4 w-4" })
+          }
+        )
+      ] }) })
+    ] })
+  ] }) });
+}
+const STEPS$1 = [
+  { id: 1, title: "Project Basics", icon: FileText },
+  { id: 2, title: "Budget & Timeline", icon: DollarSign },
+  { id: 3, title: "Team & Assets", icon: Users },
+  { id: 4, title: "Funding Goals", icon: Target },
+  { id: 5, title: "Review & Export", icon: Sparkles }
+];
+const BUDGET_RANGES = [
+  { value: "micro", label: "Micro Budget", description: "Under $50,000", recommended: ["grants", "crowdfunding", "self"] },
+  { value: "low", label: "Low Budget", description: "$50,000 - $250,000", recommended: ["grants", "crowdfunding", "investors"] },
+  { value: "mid_low", label: "Mid-Low Budget", description: "$250,000 - $500,000", recommended: ["grants", "tax_incentives", "investors"] },
+  { value: "mid", label: "Mid Budget", description: "$500,000 - $1,000,000", recommended: ["tax_incentives", "presales", "investors"] },
+  { value: "mid_high", label: "Mid-High Budget", description: "$1M - $5M", recommended: ["tax_incentives", "presales", "gap_financing", "investors"] },
+  { value: "high", label: "High Budget", description: "$5M+", recommended: ["studio", "presales", "gap_financing", "investors"] }
+];
+const PROJECT_TYPES$6 = [
+  { value: "feature", label: "Feature Film" },
+  { value: "short", label: "Short Film" },
+  { value: "documentary", label: "Documentary" },
+  { value: "tv_series", label: "TV Series" },
+  { value: "web_series", label: "Web Series" },
+  { value: "pilot", label: "TV Pilot" }
+];
+const FUNDING_SOURCES = [
+  { id: "grants", label: "Grants & Fellowships", description: "Non-repayable funding from foundations" },
+  { id: "crowdfunding", label: "Crowdfunding", description: "Seed&Spark, Kickstarter, Indiegogo" },
+  { id: "tax_incentives", label: "Tax Incentives", description: "State/country production rebates" },
+  { id: "investors", label: "Private Investors", description: "Equity investment from individuals" },
+  { id: "presales", label: "Pre-Sales", description: "Selling distribution rights upfront" },
+  { id: "gap_financing", label: "Gap/Bridge Loans", description: "Loans against unsold territories" },
+  { id: "studio", label: "Studio/Streamer Deal", description: "Major studio or platform financing" },
+  { id: "self", label: "Self-Financed", description: "Personal or family funding" }
+];
+const TIMELINE_OPTIONS = [
+  { value: "immediate", label: "Immediate", description: "Ready to shoot within 3 months" },
+  { value: "short", label: "Short-term", description: "6-12 months to production" },
+  { value: "medium", label: "Medium-term", description: "1-2 years to production" },
+  { value: "development", label: "Development", description: "Still in early development" }
+];
+const initialData = {
+  // Project basics
+  projectTitle: "",
+  projectType: "",
+  logline: "",
+  genre: "",
+  // Budget & timeline
+  budgetRange: "",
+  timeline: "",
+  currentFunding: "",
+  // Team & assets
+  hasAttachedTalent: false,
+  hasDirector: false,
+  hasProducer: false,
+  hasCompletedScript: false,
+  hasPreviousCredits: false,
+  teamNotes: "",
+  // Funding goals
+  selectedSources: [],
+  targetAmount: "",
+  askingFor: "",
+  investorPitch: ""
+};
+function FundingStrategy() {
+  var _a2, _b2, _c, _d;
+  const [currentStep, setCurrentStep] = useState(1);
+  const [data, setData] = useState(initialData);
+  const [isExporting, setIsExporting] = useState(false);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+  const updateData = (updates) => {
+    setData((prev) => ({ ...prev, ...updates }));
+  };
+  const handleNext = () => {
+    if (currentStep < STEPS$1.length) {
+      setCurrentStep((prev) => prev + 1);
+    }
+  };
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep((prev) => prev - 1);
+    }
+  };
+  const handleExport = async () => {
+    if (!data.projectTitle) {
+      toast$1.error("Please enter a project title");
+      return;
+    }
+    setIsExporting(true);
+    try {
+      await exportFundingStrategyToPDF(data);
+      toast$1.success("Funding Strategy Brief exported!");
+    } catch (error) {
+      console.error("Export error:", error);
+      toast$1.error("Failed to export PDF");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+  const getRecommendedSources = () => {
+    const budget = BUDGET_RANGES.find((b) => b.value === data.budgetRange);
+    return (budget == null ? void 0 : budget.recommended) || [];
+  };
+  const progress = currentStep / STEPS$1.length * 100;
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/funding-strategy" }),
+    /* @__PURE__ */ jsx("div", { className: "border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10", children: /* @__PURE__ */ jsx("div", { className: "container max-w-5xl mx-auto px-4 py-4", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+      /* @__PURE__ */ jsx("div", { className: "flex items-center gap-4", children: /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("h1", { className: "text-xl font-bold flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(DollarSign, { className: "h-5 w-5 text-emerald-500" }),
+          "Film Funding Strategy"
+        ] }),
+        /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Create a professional funding brief for investors" })
+      ] }) }),
+      /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-emerald-600 border-emerald-600", children: "Smart Tool" })
+    ] }) }) }),
+    /* @__PURE__ */ jsxs("div", { className: "container max-w-5xl mx-auto px-4 py-8", children: [
+      /* @__PURE__ */ jsxs("div", { className: "mb-8", children: [
+        /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between mb-4", children: STEPS$1.map((step, index) => {
+          const Icon = step.icon;
+          const isActive = currentStep === step.id;
+          const isComplete = currentStep > step.id;
+          return /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setCurrentStep(step.id),
+                className: `flex items-center gap-2 px-4 py-2 rounded-full transition-all ${isActive ? "bg-emerald-500 text-white" : isComplete ? "bg-emerald-500/20 text-emerald-600" : "bg-muted text-muted-foreground"}`,
+                children: [
+                  isComplete ? /* @__PURE__ */ jsx(CheckCircle2, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(Icon, { className: "h-4 w-4" }),
+                  /* @__PURE__ */ jsx("span", { className: "hidden md:inline text-sm font-medium", children: step.title })
+                ]
+              }
+            ),
+            index < STEPS$1.length - 1 && /* @__PURE__ */ jsx("div", { className: `w-8 lg:w-16 h-0.5 mx-2 ${currentStep > step.id ? "bg-emerald-500" : "bg-muted"}` })
+          ] }, step.id);
+        }) }),
+        /* @__PURE__ */ jsx(Progress, { value: progress, className: "h-2" })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsx(
+        FundingChatAssistant,
+        {
+          context: {
+            projectTitle: data.projectTitle,
+            budgetRange: data.budgetRange,
+            timeline: data.timeline,
+            selectedSources: data.selectedSources,
+            currentStep
+          }
+        }
+      ) }),
+      /* @__PURE__ */ jsxs(Card$1, { className: "mb-8", children: [
+        /* @__PURE__ */ jsxs(CardHeader, { children: [
+          /* @__PURE__ */ jsx(CardTitle, { children: STEPS$1[currentStep - 1].title }),
+          /* @__PURE__ */ jsxs(CardDescription, { children: [
+            currentStep === 1 && "Tell us about your project",
+            currentStep === 2 && "Define your budget range and timeline",
+            currentStep === 3 && "What assets and team do you have?",
+            currentStep === 4 && "Select your funding strategy",
+            currentStep === 5 && "Review your strategy and export"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+          currentStep === 1 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "grid gap-4 md:grid-cols-2", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "projectTitle", children: "Project Title *" }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "projectTitle",
+                    placeholder: "Enter your project title",
+                    value: data.projectTitle,
+                    onChange: (e) => updateData({ projectTitle: e.target.value })
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "genre", children: "Genre" }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "genre",
+                    placeholder: "e.g., Drama, Horror, Comedy",
+                    value: data.genre,
+                    onChange: (e) => updateData({ genre: e.target.value })
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Project Type" }),
+              /* @__PURE__ */ jsx(
+                RadioGroup,
+                {
+                  value: data.projectType,
+                  onValueChange: (value) => updateData({ projectType: value }),
+                  className: "grid grid-cols-2 md:grid-cols-3 gap-3",
+                  children: PROJECT_TYPES$6.map((type) => /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-2", children: [
+                    /* @__PURE__ */ jsx(RadioGroupItem, { value: type.value, id: type.value }),
+                    /* @__PURE__ */ jsx(Label, { htmlFor: type.value, className: "cursor-pointer", children: type.label })
+                  ] }, type.value))
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "logline", children: "Logline" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "logline",
+                  placeholder: "One sentence that captures your story",
+                  value: data.logline,
+                  onChange: (e) => updateData({ logline: e.target.value }),
+                  rows: 3
+                }
+              )
+            ] })
+          ] }),
+          currentStep === 2 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Budget Range *" }),
+              /* @__PURE__ */ jsx(
+                RadioGroup,
+                {
+                  value: data.budgetRange,
+                  onValueChange: (value) => updateData({ budgetRange: value }),
+                  className: "grid gap-3",
+                  children: BUDGET_RANGES.map((budget) => /* @__PURE__ */ jsx(
+                    "div",
+                    {
+                      className: `flex items-center justify-between p-4 rounded-lg border cursor-pointer transition-all ${data.budgetRange === budget.value ? "border-emerald-500 bg-emerald-500/10" : "border-border hover:border-muted-foreground"}`,
+                      children: /* @__PURE__ */ jsxs("div", { className: "flex items-center space-x-3", children: [
+                        /* @__PURE__ */ jsx(RadioGroupItem, { value: budget.value, id: budget.value }),
+                        /* @__PURE__ */ jsxs("div", { children: [
+                          /* @__PURE__ */ jsx(Label, { htmlFor: budget.value, className: "cursor-pointer font-medium", children: budget.label }),
+                          /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: budget.description })
+                        ] })
+                      ] })
+                    },
+                    budget.value
+                  ))
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+              /* @__PURE__ */ jsx(Label, { children: "Production Timeline" }),
+              /* @__PURE__ */ jsx(
+                RadioGroup,
+                {
+                  value: data.timeline,
+                  onValueChange: (value) => updateData({ timeline: value }),
+                  className: "grid md:grid-cols-2 gap-3",
+                  children: TIMELINE_OPTIONS.map((option) => /* @__PURE__ */ jsxs(
+                    "div",
+                    {
+                      className: `flex items-center p-4 rounded-lg border cursor-pointer transition-all ${data.timeline === option.value ? "border-emerald-500 bg-emerald-500/10" : "border-border hover:border-muted-foreground"}`,
+                      children: [
+                        /* @__PURE__ */ jsx(RadioGroupItem, { value: option.value, id: `timeline-${option.value}`, className: "mr-3" }),
+                        /* @__PURE__ */ jsxs("div", { children: [
+                          /* @__PURE__ */ jsx(Label, { htmlFor: `timeline-${option.value}`, className: "cursor-pointer font-medium", children: option.label }),
+                          /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: option.description })
+                        ] })
+                      ]
+                    },
+                    option.value
+                  ))
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "currentFunding", children: "Current Funding Secured" }),
+              /* @__PURE__ */ jsx(
+                Input,
+                {
+                  id: "currentFunding",
+                  placeholder: "e.g., $25,000 or 20%",
+                  value: data.currentFunding,
+                  onChange: (e) => updateData({ currentFunding: e.target.value })
+                }
+              )
+            ] })
+          ] }),
+          currentStep === 3 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+              /* @__PURE__ */ jsx(Label, { children: "What do you have in place? (Check all that apply)" }),
+              /* @__PURE__ */ jsx("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                { key: "hasCompletedScript", label: "Completed Script" },
+                { key: "hasDirector", label: "Attached Director" },
+                { key: "hasProducer", label: "Attached Producer" },
+                { key: "hasAttachedTalent", label: "Attached Talent/Cast" },
+                { key: "hasPreviousCredits", label: "Team Has Previous Credits" }
+              ].map((item) => /* @__PURE__ */ jsxs(
+                "div",
+                {
+                  className: `flex items-center p-4 rounded-lg border cursor-pointer transition-all ${data[item.key] ? "border-emerald-500 bg-emerald-500/10" : "border-border hover:border-muted-foreground"}`,
+                  onClick: () => updateData({ [item.key]: !data[item.key] }),
+                  children: [
+                    /* @__PURE__ */ jsx(
+                      Checkbox,
+                      {
+                        checked: data[item.key],
+                        onCheckedChange: (checked) => updateData({ [item.key]: checked }),
+                        className: "mr-3"
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(Label, { className: "cursor-pointer", children: item.label })
+                  ]
+                },
+                item.key
+              )) })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "teamNotes", children: "Team Notes (Optional)" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "teamNotes",
+                  placeholder: "Any additional information about your team, previous work, or notable attachments...",
+                  value: data.teamNotes,
+                  onChange: (e) => updateData({ teamNotes: e.target.value }),
+                  rows: 4
+                }
+              )
+            ] })
+          ] }),
+          currentStep === 4 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+                /* @__PURE__ */ jsx(Label, { children: "Select Funding Sources" }),
+                data.budgetRange && /* @__PURE__ */ jsx(Badge, { variant: "outline", className: "text-emerald-600", children: "Recommended sources highlighted" })
+              ] }),
+              /* @__PURE__ */ jsx("div", { className: "grid md:grid-cols-2 gap-3", children: FUNDING_SOURCES.map((source) => {
+                const isRecommended = getRecommendedSources().includes(source.id);
+                const isSelected = data.selectedSources.includes(source.id);
+                return /* @__PURE__ */ jsxs(
+                  "div",
+                  {
+                    className: `flex items-center p-4 rounded-lg border cursor-pointer transition-all ${isSelected ? "border-emerald-500 bg-emerald-500/10" : isRecommended ? "border-emerald-500/50 bg-emerald-500/5" : "border-border hover:border-muted-foreground"}`,
+                    onClick: () => {
+                      const newSources = isSelected ? data.selectedSources.filter((s) => s !== source.id) : [...data.selectedSources, source.id];
+                      updateData({ selectedSources: newSources });
+                    },
+                    children: [
+                      /* @__PURE__ */ jsx(
+                        Checkbox,
+                        {
+                          checked: isSelected,
+                          onCheckedChange: (checked) => {
+                            const newSources = checked ? [...data.selectedSources, source.id] : data.selectedSources.filter((s) => s !== source.id);
+                            updateData({ selectedSources: newSources });
+                          },
+                          className: "mr-3"
+                        }
+                      ),
+                      /* @__PURE__ */ jsxs("div", { className: "flex-1", children: [
+                        /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                          /* @__PURE__ */ jsx(Label, { className: "cursor-pointer font-medium", children: source.label }),
+                          isRecommended && /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "text-xs", children: "Recommended" })
+                        ] }),
+                        /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: source.description })
+                      ] })
+                    ]
+                  },
+                  source.id
+                );
+              }) })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "grid gap-4 md:grid-cols-2", children: [
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "targetAmount", children: "Target Amount to Raise" }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "targetAmount",
+                    placeholder: "e.g., $150,000",
+                    value: data.targetAmount,
+                    onChange: (e) => updateData({ targetAmount: e.target.value })
+                  }
+                )
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "askingFor", children: "What You're Asking For" }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "askingFor",
+                    placeholder: "e.g., Equity investment, Executive Producer credit",
+                    value: data.askingFor,
+                    onChange: (e) => updateData({ askingFor: e.target.value })
+                  }
+                )
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+              /* @__PURE__ */ jsx(Label, { htmlFor: "investorPitch", children: "Key Message for Investors (Optional)" }),
+              /* @__PURE__ */ jsx(
+                Textarea,
+                {
+                  id: "investorPitch",
+                  placeholder: "What makes this project a good investment? Why now?",
+                  value: data.investorPitch,
+                  onChange: (e) => updateData({ investorPitch: e.target.value }),
+                  rows: 4
+                }
+              )
+            ] })
+          ] }),
+          currentStep === 5 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+            /* @__PURE__ */ jsxs("div", { className: "bg-muted/50 rounded-lg p-6 space-y-4", children: [
+              /* @__PURE__ */ jsx("h3", { className: "font-semibold text-lg", children: "Strategy Summary" }),
+              /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Project" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-medium", children: data.projectTitle || "Not specified" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Type" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-medium", children: ((_a2 = PROJECT_TYPES$6.find((t) => t.value === data.projectType)) == null ? void 0 : _a2.label) || "Not specified" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Budget Range" }),
+                  /* @__PURE__ */ jsxs("p", { className: "font-medium", children: [
+                    ((_b2 = BUDGET_RANGES.find((b) => b.value === data.budgetRange)) == null ? void 0 : _b2.label) || "Not specified",
+                    data.budgetRange && ` (${(_c = BUDGET_RANGES.find((b) => b.value === data.budgetRange)) == null ? void 0 : _c.description})`
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Timeline" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-medium", children: ((_d = TIMELINE_OPTIONS.find((t) => t.value === data.timeline)) == null ? void 0 : _d.label) || "Not specified" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Target Raise" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-medium", children: data.targetAmount || "Not specified" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Current Funding" }),
+                  /* @__PURE__ */ jsx("p", { className: "font-medium", children: data.currentFunding || "None specified" })
+                ] })
+              ] }),
+              data.selectedSources.length > 0 && /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mb-2", children: "Selected Funding Sources" }),
+                /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: data.selectedSources.map((sourceId) => {
+                  const source = FUNDING_SOURCES.find((s) => s.id === sourceId);
+                  return /* @__PURE__ */ jsx(Badge, { variant: "secondary", children: source == null ? void 0 : source.label }, sourceId);
+                }) })
+              ] }),
+              data.logline && /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Logline" }),
+                /* @__PURE__ */ jsx("p", { className: "font-medium", children: data.logline })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-6", children: [
+              /* @__PURE__ */ jsxs("h3", { className: "font-semibold text-emerald-600 mb-2 flex items-center gap-2", children: [
+                /* @__PURE__ */ jsx(Download, { className: "h-5 w-5" }),
+                "Export Your Funding Strategy Brief"
+              ] }),
+              /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mb-4", children: "Download a professional PDF document you can share with potential investors, donors, or grant applications. Includes your project overview, funding strategy, and recommended resources." }),
+              /* @__PURE__ */ jsx(
+                Button,
+                {
+                  onClick: handleExport,
+                  disabled: isExporting,
+                  className: "bg-emerald-600 hover:bg-emerald-700",
+                  children: isExporting ? /* @__PURE__ */ jsx(Fragment, { children: "Generating PDF..." }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                    "Download Funding Strategy Brief"
+                  ] })
+                }
+              )
+            ] })
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "flex justify-between", children: [
+        /* @__PURE__ */ jsxs(
+          Button,
+          {
+            variant: "outline",
+            onClick: handleBack,
+            disabled: currentStep === 1,
+            children: [
+              /* @__PURE__ */ jsx(ArrowLeft, { className: "h-4 w-4 mr-2" }),
+              "Back"
+            ]
+          }
+        ),
+        currentStep < STEPS$1.length ? /* @__PURE__ */ jsxs(Button, { onClick: handleNext, children: [
+          "Next",
+          /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4 ml-2" })
+        ] }) : /* @__PURE__ */ jsxs(
+          Button,
+          {
+            onClick: handleExport,
+            disabled: isExporting,
+            className: "bg-emerald-600 hover:bg-emerald-700",
+            children: [
+              isExporting ? "Generating..." : "Download PDF",
+              /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 ml-2" })
+            ]
+          }
+        )
+      ] })
+    ] })
+  ] });
+}
+const GLOSSARY_TERMS = [
+  // Distribution Models
+  { term: "VOD", definition: "Video on Demand - Content available for viewers to watch whenever they choose, rather than at a scheduled broadcast time.", category: "Distribution Models" },
+  { term: "SVOD", definition: "Subscription Video on Demand - Viewers pay a recurring fee for unlimited access to a library of content (e.g., Netflix, Hulu, Disney+).", category: "Distribution Models" },
+  { term: "TVOD", definition: "Transactional Video on Demand - Viewers pay per title to rent or buy content (e.g., iTunes, Amazon Prime Video rentals).", category: "Distribution Models" },
+  { term: "AVOD", definition: "Advertising Video on Demand - Free content supported by advertisements (e.g., Tubi, Pluto TV free tiers).", category: "Distribution Models" },
+  { term: "FAST", definition: "Free Ad-Supported Streaming TV - Linear streaming channels with scheduled programming, supported by ads (e.g., Pluto TV channels, Roku Channel).", category: "Distribution Models" },
+  { term: "Theatrical", definition: "Traditional cinema/movie theater distribution where films are shown on the big screen before other release windows.", category: "Distribution Models" },
+  // Technical Terms
+  { term: "ProRes", definition: "Apple's professional video codec known for high quality and efficient editing. Common formats include ProRes 422, ProRes 422 HQ, and ProRes 4444.", category: "Technical" },
+  { term: "DNxHR", definition: "Avid's professional video codec, similar to ProRes. Used widely in post-production for high-quality intermediate files.", category: "Technical" },
+  { term: "IMF", definition: "Interoperable Master Format - A standardized file format for delivering master content to multiple platforms. Preferred by Netflix and other major streamers.", category: "Technical" },
+  { term: "M&E Track", definition: "Music & Effects Track - An audio mix containing only music and sound effects, without dialogue. Essential for international dubbing.", category: "Technical" },
+  { term: "Textless Elements", definition: "Clean versions of shots containing on-screen text (titles, credits, graphics) without the text. Needed for foreign language versions.", category: "Technical" },
+  { term: "QC", definition: "Quality Control - Technical review process to ensure video and audio meet platform specifications. Checks for issues like audio sync, color, and encoding errors.", category: "Technical" },
+  { term: "Captions/CC", definition: "Closed Captions - Text overlay of dialogue and sound descriptions that can be turned on/off. Required for accessibility compliance.", category: "Technical" },
+  { term: "SDH", definition: "Subtitles for the Deaf and Hard of Hearing - Similar to closed captions but formatted as subtitles. Includes speaker identification and sound descriptions.", category: "Technical" },
+  { term: "Master", definition: "The final, highest-quality version of your film from which all distribution copies are made. Also called the 'delivery master.'", category: "Technical" },
+  { term: "Mezzanine", definition: "A high-quality intermediate file format used for transcoding to various delivery formats. Lower than master quality but still broadcast-grade.", category: "Technical" },
+  { term: "Frame Rate", definition: "The number of individual frames displayed per second. Common rates: 23.976fps (film), 24fps, 25fps (PAL), 29.97fps (NTSC), 30fps.", category: "Technical" },
+  { term: "Resolution", definition: "The dimensions of the video image. HD (1920x1080), 4K/UHD (3840x2160), 2K (2048x1080).", category: "Technical" },
+  { term: "Stereo 2.0", definition: "Standard two-channel audio (left and right). The minimum audio format required by most platforms.", category: "Technical" },
+  { term: "5.1 Surround", definition: "Six-channel surround sound: front left, center, front right, rear left, rear right, and subwoofer (LFE). Standard for theatrical and premium streaming.", category: "Technical" },
+  { term: "7.1 Surround", definition: "Eight-channel surround sound adding two additional side channels. Used for premium theatrical and home theater experiences.", category: "Technical" },
+  { term: "Audio Stems", definition: "Separate audio tracks for dialogue, music, and effects that can be mixed independently. Useful for re-versioning and international releases.", category: "Technical" },
+  // Legal Terms
+  { term: "Chain of Title", definition: "Legal documentation proving ownership of all rights in a film, from original creation through current ownership. A deal-killer if incomplete.", category: "Legal" },
+  { term: "E&O Insurance", definition: "Errors & Omissions Insurance - Protects against claims of copyright infringement, defamation, or rights violations. Required by most distributors.", category: "Legal" },
+  { term: "Music Clearances", definition: "Legal permissions to use copyrighted music in your film. Includes sync rights (to use with picture) and master rights (to use specific recording).", category: "Legal" },
+  { term: "Cue Sheet", definition: "A detailed log of all music used in a film, including title, composer, publisher, timing, and usage type. Required for royalty payments.", category: "Legal" },
+  { term: "Talent Releases", definition: "Legal agreements granting permission to use a person's likeness in your film. Essential for all on-screen performers.", category: "Legal" },
+  { term: "Location Releases", definition: "Legal agreements granting permission to film at and depict a specific location in your finished film.", category: "Legal" },
+  { term: "Exclusive Rights", definition: "Granting a single distributor/platform the sole right to distribute your film in specified territories for a set period.", category: "Legal" },
+  { term: "Non-Exclusive Rights", definition: "Allowing multiple distributors/platforms to distribute your film simultaneously. Offers flexibility but often lower advances.", category: "Legal" },
+  // Business Terms
+  { term: "Logline", definition: "A one or two-sentence summary of your film that captures the central conflict and hooks the reader. Essential for pitching.", category: "Business" },
+  { term: "Synopsis", definition: "A summary of your film's plot. Short synopsis (1-2 paragraphs) for marketing; long synopsis (1-3 pages) for buyers.", category: "Business" },
+  { term: "Comps", definition: "Comparable Titles - Successful films similar to yours in genre, tone, or audience. Used to demonstrate market potential (e.g., 'Jaws meets Alien').", category: "Business" },
+  { term: "Key Art", definition: "The primary marketing image for your film, typically the poster design. Used across all promotional materials and platforms.", category: "Business" },
+  { term: "Press Kit", definition: "A collection of promotional materials including synopsis, bios, stills, poster, trailer link, and press coverage. Also called EPK (Electronic Press Kit).", category: "Business" },
+  { term: "Aggregator", definition: "A company that delivers content to multiple platforms on behalf of filmmakers. They handle encoding, metadata, and platform relationships for a fee.", category: "Business" },
+  { term: "Distributor", definition: "A company that acquires rights to your film and handles marketing, sales, and delivery to platforms/theaters. May pay advances or work on revenue share.", category: "Business" },
+  { term: "Sales Agent", definition: "Represents your film to distributors and buyers worldwide. Takes a commission on sales. Often works festivals and markets.", category: "Business" },
+  { term: "Territories", definition: "Geographic regions where distribution rights are granted (e.g., North America, UK, Worldwide). Rights are often sold territory by territory.", category: "Business" },
+  { term: "Term", definition: "The length of time a distribution agreement is in effect, typically measured in years (e.g., 7-year term, 10-year term).", category: "Business" },
+  { term: "MG / Advance", definition: "Minimum Guarantee - An upfront payment from a distributor against future earnings. Recouped before you see additional revenue.", category: "Business" },
+  { term: "Revenue Share", definition: "A distribution model where earnings are split between filmmaker and distributor/platform, often after expenses are recouped.", category: "Business" },
+  // Roles
+  { term: "DP", definition: "Director of Photography (also Cinematographer) - The head of the camera and lighting departments, responsible for the visual look of the film.", category: "Roles" }
+];
+function DistributionGlossary() {
+  const [isOpen, setIsOpen] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const filteredTerms = GLOSSARY_TERMS.filter(
+    (item) => item.term.toLowerCase().includes(searchQuery.toLowerCase()) || item.definition.toLowerCase().includes(searchQuery.toLowerCase())
+  ).sort((a, b) => a.term.localeCompare(b.term));
+  const groupedTerms = filteredTerms.reduce((acc, term) => {
+    if (!acc[term.category]) {
+      acc[term.category] = [];
+    }
+    acc[term.category].push(term);
+    return acc;
+  }, {});
+  const categoryOrder = ["Distribution Models", "Technical", "Legal", "Business", "Roles"];
+  return /* @__PURE__ */ jsx("div", { className: "bg-amber-500/5 border-2 border-amber-500/30 rounded-lg overflow-hidden", children: /* @__PURE__ */ jsxs(Collapsible, { open: isOpen, onOpenChange: setIsOpen, children: [
+    /* @__PURE__ */ jsxs(CollapsibleTrigger, { className: "w-full flex items-center justify-between p-4 hover:bg-amber-500/10 transition-colors", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx("div", { className: "p-1.5 bg-amber-500/20 rounded-lg", children: /* @__PURE__ */ jsx(BookOpen, { className: "h-5 w-5 text-amber-500" }) }),
+        /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground block", children: "Distribution Terms" }),
+          /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: "40+ definitions" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ChevronDown,
+        {
+          className: `h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs(CollapsibleContent, { children: [
+      /* @__PURE__ */ jsx("div", { className: "px-4 pb-2", children: /* @__PURE__ */ jsxs("div", { className: "relative", children: [
+        /* @__PURE__ */ jsx(Search, { className: "absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" }),
+        /* @__PURE__ */ jsx(
+          Input,
+          {
+            placeholder: "Search terms...",
+            value: searchQuery,
+            onChange: (e) => setSearchQuery(e.target.value),
+            className: "pl-9 bg-background"
+          }
+        )
+      ] }) }),
+      /* @__PURE__ */ jsx(ScrollArea, { className: "h-[400px] px-4 pb-4", children: filteredTerms.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-sm py-4 text-center", children: "No matching terms found" }) : /* @__PURE__ */ jsx("div", { className: "space-y-4", children: categoryOrder.map((category) => {
+        const terms = groupedTerms[category];
+        if (!terms || terms.length === 0) return null;
+        return /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("h4", { className: "text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2", children: category }),
+          /* @__PURE__ */ jsx("div", { className: "space-y-3", children: terms.map((item) => /* @__PURE__ */ jsxs(
+            "div",
+            {
+              className: "bg-background/50 rounded-md p-3 border border-border/50",
+              children: [
+                /* @__PURE__ */ jsx("dt", { className: "font-semibold text-primary text-sm", children: item.term }),
+                /* @__PURE__ */ jsx("dd", { className: "text-muted-foreground text-sm mt-1 leading-relaxed", children: item.definition })
+              ]
+            },
+            item.term
+          )) })
+        ] }, category);
+      }) }) })
+    ] })
+  ] }) });
+}
+const QUICK_QUESTIONS = [
+  { label: "Help with logline", question: "Help me write a compelling logline for my film. What makes a great logline?" },
+  { label: "Suggest comps", question: "How do I choose good comparable titles (comps) for my film? What should I consider?" },
+  { label: "E&O Insurance", question: "What is E&O insurance and why do I need it for distribution?" },
+  { label: "Chain of Title", question: "What documents do I need for a complete chain of title?" }
+];
+const CHAT_URL = `${"https://bwrzcaxpiyhnidwjpapt.supabase.co"}/functions/v1/distribution-assistant`;
+function formatMarkdown(text) {
+  if (!text) return "";
+  let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/^### (.+)$/gm, '<h4 class="font-semibold text-base mt-3 mb-1">$1</h4>').replace(/^## (.+)$/gm, '<h3 class="font-semibold text-lg mt-3 mb-1">$1</h3>').replace(/^# (.+)$/gm, '<h2 class="font-bold text-xl mt-4 mb-2">$1</h2>').replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold">$1</strong>').replace(new RegExp("(?<!\\*)\\*([^*]+)\\*(?!\\*)", "g"), "<em>$1</em>").replace(/^[\-\*] (.+)$/gm, '<li class="ml-4 list-disc">$1</li>').replace(/^\d+\. (.+)$/gm, '<li class="ml-4 list-decimal">$1</li>').replace(/(<li class="ml-4 list-disc">.*<\/li>\n?)+/g, '<ul class="my-2 space-y-1">$&</ul>').replace(/(<li class="ml-4 list-decimal">.*<\/li>\n?)+/g, '<ol class="my-2 space-y-1">$&</ol>').replace(/`([^`]+)`/g, '<code class="bg-background/50 px-1 py-0.5 rounded text-xs">$1</code>').replace(/\n\n+/g, '</p><p class="mb-2">').replace(/\n/g, "<br/>");
+  if (!html.startsWith("<h") && !html.startsWith("<ul") && !html.startsWith("<ol")) {
+    html = '<p class="mb-2">' + html + "</p>";
+  }
+  return DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ["h2", "h3", "h4", "p", "strong", "em", "ul", "ol", "li", "br", "code"],
+    ALLOWED_ATTR: ["class"]
+  });
+}
+function DistributionChatAssistant({ context }) {
+  const [isOpen, setIsOpen] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const scrollRef = useRef(null);
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+  const streamChat = async (userMessage) => {
+    var _a2, _b2, _c;
+    const userMsg = { role: "user", content: userMessage };
+    setMessages((prev) => [...prev, userMsg]);
+    setIsLoading(true);
+    setInput("");
+    let assistantContent = "";
+    try {
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cnpjYXhwaXlobmlkd2pwYXB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzQ0MTQsImV4cCI6MjA3NDA1MDQxNH0.eYpQzQciIpNWFoYXHyvk4FcuDXfVGx8UTLu190TevPU"}`
+        },
+        body: JSON.stringify({
+          messages: [...messages, userMsg],
+          context
+        })
+      });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || "Failed to get response");
+      }
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      setMessages((prev) => [...prev, { role: "assistant", content: "" }]);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+        let newlineIndex;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = (_c = (_b2 = (_a2 = parsed.choices) == null ? void 0 : _a2[0]) == null ? void 0 : _b2.delta) == null ? void 0 : _c.content;
+            if (content) {
+              assistantContent += content;
+              setMessages((prev) => {
+                const updated = [...prev];
+                updated[updated.length - 1] = { role: "assistant", content: assistantContent };
+                return updated;
+              });
+            }
+          } catch {
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast$1.error(error instanceof Error ? error.message : "Failed to get response");
+      setMessages((prev) => prev.filter((_, i) => i < prev.length - 1 || prev[i].content !== ""));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  const handleSend = () => {
+    if (!input.trim() || isLoading) return;
+    streamChat(input.trim());
+  };
+  const handleQuickQuestion = (question) => {
+    if (isLoading) return;
+    streamChat(question);
+  };
+  return /* @__PURE__ */ jsx("div", { className: "bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-lg overflow-hidden", children: /* @__PURE__ */ jsxs(Collapsible, { open: isOpen, onOpenChange: setIsOpen, children: [
+    /* @__PURE__ */ jsxs(CollapsibleTrigger, { className: "w-full flex items-center justify-between p-4 hover:bg-primary/10 transition-colors", children: [
+      /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx("div", { className: "p-1.5 bg-primary/20 rounded-lg", children: /* @__PURE__ */ jsx(MessageCircle, { className: "h-5 w-5 text-primary" }) }),
+        /* @__PURE__ */ jsxs("div", { className: "text-left", children: [
+          /* @__PURE__ */ jsx("span", { className: "font-semibold text-foreground block", children: "Distribution Assistant" }),
+          /* @__PURE__ */ jsx("span", { className: "text-xs text-muted-foreground", children: "Ask about loglines, comps, terms..." })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ChevronDown,
+        {
+          className: `h-5 w-5 text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs(CollapsibleContent, { children: [
+      messages.length === 0 && /* @__PURE__ */ jsx("div", { className: "px-4 pb-3", children: /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2", children: QUICK_QUESTIONS.map((q) => /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => handleQuickQuestion(q.question),
+          disabled: isLoading,
+          className: "text-xs px-3 py-1.5 rounded-full bg-primary/20 text-primary hover:bg-primary/30 transition-colors disabled:opacity-50",
+          children: [
+            /* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3 inline mr-1" }),
+            q.label
+          ]
+        },
+        q.label
+      )) }) }),
+      messages.length > 0 && /* @__PURE__ */ jsx(ScrollArea, { className: "h-[300px] px-4", ref: scrollRef, children: /* @__PURE__ */ jsx("div", { className: "space-y-3 pb-3", children: messages.map((msg, i) => /* @__PURE__ */ jsx(
+        "div",
+        {
+          className: `text-sm rounded-lg p-3 ${msg.role === "user" ? "bg-primary text-primary-foreground ml-6" : "bg-muted mr-4 prose prose-sm max-w-none prose-headings:text-foreground prose-p:text-foreground prose-li:text-foreground prose-strong:text-foreground"}`,
+          children: msg.role === "user" ? msg.content : msg.content ? /* @__PURE__ */ jsx(
+            "div",
+            {
+              dangerouslySetInnerHTML: { __html: formatMarkdown(msg.content) },
+              className: "[&>p]:mb-2 [&>p:last-child]:mb-0 [&>h4]:text-foreground [&>h3]:text-foreground [&>h2]:text-foreground [&>ul]:my-2 [&>ol]:my-2 leading-relaxed"
+            }
+          ) : isLoading && i === messages.length - 1 && /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" })
+        },
+        i
+      )) }) }),
+      /* @__PURE__ */ jsx("div", { className: "p-4 pt-2 border-t border-border/50", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+        /* @__PURE__ */ jsx(
+          Input,
+          {
+            placeholder: "Ask about distribution...",
+            value: input,
+            onChange: (e) => setInput(e.target.value),
+            onKeyDown: (e) => e.key === "Enter" && handleSend(),
+            disabled: isLoading,
+            className: "bg-background"
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          Button,
+          {
+            size: "icon",
+            onClick: handleSend,
+            disabled: !input.trim() || isLoading,
+            children: isLoading ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }) : /* @__PURE__ */ jsx(Send, { className: "h-4 w-4" })
+          }
+        )
+      ] }) })
+    ] })
+  ] }) });
+}
+const PLATFORMS$1 = {
+  netflix: "Netflix (SVOD)",
+  hulu: "Hulu (SVOD)",
+  apple_tv: "Apple TV / iTunes (TVOD)",
+  amazon_prime: "Amazon Prime Video (SVOD/TVOD)",
+  roku: "Roku Channel (AVOD/FAST)",
+  tubi: "Tubi (AVOD)",
+  pluto: "Pluto TV (FAST)",
+  peacock: "Peacock (SVOD/AVOD)"
+};
+const getStatusLabel = (status) => {
+  const map = {
+    complete: "Complete",
+    partial: "Partial",
+    missing: "Missing",
+    unknown: "Unknown",
+    in_place: "In Place",
+    planned: "Planned",
+    yes: "Yes",
+    no: "No",
+    in_progress: "In Progress"
+  };
+  return map[status] || status || "Not Set";
+};
+const getScoreColor = (score) => {
+  if (score >= 80) return [34, 197, 94];
+  if (score >= 60) return [59, 130, 246];
+  if (score >= 40) return [245, 158, 11];
+  return [239, 68, 68];
+};
+const exportDistributionReadinessToPDF = (data) => {
+  var _a2;
+  try {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "letter"
+    });
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+    const margin = 20;
+    const contentWidth = pageWidth - margin * 2;
+    let yPosition = margin;
+    const addNewPageIfNeeded = (requiredSpace = 20) => {
+      if (yPosition > pageHeight - margin - requiredSpace) {
+        doc.addPage();
+        yPosition = margin;
+      }
+    };
+    const addFooter = (pageNum, totalPages2) => {
+      doc.setFontSize(8);
+      doc.setTextColor(128, 128, 128);
+      doc.text(
+        `Generated by Filmmaker Genius | ${(/* @__PURE__ */ new Date()).toLocaleDateString()}`,
+        margin,
+        pageHeight - 10
+      );
+      doc.text(
+        `Page ${pageNum} of ${totalPages2}`,
+        pageWidth - margin,
+        pageHeight - 10,
+        { align: "right" }
+      );
+    };
+    if (data.companyLogo) {
+      try {
+        const logoWidth = 50;
+        const logoHeight = 15;
+        const logoX = (pageWidth - logoWidth) / 2;
+        doc.addImage(data.companyLogo, "AUTO", logoX, yPosition, logoWidth, logoHeight);
+        yPosition += logoHeight + 10;
+      } catch (error) {
+        console.error("Error adding logo to PDF:", error);
+      }
+    }
+    doc.setFontSize(28);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    const headerColor = [31, 41, 55];
+    doc.setFillColor(...headerColor);
+    doc.rect(0, yPosition - 5, pageWidth, 50, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.text("Distribution Readiness", pageWidth / 2, yPosition + 12, { align: "center" });
+    doc.setFontSize(18);
+    doc.text("Report", pageWidth / 2, yPosition + 22, { align: "center" });
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(156, 163, 175);
+    doc.text(data.projectTitle || "Untitled Project", pageWidth / 2, yPosition + 35, { align: "center" });
+    yPosition += 60;
+    const scoreColor = getScoreColor(data.finalScore);
+    doc.setFillColor(...scoreColor);
+    doc.circle(pageWidth / 2, yPosition + 25, 25, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(36);
+    doc.setFont("helvetica", "bold");
+    doc.text(String(data.finalScore), pageWidth / 2, yPosition + 30, { align: "center" });
+    yPosition += 55;
+    doc.setFontSize(14);
+    doc.setTextColor(...scoreColor);
+    doc.text(data.readinessBand, pageWidth / 2, yPosition, { align: "center" });
+    yPosition += 20;
+    doc.setTextColor(0, 0, 0);
+    const colWidth = contentWidth / 3;
+    const pillars = [
+      { name: "Business", score: data.businessScore, color: [59, 130, 246] },
+      { name: "Legal", score: data.legalScore, color: [168, 85, 247] },
+      { name: "Technical", score: data.technicalScore, color: [20, 184, 166] }
+    ];
+    pillars.forEach((pillar, index) => {
+      const x = margin + colWidth * index + colWidth / 2;
+      doc.setFillColor(...pillar.color);
+      doc.rect(margin + colWidth * index + 5, yPosition, colWidth - 10, 30, "F");
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(24);
+      doc.setFont("helvetica", "bold");
+      doc.text(String(pillar.score), x, yPosition + 15, { align: "center" });
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      doc.text(pillar.name, x, yPosition + 24, { align: "center" });
+    });
+    yPosition += 45;
+    doc.setFillColor(249, 250, 251);
+    doc.rect(margin, yPosition, contentWidth, 35, "F");
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(10);
+    doc.setFont("helvetica", "bold");
+    doc.text("Project Summary", margin + 5, yPosition + 8);
+    doc.setFont("helvetica", "normal");
+    const summaryItems = [
+      `Type: ${data.projectType || "Not Set"}`,
+      `Runtime: ${data.runtimeMinutes || "N/A"} minutes`,
+      `Budget Tier: ${data.budgetTier || "Not Set"}`,
+      `Language: ${data.languagePrimary || "Not Set"}`,
+      `Platforms: ${data.platformsSelected.length} selected`
+    ];
+    let summaryY = yPosition + 15;
+    summaryItems.forEach((item, i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      doc.text(item, margin + 5 + col * (contentWidth / 2), summaryY + row * 6);
+    });
+    doc.addPage();
+    yPosition = margin;
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("Project Overview", margin, yPosition);
+    yPosition += 15;
+    if (data.logline) {
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Logline", margin, yPosition);
+      yPosition += 6;
+      doc.setFontSize(11);
+      doc.setFont("helvetica", "italic");
+      const loglineLines = doc.splitTextToSize(`"${data.logline}"`, contentWidth);
+      doc.text(loglineLines, margin, yPosition);
+      yPosition += loglineLines.length * 5 + 8;
+    }
+    if (data.synopsisShort) {
+      addNewPageIfNeeded(40);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Synopsis", margin, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      const synopsisLines = doc.splitTextToSize(data.synopsisShort, contentWidth);
+      doc.text(synopsisLines, margin, yPosition);
+      yPosition += synopsisLines.length * 4 + 8;
+    }
+    if (data.genres.length > 0 || data.toneKeywords.length > 0) {
+      addNewPageIfNeeded(25);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Genres & Tone", margin, yPosition);
+      yPosition += 6;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      if (data.genres.length > 0) {
+        doc.text(`Genres: ${data.genres.join(", ")}`, margin, yPosition);
+        yPosition += 5;
+      }
+      if (data.toneKeywords.length > 0) {
+        doc.text(`Tone: ${data.toneKeywords.join(", ")}`, margin, yPosition);
+        yPosition += 5;
+      }
+      yPosition += 8;
+    }
+    if (data.credits.length > 0) {
+      addNewPageIfNeeded(40);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Key Credits", margin, yPosition);
+      yPosition += 8;
+      const creditData = data.credits.map((c) => [
+        c.role || "",
+        c.personName || "",
+        c.characterName || "",
+        c.notableCredits || "",
+        c.imdbUrl || ""
+      ]);
+      doc.autoTable({
+        startY: yPosition,
+        head: [["Role", "Name", "Character", "Notable Credits", "IMDb"]],
+        body: creditData,
+        margin: { left: margin, right: margin },
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [31, 41, 55] },
+        theme: "grid",
+        columnStyles: { 4: { cellWidth: 45 } }
+      });
+      yPosition = doc.lastAutoTable.finalY + 10;
+    }
+    if (data.comps.length > 0) {
+      addNewPageIfNeeded(40);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("Comparable Titles", margin, yPosition);
+      yPosition += 8;
+      const compData = data.comps.map((c) => [c.title, c.year, c.why]);
+      doc.autoTable({
+        startY: yPosition,
+        head: [["Title", "Year", "Why It's Comparable"]],
+        body: compData,
+        margin: { left: margin, right: margin },
+        styles: { fontSize: 9 },
+        headStyles: { fillColor: [31, 41, 55] },
+        theme: "grid"
+      });
+      yPosition = doc.lastAutoTable.finalY + 10;
+    }
+    doc.addPage();
+    yPosition = margin;
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("Status & Warnings", margin, yPosition);
+    yPosition += 15;
+    if (data.hardStops.length > 0) {
+      doc.setFillColor(254, 226, 226);
+      doc.rect(margin, yPosition, contentWidth, 8 + data.hardStops.length * 8, "F");
+      doc.setTextColor(185, 28, 28);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("⚠ Deal Killers", margin + 5, yPosition + 6);
+      yPosition += 12;
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "normal");
+      data.hardStops.forEach((stop) => {
+        const lines = doc.splitTextToSize(`• ${stop}`, contentWidth - 10);
+        doc.text(lines, margin + 5, yPosition);
+        yPosition += lines.length * 5;
+      });
+      yPosition += 10;
+    } else {
+      doc.setFillColor(220, 252, 231);
+      doc.rect(margin, yPosition, contentWidth, 15, "F");
+      doc.setTextColor(22, 101, 52);
+      doc.setFontSize(12);
+      doc.setFont("helvetica", "bold");
+      doc.text("✓ No Deal Killers Detected", margin + 5, yPosition + 10);
+      yPosition += 25;
+    }
+    addNewPageIfNeeded(50);
+    doc.setTextColor(0, 0, 0);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Legal & Rights Status", margin, yPosition);
+    yPosition += 8;
+    const legalItems = [
+      ["Chain of Title", getStatusLabel(data.chainOfTitleStatus)],
+      ["Music Clearances", getStatusLabel(data.musicClearanceStatus)],
+      ["Talent/Location Releases", getStatusLabel(data.releasesStatus)],
+      ["E&O Insurance", getStatusLabel(data.eAndOStatus)]
+    ];
+    doc.autoTable({
+      startY: yPosition,
+      head: [["Item", "Status"]],
+      body: legalItems,
+      margin: { left: margin, right: margin },
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [168, 85, 247] },
+      theme: "grid",
+      columnStyles: { 0: { cellWidth: 80 } }
+    });
+    yPosition = doc.lastAutoTable.finalY + 15;
+    addNewPageIfNeeded(60);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Platform Readiness Checklists", margin, yPosition);
+    yPosition += 10;
+    if (data.platformsSelected.length === 0) {
+      doc.setFontSize(10);
+      doc.setFont("helvetica", "italic");
+      doc.text("No platforms selected.", margin, yPosition);
+      yPosition += 10;
+    } else {
+      data.platformsSelected.forEach((platformId) => {
+        addNewPageIfNeeded(40);
+        const platformLabel = PLATFORMS$1[platformId] || platformId;
+        doc.setFillColor(243, 244, 246);
+        doc.rect(margin, yPosition, contentWidth, 8, "F");
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(0, 0, 0);
+        doc.text(platformLabel, margin + 3, yPosition + 6);
+        yPosition += 12;
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "normal");
+        const checkItems = [
+          { label: "Trailer", ready: !!data.trailerFile },
+          { label: "Artwork/Metadata", ready: !!(data.posterFile || data.keyArtFile) },
+          { label: "Captions/CC", ready: data.captionsAvailable === "yes" },
+          { label: "Chain of Title", ready: data.chainOfTitleStatus === "complete" },
+          { label: "E&O Insurance", ready: data.eAndOStatus === "in_place" },
+          { label: "Master Available", ready: data.masterAvailable === "yes" },
+          { label: "QC Complete", ready: data.qcDone === "yes" }
+        ];
+        checkItems.forEach((item) => {
+          const icon = item.ready ? "✓" : "○";
+          doc.setTextColor(item.ready ? 22 : 156, item.ready ? 101 : 163, item.ready ? 52 : 175);
+          doc.text(`  ${icon} ${item.label}`, margin + 5, yPosition);
+          yPosition += 5;
+        });
+        yPosition += 8;
+      });
+    }
+    doc.addPage();
+    yPosition = margin;
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("Technical Deliverables", margin, yPosition);
+    yPosition += 15;
+    const techItems = [
+      ["Master Available", getStatusLabel(data.masterAvailable)],
+      ["Master Format", data.masterFormat || "Not Set"],
+      ["Master Resolution", data.masterResolution || "Not Set"],
+      ["Frame Rate", data.masterFrameRate || "Not Set"],
+      ["Audio Deliverables", data.audioDeliverables.join(", ") || "None"],
+      ["Captions Available", getStatusLabel(data.captionsAvailable)],
+      ["Subtitle Languages", data.subtitleLanguages.join(", ") || "None"],
+      ["Textless Elements", getStatusLabel(data.textlessElements)],
+      ["M&E Track", getStatusLabel(data.mAndETrack)],
+      ["QC Complete", getStatusLabel(data.qcDone)]
+    ];
+    doc.autoTable({
+      startY: yPosition,
+      head: [["Specification", "Value"]],
+      body: techItems,
+      margin: { left: margin, right: margin },
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [20, 184, 166] },
+      theme: "grid",
+      columnStyles: { 0: { cellWidth: 60 } }
+    });
+    yPosition = doc.lastAutoTable.finalY + 15;
+    addNewPageIfNeeded(40);
+    doc.setFontSize(14);
+    doc.setFont("helvetica", "bold");
+    doc.text("Marketing Assets", margin, yPosition);
+    yPosition += 8;
+    const assetItems = [
+      ["Trailer", data.trailerFile ? "Uploaded" : "Missing"],
+      ["Poster/Key Art", data.posterFile || data.keyArtFile ? "Uploaded" : "Missing"],
+      ["Press Kit", data.pressKitUrl || "Not Provided"]
+    ];
+    doc.autoTable({
+      startY: yPosition,
+      head: [["Asset", "Status"]],
+      body: assetItems,
+      margin: { left: margin, right: margin },
+      styles: { fontSize: 10 },
+      headStyles: { fillColor: [31, 41, 55] },
+      theme: "grid"
+    });
+    doc.addPage();
+    yPosition = margin;
+    doc.setFontSize(20);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(0, 0, 0);
+    doc.text("Recommended Next Steps", margin, yPosition);
+    yPosition += 15;
+    const nextSteps = [];
+    if (data.hardStops.length > 0) {
+      nextSteps.push("Address all deal-killers listed in this report before proceeding with platform outreach.");
+    }
+    if (data.captionsAvailable !== "yes") {
+      nextSteps.push("Complete captions/closed captions for your project. This is required by most major platforms.");
+    }
+    if (data.chainOfTitleStatus !== "complete") {
+      nextSteps.push("Finalize your chain of title documentation with qualified legal counsel.");
+    }
+    if (data.eAndOStatus === "missing") {
+      nextSteps.push("Obtain Errors & Omissions insurance - this is required for most distribution deals.");
+    }
+    if (!data.trailerFile) {
+      nextSteps.push("Create and prepare a professional trailer for marketing and platform submissions.");
+    }
+    if (data.masterAvailable !== "yes") {
+      nextSteps.push("Ensure your master file is properly archived and accessible for delivery.");
+    }
+    if (data.qcDone !== "yes") {
+      nextSteps.push("Complete quality control (QC) review of your final master.");
+    }
+    nextSteps.push("Research aggregators and distributors that specialize in your target platforms.");
+    nextSteps.push("Prepare platform-specific metadata packages and submission materials.");
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "normal");
+    nextSteps.forEach((step, index) => {
+      addNewPageIfNeeded(15);
+      doc.setFillColor(249, 250, 251);
+      const stepLines = doc.splitTextToSize(step, contentWidth - 20);
+      const boxHeight = 8 + stepLines.length * 4;
+      doc.rect(margin, yPosition, contentWidth, boxHeight, "F");
+      doc.setTextColor(0, 0, 0);
+      doc.setFont("helvetica", "bold");
+      doc.text(`${index + 1}.`, margin + 3, yPosition + 6);
+      doc.setFont("helvetica", "normal");
+      doc.text(stepLines, margin + 12, yPosition + 6);
+      yPosition += boxHeight + 4;
+    });
+    yPosition += 10;
+    addNewPageIfNeeded(20);
+    doc.setFontSize(8);
+    doc.setTextColor(128, 128, 128);
+    const disclaimer = "This report is for informational purposes only and does not constitute legal or business advice. Consult qualified professionals for specific guidance on distribution agreements and legal matters.";
+    const disclaimerLines = doc.splitTextToSize(disclaimer, contentWidth);
+    doc.text(disclaimerLines, margin, yPosition);
+    const totalPages = doc.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      addFooter(i, totalPages);
+    }
+    const fileName = `Distribution_Readiness_${((_a2 = data.projectTitle) == null ? void 0 : _a2.replace(/[^a-zA-Z0-9]/g, "_")) || "Report"}_${(/* @__PURE__ */ new Date()).toISOString().split("T")[0]}.pdf`;
+    doc.save(fileName);
+  } catch (error) {
+    console.error("PDF generation error:", error);
+    throw new Error("Failed to generate PDF report");
+  }
+};
+const PLATFORMS = [
+  { id: "netflix", label: "Netflix (SVOD)" },
+  { id: "hulu", label: "Hulu (SVOD)" },
+  { id: "apple_tv", label: "Apple TV / iTunes (TVOD)" },
+  { id: "amazon_prime", label: "Amazon Prime Video (SVOD/TVOD)" },
+  { id: "roku", label: "Roku Channel (AVOD/FAST)" },
+  { id: "tubi", label: "Tubi (AVOD)" },
+  { id: "pluto", label: "Pluto TV (FAST)" },
+  { id: "peacock", label: "Peacock (SVOD/AVOD)" }
+];
+const WIZARD_STEPS = [
+  { id: 1, title: "Project Setup", icon: Film },
+  { id: 2, title: "Target Platforms", icon: Target },
+  { id: 3, title: "Business Package", icon: FileText },
+  { id: 4, title: "Key Credits", icon: Users },
+  { id: 5, title: "Trailer Upload", icon: Video },
+  { id: 6, title: "Marketing Assets", icon: Image$1 },
+  { id: 7, title: "Legal & Rights", icon: Scale },
+  { id: 8, title: "Technical Deliverables", icon: Settings },
+  { id: 9, title: "Platform Forms", icon: Target },
+  { id: 10, title: "Review & Generate", icon: CheckCircle2 }
+];
+const MASTER_FORMAT_OPTIONS = [
+  { value: "prores_422", label: "ProRes 422" },
+  { value: "prores_422_hq", label: "ProRes 422 HQ" },
+  { value: "prores_4444", label: "ProRes 4444" },
+  { value: "prores_raw", label: "ProRes RAW" },
+  { value: "dnxhd", label: "DNxHD" },
+  { value: "dnxhr", label: "DNxHR" },
+  { value: "h264", label: "H.264" },
+  { value: "h265_hevc", label: "H.265/HEVC" },
+  { value: "imf", label: "IMF Package" },
+  { value: "dcp", label: "DCP" },
+  { value: "other", label: "Other" }
+];
+const MASTER_RESOLUTION_OPTIONS = [
+  { value: "1920x1080", label: "1920x1080 (HD)" },
+  { value: "2048x1080", label: "2048x1080 (2K DCI)" },
+  { value: "3840x2160", label: "3840x2160 (4K UHD)" },
+  { value: "4096x2160", label: "4096x2160 (4K DCI)" },
+  { value: "7680x4320", label: "7680x4320 (8K UHD)" },
+  { value: "other", label: "Other" }
+];
+const FRAME_RATE_OPTIONS = [
+  { value: "23.976", label: "23.976 fps (Film NTSC)" },
+  { value: "24", label: "24 fps (True Film)" },
+  { value: "25", label: "25 fps (PAL)" },
+  { value: "29.97", label: "29.97 fps (NTSC)" },
+  { value: "30", label: "30 fps" },
+  { value: "48", label: "48 fps" },
+  { value: "50", label: "50 fps" },
+  { value: "59.94", label: "59.94 fps" },
+  { value: "60", label: "60 fps" },
+  { value: "other", label: "Other" }
+];
+const initialFormData = {
+  projectTitle: "",
+  projectType: "",
+  budgetTier: "",
+  runtimeMinutes: "",
+  languagePrimary: "",
+  platformsSelected: [],
+  distributionGoal: "",
+  rightsOfferType: "",
+  territories: "",
+  termMonths: "",
+  logline: "",
+  synopsisShort: "",
+  synopsisLong: "",
+  genres: [],
+  toneKeywords: [],
+  comps: [],
+  credits: [],
+  trailerFile: null,
+  trailerLabel: "Official Trailer",
+  trailerNotes: "",
+  posterFile: null,
+  keyArtFile: null,
+  stillImages: [],
+  pressKitUrl: "",
+  chainOfTitleStatus: "",
+  musicClearanceStatus: "",
+  releasesStatus: "",
+  eAndOStatus: "",
+  knownClearanceRisks: [],
+  masterAvailable: "",
+  masterFormat: "",
+  masterResolution: "",
+  masterFrameRate: "",
+  audioDeliverables: [],
+  captionsAvailable: "",
+  subtitleLanguages: [],
+  textlessElements: "",
+  mAndETrack: "",
+  qcDone: "",
+  knownTechIssues: [],
+  platformForms: {},
+  confirmAccuracy: false,
+  generateOutputs: ["readiness_score", "missing_items_list", "platform_checklists"],
+  companyLogo: null,
+  emailRecipients: ""
+};
+function calculateBusinessScore(data) {
+  let score = 0;
+  if (data.logline) score += 10;
+  if (data.synopsisShort) score += 10;
+  if (data.genres.length > 0) score += 10;
+  if (data.comps.length >= 3) score += 10;
+  if (data.credits.some((c) => (c.role === "director" || c.role === "cast") && c.notableCredits)) score += 15;
+  if (data.trailerFile && (data.posterFile || data.keyArtFile)) score += 15;
+  if (data.pressKitUrl) score += 10;
+  if (data.rightsOfferType && data.rightsOfferType !== "unknown") score += 20;
+  return Math.min(100, score);
+}
+function calculateLegalScore(data) {
+  let score = 0;
+  const statusMap = { complete: 25, partial: 12, missing: 0 };
+  const clearanceMap = { complete: 20, partial: 10, missing: 0, unknown: 5 };
+  const eoMap = { in_place: 20, planned: 10, missing: 0 };
+  score += statusMap[data.chainOfTitleStatus] || 0;
+  score += clearanceMap[data.musicClearanceStatus] || 0;
+  score += clearanceMap[data.releasesStatus] || 0;
+  score += eoMap[data.eAndOStatus] || 0;
+  score += Math.max(0, 15 - data.knownClearanceRisks.length * 5);
+  return Math.min(100, score);
+}
+function calculateTechnicalScore(data) {
+  let score = 0;
+  const masterMap = { yes: 20, no: 0, unknown: 10 };
+  const captionMap = { yes: 20, in_progress: 10, no: 0 };
+  const yesNoMap = { yes: 10, no: 0, unknown: 5 };
+  score += masterMap[data.masterAvailable] || 0;
+  if (data.masterFormat) {
+    if (data.masterFormat.toLowerCase().includes("prores") || data.masterFormat.toLowerCase().includes("imf")) {
+      score += 15;
+    } else if (data.masterFormat.toLowerCase().includes("dnx")) {
+      score += 10;
+    } else {
+      score += 5;
+    }
+  }
+  if (data.audioDeliverables.includes("Stereo 2.0")) score += 15;
+  score += captionMap[data.captionsAvailable] || 0;
+  score += yesNoMap[data.textlessElements] || 0;
+  score += yesNoMap[data.mAndETrack] || 0;
+  score += yesNoMap[data.qcDone] || 0;
+  return Math.min(100, score);
+}
+function getReadinessBand(score) {
+  if (score < 40) return {
+    band: "Not Ready",
+    color: "text-red-500",
+    action: "Fix deal-killers first (legal + captions + master availability)."
+  };
+  if (score < 70) return {
+    band: "Developing",
+    color: "text-amber-500",
+    action: "Complete core deliverables and tighten business packaging."
+  };
+  if (score < 85) return {
+    band: "Ready-ish",
+    color: "text-blue-500",
+    action: "Platform-specific deliverables + aggregator/distributor outreach."
+  };
+  return {
+    band: "Delivery Ready",
+    color: "text-green-500",
+    action: "Proceed to aggregator/distributor intake or platform delivery path."
+  };
+}
+function DistributionReadiness() {
+  var _a2;
+  const [currentStep, setCurrentStep] = useState(1);
+  const [formData, setFormData] = useState(initialFormData);
+  const [showResults, setShowResults] = useState(false);
+  const [genresInput, setGenresInput] = useState(formData.genres.join(", "));
+  const [toneKeywordsInput, setToneKeywordsInput] = useState(formData.toneKeywords.join(", "));
+  const updateFormData = (updates) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
+  };
+  const nextStep = () => {
+    if (currentStep < 10) setCurrentStep(currentStep + 1);
+  };
+  const prevStep = () => {
+    if (currentStep > 1) setCurrentStep(currentStep - 1);
+  };
+  const handleGenerateReport = () => {
+    if (!formData.confirmAccuracy) {
+      toast$1.error("Please confirm the accuracy of your information");
+      return;
+    }
+    setShowResults(true);
+    toast$1.success("Distribution Readiness Report Generated!");
+  };
+  const businessScore = calculateBusinessScore(formData);
+  const legalScore = calculateLegalScore(formData);
+  const technicalScore = calculateTechnicalScore(formData);
+  const weights = formData.budgetTier === "small" ? { business: 40, legal: 35, technical: 25 } : formData.budgetTier === "high" ? { business: 30, legal: 35, technical: 35 } : { business: 35, legal: 35, technical: 30 };
+  const overallScore = Math.round(
+    (businessScore * weights.business + legalScore * weights.legal + technicalScore * weights.technical) / 100
+  );
+  const hardStops = [];
+  if (parseInt(formData.runtimeMinutes) >= 40 && formData.captionsAvailable === "no") {
+    hardStops.push("Captions not available for long-form content. Most major services require captions/CC.");
+  }
+  if (formData.chainOfTitleStatus === "missing") {
+    hardStops.push("Chain of title missing. Legal clearance is a deal-killer for reputable distribution.");
+  }
+  const finalScore = hardStops.length > 0 ? Math.min(overallScore, 59) : overallScore;
+  const readiness = getReadinessBand(finalScore);
+  const progress = currentStep / 10 * 100;
+  if (showResults) {
+    return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
+      /* @__PURE__ */ jsx(ToolTopBar, {}),
+      /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-6 py-8 max-w-5xl", children: [
+        /* @__PURE__ */ jsxs(Link, { to: "/distribution-readiness", onClick: () => setShowResults(false), className: "text-muted-foreground hover:text-foreground mb-6 inline-flex items-center gap-2", children: [
+          /* @__PURE__ */ jsx(ArrowLeft, { className: "h-4 w-4" }),
+          "Back to Assessment"
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-8", children: [
+          /* @__PURE__ */ jsxs(Card$1, { className: "bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700", children: [
+            /* @__PURE__ */ jsxs(CardHeader, { className: "text-center pb-4", children: [
+              /* @__PURE__ */ jsx(CardTitle, { className: "text-3xl text-white", children: "Distribution Readiness Report" }),
+              /* @__PURE__ */ jsx(CardDescription, { className: "text-gray-400", children: formData.projectTitle })
+            ] }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                /* @__PURE__ */ jsx("div", { className: `text-7xl font-black ${readiness.color}`, children: finalScore }),
+                /* @__PURE__ */ jsx(Badge, { className: `mt-2 ${readiness.color === "text-green-500" ? "bg-green-500/20 text-green-400" : readiness.color === "text-blue-500" ? "bg-blue-500/20 text-blue-400" : readiness.color === "text-amber-500" ? "bg-amber-500/20 text-amber-400" : "bg-red-500/20 text-red-400"}`, children: readiness.band }),
+                /* @__PURE__ */ jsx("p", { className: "text-gray-400 mt-3", children: readiness.action })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-3 gap-4 pt-4 border-t border-gray-700", children: [
+                /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                  /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-blue-400", children: businessScore }),
+                  /* @__PURE__ */ jsx("div", { className: "text-sm text-gray-400", children: "Business" }),
+                  /* @__PURE__ */ jsx(Progress, { value: businessScore, className: "mt-2 h-2" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                  /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-purple-400", children: legalScore }),
+                  /* @__PURE__ */ jsx("div", { className: "text-sm text-gray-400", children: "Legal" }),
+                  /* @__PURE__ */ jsx(Progress, { value: legalScore, className: "mt-2 h-2" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                  /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-teal-400", children: technicalScore }),
+                  /* @__PURE__ */ jsx("div", { className: "text-sm text-gray-400", children: "Technical" }),
+                  /* @__PURE__ */ jsx(Progress, { value: technicalScore, className: "mt-2 h-2" })
+                ] })
+              ] })
+            ] })
+          ] }),
+          hardStops.length > 0 && /* @__PURE__ */ jsxs(Card$1, { className: "border-red-500/50 bg-red-500/10", children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-red-400", children: [
+              /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5" }),
+              "Deal Killers Detected"
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("ul", { className: "space-y-2", children: hardStops.map((stop, i) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-2 text-red-300", children: [
+              /* @__PURE__ */ jsx(XCircle, { className: "h-4 w-4 mt-0.5 flex-shrink-0" }),
+              stop
+            ] }, i)) }) })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
+              /* @__PURE__ */ jsx(Target, { className: "h-5 w-5" }),
+              "Platform Readiness"
+            ] }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: formData.platformsSelected.map((platformId) => {
+              const platform = PLATFORMS.find((p) => p.id === platformId);
+              return /* @__PURE__ */ jsxs("div", { className: "p-4 border rounded-lg", children: [
+                /* @__PURE__ */ jsx("h4", { className: "font-semibold mb-3", children: platform == null ? void 0 : platform.label }),
+                /* @__PURE__ */ jsxs("div", { className: "space-y-2 text-sm", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    formData.trailerFile ? /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4 text-green-500" }) : /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4 text-amber-500" }),
+                    /* @__PURE__ */ jsx("span", { children: "Trailer" })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    formData.posterFile || formData.keyArtFile ? /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4 text-green-500" }) : /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4 text-amber-500" }),
+                    /* @__PURE__ */ jsx("span", { children: "Artwork + Metadata" })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    formData.captionsAvailable === "yes" ? /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4 text-green-500" }) : formData.captionsAvailable === "in_progress" ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4 text-amber-500" }) : /* @__PURE__ */ jsx(AlertCircle, { className: "h-4 w-4 text-red-500" }),
+                    /* @__PURE__ */ jsx("span", { children: "Captions/CC" })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    formData.chainOfTitleStatus === "complete" ? /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4 text-green-500" }) : formData.chainOfTitleStatus === "partial" ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4 text-amber-500" }) : /* @__PURE__ */ jsx(AlertCircle, { className: "h-4 w-4 text-red-500" }),
+                    /* @__PURE__ */ jsx("span", { children: "Chain of Title" })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
+                    formData.eAndOStatus === "in_place" ? /* @__PURE__ */ jsx(CircleCheck, { className: "h-4 w-4 text-green-500" }) : formData.eAndOStatus === "planned" ? /* @__PURE__ */ jsx(Clock, { className: "h-4 w-4 text-amber-500" }) : /* @__PURE__ */ jsx(AlertCircle, { className: "h-4 w-4 text-red-500" }),
+                    /* @__PURE__ */ jsx("span", { children: "E&O Insurance" })
+                  ] })
+                ] })
+              ] }, platformId);
+            }) }) })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recommended Next Steps" }) }),
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("ol", { className: "space-y-3 list-decimal list-inside text-muted-foreground", children: [
+              hardStops.length > 0 && /* @__PURE__ */ jsx("li", { children: "Address all deal-killers listed above before proceeding with platform outreach." }),
+              formData.captionsAvailable !== "yes" && /* @__PURE__ */ jsx("li", { children: "Complete captions/closed captions for your project. This is required by most platforms." }),
+              formData.chainOfTitleStatus !== "complete" && /* @__PURE__ */ jsx("li", { children: "Finalize your chain of title documentation with legal counsel." }),
+              formData.eAndOStatus === "missing" && /* @__PURE__ */ jsx("li", { children: "Obtain Errors & Omissions insurance - required for most distribution deals." }),
+              !formData.trailerFile && /* @__PURE__ */ jsx("li", { children: "Create and upload a professional trailer for marketing purposes." }),
+              /* @__PURE__ */ jsx("li", { children: "Research aggregators and distributors that work with your target platforms." })
+            ] }) })
+          ] }),
+          /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+            /* @__PURE__ */ jsxs(CardHeader, { children: [
+              /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
+                /* @__PURE__ */ jsx(Send, { className: "h-5 w-5" }),
+                "Share Report"
+              ] }),
+              /* @__PURE__ */ jsx(CardDescription, { children: "Email the report to your team members" })
+            ] }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx(Label, { htmlFor: "emailRecipients", children: "Email Recipients" }),
+                /* @__PURE__ */ jsx(
+                  Input,
+                  {
+                    id: "emailRecipients",
+                    value: formData.emailRecipients,
+                    onChange: (e) => updateFormData({ emailRecipients: e.target.value }),
+                    placeholder: "email@example.com, another@example.com"
+                  }
+                ),
+                /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-1", children: "Separate multiple emails with commas" })
+              ] }),
+              /* @__PURE__ */ jsxs(
+                Button,
+                {
+                  onClick: async () => {
+                    const emails = formData.emailRecipients.split(",").map((e) => e.trim()).filter(Boolean);
+                    if (emails.length === 0) {
+                      toast$1.error("Please enter at least one email address");
+                      return;
+                    }
+                    try {
+                      const { data, error } = await supabase.functions.invoke("send-distribution-report", {
+                        body: {
+                          recipients: emails,
+                          projectTitle: formData.projectTitle,
+                          finalScore,
+                          readinessBand: readiness.band,
+                          businessScore,
+                          legalScore,
+                          technicalScore,
+                          companyLogoUrl: formData.companyLogo
+                        }
+                      });
+                      if (error) throw error;
+                      toast$1.success(`Report sent to ${emails.length} recipient(s)`);
+                    } catch (err) {
+                      console.error("Email error:", err);
+                      const errorMessage = (err == null ? void 0 : err.message) || String(err);
+                      if (errorMessage.includes("invalid") || errorMessage.includes("401") || errorMessage.includes("API key")) {
+                        toast$1.error("Email service configuration error. Please contact support.");
+                      } else {
+                        toast$1.error("Failed to send email. Please check your email addresses and try again.");
+                      }
+                    }
+                  },
+                  className: "w-full",
+                  disabled: !formData.emailRecipients.trim(),
+                  children: [
+                    /* @__PURE__ */ jsx(Send, { className: "h-4 w-4 mr-2" }),
+                    "Send Report via Email"
+                  ]
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "flex justify-center gap-4", children: [
+            /* @__PURE__ */ jsx(Button, { variant: "outline", onClick: () => setShowResults(false), children: "Edit Assessment" }),
+            /* @__PURE__ */ jsxs(
+              Button,
+              {
+                onClick: () => {
+                  try {
+                    const getFormatLabel = (value) => {
+                      var _a3;
+                      return ((_a3 = MASTER_FORMAT_OPTIONS.find((o) => o.value === value)) == null ? void 0 : _a3.label) || value;
+                    };
+                    const getResLabel = (value) => {
+                      var _a3;
+                      return ((_a3 = MASTER_RESOLUTION_OPTIONS.find((o) => o.value === value)) == null ? void 0 : _a3.label) || value;
+                    };
+                    const getFpsLabel = (value) => {
+                      var _a3;
+                      return ((_a3 = FRAME_RATE_OPTIONS.find((o) => o.value === value)) == null ? void 0 : _a3.label) || value;
+                    };
+                    exportDistributionReadinessToPDF({
+                      projectTitle: formData.projectTitle,
+                      projectType: formData.projectType,
+                      budgetTier: formData.budgetTier,
+                      runtimeMinutes: formData.runtimeMinutes,
+                      languagePrimary: formData.languagePrimary,
+                      logline: formData.logline,
+                      synopsisShort: formData.synopsisShort,
+                      genres: formData.genres,
+                      toneKeywords: formData.toneKeywords,
+                      comps: formData.comps,
+                      credits: formData.credits,
+                      platformsSelected: formData.platformsSelected,
+                      platformForms: formData.platformForms,
+                      distributionGoal: formData.distributionGoal,
+                      rightsOfferType: formData.rightsOfferType,
+                      territories: formData.territories,
+                      termMonths: formData.termMonths,
+                      chainOfTitleStatus: formData.chainOfTitleStatus,
+                      musicClearanceStatus: formData.musicClearanceStatus,
+                      releasesStatus: formData.releasesStatus,
+                      eAndOStatus: formData.eAndOStatus,
+                      knownClearanceRisks: formData.knownClearanceRisks,
+                      masterAvailable: formData.masterAvailable,
+                      masterFormat: getFormatLabel(formData.masterFormat),
+                      masterResolution: getResLabel(formData.masterResolution),
+                      masterFrameRate: getFpsLabel(formData.masterFrameRate),
+                      audioDeliverables: formData.audioDeliverables,
+                      captionsAvailable: formData.captionsAvailable,
+                      subtitleLanguages: formData.subtitleLanguages,
+                      textlessElements: formData.textlessElements,
+                      mAndETrack: formData.mAndETrack,
+                      qcDone: formData.qcDone,
+                      trailerFile: formData.trailerFile,
+                      posterFile: formData.posterFile,
+                      keyArtFile: formData.keyArtFile,
+                      pressKitUrl: formData.pressKitUrl,
+                      businessScore,
+                      legalScore,
+                      technicalScore,
+                      finalScore,
+                      readinessBand: readiness.band,
+                      hardStops,
+                      companyLogo: formData.companyLogo || void 0
+                    });
+                    toast$1.success("PDF Report Downloaded!");
+                  } catch (error) {
+                    console.error("PDF export failed:", error);
+                    toast$1.error("Failed to generate PDF. Please try again.");
+                  }
+                },
+                children: [
+                  /* @__PURE__ */ jsx(Download, { className: "h-4 w-4 mr-2" }),
+                  "Export PDF Report"
+                ]
+              }
+            )
+          ] })
+        ] })
+      ] })
+    ] });
+  }
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-background", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/distribution-readiness" }),
+    /* @__PURE__ */ jsxs("div", { className: "container mx-auto px-6 py-8 max-w-5xl", children: [
+      /* @__PURE__ */ jsx("div", { className: "mb-8", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between", children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("h1", { className: "text-3xl font-bold mb-2", children: "Distribution Readiness Assessment" }),
+          /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Evaluate your project's readiness for distribution and generate deliverables checklists." })
+        ] }),
+        /* @__PURE__ */ jsx(Badge, { className: "bg-blue-500/20 text-blue-400", children: "Smart Tool" })
+      ] }) }),
+      /* @__PURE__ */ jsxs("div", { className: "mb-8", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-2", children: [
+          /* @__PURE__ */ jsxs("span", { className: "text-sm text-muted-foreground", children: [
+            "Step ",
+            currentStep,
+            " of 10"
+          ] }),
+          /* @__PURE__ */ jsxs("span", { className: "text-sm text-muted-foreground", children: [
+            Math.round(progress),
+            "% Complete"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx(Progress, { value: progress, className: "h-2" })
+      ] }),
+      /* @__PURE__ */ jsx("div", { className: "flex gap-1 mb-8 overflow-x-auto pb-2", children: WIZARD_STEPS.map((step) => {
+        const StepIcon = step.icon;
+        const isActive = step.id === currentStep;
+        const isComplete = step.id < currentStep;
+        return /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => setCurrentStep(step.id),
+            className: `flex items-center gap-2 px-3 py-2 rounded-lg text-sm whitespace-nowrap transition-colors ${isActive ? "bg-primary text-primary-foreground" : isComplete ? "bg-green-500/20 text-green-400" : "bg-muted text-muted-foreground hover:bg-muted/80"}`,
+            children: [
+              /* @__PURE__ */ jsx(StepIcon, { className: "h-4 w-4" }),
+              /* @__PURE__ */ jsx("span", { className: "hidden md:inline", children: step.title })
+            ]
+          },
+          step.id
+        );
+      }) }),
+      /* @__PURE__ */ jsxs("div", { className: "grid lg:grid-cols-[1fr,300px] gap-6", children: [
+        /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsx(
+            DistributionChatAssistant,
+            {
+              context: {
+                projectTitle: formData.projectTitle,
+                projectType: formData.projectType,
+                budgetTier: formData.budgetTier,
+                currentStep
+              }
+            }
+          ),
+          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-6", children: [
+            currentStep === 1 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Project Setup" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Tell us about your film project." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "projectTitle", children: "Project Title *" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "projectTitle",
+                      value: formData.projectTitle,
+                      onChange: (e) => updateFormData({ projectTitle: e.target.value }),
+                      placeholder: "My Film Project"
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Project Type *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.projectType, onValueChange: (v2) => updateFormData({ projectType: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select type" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "feature", children: "Feature Film" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "short", children: "Short Film" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "series", children: "Series" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "doc", children: "Documentary" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "special", children: "Special" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Budget Tier *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.budgetTier, onValueChange: (v2) => updateFormData({ budgetTier: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select tier" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "small", children: "Small Budget (Indie/Low)" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "medium", children: "Medium Budget" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "high", children: "High Budget" })
+                      ] })
+                    ] })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { htmlFor: "runtime", children: "Runtime (minutes) *" }),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        id: "runtime",
+                        type: "number",
+                        value: formData.runtimeMinutes,
+                        onChange: (e) => updateFormData({ runtimeMinutes: e.target.value }),
+                        placeholder: "94"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { htmlFor: "language", children: "Primary Language *" }),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        id: "language",
+                        value: formData.languagePrimary,
+                        onChange: (e) => updateFormData({ languagePrimary: e.target.value }),
+                        placeholder: "English"
+                      }
+                    )
+                  ] })
+                ] })
+              ] })
+            ] }),
+            currentStep === 2 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Target Platforms" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Select the platforms you're targeting for distribution." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Select Target Platforms *" }),
+                  /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-2 mt-2", children: PLATFORMS.map((platform) => /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 p-3 border rounded-lg cursor-pointer hover:bg-muted/50", children: [
+                    /* @__PURE__ */ jsx(
+                      Checkbox,
+                      {
+                        checked: formData.platformsSelected.includes(platform.id),
+                        onCheckedChange: (checked) => {
+                          const newPlatforms = checked ? [...formData.platformsSelected, platform.id] : formData.platformsSelected.filter((p) => p !== platform.id);
+                          updateFormData({ platformsSelected: newPlatforms });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx("span", { className: "text-sm", children: platform.label })
+                  ] }, platform.id)) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Distribution Goal *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.distributionGoal, onValueChange: (v2) => updateFormData({ distributionGoal: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select goal" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "svod", children: "SVOD (Subscription)" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "tvod", children: "TVOD (Transactional)" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "avod", children: "AVOD (Ad-supported)" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "fast", children: "FAST (Free Streaming)" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "theatrical", children: "Theatrical" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "festival", children: "Festival Circuit" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Rights Offer Type *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.rightsOfferType, onValueChange: (v2) => updateFormData({ rightsOfferType: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select rights" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "exclusive", children: "Exclusive" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "non_exclusive", children: "Non-Exclusive" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { htmlFor: "territories", children: "Territories" }),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        id: "territories",
+                        value: formData.territories,
+                        onChange: (e) => updateFormData({ territories: e.target.value }),
+                        placeholder: "US, CA, UK, WW..."
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { htmlFor: "term", children: "Term (months)" }),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        id: "term",
+                        type: "number",
+                        value: formData.termMonths,
+                        onChange: (e) => updateFormData({ termMonths: e.target.value }),
+                        placeholder: "24"
+                      }
+                    )
+                  ] })
+                ] })
+              ] })
+            ] }),
+            currentStep === 3 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Business Package" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "What sells your project? Tell us about your story." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "logline", children: "Logline * (max 280 chars)" }),
+                  /* @__PURE__ */ jsx(
+                    Textarea,
+                    {
+                      id: "logline",
+                      value: formData.logline,
+                      onChange: (e) => updateFormData({ logline: e.target.value.slice(0, 280) }),
+                      placeholder: "A compelling one-sentence summary of your story...",
+                      rows: 2
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground mt-1", children: [
+                    formData.logline.length,
+                    "/280"
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "synopsisShort", children: "Short Synopsis * (max 1200 chars)" }),
+                  /* @__PURE__ */ jsx(
+                    Textarea,
+                    {
+                      id: "synopsisShort",
+                      value: formData.synopsisShort,
+                      onChange: (e) => updateFormData({ synopsisShort: e.target.value.slice(0, 1200) }),
+                      placeholder: "A brief overview of your story...",
+                      rows: 4
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground mt-1", children: [
+                    formData.synopsisShort.length,
+                    "/1200"
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "synopsisLong", children: "Long Synopsis (optional)" }),
+                  /* @__PURE__ */ jsx(
+                    Textarea,
+                    {
+                      id: "synopsisLong",
+                      value: formData.synopsisLong,
+                      onChange: (e) => updateFormData({ synopsisLong: e.target.value }),
+                      placeholder: "A detailed synopsis of your story...",
+                      rows: 6
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "genres", children: "Genres * (comma separated)" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "genres",
+                      value: genresInput,
+                      onChange: (e) => setGenresInput(e.target.value),
+                      onBlur: () => updateFormData({ genres: genresInput.split(",").map((g) => g.trim()).filter(Boolean) }),
+                      placeholder: "Drama, Thriller, Mystery..."
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "toneKeywords", children: "Tone Keywords (comma separated)" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "toneKeywords",
+                      value: toneKeywordsInput,
+                      onChange: (e) => setToneKeywordsInput(e.target.value),
+                      onBlur: () => updateFormData({ toneKeywords: toneKeywordsInput.split(",").map((t) => t.trim()).filter(Boolean) }),
+                      placeholder: "gritty, darkly comic, suspenseful..."
+                    }
+                  )
+                ] })
+              ] })
+            ] }),
+            currentStep === 4 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Key Credits" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Who's involved in this project?" })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                formData.credits.map((credit, index) => /* @__PURE__ */ jsxs("div", { className: "p-4 border rounded-lg space-y-3", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center", children: [
+                    /* @__PURE__ */ jsxs("span", { className: "text-sm font-medium", children: [
+                      "Credit #",
+                      index + 1
+                    ] }),
+                    /* @__PURE__ */ jsx(
+                      Button,
+                      {
+                        variant: "ghost",
+                        size: "sm",
+                        onClick: () => {
+                          const newCredits = formData.credits.filter((_, i) => i !== index);
+                          updateFormData({ credits: newCredits });
+                        },
+                        children: "Remove"
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-3", children: [
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        placeholder: "Person Name",
+                        value: credit.personName,
+                        onChange: (e) => {
+                          const newCredits = [...formData.credits];
+                          newCredits[index].personName = e.target.value;
+                          updateFormData({ credits: newCredits });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs(
+                      Select,
+                      {
+                        value: credit.role,
+                        onValueChange: (v2) => {
+                          const newCredits = [...formData.credits];
+                          newCredits[index].role = v2;
+                          updateFormData({ credits: newCredits });
+                        },
+                        children: [
+                          /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Role" }) }),
+                          /* @__PURE__ */ jsxs(SelectContent, { children: [
+                            /* @__PURE__ */ jsx(SelectItem, { value: "director", children: "Director" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "writer", children: "Writer" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "producer", children: "Producer" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "cast", children: "Cast" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "dp", children: "DP" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "editor", children: "Editor" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "composer", children: "Composer" }),
+                            /* @__PURE__ */ jsx(SelectItem, { value: "other", children: "Other" })
+                          ] })
+                        ]
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        placeholder: "Character Name (if cast)",
+                        value: credit.characterName,
+                        onChange: (e) => {
+                          const newCredits = [...formData.credits];
+                          newCredits[index].characterName = e.target.value;
+                          updateFormData({ credits: newCredits });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx(
+                      Input,
+                      {
+                        placeholder: "Notable Credits",
+                        value: credit.notableCredits,
+                        onChange: (e) => {
+                          const newCredits = [...formData.credits];
+                          newCredits[index].notableCredits = e.target.value;
+                          updateFormData({ credits: newCredits });
+                        }
+                      }
+                    )
+                  ] }),
+                  /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      placeholder: "IMDb URL (e.g., imdb.com/name/nm...)",
+                      value: credit.imdbUrl || "",
+                      onChange: (e) => {
+                        const newCredits = [...formData.credits];
+                        newCredits[index].imdbUrl = e.target.value;
+                        updateFormData({ credits: newCredits });
+                      }
+                    }
+                  ) })
+                ] }, index)),
+                /* @__PURE__ */ jsx(
+                  Button,
+                  {
+                    variant: "outline",
+                    onClick: () => {
+                      updateFormData({
+                        credits: [...formData.credits, { personName: "", role: "", characterName: "", notableCredits: "", imdbUrl: "" }]
+                      });
+                    },
+                    children: "+ Add Credit"
+                  }
+                )
+              ] })
+            ] }),
+            currentStep === 5 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Trailer Upload" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Upload your trailer or teaser (max 5 minutes). Full film uploads are not supported." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs(
+                  "div",
+                  {
+                    className: `border-2 border-dashed rounded-lg p-8 text-center transition-colors ${formData.trailerFile ? "border-green-500 bg-green-500/10" : "border-muted-foreground/25 hover:border-muted-foreground/50"}`,
+                    children: [
+                      formData.trailerFile ? /* @__PURE__ */ jsx(CheckCircle2, { className: "h-10 w-10 mx-auto text-green-500 mb-4" }) : /* @__PURE__ */ jsx(Upload, { className: "h-10 w-10 mx-auto text-muted-foreground mb-4" }),
+                      /* @__PURE__ */ jsx(
+                        "input",
+                        {
+                          type: "file",
+                          accept: ".mp4,.mov,.m4v",
+                          className: "hidden",
+                          id: "trailer-upload",
+                          onChange: (e) => {
+                            var _a3;
+                            const file = (_a3 = e.target.files) == null ? void 0 : _a3[0];
+                            if (file) {
+                              updateFormData({ trailerFile: file });
+                              toast$1.success("Trailer uploaded!");
+                            }
+                          }
+                        }
+                      ),
+                      formData.trailerFile ? /* @__PURE__ */ jsxs("div", { className: "space-y-3", children: [
+                        /* @__PURE__ */ jsx("div", { className: "text-lg font-medium text-green-500", children: "✓ Trailer Selected" }),
+                        /* @__PURE__ */ jsx("div", { className: "text-sm font-medium", children: formData.trailerFile.name }),
+                        /* @__PURE__ */ jsxs("div", { className: "text-sm text-muted-foreground", children: [
+                          (formData.trailerFile.size / (1024 * 1024)).toFixed(1),
+                          " MB • ",
+                          (_a2 = formData.trailerFile.name.split(".").pop()) == null ? void 0 : _a2.toUpperCase()
+                        ] }),
+                        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-center gap-3 pt-2", children: [
+                          /* @__PURE__ */ jsx("label", { htmlFor: "trailer-upload", className: "cursor-pointer", children: /* @__PURE__ */ jsx("span", { className: "text-sm text-primary hover:underline", children: "Replace" }) }),
+                          /* @__PURE__ */ jsx("span", { className: "text-muted-foreground", children: "•" }),
+                          /* @__PURE__ */ jsx(
+                            "button",
+                            {
+                              type: "button",
+                              onClick: () => updateFormData({ trailerFile: null }),
+                              className: "text-sm text-destructive hover:underline",
+                              children: "Remove"
+                            }
+                          )
+                        ] })
+                      ] }) : /* @__PURE__ */ jsxs("label", { htmlFor: "trailer-upload", className: "cursor-pointer", children: [
+                        /* @__PURE__ */ jsx("div", { className: "text-lg font-medium mb-1", children: "Drop your trailer here or click to browse" }),
+                        /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "MP4, MOV, or M4V (max 5 minutes)" })
+                      ] })
+                    ]
+                  }
+                ),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "trailerLabel", children: "Trailer Label" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "trailerLabel",
+                      value: formData.trailerLabel,
+                      onChange: (e) => updateFormData({ trailerLabel: e.target.value }),
+                      placeholder: "Official Trailer"
+                    }
+                  )
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "trailerNotes", children: "Notes" }),
+                  /* @__PURE__ */ jsx(
+                    Textarea,
+                    {
+                      id: "trailerNotes",
+                      value: formData.trailerNotes,
+                      onChange: (e) => updateFormData({ trailerNotes: e.target.value }),
+                      placeholder: "Any additional notes about the trailer...",
+                      rows: 3
+                    }
+                  )
+                ] })
+              ] })
+            ] }),
+            currentStep === 6 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Marketing Assets" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Upload your marketing materials (strongly recommended)." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { className: "border rounded-lg p-4", children: [
+                    /* @__PURE__ */ jsx(Label, { className: "mb-2 block", children: "Poster" }),
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "file",
+                        accept: ".png,.jpg,.jpeg",
+                        className: "hidden",
+                        id: "poster-upload",
+                        onChange: (e) => {
+                          var _a3;
+                          const file = (_a3 = e.target.files) == null ? void 0 : _a3[0];
+                          if (file) updateFormData({ posterFile: file });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx("label", { htmlFor: "poster-upload", className: "cursor-pointer block text-center p-4 border-2 border-dashed rounded-lg hover:bg-muted/50", children: formData.posterFile ? /* @__PURE__ */ jsx("span", { className: "text-sm text-green-500", children: formData.posterFile.name }) : /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Click to upload poster" }) })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { className: "border rounded-lg p-4", children: [
+                    /* @__PURE__ */ jsx(Label, { className: "mb-2 block", children: "Key Art" }),
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "file",
+                        accept: ".png,.jpg,.jpeg",
+                        className: "hidden",
+                        id: "keyart-upload",
+                        onChange: (e) => {
+                          var _a3;
+                          const file = (_a3 = e.target.files) == null ? void 0 : _a3[0];
+                          if (file) updateFormData({ keyArtFile: file });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx("label", { htmlFor: "keyart-upload", className: "cursor-pointer block text-center p-4 border-2 border-dashed rounded-lg hover:bg-muted/50", children: formData.keyArtFile ? /* @__PURE__ */ jsx("span", { className: "text-sm text-green-500", children: formData.keyArtFile.name }) : /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Click to upload key art" }) })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "pressKit", children: "Press Kit URL" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "pressKit",
+                      value: formData.pressKitUrl,
+                      onChange: (e) => updateFormData({ pressKitUrl: e.target.value }),
+                      placeholder: "https://..."
+                    }
+                  )
+                ] })
+              ] })
+            ] }),
+            currentStep === 7 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Legal & Rights" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Deal-killers live here. Be honest about your legal status." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Chain of Title Status *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.chainOfTitleStatus, onValueChange: (v2) => updateFormData({ chainOfTitleStatus: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select status" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "complete", children: "Complete" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "partial", children: "Partial" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "missing", children: "Missing" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Music Clearance Status *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.musicClearanceStatus, onValueChange: (v2) => updateFormData({ musicClearanceStatus: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select status" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "complete", children: "Complete" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "partial", children: "Partial" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "missing", children: "Missing" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Releases Status *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.releasesStatus, onValueChange: (v2) => updateFormData({ releasesStatus: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select status" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "complete", children: "Complete" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "partial", children: "Partial" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "missing", children: "Missing" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "E&O Insurance Status *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.eAndOStatus, onValueChange: (v2) => updateFormData({ eAndOStatus: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select status" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "in_place", children: "In Place" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "planned", children: "Planned" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "missing", children: "Missing" })
+                      ] })
+                    ] })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { htmlFor: "clearanceRisks", children: "Known Clearance Risks (comma separated)" }),
+                  /* @__PURE__ */ jsx(
+                    Input,
+                    {
+                      id: "clearanceRisks",
+                      value: formData.knownClearanceRisks.join(", "),
+                      onChange: (e) => updateFormData({ knownClearanceRisks: e.target.value.split(",").map((r) => r.trim()).filter(Boolean) }),
+                      placeholder: "unlicensed_song, brand_logos, artwork..."
+                    }
+                  )
+                ] })
+              ] })
+            ] }),
+            currentStep === 8 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Technical Deliverables" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "What's the technical status of your deliverables?" })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Master Available *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.masterAvailable, onValueChange: (v2) => updateFormData({ masterAvailable: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "yes", children: "Yes" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "no", children: "No" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Master Format" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.masterFormat, onValueChange: (v2) => updateFormData({ masterFormat: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select format" }) }),
+                      /* @__PURE__ */ jsx(SelectContent, { children: MASTER_FORMAT_OPTIONS.map((opt) => /* @__PURE__ */ jsx(SelectItem, { value: opt.value, children: opt.label }, opt.value)) })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Master Resolution" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.masterResolution, onValueChange: (v2) => updateFormData({ masterResolution: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select resolution" }) }),
+                      /* @__PURE__ */ jsx(SelectContent, { children: MASTER_RESOLUTION_OPTIONS.map((opt) => /* @__PURE__ */ jsx(SelectItem, { value: opt.value, children: opt.label }, opt.value)) })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Frame Rate" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.masterFrameRate, onValueChange: (v2) => updateFormData({ masterFrameRate: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select frame rate" }) }),
+                      /* @__PURE__ */ jsx(SelectContent, { children: FRAME_RATE_OPTIONS.map((opt) => /* @__PURE__ */ jsx(SelectItem, { value: opt.value, children: opt.label }, opt.value)) })
+                    ] })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Audio Deliverables" }),
+                  /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2 mt-2", children: ["Stereo 2.0", "5.1", "7.1", "Stems"].map((option) => /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-muted/50", children: [
+                    /* @__PURE__ */ jsx(
+                      Checkbox,
+                      {
+                        checked: formData.audioDeliverables.includes(option),
+                        onCheckedChange: (checked) => {
+                          const newAudio = checked ? [...formData.audioDeliverables, option] : formData.audioDeliverables.filter((a) => a !== option);
+                          updateFormData({ audioDeliverables: newAudio });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx("span", { className: "text-sm", children: option })
+                  ] }, option)) })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Captions Available *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.captionsAvailable, onValueChange: (v2) => updateFormData({ captionsAvailable: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "yes", children: "Yes" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "no", children: "No" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "in_progress", children: "In Progress" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "Textless Elements *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.textlessElements, onValueChange: (v2) => updateFormData({ textlessElements: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "yes", children: "Yes" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "no", children: "No" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "M&E Track *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.mAndETrack, onValueChange: (v2) => updateFormData({ mAndETrack: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "yes", children: "Yes" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "no", children: "No" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsxs("div", { children: [
+                    /* @__PURE__ */ jsx(Label, { children: "QC Done *" }),
+                    /* @__PURE__ */ jsxs(Select, { value: formData.qcDone, onValueChange: (v2) => updateFormData({ qcDone: v2 }), children: [
+                      /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                      /* @__PURE__ */ jsxs(SelectContent, { children: [
+                        /* @__PURE__ */ jsx(SelectItem, { value: "yes", children: "Yes" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "no", children: "No" }),
+                        /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                      ] })
+                    ] })
+                  ] })
+                ] })
+              ] })
+            ] }),
+            currentStep === 9 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Platform-Specific Details" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Provide details for each selected platform." })
+              ] }),
+              formData.platformsSelected.length === 0 ? /* @__PURE__ */ jsxs("div", { className: "text-center py-8 text-muted-foreground", children: [
+                /* @__PURE__ */ jsx(Target, { className: "h-12 w-12 mx-auto mb-4 opacity-50" }),
+                /* @__PURE__ */ jsx("p", { children: "No platforms selected. Go back to Step 2 to select platforms." })
+              ] }) : /* @__PURE__ */ jsxs(Tabs, { defaultValue: formData.platformsSelected[0], children: [
+                /* @__PURE__ */ jsx(TabsList, { className: "flex flex-wrap h-auto gap-1", children: formData.platformsSelected.map((platformId) => {
+                  const platform = PLATFORMS.find((p) => p.id === platformId);
+                  return /* @__PURE__ */ jsx(TabsTrigger, { value: platformId, className: "text-xs", children: platform == null ? void 0 : platform.label.split(" ")[0] }, platformId);
+                }) }),
+                formData.platformsSelected.map((platformId) => {
+                  const platform = PLATFORMS.find((p) => p.id === platformId);
+                  const platformForm = formData.platformForms[platformId] || { intent: "", route: "", notes: "" };
+                  return /* @__PURE__ */ jsxs(TabsContent, { value: platformId, className: "space-y-4 mt-4", children: [
+                    /* @__PURE__ */ jsx("h3", { className: "font-medium", children: platform == null ? void 0 : platform.label }),
+                    /* @__PURE__ */ jsxs("div", { className: "grid md:grid-cols-2 gap-4", children: [
+                      /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx(Label, { children: "Your Intent" }),
+                        /* @__PURE__ */ jsxs(
+                          Select,
+                          {
+                            value: platformForm.intent,
+                            onValueChange: (v2) => {
+                              updateFormData({
+                                platformForms: {
+                                  ...formData.platformForms,
+                                  [platformId]: { ...platformForm, intent: v2 }
+                                }
+                              });
+                            },
+                            children: [
+                              /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                              /* @__PURE__ */ jsxs(SelectContent, { children: [
+                                /* @__PURE__ */ jsx(SelectItem, { value: "exploring", children: "Exploring" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "actively_pitching", children: "Actively Pitching" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "ready_to_deliver", children: "Ready to Deliver" })
+                              ] })
+                            ]
+                          }
+                        )
+                      ] }),
+                      /* @__PURE__ */ jsxs("div", { children: [
+                        /* @__PURE__ */ jsx(Label, { children: "Route" }),
+                        /* @__PURE__ */ jsxs(
+                          Select,
+                          {
+                            value: platformForm.route,
+                            onValueChange: (v2) => {
+                              updateFormData({
+                                platformForms: {
+                                  ...formData.platformForms,
+                                  [platformId]: { ...platformForm, route: v2 }
+                                }
+                              });
+                            },
+                            children: [
+                              /* @__PURE__ */ jsx(SelectTrigger, { children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Select" }) }),
+                              /* @__PURE__ */ jsxs(SelectContent, { children: [
+                                /* @__PURE__ */ jsx(SelectItem, { value: "direct_if_available", children: "Direct (if available)" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "aggregator", children: "Aggregator" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "distributor", children: "Distributor" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "sales_agent", children: "Sales Agent" }),
+                                /* @__PURE__ */ jsx(SelectItem, { value: "unknown", children: "Unknown" })
+                              ] })
+                            ]
+                          }
+                        )
+                      ] })
+                    ] }),
+                    /* @__PURE__ */ jsxs("div", { children: [
+                      /* @__PURE__ */ jsx(Label, { children: "Notes" }),
+                      /* @__PURE__ */ jsx(
+                        Textarea,
+                        {
+                          value: platformForm.notes,
+                          onChange: (e) => {
+                            updateFormData({
+                              platformForms: {
+                                ...formData.platformForms,
+                                [platformId]: { ...platformForm, notes: e.target.value }
+                              }
+                            });
+                          },
+                          placeholder: "Any specific notes for this platform...",
+                          rows: 3
+                        }
+                      )
+                    ] })
+                  ] }, platformId);
+                })
+              ] })
+            ] }),
+            currentStep === 10 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Review & Generate Report" }),
+                /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Review your information and generate your distribution readiness report." })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+                /* @__PURE__ */ jsx(Card$1, { className: "border-dashed", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
+                  /* @__PURE__ */ jsxs("h3", { className: "font-medium mb-3 flex items-center gap-2", children: [
+                    /* @__PURE__ */ jsx(ImageIcon, { className: "h-4 w-4" }),
+                    "Company Logo (Optional)"
+                  ] }),
+                  /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mb-3", children: "Add your company logo to the PDF report header" }),
+                  formData.companyLogo ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4", children: [
+                    /* @__PURE__ */ jsx("img", { src: formData.companyLogo, alt: "Logo", className: "h-12 max-w-[150px] object-contain" }),
+                    /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", onClick: () => updateFormData({ companyLogo: null }), children: [
+                      /* @__PURE__ */ jsx(X, { className: "h-4 w-4 mr-1" }),
+                      " Remove"
+                    ] })
+                  ] }) : /* @__PURE__ */ jsxs("div", { className: "border-2 border-dashed rounded-lg p-4 text-center hover:border-primary/50 transition-colors", children: [
+                    /* @__PURE__ */ jsx(
+                      "input",
+                      {
+                        type: "file",
+                        accept: "image/*",
+                        id: "logo-upload",
+                        className: "hidden",
+                        onChange: (e) => {
+                          var _a3;
+                          const file = (_a3 = e.target.files) == null ? void 0 : _a3[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              var _a4;
+                              updateFormData({ companyLogo: (_a4 = ev.target) == null ? void 0 : _a4.result });
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsxs("label", { htmlFor: "logo-upload", className: "cursor-pointer", children: [
+                      /* @__PURE__ */ jsx(Upload, { className: "h-6 w-6 mx-auto text-muted-foreground mb-2" }),
+                      /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Upload logo (landscape, ~200x60px)" })
+                    ] })
+                  ] })
+                ] }) }),
+                /* @__PURE__ */ jsx(Card$1, { className: "bg-muted/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
+                  /* @__PURE__ */ jsx("h3", { className: "font-medium mb-3", children: "Summary" }),
+                  /* @__PURE__ */ jsxs("dl", { className: "grid grid-cols-2 gap-2 text-sm", children: [
+                    /* @__PURE__ */ jsx("dt", { className: "text-muted-foreground", children: "Project:" }),
+                    /* @__PURE__ */ jsx("dd", { children: formData.projectTitle || "Not set" }),
+                    /* @__PURE__ */ jsx("dt", { className: "text-muted-foreground", children: "Type:" }),
+                    /* @__PURE__ */ jsx("dd", { className: "capitalize", children: formData.projectType || "Not set" }),
+                    /* @__PURE__ */ jsx("dt", { className: "text-muted-foreground", children: "Platforms:" }),
+                    /* @__PURE__ */ jsxs("dd", { children: [
+                      formData.platformsSelected.length,
+                      " selected"
+                    ] }),
+                    /* @__PURE__ */ jsx("dt", { className: "text-muted-foreground", children: "Credits:" }),
+                    /* @__PURE__ */ jsxs("dd", { children: [
+                      formData.credits.length,
+                      " added"
+                    ] })
+                  ] })
+                ] }) }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsx(Label, { children: "Generate Outputs" }),
+                  /* @__PURE__ */ jsx("div", { className: "flex flex-wrap gap-2 mt-2", children: [
+                    { id: "readiness_score", label: "Readiness Score" },
+                    { id: "missing_items_list", label: "Missing Items List" },
+                    { id: "platform_checklists", label: "Platform Checklists" },
+                    { id: "pitch_one_sheet_draft", label: "Pitch One-Sheet Draft" }
+                  ].map((output) => /* @__PURE__ */ jsxs("label", { className: "flex items-center gap-2 px-3 py-2 border rounded-lg cursor-pointer hover:bg-muted/50", children: [
+                    /* @__PURE__ */ jsx(
+                      Checkbox,
+                      {
+                        checked: formData.generateOutputs.includes(output.id),
+                        onCheckedChange: (checked) => {
+                          const newOutputs = checked ? [...formData.generateOutputs, output.id] : formData.generateOutputs.filter((o) => o !== output.id);
+                          updateFormData({ generateOutputs: newOutputs });
+                        }
+                      }
+                    ),
+                    /* @__PURE__ */ jsx("span", { className: "text-sm", children: output.label })
+                  ] }, output.id)) })
+                ] }),
+                /* @__PURE__ */ jsxs("label", { className: "flex items-start gap-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50", children: [
+                  /* @__PURE__ */ jsx(
+                    Checkbox,
+                    {
+                      checked: formData.confirmAccuracy,
+                      onCheckedChange: (checked) => updateFormData({ confirmAccuracy: !!checked })
+                    }
+                  ),
+                  /* @__PURE__ */ jsx("span", { className: "text-sm", children: "I confirm the above information is accurate to the best of my knowledge." })
+                ] })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { className: "flex justify-between mt-8 pt-6 border-t", children: [
+              /* @__PURE__ */ jsxs(
+                Button,
+                {
+                  variant: "outline",
+                  onClick: prevStep,
+                  disabled: currentStep === 1,
+                  children: [
+                    /* @__PURE__ */ jsx(ArrowLeft, { className: "h-4 w-4 mr-2" }),
+                    "Previous"
+                  ]
+                }
+              ),
+              currentStep < 10 ? /* @__PURE__ */ jsxs(Button, { onClick: nextStep, children: [
+                "Next",
+                /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4 ml-2" })
+              ] }) : /* @__PURE__ */ jsxs(Button, { onClick: handleGenerateReport, className: "bg-green-600 hover:bg-green-700", children: [
+                /* @__PURE__ */ jsx(CheckCircle2, { className: "h-4 w-4 mr-2" }),
+                "Generate Report"
+              ] })
+            ] })
+          ] }) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+          /* @__PURE__ */ jsxs(Card$1, { className: "sticky top-6", children: [
+            /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Live Readiness Score" }) }),
+            /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
+              /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
+                /* @__PURE__ */ jsx("div", { className: `text-5xl font-black ${readiness.color}`, children: finalScore }),
+                /* @__PURE__ */ jsx(Badge, { className: "mt-2", variant: "outline", children: readiness.band })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { className: "space-y-3", children: [
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm mb-1", children: [
+                    /* @__PURE__ */ jsx("span", { children: "Business" }),
+                    /* @__PURE__ */ jsxs("span", { className: "text-blue-400", children: [
+                      businessScore,
+                      "%"
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsx(Progress, { value: businessScore, className: "h-2" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm mb-1", children: [
+                    /* @__PURE__ */ jsx("span", { children: "Legal" }),
+                    /* @__PURE__ */ jsxs("span", { className: "text-purple-400", children: [
+                      legalScore,
+                      "%"
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsx(Progress, { value: legalScore, className: "h-2" })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { children: [
+                  /* @__PURE__ */ jsxs("div", { className: "flex justify-between text-sm mb-1", children: [
+                    /* @__PURE__ */ jsx("span", { children: "Technical" }),
+                    /* @__PURE__ */ jsxs("span", { className: "text-teal-400", children: [
+                      technicalScore,
+                      "%"
+                    ] })
+                  ] }),
+                  /* @__PURE__ */ jsx(Progress, { value: technicalScore, className: "h-2" })
+                ] })
+              ] }),
+              hardStops.length > 0 && /* @__PURE__ */ jsxs("div", { className: "pt-3 border-t", children: [
+                /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 text-red-400 text-sm font-medium mb-2", children: [
+                  /* @__PURE__ */ jsx(AlertTriangle, { className: "h-4 w-4" }),
+                  "Deal Killers"
+                ] }),
+                /* @__PURE__ */ jsx("ul", { className: "text-xs text-muted-foreground space-y-1", children: hardStops.map((stop, i) => /* @__PURE__ */ jsxs("li", { className: "flex items-start gap-1", children: [
+                  /* @__PURE__ */ jsx(XCircle, { className: "h-3 w-3 mt-0.5 text-red-400 flex-shrink-0" }),
+                  stop.slice(0, 60),
+                  "..."
+                ] }, i)) })
+              ] })
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(DistributionGlossary, {})
+        ] })
+      ] })
+    ] })
+  ] });
+}
+const parseFDX = (xmlContent) => {
+  var _a2, _b2;
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(xmlContent, "text/xml");
+  const scenes = [];
+  const characters = /* @__PURE__ */ new Set();
+  let currentScene = null;
+  let sceneNumber = 0;
+  const titlePage = doc.querySelector("TitlePage");
+  let title = "Untitled Screenplay";
+  let author = "";
+  if (titlePage) {
+    const titleContent = titlePage.querySelector('Content[Type="Title"]');
+    if (titleContent) {
+      title = ((_a2 = titleContent.textContent) == null ? void 0 : _a2.trim()) || title;
+    }
+    const authorContent = titlePage.querySelector('Content[Type="Author"]');
+    if (authorContent) {
+      author = ((_b2 = authorContent.textContent) == null ? void 0 : _b2.trim()) || "";
+    }
+  }
+  const paragraphs = doc.querySelectorAll("Paragraph");
+  paragraphs.forEach((para) => {
+    var _a3, _b3;
+    const type = para.getAttribute("Type") || "";
+    const textContent = ((_b3 = (_a3 = para.querySelector("Text")) == null ? void 0 : _a3.textContent) == null ? void 0 : _b3.trim()) || "";
+    if (!textContent) return;
+    switch (type) {
+      case "Scene Heading":
+        if (currentScene) {
+          scenes.push(currentScene);
+        }
+        sceneNumber++;
+        const { location, timeOfDay, intExt } = parseSceneHeading(textContent);
+        currentScene = {
+          sceneNumber,
+          heading: textContent,
+          location,
+          timeOfDay,
+          intExt,
+          content: "",
+          dialogue: [],
+          actions: []
+        };
+        break;
+      case "Action":
+        if (currentScene) {
+          currentScene.actions.push(textContent);
+          currentScene.content += textContent + "\n\n";
+        }
+        break;
+      case "Character":
+        characters.add(textContent.replace(/\s*\(.*\)\s*$/, "").trim());
+        if (currentScene) {
+          currentScene.content += textContent + "\n";
+        }
+        break;
+      case "Dialogue":
+        if (currentScene) {
+          const lastCharIdx = currentScene.content.lastIndexOf("\n");
+          const recentContent = currentScene.content.slice(0, lastCharIdx);
+          const charMatch = recentContent.match(/([A-Z][A-Z\s]+)(?:\s*\(.*\))?\s*$/);
+          if (charMatch) {
+            currentScene.dialogue.push({
+              character: charMatch[1].trim(),
+              text: textContent
+            });
+          }
+          currentScene.content += textContent + "\n\n";
+        }
+        break;
+      case "Parenthetical":
+        if (currentScene && currentScene.dialogue.length > 0) {
+          currentScene.dialogue[currentScene.dialogue.length - 1].parenthetical = textContent;
+        }
+        if (currentScene) {
+          currentScene.content += `(${textContent})
+`;
+        }
+        break;
+      case "Transition":
+        if (currentScene) {
+          currentScene.content += textContent + "\n\n";
+        }
+        break;
+    }
+  });
+  if (currentScene) {
+    scenes.push(currentScene);
+  }
+  const rawText = scenes.map((scene) => {
+    return `${scene.heading}
+
+${scene.content}`;
+  }).join("\n\n");
+  return {
+    title,
+    author,
+    scenes,
+    characters: Array.from(characters),
+    rawText
+  };
+};
+const parseFountain = (text) => {
+  const scenes = [];
+  const characters = /* @__PURE__ */ new Set();
+  let currentScene = null;
+  let sceneNumber = 0;
+  let title = "Untitled Screenplay";
+  let author = "";
+  const titleMatch = text.match(/^Title:\s*(.+)$/mi);
+  if (titleMatch) {
+    title = titleMatch[1].trim();
+  }
+  const authorMatch = text.match(/^(?:Author|Credit|By):\s*(.+)$/mi);
+  if (authorMatch) {
+    author = authorMatch[1].trim();
+  }
+  const bodyStart = text.search(/^(?:INT\.|EXT\.|INT\/EXT\.|I\/E\.)/mi);
+  const body = bodyStart > -1 ? text.slice(bodyStart) : text;
+  const lines = body.split("\n");
+  let i = 0;
+  while (i < lines.length) {
+    const line = lines[i].trim();
+    if (/^(?:INT\.|EXT\.|INT\/EXT\.|I\/E\.|\.)/i.test(line) && !line.startsWith("..")) {
+      if (currentScene) {
+        scenes.push(currentScene);
+      }
+      sceneNumber++;
+      const heading = line.startsWith(".") ? line.slice(1) : line;
+      const { location, timeOfDay, intExt } = parseSceneHeading(heading);
+      currentScene = {
+        sceneNumber,
+        heading,
+        location,
+        timeOfDay,
+        intExt,
+        content: heading + "\n\n",
+        dialogue: [],
+        actions: []
+      };
+      i++;
+      continue;
+    }
+    if (/^[A-Z][A-Z\s]+(?:\s*\(.*\))?$/.test(line) && line.length < 50) {
+      const charName = line.replace(/\s*\(.*\)\s*$/, "").trim();
+      characters.add(charName);
+      if (currentScene) {
+        currentScene.content += line + "\n";
+        i++;
+        let parenthetical = "";
+        let dialogueText = "";
+        while (i < lines.length) {
+          const nextLine = lines[i].trim();
+          if (nextLine.startsWith("(") && nextLine.endsWith(")")) {
+            parenthetical = nextLine.slice(1, -1);
+            currentScene.content += nextLine + "\n";
+            i++;
+            continue;
+          }
+          if (nextLine === "" || /^(?:INT\.|EXT\.|INT\/EXT\.|I\/E\.)/i.test(nextLine)) {
+            break;
+          }
+          if (/^[A-Z][A-Z\s]+(?:\s*\(.*\))?$/.test(nextLine) && nextLine.length < 50) {
+            break;
+          }
+          dialogueText += (dialogueText ? " " : "") + nextLine;
+          currentScene.content += nextLine + "\n";
+          i++;
+        }
+        if (dialogueText) {
+          currentScene.dialogue.push({
+            character: charName,
+            parenthetical: parenthetical || void 0,
+            text: dialogueText
+          });
+        }
+        currentScene.content += "\n";
+        continue;
+      }
+    }
+    if (line && currentScene) {
+      currentScene.actions.push(line);
+      currentScene.content += line + "\n";
+    }
+    i++;
+  }
+  if (currentScene) {
+    scenes.push(currentScene);
+  }
+  const rawText = scenes.map((scene) => scene.content).join("\n");
+  return {
+    title,
+    author,
+    scenes,
+    characters: Array.from(characters),
+    rawText
+  };
+};
+const parseSceneHeading = (heading) => {
+  let intExt = "";
+  let location = heading;
+  let timeOfDay = "";
+  const intExtMatch = heading.match(/^(INT\.|EXT\.|INT\/EXT\.|I\/E\.)\s*/i);
+  if (intExtMatch) {
+    const prefix = intExtMatch[1].toUpperCase();
+    if (prefix.includes("INT") && prefix.includes("EXT")) {
+      intExt = "INT/EXT";
+    } else if (prefix.includes("INT")) {
+      intExt = "INT";
+    } else if (prefix.includes("EXT")) {
+      intExt = "EXT";
+    }
+    location = heading.slice(intExtMatch[0].length);
+  }
+  const timeMatch = location.match(/\s*-\s*(DAY|NIGHT|DUSK|DAWN|MORNING|AFTERNOON|EVENING|CONTINUOUS|LATER|SAME)\s*$/i);
+  if (timeMatch) {
+    timeOfDay = timeMatch[1].toUpperCase();
+    location = location.slice(0, -timeMatch[0].length);
+  }
+  return { location: location.trim(), timeOfDay, intExt };
+};
+const cleanText = (s) => s.replace(/\s+/g, " ").replace(/[\u201c\u201d]/g, '"').replace(/[\u2018\u2019]/g, "'").trim();
+function screenplayToTableRead(parsed, fallbackTitle) {
+  const lines = [];
+  parsed.scenes.forEach((scene, sceneIndex) => {
+    scene.dialogue.forEach((d) => {
+      const text = cleanText(d.text);
+      if (text.length === 0) return;
+      lines.push({
+        character: d.character.trim(),
+        text,
+        sceneIndex
+      });
+    });
+  });
+  const characters = Array.from(new Set(lines.map((l) => l.character)));
+  return {
+    title: parsed.title && parsed.title !== "Untitled Screenplay" ? parsed.title : fallbackTitle,
+    characters,
+    lines
+  };
+}
+function parsePastedOrText(text, title = "Untitled Table Read") {
+  return screenplayToTableRead(parseFountain(text), title);
+}
+function parseFDXText(xml, title = "Untitled Table Read") {
+  return screenplayToTableRead(parseFDX(xml), title);
+}
+async function parseDocxFile(file) {
+  const mammoth = await import("mammoth");
+  const arrayBuffer = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer });
+  return parsePastedOrText(result.value, file.name.replace(/\.docx$/i, ""));
+}
+async function parsePdfFile(_file) {
+  throw new Error(
+    "PDF upload isn't supported here yet — please paste the script text or upload a .fountain, .txt, or .docx file."
+  );
+}
+async function parseAnyFile(file) {
+  const ext = file.name.toLowerCase().split(".").pop();
+  const baseTitle = file.name.replace(/\.[^.]+$/, "");
+  if (ext === "fdx") {
+    const text2 = await file.text();
+    return parseFDXText(text2, baseTitle);
+  }
+  if (ext === "docx") return parseDocxFile(file);
+  if (ext === "pdf") return parsePdfFile();
+  const text = await file.text();
+  return parsePastedOrText(text, baseTitle);
+}
+const ACCEPTED = [".fountain", ".txt", ".fdx", ".docx"];
+function ScriptUploader({ onParsed }) {
+  const [isDragging, setIsDragging] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [fileName, setFileName] = useState(null);
+  const [pasted, setPasted] = useState("");
+  const { toast: toast2 } = useToast();
+  const handleFile = async (file) => {
+    var _a2;
+    const ext = "." + (((_a2 = file.name.split(".").pop()) == null ? void 0 : _a2.toLowerCase()) ?? "");
+    if (!ACCEPTED.includes(ext)) {
+      toast2({ title: "Unsupported file", description: `Use ${ACCEPTED.join(", ")}.`, variant: "destructive" });
+      return;
+    }
+    setIsProcessing(true);
+    setFileName(file.name);
+    try {
+      const parsed = await parseAnyFile(file);
+      if (parsed.lines.length === 0) {
+        toast2({ title: "No dialogue found", description: "We couldn't detect any character dialogue in this file.", variant: "destructive" });
+      } else {
+        toast2({ title: "Script parsed", description: `${parsed.characters.length} characters · ${parsed.lines.length} lines` });
+        onParsed(parsed);
+      }
+    } catch (e) {
+      toast2({ title: "Parse failed", description: e instanceof Error ? e.message : "Unknown error", variant: "destructive" });
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+  const handlePaste = () => {
+    if (!pasted.trim()) return;
+    const parsed = parsePastedOrText(pasted, "Pasted Script");
+    if (parsed.lines.length === 0) {
+      toast2({ title: "No dialogue found", description: "Make sure character names are in ALL CAPS.", variant: "destructive" });
+      return;
+    }
+    toast2({ title: "Script parsed", description: `${parsed.characters.length} characters · ${parsed.lines.length} lines` });
+    onParsed(parsed);
+  };
+  const onDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const f = e.dataTransfer.files[0];
+    if (f) handleFile(f);
+  }, []);
+  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+    /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
+      /* @__PURE__ */ jsx(FileText, { className: "w-5 h-5 text-pink-400" }),
+      "Upload or paste your screenplay"
+    ] }) }),
+    /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs(Tabs, { defaultValue: "upload", className: "w-full", children: [
+      /* @__PURE__ */ jsxs(TabsList, { className: "bg-gray-800", children: [
+        /* @__PURE__ */ jsxs(TabsTrigger, { value: "upload", className: "data-[state=active]:bg-pink-500/20 data-[state=active]:text-pink-300", children: [
+          /* @__PURE__ */ jsx(Upload, { className: "w-4 h-4 mr-2" }),
+          " Upload"
+        ] }),
+        /* @__PURE__ */ jsxs(TabsTrigger, { value: "paste", className: "data-[state=active]:bg-pink-500/20 data-[state=active]:text-pink-300", children: [
+          /* @__PURE__ */ jsx(Clipboard, { className: "w-4 h-4 mr-2" }),
+          " Paste text"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx(TabsContent, { value: "upload", className: "mt-4", children: /* @__PURE__ */ jsxs(
+        "div",
+        {
+          onDragOver: (e) => {
+            e.preventDefault();
+            setIsDragging(true);
+          },
+          onDragLeave: (e) => {
+            e.preventDefault();
+            setIsDragging(false);
+          },
+          onDrop,
+          className: `relative border-2 border-dashed rounded-lg p-12 text-center transition-colors ${isDragging ? "border-pink-500 bg-pink-500/10" : "border-gray-700 hover:border-gray-600"}`,
+          children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "file",
+                accept: ".fountain,.txt,.fdx,.docx",
+                onChange: (e) => {
+                  var _a2;
+                  return ((_a2 = e.target.files) == null ? void 0 : _a2[0]) && handleFile(e.target.files[0]);
+                },
+                className: "absolute inset-0 w-full h-full opacity-0 cursor-pointer",
+                disabled: isProcessing
+              }
+            ),
+            /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-4", children: [
+              /* @__PURE__ */ jsx("div", { className: `w-16 h-16 rounded-full flex items-center justify-center ${isDragging ? "bg-pink-500/20" : "bg-gray-800"}`, children: /* @__PURE__ */ jsx(Upload, { className: `w-8 h-8 ${isDragging ? "text-pink-400" : "text-gray-400"}` }) }),
+              isProcessing ? /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+                /* @__PURE__ */ jsx("div", { className: "w-8 h-8 border-2 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto" }),
+                /* @__PURE__ */ jsxs("p", { className: "text-gray-400", children: [
+                  "Processing ",
+                  fileName,
+                  "…"
+                ] })
+              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx("p", { className: "text-white font-medium", children: "Drag and drop your screenplay" }),
+                /* @__PURE__ */ jsx("p", { className: "text-gray-400 text-sm", children: "or click to browse" }),
+                /* @__PURE__ */ jsx("div", { className: "flex gap-2 flex-wrap justify-center", children: ACCEPTED.map((t) => /* @__PURE__ */ jsx(Badge, { variant: "secondary", className: "bg-gray-800 text-gray-300", children: t }, t)) }),
+                /* @__PURE__ */ jsx("p", { className: "text-xs text-gray-500 mt-2", children: "PDFs: please copy the text and use the Paste tab." })
+              ] })
+            ] })
+          ]
+        }
+      ) }),
+      /* @__PURE__ */ jsx(TabsContent, { value: "paste", className: "mt-4", children: /* @__PURE__ */ jsxs("div", { className: "space-y-3", children: [
+        /* @__PURE__ */ jsx(
+          Textarea,
+          {
+            value: pasted,
+            onChange: (e) => setPasted(e.target.value),
+            placeholder: "INT. KITCHEN - DAY\n\nJANE\nWhere did you put the keys?\n\nJOHN\nThey're on the counter.\n",
+            className: "bg-gray-950 border-gray-700 text-gray-100 min-h-[260px] font-mono text-sm"
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { className: "flex justify-between items-center", children: [
+          /* @__PURE__ */ jsx("p", { className: "text-xs text-gray-500", children: "Tip: character names must be in ALL CAPS on their own line." }),
+          /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
+            pasted && /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", onClick: () => setPasted(""), className: "text-gray-400", children: [
+              /* @__PURE__ */ jsx(X, { className: "w-4 h-4 mr-1" }),
+              " Clear"
+            ] }),
+            /* @__PURE__ */ jsx(Button, { onClick: handlePaste, disabled: !pasted.trim(), className: "bg-pink-500 hover:bg-pink-600 text-white", children: "Parse script" })
+          ] })
+        ] })
+      ] }) })
+    ] }) })
+  ] });
+}
+const VOICES = [
+  // American Female
+  { id: "af_heart", label: "Heart (US Female)", gender: "female", accent: "American" },
+  { id: "af_bella", label: "Bella (US Female)", gender: "female", accent: "American" },
+  { id: "af_nicole", label: "Nicole (US Female)", gender: "female", accent: "American" },
+  { id: "af_sarah", label: "Sarah (US Female)", gender: "female", accent: "American" },
+  { id: "af_sky", label: "Sky (US Female)", gender: "female", accent: "American" },
+  // American Male
+  { id: "am_adam", label: "Adam (US Male)", gender: "male", accent: "American" },
+  { id: "am_michael", label: "Michael (US Male)", gender: "male", accent: "American" },
+  { id: "am_fenrir", label: "Fenrir (US Male)", gender: "male", accent: "American" },
+  { id: "am_liam", label: "Liam (US Male)", gender: "male", accent: "American" },
+  // British Female
+  { id: "bf_emma", label: "Emma (UK Female)", gender: "female", accent: "British" },
+  { id: "bf_isabella", label: "Isabella (UK Female)", gender: "female", accent: "British" },
+  { id: "bf_alice", label: "Alice (UK Female)", gender: "female", accent: "British" },
+  // British Male
+  { id: "bm_george", label: "George (UK Male)", gender: "male", accent: "British" },
+  { id: "bm_lewis", label: "Lewis (UK Male)", gender: "male", accent: "British" },
+  { id: "bm_daniel", label: "Daniel (UK Male)", gender: "male", accent: "British" }
+];
+const FEMALE_NAME_HINTS = [
+  "MARY",
+  "SARAH",
+  "JANE",
+  "ANNA",
+  "ANNE",
+  "EMMA",
+  "LISA",
+  "KATE",
+  "JEN",
+  "JULIA",
+  "RACHEL",
+  "LUCY",
+  "CLAIRE",
+  "SOPHIE",
+  "OLIVIA",
+  "NICOLE",
+  "ALICE",
+  "BELLA",
+  "ROSE",
+  "GRACE",
+  "ELLA",
+  "CHLOE",
+  "MIA",
+  "AVA",
+  "ZOE",
+  "ELIZA",
+  "HELEN",
+  "LAURA",
+  "MOM",
+  "MOTHER",
+  "DAUGHTER",
+  "SISTER",
+  "WOMAN",
+  "GIRL",
+  "WIFE",
+  "QUEEN",
+  "MS",
+  "MRS",
+  "MISS"
+];
+const MALE_NAME_HINTS = [
+  "JOHN",
+  "JAMES",
+  "DAVID",
+  "MIKE",
+  "MICHAEL",
+  "TOM",
+  "BOB",
+  "BILL",
+  "JIM",
+  "STEVE",
+  "PAUL",
+  "MARK",
+  "CHRIS",
+  "DAN",
+  "DANIEL",
+  "ADAM",
+  "LIAM",
+  "GEORGE",
+  "LEWIS",
+  "DAD",
+  "FATHER",
+  "SON",
+  "BROTHER",
+  "MAN",
+  "BOY",
+  "HUSBAND",
+  "KING",
+  "MR",
+  "SHERIFF",
+  "DETECTIVE",
+  "OFFICER",
+  "DOCTOR",
+  "CAPTAIN",
+  "SIR",
+  "FRANK",
+  "JACK",
+  "HARRY"
+];
+let femaleIdx = 0;
+let maleIdx = 0;
+function suggestVoice(characterName) {
+  const upper = characterName.toUpperCase();
+  const tokens = upper.split(/[\s\-_'.]+/).filter(Boolean);
+  let isFemale = tokens.some((t) => FEMALE_NAME_HINTS.includes(t));
+  let isMale = tokens.some((t) => MALE_NAME_HINTS.includes(t));
+  if (!isFemale && !isMale) {
+    isFemale = (femaleIdx + maleIdx) % 2 === 0;
+    isMale = !isFemale;
+  }
+  const pool = VOICES.filter(
+    (v2) => isFemale ? v2.gender === "female" : v2.gender === "male"
+  );
+  const idx = isFemale ? femaleIdx++ % pool.length : maleIdx++ % pool.length;
+  return pool[idx].id;
+}
+function resetVoiceSuggestions() {
+  femaleIdx = 0;
+  maleIdx = 0;
+}
+function CastVoiceAssigner({ parsed, assignments, onAssignmentsChange, onContinue }) {
+  const [previewing, setPreviewing] = useState(null);
+  useEffect(() => {
+    const missing = parsed.characters.filter((c) => !assignments[c]);
+    if (missing.length > 0) {
+      resetVoiceSuggestions();
+      const next = { ...assignments };
+      parsed.characters.forEach((c) => {
+        if (!next[c]) next[c] = suggestVoice(c);
+      });
+      onAssignmentsChange(next);
+    }
+  }, [parsed]);
+  const reshuffle = () => {
+    resetVoiceSuggestions();
+    const next = {};
+    parsed.characters.forEach((c) => {
+      next[c] = suggestVoice(c);
+    });
+    onAssignmentsChange(next);
+  };
+  const linesByChar = parsed.lines.reduce((acc, l) => {
+    acc[l.character] = (acc[l.character] ?? 0) + 1;
+    return acc;
+  }, {});
+  const previewVoice = async (character) => {
+    const voiceId = assignments[character];
+    if (!voiceId) return;
+    setPreviewing(character);
+    try {
+      const { previewLine: previewLine2 } = await Promise.resolve().then(() => ttsClient);
+      await previewLine2(`Hello, I'm ${character}.`, voiceId);
+    } catch (e) {
+      console.error("preview failed", e);
+    } finally {
+      setPreviewing(null);
+    }
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+    /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
+      /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(Users, { className: "w-5 h-5 text-pink-400" }),
+        "Assign voices (",
+        parsed.characters.length,
+        ")"
+      ] }),
+      /* @__PURE__ */ jsxs(Button, { variant: "ghost", size: "sm", onClick: reshuffle, className: "text-gray-300 hover:text-white", children: [
+        /* @__PURE__ */ jsx(RefreshCw, { className: "w-4 h-4 mr-1" }),
+        " Auto-assign"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs(CardContent, { children: [
+      /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 sm:grid-cols-2 gap-3", children: parsed.characters.map((c) => /* @__PURE__ */ jsxs("div", { className: "p-4 rounded-lg bg-gray-800 border border-gray-700", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-3", children: [
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("p", { className: "text-white font-semibold truncate", children: c }),
+            /* @__PURE__ */ jsxs("p", { className: "text-xs text-gray-400", children: [
+              linesByChar[c] ?? 0,
+              " lines"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(
+            Button,
+            {
+              variant: "ghost",
+              size: "icon",
+              onClick: () => previewVoice(c),
+              disabled: previewing === c,
+              className: "text-pink-400 hover:text-pink-300",
+              title: "Preview voice",
+              children: /* @__PURE__ */ jsx(Volume2, { className: `w-4 h-4 ${previewing === c ? "animate-pulse" : ""}` })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs(
+          Select,
+          {
+            value: assignments[c] ?? "",
+            onValueChange: (v2) => onAssignmentsChange({ ...assignments, [c]: v2 }),
+            children: [
+              /* @__PURE__ */ jsx(SelectTrigger, { className: "bg-gray-950 border-gray-700 text-gray-100", children: /* @__PURE__ */ jsx(SelectValue, { placeholder: "Choose a voice" }) }),
+              /* @__PURE__ */ jsx(SelectContent, { className: "bg-gray-900 border-gray-700 text-gray-100 max-h-72", children: ["American", "British"].map((accent) => /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { className: "px-2 py-1 text-xs text-gray-500 uppercase", children: accent }),
+                VOICES.filter((v2) => v2.accent === accent).map((v2) => /* @__PURE__ */ jsx(SelectItem, { value: v2.id, children: v2.label }, v2.id))
+              ] }, accent)) })
+            ]
+          }
+        )
+      ] }, c)) }),
+      /* @__PURE__ */ jsxs("div", { className: "mt-6 flex items-center justify-between", children: [
+        /* @__PURE__ */ jsxs(Badge, { className: "bg-pink-500/20 text-pink-300 border-pink-500/30", children: [
+          parsed.lines.length,
+          " dialogue lines total"
+        ] }),
+        /* @__PURE__ */ jsxs(Button, { onClick: onContinue, className: "bg-pink-500 hover:bg-pink-600 text-white", children: [
+          "Generate audiobook ",
+          /* @__PURE__ */ jsx(ArrowRight, { className: "w-4 h-4 ml-2" })
+        ] })
+      ] })
+    ] })
+  ] });
+}
+let worker = null;
+let initPromise = null;
+let nextId = 1;
+const pending = /* @__PURE__ */ new Map();
+function ensureWorker() {
+  if (worker) return worker;
+  worker = new Worker(new URL("../../workers/kokoroWorker.ts", import.meta.url), { type: "module" });
+  worker.onmessage = (e) => {
+    const msg = e.data;
+    if (msg.type === "chunk") {
+      const p = pending.get(msg.id);
+      if (p) {
+        pending.delete(msg.id);
+        p.resolve({ pcm: msg.pcm, sampleRate: msg.sampleRate });
+      }
+    } else if (msg.type === "error" && msg.id != null) {
+      const p = pending.get(msg.id);
+      if (p) {
+        pending.delete(msg.id);
+        p.reject(new Error(msg.error));
+      }
+    }
+  };
+  return worker;
+}
+function initTTS(onProgress) {
+  if (initPromise) return initPromise;
+  const w = ensureWorker();
+  onProgress == null ? void 0 : onProgress("Loading voice model (one-time, ~80MB)…");
+  initPromise = new Promise((resolve, reject) => {
+    const handler = (e) => {
+      const msg = e.data;
+      if ((msg == null ? void 0 : msg.type) === "ready") {
+        w.removeEventListener("message", handler);
+        resolve();
+      } else if ((msg == null ? void 0 : msg.type) === "error" && msg.id == null) {
+        w.removeEventListener("message", handler);
+        reject(new Error(msg.error));
+      }
+    };
+    w.addEventListener("message", handler);
+    w.postMessage({ type: "init" });
+  });
+  return initPromise;
+}
+function generateLine(text, voice) {
+  const w = ensureWorker();
+  const id = nextId++;
+  return new Promise((resolve, reject) => {
+    pending.set(id, { resolve, reject });
+    w.postMessage({ type: "generate", id, text, voice });
+  });
+}
+function terminateTTS() {
+  worker == null ? void 0 : worker.terminate();
+  worker = null;
+  initPromise = null;
+  pending.clear();
+}
+async function previewLine(text, voice) {
+  await initTTS();
+  const { pcm, sampleRate } = await generateLine(text, voice);
+  const ctx = new AudioContext({ sampleRate });
+  const buf = ctx.createBuffer(1, pcm.length, sampleRate);
+  const safe = new Float32Array(pcm.length);
+  safe.set(pcm);
+  buf.copyToChannel(safe, 0);
+  const src = ctx.createBufferSource();
+  src.buffer = buf;
+  src.connect(ctx.destination);
+  src.start();
+  await new Promise((r) => {
+    src.onended = () => r();
+  });
+  ctx.close();
+}
+const ttsClient = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  generateLine,
+  initTTS,
+  previewLine,
+  terminateTTS
+}, Symbol.toStringTag, { value: "Module" }));
+function encodePcmToMp3(pcm, sampleRate = 24e3, kbps = 96) {
+  const samples = new Int16Array(pcm.length);
+  for (let i = 0; i < pcm.length; i++) {
+    const s = Math.max(-1, Math.min(1, pcm[i]));
+    samples[i] = s < 0 ? s * 32768 : s * 32767;
+  }
+  const encoder = new lamejs.Mp3Encoder(1, sampleRate, kbps);
+  const blockSize = 1152;
+  const mp3Data = [];
+  for (let i = 0; i < samples.length; i += blockSize) {
+    const chunk = samples.subarray(i, i + blockSize);
+    const buf = encoder.encodeBuffer(chunk);
+    if (buf.length > 0) mp3Data.push(buf);
+  }
+  const end = encoder.flush();
+  if (end.length > 0) mp3Data.push(end);
+  return new Blob(mp3Data, { type: "audio/mpeg" });
+}
+function concatPcmWithGaps(segments, sampleRate = 24e3) {
+  let total = 0;
+  for (const s of segments) {
+    total += s.pcm.length + Math.floor(s.gapAfterSec * sampleRate);
+  }
+  const out = new Float32Array(total);
+  let offset = 0;
+  for (const s of segments) {
+    out.set(s.pcm, offset);
+    offset += s.pcm.length;
+    offset += Math.floor(s.gapAfterSec * sampleRate);
+  }
+  return out;
+}
+function GenerationProgress({ parsed, assignments, onComplete, onCancel }) {
+  const { user } = useAuth();
+  const { toast: toast2 } = useToast();
+  const cancelledRef = useRef(false);
+  const [status, setStatus] = useState("Loading voice model…");
+  const [currentLine, setCurrentLine] = useState(0);
+  const [currentPreview, setCurrentPreview] = useState(null);
+  const [phase, setPhase] = useState("loading");
+  useEffect(() => {
+    let aborted = false;
+    (async () => {
+      var _a2;
+      try {
+        await initTTS((m) => setStatus(m));
+        if (aborted || cancelledRef.current) return;
+        setPhase("generating");
+        setStatus("Generating dialogue audio…");
+        const segments = [];
+        let lastSceneIndex = ((_a2 = parsed.lines[0]) == null ? void 0 : _a2.sceneIndex) ?? 0;
+        for (let i = 0; i < parsed.lines.length; i++) {
+          if (cancelledRef.current) throw new Error("cancelled");
+          const line = parsed.lines[i];
+          const voice = assignments[line.character];
+          if (!voice) continue;
+          setCurrentLine(i + 1);
+          setCurrentPreview({ char: line.character, text: line.text.slice(0, 120) });
+          const sceneChanged = line.sceneIndex !== lastSceneIndex;
+          lastSceneIndex = line.sceneIndex;
+          if (sceneChanged && segments.length > 0) {
+            segments[segments.length - 1].gapAfterSec = 0.6;
+          }
+          const { pcm } = await generateLine(line.text, voice);
+          segments.push({ pcm, gapAfterSec: 0.3 });
+        }
+        if (cancelledRef.current) throw new Error("cancelled");
+        setPhase("encoding");
+        setStatus("Mixing and encoding MP3…");
+        const merged = concatPcmWithGaps(segments, 24e3);
+        const mp3 = encodePcmToMp3(merged, 24e3, 96);
+        if (!user) throw new Error("You must be signed in to save a table read.");
+        setPhase("uploading");
+        setStatus("Uploading to your library…");
+        const id = crypto.randomUUID();
+        const path = `${user.id}/${id}.mp3`;
+        const { error: upErr } = await supabase.storage.from("table-reads").upload(path, mp3, {
+          contentType: "audio/mpeg",
+          upsert: false
+        });
+        if (upErr) throw upErr;
+        const { data: row, error: insErr } = await supabase.from("table_reads").insert({
+          id,
+          user_id: user.id,
+          title: parsed.title,
+          audio_url: path,
+          character_count: parsed.characters.length,
+          line_count: parsed.lines.length,
+          is_public: false
+        }).select().single();
+        if (insErr) throw insErr;
+        setPhase("done");
+        onComplete({ id: row.id, audioUrl: URL.createObjectURL(mp3), mp3Blob: mp3 });
+      } catch (e) {
+        if (cancelledRef.current) return;
+        console.error(e);
+        setPhase("error");
+        setStatus(e instanceof Error ? e.message : "Generation failed");
+        toast2({
+          title: "Generation failed",
+          description: e instanceof Error ? e.message : "Unknown error",
+          variant: "destructive"
+        });
+      }
+    })();
+    return () => {
+      aborted = true;
+    };
+  }, []);
+  const total = parsed.lines.length;
+  const pct = phase === "generating" ? Math.round(currentLine / total * 100) : phase === "encoding" ? 95 : phase === "uploading" ? 98 : phase === "done" ? 100 : 5;
+  const handleCancel = () => {
+    cancelledRef.current = true;
+    terminateTTS();
+    onCancel();
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+    /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
+      /* @__PURE__ */ jsx(Wand2, { className: "w-5 h-5 text-pink-400" }),
+      "Generating your table read"
+    ] }) }),
+    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-2 text-sm", children: [
+          /* @__PURE__ */ jsxs("span", { className: "text-gray-300 flex items-center gap-2", children: [
+            phase !== "done" && phase !== "error" && /* @__PURE__ */ jsx(Loader2, { className: "w-4 h-4 animate-spin text-pink-400" }),
+            status
+          ] }),
+          /* @__PURE__ */ jsx("span", { className: "text-gray-400", children: phase === "generating" ? `Line ${currentLine} of ${total}` : `${pct}%` })
+        ] }),
+        /* @__PURE__ */ jsx(Progress, { value: pct, className: "bg-gray-800" })
+      ] }),
+      currentPreview && phase === "generating" && /* @__PURE__ */ jsxs("div", { className: "p-4 rounded-lg bg-gray-800 border border-gray-700", children: [
+        /* @__PURE__ */ jsx("p", { className: "text-pink-400 text-xs uppercase tracking-wide mb-1", children: currentPreview.char }),
+        /* @__PURE__ */ jsxs("p", { className: "text-gray-200 text-sm italic", children: [
+          '"',
+          currentPreview.text,
+          '"'
+        ] })
+      ] }),
+      phase !== "done" && phase !== "error" && /* @__PURE__ */ jsxs(Button, { variant: "outline", onClick: handleCancel, className: "border-gray-700 text-gray-300 hover:bg-gray-800", children: [
+        /* @__PURE__ */ jsx(X, { className: "w-4 h-4 mr-2" }),
+        " Cancel"
+      ] })
+    ] })
+  ] });
+}
+function AudioPlayer({ id, audioUrl, mp3Blob, initialTitle, onStartOver }) {
+  const { toast: toast2 } = useToast();
+  const [title, setTitle] = useState(initialTitle);
+  const [editingTitle, setEditingTitle] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const saveTitle = async () => {
+    setSaving(true);
+    const { error } = await supabase.from("table_reads").update({ title }).eq("id", id);
+    setSaving(false);
+    if (error) {
+      toast2({ title: "Save failed", description: error.message, variant: "destructive" });
+    } else {
+      setEditingTitle(false);
+      toast2({ title: "Title updated" });
+    }
+  };
+  const togglePublic = async () => {
+    const next = !isPublic;
+    const { error } = await supabase.from("table_reads").update({ is_public: next }).eq("id", id);
+    if (error) {
+      toast2({ title: "Update failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setIsPublic(next);
+    toast2({ title: next ? "Now public" : "Now private" });
+  };
+  const download = () => {
+    const url2 = URL.createObjectURL(mp3Blob);
+    const a = document.createElement("a");
+    a.href = url2;
+    a.download = `${title.replace(/[^a-z0-9-_ ]/gi, "_")}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url2);
+  };
+  const copyShareLink = async () => {
+    const link = `${window.location.origin}/table-read/shared/${id}`;
+    await navigator.clipboard.writeText(link);
+    toast2({ title: "Link copied", description: isPublic ? "Anyone with the link can listen." : "Heads up: this read is private — toggle public so others can listen." });
+  };
+  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+    /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { className: "text-white flex items-center justify-between gap-2", children: editingTitle ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 w-full", children: [
+      /* @__PURE__ */ jsx(Input, { value: title, onChange: (e) => setTitle(e.target.value), className: "bg-gray-950 border-gray-700 text-white" }),
+      /* @__PURE__ */ jsx(Button, { size: "sm", onClick: saveTitle, disabled: saving, className: "bg-pink-500 hover:bg-pink-600 text-white", children: /* @__PURE__ */ jsx(Check$1, { className: "w-4 h-4" }) })
+    ] }) : /* @__PURE__ */ jsxs("span", { className: "flex items-center gap-2", children: [
+      title,
+      /* @__PURE__ */ jsx(Button, { variant: "ghost", size: "icon", onClick: () => setEditingTitle(true), className: "text-gray-400 hover:text-white", children: /* @__PURE__ */ jsx(Edit3, { className: "w-4 h-4" }) })
+    ] }) }) }),
+    /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6", children: [
+      /* @__PURE__ */ jsx("audio", { controls: true, src: audioUrl, className: "w-full" }),
+      /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-3", children: [
+        /* @__PURE__ */ jsxs(Button, { onClick: download, className: "bg-pink-500 hover:bg-pink-600 text-white", children: [
+          /* @__PURE__ */ jsx(Download, { className: "w-4 h-4 mr-2" }),
+          " Download MP3"
+        ] }),
+        /* @__PURE__ */ jsxs(Button, { onClick: copyShareLink, variant: "outline", className: "border-gray-700 text-gray-200 hover:bg-gray-800", children: [
+          /* @__PURE__ */ jsx(Share2, { className: "w-4 h-4 mr-2" }),
+          " Copy share link"
+        ] }),
+        /* @__PURE__ */ jsxs(Button, { onClick: togglePublic, variant: "outline", className: "border-gray-700 text-gray-200 hover:bg-gray-800", children: [
+          isPublic ? /* @__PURE__ */ jsx(Globe, { className: "w-4 h-4 mr-2" }) : /* @__PURE__ */ jsx(Lock, { className: "w-4 h-4 mr-2" }),
+          isPublic ? "Public" : "Private"
+        ] }),
+        /* @__PURE__ */ jsx(Button, { onClick: onStartOver, variant: "ghost", className: "text-gray-300 hover:text-white", children: "Start over" })
+      ] }),
+      /* @__PURE__ */ jsx("p", { className: "text-xs text-gray-500", children: "Saved to your library. Generated 100% in your browser with kokoro-js — no third-party APIs were used." })
+    ] })
+  ] });
+}
+const STEPS = [
+  { id: 1, name: "Upload", icon: Upload },
+  { id: 2, name: "Cast", icon: Users },
+  { id: 3, name: "Generate", icon: Wand2 },
+  { id: 4, name: "Player", icon: Play }
+];
+function TableRead() {
+  useAuth();
+  const [step, setStep] = useState(1);
+  const [parsed, setParsed] = useState(null);
+  const [assignments, setAssignments] = useState({});
+  const [result, setResult] = useState(null);
+  const reset = () => {
+    setStep(1);
+    setParsed(null);
+    setAssignments({});
+    setResult(null);
+  };
+  const handleParsed = (p) => {
+    setParsed(p);
+    setAssignments({});
+    setStep(2);
+  };
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return /* @__PURE__ */ jsx(ScriptUploader, { onParsed: handleParsed });
+      case 2:
+        return parsed ? /* @__PURE__ */ jsx(
+          CastVoiceAssigner,
+          {
+            parsed,
+            assignments,
+            onAssignmentsChange: setAssignments,
+            onContinue: () => setStep(3)
+          }
+        ) : null;
+      case 3:
+        return parsed ? /* @__PURE__ */ jsx(
+          GenerationProgress,
+          {
+            parsed,
+            assignments,
+            onComplete: (r) => {
+              setResult(r);
+              setStep(4);
+            },
+            onCancel: () => setStep(2)
+          }
+        ) : null;
+      case 4:
+        return result && parsed ? /* @__PURE__ */ jsx(
+          AudioPlayer,
+          {
+            id: result.id,
+            audioUrl: result.audioUrl,
+            mp3Blob: result.mp3Blob,
+            initialTitle: parsed.title,
+            onStartOver: reset
+          }
+        ) : null;
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gray-950", children: [
+    /* @__PURE__ */ jsx(ToolTopBar, {}),
+    /* @__PURE__ */ jsx(ToolLead, { path: "/table-read" }),
+    /* @__PURE__ */ jsx("div", { className: "border-b border-gray-800 bg-gray-900/50", children: /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-4", children: /* @__PURE__ */ jsx("div", { className: "flex items-center gap-4", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
+      /* @__PURE__ */ jsx("div", { className: "w-10 h-10 bg-pink-500/20 rounded-lg flex items-center justify-center", children: /* @__PURE__ */ jsx(Headphones, { className: "w-5 h-5 text-pink-400" }) }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("h1", { className: "text-xl font-bold text-white", children: "Table Read" }),
+        /* @__PURE__ */ jsx("p", { className: "text-sm text-gray-400", children: "Turn your screenplay into a voiced audiobook — runs entirely in your browser." })
+      ] })
+    ] }) }) }) }),
+    /* @__PURE__ */ jsx("div", { className: "border-b border-gray-800 bg-gray-900/30", children: /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-6", children: /* @__PURE__ */ jsx("div", { className: "flex items-center justify-between max-w-3xl mx-auto", children: STEPS.map((s, i) => {
+      const Icon = s.icon;
+      const completed = step > s.id;
+      const active = step === s.id;
+      return /* @__PURE__ */ jsxs("div", { className: "flex items-center", children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center", children: [
+          /* @__PURE__ */ jsx("div", { className: `w-10 h-10 rounded-full flex items-center justify-center transition-colors ${completed ? "bg-pink-500 text-white" : active ? "bg-pink-500/20 border-2 border-pink-500 text-pink-400" : "bg-gray-800 text-gray-500"}`, children: completed ? /* @__PURE__ */ jsx(Check$1, { className: "w-5 h-5" }) : /* @__PURE__ */ jsx(Icon, { className: "w-5 h-5" }) }),
+          /* @__PURE__ */ jsx("span", { className: `mt-2 text-xs font-medium ${active ? "text-pink-400" : completed ? "text-white" : "text-gray-500"}`, children: s.name })
+        ] }),
+        i < STEPS.length - 1 && /* @__PURE__ */ jsx("div", { className: `w-12 sm:w-20 h-0.5 mx-2 ${step > s.id ? "bg-pink-500" : "bg-gray-800"}` })
+      ] }, s.id);
+    }) }) }) }),
+    /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-8", children: /* @__PURE__ */ jsx("div", { className: "max-w-4xl mx-auto", children: renderStep() }) })
+  ] });
 }
 function Marketing() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsxs(
     "div",
     {
       style: {
@@ -12886,31 +29383,37 @@ function Marketing() {
         minHeight: "100vh",
         fontFamily: "'Inter Tight', sans-serif"
       },
-      children: /* @__PURE__ */ jsx(
-        "div",
-        {
-          style: {
-            maxWidth: 1120,
-            margin: "0 auto",
-            padding: "96px 24px 80px"
-          },
-          children: /* @__PURE__ */ jsx(
-            "h1",
-            {
-              className: "text-center",
-              style: {
-                fontFamily: "'Anton', 'Archivo Black', sans-serif",
-                textTransform: "uppercase",
-                letterSpacing: "0.02em",
-                fontSize: "clamp(34px, 7vw, 76px)",
-                lineHeight: 1.05,
-                color: "#00d4aa"
-              },
-              children: "Marketing in a Box"
-            }
-          )
-        }
-      )
+      children: [
+        /* @__PURE__ */ jsx(ToolSeo, { path: "/marketing" }),
+        /* @__PURE__ */ jsxs(
+          "div",
+          {
+            style: {
+              maxWidth: 1120,
+              margin: "0 auto",
+              padding: "96px 24px 80px"
+            },
+            children: [
+              /* @__PURE__ */ jsx(
+                "h1",
+                {
+                  className: "text-center",
+                  style: {
+                    fontFamily: "'Anton', 'Archivo Black', sans-serif",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.02em",
+                    fontSize: "clamp(34px, 7vw, 76px)",
+                    lineHeight: 1.05,
+                    color: "#00d4aa"
+                  },
+                  children: "Marketing in a Box"
+                }
+              ),
+              /* @__PURE__ */ jsx(ToolLead, { path: "/marketing" })
+            ]
+          }
+        )
+      ]
     }
   );
 }
@@ -13725,43 +30228,6 @@ function PublicCastCrewForm() {
     ] }) })
   ] });
 }
-const Tabs = TabsPrimitive.Root;
-const TabsList = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.List,
-  {
-    ref,
-    className: cn(
-      "inline-flex h-10 items-center justify-center rounded-md bg-muted p-1 text-muted-foreground",
-      className
-    ),
-    ...props
-  }
-));
-TabsList.displayName = TabsPrimitive.List.displayName;
-const TabsTrigger = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.Trigger,
-  {
-    ref,
-    className: cn(
-      "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-      className
-    ),
-    ...props
-  }
-));
-TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
-const TabsContent = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  TabsPrimitive.Content,
-  {
-    ref,
-    className: cn(
-      "mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      className
-    ),
-    ...props
-  }
-));
-TabsContent.displayName = TabsPrimitive.Content.displayName;
 const documentBundles = [
   {
     id: "development_rights",
@@ -14113,109 +30579,6 @@ function DocsLibrary() {
       ] })
     ] })
   ] });
-}
-const Checkbox = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
-  CheckboxPrimitive.Root,
-  {
-    ref,
-    className: cn(
-      "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
-      className
-    ),
-    ...props,
-    children: /* @__PURE__ */ jsx(CheckboxPrimitive.Indicator, { className: cn("flex items-center justify-center text-current"), children: /* @__PURE__ */ jsx(Check$1, { className: "h-4 w-4" }) })
-  }
-));
-Checkbox.displayName = CheckboxPrimitive.Root.displayName;
-const alertVariants = cva(
-  "relative w-full rounded-lg border p-4 [&>svg~*]:pl-7 [&>svg+div]:translate-y-[-3px] [&>svg]:absolute [&>svg]:left-4 [&>svg]:top-4 [&>svg]:text-foreground",
-  {
-    variants: {
-      variant: {
-        default: "bg-background text-foreground",
-        destructive: "border-destructive/50 text-destructive dark:border-destructive [&>svg]:text-destructive"
-      }
-    },
-    defaultVariants: {
-      variant: "default"
-    }
-  }
-);
-const Alert = React.forwardRef(({ className, variant, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, role: "alert", className: cn(alertVariants({ variant }), className), ...props }));
-Alert.displayName = "Alert";
-const AlertTitle = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("h5", { ref, className: cn("mb-1 font-medium leading-none tracking-tight", className), ...props })
-);
-AlertTitle.displayName = "AlertTitle";
-const AlertDescription = React.forwardRef(
-  ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("text-sm [&_p]:leading-relaxed", className), ...props })
-);
-AlertDescription.displayName = "AlertDescription";
-class InsufficientCreditsError extends Error {
-  constructor(required, available) {
-    super("Insufficient credits");
-    __publicField(this, "required");
-    __publicField(this, "available");
-    this.name = "InsufficientCreditsError";
-    this.required = required;
-    this.available = available;
-  }
-}
-const listeners = /* @__PURE__ */ new Set();
-function publishBalance(available) {
-  if (typeof available !== "number" || Number.isNaN(available)) return;
-  listeners.forEach((fn) => {
-    try {
-      fn(available);
-    } catch {
-    }
-  });
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new CustomEvent("credits:updated", { detail: { available } }));
-  }
-}
-function goToRefill() {
-  if (typeof window === "undefined") return;
-  if (window.location.pathname !== "/refill") {
-    window.location.href = "/refill";
-  }
-}
-async function aiInvoke(functionName, options = {}) {
-  const { body, redirectOnPaywall = true } = options;
-  const { data, error } = await supabase.functions.invoke(functionName, {
-    body
-  });
-  if (error) {
-    const res = error == null ? void 0 : error.context;
-    if (res && typeof res.json === "function") {
-      let payload = null;
-      try {
-        payload = await res.clone().json();
-      } catch {
-      }
-      if (res.status === 402 || (payload == null ? void 0 : payload.error) === "Insufficient credits") {
-        const required = Number((payload == null ? void 0 : payload.required) ?? 0);
-        const available = Number((payload == null ? void 0 : payload.available) ?? 0);
-        publishBalance(available);
-        toast$1.error("You're out of credits — top up to continue", {
-          description: required > 0 ? `This action needs ${required} credit${required === 1 ? "" : "s"}. You have ${available}.` : void 0,
-          action: { label: "Top up", onClick: goToRefill }
-        });
-        if (redirectOnPaywall) setTimeout(goToRefill, 800);
-        throw new InsufficientCreditsError(required, available);
-      }
-      if (res.status === 401) {
-        toast$1.error("Please sign in to use this tool");
-        throw new Error("Unauthorized");
-      }
-      if (payload == null ? void 0 : payload.error) {
-        throw new Error(payload.error);
-      }
-    }
-    throw error;
-  }
-  publishBalance(data == null ? void 0 : data.available_credits);
-  return data;
 }
 const INITIAL_FORM$O = {
   effective_date: "",
@@ -48174,7 +64537,7 @@ const ClearanceLog = () => {
   };
   const counts = useMemo(() => {
     const cleared = rows.filter((r) => r.status === "Cleared").length;
-    const pending = rows.filter(
+    const pending2 = rows.filter(
       (r) => r.status === "Pending" || r.status === "Requested" || r.status === "In Negotiation"
     ).length;
     const denied = rows.filter((r) => r.status === "Denied").length;
@@ -48182,8 +64545,8 @@ const ClearanceLog = () => {
     return {
       total: rows.length,
       cleared,
-      pending,
-      outstanding: pending,
+      pending: pending2,
+      outstanding: pending2,
       denied,
       na
     };
@@ -57060,7 +73423,47 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/green-light-engine/:tier", element: /* @__PURE__ */ jsx(GleTier, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug", element: /* @__PURE__ */ jsx(CoursePage, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/academy/:courseSlug/:chapterSlug", element: /* @__PURE__ */ jsx(CourseChapter, {}) }),
-  /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsx(Launch, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/launch", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/launch" }),
+    /* @__PURE__ */ jsx(Launch, {})
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/movie-in-a-box", element: /* @__PURE__ */ jsx(MovieInABox, {}) }),
+  /* @__PURE__ */ jsx(Route, { path: "/script-analysis", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/script-analysis" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ScriptAnalysis, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/scene-analysis", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/scene-analysis" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(SceneAnalysis, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/storyboarding", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/storyboarding" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(StoryboardingRoute, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/call-sheet", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/call-sheet" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(CallSheet, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/pitch-deck" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(PitchDeckMaker, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/contract-assistant", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/contract-assistant" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ContractAssistant, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/funding-strategy", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/funding-strategy" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(FundingStrategy, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/distribution-readiness", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/distribution-readiness" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(DistributionReadiness, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/table-read", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/table-read" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(TableRead, {}) })
+  ] }) }),
   /* @__PURE__ */ jsx(Route, { path: "/marketing", element: /* @__PURE__ */ jsx(Marketing, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/contact-cast-crew", element: /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ContactCastCrew, {}) }) }),
   /* @__PURE__ */ jsx(Route, { path: "/f/:slug", element: /* @__PURE__ */ jsx(PublicCastCrewForm, {}) }),

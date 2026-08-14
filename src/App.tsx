@@ -259,6 +259,7 @@ import ShoppingAgreement from "./pages/agreements/ShoppingAgreement";
 
 
 import ToolGate from "@/components/ToolGate";
+import { ToolSeo } from "@/components/ToolSeo";
 
 const queryClient = new QueryClient();
 
@@ -287,11 +288,11 @@ const AppContent = () => (
       <Route path="/auditions" element={<ToolGate><Auditions /></ToolGate>} />
       <Route path="/audition/:id" element={<AuditionDetail />} />
       <Route path="/upload-auditions" element={<ToolGate><UploadAuditions /></ToolGate>} />
-      <Route path="/scene-analysis" element={<ToolGate><SceneAnalysis /></ToolGate>} />
-      <Route path="/script-analysis" element={<ToolGate><ScriptAnalysis /></ToolGate>} />
-      <Route path="/storyboarding" element={<ToolGate><StoryboardingRoute /></ToolGate>} />
+      <Route path="/scene-analysis" element={<><ToolSeo path="/scene-analysis" /><ToolGate><SceneAnalysis /></ToolGate></>} />
+      <Route path="/script-analysis" element={<><ToolSeo path="/script-analysis" /><ToolGate><ScriptAnalysis /></ToolGate></>} />
+      <Route path="/storyboarding" element={<><ToolSeo path="/storyboarding" /><ToolGate><StoryboardingRoute /></ToolGate></>} />
       <Route path="/storyboarding/pricing" element={<Navigate to="/membership" replace />} />
-      <Route path="/call-sheet" element={<ToolGate><CallSheet /></ToolGate>} />
+      <Route path="/call-sheet" element={<><ToolSeo path="/call-sheet" /><ToolGate><CallSheet /></ToolGate></>} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />
@@ -480,13 +481,13 @@ const AppContent = () => (
           <Route path="/training/my-learning" element={<Navigate to="/" replace />} />
           <Route path="/training/certifications" element={<Navigate to="/" replace />} />
           <Route path="/verify-certificate/:certificateNumber" element={<VerifyCertificate />} />
-          <Route path="/contract-assistant" element={<ToolGate><ContractAssistant /></ToolGate>} />
-          <Route path="/funding-strategy" element={<ToolGate><FundingStrategy /></ToolGate>} />
+          <Route path="/contract-assistant" element={<><ToolSeo path="/contract-assistant" /><ToolGate><ContractAssistant /></ToolGate></>} />
+          <Route path="/funding-strategy" element={<><ToolSeo path="/funding-strategy" /><ToolGate><FundingStrategy /></ToolGate></>} />
           <Route path="/contract-filler" element={<ToolGate><ContractFiller /></ToolGate>} />
-          <Route path="/pitch-deck" element={<ToolGate><PitchDeckMaker /></ToolGate>} />
+          <Route path="/pitch-deck" element={<><ToolSeo path="/pitch-deck" /><ToolGate><PitchDeckMaker /></ToolGate></>} />
           <Route path="/pitch-deck/preview" element={<ToolGate><PitchDeckPreview /></ToolGate>} />
-          <Route path="/distribution-readiness" element={<ToolGate><DistributionReadiness /></ToolGate>} />
-          <Route path="/table-read" element={<ToolGate><TableRead /></ToolGate>} />
+          <Route path="/distribution-readiness" element={<><ToolSeo path="/distribution-readiness" /><ToolGate><DistributionReadiness /></ToolGate></>} />
+          <Route path="/table-read" element={<><ToolSeo path="/table-read" /><ToolGate><TableRead /></ToolGate></>} />
           <Route path="/table-read/shared/:id" element={<TableReadShared />} />
           <Route path="/video-evaluation" element={<ToolGate><VideoEvaluation /></ToolGate>} />
           <Route path="/actor-dashboard" element={<ActorDashboard />} />
@@ -518,7 +519,7 @@ const AppContent = () => (
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/recut" element={<ToolGate><Recut /></ToolGate>} />
-          <Route path="/launch" element={<Launch />} />
+          <Route path="/launch" element={<><ToolSeo path="/launch" /><Launch /></>} />
           <Route path="/marketing" element={<Marketing />} />
           <Route path="/refill" element={<Refill />} />
           <Route path="/movie-in-a-box" element={<MovieInABox />} />

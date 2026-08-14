@@ -12,6 +12,9 @@ interface SeoProps {
 const DEFAULT_IMAGE = "https://filmmakergenius.com/og-image.jpg";
 const SITE_NAME = "Filmmaker Genius";
 const BRAND_SUFFIXES = [
+  " | Filmmaking by Will Roberts",
+  " — Filmmaking by Will Roberts",
+  " | Filmmaker Genius Academy",
   " | Filmmaker Genius",
   " — Filmmaker Genius Academy",
   " — Filmmaker Genius",
@@ -21,12 +24,25 @@ const DESC_MAX = 160;
 const DESC_SOFT = 148;
 
 function normalizeTitle(raw: string): string {
-  const t = (raw || "").trim();
+  let t = (raw || "").trim();
   if (!t || t.length <= TITLE_MAX) return t;
   for (const suffix of BRAND_SUFFIXES) {
     if (t.endsWith(suffix)) {
       const stripped = t.slice(0, -suffix.length).trim().replace(/[—\-|]\s*$/, "").trim();
-      if (stripped.length > 0) return stripped;
+      if (stripped.length > 0) {
+        t = stripped;
+        break;
+      }
+    }
+  }
+  if (t.length > TITLE_MAX) {
+    const pipe = t.lastIndexOf(" | ");
+    if (pipe >= 24) t = t.slice(0, pipe).trim();
+  }
+  if (t.length > TITLE_MAX) {
+    for (const sep of [": ", " — ", " - "]) {
+      const i = t.indexOf(sep);
+      if (i >= 24 && i <= TITLE_MAX) return t.slice(0, i).trim();
     }
   }
   return t;

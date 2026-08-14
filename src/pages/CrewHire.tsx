@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Seo from "@/components/Seo";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -248,6 +249,7 @@ export default function CrewHire() {
         type="website"
       />
       <ToolTopBar />
+      <ToolLead path="/crew-hire" />
       <div className="container mx-auto px-6 py-8 max-w-4xl">
 
         {/* Header */}

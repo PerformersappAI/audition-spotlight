@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { ToolSeo, ToolLead } from "@/components/ToolSeo";
 
 export default function Marketing() {
   useEffect(() => {
@@ -14,6 +15,7 @@ export default function Marketing() {
         fontFamily: "'Inter Tight', sans-serif",
       }}
     >
+      <ToolSeo path="/marketing" />
       <div
         style={{
           maxWidth: 1120,
@@ -34,6 +36,7 @@ export default function Marketing() {
         >
           Marketing in a Box
         </h1>
+        <ToolLead path="/marketing" />
       </div>
     </div>
   );

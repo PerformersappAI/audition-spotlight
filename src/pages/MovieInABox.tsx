@@ -73,8 +73,8 @@ export default function MovieInABox() {
   return (
     <>
       <Seo
-        title="Movie in a Box | Filmmaker Genius"
-        description="Pick a story structure and start building your film — beat by beat."
+        title="Story Structure Templates for Screenwriters | Filmmaker Genius"
+        description="Pick a proven story structure — three-act, Save the Cat, Hero's Journey or the sequence method — and build your film beat by beat with prompts for every beat."
         canonical="https://filmmakergenius.com/movie-in-a-box"
         type="website"
       />
@@ -85,9 +85,14 @@ export default function MovieInABox() {
             <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
               Movie in a <span className="text-gold">Box</span>
             </h1>
-            <p className="text-lg text-foreground/60 mt-4">
-              How do you want to shape your story?
+            <p className="text-base text-foreground/60 mt-4 leading-relaxed">
+              The fastest way to outline a film is to start from a structure that already
+              works, then fill in its beats with your story. Pick a template below —
+              three-act, Save the Cat, the Hero's Journey or the sequence method — and
+              Movie in a Box walks you beat by beat, explaining what each beat has to
+              accomplish before you write it.
             </p>
+
           </div>
 
           {/* Hero compare banner */}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -414,6 +415,7 @@ const SceneAnalysis = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5">
       <ToolTopBar />
+      <ToolLead path="/scene-analysis" />
       <div className="container mx-auto px-4 py-8">
         <div className="space-y-6">
           {/* Header */}

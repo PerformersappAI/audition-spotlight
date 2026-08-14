@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -470,6 +471,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
   return (
     <div className="min-h-screen bg-background">
       <ToolTopBar />
+      <ToolLead path="/contract-assistant" />
       <div className="container mx-auto px-4 py-6">
         {/* Legal Disclaimer Banner */}
         <Alert className="mb-6 border-amber-500/50 bg-amber-500/10">

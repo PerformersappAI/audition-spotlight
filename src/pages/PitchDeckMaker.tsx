@@ -2,6 +2,7 @@ import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ToolTopBar from "@/components/ToolTopBar";
+import { ToolLead } from "@/components/ToolSeo";
 import { Save, Sparkles, ChevronRight, ChevronLeft, Loader2, Film, BookOpen, Users, Briefcase, Check, Clapperboard, FilePlus2 } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -275,6 +276,7 @@ const PitchDeckMaker = () => {
   return (
     <div className="relative min-h-screen overflow-hidden" style={{ backgroundColor: "#08080d" }}>
       <ToolTopBar />
+      <ToolLead path="/pitch-deck" />
       {/* Cinematic ambient backdrop */}
       <div
         aria-hidden="true"

@@ -157,8 +157,8 @@ export default function Toolbox() {
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh" }}>
       <Seo
-        title="Toolbox — Every Indie Film Tool in One Place | Filmmaker Genius"
-        description="The Filmmaker Genius Toolbox: script analysis, storyboards, pitch decks, call sheets, casting, breakdowns, and distribution tools — grouped by production phase."
+        title="Indie Film Production Tools | Filmmaker Genius"
+        description="Every indie film tool in one place: script analysis, storyboards, shot lists, call sheets, pitch decks, funding briefs and distribution prep, grouped by phase."
         canonical="https://filmmakergenius.com/toolbox"
       />
       <style>{`
@@ -185,8 +185,10 @@ export default function Toolbox() {
             fontWeight: 700, lineHeight: 1.05, margin: 0,
           }}>Filmmaker Tools</h1>
           <p style={{
-            marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.55)",
-          }}>AI-powered tools for every stage of your production</p>
+            marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)",
+            maxWidth: 720, margin: "16px auto 0", lineHeight: 1.65, textAlign: "left",
+          }}>Every indie film needs the same handful of documents: a script breakdown, a shot list, a call sheet, a pitch deck, a funding brief and a deliverables checklist. These tools generate all of them from your own script and project details, so you skip the blank page. Pick the phase you are in — pre-production, production, post, release or distribution — and open the tool that matches today's problem.</p>
+
         </div>
 
         {/* TABS */}
