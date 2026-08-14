@@ -195,6 +195,7 @@ import PressRelease from "./pages/agreements/PressRelease";
 import DirectorsStatement from "./pages/agreements/DirectorsStatement";
 import SynopsisTemplate from "./pages/agreements/SynopsisTemplate";
 import CastCrewBio from "./pages/agreements/CastCrewBio";
+import FestivalCoverLetter from "./pages/agreements/FestivalCoverLetter";
 
 
 
@@ -408,6 +409,7 @@ const AppContent = () => (
           <Route path="/library/directors-statement" element={<ToolGate><DirectorsStatement /></ToolGate>} />
           <Route path="/library/synopsis" element={<ToolGate><SynopsisTemplate /></ToolGate>} />
           <Route path="/library/cast-crew-bio" element={<ToolGate><CastCrewBio /></ToolGate>} />
+          <Route path="/library/festival-cover-letter" element={<ToolGate><FestivalCoverLetter /></ToolGate>} />
 
 
 
