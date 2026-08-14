@@ -39,7 +39,7 @@ export default function AuditionDetail() {
   const fetchAudition = async () => {
     try {
       const { data, error } = await supabase
-        .from("audition_notices")
+        .from("audition_notices_public")
         .select("*")
         .eq("id", id)
         .single();
