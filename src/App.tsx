@@ -174,6 +174,7 @@ import MusicLicenseSync from "./pages/agreements/MusicLicenseSync";
 import MusicCueSheet from "./pages/agreements/MusicCueSheet";
 import ComposerAgreement from "./pages/agreements/ComposerAgreement";
 import MusicianSessionRelease from "./pages/agreements/MusicianSessionRelease";
+import MaterialsArtworkRelease from "./pages/agreements/MaterialsArtworkRelease";
 
 
 
@@ -349,6 +350,7 @@ const AppContent = () => (
           <Route path="/library/music-cue-sheet" element={<ToolGate><MusicCueSheet /></ToolGate>} />
           <Route path="/library/composer-agreement" element={<ToolGate><ComposerAgreement /></ToolGate>} />
           <Route path="/library/musician-session-release" element={<ToolGate><MusicianSessionRelease /></ToolGate>} />
+          <Route path="/library/materials-artwork-release" element={<ToolGate><MaterialsArtworkRelease /></ToolGate>} />
 
 
 
