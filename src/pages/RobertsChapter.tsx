@@ -187,6 +187,7 @@ const RobertsChapter = () => {
           }}
           dangerouslySetInnerHTML={{ __html: intro }}
         />
+        <AcademyByline />
       </header>
 
       {/* Video slot */}
