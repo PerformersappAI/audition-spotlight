@@ -159,6 +159,7 @@ import SoundReport from "./pages/agreements/SoundReport";
 import ContinuityReport from "./pages/agreements/ContinuityReport";
 import BackgroundVoucher from "./pages/agreements/BackgroundVoucher";
 import EquipmentInventory from "./pages/agreements/EquipmentInventory";
+import AccidentIncidentReport from "./pages/agreements/AccidentIncidentReport";
 
 
 
@@ -314,6 +315,7 @@ const AppContent = () => (
           <Route path="/library/continuity-report" element={<ToolGate><ContinuityReport /></ToolGate>} />
           <Route path="/library/background-voucher" element={<ToolGate><BackgroundVoucher /></ToolGate>} />
           <Route path="/library/equipment-inventory" element={<ToolGate><EquipmentInventory /></ToolGate>} />
+          <Route path="/library/accident-incident-report" element={<ToolGate><AccidentIncidentReport /></ToolGate>} />
 
 
 
