@@ -23,6 +23,7 @@ import GreenLightEngine from "./pages/GreenLightEngine";
 import GleNiche from "./pages/GleNiche";
 import GleNichePage from "./pages/GleNichePage";
 import GleTier from "./pages/GleTier";
+import GlePlatformPage from "./pages/GlePlatformPage";
 import CoursePage from "./pages/CoursePage";
 import CourseChapter from "./pages/CourseChapter";
 import NotFound from "./pages/NotFound";
@@ -169,6 +170,7 @@ export const AppRoutes = () => (
       <Route path="/green-light-engine/niche" element={<GleNiche />} />
       <Route path="/green-light-engine/niche/:slug" element={<GleNichePage />} />
       <Route path="/green-light-engine/:tier" element={<GleTier />} />
+      <Route path="/green-light-engine/:tier/:platform" element={<GlePlatformPage />} />
       <Route path="/academy/:courseSlug" element={<CoursePage />} />
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
       <Route path="/launch" element={<><ToolSeo path="/launch" /><Launch /></>} />
