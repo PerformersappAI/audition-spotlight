@@ -4,6 +4,12 @@ import ToolTopBar from "@/components/ToolTopBar";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import {
+  castCrewReportBase64,
+  exportCastCrewReportToPDF,
+  reportFileName,
+} from "@/utils/exportCastCrewReportToPDF";
+
 
 const TEAL = "#00d4aa";
 
