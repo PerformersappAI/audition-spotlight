@@ -8,7 +8,8 @@
     "build": "vite build && vite build --ssr src/entry-server.tsx --outDir dist-server && tsx scripts/prerender.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "indexnow": "tsx scripts/indexnow.mjs"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
