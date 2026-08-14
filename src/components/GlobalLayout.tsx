@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Menu, X, Zap, Shield, LogOut, Wallet } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import LibraryDocSeo from '@/components/LibraryDocSeo';
 import { useAuth } from '@/hooks/useAuth';
 import { useAdminAuth } from '@/hooks/useAdminAuth';
 import { useCredits } from '@/hooks/useCredits';
@@ -47,6 +48,7 @@ export const GlobalLayout = ({ children }: GlobalLayoutProps) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <LibraryDocSeo />
       {/* Header */}
       <header
         className="sticky top-0 backdrop-blur-[12px] border-b"
