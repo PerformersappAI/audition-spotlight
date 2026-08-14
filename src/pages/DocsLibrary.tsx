@@ -158,7 +158,7 @@ const documentBundles = [
       { id: "55", title: "Background Voucher", description: "Payroll voucher for background and extra performers", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/background-voucher" },
       { id: "56", title: "Equipment Checkout / Inventory", description: "Log rented or owned equipment checked in and out", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/equipment-inventory" },
       { id: "57", title: "Accident / Incident Report", description: "Document any on-set injury or safety incident", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/accident-incident-report" },
-      { id: "58", title: "Safety Meeting Acknowledgement", description: "Confirm crew attendance at a safety briefing", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "58", title: "Safety Meeting Acknowledgement", description: "Confirm crew attendance at a safety briefing", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/safety-meeting-acknowledgement" },
     ]
   },
   {
