@@ -1,4 +1,4 @@
-// Auto-generated metadata for public document library pages (titles + descriptions for SEO).
+// Auto-generated metadata for the public document library pages (used for SEO + sitemap).
 export interface LibraryDoc {
   path: string;
   title: string;
@@ -66,15 +66,40 @@ export const libraryDocs: LibraryDoc[] = [
   { path: "/library/safety-meeting-acknowledgement", title: "Safety Meeting Acknowledgement", description: "Confirm crew attendance at a safety briefing" },
   { path: "/library/purchase-order", title: "Purchase Order", description: "Authorize a purchase for the production" },
   { path: "/library/purchase-order-log", title: "Purchase Order Log", description: "Track all purchase orders and their status" },
+  { path: "/library/check-request", title: "Check Request", description: "Request a check payment for a vendor or crew member" },
+  { path: "/library/petty-cash-reconciliation", title: "Petty Cash Envelope / Reconciliation", description: "Log and reconcile small cash expenditures" },
+  { path: "/library/expense-report", title: "Expense Report", description: "Reimburse production-related expenses" },
+  { path: "/library/mileage-log", title: "Mileage Log", description: "Track vehicle mileage for reimbursement or tax records" },
+  { path: "/library/credit-card-log", title: "Credit Card Log", description: "Log production credit card charges and receipts" },
+  { path: "/library/invoice-template", title: "Invoice Template", description: "Bill the production for services or equipment" },
+  { path: "/library/cost-report-actuals", title: "Cost Report / Actuals", description: "Compare actual spending against the approved budget" },
   { path: "/library/music-license-sync", title: "Music License (template)", description: "License a song or master recording for the project" },
   { path: "/library/composer-agreement", title: "Composer Agreement", description: "Engage a composer to write original score" },
   { path: "/library/music-cue-sheet", title: "Music Cue Sheet", description: "List every music cue with timing and rights holder" },
   { path: "/library/musician-session-release", title: "Musician / Session Release", description: "Release for recording session musicians and vocalists" },
   { path: "/library/materials-artwork-release", title: "Materials / Artwork Release", description: "Clear artwork, photos, or archival materials used on screen" },
   { path: "/library/product-placement-release", title: "Product Placement Release", description: "Permission to feature a branded product or logo" },
+  { path: "/library/clearance-log", title: "Clearance Log", description: "Track all clearance items and their status" },
+  { path: "/library/post-schedule", title: "Post Schedule", description: "Schedule editing, sound, VFX, and color milestones" },
+  { path: "/library/editor-agreement", title: "Editor Agreement", description: "Engage an editor and define cut delivery terms" },
+  { path: "/library/vfx-shot-list", title: "VFX Shot List / Turnover", description: "List and describe every visual effects shot needed" },
+  { path: "/library/deliverables-checklist", title: "Deliverables Checklist", description: "List of final deliverables for festivals and distributors" },
+  { path: "/library/qc-checklist", title: "QC Checklist", description: "Quality-control checklist for picture, sound, and captions" },
+  { path: "/library/ccsl", title: "Combined Continuity & Spotting List (CCSL)", description: "Detailed dialogue, continuity, and spotting document" },
+  { path: "/library/credits-title-list", title: "Credits / Title List", description: "Final list of on-screen credits and titles" },
+  { path: "/library/distribution-package-checklist", title: "Distribution Package Checklist", description: "Complete checklist of required sales and distribution materials" },
+  { path: "/library/delivery-schedule", title: "Delivery Schedule", description: "Timeline for delivering all required elements" },
   { path: "/library/sales-agent-agreement", title: "Sales Agent Agreement (template)", description: "Engage a sales agent to represent the film" },
+  { path: "/library/distribution-agreement", title: "Distribution Agreement (template)", description: "License the film to a distributor for a territory or platform" },
+  { path: "/library/epk-feature", title: "EPK Template — Feature", description: "Complete electronic press kit for a feature film" },
+  { path: "/library/epk-short", title: "EPK Template — Short", description: "Electronic press kit tailored for a short film" },
   { path: "/library/one-sheet-poster", title: "One-Sheet / Poster Template", description: "Marketing poster layout with key art and credits" },
+  { path: "/library/press-release", title: "Press Release Template", description: "Announcement template for festival, press, or release" },
+  { path: "/library/directors-statement", title: "Director's Statement", description: "Template for the director's festival or press statement" },
+  { path: "/library/synopsis", title: "Synopsis (Short & Long)", description: "Short and long-form synopsis templates for marketing" },
   { path: "/library/cast-crew-bio", title: "Cast / Crew Bio Template", description: "Bio template for key cast and crew members" },
+  { path: "/library/festival-cover-letter", title: "Festival Cover Letter", description: "Professional cover letter for festival submissions" },
+  { path: "/library/festival-qa", title: "Festival Q&A Template", description: "Frequently asked festival questions and sample answers" },
 ];
 
 export const libraryDocPaths: string[] = libraryDocs.map((d) => d.path);
