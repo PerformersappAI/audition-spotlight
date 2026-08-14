@@ -17,6 +17,7 @@ interface SharedRead {
 export default function TableReadShared() {
   const { id } = useParams<{ id: string }>();
   const [read, setRead] = useState<SharedRead | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +31,16 @@ export default function TableReadShared() {
         .maybeSingle();
       if (error) setError(error.message);
       else if (!data) setError("This table read doesn't exist or isn't shared publicly.");
-      else setRead(data as SharedRead);
+      else {
+        setRead(data as SharedRead);
+        if ((data as SharedRead).audio_url) {
+          const { data: signed } = await supabase.functions.invoke("table-read-audio", {
+            body: { id },
+          });
+          if ((signed as any)?.url) setAudioUrl((signed as any).url);
+          else setError("The audio for this table read isn't available.");
+        }
+      }
       setLoading(false);
     })();
   }, [id]);
