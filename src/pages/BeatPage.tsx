@@ -1043,6 +1043,17 @@ export default function BeatPage() {
         description={`${beatName}: what the beat is, and how ${struct.movie.title} nails it.`}
         canonical={`https://filmmakergenius.com/movie-in-a-box/${structure}/beat/${slug}`}
         type="article"
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: `${beatName} — ${struct.name}`,
+          description: `${beatName}: what the beat is, and how ${struct.movie.title} nails it.`,
+          url: `https://filmmakergenius.com/movie-in-a-box/${structure}/beat/${slug}`,
+          isPartOf: {
+            type: "Article",
+            name: struct.name,
+            url: `https://filmmakergenius.com/movie-in-a-box/${structure}/structure`,
+          },
+        })}
       />
 
       {/* breadcrumb */}
