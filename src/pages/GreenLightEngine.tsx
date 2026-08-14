@@ -138,6 +138,7 @@ export default function GreenLightEngine() {
           Pick a tier to see the platforms your film could reach — then we walk you
           through exactly how to get there.
         </p>
+        <AcademyByline style={{ margin: "-28px 0 32px", textAlign: "center", color: "rgba(255,255,255,0.4)" }} />
 
         <div
           className="gle-grid-square"
