@@ -183,6 +183,8 @@ import DeliverablesChecklist from "./pages/agreements/DeliverablesChecklist";
 import QcChecklist from "./pages/agreements/QcChecklist";
 import EditorAgreement from "./pages/agreements/EditorAgreement";
 import CcslList from "./pages/agreements/CcslList";
+import CreditsTitleList from "./pages/agreements/CreditsTitleList";
+
 
 
 
@@ -377,6 +379,8 @@ const AppContent = () => (
           <Route path="/library/qc-checklist" element={<ToolGate><QcChecklist /></ToolGate>} />
           <Route path="/library/editor-agreement" element={<ToolGate><EditorAgreement /></ToolGate>} />
           <Route path="/library/ccsl" element={<ToolGate><CcslList /></ToolGate>} />
+          <Route path="/library/credits-title-list" element={<ToolGate><CreditsTitleList /></ToolGate>} />
+
 
 
 

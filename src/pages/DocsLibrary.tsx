@@ -211,7 +211,7 @@ const documentBundles = [
       { id: "78", title: "Deliverables Checklist", route: "/library/deliverables-checklist", description: "List of final deliverables for festivals and distributors", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "79", title: "QC Checklist", route: "/library/qc-checklist", description: "Quality-control checklist for picture, sound, and captions", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "80", title: "Combined Continuity & Spotting List (CCSL)", route: "/library/ccsl", description: "Detailed dialogue, continuity, and spotting document", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
-      { id: "81", title: "Credits / Title List", description: "Final list of on-screen credits and titles", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "81", title: "Credits / Title List", route: "/library/credits-title-list", description: "Final list of on-screen credits and titles", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   },
   {
