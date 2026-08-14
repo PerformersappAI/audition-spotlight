@@ -74,6 +74,7 @@ export default function GleNichePage() {
           <div style={{ fontSize: 11, fontWeight: 800, letterSpacing: "0.12em", textTransform: "uppercase", color: accent }}>Niche & Identity</div>
           <h1 style={{ fontSize: 30, margin: "8px 0 10px" }}>{title}</h1>
           <p style={{ color: "#9ab1c2", fontSize: 15, maxWidth: 600, margin: "0 auto", lineHeight: 1.6 }}>{sub}</p>
+          <AcademyByline style={{ color: "rgba(255,255,255,0.4)" }} />
         </div>
 
         <div className="gle-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }}>
