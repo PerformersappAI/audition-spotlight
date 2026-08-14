@@ -340,6 +340,8 @@ const AppContent = () => (
           <Route path="/library/mileage-log" element={<ToolGate><MileageLog /></ToolGate>} />
           <Route path="/library/credit-card-log" element={<ToolGate><CreditCardLog /></ToolGate>} />
           <Route path="/library/invoice-template" element={<ToolGate><InvoiceTemplate /></ToolGate>} />
+          <Route path="/library/cost-report-actuals" element={<ToolGate><CostReportActuals /></ToolGate>} />
+
 
 
 
