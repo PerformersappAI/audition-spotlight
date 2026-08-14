@@ -3149,7 +3149,6 @@ const imgPitchDeck = "/assets/tool-pitch-deck-new-KGycKjNa.webp";
 const imgCallSheet = "/assets/tool-call-sheet-DQpWMo_S.webp";
 const imgAuditions = "/assets/tool-auditions-CAWKiQYv.webp";
 const imgCrewHire = "/assets/tool-crew-hire-C6wHLsjN.webp";
-const imgContactCastCrew = "/assets/tool-contact-cast-crew-DIccHi3t.webp";
 const version$4 = 1;
 const asset_id$4 = "5515411f-b226-45eb-a75f-d58c29bcf316";
 const project_id$4 = "2327b42e-2823-4633-a594-07a097a36c30";
@@ -3294,7 +3293,6 @@ const HomeMarketing = () => {
   const callSheet = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const crewHire = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
-  const contactCastCrew = { title: "Contact Cast & Crew", to: "/contact-cast-crew", cta: "Join", img: imgContactCastCrew };
   const contractAssistant = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
   const marketingInABox = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox.url };
   const greenLightEngine = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine.url, fit: "contain" };
@@ -3377,8 +3375,7 @@ const HomeMarketing = () => {
             /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-[14px] h-full", children: [
               /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: callSheet, aspect: "tall", className: "h-full" }) }),
               /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: auditions, aspect: "tall", className: "h-full" }) }),
-              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) }),
-              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: contactCastCrew, aspect: "tall", className: "h-full" }) })
+              /* @__PURE__ */ jsx("div", { className: "flex-1 [&>a>div:first-child]:!min-h-0", children: /* @__PURE__ */ jsx(ToolCard$1, { card: crewHire, aspect: "tall", className: "h-full" }) })
             ] })
           ] }) }),
           /* @__PURE__ */ jsx(NeonCube, { label: "FUND", color: "#39ff14", children: /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-[14px]", children: [
@@ -4462,9 +4459,10 @@ const GROUPS$1 = [
   {
     key: "Cast & Crew",
     label: "Cast & Crew",
-    rows: [{ cols: 2, tools: [
+    rows: [{ cols: 3, tools: [
       { title: "Auditions", to: "/upload-auditions", theme: "rose" },
-      { title: "Crew Hire", to: "/crew-hire", theme: "rose" }
+      { title: "Crew Hire", to: "/crew-hire", theme: "rose" },
+      { title: "Contact Cast & Crew", to: "/contact-cast-crew", theme: "rose" }
     ] }]
   },
   {
