@@ -29,6 +29,7 @@ import NotFound from "./pages/NotFound";
 import Launch from "./pages/Launch";
 import Marketing from "./pages/Marketing";
 import ContactCastCrew from "./pages/ContactCastCrew";
+import PublicCastCrewForm from "./pages/PublicCastCrewForm";
 
 
 export const AppRoutes = () => (
@@ -66,7 +67,8 @@ export const AppRoutes = () => (
       <Route path="/academy/:courseSlug/:chapterSlug" element={<CourseChapter />} />
       <Route path="/launch" element={<Launch />} />
       <Route path="/marketing" element={<Marketing />} />
-      <Route path="/contact-cast-crew" element={<ContactCastCrew />} />
+      <Route path="/contact-cast-crew" element={<ToolGate><ContactCastCrew /></ToolGate>} />
+      <Route path="/f/:slug" element={<PublicCastCrewForm />} />
       <Route path="*" element={<NotFound />} />
 
     </Routes>

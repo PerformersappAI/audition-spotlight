@@ -928,6 +928,95 @@ export type Database = {
           },
         ]
       }
+      cast_crew_contacts: {
+        Row: {
+          actor_type: string | null
+          character_name: string | null
+          created_at: string
+          email: string | null
+          first_name: string | null
+          form_id: string
+          id: string
+          instagram_handle: string | null
+          job_position: string | null
+          last_name: string | null
+          notes: string | null
+          other_role: string | null
+          owner_user_id: string
+          phone: string | null
+        }
+        Insert: {
+          actor_type?: string | null
+          character_name?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          form_id: string
+          id?: string
+          instagram_handle?: string | null
+          job_position?: string | null
+          last_name?: string | null
+          notes?: string | null
+          other_role?: string | null
+          owner_user_id: string
+          phone?: string | null
+        }
+        Update: {
+          actor_type?: string | null
+          character_name?: string | null
+          created_at?: string
+          email?: string | null
+          first_name?: string | null
+          form_id?: string
+          id?: string
+          instagram_handle?: string | null
+          job_position?: string | null
+          last_name?: string | null
+          notes?: string | null
+          other_role?: string | null
+          owner_user_id?: string
+          phone?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cast_crew_contacts_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "cast_crew_forms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cast_crew_forms: {
+        Row: {
+          created_at: string
+          id: string
+          notify_email: string
+          owner_user_id: string
+          production_name: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notify_email: string
+          owner_user_id: string
+          production_name?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notify_email?: string
+          owner_user_id?: string
+          production_name?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       course_discussions: {
         Row: {
           content: string

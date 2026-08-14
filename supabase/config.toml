@@ -145,3 +145,9 @@ verify_jwt = true
 
 [functions.movie-brain]
 verify_jwt = true
+
+[functions.submit-cast-crew-contact]
+verify_jwt = false
+
+[functions.table-read-audio]
+verify_jwt = false

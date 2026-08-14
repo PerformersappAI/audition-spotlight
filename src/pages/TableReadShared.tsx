@@ -17,6 +17,7 @@ interface SharedRead {
 export default function TableReadShared() {
   const { id } = useParams<{ id: string }>();
   const [read, setRead] = useState<SharedRead | null>(null);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,7 +31,16 @@ export default function TableReadShared() {
         .maybeSingle();
       if (error) setError(error.message);
       else if (!data) setError("This table read doesn't exist or isn't shared publicly.");
-      else setRead(data as SharedRead);
+      else {
+        setRead(data as SharedRead);
+        if ((data as SharedRead).audio_url) {
+          const { data: signed } = await supabase.functions.invoke("table-read-audio", {
+            body: { id },
+          });
+          if ((signed as any)?.url) setAudioUrl((signed as any).url);
+          else setError("The audio for this table read isn't available.");
+        }
+      }
       setLoading(false);
     })();
   }, [id]);
@@ -63,14 +73,14 @@ export default function TableReadShared() {
             </CardContent>
           </Card>
         )}
-        {read && read.audio_url && (
+        {read && audioUrl && (
           <Card className="bg-gray-900 border-gray-800">
             <CardHeader>
               <CardTitle className="text-white">{read.title}</CardTitle>
               <p className="text-sm text-gray-400">{read.character_count} characters · {read.line_count} lines</p>
             </CardHeader>
             <CardContent>
-              <audio controls src={read.audio_url} className="w-full" />
+              <audio controls src={audioUrl} className="w-full" />
               <p className="text-xs text-gray-500 mt-4">Made with Filmmaker Genius — Table Read.</p>
             </CardContent>
           </Card>

@@ -77,15 +77,13 @@ export default function GenerationProgress({ parsed, assignments, onComplete, on
           upsert: false,
         });
         if (upErr) throw upErr;
-        const { data: pub } = supabase.storage.from("table-reads").getPublicUrl(path);
-
         const { data: row, error: insErr } = await supabase
           .from("table_reads")
           .insert({
             id,
             user_id: user.id,
             title: parsed.title,
-            audio_url: pub.publicUrl,
+            audio_url: path,
             character_count: parsed.characters.length,
             line_count: parsed.lines.length,
             is_public: false,
@@ -95,7 +93,7 @@ export default function GenerationProgress({ parsed, assignments, onComplete, on
         if (insErr) throw insErr;
 
         setPhase("done");
-        onComplete({ id: row.id, audioUrl: pub.publicUrl, mp3Blob: mp3 });
+        onComplete({ id: row.id, audioUrl: URL.createObjectURL(mp3), mp3Blob: mp3 });
       } catch (e) {
         if (cancelledRef.current) return;
         console.error(e);
