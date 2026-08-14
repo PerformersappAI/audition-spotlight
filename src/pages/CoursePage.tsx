@@ -57,23 +57,19 @@ export default function CoursePage() {
         description={course.seoDesc}
         canonical={`https://filmmakergenius.com/academy/${course.slug}`}
         jsonLd={[
-          {
-            "@context": "https://schema.org",
-            "@type": "Course",
-            name: course.title,
+          academyJsonLd({
+            type: "Course",
+            headline: course.title,
             description: course.seoDesc,
             url: `https://filmmakergenius.com/academy/${course.slug}`,
-            provider: {
-              "@type": "Organization",
-              name: "Filmmaker Genius",
-              sameAs: "https://filmmakergenius.com",
+            extra: {
+              hasCourseInstance: {
+                "@type": "CourseInstance",
+                courseMode: "online",
+                courseWorkload: course.readTime,
+              },
             },
-            hasCourseInstance: {
-              "@type": "CourseInstance",
-              courseMode: "online",
-              courseWorkload: course.readTime,
-            },
-          },
+          }),
           {
             "@context": "https://schema.org",
             "@type": "BreadcrumbList",
