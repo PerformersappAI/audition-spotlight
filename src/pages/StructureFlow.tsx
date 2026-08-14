@@ -315,6 +315,12 @@ var el=document.getElementById(id); if(el) el.innerHTML=s;}
         description={subtitle}
         canonical={`https://filmmakergenius.com/movie-in-a-box/${structureKey}/${activeStop}`}
         type="website"
+        jsonLd={academyJsonLd({
+          type: "LearningResource",
+          headline: `${title} — ${stopLabel}`,
+          description: subtitle,
+          url: `https://filmmakergenius.com/movie-in-a-box/${structureKey}/${activeStop}`,
+        })}
       />
 
       <nav
