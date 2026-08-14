@@ -68,7 +68,7 @@ serve(async (req) => {
       to: [to],
       subject: `${production} — Cast & Crew contact sheet (${contactCount})`,
       html: `
-        <div style="font-family:Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#12122 0;">
+        <div style="font-family:Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#121220;">
           <h1 style="font-size:20px;margin:0 0 8px;">${production}</h1>
           <p style="color:#00b08c;font-weight:700;letter-spacing:.06em;font-size:12px;margin:0 0 20px;">CAST &amp; CREW CONTACT SHEET</p>
           <p style="line-height:1.7;color:#333;">Your contact sheet is attached as a PDF. It includes ${contactCount} contact${contactCount === 1 ? "" : "s"} collected through your shareable form, grouped into cast and crew.</p>
