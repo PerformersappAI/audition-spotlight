@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 
 const TEAL = "#00d4aa";
 const BG = "#0a0a12";
