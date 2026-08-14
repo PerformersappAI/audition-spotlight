@@ -73,6 +73,17 @@ export default function MonetizationSubPage({ group }: Props) {
         title={`${entry.title} — ${entry.groupTitle} | Filmmaker Genius Academy`}
         description={`${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300)}
         canonical={canonical}
+        jsonLd={academyJsonLd({
+          type: "Article",
+          headline: entry.title,
+          description: `${entry.groupTitle} for indie film: ${entry.title.toLowerCase()}. ${entry.intro}`.slice(0, 300),
+          url: canonical,
+          isPartOf: {
+            type: "Article",
+            name: entry.groupTitle,
+            url: `https://filmmakergenius.com${entry.groupPath}`,
+          },
+        })}
       />
 
       <style>{`
