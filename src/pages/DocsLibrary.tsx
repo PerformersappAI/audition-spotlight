@@ -156,7 +156,7 @@ const documentBundles = [
       { id: "53", title: "Sound Report", description: "Log sound files, takes, and audio notes for each day", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/sound-report" },
       { id: "54", title: "Continuity / Script Supervisor Report", description: "Track scene continuity, action, and dialogue notes", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/continuity-report" },
       { id: "55", title: "Background Voucher", description: "Payroll voucher for background and extra performers", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/background-voucher" },
-      { id: "56", title: "Equipment Checkout / Inventory", description: "Log rented or owned equipment checked in and out", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "56", title: "Equipment Checkout / Inventory", description: "Log rented or owned equipment checked in and out", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/equipment-inventory" },
       { id: "57", title: "Accident / Incident Report", description: "Document any on-set injury or safety incident", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "58", title: "Safety Meeting Acknowledgement", description: "Confirm crew attendance at a safety briefing", category: "production_reports", format: "PDF + Word", size: "Fillable", premium: true },
     ]
