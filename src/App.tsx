@@ -62,6 +62,7 @@ import ActorHub from "./pages/ActorHub";
 import ActorProfile from "./pages/ActorProfile";
 import CrewHub from "./pages/CrewHub";
 import CrewHire from "./pages/CrewHire";
+import ContactCastCrew from "./pages/ContactCastCrew";
 import Membership from "./pages/Membership";
 import TrainingHub from "./pages/TrainingHub";
 import CourseDetail from "./pages/CourseDetail";
@@ -279,6 +280,7 @@ const AppContent = () => (
       <Route path="/actor/profile" element={<ActorProfile />} />
       <Route path="/crew" element={<ToolGate><CrewHub /></ToolGate>} />
       <Route path="/crew-hire" element={<ToolGate><CrewHire /></ToolGate>} />
+      <Route path="/contact-cast-crew" element={<ContactCastCrew />} />
       <Route path="/create-audition" element={<ToolGate><CreateAudition /></ToolGate>} />
       <Route path="/auditions" element={<ToolGate><Auditions /></ToolGate>} />
       <Route path="/audition/:id" element={<AuditionDetail />} />
