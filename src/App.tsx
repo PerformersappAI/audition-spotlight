@@ -161,6 +161,7 @@ import BackgroundVoucher from "./pages/agreements/BackgroundVoucher";
 import EquipmentInventory from "./pages/agreements/EquipmentInventory";
 import AccidentIncidentReport from "./pages/agreements/AccidentIncidentReport";
 import SafetyMeetingAcknowledgement from "./pages/agreements/SafetyMeetingAcknowledgement";
+import PurchaseOrder from "./pages/agreements/PurchaseOrder";
 
 
 
@@ -318,6 +319,7 @@ const AppContent = () => (
           <Route path="/library/equipment-inventory" element={<ToolGate><EquipmentInventory /></ToolGate>} />
           <Route path="/library/accident-incident-report" element={<ToolGate><AccidentIncidentReport /></ToolGate>} />
           <Route path="/library/safety-meeting-acknowledgement" element={<ToolGate><SafetyMeetingAcknowledgement /></ToolGate>} />
+          <Route path="/library/purchase-order" element={<ToolGate><PurchaseOrder /></ToolGate>} />
 
 
 
