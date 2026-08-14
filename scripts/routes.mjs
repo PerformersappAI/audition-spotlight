@@ -4,6 +4,7 @@ import { gleNiche } from "../src/data/gleNiche.ts";
 import { monetizationHubs } from "../src/data/monetizationHubs.ts";
 import { monetizationSub } from "../src/data/monetizationSub.ts";
 import { allCourses } from "../src/data/courses/index.ts";
+import { libraryDocPaths } from "../src/data/libraryDocs.ts";
 
 const set = new Set();
 
@@ -46,5 +47,8 @@ for (const course of allCourses) {
     }
   }
 }
+
+libraryDocPaths.forEach((r) => set.add(r));
+set.add("/library");
 
 export const routes = [...set];
