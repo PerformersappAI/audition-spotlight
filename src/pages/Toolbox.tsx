@@ -59,9 +59,10 @@ const GROUPS: Group[] = [
   {
     key: "Cast & Crew",
     label: "Cast & Crew",
-    rows: [{ cols: 2, tools: [
+    rows: [{ cols: 3, tools: [
       { title: "Auditions", to: "/upload-auditions", theme: "rose" },
       { title: "Crew Hire", to: "/crew-hire", theme: "rose" },
+      { title: "Contact Cast & Crew", to: "/contact-cast-crew", theme: "rose" },
     ]}],
   },
   {
