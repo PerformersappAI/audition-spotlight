@@ -243,7 +243,7 @@ const documentBundles = [
       { id: "91", title: "Synopsis (Short & Long)", route: "/library/synopsis", description: "Short and long-form synopsis templates for marketing", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "92", title: "Cast / Crew Bio Template", description: "Bio template for key cast and crew members", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true, route: "/library/cast-crew-bio" },
       { id: "93", title: "Festival Cover Letter", route: "/library/festival-cover-letter", description: "Professional cover letter for festival submissions", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
-      { id: "94", title: "Festival Q&A Template", description: "Frequently asked festival questions and sample answers", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "94", title: "Festival Q&A Template", route: "/library/festival-qa", description: "Frequently asked festival questions and sample answers", category: "marketing_epk_festival", format: "PDF + Word", size: "Fillable", premium: true },
     ]
   }
 ];

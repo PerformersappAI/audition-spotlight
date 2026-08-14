@@ -196,6 +196,7 @@ import DirectorsStatement from "./pages/agreements/DirectorsStatement";
 import SynopsisTemplate from "./pages/agreements/SynopsisTemplate";
 import CastCrewBio from "./pages/agreements/CastCrewBio";
 import FestivalCoverLetter from "./pages/agreements/FestivalCoverLetter";
+import FestivalQA from "./pages/agreements/FestivalQA";
 
 
 
@@ -410,6 +411,7 @@ const AppContent = () => (
           <Route path="/library/synopsis" element={<ToolGate><SynopsisTemplate /></ToolGate>} />
           <Route path="/library/cast-crew-bio" element={<ToolGate><CastCrewBio /></ToolGate>} />
           <Route path="/library/festival-cover-letter" element={<ToolGate><FestivalCoverLetter /></ToolGate>} />
+          <Route path="/library/festival-qa" element={<ToolGate><FestivalQA /></ToolGate>} />
 
 
 
