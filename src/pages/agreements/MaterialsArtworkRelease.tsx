@@ -538,7 +538,7 @@ const MaterialsArtworkRelease = () => {
                   <Textarea
                     id="use_description"
                     rows={3}
-                    placeholder='e.g., "Hanging in the protagonist\'s apartment, visible in wide shots during scenes 12 and 15"'
+                    placeholder='e.g., "Hanging in the protagonist apartment, visible in wide shots during scenes 12 and 15"'
                     value={form.use_description}
                     onChange={(e) => set("use_description", e.target.value)}
                   />
