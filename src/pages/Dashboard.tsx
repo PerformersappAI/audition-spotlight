@@ -508,7 +508,7 @@ const Dashboard = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>
-                        {application.projects?.title || application.film_festivals?.name}
+                        {application.projects_public?.title || application.film_festivals_public?.name}
                       </CardTitle>
                       <Badge className={getStatusColor(application.status)}>
                         {application.status}
