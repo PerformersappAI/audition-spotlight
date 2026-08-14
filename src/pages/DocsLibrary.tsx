@@ -175,7 +175,8 @@ const documentBundles = [
       { id: "62", title: "Petty Cash Envelope / Reconciliation", route: "/library/petty-cash-reconciliation", description: "Log and reconcile small cash expenditures", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "63", title: "Expense Report", route: "/library/expense-report", description: "Reimburse production-related expenses", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "64", title: "Mileage Log", route: "/library/mileage-log", description: "Track vehicle mileage for reimbursement or tax records", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
-      { id: "65", title: "Credit Card Log", description: "Log production credit card charges and receipts", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "65", title: "Credit Card Log", route: "/library/credit-card-log", description: "Log production credit card charges and receipts", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
+
       { id: "66", title: "Invoice Template", description: "Bill the production for services or equipment", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "67", title: "Cost Report / Actuals", description: "Compare actual spending against the approved budget", category: "accounting", format: "PDF + Word", size: "Fillable", premium: true },
     ]
