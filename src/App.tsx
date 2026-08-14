@@ -179,6 +179,7 @@ import ProductPlacementRelease from "./pages/agreements/ProductPlacementRelease"
 import ClearanceLog from "./pages/agreements/ClearanceLog";
 import PostSchedule from "./pages/agreements/PostSchedule";
 import VfxShotList from "./pages/agreements/VfxShotList";
+import DeliverablesChecklist from "./pages/agreements/DeliverablesChecklist";
 import EditorAgreement from "./pages/agreements/EditorAgreement";
 
 
@@ -369,6 +370,7 @@ const AppContent = () => (
           <Route path="/library/clearance-log" element={<ToolGate><ClearanceLog /></ToolGate>} />
           <Route path="/library/post-schedule" element={<ToolGate><PostSchedule /></ToolGate>} />
           <Route path="/library/vfx-shot-list" element={<ToolGate><VfxShotList /></ToolGate>} />
+          <Route path="/library/deliverables-checklist" element={<ToolGate><DeliverablesChecklist /></ToolGate>} />
           <Route path="/library/editor-agreement" element={<ToolGate><EditorAgreement /></ToolGate>} />
 
 
