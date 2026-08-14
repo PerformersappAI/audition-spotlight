@@ -171,6 +171,7 @@ import CreditCardLog from "./pages/agreements/CreditCardLog";
 import InvoiceTemplate from "./pages/agreements/InvoiceTemplate";
 import CostReportActuals from "./pages/agreements/CostReportActuals";
 import MusicLicenseSync from "./pages/agreements/MusicLicenseSync";
+import MusicCueSheet from "./pages/agreements/MusicCueSheet";
 import ComposerAgreement from "./pages/agreements/ComposerAgreement";
 
 
@@ -344,6 +345,7 @@ const AppContent = () => (
           <Route path="/library/invoice-template" element={<ToolGate><InvoiceTemplate /></ToolGate>} />
           <Route path="/library/cost-report-actuals" element={<ToolGate><CostReportActuals /></ToolGate>} />
           <Route path="/library/music-license-sync" element={<ToolGate><MusicLicenseSync /></ToolGate>} />
+          <Route path="/library/music-cue-sheet" element={<ToolGate><MusicCueSheet /></ToolGate>} />
           <Route path="/library/composer-agreement" element={<ToolGate><ComposerAgreement /></ToolGate>} />
 
 
