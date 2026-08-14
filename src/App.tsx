@@ -190,6 +190,7 @@ import SalesAgentAgreement from "./pages/agreements/SalesAgentAgreement";
 import DistributionAgreement from "./pages/agreements/DistributionAgreement";
 import EpkFeature from "./pages/agreements/EpkFeature";
 import EpkShort from "./pages/agreements/EpkShort";
+import OneSheetPoster from "./pages/agreements/OneSheetPoster";
 
 
 
@@ -396,6 +397,7 @@ const AppContent = () => (
           <Route path="/library/distribution-agreement" element={<ToolGate><DistributionAgreement /></ToolGate>} />
           <Route path="/library/epk-feature" element={<ToolGate><EpkFeature /></ToolGate>} />
           <Route path="/library/epk-short" element={<ToolGate><EpkShort /></ToolGate>} />
+          <Route path="/library/one-sheet-poster" element={<ToolGate><OneSheetPoster /></ToolGate>} />
 
 
 
