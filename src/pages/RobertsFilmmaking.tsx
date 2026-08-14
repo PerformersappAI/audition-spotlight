@@ -127,6 +127,7 @@ export default function RobertsFilmmaking() {
           <p style={{ marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }}>
             The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen.
           </p>
+          <AcademyByline />
           <div style={{ marginTop: 26, display: "inline-flex", gap: 10, alignItems: "center" }}>
             <div style={{
               width: 38, height: 38, borderRadius: "50%",
