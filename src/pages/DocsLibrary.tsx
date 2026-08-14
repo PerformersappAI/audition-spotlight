@@ -207,7 +207,7 @@ const documentBundles = [
     documents: [
       { id: "75", title: "Post Schedule", route: "/library/post-schedule", description: "Schedule editing, sound, VFX, and color milestones", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "76", title: "Editor Agreement", route: "/library/editor-agreement", description: "Engage an editor and define cut delivery terms", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
-      { id: "77", title: "VFX Shot List / Turnover", description: "List and describe every visual effects shot needed", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
+      { id: "77", title: "VFX Shot List / Turnover", route: "/library/vfx-shot-list", description: "List and describe every visual effects shot needed", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "78", title: "Deliverables Checklist", description: "List of final deliverables for festivals and distributors", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "79", title: "QC Checklist", description: "Quality-control checklist for picture, sound, and captions", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
       { id: "80", title: "Combined Continuity & Spotting List (CCSL)", description: "Detailed dialogue, continuity, and spotting document", category: "post_production", format: "PDF + Word", size: "Fillable", premium: true },
