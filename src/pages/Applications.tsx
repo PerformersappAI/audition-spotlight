@@ -48,8 +48,8 @@ const Applications = () => {
         .from('applications')
         .select(`
           *,
-          projects (title, project_type, location),
-          film_festivals (name, location)
+          projects_public (title, project_type, location),
+          film_festivals_public (name, location)
         `)
         .eq('applicant_user_id', user?.id)
         .order('applied_at', { ascending: false });
@@ -63,14 +63,14 @@ const Applications = () => {
         status: app.status as "pending" | "reviewed" | "accepted" | "rejected",
         appliedAt: new Date(app.applied_at),
         notes: app.notes,
-        project: app.projects ? {
-          title: app.projects.title,
-          projectType: app.projects.project_type,
-          location: app.projects.location
+        project: app.projects_public ? {
+          title: app.projects_public.title,
+          projectType: app.projects_public.project_type,
+          location: app.projects_public.location
         } : undefined,
-        festival: app.film_festivals ? {
-          name: app.film_festivals.name,
-          location: app.film_festivals.location
+        festival: app.film_festivals_public ? {
+          name: app.film_festivals_public.name,
+          location: app.film_festivals_public.location
         } : undefined
       })) || [];
 

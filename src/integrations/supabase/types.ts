@@ -153,10 +153,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "applications_film_festival_id_fkey"
+            columns: ["film_festival_id"]
+            isOneToOne: false
+            referencedRelation: "film_festivals_public"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "applications_project_id_fkey"
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applications_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects_public"
             referencedColumns: ["id"]
           },
         ]
@@ -2247,6 +2261,93 @@ export type Database = {
           },
         ]
       }
+      film_festivals_public: {
+        Row: {
+          acceptance_rate: number | null
+          awards: string[] | null
+          categories: string[] | null
+          created_at: string | null
+          description: string | null
+          early_deadline: string | null
+          end_date: string | null
+          entry_fees_range: string | null
+          featured: boolean | null
+          festival_tier: string | null
+          filmfreeway_url: string | null
+          genres: string[] | null
+          id: string | null
+          late_deadline: string | null
+          location: string | null
+          name: string | null
+          notification_date: string | null
+          requirements: string | null
+          start_date: string | null
+          status: string | null
+          submission_deadline: string | null
+          submission_fee: string | null
+          submission_url: string | null
+          updated_at: string | null
+          user_id: string | null
+          website: string | null
+        }
+        Insert: {
+          acceptance_rate?: number | null
+          awards?: string[] | null
+          categories?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          early_deadline?: string | null
+          end_date?: string | null
+          entry_fees_range?: string | null
+          featured?: boolean | null
+          festival_tier?: string | null
+          filmfreeway_url?: string | null
+          genres?: string[] | null
+          id?: string | null
+          late_deadline?: string | null
+          location?: string | null
+          name?: string | null
+          notification_date?: string | null
+          requirements?: string | null
+          start_date?: string | null
+          status?: string | null
+          submission_deadline?: string | null
+          submission_fee?: string | null
+          submission_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Update: {
+          acceptance_rate?: number | null
+          awards?: string[] | null
+          categories?: string[] | null
+          created_at?: string | null
+          description?: string | null
+          early_deadline?: string | null
+          end_date?: string | null
+          entry_fees_range?: string | null
+          featured?: boolean | null
+          festival_tier?: string | null
+          filmfreeway_url?: string | null
+          genres?: string[] | null
+          id?: string | null
+          late_deadline?: string | null
+          location?: string | null
+          name?: string | null
+          notification_date?: string | null
+          requirements?: string | null
+          start_date?: string | null
+          status?: string | null
+          submission_deadline?: string | null
+          submission_fee?: string | null
+          submission_url?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+          website?: string | null
+        }
+        Relationships: []
+      }
       profiles_public: {
         Row: {
           bio: string | null
@@ -2277,6 +2378,72 @@ export type Database = {
           location?: string | null
           user_id?: string | null
           website?: string | null
+        }
+        Relationships: []
+      }
+      projects_public: {
+        Row: {
+          age_range: string | null
+          audition_date: string | null
+          casting_director: string | null
+          compensation: string | null
+          created_at: string | null
+          deadline_date: string | null
+          description: string | null
+          featured: boolean | null
+          gender_preference: string | null
+          id: string | null
+          location: string | null
+          production_company: string | null
+          project_name: string | null
+          project_type: string | null
+          requirements: string | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          age_range?: string | null
+          audition_date?: string | null
+          casting_director?: string | null
+          compensation?: string | null
+          created_at?: string | null
+          deadline_date?: string | null
+          description?: string | null
+          featured?: boolean | null
+          gender_preference?: string | null
+          id?: string | null
+          location?: string | null
+          production_company?: string | null
+          project_name?: string | null
+          project_type?: string | null
+          requirements?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          age_range?: string | null
+          audition_date?: string | null
+          casting_director?: string | null
+          compensation?: string | null
+          created_at?: string | null
+          deadline_date?: string | null
+          description?: string | null
+          featured?: boolean | null
+          gender_preference?: string | null
+          id?: string | null
+          location?: string | null
+          production_company?: string | null
+          project_name?: string | null
+          project_type?: string | null
+          requirements?: string | null
+          status?: string | null
+          title?: string | null
+          updated_at?: string | null
+          user_id?: string | null
         }
         Relationships: []
       }

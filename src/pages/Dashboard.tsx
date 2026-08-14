@@ -60,8 +60,8 @@ const Dashboard = () => {
         .from('applications')
         .select(`
           *,
-          projects (title, project_type),
-          film_festivals (name)
+          projects_public (title, project_type),
+          film_festivals_public (name)
         `)
         .eq('applicant_user_id', user.id)
         .order('applied_at', { ascending: false });
@@ -508,7 +508,7 @@ const Dashboard = () => {
                   <CardHeader>
                     <div className="flex items-center justify-between">
                       <CardTitle>
-                        {application.projects?.title || application.film_festivals?.name}
+                        {application.projects_public?.title || application.film_festivals_public?.name}
                       </CardTitle>
                       <Badge className={getStatusColor(application.status)}>
                         {application.status}

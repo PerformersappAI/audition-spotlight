@@ -54,7 +54,7 @@ export default function Festivals() {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('film_festivals')
+        .from('film_festivals_public')
         .select(`
           id,
           name,
@@ -73,8 +73,7 @@ export default function Festivals() {
           genres,
           status,
           festival_tier,
-          description,
-          contact_email
+          description
         `)
         .eq('status', 'active')
         .order('festival_tier', { ascending: true })
@@ -82,13 +81,13 @@ export default function Festivals() {
 
       if (error) throw error;
 
-      const formattedFestivals = data?.map(festival => ({
+      const formattedFestivals = (data || []).map(festival => ({
         ...festival,
         organizer: {
           name: 'Festival Organizer',
-          email: festival.contact_email || ''
+          email: ''
         }
-      })) || [];
+      }));
 
       setFestivals(formattedFestivals);
     } catch (error) {
