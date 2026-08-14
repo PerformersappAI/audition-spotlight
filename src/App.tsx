@@ -176,6 +176,10 @@ import ComposerAgreement from "./pages/agreements/ComposerAgreement";
 import MusicianSessionRelease from "./pages/agreements/MusicianSessionRelease";
 import MaterialsArtworkRelease from "./pages/agreements/MaterialsArtworkRelease";
 import ProductPlacementRelease from "./pages/agreements/ProductPlacementRelease";
+import ClearanceLog from "./pages/agreements/ClearanceLog";
+
+
+
 
 
 
@@ -353,6 +357,10 @@ const AppContent = () => (
           <Route path="/library/musician-session-release" element={<ToolGate><MusicianSessionRelease /></ToolGate>} />
           <Route path="/library/materials-artwork-release" element={<ToolGate><MaterialsArtworkRelease /></ToolGate>} />
           <Route path="/library/product-placement-release" element={<ToolGate><ProductPlacementRelease /></ToolGate>} />
+          <Route path="/library/clearance-log" element={<ToolGate><ClearanceLog /></ToolGate>} />
+
+
+
 
 
 
