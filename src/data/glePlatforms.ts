@@ -479,4 +479,427 @@ export const glePlatforms: Record<string, GlePlatformDetail> = {
       },
     ],
   },
+
+  amazon: {
+    slug: "amazon",
+    name: "Amazon Prime Video",
+    accent: "#00a8e1",
+    accentRgb: "0,168,225",
+    catPill: "Tier 1 · Major Streamer",
+    h1: "How to Get Your Film on Amazon Prime Video",
+    seoTitle: "How to Get Your Film on Amazon Prime Video — Green Light Engine | Filmmaker Genius",
+    seoDescription:
+      "The widest-reach Tier 1 platform — but the self-publish door has narrowed. The aggregator path in, what it really pays, delivery specs, and how to keep your title from getting pruned.",
+    intro:
+      "The biggest audience in the tier — and a lower talent bar than Netflix or Hulu. But the self-publish door has narrowed and the money is engagement-driven. Here's the real path in, what it pays, and how to keep your title from getting pruned.",
+    stats: [
+      { hi: "200M+", text: "Prime Video subscribers" },
+      { hi: "315M+", text: "monthly ad-supported viewers" },
+      { hi: "16", text: "ad markets — beats Netflix ad reach" },
+      { hi: "20%", text: "Filmhub revenue share, no upfront fee" },
+    ],
+    introCallout:
+      "Amazon is a retail-and-advertising company that happens to run a streaming service. Its priority is Prime retention and ad inventory — so the reach is enormous and the talent bar is lower than Netflix/Hulu, but the per-title money is thin and Amazon has been tightening who can self-publish. Prime Video Direct — Amazon's old self-publish program — stopped accepting unsolicited documentaries and short-form content, repeatedly slashed its per-hour royalties, and removes low-engagement titles. The reliable path now is through an aggregator or distributor.",
+    doors: {
+      heading: "The doors into Prime Video",
+      cards: [
+        {
+          label: "Door A",
+          title: "An aggregator",
+          desc: "Delivers your film to Amazon's spec and places it across TVOD/SVOD/AVOD. Filmhub is dominant: no upfront fee, 20% revenue share, free delivery, non-exclusive.",
+          verdict: "Most accessible — start here",
+        },
+        {
+          label: "Door B",
+          title: "A distributor",
+          desc: "Licenses/sells your film across platforms including Amazon, for a commission (and sometimes exclusivity + a multi-year term). A human advocate and broader sales.",
+          verdict: "For broader sales",
+        },
+        {
+          label: "Door C",
+          title: "Prime Video Direct",
+          desc: "Self-publish still exists for some features in some regions, but is closed to unsolicited docs/shorts, low-paying, and prone to takedown.",
+          verdict: "Restricted — not reliable",
+        },
+      ],
+    },
+    wants: {
+      heading: "What Amazon actually wants",
+      leversLabel: "The four things that matter",
+      levers: [
+        {
+          title: "Genre clarity + strong artwork",
+          desc: "The thumbnail and title do the selling in a massive catalog.",
+        },
+        {
+          title: "Flawless deliverables",
+          desc: "Captions, artwork and metadata must be clean and complete — the top causes of QC delay.",
+        },
+        {
+          title: "Engagement / watch-time",
+          desc: "AVOD pays per hour and included-with-Prime pays on engagement, so a strong opening and real watch-time are the currency.",
+        },
+        {
+          title: "Multi-model placement",
+          desc: "TVOD + SVOD + AVOD together dramatically outperform TVOD-only.",
+        },
+      ],
+      note:
+        "Amazon is less about name talent than Netflix/Hulu — but you must drive your own audience, because Amazon removes low-engagement titles.",
+    },
+    partners: {
+      heading: "How the aggregator path works",
+      blocks: [
+        {
+          title: "Aggregator",
+          desc: "Handles delivery, QC, metadata, captions and conforms your package to Amazon's spec — usually non-exclusive.",
+        },
+        {
+          title: "Distributor",
+          desc: "Sells your film across platforms and negotiates terms; may want exclusivity and a multi-year rights term.",
+        },
+      ],
+      tableHead: ["Partner", "Model", "Detail"],
+      tableRows: [
+        {
+          cells: [
+            "Filmhub",
+            "20% rev-share, no upfront",
+            "Free delivery to Amazon specs (conversion, artwork, captions, QC). ~$500 optional QC fee added in 2026; skipping it can limit channels. Non-exclusive.",
+          ],
+        },
+        {
+          cells: [
+            "Bitmax / Premiere Digital",
+            "Fixed / custom",
+            "Established aggregators delivering premium TVOD/SVOD/AVOD to Amazon.",
+          ],
+        },
+        {
+          cells: [
+            "Distributor",
+            "Commission",
+            "Broader sales + an advocate; may want exclusivity and a term.",
+          ],
+        },
+      ],
+    },
+    money: {
+      heading: "How Amazon pays",
+      subhead: "Volume-and-engagement, not an upfront check",
+      rows: [
+        { label: "TVOD (rent/buy)", value: "Share of each transaction", kind: "plus" },
+        { label: "AVOD (ad-supported)", value: "Small per-hour-streamed royalty (repeatedly cut)", kind: "minus" },
+        { label: "SVOD (included with Prime)", value: "Engagement-based earnings", kind: "plus" },
+        { label: "Aggregator fee (Filmhub)", value: "20% + optional ~$500 QC fee", kind: "net" },
+      ],
+      note:
+        "Most Amazon revenue is a launch spike (often TVOD) plus a small long tail of AVOD/SVOD. One title rarely pays a mortgage; a catalog with strong watch-time is the business. Because Amazon removes low-engagement titles, you must drive your own audience to the page.",
+    },
+    technical: {
+      heading: "Technical delivery checklist",
+      groups: [
+        {
+          title: "Deliverables",
+          rows: [
+            {
+              label: "Master file",
+              value:
+                "Apple ProRes preferred (high-bitrate H.264/H.265 accepted); up to 4K UHD, HD accepted; native frame rate, original aspect ratio",
+            },
+            {
+              label: "Closed captions",
+              value:
+                "Required and strictly checked (CEA-608/708 or SRT/TTML) — the #1 cause of rejection/delay",
+            },
+            {
+              label: "Artwork",
+              value: "Cover/box art + thumbnails to Amazon's exact pixel specs",
+            },
+            {
+              label: "Metadata",
+              value:
+                "Title, synopsis, genre, cast/crew, rating, runtime, year, language, keywords — complete and correct",
+            },
+            {
+              label: "Trailer",
+              value: "Preview/trailer to spec",
+            },
+            {
+              label: "Audio",
+              value: "Stereo minimum; 5.1 where available",
+            },
+          ],
+        },
+      ],
+      qc:
+        "Amazon checks video, audio, captions, artwork and metadata. Frame-rate errors, caption timing and incomplete metadata are the usual rejection causes; your aggregator runs QC and fixes them first.",
+    },
+    contract: {
+      heading: "The contract — what to watch",
+      bullets: [
+        "Aggregator terms — Filmhub is non-exclusive at 20% (you can leave and pull your film); distributors may want exclusivity + a multi-year term.",
+        "The QC fee — Filmhub's ~$500 QC fee is 'optional' but skipping it can limit your channels.",
+        "Rights & exclusivity — don't grant exclusive rights that block Tubi/Roku/Apple unless justified.",
+        "Takedown risk — Amazon removes low-engagement titles; keep the ability to re-list or move.",
+        "Get a lawyer for any distributor contract; always read even the self-serve terms.",
+      ],
+    },
+    steps: {
+      heading: "Step-by-step to Amazon",
+      items: [
+        { title: "Finish a clean, high-quality master", desc: "ProRes preferred, native frame rate." },
+        { title: "Prepare deliverables", desc: "Closed captions, cover art + thumbnails, complete metadata, trailer." },
+        { title: "Choose your door", desc: "Filmhub (fast, non-exclusive, 20%) for most; a distributor for broader sales." },
+        { title: "Deliver & pass QC", desc: "The aggregator conforms to Amazon spec." },
+        { title: "Select models & territories", desc: "Enable TVOD + SVOD + AVOD together." },
+        { title: "Drive your own audience", desc: "Amazon rewards engagement and prunes low watch-time." },
+        { title: "Track & optimize", desc: "Refresh artwork/metadata; keep the title engaged." },
+        { title: "Build the catalog", desc: "Across platforms and titles." },
+      ],
+    },
+    faq: [
+      {
+        q: "Can I still self-publish via Prime Video Direct?",
+        a: "Largely no for docs and shorts — PVD stopped accepting unsolicited non-fiction and short-form, cut royalties, and removes low-engagement titles. Use an aggregator or distributor.",
+      },
+      {
+        q: "What's the easiest way onto Amazon Prime Video?",
+        a: "An aggregator like Filmhub — no upfront fee, 20% revenue share, free delivery to Amazon specs, non-exclusive.",
+      },
+      {
+        q: "How much does Amazon pay?",
+        a: "Volume/engagement-based: TVOD per transaction, AVOD a small per-hour-streamed royalty (repeatedly cut), SVOD on engagement. Expect a launch spike plus a small long tail — not a big upfront check.",
+      },
+      {
+        q: "Do I need name actors?",
+        a: "No — Amazon is more forgiving on talent. But you need clean deliverables, strong artwork/metadata, and the ability to drive watch-time.",
+      },
+      {
+        q: "What format does Amazon want?",
+        a: "A high-quality ProRes (or high-bitrate H.264) master, required closed captions, cover art/thumbnails to spec, complete metadata — up to 4K, native frame rate.",
+      },
+      {
+        q: "Why did my film get rejected or removed?",
+        a: "Rejections are usually caption timing, frame-rate errors, or incomplete metadata. Removals are usually low engagement — Amazon prunes titles nobody watches.",
+      },
+      {
+        q: "TVOD, SVOD, or AVOD?",
+        a: "All three together — optimized multi-model placement dramatically outperforms TVOD-only.",
+      },
+    ],
+  },
+
+  "apple-tv": {
+    slug: "apple-tv",
+    name: "Apple TV / iTunes",
+    accent: "#c9d1dc",
+    accentRgb: "201,209,220",
+    catPill: "Tier 1 · Major Streamer",
+    h1: "How to Get Your Film on Apple TV / iTunes",
+    seoTitle: "How to Get Your Film on Apple TV / iTunes — Green Light Engine | Filmmaker Genius",
+    seoDescription:
+      "A prestigious rent/buy storefront in 100+ countries — but you can't submit directly, and it isn't Apple TV+. The approved-aggregator path, the iTunes Store Package spec, and what it pays.",
+    intro:
+      "A prestigious rent/buy storefront reaching 100+ countries — but you can't submit directly, and it isn't Apple TV+. Here's the approved-aggregator path in, the iTunes Store Package spec, and exactly what it pays.",
+    stats: [
+      { hi: "100+", text: "countries (Apple TV app)" },
+      { hi: "~70%", text: "to filmmaker after Apple's cut" },
+      { hi: ".itmsp", text: "iTunes Store Package required" },
+      { hi: "0", text: "direct submissions accepted" },
+    ],
+    introCallout:
+      "Apple TV / iTunes is a transactional rent/buy (TVOD) storefront open to indies via aggregators. Apple TV+ is Apple's originals subscription service (~47–48M subscribers) — commissioned premium content, effectively closed to independents. Don't confuse the two. The core rule: you cannot submit to Apple directly. Every film reaches the Apple TV app / iTunes Store through an Apple-approved aggregator (or an approved encoding house, only if you already hold a direct Apple delivery agreement). Apple publishes a ranked list of approved partners.",
+    doors: {
+      heading: "The doors into Apple TV",
+      cards: [
+        {
+          label: "Door A",
+          title: "Approved aggregator",
+          desc: "Builds your iTunes Store Package, delivers it, clears QC, reports sales. Quiver (flat fee, 0% back-end), Bitmax (major, high-volume), or Filmhub (20%, non-exclusive).",
+          verdict: "The path for virtually everyone",
+        },
+        {
+          label: "Door B",
+          title: "Encoding house",
+          desc: "Formats and QCs your package to Apple's standard — but only usable if you already hold a direct delivery agreement with Apple. Rare for indies.",
+          verdict: "Only with a direct Apple deal",
+        },
+        {
+          label: "Door C",
+          title: "Apple TV+ originals",
+          desc: "Apple's originals subscription — commissioned/acquired via agencies, major producers, festival deals. Effectively closed to indies.",
+          verdict: "What you build toward",
+        },
+      ],
+    },
+    wants: {
+      heading: "What Apple actually wants",
+      leversLabel: "The quality gate",
+      levers: [
+        {
+          title: "A pristine, compliant master",
+          desc: "ProRes-based, correct frame rate, correct color, clean audio — Apple QC rejects non-compliant files.",
+        },
+        {
+          title: "Correct captions & subtitles",
+          desc: "Accessibility compliance is mandatory; caption timing/format is a top rejection cause. Subtitles/dubbing may be needed per territory.",
+        },
+        {
+          title: "Polished artwork & complete metadata",
+          desc: "The storefront is curated and premium — sloppy assets get rejected or buried.",
+        },
+        {
+          title: "A reason to buy",
+          desc: "It's transactional, so name talent, festival pedigree, strong reviews, or a built-in audience drive rentals and purchases.",
+        },
+      ],
+      note: "Apple TV is a quality-gated premium storefront — a prestige placement as much as a revenue channel.",
+    },
+    partners: {
+      heading: "The approved aggregators",
+      blocks: [
+        {
+          title: "Approved aggregator",
+          desc: "Builds the .itmsp, runs QC, delivers to Apple — required for virtually everyone without a direct Apple deal.",
+        },
+        {
+          title: "Encoding house",
+          desc: "Formats and QCs the package — only usable if you already hold a direct Apple delivery agreement.",
+        },
+      ],
+      tableHead: ["Partner", "Model", "Detail"],
+      tableRows: [
+        {
+          cells: [
+            "Quiver Digital",
+            "Flat fee, 0% back-end",
+            "Indie gold standard — pay once, keep 100% of your net. Endorsed by Sundance's Creative Distribution Initiative.",
+          ],
+        },
+        {
+          cells: [
+            "Bitmax",
+            "Major aggregator",
+            "Delivers premium VOD/SVOD/AVOD/TVOD; among the largest-volume providers.",
+          ],
+        },
+        {
+          cells: [
+            "Filmhub",
+            "20% rev-share",
+            "Self-serve, non-exclusive, no upfront fee; delivers to Apple among 100+ channels.",
+          ],
+        },
+      ],
+    },
+    money: {
+      heading: "How Apple pays",
+      subhead: "Transactional — higher value per sale, lower volume",
+      rows: [
+        { label: "Apple's platform cut", value: "~30%", kind: "minus" },
+        { label: "Filmmaker side", value: "~70% of each transaction", kind: "plus" },
+        { label: "Aggregator fee", value: "Quiver flat fee (0% back-end) / Filmhub 20%", kind: "net" },
+      ],
+      note:
+        "Apple TV/iTunes is a prestige + transactional channel. Revenue depends on how many people you drive to rent or buy — so it rewards films with a built-in audience, a launch push, or name recognition. One high-value tile in a multi-platform release, not a stand-alone payday.",
+    },
+    technical: {
+      heading: "The iTunes Store Package",
+      groups: [
+        {
+          title: "Deliverables (.itmsp)",
+          rows: [
+            {
+              label: "Video master",
+              value:
+                "Apple ProRes 422 HQ (SD/HD); ProRes 4444 / 4444 XQ required for HDR. Built via Compressor or the encoding house",
+            },
+            {
+              label: "Resolution",
+              value:
+                "Up to 4K UHD (HDR / Dolby Vision supported); HD accepted; native frame rate, original aspect ratio",
+            },
+            {
+              label: "Closed captions",
+              value: "Required — CEA-608/708-compliant, accurate timing",
+            },
+            {
+              label: "Subtitles / dubbing",
+              value: "Subtitle files and/or dub tracks per target territory as needed",
+            },
+            {
+              label: "Audio",
+              value: "Stereo minimum; 5.1 where available; Dolby Atmos supported",
+            },
+            {
+              label: "Artwork",
+              value: "Cover art / poster to Apple's exact pixel dimensions and format",
+            },
+            {
+              label: "Metadata",
+              value:
+                "Title, synopsis, genre, cast/crew, rating, runtime, year, language, and Apple-required fields",
+            },
+          ],
+        },
+      ],
+      qc:
+        "The encoding house re-encodes into the resolutions, audio formats and bitrates Apple needs, then Apple runs rigorous QC. Frame-rate, caption timing, encoding, color and metadata issues are the usual rejection causes.",
+    },
+    contract: {
+      heading: "The contract — what to watch",
+      bullets: [
+        "Fee model — flat-fee (Quiver) vs. revenue-share (Filmhub 20%) vs. fixed service fee; run the math for your volume. Flat fee wins on larger sales.",
+        "Exclusivity — Filmhub is non-exclusive (leave anytime); a distributor may want exclusivity + a term.",
+        "Territories & pricing — confirm countries and price tiers; keep the right to distribute elsewhere.",
+        "Reporting & payment — how and when you're paid; transaction-level reporting.",
+        "Deliverable costs — who pays for encoding, captions, subtitles/dubbing, and QC fixes.",
+        "Vet financial stability — the Distribber collapse wiped out filmmakers when an aggregator went under holding their money.",
+      ],
+    },
+    steps: {
+      heading: "Step-by-step to Apple TV",
+      items: [
+        { title: "Finish a pristine, compliant master", desc: "ProRes 422 HQ (ProRes 4444/4444 XQ for HDR), native frame rate, correct color and audio." },
+        { title: "Prepare deliverables", desc: "Closed captions, subtitles as needed, poster/artwork to spec, complete metadata, trailer." },
+        { title: "Choose an Apple-approved aggregator", desc: "Quiver, Bitmax, or Filmhub; confirm they're on Apple's approved list." },
+        { title: "Package & deliver", desc: "The partner builds the .itmsp iTunes Store Package." },
+        { title: "Pass Apple QC", desc: "Fix any rejections and resubmit." },
+        { title: "Set territories & price tiers", desc: "Global or selected markets; rental/purchase pricing." },
+        { title: "Drive rentals/purchases", desc: "It's transactional; launch with a real push." },
+        { title: "Track & stack", desc: "One high-value, prestige tile; build the catalog." },
+      ],
+    },
+    faq: [
+      {
+        q: "Can I submit my film to Apple TV / iTunes directly?",
+        a: "No. You must go through an Apple-approved aggregator (or an approved encoding house if you already hold a direct Apple delivery agreement).",
+      },
+      {
+        q: "Is Apple TV the same as Apple TV+?",
+        a: "No. Apple TV / iTunes is a transactional rent/buy storefront open to indies via aggregators. Apple TV+ is Apple's originals subscription (~47–48M subs), effectively closed to indies.",
+      },
+      {
+        q: "Which aggregator should I use?",
+        a: "Reputable Apple-approved ones include Quiver Digital (flat fee, 0% back-end), Bitmax (major, high-volume), and Filmhub (20%, non-exclusive). Match the fee model to expected sales.",
+      },
+      {
+        q: "How much does Apple pay?",
+        a: "Roughly 70% to the filmmaker after Apple's ~30% cut, then your aggregator's fee. Per-transaction (rent/buy) — higher value per sale than ad platforms, lower volume.",
+      },
+      {
+        q: "What master format does Apple want?",
+        a: "ProRes 422 HQ for SD/HD; ProRes 4444 / 4444 XQ for HDR; up to 4K UHD, native frame rate, original aspect ratio, required closed captions, complete metadata — packaged as an iTunes Store Package (.itmsp).",
+      },
+      {
+        q: "Why did my film fail Apple QC?",
+        a: "Usually caption timing/format, frame-rate issues, non-compliant encoding, color, or incomplete metadata. Your encoding house/aggregator fixes and resubmits.",
+      },
+      {
+        q: "Can I get on Apple TV+?",
+        a: "Effectively closed to indies without representation and a premium package — build toward it through festivals, track record, and partners.",
+      },
+    ],
+  },
 };
