@@ -25,13 +25,20 @@ const BlogImageStudio = ({ value, onChange }: Props) => {
   }, [value]);
 
   const doUpload = async (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Please choose an image file", variant: "destructive" });
+      return;
+    }
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop() || "png";
+      const { data: sessionData } = await supabase.auth.getSession();
+      if (!sessionData.session) throw new Error("You must be signed in as an admin to upload.");
+
+      const ext = (file.name.split(".").pop() || "png").toLowerCase();
       const path = `uploads/${crypto.randomUUID()}.${ext}`;
       const { error } = await supabase.storage
         .from("blog-images")
-        .upload(path, file, { contentType: file.type, upsert: false });
+        .upload(path, file, { contentType: file.type || "image/png", upsert: false });
       if (error) throw error;
       const TEN_YEARS = 60 * 60 * 24 * 365 * 10;
       const { data: signed, error: signErr } = await supabase.storage
@@ -39,13 +46,20 @@ const BlogImageStudio = ({ value, onChange }: Props) => {
         .createSignedUrl(path, TEN_YEARS);
       if (signErr || !signed?.signedUrl) throw signErr ?? new Error("Signed URL failed");
       onChange(signed.signedUrl);
-      toast({ title: "Image uploaded" });
+      toast({ title: "Image uploaded", description: "Attached as the cover image." });
     } catch (e: any) {
-      toast({ title: "Upload failed", description: e.message, variant: "destructive" });
+      console.error("[BlogImageStudio] upload failed", e);
+      toast({
+        title: "Upload failed",
+        description: e?.message || "Unknown storage error",
+        variant: "destructive",
+      });
     } finally {
       setUploading(false);
+      if (fileRef.current) fileRef.current.value = "";
     }
   };
+
 
   const doGenerate = async () => {
     if (!prompt.trim()) return;
@@ -71,11 +85,22 @@ const BlogImageStudio = ({ value, onChange }: Props) => {
 
       {value && (
         <div className="relative inline-block">
-          <img src={value} alt="cover" className="max-h-40 rounded border border-border" />
+          <img
+            src={value}
+            alt="cover"
+            className="max-h-40 min-h-16 min-w-24 rounded border border-border object-cover bg-muted"
+            onError={() =>
+              toast({
+                title: "Cover image could not be displayed",
+                description: "The image was attached but the URL failed to load.",
+                variant: "destructive",
+              })
+            }
+          />
           <Button
             size="icon"
             variant="destructive"
-            className="absolute top-1 right-1 h-6 w-6"
+            className="absolute -top-2 -right-2 h-6 w-6"
             onClick={() => onChange(null)}
             type="button"
           >
@@ -91,19 +116,40 @@ const BlogImageStudio = ({ value, onChange }: Props) => {
         </TabsList>
 
         <TabsContent value="upload" className="space-y-2 pt-2">
-          <Input
+          <input
             ref={fileRef}
             type="file"
             accept="image/*"
+            className="hidden"
             onChange={(e) => e.target.files?.[0] && doUpload(e.target.files[0])}
-            disabled={uploading}
           />
-          {uploading && (
-            <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin" /> Uploading…
+          <div
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              e.preventDefault();
+              const f = e.dataTransfer.files?.[0];
+              if (f) doUpload(f);
+            }}
+            className="rounded-lg border border-dashed border-border p-4 flex flex-col items-center gap-2 text-center"
+          >
+            <Button
+              type="button"
+              variant="outline"
+              disabled={uploading}
+              onClick={() => fileRef.current?.click()}
+            >
+              {uploading ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Uploading…</>
+              ) : (
+                <><Upload className="w-4 h-4 mr-2" /> Choose image</>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              PNG, JPG, or WebP — or drag &amp; drop a file here.
             </p>
-          )}
+          </div>
         </TabsContent>
+
 
         <TabsContent value="ai" className="space-y-2 pt-2">
           <Textarea
