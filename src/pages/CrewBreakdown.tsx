@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import BreakdownWorkspace from "@/components/breakdown/BreakdownWorkspace";
+import CrewExpenses from "@/components/expenses/CrewExpenses";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
 
