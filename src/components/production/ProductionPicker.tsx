@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Check, Loader2, Pencil, Share2, X } from "lucide-react";
+import { Check, Loader2, Pencil, Share2, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 import SharePanel from "@/components/breakdown/SharePanel";
+import { deleteProduction } from "@/lib/production/deleteProduction";
 
 export interface Production {
   id: string;
