@@ -113,7 +113,7 @@ const Modal = ({ title, children, onClose }: { title: string; children: React.Re
 );
 
 const ScriptBreakdown = () => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const projectId = searchParams.get("project") || "";
   const sceneId = searchParams.get("scene") || "";
