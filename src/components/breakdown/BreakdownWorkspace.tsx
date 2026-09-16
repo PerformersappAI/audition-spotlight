@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Download, Loader2, Plus, Trash2, X } from "lucide-react";
+import { ChevronDown, Download, Loader2, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "./DepartmentChecklist";
 import SignOffBox from "./SignOffBox";
