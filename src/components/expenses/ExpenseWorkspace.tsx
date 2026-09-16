@@ -45,6 +45,10 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
   const [dialogFor, setDialogFor] = useState<Expense | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewer, setViewer] = useState<{ url: string; isPdf: boolean; title: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [includeImages, setIncludeImages] = useState(false);
+  const [exporting, setExporting] = useState<"xlsx" | "csv" | "pdf" | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const filters = useMemo<ExpenseFilterState>(() => ({
     q: searchParams.get("q") || "",
