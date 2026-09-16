@@ -192,7 +192,7 @@ const ScriptBreakdown = () => {
 
   // Load scenes + items + signoffs for the selected project
   const loadScenes = useCallback(async () => {
-    if (!projectId) { setScenes([]); setItems([]); setSignoffs([]); return; }
+    if (!projectId) { setScenes([]); setItems([]); setSignoffs([]); setPhotos([]); return; }
     const [{ data: sceneRows }, { data: itemRows }, { data: signoffRows }] = await Promise.all([
       supabase
         .from("breakdown_scenes")
