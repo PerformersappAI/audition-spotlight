@@ -96,6 +96,13 @@ export const toolSeo: Record<string, ToolSeoEntry> = {
     lead:
       "A production expense tracker keeps every receipt, invoice and per-diem claim attached to the production it belongs to, so nothing gets settled from a shoebox at wrap. Crew photograph receipts or build an invoice from set, you approve, reject or mark them paid, and spending totals by department and currency stay current — ready to export for your accountant.",
   },
+  "/set-translator": {
+    title: "On-Set Translator for Film Crews | Filmmaker Genius",
+    description:
+      "Translate call-time messages, safety notes and documents into every language your crew speaks — at once — and send them to the team.",
+    lead:
+      "On a multilingual set, the fastest way to stop a misunderstanding is to send one message in every language your crew speaks. Pick your production and the languages it works in, then type, paste or upload a call-time change, a safety note or a document — the Set Translator produces every version at once. Copy it, download it, or send it straight to your team.",
+  },
   "/script-breakdown": {
 
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
