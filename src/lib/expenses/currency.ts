@@ -1,32 +1,30 @@
 export interface CurrencyDef {
   code: string;
   label: string;
-  /** Symbol shown in compact contexts (BAM prints as KM). */
-  short: string;
 }
 
-export const CURRENCIES: CurrencyDef[] = [
-  { code: "USD", label: "USD — US Dollar", short: "$" },
-  { code: "EUR", label: "EUR — Euro", short: "€" },
-  { code: "GBP", label: "GBP — British Pound", short: "£" },
-  { code: "CAD", label: "CAD — Canadian Dollar", short: "CA$" },
-  { code: "AUD", label: "AUD — Australian Dollar", short: "A$" },
-  { code: "BAM", label: "BAM — Bosnian Mark (KM)", short: "KM" },
-  { code: "CHF", label: "CHF — Swiss Franc", short: "CHF" },
-  { code: "MXN", label: "MXN — Mexican Peso", short: "MX$" },
-  { code: "NZD", label: "NZD — New Zealand Dollar", short: "NZ$" },
-  { code: "SEK", label: "SEK — Swedish Krona", short: "kr" },
-  { code: "NOK", label: "NOK — Norwegian Krone", short: "kr" },
-  { code: "DKK", label: "DKK — Danish Krone", short: "kr" },
-  { code: "PLN", label: "PLN — Polish Zloty", short: "zł" },
-  { code: "CZK", label: "CZK — Czech Koruna", short: "Kč" },
-  { code: "HUF", label: "HUF — Hungarian Forint", short: "Ft" },
-  { code: "RSD", label: "RSD — Serbian Dinar", short: "din" },
-  { code: "JPY", label: "JPY — Japanese Yen", short: "¥" },
-  { code: "INR", label: "INR — Indian Rupee", short: "₹" },
-  { code: "ZAR", label: "ZAR — South African Rand", short: "R" },
-  { code: "BRL", label: "BRL — Brazilian Real", short: "R$" },
+/** ISO 4217 codes a production can bill in, most widely used first. */
+const CODES = [
+  "USD", "EUR", "GBP", "CAD", "AUD", "JPY", "INR", "CNY", "MXN", "BRL",
+  "ZAR", "NZD", "CHF", "SEK", "NOK", "DKK", "PLN", "CZK", "HUF", "KRW",
+  "SGD", "HKD", "AED", "TRY", "NGN", "KES", "ARS", "CLP", "COP", "PHP",
+  "THB", "IDR", "MYR", "ILS", "RON", "BAM", "RSD",
 ];
+
+/** "USD — US Dollar" using the runtime's own currency names where available. */
+const currencyName = (code: string): string => {
+  try {
+    const names = new Intl.DisplayNames(["en"], { type: "currency" });
+    return names.of(code) || code;
+  } catch {
+    return code;
+  }
+};
+
+export const CURRENCIES: CurrencyDef[] = CODES.map((code) => {
+  const name = currencyName(code);
+  return { code, label: name === code ? code : `${code} — ${name}` };
+});
 
 export const CURRENCY_CODES = CURRENCIES.map((c) => c.code);
 
