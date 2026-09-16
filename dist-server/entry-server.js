@@ -25744,7 +25744,7 @@ const ScriptBreakdown = () => {
   const loadProjects = useCallback(async () => {
     if (!user) return;
     setLoadingProjects(true);
-    const { data } = await supabase.from("breakdown_projects").select(PROJECT_FIELDS).order("created_at", { ascending: false });
+    const { data } = await supabase.from("breakdown_projects").select(PROJECT_FIELDS).eq("owner_id", user.id).order("created_at", { ascending: false });
     const list = data || [];
     setProjects(list);
     setLoadingProjects(false);

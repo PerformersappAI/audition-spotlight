@@ -159,6 +159,7 @@ const ScriptBreakdown = () => {
     const { data } = await supabase
       .from("breakdown_projects")
       .select(PROJECT_FIELDS)
+      .eq("owner_id", user.id)
       .order("created_at", { ascending: false });
     const list = (data || []) as Project[];
     setProjects(list);
