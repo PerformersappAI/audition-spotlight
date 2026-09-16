@@ -344,7 +344,6 @@ serve(async (req) => {
   const translateNoteBody = async (
     value: string,
   ): Promise<{ source: string | null; translations: Record<string, unknown>; commit: () => Promise<void> } | null> => {
-    const noop = async () => {};
     const languages = productionLanguages(project.languages);
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     const targets = languages.slice(0, MAX_TARGETS);
@@ -375,7 +374,6 @@ serve(async (req) => {
     const translations = buildTranslationsColumn(result, storedSource);
     if (!Object.keys(translations).length) return null;
 
-    void noop;
     return {
       source: storedSource,
       translations,
