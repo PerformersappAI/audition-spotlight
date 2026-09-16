@@ -65,11 +65,12 @@ export interface Expense {
   linked_item_id: string | null;
   submitted_by_name: string;
   submitted_by_email: string | null;
+  submitted_by_crew_id: string | null;
   created_at: string;
 }
 
 export const EXPENSE_FIELDS =
-  "id, project_id, kind, department, vendor, description, expense_date, currency, amount, payment_method, status, status_note, decided_by_name, decided_at, notes, line_items, invoice_number, bill_to, receipt_path, item_photo_path, linked_item_id, submitted_by_name, submitted_by_email, created_at";
+  "id, project_id, kind, department, vendor, description, expense_date, currency, amount, payment_method, status, status_note, decided_by_name, decided_at, notes, line_items, invoice_number, bill_to, receipt_path, item_photo_path, linked_item_id, submitted_by_name, submitted_by_email, submitted_by_crew_id, created_at";
 
 export const EXPENSE_BUCKET = "expense-receipts";
 
