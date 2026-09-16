@@ -766,7 +766,13 @@ const CallSheet = () => {
               Call Sheet Generator
 
             </h1>
-            <p className="text-muted-foreground mt-2">Create professional production call sheets with smart OCR</p>
+            <p className="text-muted-foreground mt-2">
+              {isLoadingSaved
+                ? "Opening your saved call sheet..."
+                : formData.id
+                  ? "Editing a saved call sheet — saving updates it."
+                  : "Create professional production call sheets with smart OCR"}
+            </p>
           </div>
           <Film className="h-12 w-12 text-primary" />
         </div>
