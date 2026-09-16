@@ -5,24 +5,37 @@ import { supabase } from "@/integrations/supabase/client";
 import { ghostBtn, inputStyle, panel } from "@/components/production/ProductionPicker";
 import NoteCard, { type NoteEdit } from "@/components/notes/NoteCard";
 import {
+  MAX_NOTE_CHARS,
   NOTE_FIELDS,
   NOTE_PRIORITIES,
   NOTE_TAGS,
+  groupNotesByDay,
   prettyDay,
   sceneLabel,
-  tagColor,
   type NoteScene,
   type ProductionNote,
 } from "@/lib/notes/types";
 
 interface Props {
-  projectId: string;
+  /** Owner mode loads and edits through Supabase directly. */
+  projectId?: string;
   scenes: NoteScene[];
   canTranslate: boolean;
-  actingName: string;
-  refreshKey: number;
-  onRetranslate: (note: ProductionNote) => void | Promise<void>;
+  actingName?: string;
+  refreshKey?: number;
+  onRetranslate?: (note: ProductionNote) => void | Promise<void>;
   busyNoteId?: string | null;
+
+  /** Crew mode: notes come from the edge function and are passed in. */
+  mode?: "owner" | "crew";
+  notes?: ProductionNote[];
+  loading?: boolean;
+  readLanguage?: string;
+  crewId?: string;
+  maxChars?: number;
+  onPatchNote?: (note: ProductionNote, changes: Partial<ProductionNote>) => void | Promise<void>;
+  onEditNote?: (note: ProductionNote, edit: NoteEdit) => void | Promise<void>;
+  onDeleteNote?: (note: ProductionNote) => void | Promise<void>;
 }
 
 const label: React.CSSProperties = {
@@ -32,43 +45,74 @@ const label: React.CSSProperties = {
   marginBottom: 6,
 };
 
-const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onRetranslate, busyNoteId }: Props) => {
+const NoteList = ({
+  projectId,
+  scenes,
+  canTranslate,
+  actingName = "",
+  refreshKey = 0,
+  onRetranslate,
+  busyNoteId,
+  mode = "owner",
+  notes: externalNotes,
+  loading: externalLoading,
+  readLanguage,
+  crewId,
+  maxChars = MAX_NOTE_CHARS,
+  onPatchNote,
+  onEditNote,
+  onDeleteNote,
+}: Props) => {
+  const isCrew = mode === "crew";
   const [searchParams, setSearchParams] = useSearchParams();
-  const [notes, setNotes] = useState<ProductionNote[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [ownerNotes, setOwnerNotes] = useState<ProductionNote[]>([]);
+  const [ownerLoading, setOwnerLoading] = useState(true);
 
-  const search = searchParams.get("q") || "";
-  const tagFilter = (searchParams.get("tags") || "").split(",").filter(Boolean);
-  const priorityFilter = searchParams.get("priority") || "";
-  const fromDay = searchParams.get("from") || "";
-  const toDay = searchParams.get("to") || "";
-  const sceneFilter = searchParams.get("scene") || "";
-  const showResolved = searchParams.get("resolved") === "1";
+  // Crew keep their filters local — the share link stays clean.
+  const [localFilters, setLocalFilters] = useState<Record<string, string>>({});
 
+  const getParam = (key: string) => (isCrew ? localFilters[key] || "" : searchParams.get(key) || "");
   const setParam = useCallback((key: string, value: string | null) => {
+    if (isCrew) {
+      setLocalFilters((prev) => {
+        const next = { ...prev };
+        if (value) next[key] = value;
+        else delete next[key];
+        return next;
+      });
+      return;
+    }
     const params = new URLSearchParams(searchParams);
     if (value) params.set(key, value);
     else params.delete(key);
     setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
+  }, [isCrew, searchParams, setSearchParams]);
+
+  const search = getParam("q");
+  const tagFilter = getParam("tags").split(",").filter(Boolean);
+  const priorityFilter = isCrew ? "" : getParam("priority");
+  const fromDay = isCrew ? "" : getParam("from");
+  const toDay = isCrew ? "" : getParam("to");
+  const sceneFilter = isCrew ? "" : getParam("scene");
+  const showResolved = getParam("resolved") === "1";
 
   const load = useCallback(async () => {
     if (!projectId) return;
-    setLoading(true);
+    setOwnerLoading(true);
     const { data } = await supabase
       .from("production_notes")
       .select(NOTE_FIELDS)
       .eq("project_id", projectId)
       .order("created_at", { ascending: false });
-    setNotes((data || []) as ProductionNote[]);
-    setLoading(false);
+    setOwnerNotes((data || []) as ProductionNote[]);
+    setOwnerLoading(false);
   }, [projectId]);
 
-  useEffect(() => { load(); }, [load, refreshKey]);
+  useEffect(() => { if (!isCrew) load(); }, [isCrew, load, refreshKey]);
 
-  // Live updates for this production.
+  // Live updates for this production (owner only — crew poll instead).
   useEffect(() => {
-    if (!projectId) return;
+    if (isCrew || !projectId) return;
     const channel = supabase
       .channel(`production_notes:${projectId}`)
       .on(
@@ -78,19 +122,24 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
       )
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [projectId, load]);
+  }, [isCrew, projectId, load]);
+
+  const notes = isCrew ? (externalNotes || []) : ownerNotes;
+  const loading = isCrew ? !!externalLoading : ownerLoading;
 
   const patch = async (note: ProductionNote, changes: Partial<ProductionNote>) => {
+    if (onPatchNote) { await onPatchNote(note, changes); return; }
     const next: Record<string, unknown> = { ...changes };
     if (changes.resolved !== undefined) {
       next.resolved_by_name = changes.resolved ? actingName : null;
       next.resolved_at = changes.resolved ? new Date().toISOString() : null;
     }
-    setNotes((prev) => prev.map((n) => (n.id === note.id ? { ...n, ...(next as Partial<ProductionNote>) } : n)));
+    setOwnerNotes((prev) => prev.map((n) => (n.id === note.id ? { ...n, ...(next as Partial<ProductionNote>) } : n)));
     await supabase.from("production_notes").update(next).eq("id", note.id);
   };
 
   const edit = async (note: ProductionNote, e: NoteEdit) => {
+    if (onEditNote) { await onEditNote(note, e); return; }
     const next: Record<string, unknown> = {
       tag: e.tag,
       priority: e.priority,
@@ -100,13 +149,14 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
     };
     // Editing the text invalidates the existing translations.
     if (e.textChanged) next.translations = {};
-    setNotes((prev) => prev.map((n) => (n.id === note.id ? { ...n, ...(next as Partial<ProductionNote>) } : n)));
+    setOwnerNotes((prev) => prev.map((n) => (n.id === note.id ? { ...n, ...(next as Partial<ProductionNote>) } : n)));
     await supabase.from("production_notes").update(next).eq("id", note.id);
   };
 
   const remove = async (note: ProductionNote) => {
     if (!window.confirm("Delete this note?")) return;
-    setNotes((prev) => prev.filter((n) => n.id !== note.id));
+    if (onDeleteNote) { await onDeleteNote(note); return; }
+    setOwnerNotes((prev) => prev.filter((n) => n.id !== note.id));
     await supabase.from("production_notes").delete().eq("id", note.id);
   };
 
@@ -124,27 +174,7 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
     });
   }, [notes, search, tagFilter, priorityFilter, sceneFilter, fromDay, toDay, showResolved]);
 
-  const groups = useMemo(() => {
-    const byDay = new Map<string, ProductionNote[]>();
-    filtered.forEach((n) => {
-      const key = n.shoot_day || "";
-      const list = byDay.get(key) || [];
-      list.push(n);
-      byDay.set(key, list);
-    });
-    const days = [...byDay.keys()].sort((a, b) => {
-      if (!a) return 1;
-      if (!b) return -1;
-      return b.localeCompare(a);
-    });
-    return days.map((day) => ({
-      day,
-      notes: [...byDay.get(day)!].sort((a, b) => {
-        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-        return (b.created_at || "").localeCompare(a.created_at || "");
-      }),
-    }));
-  }, [filtered]);
+  const groups = useMemo(() => groupNotesByDay(filtered), [filtered]);
 
   const toggleTag = (value: string) => {
     const next = tagFilter.includes(value)
@@ -153,41 +183,58 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
     setParam("tags", next.length ? next.join(",") : null);
   };
 
+  const clearFilters = () => {
+    if (isCrew) {
+      setLocalFilters((prev) => (prev.resolved ? { resolved: prev.resolved } : {}));
+      return;
+    }
+    const params = new URLSearchParams(searchParams);
+    ["q", "tags", "priority", "from", "to", "scene"].forEach((k) => params.delete(k));
+    setSearchParams(params, { replace: true });
+  };
+
   return (
     <div style={{ paddingBottom: 60 }}>
       <div style={{ ...panel, padding: 20, marginBottom: 20 }}>
         <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }}>Filters</div>
-        <div className="pn-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 14 }}>
+        <div
+          className="pn-grid"
+          style={{ display: "grid", gridTemplateColumns: `repeat(${isCrew ? 2 : 3}, 1fr)`, gap: 12, marginTop: 14 }}
+        >
           <div>
             <label style={label}>Search</label>
             <input value={search} onChange={(e) => setParam("q", e.target.value || null)} placeholder="Search notes" style={inputStyle} />
           </div>
-          <div>
-            <label style={label}>Priority</label>
-            <select value={priorityFilter} onChange={(e) => setParam("priority", e.target.value || null)} style={inputStyle}>
-              <option value="" style={{ background: "#10101b" }}>Any priority</option>
-              {NOTE_PRIORITIES.map((p) => (
-                <option key={p.value} value={p.value} style={{ background: "#10101b" }}>{p.label}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={label}>Scene</label>
-            <select value={sceneFilter} onChange={(e) => setParam("scene", e.target.value || null)} style={inputStyle}>
-              <option value="" style={{ background: "#10101b" }}>All scenes</option>
-              {scenes.map((s) => (
-                <option key={s.id} value={s.id} style={{ background: "#10101b" }}>{sceneLabel(s)}</option>
-              ))}
-            </select>
-          </div>
-          <div>
-            <label style={label}>From day</label>
-            <input type="date" value={fromDay} onChange={(e) => setParam("from", e.target.value || null)} style={inputStyle} />
-          </div>
-          <div>
-            <label style={label}>To day</label>
-            <input type="date" value={toDay} onChange={(e) => setParam("to", e.target.value || null)} style={inputStyle} />
-          </div>
+          {!isCrew && (
+            <>
+              <div>
+                <label style={label}>Priority</label>
+                <select value={priorityFilter} onChange={(e) => setParam("priority", e.target.value || null)} style={inputStyle}>
+                  <option value="" style={{ background: "#10101b" }}>Any priority</option>
+                  {NOTE_PRIORITIES.map((p) => (
+                    <option key={p.value} value={p.value} style={{ background: "#10101b" }}>{p.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={label}>Scene</label>
+                <select value={sceneFilter} onChange={(e) => setParam("scene", e.target.value || null)} style={inputStyle}>
+                  <option value="" style={{ background: "#10101b" }}>All scenes</option>
+                  {scenes.map((s) => (
+                    <option key={s.id} value={s.id} style={{ background: "#10101b" }}>{sceneLabel(s)}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={label}>From day</label>
+                <input type="date" value={fromDay} onChange={(e) => setParam("from", e.target.value || null)} style={inputStyle} />
+              </div>
+              <div>
+                <label style={label}>To day</label>
+                <input type="date" value={toDay} onChange={(e) => setParam("to", e.target.value || null)} style={inputStyle} />
+              </div>
+            </>
+          )}
           <div style={{ display: "flex", alignItems: "flex-end" }}>
             <label style={{ display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 14 }}>
               <input
@@ -223,14 +270,7 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
             );
           })}
           {(tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter) ? (
-            <button
-              onClick={() => {
-                const params = new URLSearchParams(searchParams);
-                ["q", "tags", "priority", "from", "to", "scene"].forEach((k) => params.delete(k));
-                setSearchParams(params, { replace: true });
-              }}
-              style={{ ...ghostBtn, minHeight: 40, fontSize: 13 }}
-            >
+            <button onClick={clearFilters} style={{ ...ghostBtn, minHeight: 40, fontSize: 13 }}>
               Clear filters
             </button>
           ) : null}
@@ -258,19 +298,28 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
               </span>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {g.notes.map((n) => (
-                <NoteCard
-                  key={n.id}
-                  note={n}
-                  scenes={scenes}
-                  canTranslate={canTranslate}
-                  busy={busyNoteId === n.id}
-                  onPatch={(p) => patch(n, p)}
-                  onEdit={(e) => edit(n, e)}
-                  onDelete={() => remove(n)}
-                  onRetranslate={() => onRetranslate(n)}
-                />
-              ))}
+              {g.notes.map((n) => {
+                const mine = !isCrew || (!!crewId && n.created_by_crew_id === crewId);
+                return (
+                  <NoteCard
+                    key={n.id}
+                    note={n}
+                    scenes={scenes}
+                    canTranslate={canTranslate}
+                    busy={busyNoteId === n.id}
+                    mode={mode}
+                    readLanguage={readLanguage}
+                    maxChars={maxChars}
+                    canEdit={mine}
+                    canDelete={mine}
+                    allowPin={!isCrew}
+                    onPatch={(p) => patch(n, p)}
+                    onEdit={(e) => edit(n, e)}
+                    onDelete={() => remove(n)}
+                    onRetranslate={() => onRetranslate?.(n)}
+                  />
+                );
+              })}
             </div>
           </div>
         ))
