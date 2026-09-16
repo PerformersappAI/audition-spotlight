@@ -1515,7 +1515,7 @@ const CallSheet = () => {
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Save Call Sheet
+                  {formData.id ? "Update Call Sheet" : "Save Call Sheet"}
                 </>
               )}
             </Button>
@@ -1525,6 +1525,13 @@ const CallSheet = () => {
             </Button>
           </div>
         </form>
+
+        <ImportContactsDialog
+          open={importTarget !== null}
+          onOpenChange={(open) => !open && setImportTarget(null)}
+          mode={importTarget || "cast"}
+          onImport={handleImportContacts}
+        />
       </div>
     </div>
   );
