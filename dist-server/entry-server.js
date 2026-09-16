@@ -14611,6 +14611,8 @@ const DialogContent = React.forwardRef(({ className, children, ...props }, ref) 
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 const DialogHeader = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col space-y-1.5 text-center sm:text-left", className), ...props });
 DialogHeader.displayName = "DialogHeader";
+const DialogFooter = ({ className, ...props }) => /* @__PURE__ */ jsx("div", { className: cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className), ...props });
+DialogFooter.displayName = "DialogFooter";
 const DialogTitle = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx(
   DialogPrimitive.Title,
   {
@@ -21285,6 +21287,520 @@ function StoryboardingRoute() {
     /* @__PURE__ */ jsx(Storyboarding, {})
   ] });
 }
+const WMO = {
+  0: "Clear sky",
+  1: "Mainly clear",
+  2: "Partly cloudy",
+  3: "Overcast",
+  45: "Fog",
+  48: "Freezing fog",
+  51: "Light drizzle",
+  53: "Drizzle",
+  55: "Heavy drizzle",
+  56: "Freezing drizzle",
+  57: "Freezing drizzle",
+  61: "Light rain",
+  63: "Rain",
+  65: "Heavy rain",
+  66: "Freezing rain",
+  67: "Freezing rain",
+  71: "Light snow",
+  73: "Snow",
+  75: "Heavy snow",
+  77: "Snow grains",
+  80: "Rain showers",
+  81: "Rain showers",
+  82: "Heavy showers",
+  85: "Snow showers",
+  86: "Heavy snow showers",
+  95: "Thunderstorm",
+  96: "Thunderstorm, hail",
+  99: "Thunderstorm, hail"
+};
+const CACHE_MS = 30 * 60 * 1e3;
+const cache = /* @__PURE__ */ new Map();
+const clock = (iso) => (iso || "").slice(11, 16);
+class WeatherRangeError extends Error {
+}
+const FORECAST_WINDOW_DAYS = 14;
+const geoCache = /* @__PURE__ */ new Map();
+const lookupOnce = async (query) => {
+  var _a2;
+  const res = await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  return ((_a2 = json == null ? void 0 : json.results) == null ? void 0 : _a2[0]) ?? null;
+};
+async function geocodeLocation(location) {
+  const raw2 = location.trim();
+  const key = raw2.toLowerCase();
+  const cached = geoCache.get(key);
+  if (cached) return cached;
+  const parts = raw2.split(",").map((p) => p.trim()).filter(Boolean);
+  const attempts = [raw2];
+  if (parts.length > 1) attempts.push(parts.slice(-2).join(", "), parts[parts.length - 1]);
+  for (const attempt of attempts) {
+    const hit = await lookupOnce(attempt);
+    if (hit) {
+      geoCache.set(key, hit);
+      return hit;
+    }
+  }
+  throw new Error("location not found");
+}
+const placeName = (hit) => [hit.name, hit.country].filter(Boolean).join(", ");
+const daysFromToday = (isoDate) => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((isoDate || "").trim());
+  if (!m) return null;
+  const target = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const today2 = /* @__PURE__ */ new Date();
+  today2.setHours(0, 0, 0, 0);
+  return Math.round((target.getTime() - today2.getTime()) / 864e5);
+};
+async function fetchWeatherForDate(location, isoDate) {
+  var _a2, _b2, _c, _d, _e;
+  const offset = daysFromToday(isoDate);
+  if (offset === null || offset < 0 || offset > FORECAST_WINDOW_DAYS) {
+    throw new WeatherRangeError("out of forecast range");
+  }
+  const hit = await geocodeLocation(location);
+  const res = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&start_date=${isoDate}&end_date=${isoDate}`
+  );
+  if (!res.ok) throw new Error("forecast failed");
+  const json = await res.json();
+  const d = json == null ? void 0 : json.daily;
+  if (!d || ((_a2 = d.temperature_2m_max) == null ? void 0 : _a2[0]) == null) throw new Error("no forecast");
+  return {
+    place: placeName(hit),
+    code: ((_b2 = d.weather_code) == null ? void 0 : _b2[0]) ?? 0,
+    date: isoDate,
+    max: Math.round(d.temperature_2m_max[0]),
+    min: Math.round(d.temperature_2m_min[0]),
+    rain: ((_c = d.precipitation_probability_max) == null ? void 0 : _c[0]) ?? null,
+    sunrise: ((_d = d.sunrise) == null ? void 0 : _d[0]) || "",
+    sunset: ((_e = d.sunset) == null ? void 0 : _e[0]) || ""
+  };
+}
+async function fetchWeather(location) {
+  var _a2;
+  const key = location.trim().toLowerCase();
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.at < CACHE_MS) return cached.data;
+  const hit = await geocodeLocation(location);
+  const res = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&forecast_days=2`
+  );
+  if (!res.ok) throw new Error("forecast failed");
+  const json = await res.json();
+  const d = json == null ? void 0 : json.daily;
+  if (!(json == null ? void 0 : json.current) || !d) throw new Error("no forecast");
+  const day = (i) => {
+    var _a3, _b2, _c;
+    return {
+      max: Math.round(d.temperature_2m_max[i]),
+      min: Math.round(d.temperature_2m_min[i]),
+      rain: ((_a3 = d.precipitation_probability_max) == null ? void 0 : _a3[i]) ?? null,
+      sunrise: ((_b2 = d.sunrise) == null ? void 0 : _b2[i]) || "",
+      sunset: ((_c = d.sunset) == null ? void 0 : _c[i]) || ""
+    };
+  };
+  const data = {
+    place: [hit.name, hit.country].filter(Boolean).join(", "),
+    temp: Math.round(json.current.temperature_2m),
+    code: json.current.weather_code,
+    today: day(0),
+    tomorrow: ((_a2 = d.time) == null ? void 0 : _a2.length) > 1 ? day(1) : null
+  };
+  cache.set(key, { at: Date.now(), data });
+  return data;
+}
+async function weatherLine(location) {
+  if (!location || !location.trim()) return "";
+  try {
+    const d = await fetchWeather(location.trim());
+    return [
+      d.place,
+      `${d.temp}°C`,
+      WMO[d.code] ?? "",
+      `High ${d.today.max}° / Low ${d.today.min}°`,
+      d.today.rain != null ? `Rain ${d.today.rain}%` : "",
+      d.today.sunrise ? `Sunrise ${clock(d.today.sunrise)}` : "",
+      d.today.sunset ? `Sunset ${clock(d.today.sunset)}` : ""
+    ].filter(Boolean).join(" · ");
+  } catch {
+    return "";
+  }
+}
+const UNIT_KEY = "fg-weather-unit";
+const readUnit = () => {
+  try {
+    return localStorage.getItem(UNIT_KEY) === "f" ? "f" : "c";
+  } catch {
+    return "c";
+  }
+};
+const writeUnit = (u) => {
+  try {
+    localStorage.setItem(UNIT_KEY, u);
+  } catch {
+  }
+};
+const wrap = {
+  display: "flex",
+  alignItems: "center",
+  flexWrap: "wrap",
+  gap: 10,
+  marginTop: 12,
+  padding: "10px 14px",
+  borderRadius: 12,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)",
+  fontSize: 13.5,
+  color: "rgba(255,255,255,0.75)",
+  lineHeight: 1.6
+};
+const chip$1 = {
+  minHeight: 32,
+  padding: "0 10px",
+  borderRadius: 8,
+  border: "1px solid rgba(255,255,255,0.14)",
+  background: "rgba(255,255,255,0.04)",
+  color: "rgba(255,255,255,0.8)",
+  fontSize: 12.5,
+  fontWeight: 600,
+  cursor: "pointer"
+};
+const DatedWeather = ({ location, date, onApply, applyLabel }) => {
+  const [data, setData] = useState(null);
+  const [state, setState] = useState("loading");
+  const [unit, setUnit] = useState(readUnit);
+  useEffect(() => {
+    let live = true;
+    setState("loading");
+    setData(null);
+    fetchWeatherForDate(location, date).then((d) => {
+      if (!live) return;
+      setData(d);
+      setState("ok");
+    }).catch((err) => {
+      if (!live) return;
+      setState(err instanceof WeatherRangeError ? "range" : "failed");
+    });
+    return () => {
+      live = false;
+    };
+  }, [location, date]);
+  if (state === "loading") return /* @__PURE__ */ jsx("div", { style: wrap, children: "Loading forecast for the shoot date…" });
+  if (state === "range")
+    return /* @__PURE__ */ jsxs("div", { style: wrap, children: [
+      "Forecast available within ",
+      FORECAST_WINDOW_DAYS,
+      " days of the shoot"
+    ] });
+  if (state === "failed" || !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Weather unavailable for this location" });
+  const degShort = (c) => unit === "c" ? `${c}°` : `${Math.round(c * 9 / 5 + 32)}°`;
+  const parts = [
+    data.place,
+    WMO[data.code] ?? "—",
+    `↑${degShort(data.max)} ↓${degShort(data.min)}`,
+    data.rain != null ? `Rain ${data.rain}%` : null,
+    data.sunrise ? `Sunrise ${clock(data.sunrise)}` : null,
+    data.sunset ? `Sunset ${clock(data.sunset)}` : null
+  ].filter(Boolean);
+  return /* @__PURE__ */ jsxs("div", { style: wrap, children: [
+    /* @__PURE__ */ jsxs("span", { style: { flex: "1 1 240px", minWidth: 0 }, children: [
+      "Shoot date · ",
+      parts.join(" · ")
+    ] }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        type: "button",
+        style: chip$1,
+        onClick: () => {
+          const next = unit === "c" ? "f" : "c";
+          setUnit(next);
+          writeUnit(next);
+        },
+        "aria-label": "Toggle temperature unit",
+        children: unit === "c" ? "°F" : "°C"
+      }
+    ),
+    onApply && /* @__PURE__ */ jsx("button", { type: "button", style: chip$1, onClick: () => onApply(data), children: applyLabel || "Add weather" })
+  ] });
+};
+const WeatherBar = ({ location, date, onApply, applyLabel }) => {
+  const [data, setData] = useState(null);
+  const [failed, setFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [unit, setUnit] = useState(readUnit);
+  const [showTomorrow, setShowTomorrow] = useState(false);
+  const dated = Boolean(date && location.trim());
+  useEffect(() => {
+    if (dated || !location.trim()) return;
+    let live = true;
+    setLoading(true);
+    setFailed(false);
+    fetchWeather(location.trim()).then((d) => {
+      if (live) setData(d);
+    }).catch(() => {
+      if (live) {
+        setData(null);
+        setFailed(true);
+      }
+    }).finally(() => {
+      if (live) setLoading(false);
+    });
+    return () => {
+      live = false;
+    };
+  }, [location, dated]);
+  if (!location.trim()) return null;
+  if (dated)
+    return /* @__PURE__ */ jsx(DatedWeather, { location: location.trim(), date, onApply, applyLabel });
+  if (loading && !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Loading weather…" });
+  if (failed || !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Weather unavailable" });
+  const deg = (c) => unit === "c" ? `${c}°C` : `${Math.round(c * 9 / 5 + 32)}°F`;
+  const degShort = (c) => unit === "c" ? `${c}°` : `${Math.round(c * 9 / 5 + 32)}°`;
+  const shown = showTomorrow && data.tomorrow ? data.tomorrow : data.today;
+  const parts = [
+    data.place,
+    !showTomorrow ? deg(data.temp) : null,
+    WMO[data.code] ?? "—",
+    `↑${degShort(shown.max)} ↓${degShort(shown.min)}`,
+    shown.rain != null ? `Rain ${shown.rain}%` : null,
+    shown.sunrise ? `Sunrise ${clock(shown.sunrise)}` : null,
+    shown.sunset ? `Sunset ${clock(shown.sunset)}` : null
+  ].filter(Boolean);
+  return /* @__PURE__ */ jsxs("div", { style: wrap, children: [
+    /* @__PURE__ */ jsxs("span", { style: { flex: "1 1 240px", minWidth: 0 }, children: [
+      showTomorrow ? "Tomorrow · " : "",
+      parts.join(" · ")
+    ] }),
+    data.tomorrow && /* @__PURE__ */ jsx("button", { type: "button", style: chip$1, onClick: () => setShowTomorrow((v2) => !v2), children: showTomorrow ? "Today" : "Tomorrow" }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        type: "button",
+        style: chip$1,
+        onClick: () => {
+          const next = unit === "c" ? "f" : "c";
+          setUnit(next);
+          writeUnit(next);
+        },
+        "aria-label": "Toggle temperature unit",
+        children: unit === "c" ? "°F" : "°C"
+      }
+    )
+  ] });
+};
+const JOB_OPTIONS$1 = [
+  "Director",
+  "Producer",
+  "Executive Producer",
+  "1st Assistant Director",
+  "2nd Assistant Director",
+  "Director of Photography",
+  "Camera Operator",
+  "1st AC",
+  "Gaffer",
+  "Key Grip",
+  "Sound Mixer",
+  "Boom Operator",
+  "Production Designer",
+  "Art Director",
+  "Makeup Artist",
+  "Hair Stylist",
+  "Costume / Wardrobe",
+  "Actor",
+  "Background / Extra",
+  "Production Assistant",
+  "Other"
+];
+const ACTOR_TYPES = ["Principal", "Background / Extra"];
+const CONTACT_FIELDS = "id, first_name, last_name, phone, email, instagram_handle, job_position, other_role, character_name, actor_type, notes, notes_internal, confirmation_sent_at, created_at";
+const FORM_FIELDS = "id, slug, production_name, notify_email, project_id, auto_confirm";
+const contactName = (c) => [c.first_name, c.last_name].filter(Boolean).join(" ").trim() || "Unnamed";
+const contactRole = (c) => c.job_position === "Other" && c.other_role ? `Other — ${c.other_role}` : c.job_position || "—";
+const isCastMember = (c) => {
+  const role = (c.job_position || "").toLowerCase();
+  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast") || role.includes("background") || role.includes("extra");
+};
+const isValidEmail = (v2) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v2.trim());
+const shareLinkFor = (slug2) => `https://filmmakergenius.com/f/${slug2}`;
+const ImportContactsDialog = ({ open, onOpenChange, mode, onImport }) => {
+  const [forms, setForms] = useState([]);
+  const [formId, setFormId] = useState("");
+  const [contacts, setContacts] = useState([]);
+  const [loadingForms, setLoadingForms] = useState(false);
+  const [loadingContacts, setLoadingContacts] = useState(false);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState(mode);
+  const [selected, setSelected] = useState({});
+  useEffect(() => {
+    if (!open) return;
+    setFilter(mode);
+    setSearch("");
+    setSelected({});
+    let live = true;
+    setLoadingForms(true);
+    (async () => {
+      var _a2;
+      const { data, error } = await supabase.from("cast_crew_forms").select(FORM_FIELDS).order("created_at", { ascending: false });
+      if (!live) return;
+      setLoadingForms(false);
+      if (error) {
+        toast({ title: "Could not load your lists", description: error.message, variant: "destructive" });
+        return;
+      }
+      const rows = data || [];
+      setForms(rows);
+      setFormId(((_a2 = rows[0]) == null ? void 0 : _a2.id) || "");
+    })();
+    return () => {
+      live = false;
+    };
+  }, [open, mode]);
+  useEffect(() => {
+    if (!open || !formId) {
+      setContacts([]);
+      return;
+    }
+    let live = true;
+    setLoadingContacts(true);
+    setSelected({});
+    (async () => {
+      const { data, error } = await supabase.from("cast_crew_contacts").select(CONTACT_FIELDS).eq("form_id", formId).order("created_at", { ascending: false });
+      if (!live) return;
+      setLoadingContacts(false);
+      if (error) {
+        toast({ title: "Could not load contacts", description: error.message, variant: "destructive" });
+        return;
+      }
+      setContacts(data || []);
+    })();
+    return () => {
+      live = false;
+    };
+  }, [open, formId]);
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return contacts.filter((c) => {
+      if (filter === "cast" && !isCastMember(c)) return false;
+      if (filter === "crew" && isCastMember(c)) return false;
+      if (!q) return true;
+      return [contactName(c), c.email, c.phone, contactRole(c), c.character_name].filter(Boolean).some((v2) => String(v2).toLowerCase().includes(q));
+    });
+  }, [contacts, filter, search]);
+  const allShownSelected = visible.length > 0 && visible.every((c) => selected[c.id]);
+  const chosen = visible.filter((c) => selected[c.id]);
+  const toggleAll = () => {
+    const next = { ...selected };
+    visible.forEach((c) => {
+      next[c.id] = !allShownSelected;
+    });
+    setSelected(next);
+  };
+  const formLabel = (f) => f.production_name || (f.project_id ? "Untitled production" : "General list");
+  return /* @__PURE__ */ jsx(Dialog, { open, onOpenChange, children: /* @__PURE__ */ jsxs(DialogContent, { className: "max-w-2xl", children: [
+    /* @__PURE__ */ jsxs(DialogHeader, { children: [
+      /* @__PURE__ */ jsxs(DialogTitle, { className: "flex items-center gap-2", children: [
+        /* @__PURE__ */ jsx(Users, { className: "h-5 w-5" }),
+        "Import from Cast & Crew List"
+      ] }),
+      /* @__PURE__ */ jsx(DialogDescription, { children: "Pick a list, choose people, and they are added to this call sheet. Call times stay empty for you to fill." })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
+      /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
+        /* @__PURE__ */ jsx(Label, { children: "List" }),
+        loadingForms ? /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Loading your lists…" }) : forms.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "You have no cast & crew lists yet. Create one in the Cast & Crew List tool first." }) : /* @__PURE__ */ jsx(
+          "select",
+          {
+            className: "h-10 w-full rounded-md border border-input bg-background px-3 text-sm",
+            value: formId,
+            onChange: (e) => setFormId(e.target.value),
+            children: forms.map((f) => /* @__PURE__ */ jsx("option", { value: f.id, children: formLabel(f) }, f.id))
+          }
+        )
+      ] }),
+      forms.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsxs("div", { className: "flex flex-col gap-2 sm:flex-row sm:items-center", children: [
+          /* @__PURE__ */ jsx(
+            Input,
+            {
+              placeholder: "Search name, email, phone, position…",
+              value: search,
+              onChange: (e) => setSearch(e.target.value),
+              className: "flex-1"
+            }
+          ),
+          /* @__PURE__ */ jsx("div", { className: "flex gap-2", children: ["all", "cast", "crew"].map((f) => /* @__PURE__ */ jsx(
+            Button,
+            {
+              type: "button",
+              size: "sm",
+              variant: filter === f ? "default" : "outline",
+              onClick: () => setFilter(f),
+              children: f === "all" ? "All" : f === "cast" ? "Cast" : "Crew"
+            },
+            f
+          )) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between text-sm", children: [
+          /* @__PURE__ */ jsx(Button, { type: "button", size: "sm", variant: "ghost", onClick: toggleAll, disabled: visible.length === 0, children: allShownSelected ? "Clear all" : "Select all" }),
+          /* @__PURE__ */ jsxs("span", { className: "text-muted-foreground", children: [
+            chosen.length,
+            " selected"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsx("div", { className: "max-h-72 space-y-2 overflow-y-auto rounded-md border border-border p-2", children: loadingContacts ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 p-3 text-sm text-muted-foreground", children: [
+          /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin" }),
+          " Loading contacts…"
+        ] }) : visible.length === 0 ? /* @__PURE__ */ jsx("p", { className: "p-3 text-sm text-muted-foreground", children: "No matching people on this list." }) : visible.map((c) => /* @__PURE__ */ jsxs(
+          "label",
+          {
+            className: "flex min-h-[44px] cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-muted/40",
+            children: [
+              /* @__PURE__ */ jsx(
+                Checkbox,
+                {
+                  checked: Boolean(selected[c.id]),
+                  onCheckedChange: (v2) => setSelected((prev) => ({ ...prev, [c.id]: Boolean(v2) }))
+                }
+              ),
+              /* @__PURE__ */ jsxs("span", { className: "min-w-0 flex-1", children: [
+                /* @__PURE__ */ jsx("span", { className: "block truncate font-medium", children: contactName(c) }),
+                /* @__PURE__ */ jsx("span", { className: "block truncate text-xs text-muted-foreground", children: [contactRole(c), c.character_name, c.email, c.phone].filter(Boolean).join(" · ") })
+              ] })
+            ]
+          },
+          c.id
+        )) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs(DialogFooter, { children: [
+      /* @__PURE__ */ jsx(Button, { type: "button", variant: "outline", onClick: () => onOpenChange(false), children: "Cancel" }),
+      /* @__PURE__ */ jsxs(
+        Button,
+        {
+          type: "button",
+          disabled: chosen.length === 0,
+          onClick: () => {
+            onImport(chosen);
+            onOpenChange(false);
+          },
+          children: [
+            "Import ",
+            chosen.length || ""
+          ]
+        }
+      )
+    ] })
+  ] }) });
+};
 const sanitizeValue = (value, isTimeField = false) => {
   if (value === "null" || value === "NULL" || value === "" || value === void 0) {
     return null;
@@ -21338,6 +21854,133 @@ const sanitizeBackgroundData = (background) => {
     return sanitized;
   });
 };
+const buildParentRow = (s) => ({
+  production_company: s.production_company || "",
+  project_name: s.project_name || "",
+  shoot_date: s.shoot_date || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
+  day_number: s.day_number,
+  script_color: s.script_color,
+  schedule_color: s.schedule_color,
+  general_crew_call: s.general_crew_call,
+  shooting_call: s.shooting_call,
+  lunch_time: s.lunch_time,
+  courtesy_breakfast_time: s.courtesy_breakfast_time,
+  wrap_time: s.wrap_time,
+  executive_producers: s.executive_producers,
+  producers: s.producers,
+  director: s.director,
+  associate_director: s.associate_director,
+  line_producer: s.line_producer,
+  upm: s.upm,
+  production_office_address: s.production_office_address,
+  shooting_location: s.shooting_location,
+  location_address: s.location_address,
+  crew_parking: s.crew_parking,
+  basecamp: s.basecamp,
+  nearest_hospital: s.nearest_hospital,
+  hospital_address: s.hospital_address,
+  weather_description: s.weather_description,
+  high_temp: s.high_temp,
+  low_temp: s.low_temp,
+  sunrise_time: s.sunrise_time,
+  sunset_time: s.sunset_time,
+  dawn_time: s.dawn_time,
+  twilight_time: s.twilight_time,
+  lx_precall_time: s.lx_precall_time,
+  unit_call_time: s.unit_call_time,
+  current_schedule: s.current_schedule,
+  current_script: s.current_script,
+  unit_base: s.unit_base,
+  unit_base_address: s.unit_base_address
+});
+const insertChildren = async (callSheetId, scenes, cast, crew, background, breaks, requirements) => {
+  if (scenes.length > 0) {
+    const { error } = await supabase.from("call_sheet_scenes").insert(
+      scenes.map((scene, index) => ({
+        scene_number: scene.scene_number || "",
+        pages: scene.pages,
+        set_description: scene.set_description || "",
+        day_night: scene.day_night,
+        cast_ids: scene.cast_ids,
+        notes: scene.notes,
+        location: scene.location,
+        start_time: scene.start_time,
+        int_ext: scene.int_ext,
+        call_sheet_id: callSheetId,
+        order_index: index
+      }))
+    );
+    if (error) throw error;
+  }
+  if (cast.length > 0) {
+    const { error } = await supabase.from("call_sheet_cast").insert(
+      cast.map((member, index) => ({
+        character_name: member.character_name || "",
+        actor_name: member.actor_name || "",
+        status: member.status,
+        pickup_time: member.pickup_time,
+        call_time: member.call_time,
+        set_ready_time: member.set_ready_time,
+        special_instructions: member.special_instructions,
+        cast_id: member.cast_id,
+        swf: member.swf,
+        makeup_time: member.makeup_time,
+        costume_time: member.costume_time,
+        travel_time: member.travel_time,
+        on_set_time: member.on_set_time,
+        call_sheet_id: callSheetId,
+        order_index: index
+      }))
+    );
+    if (error) throw error;
+  }
+  if (crew.length > 0) {
+    const { error } = await supabase.from("call_sheet_crew").insert(
+      crew.map((member, index) => ({
+        department: member.department || "",
+        title: member.title || "",
+        name: member.name || "",
+        call_time: member.call_time,
+        call_sheet_id: callSheetId,
+        order_index: index
+      }))
+    );
+    if (error) throw error;
+  }
+  if (background.length > 0) {
+    const { error } = await supabase.from("call_sheet_background").insert(
+      background.map((item) => ({
+        description: item.description || "",
+        quantity: item.quantity,
+        call_time: item.call_time,
+        notes: item.notes,
+        call_sheet_id: callSheetId
+      }))
+    );
+    if (error) throw error;
+  }
+  if (breaks.length > 0) {
+    const { error } = await supabase.from("call_sheet_breaks").insert(
+      breaks.map((item) => ({
+        break_type: item.break_type,
+        after_scene_index: item.after_scene_index,
+        call_sheet_id: callSheetId
+      }))
+    );
+    if (error) throw error;
+  }
+  if (requirements.length > 0) {
+    const { error } = await supabase.from("call_sheet_requirements").insert(
+      requirements.map((item, index) => ({
+        department: item.department,
+        notes: item.notes,
+        order_index: index,
+        call_sheet_id: callSheetId
+      }))
+    );
+    if (error) throw error;
+  }
+};
 const useCallSheets = () => {
   const [callSheets, setCallSheets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21362,178 +22005,71 @@ const useCallSheets = () => {
       setLoading(false);
     }
   };
+  const loadCallSheet = async (id) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+    const { data, error } = await supabase.from("call_sheets").select(`*,
+        call_sheet_scenes(*),
+        call_sheet_cast(*),
+        call_sheet_crew(*),
+        call_sheet_background(*),
+        call_sheet_breaks(*),
+        call_sheet_requirements(*)`).eq("id", id).eq("user_id", user.id).maybeSingle();
+    if (error) {
+      console.error("Error loading call sheet:", error);
+      return null;
+    }
+    if (!data) return null;
+    const row = data;
+    const sortBy = (rows) => [...rows].sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
+    return {
+      callSheet: row,
+      scenes: sortBy(row.call_sheet_scenes || []),
+      cast: sortBy(row.call_sheet_cast || []),
+      crew: sortBy(row.call_sheet_crew || []),
+      background: row.call_sheet_background || [],
+      breaks: row.call_sheet_breaks || [],
+      requirements: sortBy(row.call_sheet_requirements || [])
+    };
+  };
   const saveCallSheet = async (callSheetData, scenes, cast, crew, background, breaks = [], requirements = [], _scheduleRows = [], _advanceRows = []) => {
     try {
-      console.log("🚀 Starting call sheet save...", { callSheetData, scenesCount: scenes.length, castCount: cast.length });
       const { data: { user } } = await supabase.auth.getUser();
-      console.log("👤 User check:", user ? `Logged in as ${user.id}` : "Not logged in");
       if (!user) throw new Error("Not authenticated");
       const sanitizedCallSheet = sanitizeCallSheetData(callSheetData);
       const sanitizedCast = sanitizeCastData(cast);
       const sanitizedCrew = sanitizeCrewData(crew);
       const sanitizedBackground = sanitizeBackgroundData(background);
-      console.log("💾 Inserting call sheet to database...");
-      const { data: callSheet, error: callSheetError } = await supabase.from("call_sheets").insert({
-        production_company: sanitizedCallSheet.production_company || "",
-        project_name: sanitizedCallSheet.project_name || "",
-        shoot_date: sanitizedCallSheet.shoot_date || (/* @__PURE__ */ new Date()).toISOString().split("T")[0],
-        day_number: sanitizedCallSheet.day_number,
-        total_days: sanitizedCallSheet.total_days,
-        script_color: sanitizedCallSheet.script_color,
-        schedule_color: sanitizedCallSheet.schedule_color,
-        general_crew_call: sanitizedCallSheet.general_crew_call,
-        shooting_call: sanitizedCallSheet.shooting_call,
-        lunch_time: sanitizedCallSheet.lunch_time,
-        courtesy_breakfast_time: sanitizedCallSheet.courtesy_breakfast_time,
-        wrap_time: sanitizedCallSheet.wrap_time,
-        executive_producers: sanitizedCallSheet.executive_producers,
-        producers: sanitizedCallSheet.producers,
-        director: sanitizedCallSheet.director,
-        associate_director: sanitizedCallSheet.associate_director,
-        line_producer: sanitizedCallSheet.line_producer,
-        upm: sanitizedCallSheet.upm,
-        production_office_address: sanitizedCallSheet.production_office_address,
-        shooting_location: sanitizedCallSheet.shooting_location,
-        location_address: sanitizedCallSheet.location_address,
-        crew_parking: sanitizedCallSheet.crew_parking,
-        basecamp: sanitizedCallSheet.basecamp,
-        nearest_hospital: sanitizedCallSheet.nearest_hospital,
-        hospital_address: sanitizedCallSheet.hospital_address,
-        weather_description: sanitizedCallSheet.weather_description,
-        high_temp: sanitizedCallSheet.high_temp,
-        low_temp: sanitizedCallSheet.low_temp,
-        sunrise_time: sanitizedCallSheet.sunrise_time,
-        sunset_time: sanitizedCallSheet.sunset_time,
-        dawn_time: sanitizedCallSheet.dawn_time,
-        twilight_time: sanitizedCallSheet.twilight_time,
-        lx_precall_time: sanitizedCallSheet.lx_precall_time,
-        unit_call_time: sanitizedCallSheet.unit_call_time,
-        current_schedule: sanitizedCallSheet.current_schedule,
-        current_script: sanitizedCallSheet.current_script,
-        unit_base: sanitizedCallSheet.unit_base,
-        unit_base_address: sanitizedCallSheet.unit_base_address,
-        user_id: user.id
-      }).select().single();
-      if (callSheetError) {
-        console.error("❌ Call sheet insert error:", callSheetError);
-        throw callSheetError;
+      const existingId = callSheetData.id;
+      let callSheetId = existingId;
+      if (existingId) {
+        const { error: updateError } = await supabase.from("call_sheets").update(buildParentRow(sanitizedCallSheet)).eq("id", existingId).eq("user_id", user.id);
+        if (updateError) throw updateError;
+        await Promise.all([
+          supabase.from("call_sheet_scenes").delete().eq("call_sheet_id", existingId),
+          supabase.from("call_sheet_cast").delete().eq("call_sheet_id", existingId),
+          supabase.from("call_sheet_crew").delete().eq("call_sheet_id", existingId),
+          supabase.from("call_sheet_background").delete().eq("call_sheet_id", existingId),
+          supabase.from("call_sheet_breaks").delete().eq("call_sheet_id", existingId),
+          supabase.from("call_sheet_requirements").delete().eq("call_sheet_id", existingId)
+        ]);
+      } else {
+        const { data: callSheet, error: callSheetError } = await supabase.from("call_sheets").insert({ ...buildParentRow(sanitizedCallSheet), user_id: user.id }).select().single();
+        if (callSheetError) throw callSheetError;
+        callSheetId = callSheet.id;
       }
-      console.log("✅ Call sheet inserted:", callSheet.id);
-      const callSheetId = callSheet.id;
-      if (scenes.length > 0) {
-        console.log(`📋 Inserting ${scenes.length} scenes...`);
-        const scenesWithId = scenes.map((scene, index) => ({
-          scene_number: scene.scene_number || "",
-          pages: scene.pages,
-          set_description: scene.set_description || "",
-          day_night: scene.day_night,
-          cast_ids: scene.cast_ids,
-          notes: scene.notes,
-          location: scene.location,
-          start_time: scene.start_time,
-          int_ext: scene.int_ext,
-          call_sheet_id: callSheetId,
-          order_index: index
-        }));
-        const { error: scenesError } = await supabase.from("call_sheet_scenes").insert(scenesWithId);
-        if (scenesError) {
-          console.error("❌ Scenes insert error:", scenesError);
-          throw scenesError;
-        }
-        console.log("✅ Scenes inserted");
-      }
-      if (sanitizedCast.length > 0) {
-        console.log(`👥 Inserting ${sanitizedCast.length} cast members...`);
-        const castWithId = sanitizedCast.map((member, index) => ({
-          character_name: member.character_name || "",
-          actor_name: member.actor_name || "",
-          status: member.status,
-          pickup_time: member.pickup_time,
-          call_time: member.call_time,
-          set_ready_time: member.set_ready_time,
-          special_instructions: member.special_instructions,
-          cast_id: member.cast_id,
-          swf: member.swf,
-          makeup_time: member.makeup_time,
-          costume_time: member.costume_time,
-          travel_time: member.travel_time,
-          on_set_time: member.on_set_time,
-          call_sheet_id: callSheetId,
-          order_index: index
-        }));
-        const { error: castError } = await supabase.from("call_sheet_cast").insert(castWithId);
-        if (castError) {
-          console.error("❌ Cast insert error:", castError);
-          throw castError;
-        }
-        console.log("✅ Cast inserted");
-      }
-      if (sanitizedCrew.length > 0) {
-        console.log(`🎬 Inserting ${sanitizedCrew.length} crew members...`);
-        const crewWithId = sanitizedCrew.map((member, index) => ({
-          department: member.department || "",
-          title: member.title || "",
-          name: member.name || "",
-          call_time: member.call_time,
-          call_sheet_id: callSheetId,
-          order_index: index
-        }));
-        const { error: crewError } = await supabase.from("call_sheet_crew").insert(crewWithId);
-        if (crewError) {
-          console.error("❌ Crew insert error:", crewError);
-          throw crewError;
-        }
-        console.log("✅ Crew inserted");
-      }
-      if (sanitizedBackground.length > 0) {
-        console.log(`🎭 Inserting ${sanitizedBackground.length} background performers...`);
-        const backgroundWithId = sanitizedBackground.map((item) => ({
-          description: item.description || "",
-          quantity: item.quantity,
-          call_time: item.call_time,
-          notes: item.notes,
-          call_sheet_id: callSheetId
-        }));
-        const { error: backgroundError } = await supabase.from("call_sheet_background").insert(backgroundWithId);
-        if (backgroundError) {
-          console.error("❌ Background insert error:", backgroundError);
-          throw backgroundError;
-        }
-        console.log("✅ Background inserted");
-      }
-      if (breaks.length > 0) {
-        console.log(`⏸️ Inserting ${breaks.length} breaks...`);
-        const breaksWithId = breaks.map((item) => ({
-          break_type: item.break_type,
-          after_scene_index: item.after_scene_index,
-          call_sheet_id: callSheetId
-        }));
-        const { error: breaksError } = await supabase.from("call_sheet_breaks").insert(breaksWithId);
-        if (breaksError) {
-          console.error("❌ Breaks insert error:", breaksError);
-          throw breaksError;
-        }
-        console.log("✅ Breaks inserted");
-      }
-      if (requirements.length > 0) {
-        console.log(`📋 Inserting ${requirements.length} requirements...`);
-        const reqWithId = requirements.map((item, index) => ({
-          department: item.department,
-          notes: item.notes,
-          order_index: index,
-          call_sheet_id: callSheetId
-        }));
-        const { error: reqError } = await supabase.from("call_sheet_requirements").insert(reqWithId);
-        if (reqError) {
-          console.error("❌ Requirements insert error:", reqError);
-          throw reqError;
-        }
-        console.log("✅ Requirements inserted");
-      }
-      console.log("🎉 Call sheet saved successfully! ID:", callSheetId);
+      await insertChildren(
+        callSheetId,
+        scenes,
+        sanitizedCast,
+        sanitizedCrew,
+        sanitizedBackground,
+        breaks,
+        requirements
+      );
       toast({
         title: "Success",
-        description: "Call sheet saved successfully!"
+        description: existingId ? "Call sheet updated successfully!" : "Call sheet saved successfully!"
       });
       await fetchCallSheets();
       return callSheetId;
@@ -21554,6 +22090,7 @@ const useCallSheets = () => {
     callSheets,
     loading,
     saveCallSheet,
+    loadCallSheet,
     refetch: fetchCallSheets
   };
 };
@@ -21699,8 +22236,21 @@ const exportCallSheetToPDF = (callSheet, scenes, cast, crew, background, breaks 
     }
   });
   yPosition = doc.lastAutoTable.finalY + 4;
-  const weatherTemp = callSheet.high_temp ? `${callSheet.high_temp}°C` : "";
-  const weatherInfo = [weatherTemp, callSheet.weather_description].filter(Boolean).join(" ");
+  const withDegree = (t) => {
+    const v2 = (t || "").trim();
+    if (!v2) return "";
+    return /[°CF]$/i.test(v2) ? v2 : `${v2}°C`;
+  };
+  const highLow = [
+    callSheet.high_temp ? `H ${withDegree(callSheet.high_temp)}` : "",
+    callSheet.low_temp ? `L ${withDegree(callSheet.low_temp)}` : ""
+  ].filter(Boolean).join(" / ");
+  const weatherInfo = [
+    callSheet.weather_description,
+    highLow,
+    callSheet.precipitation ? `Rain ${callSheet.precipitation}` : "",
+    callSheet.wind ? `Wind ${callSheet.wind}` : ""
+  ].filter(Boolean).join(" · ");
   const sunInfo = [
     callSheet.sunrise_time ? `Sunrise: ${callSheet.sunrise_time}` : "",
     callSheet.sunset_time ? `Sunset: ${callSheet.sunset_time}` : ""
@@ -22028,9 +22578,13 @@ const exportCallSheetToPDF = (callSheet, scenes, cast, crew, background, breaks 
 };
 const CallSheet = () => {
   const navigate = useNavigate();
-  const { saveCallSheet } = useCallSheets();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("id");
+  const { saveCallSheet, loadCallSheet } = useCallSheets();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isParsingData, setIsParsingData] = useState(false);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(Boolean(editId));
+  const [importTarget, setImportTarget] = useState(null);
   const [logo, setLogo] = useState(null);
   const {
     processFile,
@@ -22570,6 +23124,107 @@ const CallSheet = () => {
   const handleDownloadPDF = () => {
     exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements.filter((r) => r.department || r.notes), logo, scheduleRows, advanceRows);
   };
+  useEffect(() => {
+    if (!editId) return;
+    let live = true;
+    setIsLoadingSaved(true);
+    (async () => {
+      const loaded = await loadCallSheet(editId);
+      if (!live) return;
+      setIsLoadingSaved(false);
+      if (!loaded) {
+        toast({
+          title: "Call sheet not found",
+          description: "We couldn't open that call sheet, so here's a blank one.",
+          variant: "destructive"
+        });
+        return;
+      }
+      setFormData((prev) => ({ ...prev, ...loaded.callSheet }));
+      if (loaded.scenes.length) setScenes(loaded.scenes);
+      if (loaded.cast.length) setCast(loaded.cast);
+      if (loaded.crew.length) setCrew(loaded.crew);
+      if (loaded.background.length) setBackground(loaded.background);
+      setBreaks(loaded.breaks);
+      if (loaded.requirements.length) setRequirements(loaded.requirements);
+    })();
+    return () => {
+      live = false;
+    };
+  }, [editId]);
+  const applyForecast = (f) => {
+    setFormData((prev) => ({
+      ...prev,
+      weather_description: WMO[f.code] || prev.weather_description,
+      high_temp: `${f.max}`,
+      low_temp: `${f.min}`,
+      sunrise_time: f.sunrise ? clock(f.sunrise) : prev.sunrise_time,
+      sunset_time: f.sunset ? clock(f.sunset) : prev.sunset_time,
+      precipitation: f.rain != null ? `${f.rain}%` : prev.precipitation
+    }));
+    toast({ title: "Weather added", description: "Conditions, temperatures and sun times are on the call sheet." });
+  };
+  const weatherLocation = (formData.shooting_location || formData.location_address || "").trim();
+  const handleImportContacts = (contacts) => {
+    const target = importTarget;
+    if (!target) return;
+    const key = (name, email) => `${name.trim().toLowerCase()}|${"".trim().toLowerCase()}`;
+    if (target === "cast") {
+      const people = contacts.filter(isCastMember);
+      const existing = new Set(cast.map((c) => key(c.actor_name || "")));
+      const rows = [];
+      people.forEach((c) => {
+        const name = contactName(c);
+        if (existing.has(key(name))) return;
+        existing.add(key(name));
+        rows.push({
+          character_name: c.character_name || "",
+          actor_name: name,
+          cast_id: "",
+          status: "",
+          pickup_time: "",
+          call_time: "",
+          set_ready_time: "",
+          special_instructions: "",
+          swf: "",
+          makeup_time: "",
+          costume_time: "",
+          travel_time: "",
+          on_set_time: "",
+          wrap_time: ""
+        });
+      });
+      const base = cast.filter((c) => c.actor_name || c.character_name);
+      setCast(rows.length ? [...base, ...rows] : cast);
+      toast({
+        title: rows.length ? `${rows.length} added to cast` : "Nothing to add",
+        description: rows.length ? "Fill in their call times." : "Those people are already on the sheet, or none of them are cast."
+      });
+    } else {
+      const people = contacts.filter((c) => !isCastMember(c));
+      const existing = new Set(crew.map((c) => key(c.name || "")));
+      const rows = [];
+      people.forEach((c) => {
+        const name = contactName(c);
+        if (existing.has(key(name))) return;
+        existing.add(key(name));
+        rows.push({
+          department: "",
+          title: contactRole(c) === "—" ? "" : contactRole(c).replace(/^Other — /, ""),
+          name,
+          call_time: "",
+          phone: c.phone || "",
+          off_set: ""
+        });
+      });
+      const base = crew.filter((c) => c.name || c.title || c.department);
+      setCrew(rows.length ? [...base, ...rows] : crew);
+      toast({
+        title: rows.length ? `${rows.length} added to crew` : "Nothing to add",
+        description: rows.length ? "Fill in their call times." : "Those people are already on the sheet, or all of them are cast."
+      });
+    }
+  };
   return /* @__PURE__ */ jsxs("div", { className: "min-h-screen bg-gradient-to-b from-background via-background to-secondary/20", children: [
     /* @__PURE__ */ jsx(ToolTopBar, {}),
     /* @__PURE__ */ jsx(ToolLead, { path: "/call-sheet" }),
@@ -22577,7 +23232,7 @@ const CallSheet = () => {
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between mb-8", children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("h1", { className: "text-4xl font-bold text-white", children: "Call Sheet Generator" }),
-          /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mt-2", children: "Create professional production call sheets with smart OCR" })
+          /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mt-2", children: isLoadingSaved ? "Opening your saved call sheet..." : formData.id ? "Editing a saved call sheet — saving updates it." : "Create professional production call sheets with smart OCR" })
         ] }),
         /* @__PURE__ */ jsx(Film, { className: "h-12 w-12 text-primary" })
       ] }),
@@ -22759,6 +23414,15 @@ const CallSheet = () => {
                 /* @__PURE__ */ jsx(Label, { children: "Location Address" }),
                 /* @__PURE__ */ jsx(Textarea, { rows: 2, value: formData.location_address, onChange: (e) => updateField("location_address", e.target.value) })
               ] }),
+              weatherLocation && formData.shoot_date ? /* @__PURE__ */ jsx(
+                WeatherBar,
+                {
+                  location: weatherLocation,
+                  date: formData.shoot_date,
+                  onApply: applyForecast,
+                  applyLabel: "Add weather to call sheet"
+                }
+              ) : /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Add a shoot date and a location to see the forecast for that day." }),
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
                   /* @__PURE__ */ jsx(Label, { children: "Gate / Access Code" }),
@@ -22893,11 +23557,17 @@ const CallSheet = () => {
             }) })
           ] }) }),
           /* @__PURE__ */ jsx(TabsContent, { value: "cast", children: /* @__PURE__ */ jsxs(Card$2, { children: [
-            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Cast" }),
-              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCast, size: "sm", children: [
-                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
-                "Add Cast Member"
+              /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                /* @__PURE__ */ jsxs(Button, { type: "button", variant: "outline", size: "sm", onClick: () => setImportTarget("cast"), children: [
+                  /* @__PURE__ */ jsx(Users, { className: "h-4 w-4 mr-2" }),
+                  "Import from Cast & Crew List"
+                ] }),
+                /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCast, size: "sm", children: [
+                  /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                  "Add Cast Member"
+                ] })
               ] })
             ] }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: cast.map((member, index) => /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
@@ -22947,11 +23617,17 @@ const CallSheet = () => {
             ] }) }) }, index)) })
           ] }) }),
           /* @__PURE__ */ jsx(TabsContent, { value: "crew", children: /* @__PURE__ */ jsxs(Card$2, { children: [
-            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
+            /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Crew" }),
-              /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCrew, size: "sm", children: [
-                /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
-                "Add Crew Member"
+              /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2", children: [
+                /* @__PURE__ */ jsxs(Button, { type: "button", variant: "outline", size: "sm", onClick: () => setImportTarget("crew"), children: [
+                  /* @__PURE__ */ jsx(Users, { className: "h-4 w-4 mr-2" }),
+                  "Import from Cast & Crew List"
+                ] }),
+                /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCrew, size: "sm", children: [
+                  /* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 mr-2" }),
+                  "Add Crew Member"
+                ] })
               ] })
             ] }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: crew.map((member, index) => /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
@@ -23147,14 +23823,23 @@ const CallSheet = () => {
             "Saving..."
           ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
             /* @__PURE__ */ jsx(Save, { className: "mr-2 h-4 w-4" }),
-            "Save Call Sheet"
+            formData.id ? "Update Call Sheet" : "Save Call Sheet"
           ] }) }),
           /* @__PURE__ */ jsxs(Button, { type: "button", variant: "outline", onClick: handleDownloadPDF, children: [
             /* @__PURE__ */ jsx(Download, { className: "mr-2 h-4 w-4" }),
             "Download PDF"
           ] })
         ] })
-      ] })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ImportContactsDialog,
+        {
+          open: importTarget !== null,
+          onOpenChange: (open) => !open && setImportTarget(null),
+          mode: importTarget || "cast",
+          onImport: handleImportContacts
+        }
+      )
     ] })
   ] });
 };
@@ -28257,196 +28942,6 @@ const ReceiptsExpenses = () => {
         selectedProject.id
       )
     ] })
-  ] });
-};
-const WMO = {
-  0: "Clear sky",
-  1: "Mainly clear",
-  2: "Partly cloudy",
-  3: "Overcast",
-  45: "Fog",
-  48: "Freezing fog",
-  51: "Light drizzle",
-  53: "Drizzle",
-  55: "Heavy drizzle",
-  56: "Freezing drizzle",
-  57: "Freezing drizzle",
-  61: "Light rain",
-  63: "Rain",
-  65: "Heavy rain",
-  66: "Freezing rain",
-  67: "Freezing rain",
-  71: "Light snow",
-  73: "Snow",
-  75: "Heavy snow",
-  77: "Snow grains",
-  80: "Rain showers",
-  81: "Rain showers",
-  82: "Heavy showers",
-  85: "Snow showers",
-  86: "Heavy snow showers",
-  95: "Thunderstorm",
-  96: "Thunderstorm, hail",
-  99: "Thunderstorm, hail"
-};
-const CACHE_MS = 30 * 60 * 1e3;
-const cache = /* @__PURE__ */ new Map();
-const clock = (iso) => (iso || "").slice(11, 16);
-async function fetchWeather(location) {
-  var _a2, _b2;
-  const key = location.trim().toLowerCase();
-  const cached = cache.get(key);
-  if (cached && Date.now() - cached.at < CACHE_MS) return cached.data;
-  const geoRes = await fetch(
-    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
-  );
-  if (!geoRes.ok) throw new Error("geocode failed");
-  const geo = await geoRes.json();
-  const hit = (_a2 = geo == null ? void 0 : geo.results) == null ? void 0 : _a2[0];
-  if (!hit) throw new Error("location not found");
-  const res = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&forecast_days=2`
-  );
-  if (!res.ok) throw new Error("forecast failed");
-  const json = await res.json();
-  const d = json == null ? void 0 : json.daily;
-  if (!(json == null ? void 0 : json.current) || !d) throw new Error("no forecast");
-  const day = (i) => {
-    var _a3, _b3, _c;
-    return {
-      max: Math.round(d.temperature_2m_max[i]),
-      min: Math.round(d.temperature_2m_min[i]),
-      rain: ((_a3 = d.precipitation_probability_max) == null ? void 0 : _a3[i]) ?? null,
-      sunrise: ((_b3 = d.sunrise) == null ? void 0 : _b3[i]) || "",
-      sunset: ((_c = d.sunset) == null ? void 0 : _c[i]) || ""
-    };
-  };
-  const data = {
-    place: [hit.name, hit.country].filter(Boolean).join(", "),
-    temp: Math.round(json.current.temperature_2m),
-    code: json.current.weather_code,
-    today: day(0),
-    tomorrow: ((_b2 = d.time) == null ? void 0 : _b2.length) > 1 ? day(1) : null
-  };
-  cache.set(key, { at: Date.now(), data });
-  return data;
-}
-async function weatherLine(location) {
-  if (!location || !location.trim()) return "";
-  try {
-    const d = await fetchWeather(location.trim());
-    return [
-      d.place,
-      `${d.temp}°C`,
-      WMO[d.code] ?? "",
-      `High ${d.today.max}° / Low ${d.today.min}°`,
-      d.today.rain != null ? `Rain ${d.today.rain}%` : "",
-      d.today.sunrise ? `Sunrise ${clock(d.today.sunrise)}` : "",
-      d.today.sunset ? `Sunset ${clock(d.today.sunset)}` : ""
-    ].filter(Boolean).join(" · ");
-  } catch {
-    return "";
-  }
-}
-const UNIT_KEY = "fg-weather-unit";
-const readUnit = () => {
-  try {
-    return localStorage.getItem(UNIT_KEY) === "f" ? "f" : "c";
-  } catch {
-    return "c";
-  }
-};
-const writeUnit = (u) => {
-  try {
-    localStorage.setItem(UNIT_KEY, u);
-  } catch {
-  }
-};
-const WeatherBar = ({ location }) => {
-  const [data, setData] = useState(null);
-  const [failed, setFailed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [unit, setUnit] = useState(readUnit);
-  const [showTomorrow, setShowTomorrow] = useState(false);
-  useEffect(() => {
-    if (!location.trim()) return;
-    let live = true;
-    setLoading(true);
-    setFailed(false);
-    fetchWeather(location.trim()).then((d) => {
-      if (live) setData(d);
-    }).catch(() => {
-      if (live) {
-        setData(null);
-        setFailed(true);
-      }
-    }).finally(() => {
-      if (live) setLoading(false);
-    });
-    return () => {
-      live = false;
-    };
-  }, [location]);
-  const deg = (c) => unit === "c" ? `${c}°C` : `${Math.round(c * 9 / 5 + 32)}°F`;
-  const degShort = (c) => unit === "c" ? `${c}°` : `${Math.round(c * 9 / 5 + 32)}°`;
-  const wrap = {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    gap: 10,
-    marginTop: 12,
-    padding: "10px 14px",
-    borderRadius: 12,
-    border: "1px solid rgba(255,255,255,0.08)",
-    background: "rgba(255,255,255,0.03)",
-    fontSize: 13.5,
-    color: "rgba(255,255,255,0.75)",
-    lineHeight: 1.6
-  };
-  if (!location.trim()) return null;
-  if (loading && !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Loading weather…" });
-  if (failed || !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Weather unavailable" });
-  const shown = showTomorrow && data.tomorrow ? data.tomorrow : data.today;
-  const parts = [
-    data.place,
-    !showTomorrow ? deg(data.temp) : null,
-    WMO[data.code] ?? "—",
-    `↑${degShort(shown.max)} ↓${degShort(shown.min)}`,
-    shown.rain != null ? `Rain ${shown.rain}%` : null,
-    shown.sunrise ? `Sunrise ${clock(shown.sunrise)}` : null,
-    shown.sunset ? `Sunset ${clock(shown.sunset)}` : null
-  ].filter(Boolean);
-  const chip2 = {
-    minHeight: 32,
-    padding: "0 10px",
-    borderRadius: 8,
-    border: "1px solid rgba(255,255,255,0.14)",
-    background: "rgba(255,255,255,0.04)",
-    color: "rgba(255,255,255,0.8)",
-    fontSize: 12.5,
-    fontWeight: 600,
-    cursor: "pointer"
-  };
-  return /* @__PURE__ */ jsxs("div", { style: wrap, children: [
-    /* @__PURE__ */ jsxs("span", { style: { flex: "1 1 240px", minWidth: 0 }, children: [
-      showTomorrow ? "Tomorrow · " : "",
-      parts.join(" · ")
-    ] }),
-    data.tomorrow && /* @__PURE__ */ jsx("button", { type: "button", style: chip2, onClick: () => setShowTomorrow((v2) => !v2), children: showTomorrow ? "Today" : "Tomorrow" }),
-    /* @__PURE__ */ jsx(
-      "button",
-      {
-        type: "button",
-        style: chip2,
-        onClick: () => {
-          const next = unit === "c" ? "f" : "c";
-          setUnit(next);
-          writeUnit(next);
-        },
-        "aria-label": "Toggle temperature unit",
-        children: unit === "c" ? "°F" : "°C"
-      }
-    )
   ] });
 };
 const LANGUAGES = {
@@ -39594,40 +40089,6 @@ function Marketing() {
     }
   );
 }
-const JOB_OPTIONS$1 = [
-  "Director",
-  "Producer",
-  "Executive Producer",
-  "1st Assistant Director",
-  "2nd Assistant Director",
-  "Director of Photography",
-  "Camera Operator",
-  "1st AC",
-  "Gaffer",
-  "Key Grip",
-  "Sound Mixer",
-  "Boom Operator",
-  "Production Designer",
-  "Art Director",
-  "Makeup Artist",
-  "Hair Stylist",
-  "Costume / Wardrobe",
-  "Actor",
-  "Background / Extra",
-  "Production Assistant",
-  "Other"
-];
-const ACTOR_TYPES = ["Principal", "Background / Extra"];
-const CONTACT_FIELDS = "id, first_name, last_name, phone, email, instagram_handle, job_position, other_role, character_name, actor_type, notes, notes_internal, confirmation_sent_at, created_at";
-const FORM_FIELDS = "id, slug, production_name, notify_email, project_id, auto_confirm";
-const contactName = (c) => [c.first_name, c.last_name].filter(Boolean).join(" ").trim() || "Unnamed";
-const contactRole = (c) => c.job_position === "Other" && c.other_role ? `Other — ${c.other_role}` : c.job_position || "—";
-const isCastMember = (c) => {
-  const role = (c.job_position || "").toLowerCase();
-  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast") || role.includes("background") || role.includes("extra");
-};
-const isValidEmail = (v2) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v2.trim());
-const shareLinkFor = (slug2) => `https://filmmakergenius.com/f/${slug2}`;
 const label$1 = {
   display: "block",
   fontSize: 13,
@@ -63284,7 +63745,7 @@ const DailyProductionReport = () => {
   const [firstAfterLunch, setFirstAfterLunch] = useState("");
   const [lastShot, setLastShot] = useState("");
   const [cameraWrap, setCameraWrap] = useState("");
-  const [wrap, setWrap] = useState("");
+  const [wrap2, setWrap] = useState("");
   const [scenesScheduled, setScenesScheduled] = useState("");
   const [scenesCompleted, setScenesCompleted] = useState("");
   const [pagesScheduled, setPagesScheduled] = useState("");
@@ -63375,7 +63836,7 @@ const DailyProductionReport = () => {
       ["First After Lunch", firstAfterLunch],
       ["Last Shot", lastShot],
       ["Camera Wrap", cameraWrap],
-      ["Wrap", wrap]
+      ["Wrap", wrap2]
     ];
     times.forEach(([label2, value]) => writeLine(label2, value));
     y += 4;
@@ -63660,7 +64121,7 @@ const DailyProductionReport = () => {
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
                 /* @__PURE__ */ jsx(Label, { htmlFor: "wrap", children: "Wrap" }),
-                /* @__PURE__ */ jsx(Input, { id: "wrap", value: wrap, onChange: (e) => setWrap(e.target.value) })
+                /* @__PURE__ */ jsx(Input, { id: "wrap", value: wrap2, onChange: (e) => setWrap(e.target.value) })
               ] })
             ] })
           ] }),
@@ -63895,7 +64356,7 @@ const DailyProductionReport = () => {
               ["First After Lunch", firstAfterLunch],
               ["Last Shot", lastShot],
               ["Camera Wrap", cameraWrap],
-              ["Wrap", wrap]
+              ["Wrap", wrap2]
             ].map(([label2, value], idx) => /* @__PURE__ */ jsxs("div", { className: "border border-gray-200 p-2 rounded", children: [
               /* @__PURE__ */ jsx("p", { className: "text-xs text-gray-500", children: label2 }),
               /* @__PURE__ */ jsx("p", { className: "font-medium", children: value.trim() || /* @__PURE__ */ jsx("span", { className: "italic text-gray-400", children: "—" }) })
