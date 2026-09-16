@@ -22,15 +22,6 @@ const STEPS = [
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." },
 ];
 
-const DEPARTMENTS = [
-  { key: "props", label: "Props" },
-  { key: "locations", label: "Locations" },
-  { key: "makeup_sfx", label: "Makeup & SFX" },
-  { key: "wardrobe", label: "Wardrobe" },
-  { key: "vehicles", label: "Vehicles" },
-] as const;
-
-type DeptKey = (typeof DEPARTMENTS)[number]["key"];
 
 interface Project {
   id: string;
