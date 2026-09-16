@@ -988,6 +988,7 @@ const ScriptBreakdown = () => {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
                     {checked}/{total} items ready · {signed}/5 departments signed off
+                    {sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""}
                   </div>
                   <div style={{ marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
                     <div style={{ width: `${pct}%`, height: "100%", background: TEAL, transition: "width .3s" }} />
