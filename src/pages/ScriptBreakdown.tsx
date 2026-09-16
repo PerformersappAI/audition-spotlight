@@ -235,16 +235,65 @@ const ScriptBreakdown = () => {
     setSignoffs((prev) => [...prev.filter((s) => s.scene_id !== sceneId), ...((signoffRows || []) as BreakdownSignoff[])]);
   }, [sceneId, projectId]);
 
-  // Live updates for the selected scene
+  // ---- photos ---------------------------------------------------------------
+  const loadPhotos = useCallback(async () => {
+    if (!projectId) { setPhotos([]); return; }
+    const { data } = await supabase
+      .from("breakdown_photos")
+      .select(PHOTO_FIELDS)
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: true });
+    setPhotos((data || []) as BreakdownPhoto[]);
+  }, [projectId]);
+
+  useEffect(() => { loadPhotos(); }, [loadPhotos]);
+
+  // Sign the private storage paths in batches, refreshing when they expire
+  useEffect(() => {
+    const now = Date.now();
+    const needed = Array.from(
+      new Set(
+        photos
+          .filter((p) => !!p.storage_path)
+          .map((p) => p.storage_path as string)
+          .filter((path) => !urlMap[path] || urlMap[path].exp < now + 60_000),
+      ),
+    );
+    if (!needed.length) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error: err } = await supabase.storage.from(BUCKET).createSignedUrls(needed, 3600);
+      if (cancelled || err || !data) return;
+      const exp = Date.now() + 3600 * 1000;
+      setUrlMap((prev) => {
+        const next = { ...prev };
+        data.forEach((row: any, i: number) => {
+          const path = row.path || needed[i];
+          if (row.signedUrl && path) next[path] = { url: row.signedUrl, exp };
+        });
+        return next;
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [photos, urlMap]);
+
+  const signedUrl = useCallback(
+    (photo: BreakdownPhoto) =>
+      photo.external_url || (photo.storage_path ? urlMap[photo.storage_path]?.url : undefined),
+    [urlMap],
+  );
+
+  // Live updates for the selected scene + the project's photos
   useEffect(() => {
     if (!sceneId) return;
     const channel = supabase
       .channel(`breakdown-scene-${sceneId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, () => { loadPhotos(); })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [sceneId, refreshScene]);
+  }, [sceneId, projectId, refreshScene, loadPhotos]);
 
   const itemCount = useCallback((sid: string) => items.filter((i) => i.scene_id === sid).length, [items]);
 
