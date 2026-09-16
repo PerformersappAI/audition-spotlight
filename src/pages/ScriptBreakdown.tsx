@@ -1,14 +1,13 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Check, Loader2, Pencil, Share2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import Seo from "@/components/Seo";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { aiInvoke } from "@/lib/aiInvoke";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import BreakdownWorkspace from "@/components/breakdown/BreakdownWorkspace";
-import SharePanel from "@/components/breakdown/SharePanel";
+import ProductionPicker, { type Production } from "@/components/production/ProductionPicker";
 import { createOwnerAdapter } from "@/lib/breakdown/adapter";
 
 const SITE = "https://filmmakergenius.com";
@@ -21,18 +20,6 @@ const STEPS = [
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." },
 ];
 
-interface Project {
-  id: string;
-  title: string;
-  company: string | null;
-  status: string;
-  start_date: string | null;
-  share_token: string;
-  sharing_enabled: boolean;
-  created_at: string;
-}
-
-const PROJECT_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, created_at";
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
@@ -105,21 +92,9 @@ const ScriptBreakdown = () => {
   const projectId = searchParams.get("project") || "";
   const sceneId = searchParams.get("scene") || "";
 
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [selectedProject, setSelectedProject] = useState<Production | null>(null);
   const [sceneCount, setSceneCount] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
-
-  const [showNewProject, setShowNewProject] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newCompany, setNewCompany] = useState("");
-  const [newStatus, setNewStatus] = useState("in_production");
-  const [newStart, setNewStart] = useState("");
-  const [creating, setCreating] = useState(false);
-
-  const [renaming, setRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
-  const [showShare, setShowShare] = useState(false);
 
   const [showUpload, setShowUpload] = useState(false);
   const [scriptText, setScriptText] = useState("");
@@ -131,8 +106,6 @@ const ScriptBreakdown = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
 
-  const selectedProject = useMemo(() => projects.find((p) => p.id === projectId) || null, [projects, projectId]);
-
   const setParams = useCallback((next: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(next).forEach(([k, v]) => {
@@ -141,6 +114,7 @@ const ScriptBreakdown = () => {
     });
     setSearchParams(params, { replace: true });
   }, [searchParams, setSearchParams]);
+
 
   const actorName =
     (userProfile?.first_name as string | undefined)?.trim() ||
@@ -152,55 +126,8 @@ const ScriptBreakdown = () => {
     [projectId, actorName],
   );
 
-  // Load projects
-  const loadProjects = useCallback(async () => {
-    if (!user) return;
-    setLoadingProjects(true);
-    const { data } = await supabase
-      .from("breakdown_projects")
-      .select(PROJECT_FIELDS)
-      .eq("owner_id", user.id)
-      .order("created_at", { ascending: false });
-    const list = (data || []) as Project[];
-    setProjects(list);
-    setLoadingProjects(false);
-    if (list.length && !list.some((p) => p.id === projectId)) {
-      setParams({ project: list[0].id, scene: null });
-    }
-  }, [user, projectId, setParams]);
 
-  useEffect(() => { loadProjects(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user]);
 
-  const createProject = async () => {
-    if (!user || !newTitle.trim()) return;
-    setCreating(true);
-    setError("");
-    const { data, error: err } = await supabase
-      .from("breakdown_projects")
-      .insert({
-        owner_id: user.id,
-        title: newTitle.trim(),
-        company: newCompany.trim() || null,
-        status: newStatus,
-        start_date: newStart || null,
-      })
-      .select(PROJECT_FIELDS)
-      .single();
-    setCreating(false);
-    if (err || !data) { setError(err?.message || "Could not create the production."); return; }
-    setProjects((prev) => [data as Project, ...prev]);
-    setShowNewProject(false);
-    setNewTitle(""); setNewCompany(""); setNewStatus("in_production"); setNewStart("");
-    setParams({ project: (data as Project).id, scene: null });
-  };
-
-  const saveRename = async () => {
-    if (!selectedProject || !renameValue.trim()) { setRenaming(false); return; }
-    const title = renameValue.trim();
-    await supabase.from("breakdown_projects").update({ title }).eq("id", selectedProject.id);
-    setProjects((prev) => prev.map((p) => (p.id === selectedProject.id ? { ...p, title } : p)));
-    setRenaming(false);
-  };
 
   const handleFile = (file: File) => {
     setError("");
@@ -305,68 +232,14 @@ const ScriptBreakdown = () => {
           </div>
         </div>
 
-        {/* PROJECTS */}
-        <div style={{ paddingBottom: 24 }}>
-          {loadingProjects ? (
-            <div style={{ ...panel, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }}>
-              <Loader2 size={16} className="animate-spin" /> Loading your productions…
-            </div>
-          ) : projects.length === 0 ? (
-            <div style={{ ...panel, padding: 32, textAlign: "center" }}>
-              <div style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }}>Create your first production</div>
-              <p style={{ color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }}>
-                Give it a name, then add scenes and let the breakdown do the rest.
-              </p>
-              <button style={{ ...primaryBtn, marginTop: 18 }} onClick={() => setShowNewProject(true)}>+ New Project</button>
-            </div>
-          ) : (
-            <div style={{ ...panel, padding: 16 }}>
-              <div className="sb-row" style={{ display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
-                <div style={{ display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }}>
-                  <select
-                    aria-label="Select production"
-                    value={projectId}
-                    onChange={(e) => { setParams({ project: e.target.value, scene: null }); setShowShare(false); }}
-                    style={{ ...inputStyle, maxWidth: 320 }}
-                  >
-                    {projects.map((p) => (
-                      <option key={p.id} value={p.id} style={{ background: "#10101b" }}>{p.title}</option>
-                    ))}
-                  </select>
-                  {selectedProject && (
-                    <button
-                      aria-label="Rename production"
-                      onClick={() => { setRenameValue(selectedProject.title); setRenaming(true); }}
-                      style={{ ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}
-                    >
-                      <Pencil size={16} />
-                    </button>
-                  )}
-                </div>
-                <div className="sb-row" style={{ display: "flex", gap: 10, flex: "0 0 auto" }}>
-                  {selectedProject && (
-                    <button onClick={() => setShowShare((v) => !v)} style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8 }}>
-                      <Share2 size={16} /> Share with crew
-                    </button>
-                  )}
-                  <button style={primaryBtn} onClick={() => setShowNewProject(true)}>+ New Project</button>
-                </div>
-              </div>
-              {selectedProject?.company && (
-                <div style={{ marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }}>{selectedProject.company}</div>
-              )}
-              {selectedProject && showShare && (
-                <SharePanel
-                  projectId={selectedProject.id}
-                  projectTitle={selectedProject.title}
-                  shareToken={selectedProject.share_token}
-                  sharingEnabled={selectedProject.sharing_enabled}
-                  onChange={(patch) => setProjects((prev) => prev.map((p) => (p.id === selectedProject.id ? { ...p, ...patch } : p)))}
-                />
-              )}
-            </div>
-          )}
-        </div>
+        {/* PRODUCTIONS */}
+        <ProductionPicker
+          enableShare
+          clearParamsOnChange={["scene"]}
+          emptyText="Give it a name, then add scenes and let the breakdown do the rest."
+          onSelect={setSelectedProject}
+        />
+
 
         {/* UPLOAD PANEL */}
         {selectedProject && showUpload && (
@@ -480,51 +353,6 @@ const ScriptBreakdown = () => {
         {sceneCount === 0 && <div style={{ height: 24 }} />}
       </div>
 
-      {/* NEW PROJECT MODAL */}
-      {showNewProject && (
-        <Modal title="New production" onClose={() => setShowNewProject(false)}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <div>
-              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Title</label>
-              <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Knock at 8" style={inputStyle} />
-            </div>
-            <div>
-              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Production company (optional)</label>
-              <input value={newCompany} onChange={(e) => setNewCompany(e.target.value)} style={inputStyle} />
-            </div>
-            <div>
-              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Status</label>
-              <select value={newStatus} onChange={(e) => setNewStatus(e.target.value)} style={inputStyle}>
-                <option value="upcoming" style={{ background: "#10101b" }}>Upcoming</option>
-                <option value="in_production" style={{ background: "#10101b" }}>In production</option>
-                <option value="wrapped" style={{ background: "#10101b" }}>Wrapped</option>
-              </select>
-            </div>
-            <div>
-              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Start date (optional)</label>
-              <input type="date" value={newStart} onChange={(e) => setNewStart(e.target.value)} style={inputStyle} />
-            </div>
-            {error && <div style={{ color: "#ff9d9d", fontSize: 14 }}>{error}</div>}
-            <button
-              onClick={createProject}
-              disabled={creating || !newTitle.trim()}
-              style={{ ...primaryBtn, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 }}
-            >
-              {creating ? "Creating…" : "Create production"}
-            </button>
-          </div>
-        </Modal>
-      )}
-
-      {/* RENAME MODAL */}
-      {renaming && selectedProject && (
-        <Modal title="Rename production" onClose={() => setRenaming(false)}>
-          <input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} style={inputStyle} />
-          <button onClick={saveRename} style={{ ...primaryBtn, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }}>
-            <Check size={16} /> Save
-          </button>
-        </Modal>
-      )}
     </div>
   );
 };
