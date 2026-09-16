@@ -516,6 +516,7 @@ export type Database = {
           id: string
           last_seen_at: string | null
           name: string
+          preferred_language: string | null
           project_id: string
         }
         Insert: {
@@ -525,6 +526,7 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           name: string
+          preferred_language?: string | null
           project_id: string
         }
         Update: {
@@ -534,6 +536,7 @@ export type Database = {
           id?: string
           last_seen_at?: string | null
           name?: string
+          preferred_language?: string | null
           project_id?: string
         }
         Relationships: [
@@ -704,10 +707,12 @@ export type Database = {
           created_at: string
           default_currency: string
           id: string
+          languages: string[]
           notify_expenses: boolean
           owner_id: string
           share_token: string
           sharing_enabled: boolean
+          shoot_location: string | null
           start_date: string | null
           status: string
           title: string
@@ -718,10 +723,12 @@ export type Database = {
           created_at?: string
           default_currency?: string
           id?: string
+          languages?: string[]
           notify_expenses?: boolean
           owner_id: string
           share_token?: string
           sharing_enabled?: boolean
+          shoot_location?: string | null
           start_date?: string | null
           status?: string
           title?: string
@@ -732,10 +739,12 @@ export type Database = {
           created_at?: string
           default_currency?: string
           id?: string
+          languages?: string[]
           notify_expenses?: boolean
           owner_id?: string
           share_token?: string
           sharing_enabled?: boolean
+          shoot_location?: string | null
           start_date?: string | null
           status?: string
           title?: string
@@ -1806,6 +1815,72 @@ export type Database = {
             columns: ["submitted_by_crew_id"]
             isOneToOne: false
             referencedRelation: "breakdown_crew"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      production_messages: {
+        Row: {
+          created_at: string
+          created_by_crew_id: string | null
+          created_by_name: string
+          created_by_user_id: string | null
+          id: string
+          project_id: string
+          sent_at: string | null
+          sent_to: Json
+          source_kind: string
+          source_language: string
+          source_text: string
+          subject: string | null
+          translations: Json
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_crew_id?: string | null
+          created_by_name: string
+          created_by_user_id?: string | null
+          id?: string
+          project_id: string
+          sent_at?: string | null
+          sent_to?: Json
+          source_kind?: string
+          source_language: string
+          source_text: string
+          subject?: string | null
+          translations?: Json
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_crew_id?: string | null
+          created_by_name?: string
+          created_by_user_id?: string | null
+          id?: string
+          project_id?: string
+          sent_at?: string | null
+          sent_to?: Json
+          source_kind?: string
+          source_language?: string
+          source_text?: string
+          subject?: string | null
+          translations?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_messages_created_by_crew_id_fkey"
+            columns: ["created_by_crew_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_crew"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_messages_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
             referencedColumns: ["id"]
           },
         ]

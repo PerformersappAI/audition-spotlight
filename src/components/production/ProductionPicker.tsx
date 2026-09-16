@@ -15,11 +15,13 @@ export interface Production {
   sharing_enabled: boolean;
   default_currency: string;
   notify_expenses: boolean;
+  languages: string[];
+  shoot_location: string | null;
   created_at: string;
 }
 
 export const PRODUCTION_FIELDS =
-  "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, created_at";
+  "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, languages, shoot_location, created_at";
 
 const TEAL = "#00d4aa";
 

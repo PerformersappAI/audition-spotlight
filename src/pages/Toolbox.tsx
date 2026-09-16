@@ -55,7 +55,7 @@ const GROUPS: Group[] = [
         { title: "Production Notes", to: "#", theme: "violet" },
       ]},
       { cols: 2, tools: [
-        { title: "Set Translator", to: "#", theme: "violet" },
+        { title: "Set Translator", to: "/set-translator", theme: "violet" },
         { title: "Receipts & Expenses", to: "/receipts-expenses", theme: "violet" },
       ]},
     ],
