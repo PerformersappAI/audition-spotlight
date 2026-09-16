@@ -1,3 +1,5 @@
+import { PRODUCTION_DEPARTMENTS } from "@/lib/production/departments";
+
 export const DEPARTMENTS = [
   { key: "props", label: "Props" },
   { key: "locations", label: "Locations" },
@@ -9,19 +11,7 @@ export const DEPARTMENTS = [
 export type DeptKey = (typeof DEPARTMENTS)[number]["key"];
 
 /** Departments a crew member can pick when joining via the private link. */
-export const CREW_DEPARTMENTS = [
-  "Director",
-  "Producer",
-  "Assistant Director",
-  "Props",
-  "Locations",
-  "Makeup & SFX",
-  "Wardrobe",
-  "Transport / Vehicles",
-  "Camera",
-  "Art Department",
-  "Other",
-] as const;
+export const CREW_DEPARTMENTS = PRODUCTION_DEPARTMENTS;
 
 export interface BreakdownScene {
   id: string;
