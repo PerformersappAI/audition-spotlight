@@ -471,7 +471,10 @@ const ScriptBreakdown = () => {
             reloadKey={reloadKey}
             onRequestAddScene={() => { setShowUpload(true); setError(""); }}
             onLoaded={({ scenes }) => setSceneCount(scenes.length)}
+            projectTitle={selectedProject.title}
+            company={selectedProject.company}
           />
+
         )}
         {sceneCount === 0 && <div style={{ height: 24 }} />}
       </div>

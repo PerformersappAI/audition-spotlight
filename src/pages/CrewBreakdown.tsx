@@ -148,7 +148,10 @@ const CrewBreakdown = () => {
         adapter={adapter}
         sceneId={sceneId}
         onSelectScene={(id) => setSceneId(id || "")}
+        projectTitle={project?.title || "Production"}
+        company={project?.company ?? null}
       />
+
     );
   };
 

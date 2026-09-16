@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Loader2, Plus, Trash2, X } from "lucide-react";
+import { ChevronDown, Download, Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "./DepartmentChecklist";
 import SignOffBox from "./SignOffBox";
@@ -17,6 +17,8 @@ import {
 } from "./types";
 import { BreakdownAdapter } from "@/lib/breakdown/adapter";
 import { ImageError } from "@/lib/breakdown/imageDownscale";
+import { exportBreakdownToPDF } from "@/utils/exportBreakdownToPDF";
+
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
@@ -50,10 +52,15 @@ interface Props {
   onRequestAddScene?: () => void;
   onLoaded?: (data: { scenes: BreakdownScene[]; items: BreakdownItem[] }) => void;
   hideSceneStrip?: boolean;
+  /** Used in the PDF header. */
+  projectTitle?: string;
+  company?: string | null;
 }
+
 
 const BreakdownWorkspace = ({
   adapter, sceneId, onSelectScene, reloadKey = 0, onRequestAddScene, onLoaded, hideSceneStrip,
+  projectTitle = "Production", company = null,
 }: Props) => {
   const [scenes, setScenes] = useState<BreakdownScene[]>([]);
   const [items, setItems] = useState<BreakdownItem[]>([]);
@@ -68,6 +75,10 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
   const [deleteScene, setDeleteScene] = useState<BreakdownScene | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [includeScript, setIncludeScript] = useState(false);
+
 
   const failed = (msg: string) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
 
@@ -305,7 +316,35 @@ const BreakdownWorkspace = ({
     await reload();
   };
 
+  const runExport = async (scope: "scene" | "all") => {
+    setExportOpen(false);
+    setExporting(true);
+    try {
+      const chosen = scope === "all" ? scenes : scenes.filter((s) => s.id === sceneId);
+      await exportBreakdownToPDF({
+        projectTitle,
+        company,
+        scenes: chosen,
+        items,
+        signoffs,
+        photos,
+        includeScript,
+        scope,
+      });
+      toast({ title: "PDF ready", description: "Your breakdown has been downloaded." });
+    } catch (err: any) {
+      toast({
+        title: "Export failed",
+        description: err?.message || "The PDF couldn't be generated.",
+        variant: "destructive",
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
+
   // ---- photo derivations ---------------------------------------------------
+
   const photosByItem = useMemo(() => {
     const map: Record<string, BreakdownPhoto[]> = {};
     photos.forEach((p) => {
@@ -352,6 +391,59 @@ const BreakdownWorkspace = ({
 
   const deptItems = sceneItems.filter((i) => i.department === activeDept);
 
+  const exportButton = (
+    <button
+      onClick={() => setExportOpen((v) => !v)}
+      disabled={exporting}
+      className="sb-tap"
+      aria-label="Export PDF"
+      style={{
+        ...ghostBtn, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+        opacity: exporting ? 0.6 : 1, width: "100%",
+      }}
+    >
+      {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+      {exporting ? "Building PDF…" : "Export PDF"}
+    </button>
+  );
+
+  const exportMenu = (
+    <div
+      style={{
+        ...panel, position: "absolute", right: 0, bottom: "calc(100% + 8px)",
+        background: "#10101b", padding: 10, minWidth: 250, zIndex: 40,
+        boxShadow: "0 12px 32px rgba(0,0,0,0.55)",
+      }}
+    >
+      {([["scene", "This scene"], ["all", "Whole production (all scenes)"]] as const).map(([scope, label]) => (
+        <button
+          key={scope}
+          onClick={() => runExport(scope)}
+          disabled={scope === "scene" ? !sceneId : scenes.length === 0}
+          className="sb-tap"
+          style={{
+            display: "block", width: "100%", textAlign: "left", background: "none",
+            border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+            padding: "0 10px", borderRadius: 8, fontFamily: "'Inter Tight', sans-serif",
+          }}
+        >
+          {label}
+        </button>
+      ))}
+      <label
+        style={{
+          display: "flex", alignItems: "center", gap: 8, marginTop: 6, paddingTop: 10,
+          borderTop: "1px solid rgba(255,255,255,0.1)", fontSize: 13,
+          color: "rgba(255,255,255,0.6)", cursor: "pointer", minHeight: 44,
+        }}
+      >
+        <input type="checkbox" checked={includeScript} onChange={(e) => setIncludeScript(e.target.checked)} />
+        Include scene script
+      </label>
+    </div>
+  );
+
+
   if (loading) {
     return (
       <div style={{ ...panel, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }}>
@@ -362,7 +454,20 @@ const BreakdownWorkspace = ({
 
   return (
     <>
+      <style>{`
+        .bw-export-mobile { display: none; }
+        @media (max-width: 700px) {
+          .bw-export-desktop { display: none !important; }
+          .bw-export-mobile {
+            display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+            background: rgba(10,10,18,0.96);
+            border-top: 1px solid rgba(255,255,255,0.1);
+          }
+        }
+      `}</style>
       {/* SCENES */}
+
       {!hideSceneStrip && (
         <div style={{ paddingBottom: 24 }}>
           <div style={{
@@ -446,7 +551,7 @@ const BreakdownWorkspace = ({
             );
           })()}
 
-          <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap", alignItems: "center" }}>
             {([["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]] as const).map(([key, label]) => (
               <button
                 key={key}
@@ -464,7 +569,12 @@ const BreakdownWorkspace = ({
                 {label}
               </button>
             ))}
+            <div className="bw-export-desktop" style={{ position: "relative", marginLeft: "auto" }}>
+              {exportButton}
+              {exportOpen && exportMenu}
+            </div>
           </div>
+
 
           {view === "approvals" ? (
             <ApprovalsView
@@ -572,7 +682,18 @@ const BreakdownWorkspace = ({
         </div>
       )}
 
+      {/* MOBILE EXPORT BAR */}
+      {selectedScene && (
+        <div className="bw-export-mobile">
+          <div style={{ position: "relative" }}>
+            {exportOpen && exportMenu}
+            {exportButton}
+          </div>
+        </div>
+      )}
+
       {/* DELETE SCENE CONFIRM */}
+
       {deleteScene && (
         <div
           onClick={() => setDeleteScene(null)}
