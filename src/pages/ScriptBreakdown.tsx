@@ -7,6 +7,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { aiInvoke } from "@/lib/aiInvoke";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
+import { toast } from "@/hooks/use-toast";
+import DepartmentChecklist from "@/components/breakdown/DepartmentChecklist";
+import SignOffBox from "@/components/breakdown/SignOffBox";
+import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff } from "@/components/breakdown/types";
 
 const SITE = "https://filmmakergenius.com";
 const TEAL = "#00d4aa";
@@ -18,15 +22,6 @@ const STEPS = [
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." },
 ];
 
-const DEPARTMENTS = [
-  { key: "props", label: "Props" },
-  { key: "locations", label: "Locations" },
-  { key: "makeup_sfx", label: "Makeup & SFX" },
-  { key: "wardrobe", label: "Wardrobe" },
-  { key: "vehicles", label: "Vehicles" },
-] as const;
-
-type DeptKey = (typeof DEPARTMENTS)[number]["key"];
 
 interface Project {
   id: string;
@@ -46,13 +41,6 @@ interface Scene {
   created_at: string;
 }
 
-interface Item {
-  id: string;
-  scene_id: string;
-  department: string;
-  text: string;
-  sort_order: number;
-}
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
@@ -125,14 +113,15 @@ const Modal = ({ title, children, onClose }: { title: string; children: React.Re
 );
 
 const ScriptBreakdown = () => {
-  const { user } = useAuth();
+  const { user, userProfile } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const projectId = searchParams.get("project") || "";
   const sceneId = searchParams.get("scene") || "";
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [scenes, setScenes] = useState<Scene[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<BreakdownItem[]>([]);
+  const [signoffs, setSignoffs] = useState<BreakdownSignoff[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   const [showNewProject, setShowNewProject] = useState(false);
@@ -189,10 +178,10 @@ const ScriptBreakdown = () => {
 
   useEffect(() => { loadProjects(); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, [user]);
 
-  // Load scenes + items for the selected project
+  // Load scenes + items + signoffs for the selected project
   const loadScenes = useCallback(async () => {
-    if (!projectId) { setScenes([]); setItems([]); return; }
-    const [{ data: sceneRows }, { data: itemRows }] = await Promise.all([
+    if (!projectId) { setScenes([]); setItems([]); setSignoffs([]); return; }
+    const [{ data: sceneRows }, { data: itemRows }, { data: signoffRows }] = await Promise.all([
       supabase
         .from("breakdown_scenes")
         .select("id, scene_number, label, script_text, sort_order, created_at")
@@ -201,15 +190,49 @@ const ScriptBreakdown = () => {
         .order("created_at", { ascending: true }),
       supabase
         .from("breakdown_items")
-        .select("id, scene_id, department, text, sort_order")
+        .select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order")
         .eq("project_id", projectId)
         .order("sort_order", { ascending: true }),
+      supabase
+        .from("breakdown_signoffs")
+        .select("id, scene_id, department, status, note, by_name, by_department, updated_at")
+        .eq("project_id", projectId),
     ]);
     setScenes((sceneRows || []) as Scene[]);
-    setItems((itemRows || []) as Item[]);
+    setItems((itemRows || []) as BreakdownItem[]);
+    setSignoffs((signoffRows || []) as BreakdownSignoff[]);
   }, [projectId]);
 
   useEffect(() => { loadScenes(); }, [loadScenes]);
+
+  // Reload the current scene's items + signoffs (used by realtime)
+  const refreshScene = useCallback(async () => {
+    if (!sceneId || !projectId) return;
+    const [{ data: itemRows }, { data: signoffRows }] = await Promise.all([
+      supabase
+        .from("breakdown_items")
+        .select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order")
+        .eq("scene_id", sceneId)
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("breakdown_signoffs")
+        .select("id, scene_id, department, status, note, by_name, by_department, updated_at")
+        .eq("scene_id", sceneId),
+    ]);
+    setItems((prev) => [...prev.filter((i) => i.scene_id !== sceneId), ...((itemRows || []) as BreakdownItem[])]);
+    setSignoffs((prev) => [...prev.filter((s) => s.scene_id !== sceneId), ...((signoffRows || []) as BreakdownSignoff[])]);
+  }, [sceneId, projectId]);
+
+  // Live updates for the selected scene
+  useEffect(() => {
+    if (!sceneId) return;
+    const channel = supabase
+      .channel(`breakdown-scene-${sceneId}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
+      .subscribe();
+    return () => { supabase.removeChannel(channel); };
+  }, [sceneId, refreshScene]);
 
   const itemCount = useCallback((sid: string) => items.filter((i) => i.scene_id === sid).length, [items]);
 
@@ -222,6 +245,128 @@ const ScriptBreakdown = () => {
     (dept: string) => sceneItems.filter((i) => i.department === dept).length,
     [sceneItems],
   );
+
+  const deptCheckedCount = useCallback(
+    (dept: string) => sceneItems.filter((i) => i.department === dept && i.checked).length,
+    [sceneItems],
+  );
+
+  const sceneSignoff = useCallback(
+    (dept: string) => signoffs.find((s) => s.scene_id === sceneId && s.department === dept) || null,
+    [signoffs, sceneId],
+  );
+
+  // The person acting right now. Crew names arrive in a later step — pass them in instead.
+  const actorName =
+    (userProfile?.first_name as string | undefined)?.trim() ||
+    (user?.email ? user.email.split("@")[0] : "") ||
+    "Someone";
+  const actorDepartment: string | null = null;
+
+  // ---- checklist mutations -------------------------------------------------
+  const failed = (msg: string) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
+
+  const toggleItem = async (item: BreakdownItem) => {
+    const next = !item.checked;
+    const patch = {
+      checked: next,
+      checked_by_name: next ? actorName : null,
+      checked_at: next ? new Date().toISOString() : null,
+    };
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, ...patch } : i)));
+    const { error: err } = await supabase.from("breakdown_items").update(patch).eq("id", item.id);
+    if (err) {
+      setItems((prev) => prev.map((i) => (i.id === item.id ? item : i)));
+      failed(err.message);
+    }
+  };
+
+  const editItemText = async (item: BreakdownItem, text: string) => {
+    setItems((prev) => prev.map((i) => (i.id === item.id ? { ...i, text } : i)));
+    const { error: err } = await supabase.from("breakdown_items").update({ text }).eq("id", item.id);
+    if (err) {
+      setItems((prev) => prev.map((i) => (i.id === item.id ? item : i)));
+      failed(err.message);
+    }
+  };
+
+  const deleteItem = async (item: BreakdownItem) => {
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
+    const { error: err } = await supabase.from("breakdown_items").delete().eq("id", item.id);
+    if (err) {
+      setItems((prev) => [...prev, item]);
+      failed(err.message);
+    }
+  };
+
+  const addItem = async (department: string, text: string, opts?: { flagged?: boolean; source?: string }) => {
+    if (!sceneId || !projectId) return;
+    const maxOrder = sceneItems
+      .filter((i) => i.department === department)
+      .reduce((m, i) => Math.max(m, i.sort_order), -1);
+    const { data, error: err } = await supabase
+      .from("breakdown_items")
+      .insert({
+        scene_id: sceneId,
+        project_id: projectId,
+        department,
+        text,
+        source: opts?.source || "manual",
+        flagged: opts?.flagged || false,
+        added_by_name: actorName,
+        sort_order: maxOrder + 1,
+      })
+      .select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order")
+      .single();
+    if (err || !data) { failed(err?.message || "The item wasn't added."); return; }
+    setItems((prev) => [...prev, data as BreakdownItem]);
+  };
+
+  const setSignoff = async (department: string, status: "good" | "need_help", note?: string) => {
+    if (!sceneId || !projectId) return;
+    const { data, error: err } = await supabase
+      .from("breakdown_signoffs")
+      .upsert(
+        {
+          scene_id: sceneId,
+          project_id: projectId,
+          department,
+          status,
+          note: note ?? null,
+          by_name: actorName,
+          by_department: actorDepartment,
+          updated_at: new Date().toISOString(),
+        },
+        { onConflict: "scene_id,department" },
+      )
+      .select("id, scene_id, department, status, note, by_name, by_department, updated_at")
+      .single();
+    if (err || !data) { failed(err?.message || "The sign-off wasn't saved."); return; }
+    setSignoffs((prev) => [
+      ...prev.filter((s) => !(s.scene_id === sceneId && s.department === department)),
+      data as BreakdownSignoff,
+    ]);
+  };
+
+  const clearSignoff = async (department: string) => {
+    const existing = sceneSignoff(department);
+    if (!existing) return;
+    setSignoffs((prev) => prev.filter((s) => s.id !== existing.id));
+    const { error: err } = await supabase.from("breakdown_signoffs").delete().eq("id", existing.id);
+    if (err) {
+      setSignoffs((prev) => [...prev, existing]);
+      failed(err.message);
+    }
+  };
+
+  const addNoteItem = async (department: string, text: string) => {
+    await addItem(department, text, { flagged: true, source: "note" });
+    const existing = sceneSignoff(department);
+    if (existing?.status === "need_help") {
+      await setSignoff(department, "need_help", text);
+    }
+  };
+
 
   // ---- actions -------------------------------------------------------------
   const createProject = async () => {
@@ -583,9 +728,27 @@ const ScriptBreakdown = () => {
               <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>{selectedScene.label}</div>
             )}
 
+            {(() => {
+              const total = sceneItems.length;
+              const checked = sceneItems.filter((i) => i.checked).length;
+              const signed = DEPARTMENTS.filter((d) => !!sceneSignoff(d.key)).length;
+              const pct = total ? Math.round((checked / total) * 100) : 0;
+              return (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+                    {checked}/{total} items ready · {signed}/5 departments signed off
+                  </div>
+                  <div style={{ marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: TEAL, transition: "width .3s" }} />
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }}>
               {DEPARTMENTS.map((d) => {
                 const active = d.key === activeDept;
+                const so = sceneSignoff(d.key);
                 return (
                   <button
                     key={d.key}
@@ -598,28 +761,39 @@ const ScriptBreakdown = () => {
                       color: active ? TEAL : "rgba(255,255,255,0.7)",
                       fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
                       fontFamily: "'Inter Tight', sans-serif",
+                      display: "inline-flex", alignItems: "center", gap: 8,
                     }}
                   >
-                    {d.label} · {deptCount(d.key)}
+                    {d.label} {deptCheckedCount(d.key)}/{deptCount(d.key)}
+                    {so && (
+                      <span style={{
+                        width: 8, height: 8, borderRadius: 9999,
+                        background: so.status === "good" ? TEAL : "#f5a524",
+                      }} />
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            <ul style={{ listStyle: "none", padding: 0, margin: "20px 0 0" }}>
-              {sceneItems.filter((i) => i.department === activeDept).length === 0 ? (
-                <li style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Nothing found for this department.</li>
-              ) : (
-                sceneItems
-                  .filter((i) => i.department === activeDept)
-                  .map((i) => (
-                    <li key={i.id} style={{
-                      padding: "13px 4px", borderBottom: "1px solid rgba(255,255,255,0.06)",
-                      fontSize: 15, color: "rgba(255,255,255,0.88)", lineHeight: 1.5,
-                    }}>{i.text}</li>
-                  ))
-              )}
-            </ul>
+            <DepartmentChecklist
+              key={`${sceneId}-${activeDept}`}
+              department={activeDept}
+              items={sceneItems.filter((i) => i.department === activeDept)}
+              onToggle={toggleItem}
+              onEditText={editItemText}
+              onDelete={deleteItem}
+              onAdd={(text) => addItem(activeDept, text)}
+            />
+
+            <SignOffBox
+              key={`signoff-${sceneId}-${activeDept}`}
+              signoff={sceneSignoff(activeDept)}
+              onSetStatus={(status, note) => setSignoff(activeDept, status, note)}
+              onClear={() => clearSignoff(activeDept)}
+              onAddNoteItem={(text) => addNoteItem(activeDept, text)}
+            />
+
 
             <button
               onClick={() => setShowScript((v) => !v)}
