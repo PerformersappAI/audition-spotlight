@@ -209,8 +209,22 @@ export const exportCallSheetToPDF = (
   yPosition = (doc as any).lastAutoTable.finalY + 4;
   
   // ===== WEATHER & SCHEDULE INFO ROW =====
-  const weatherTemp = callSheet.high_temp ? `${callSheet.high_temp}°C` : '';
-  const weatherInfo = [weatherTemp, callSheet.weather_description].filter(Boolean).join(' ');
+  /** Temps may be stored bare ("22") or already carrying a unit ("22°C"). */
+  const withDegree = (t?: string) => {
+    const v = (t || '').trim();
+    if (!v) return '';
+    return /[°CF]$/i.test(v) ? v : `${v}°C`;
+  };
+  const highLow = [
+    callSheet.high_temp ? `H ${withDegree(callSheet.high_temp)}` : '',
+    callSheet.low_temp ? `L ${withDegree(callSheet.low_temp)}` : '',
+  ].filter(Boolean).join(' / ');
+  const weatherInfo = [
+    callSheet.weather_description,
+    highLow,
+    callSheet.precipitation ? `Rain ${callSheet.precipitation}` : '',
+    callSheet.wind ? `Wind ${callSheet.wind}` : '',
+  ].filter(Boolean).join(' · ');
   const sunInfo = [
     callSheet.sunrise_time ? `Sunrise: ${callSheet.sunrise_time}` : '',
     callSheet.sunset_time ? `Sunset: ${callSheet.sunset_time}` : ''
