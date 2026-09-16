@@ -508,6 +508,310 @@ export type Database = {
         }
         Relationships: []
       }
+      breakdown_crew: {
+        Row: {
+          created_at: string
+          department: string | null
+          id: string
+          last_seen_at: string | null
+          name: string
+          project_id: string
+        }
+        Insert: {
+          created_at?: string
+          department?: string | null
+          id?: string
+          last_seen_at?: string | null
+          name: string
+          project_id: string
+        }
+        Update: {
+          created_at?: string
+          department?: string | null
+          id?: string
+          last_seen_at?: string | null
+          name?: string
+          project_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_crew_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breakdown_items: {
+        Row: {
+          added_by_name: string | null
+          checked: boolean
+          checked_at: string | null
+          checked_by_name: string | null
+          created_at: string
+          department: string
+          flagged: boolean
+          id: string
+          original_text: string | null
+          project_id: string
+          scene_id: string
+          sort_order: number
+          source: string
+          text: string
+          updated_at: string
+        }
+        Insert: {
+          added_by_name?: string | null
+          checked?: boolean
+          checked_at?: string | null
+          checked_by_name?: string | null
+          created_at?: string
+          department: string
+          flagged?: boolean
+          id?: string
+          original_text?: string | null
+          project_id: string
+          scene_id: string
+          sort_order?: number
+          source?: string
+          text: string
+          updated_at?: string
+        }
+        Update: {
+          added_by_name?: string | null
+          checked?: boolean
+          checked_at?: string | null
+          checked_by_name?: string | null
+          created_at?: string
+          department?: string
+          flagged?: boolean
+          id?: string
+          original_text?: string | null
+          project_id?: string
+          scene_id?: string
+          sort_order?: number
+          source?: string
+          text?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdown_items_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breakdown_photos: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decided_by_name: string | null
+          external_url: string | null
+          feedback: string | null
+          id: string
+          is_reference: boolean
+          item_id: string
+          project_id: string
+          status: string
+          storage_path: string | null
+          updated_at: string
+          uploaded_by_name: string | null
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by_name?: string | null
+          external_url?: string | null
+          feedback?: string | null
+          id?: string
+          is_reference?: boolean
+          item_id: string
+          project_id: string
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+          uploaded_by_name?: string | null
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decided_by_name?: string | null
+          external_url?: string | null
+          feedback?: string | null
+          id?: string
+          is_reference?: boolean
+          item_id?: string
+          project_id?: string
+          status?: string
+          storage_path?: string | null
+          updated_at?: string
+          uploaded_by_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_photos_item_id_fkey"
+            columns: ["item_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdown_photos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breakdown_projects: {
+        Row: {
+          company: string | null
+          created_at: string
+          id: string
+          owner_id: string
+          share_token: string
+          sharing_enabled: boolean
+          start_date: string | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          owner_id: string
+          share_token?: string
+          sharing_enabled?: boolean
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string
+          id?: string
+          owner_id?: string
+          share_token?: string
+          sharing_enabled?: boolean
+          start_date?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      breakdown_scenes: {
+        Row: {
+          analyzed_at: string | null
+          created_at: string
+          id: string
+          label: string | null
+          project_id: string
+          scene_number: string | null
+          script_text: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          analyzed_at?: string | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          project_id: string
+          scene_number?: string | null
+          script_text?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          analyzed_at?: string | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          project_id?: string
+          scene_number?: string | null
+          script_text?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_scenes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      breakdown_signoffs: {
+        Row: {
+          by_department: string | null
+          by_name: string | null
+          created_at: string
+          department: string
+          id: string
+          note: string | null
+          project_id: string
+          scene_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          by_department?: string | null
+          by_name?: string | null
+          created_at?: string
+          department: string
+          id?: string
+          note?: string | null
+          project_id: string
+          scene_id: string
+          status: string
+          updated_at?: string
+        }
+        Update: {
+          by_department?: string | null
+          by_name?: string | null
+          created_at?: string
+          department?: string
+          id?: string
+          note?: string | null
+          project_id?: string
+          scene_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "breakdown_signoffs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdown_signoffs_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       call_sheet_background: {
         Row: {
           call_sheet_id: string
@@ -2488,6 +2792,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: undefined
+      }
+      owns_breakdown_project: {
+        Args: { _project_id: string }
+        Returns: boolean
       }
       publish_due_blog_posts: { Args: never; Returns: undefined }
       refresh_plan_credits: {
