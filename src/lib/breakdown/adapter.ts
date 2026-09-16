@@ -13,6 +13,18 @@ import { prepareImage } from "./imageDownscale";
 
 export const BUCKET = "breakdown-photos";
 
+export interface SceneEdit {
+  scene_number: string | null;
+  label: string | null;
+  script_text: string;
+}
+
+export interface SceneMergeResult {
+  kept: number;
+  removed: number;
+  added: number;
+}
+
 export interface BreakdownData {
   scenes: BreakdownScene[];
   items: BreakdownItem[];
