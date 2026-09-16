@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AlertTriangle, Check, Copy, Pencil, Pin, RotateCcw, Trash2 } from "lucide-react";
 import { ghostBtn, inputStyle, panel, primaryBtn } from "@/components/production/ProductionPicker";
 import { timeAgo } from "@/components/breakdown/timeAgo";
@@ -36,6 +36,13 @@ interface Props {
   onDelete: () => void;
   onRetranslate: () => void | Promise<void>;
   busy?: boolean;
+  /** Crew mode reads in one language and hides pinning. */
+  mode?: "owner" | "crew";
+  readLanguage?: string;
+  maxChars?: number;
+  canEdit?: boolean;
+  canDelete?: boolean;
+  allowPin?: boolean;
 }
 
 const smallBtn: React.CSSProperties = {
@@ -48,9 +55,27 @@ const smallBtn: React.CSSProperties = {
   gap: 6,
 };
 
-const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRetranslate, busy }: Props) => {
+const native = (code: string) => LANGUAGES[code]?.native || code;
+
+const NoteCard = ({
+  note,
+  scenes,
+  canTranslate,
+  onPatch,
+  onEdit,
+  onDelete,
+  onRetranslate,
+  busy,
+  mode = "owner",
+  readLanguage,
+  maxChars = MAX_NOTE_CHARS,
+  canEdit = true,
+  canDelete = true,
+  allowPin = true,
+}: Props) => {
   const [editing, setEditing] = useState(false);
   const [showTranslations, setShowTranslations] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
   const [tag, setTag] = useState(note.tag as NoteTag);
   const [priority, setPriority] = useState(note.priority as NotePriority);
   const [shootDay, setShootDay] = useState(note.shoot_day || "");
@@ -63,6 +88,20 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
   const isSafety = note.tag === "safety";
   const urgent = note.priority === "urgent";
   const staleTranslations = !!note.source_language && translations.length === 0;
+  const viaCrew = mode === "owner" && !!note.created_by_crew_id;
+
+  // Crew read the note in their own language when we have it.
+  const shown = useMemo(() => {
+    if (mode !== "crew" || !readLanguage || showOriginal) {
+      return { text: note.body, code: note.source_language || "", fallback: false };
+    }
+    if (readLanguage === note.source_language) {
+      return { text: note.body, code: readLanguage, fallback: false };
+    }
+    const hit = translations.find((t) => t.code === readLanguage);
+    if (hit) return { text: hit.text, code: hit.code, fallback: false };
+    return { text: note.body, code: note.source_language || "", fallback: true };
+  }, [mode, readLanguage, showOriginal, note.body, note.source_language, translations]);
 
   const startEdit = () => {
     setTag(note.tag as NoteTag);
@@ -79,7 +118,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
       priority,
       shoot_day: shootDay || null,
       scene_id: sceneId || null,
-      body: body.slice(0, MAX_NOTE_CHARS),
+      body: body.slice(0, maxChars),
       textChanged: body.trim() !== note.body.trim(),
     });
     setEditing(false);
@@ -87,7 +126,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
 
   const copy = async () => {
     try {
-      await navigator.clipboard.writeText(note.body);
+      await navigator.clipboard.writeText(shown.text);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch { /* clipboard unavailable */ }
@@ -126,6 +165,15 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
             {sceneLabel(scene)}
           </span>
         )}
+        {viaCrew && (
+          <span style={{
+            fontSize: 11.5, padding: "4px 10px", borderRadius: 9999,
+            background: "rgba(0,212,170,0.12)", color: "#00d4aa",
+            border: "1px solid rgba(0,212,170,0.35)",
+          }}>
+            via crew link
+          </span>
+        )}
         {note.resolved && (
           <span style={{ fontSize: 12, color: "#06d6a0" }}>
             Resolved{note.resolved_by_name ? ` by ${note.resolved_by_name}` : ""}
@@ -154,7 +202,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
           </select>
           <textarea
             value={body}
-            onChange={(e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS))}
+            onChange={(e) => setBody(e.target.value.slice(0, maxChars))}
             rows={Math.min(20, Math.max(3, body.split("\n").length + 1))}
             style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6 }}
           />
@@ -166,7 +214,18 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
           </div>
         </div>
       ) : (
-        <div style={{ marginTop: 12, fontSize: 15, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{note.body}</div>
+        <div
+          dir={shown.code && RTL_LANGUAGES.has(shown.code) ? "rtl" : "ltr"}
+          style={{ marginTop: 12, fontSize: 15, lineHeight: 1.65, whiteSpace: "pre-wrap" }}
+        >
+          {shown.text}
+        </div>
+      )}
+
+      {mode === "crew" && shown.fallback && (
+        <div style={{ marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.5)" }}>
+          Original{note.source_language ? ` (${native(note.source_language)})` : ""} — no translation yet
+        </div>
       )}
 
       <div style={{ marginTop: 12, fontSize: 12, color: "rgba(255,255,255,0.45)" }}>
@@ -175,34 +234,42 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
       </div>
 
       {translations.length > 0 && (
-        <div style={{ marginTop: 10 }}>
+        <div style={{ marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {mode === "crew" && !shown.fallback && (
+            <button onClick={() => setShowOriginal((v) => !v)} style={{ ...smallBtn, minHeight: 36 }}>
+              {showOriginal ? "Show my language" : "Show original"}
+            </button>
+          )}
           <button
             onClick={() => setShowTranslations((v) => !v)}
             style={{ ...smallBtn, minHeight: 36 }}
           >
-            Translated: {translations.map((t) => t.code.toUpperCase()).join(" · ")}
+            {mode === "crew"
+              ? (showTranslations ? "Hide languages" : "All languages")
+              : `Translated: ${translations.map((t) => t.code.toUpperCase()).join(" · ")}`}
           </button>
-          {showTranslations && (
-            <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }}>
-              {translations.map(({ code, text }) => (
-                <div key={code} style={{ borderLeft: "2px solid rgba(0,212,170,0.4)", paddingLeft: 12 }}>
-                  <div style={{ fontSize: 12, fontWeight: 700, color: "#00d4aa" }}>
-                    {LANGUAGES[code]?.native || code}
-                  </div>
-                  <div
-                    dir={RTL_LANGUAGES.has(code) ? "rtl" : "ltr"}
-                    style={{ fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)", marginTop: 4 }}
-                  >
-                    {text}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
       )}
 
-      {staleTranslations && canTranslate && (
+      {translations.length > 0 && showTranslations && (
+        <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }}>
+          {translations.map(({ code, text }) => (
+            <div key={code} style={{ borderLeft: "2px solid rgba(0,212,170,0.4)", paddingLeft: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#00d4aa" }}>
+                {native(code)}
+              </div>
+              <div
+                dir={RTL_LANGUAGES.has(code) ? "rtl" : "ltr"}
+                style={{ fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)", marginTop: 4 }}
+              >
+                {text}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {staleTranslations && canTranslate && mode === "owner" && (
         <button onClick={onRetranslate} disabled={busy} style={{ ...smallBtn, marginTop: 10, opacity: busy ? 0.5 : 1 }}>
           Re-translate (1 credit)
         </button>
@@ -210,18 +277,22 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
 
       {!editing && (
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
-          <button onClick={() => onPatch({ pinned: !note.pinned })} style={smallBtn}>
-            <Pin size={14} /> {note.pinned ? "Unpin" : "Pin"}
-          </button>
+          {allowPin && (
+            <button onClick={() => onPatch({ pinned: !note.pinned })} style={smallBtn}>
+              <Pin size={14} /> {note.pinned ? "Unpin" : "Pin"}
+            </button>
+          )}
           <button
             onClick={() => onPatch({ resolved: !note.resolved })}
             style={smallBtn}
           >
             {note.resolved ? <><RotateCcw size={14} /> Reopen</> : <><Check size={14} /> Resolve</>}
           </button>
-          <button onClick={startEdit} style={smallBtn}><Pencil size={14} /> Edit</button>
+          {canEdit && <button onClick={startEdit} style={smallBtn}><Pencil size={14} /> Edit</button>}
           <button onClick={copy} style={smallBtn}><Copy size={14} /> {copied ? "Copied" : "Copy"}</button>
-          <button onClick={onDelete} style={{ ...smallBtn, color: "#ff9d9d" }}><Trash2 size={14} /> Delete</button>
+          {canDelete && (
+            <button onClick={onDelete} style={{ ...smallBtn, color: "#ff9d9d" }}><Trash2 size={14} /> Delete</button>
+          )}
           {isSafety && <AlertTriangle size={14} color="#ff4d4f" style={{ alignSelf: "center" }} />}
         </div>
       )}
