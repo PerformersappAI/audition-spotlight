@@ -454,7 +454,20 @@ const BreakdownWorkspace = ({
 
   return (
     <>
+      <style>{`
+        .bw-export-mobile { display: none; }
+        @media (max-width: 700px) {
+          .bw-export-desktop { display: none !important; }
+          .bw-export-mobile {
+            display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+            background: rgba(10,10,18,0.96);
+            border-top: 1px solid rgba(255,255,255,0.1);
+          }
+        }
+      `}</style>
       {/* SCENES */}
+
       {!hideSceneStrip && (
         <div style={{ paddingBottom: 24 }}>
           <div style={{
