@@ -151,6 +151,12 @@ const ScriptBreakdown = () => {
   const [showScript, setShowScript] = useState(false);
   const [deleteScene, setDeleteScene] = useState<Scene | null>(null);
 
+  const [photos, setPhotos] = useState<BreakdownPhoto[]>([]);
+  const [urlMap, setUrlMap] = useState<Record<string, { url: string; exp: number }>>({});
+  const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
+  const [view, setView] = useState<"checklist" | "approvals">("checklist");
+  const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
 
