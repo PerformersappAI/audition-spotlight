@@ -202,9 +202,30 @@ const SetTranslator = () => {
               {savedLocation && <WeatherBar location={savedLocation} />}
             </div>
 
-            <div style={{ ...panel, padding: 24, marginBottom: 48, textAlign: "center", color: "rgba(255,255,255,0.55)" }}>
-              Translation is coming next.
-            </div>
+            {message ? (
+              <ResultView
+                message={message}
+                productionTitle={selectedProject.title}
+                shootLocation={savedLocation || selectedProject.shoot_location}
+                onNewMessage={() => setMessage(null)}
+              />
+            ) : (
+              <ComposePanel
+                languages={languages}
+                translating={translating}
+                error={translateError}
+                onTranslate={translate}
+              />
+            )}
+
+            <MessageHistory
+              projectId={selectedProject.id}
+              refreshKey={historyKey}
+              onOpen={(m) => {
+                setMessage(m);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+            />
           </>
         )}
       </div>
