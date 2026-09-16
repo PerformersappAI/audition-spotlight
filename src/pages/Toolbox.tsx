@@ -268,7 +268,7 @@ export default function Toolbox() {
                 return (
                   <div
                     key={i}
-                    className={row.cols === 3 ? "tb-grid-3" : row.single ? "tb-grid-2 tb-row-single" : "tb-grid-2"}
+                    className={row.cols === 3 ? "tb-grid-3" : single ? "tb-grid-2 tb-row-single" : "tb-grid-2"}
                     style={{ marginTop: i > 0 ? 16 : 0 }}
                   >
                     {row.tools.map((t) => <ToolCard key={t.title} tool={t} />)}
