@@ -140,10 +140,7 @@ const ComposePanel = ({ languages, translating, error, onTranslate }: Props) => 
         </label>
         <textarea
           value={text}
-          onChange={(e) => {
-            setText(e.target.value.slice(0, MAX_CHARS));
-            setSourceKind((k) => (k === "text" ? k : k));
-          }}
+          onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
           rows={8}
           placeholder={"Call time tomorrow moves to 06:30 at the Sarajevo set.\nPlease be on time — scene 12A."}
           style={{

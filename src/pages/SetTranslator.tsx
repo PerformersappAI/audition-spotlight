@@ -3,6 +3,11 @@ import ProductionPicker, { inputStyle, panel, primaryBtn, type Production } from
 import WeatherBar from "@/components/production/WeatherBar";
 import { supabase } from "@/integrations/supabase/client";
 import { LANGUAGE_CODES, LANGUAGES } from "@/lib/languages";
+import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
+import ComposePanel from "@/components/translator/ComposePanel";
+import ResultView from "@/components/translator/ResultView";
+import MessageHistory from "@/components/translator/MessageHistory";
+import type { ProductionMessage, SourceKind } from "@/lib/translator/types";
 
 const STEPS = [
   { n: 1, title: "Pick your production", text: "And the languages your crew speaks." },
