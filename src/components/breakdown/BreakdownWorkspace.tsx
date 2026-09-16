@@ -316,7 +316,35 @@ const BreakdownWorkspace = ({
     await reload();
   };
 
+  const runExport = async (scope: "scene" | "all") => {
+    setExportOpen(false);
+    setExporting(true);
+    try {
+      const chosen = scope === "all" ? scenes : scenes.filter((s) => s.id === sceneId);
+      await exportBreakdownToPDF({
+        projectTitle,
+        company,
+        scenes: chosen,
+        items,
+        signoffs,
+        photos,
+        includeScript,
+        scope,
+      });
+      toast({ title: "PDF ready", description: "Your breakdown has been downloaded." });
+    } catch (err: any) {
+      toast({
+        title: "Export failed",
+        description: err?.message || "The PDF couldn't be generated.",
+        variant: "destructive",
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
+
   // ---- photo derivations ---------------------------------------------------
+
   const photosByItem = useMemo(() => {
     const map: Record<string, BreakdownPhoto[]> = {};
     photos.forEach((p) => {
