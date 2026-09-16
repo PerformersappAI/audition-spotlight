@@ -1066,6 +1066,17 @@ const ScriptBreakdown = () => {
               onEditText={editItemText}
               onDelete={deleteItem}
               onAdd={(text) => addItem(activeDept, text)}
+              photosByItem={photosByItem}
+              signedUrl={signedUrl}
+              onAddPhotos={addPhotos}
+              onOpenPhoto={openPhoto}
+              uploadingItemId={uploadingItemId}
+            />
+
+            <ReferenceSearch
+              key={`ref-${sceneId}-${activeDept}`}
+              items={sceneItems.filter((i) => i.department === activeDept)}
+              onAttach={attachReference}
             />
 
             <SignOffBox
@@ -1075,6 +1086,10 @@ const ScriptBreakdown = () => {
               onClear={() => clearSignoff(activeDept)}
               onAddNoteItem={(text) => addNoteItem(activeDept, text)}
             />
+            </>
+            )}
+
+
 
 
             <button
