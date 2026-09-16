@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, FileSpreadsheet, Table, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -39,6 +39,7 @@ import { formatDistanceToNow } from "date-fns";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 import GIF from "gif.js";
 import autoTable from "jspdf-autotable";
+import * as XLSX from "xlsx";
 import { ResponsiveContainer, BarChart, CartesianGrid, XAxis, YAxis, Tooltip, Bar, Cell } from "recharts";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import * as CollapsiblePrimitive from "@radix-ui/react-collapsible";
@@ -24193,7 +24194,7 @@ const prepareImage = async (file) => {
   if (!blob) throw new ImageError("Your browser couldn't process that image.");
   return blob;
 };
-const MARGIN = 15;
+const MARGIN$1 = 15;
 const BODY = "NotoSans";
 const MONO = "NotoSansMono";
 const FONT_FILES = [
@@ -24211,7 +24212,7 @@ const toBase64 = (buf) => {
   }
   return btoa(binary);
 };
-async function loadFonts(doc) {
+async function loadUnicodeFonts(doc) {
   try {
     if (!fontCache) {
       const entries = await Promise.all(
@@ -24246,14 +24247,14 @@ const longDate = (iso) => {
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString(void 0, { day: "2-digit", month: "short", year: "numeric" });
 };
-const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const slug$1 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 function breakdownFileName(input) {
   const date = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-  const base = `breakdown-${slug(input.projectTitle)}`;
+  const base = `breakdown-${slug$1(input.projectTitle)}`;
   if (input.scope === "all" || input.scenes.length !== 1) return `${base}-all-scenes-${date}.pdf`;
   const scene = input.scenes[0];
   const label2 = scene.scene_number || scene.label || "scene";
-  return `${base}-scene-${slug(label2)}-${date}.pdf`;
+  return `${base}-scene-${slug$1(label2)}-${date}.pdf`;
 }
 const photoSummary = (rows) => {
   const refs = rows.filter((p) => p.is_reference);
@@ -24275,10 +24276,10 @@ const photoSummary = (rows) => {
 };
 async function buildBreakdownPDF(input) {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const { body, mono } = await loadFonts(doc);
+  const { body, mono } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN * 2;
+  const contentW = pageW - MARGIN$1 * 2;
   let y = 28;
   const ensure = (needed) => {
     if (y + needed > pageH - 20) {
@@ -24293,7 +24294,7 @@ async function buildBreakdownPDF(input) {
     const lines = doc.splitTextToSize(text, contentW);
     ensure(lines.length * (size2 * 0.45) + 2);
     lines.forEach((l) => {
-      doc.text(l, MARGIN, y);
+      doc.text(l, MARGIN$1, y);
       y += size2 * 0.45;
     });
   };
@@ -24336,7 +24337,7 @@ async function buildBreakdownPDF(input) {
             const by = item.checked && item.checked_by_name ? `${item.checked_by_name}${shortDate$1(item.checked_at) ? ` · ${shortDate$1(item.checked_at)}` : ""}` : "—";
             return [item.checked ? "[x]" : "[ ]", text, by, photoSummary(input.photos.filter((p) => p.item_id === item.id))];
           }),
-          margin: { left: MARGIN, right: MARGIN, top: 28, bottom: 20 },
+          margin: { left: MARGIN$1, right: MARGIN$1, top: 28, bottom: 20 },
           theme: "grid",
           styles: {
             font: body,
@@ -24389,7 +24390,7 @@ async function buildBreakdownPDF(input) {
             doc.setFont(mono, "normal");
             doc.setFontSize(8.5);
           }
-          doc.text(l, MARGIN, y);
+          doc.text(l, MARGIN$1, y);
           y += 4;
         });
       });
@@ -24402,21 +24403,21 @@ async function buildBreakdownPDF(input) {
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN, 14);
+    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN$1, 14);
     if (input.company) {
       doc.setFont(body, "normal");
       doc.setFontSize(9);
       doc.setTextColor(110, 110, 110);
-      doc.text(input.company, pageW - MARGIN, 14, { align: "right" });
+      doc.text(input.company, pageW - MARGIN$1, 14, { align: "right" });
     }
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN, 17.5, pageW - MARGIN, 17.5);
+    doc.line(MARGIN$1, 17.5, pageW - MARGIN$1, 17.5);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$1, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$1, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -26389,6 +26390,401 @@ const parseAmount = (raw2) => {
   return negative ? -n : n;
 };
 const round2 = (n) => Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
+const MARGIN = 15;
+const slug = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const today$2 = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+const expensesFileName = (title, ext) => `expenses-${slug(title)}-${today$2()}.${ext}`;
+const expenseReportFileName = (title) => `expense-report-${slug(title)}-${today$2()}.pdf`;
+const dayLabel = (iso) => {
+  if (!iso) return "";
+  const d = /* @__PURE__ */ new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString(void 0, { day: "numeric", month: "short" });
+};
+const stampLabel = (iso) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleString();
+};
+function describeFilters(filters) {
+  if (!filters) return "All expenses";
+  const parts = [];
+  if (filters.status) parts.push(`Status: ${statusDef(filters.status).label}`);
+  if (filters.department) parts.push(filters.department);
+  if (filters.payment) parts.push(paymentLabel(filters.payment));
+  if (filters.from || filters.to) {
+    if (filters.from && filters.to) parts.push(`${dayLabel(filters.from)}–${dayLabel(filters.to)}`);
+    else if (filters.from) parts.push(`From ${dayLabel(filters.from)}`);
+    else parts.push(`Until ${dayLabel(filters.to)}`);
+  }
+  if (filters.q) parts.push(`Search: "${filters.q}"`);
+  return parts.length ? parts.join(" · ") : "All expenses";
+}
+const linkedLabel = (expense, linkedItems) => {
+  if (!expense.linked_item_id) return "";
+  const info = linkedItems == null ? void 0 : linkedItems[expense.linked_item_id];
+  return info ? `${info.scene} · ${info.department} · ${info.text}` : "Linked item";
+};
+const EXPENSE_COLUMNS = [
+  "Date",
+  "Submitted by",
+  "Email",
+  "Department",
+  "Type",
+  "Invoice #",
+  "Vendor",
+  "Description",
+  "Currency",
+  "Amount",
+  "Payment method",
+  "Status",
+  "Status note",
+  "Decided by",
+  "Decided at",
+  "Notes",
+  "Linked checklist item",
+  "Via crew link"
+];
+const expenseRows = (input) => input.expenses.map((e) => [
+  e.expense_date || "",
+  e.submitted_by_name || "",
+  e.submitted_by_email || "",
+  e.department || "",
+  e.kind === "invoice" ? "Invoice" : "Receipt",
+  e.invoice_number || "",
+  e.vendor || "",
+  e.description || "",
+  (e.currency || "").toUpperCase(),
+  round2(e.amount),
+  paymentLabel(e.payment_method),
+  statusDef(e.status).label,
+  e.status_note || "",
+  e.decided_by_name || "",
+  stampLabel(e.decided_at),
+  e.notes || "",
+  linkedLabel(e, input.linkedItems),
+  e.submitted_by_crew_id ? "Yes" : "No"
+]);
+function currencyTotals(expenses) {
+  const map = /* @__PURE__ */ new Map();
+  const deptMap = /* @__PURE__ */ new Map();
+  expenses.forEach((e) => {
+    const code = (e.currency || "USD").toUpperCase();
+    if (!map.has(code)) {
+      map.set(code, { currency: code, submitted: 0, approved: 0, pending: 0, paid: 0, rejected: 0, departments: [] });
+      deptMap.set(code, /* @__PURE__ */ new Map());
+    }
+    const t = map.get(code);
+    const amount = round2(e.amount);
+    t.submitted += amount;
+    if (e.status === "approved") t.approved += amount;
+    else if (e.status === "pending") t.pending += amount;
+    else if (e.status === "paid") t.paid += amount;
+    else if (e.status === "rejected") t.rejected += amount;
+    const dept = e.department || "Other";
+    const byDept = deptMap.get(code);
+    if (!byDept.has(dept)) byDept.set(dept, { settled: 0, pending: 0 });
+    const d = byDept.get(dept);
+    if (e.status === "approved" || e.status === "paid") d.settled += amount;
+    else if (e.status === "pending") d.pending += amount;
+  });
+  return [...map.values()].map((t) => ({
+    ...t,
+    submitted: round2(t.submitted),
+    approved: round2(t.approved),
+    pending: round2(t.pending),
+    paid: round2(t.paid),
+    rejected: round2(t.rejected),
+    departments: [...deptMap.get(t.currency).entries()].map(([department, v2]) => ({ department, settled: round2(v2.settled), pending: round2(v2.pending) })).sort((a, b) => b.settled - a.settled || a.department.localeCompare(b.department))
+  })).sort((a, b) => b.submitted - a.submitted);
+}
+const setNumberFormat = (sheet, column, rows) => {
+  rows.forEach((r) => {
+    const ref = XLSX.utils.encode_cell({ c: column, r });
+    const cell2 = sheet[ref];
+    if (cell2 && cell2.t === "n") cell2.z = "0.00";
+  });
+};
+function buildExpensesWorkbook(input) {
+  const wb = XLSX.utils.book_new();
+  const rows = expenseRows(input);
+  const expensesSheet = XLSX.utils.aoa_to_sheet([EXPENSE_COLUMNS, ...rows]);
+  expensesSheet["!cols"] = EXPENSE_COLUMNS.map((c, i) => ({ wch: i === 7 || i === 15 || i === 16 ? 34 : Math.max(12, c.length + 2) }));
+  setNumberFormat(expensesSheet, 9, rows.map((_, i) => i + 1));
+  XLSX.utils.book_append_sheet(wb, expensesSheet, "Expenses");
+  const totals = currencyTotals(input.expenses);
+  const summary = [["Currency", "Submitted", "Approved", "Pending", "Paid", "Rejected"]];
+  totals.forEach((t) => summary.push([t.currency, t.submitted, t.approved, t.pending, t.paid, t.rejected]));
+  totals.forEach((t) => {
+    summary.push([]);
+    summary.push([`By department — ${t.currency}`]);
+    summary.push(["Department", "Approved + paid", "Pending"]);
+    t.departments.forEach((d) => summary.push([d.department, d.settled, d.pending]));
+  });
+  const summarySheet = XLSX.utils.aoa_to_sheet(summary);
+  summarySheet["!cols"] = [{ wch: 28 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
+  summary.forEach((_, r) => setNumberFormat(summarySheet, 1, [r]));
+  [2, 3, 4, 5].forEach((c) => summary.forEach((_, r) => setNumberFormat(summarySheet, c, [r])));
+  XLSX.utils.book_append_sheet(wb, summarySheet, "Summary");
+  const lineRows = [];
+  input.expenses.forEach((e) => {
+    (e.line_items || []).forEach((l) => {
+      lineRows.push([
+        e.expense_date || "",
+        e.submitted_by_name || "",
+        e.kind === "invoice" ? "Invoice" : "Receipt",
+        e.invoice_number || "",
+        l.text || "",
+        l.qty ?? "",
+        l.rate ?? "",
+        round2(l.amount),
+        (e.currency || "").toUpperCase()
+      ]);
+    });
+  });
+  const lineHead = ["Date", "Submitted by", "Type", "Invoice #", "Description", "Qty", "Rate", "Amount", "Currency"];
+  const lineSheet = XLSX.utils.aoa_to_sheet([lineHead, ...lineRows]);
+  lineSheet["!cols"] = [{ wch: 12 }, { wch: 18 }, { wch: 10 }, { wch: 12 }, { wch: 40 }, { wch: 8 }, { wch: 10 }, { wch: 12 }, { wch: 10 }];
+  [5, 6, 7].forEach((c) => setNumberFormat(lineSheet, c, lineRows.map((_, i) => i + 1)));
+  XLSX.utils.book_append_sheet(wb, lineSheet, "Line items");
+  return wb;
+}
+function exportExpensesToXLSX(input) {
+  XLSX.writeFile(buildExpensesWorkbook(input), expensesFileName(input.productionTitle, "xlsx"));
+}
+const csvCell$1 = (value) => {
+  const s = typeof value === "number" ? value.toFixed(2) : (value ?? "").toString();
+  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+function buildExpensesCSV(input) {
+  const rows = [EXPENSE_COLUMNS, ...expenseRows(input)];
+  return rows.map((r) => r.map(csvCell$1).join(",")).join("\r\n");
+}
+function exportExpensesToCSV(input) {
+  const blob = new Blob([`\uFEFF${buildExpensesCSV(input)}`], { type: "text/csv;charset=utf-8;" });
+  const url2 = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url2;
+  a.download = expensesFileName(input.productionTitle, "csv");
+  a.click();
+  URL.revokeObjectURL(url2);
+}
+const isPdfPath = (path) => /\.pdf$/i.test(path);
+async function fetchReceiptImages(input) {
+  var _a2;
+  const images = [];
+  const pdfNotes = [];
+  for (const e of input.expenses) {
+    const path = e.receipt_path;
+    if (!path) continue;
+    const caption = `${e.expense_date} · ${e.submitted_by_name} · ${formatMoney$a(e.amount, e.currency)}`;
+    if (isPdfPath(path)) {
+      pdfNotes.push(`${caption} — PDF receipt — see app`);
+      continue;
+    }
+    const url2 = (_a2 = input.signedUrls) == null ? void 0 : _a2[path];
+    if (!url2) continue;
+    try {
+      const loaded = await new Promise((resolve, reject) => {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        img.onload = () => {
+          const max = 1400;
+          const scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+          const w = Math.max(1, Math.round(img.naturalWidth * scale));
+          const h = Math.max(1, Math.round(img.naturalHeight * scale));
+          const canvas = document.createElement("canvas");
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            reject(new Error("no canvas"));
+            return;
+          }
+          ctx.fillStyle = "#fff";
+          ctx.fillRect(0, 0, w, h);
+          ctx.drawImage(img, 0, 0, w, h);
+          resolve({ dataUrl: canvas.toDataURL("image/jpeg", 0.8), width: w, height: h, caption });
+        };
+        img.onerror = () => reject(new Error("image failed"));
+        img.src = url2;
+      });
+      images.push(loaded);
+    } catch {
+      pdfNotes.push(`${caption} — receipt image could not be loaded`);
+    }
+  }
+  return { images, pdfNotes };
+}
+async function buildExpensesPDF(input) {
+  var _a2;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const { body } = await loadUnicodeFonts(doc);
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const contentW = pageW - MARGIN * 2;
+  let y = 30;
+  const ensure = (needed) => {
+    if (y + needed > pageH - 20) {
+      doc.addPage();
+      y = 30;
+    }
+  };
+  const line = (text, size2, style, grey = false) => {
+    doc.setFont(body, style);
+    doc.setFontSize(size2);
+    doc.setTextColor(grey ? 110 : 20, grey ? 110 : 20, grey ? 110 : 20);
+    const lines = doc.splitTextToSize(text, contentW);
+    ensure(lines.length * (size2 * 0.45) + 2);
+    lines.forEach((l) => {
+      doc.text(l, MARGIN, y);
+      y += size2 * 0.45;
+    });
+  };
+  const tableStyles = {
+    font: body,
+    fontSize: 9,
+    cellPadding: 2,
+    textColor: [30, 30, 30],
+    overflow: "linebreak",
+    lineColor: [200, 200, 200],
+    lineWidth: 0.1
+  };
+  const headStyles = {
+    font: body,
+    fontStyle: "bold",
+    fillColor: [238, 238, 238],
+    textColor: [20, 20, 20],
+    fontSize: 9
+  };
+  const totals = currencyTotals(input.expenses);
+  line("SUMMARY", 11, "bold");
+  y += 1;
+  if (!totals.length) {
+    line("No expenses match these filters.", 9, "normal", true);
+    y += 4;
+  }
+  totals.forEach((t) => {
+    var _a3, _b2;
+    ensure(26);
+    line(t.currency, 10, "bold");
+    autoTable(doc, {
+      startY: y,
+      head: [["Submitted", "Approved", "Pending", "Paid", "Rejected"]],
+      body: [[
+        formatMoney$a(t.submitted, t.currency),
+        formatMoney$a(t.approved, t.currency),
+        formatMoney$a(t.pending, t.currency),
+        formatMoney$a(t.paid, t.currency),
+        formatMoney$a(t.rejected, t.currency)
+      ]],
+      margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+      theme: "grid",
+      styles: tableStyles,
+      headStyles,
+      columnStyles: { 0: { halign: "right" }, 1: { halign: "right" }, 2: { halign: "right" }, 3: { halign: "right" }, 4: { halign: "right" } }
+    });
+    y = (((_a3 = doc.lastAutoTable) == null ? void 0 : _a3.finalY) ?? y) + 4;
+    if (t.departments.length) {
+      ensure(20);
+      line(`By department — ${t.currency}`, 9, "bold");
+      autoTable(doc, {
+        startY: y,
+        head: [["Department", "Approved + paid", "Pending"]],
+        body: t.departments.map((d) => [d.department, formatMoney$a(d.settled, t.currency), formatMoney$a(d.pending, t.currency)]),
+        margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+        theme: "grid",
+        styles: tableStyles,
+        headStyles,
+        columnStyles: { 0: { cellWidth: "auto" }, 1: { cellWidth: 38, halign: "right" }, 2: { cellWidth: 30, halign: "right" } }
+      });
+      y = (((_b2 = doc.lastAutoTable) == null ? void 0 : _b2.finalY) ?? y) + 6;
+    }
+  });
+  if (input.expenses.length) {
+    ensure(24);
+    line("EXPENSES", 11, "bold");
+    autoTable(doc, {
+      startY: y,
+      head: [["Date", "Submitted by", "Dept", "Type / Invoice #", "Vendor / Description", "Payment", "Status", "Amount"]],
+      body: input.expenses.map((e) => [
+        e.expense_date || "",
+        e.submitted_by_name || "",
+        e.department || "",
+        `${e.kind === "invoice" ? "Invoice" : "Receipt"}${e.invoice_number ? `
+${e.invoice_number}` : ""}`,
+        [e.vendor, e.description].filter(Boolean).join("\n"),
+        paymentLabel(e.payment_method),
+        statusDef(e.status).label,
+        formatMoney$a(e.amount, e.currency)
+      ]),
+      margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+      theme: "grid",
+      styles: { ...tableStyles, fontSize: 8 },
+      headStyles: { ...headStyles, fontSize: 8 },
+      columnStyles: {
+        0: { cellWidth: 16 },
+        1: { cellWidth: 24 },
+        2: { cellWidth: 22 },
+        3: { cellWidth: 22 },
+        4: { cellWidth: "auto" },
+        5: { cellWidth: 21 },
+        6: { cellWidth: 17 },
+        7: { cellWidth: 24, halign: "right" }
+      }
+    });
+    y = (((_a2 = doc.lastAutoTable) == null ? void 0 : _a2.finalY) ?? y) + 6;
+  }
+  if (input.includeImages) {
+    const { images, pdfNotes } = await fetchReceiptImages(input);
+    if (pdfNotes.length) {
+      ensure(20);
+      line("RECEIPT FILES NOT PRINTED", 11, "bold");
+      pdfNotes.forEach((n) => line(n, 8.5, "normal", true));
+      y += 4;
+    }
+    images.forEach((img) => {
+      doc.addPage();
+      y = 30;
+      doc.setFont(body, "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(60, 60, 60);
+      doc.text(doc.splitTextToSize(img.caption, contentW), MARGIN, y);
+      y += 6;
+      const availH = pageH - y - 20;
+      const scale = Math.min(contentW / img.width, availH / img.height);
+      doc.addImage(img.dataUrl, "JPEG", MARGIN, y, img.width * scale, img.height * scale);
+    });
+  }
+  const generated = (/* @__PURE__ */ new Date()).toLocaleString();
+  const filterText = describeFilters(input.filters);
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i += 1) {
+    doc.setPage(i);
+    doc.setFont(body, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(20, 20, 20);
+    doc.text(`EXPENSE REPORT — ${input.productionTitle}`, MARGIN, 13);
+    doc.setFont(body, "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(110, 110, 110);
+    if (input.company) doc.text(input.company, pageW - MARGIN, 13, { align: "right" });
+    doc.text(filterText, MARGIN, 18);
+    doc.text(`Generated ${generated}`, pageW - MARGIN, 18, { align: "right" });
+    doc.setDrawColor(190, 190, 190);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, 21, pageW - MARGIN, 21);
+    doc.setFontSize(8);
+    doc.setTextColor(130, 130, 130);
+    doc.text("filmmakergenius.com", MARGIN, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+  }
+  return doc;
+}
+async function exportExpensesToPDF(input) {
+  const doc = await buildExpensesPDF(input);
+  doc.save(expenseReportFileName(input.productionTitle));
+}
 const TEAL$5 = "#00d4aa";
 const byCurrency = (rows) => {
   const map = /* @__PURE__ */ new Map();
@@ -27346,7 +27742,7 @@ const nextInvoiceNumber = (expenses) => {
   });
   return `INV-${String(max + 1).padStart(3, "0")}`;
 };
-const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) => {
+const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency, actorName }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [expenses, setExpenses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27357,6 +27753,10 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) =>
   const [dialogFor, setDialogFor] = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewer, setViewer] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [includeImages, setIncludeImages] = useState(false);
+  const [exporting, setExporting] = useState(null);
+  const menuRef = useRef(null);
   const filters = useMemo(() => ({
     q: searchParams.get("q") || "",
     status: searchParams.get("status") || "",
@@ -27494,22 +27894,140 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) =>
       cancelled = true;
     };
   }, [expenses]);
+  const exportInput = useCallback(() => ({
+    productionTitle,
+    company,
+    expenses: filtered,
+    filters,
+    linkedItems,
+    signedUrls,
+    includeImages
+  }), [productionTitle, company, filtered, filters, linkedItems, signedUrls, includeImages]);
+  const runExport = async (kind) => {
+    if (!filtered.length) {
+      toast$1.error("There is nothing to export with these filters.");
+      return;
+    }
+    setMenuOpen(false);
+    setExporting(kind);
+    try {
+      const input = exportInput();
+      if (kind === "xlsx") exportExpensesToXLSX(input);
+      else if (kind === "csv") exportExpensesToCSV(input);
+      else await exportExpensesToPDF(input);
+      toast$1.success(kind === "pdf" ? "Expense report downloaded." : "Export downloaded.");
+    } catch (err) {
+      console.error("expense export failed", err);
+      toast$1.error(err instanceof Error ? err.message : "Could not build that export.");
+    } finally {
+      setExporting(null);
+    }
+  };
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menuOpen]);
   return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 56 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 18 }, children: [
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, margin: 0 }, children: "Expenses" }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            disabled: true,
-            title: "Coming in the next step",
-            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, opacity: 0.45, cursor: "not-allowed" },
-            children: [
-              /* @__PURE__ */ jsx(Download, { size: 16 }),
-              " Export"
-            ]
-          }
-        ),
+        /* @__PURE__ */ jsxs("div", { ref: menuRef, style: { position: "relative" }, children: [
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => setMenuOpen((v2) => !v2),
+              disabled: !!exporting,
+              "aria-haspopup": "menu",
+              "aria-expanded": menuOpen,
+              style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, cursor: exporting ? "wait" : "pointer" },
+              children: [
+                exporting ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Download, { size: 16 }),
+                exporting ? "Generating…" : "Export"
+              ]
+            }
+          ),
+          menuOpen && /* @__PURE__ */ jsxs(
+            "div",
+            {
+              role: "menu",
+              style: {
+                position: "absolute",
+                right: 0,
+                top: "calc(100% + 8px)",
+                zIndex: 40,
+                minWidth: 250,
+                borderRadius: 12,
+                padding: 8,
+                background: "#10101b",
+                border: "1px solid rgba(255,255,255,0.14)",
+                boxShadow: "0 18px 40px rgba(0,0,0,0.5)"
+              },
+              children: [
+                /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)", padding: "6px 10px" }, children: "Exports use your current filters" }),
+                [
+                  ["xlsx", "Excel (.xlsx)", FileSpreadsheet],
+                  ["csv", "CSV", Table],
+                  ["pdf", "PDF report", FileText]
+                ].map(([kind, copy, Icon]) => /* @__PURE__ */ jsxs(
+                  "button",
+                  {
+                    role: "menuitem",
+                    onClick: () => runExport(kind),
+                    style: {
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      width: "100%",
+                      minHeight: 44,
+                      padding: "0 10px",
+                      borderRadius: 8,
+                      border: "none",
+                      background: "transparent",
+                      color: "#fff",
+                      fontSize: 15,
+                      textAlign: "left",
+                      cursor: "pointer",
+                      fontFamily: "'Inter Tight', sans-serif"
+                    },
+                    children: [
+                      /* @__PURE__ */ jsx(Icon, { size: 16 }),
+                      " ",
+                      copy
+                    ]
+                  },
+                  kind
+                )),
+                /* @__PURE__ */ jsxs("label", { style: {
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  minHeight: 44,
+                  padding: "0 10px",
+                  marginTop: 4,
+                  borderTop: "1px solid rgba(255,255,255,0.08)",
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.7)",
+                  cursor: "pointer"
+                }, children: [
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "checkbox",
+                      checked: includeImages,
+                      onChange: (e) => setIncludeImages(e.target.checked),
+                      style: { width: 18, height: 18, accentColor: "#00d4aa" }
+                    }
+                  ),
+                  "Include receipt images (PDF)"
+                ] })
+              ]
+            }
+          )
+        ] }),
         /* @__PURE__ */ jsxs(
           "button",
           {
@@ -27720,6 +28238,7 @@ const ReceiptsExpenses = () => {
         ExpenseWorkspace,
         {
           projectId: selectedProject.id,
+          productionTitle: selectedProject.title,
           company: selectedProject.company,
           defaultCurrency: activeCurrency,
           actorName
