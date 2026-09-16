@@ -74,6 +74,7 @@ export const EXPENSE_FIELDS =
 
 export const EXPENSE_BUCKET = "expense-receipts";
 
+
 export const normalizeLines = (raw: unknown): ExpenseLine[] => {
   if (!Array.isArray(raw)) return [];
   return raw

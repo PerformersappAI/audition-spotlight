@@ -224,6 +224,25 @@ const CrewBreakdown = () => {
           )}
         </div>
 
+        {!checking && !dead && identity && (
+          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22 }}>
+            {([["breakdown", "Breakdown"], ["receipts", "Receipts"]] as [CrewTab, string][]).map(([key, copy]) => (
+              <button
+                key={key}
+                onClick={() => { setTab(key); localStorage.setItem(tabKey(token), key); }}
+                style={{
+                  minHeight: 44, padding: "0 20px", borderRadius: 9999, cursor: "pointer",
+                  fontSize: 15, fontWeight: 700, whiteSpace: "nowrap",
+                  border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
+                  background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                  color: tab === key ? TEAL : "#fff",
+                  fontFamily: "'Inter Tight', sans-serif",
+                }}
+              >{copy}</button>
+            ))}
+          </div>
+        )}
+
         {content()}
         <div style={{ height: 40 }} />
       </div>
