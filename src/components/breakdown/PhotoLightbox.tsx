@@ -7,6 +7,8 @@ interface Props {
   photos: BreakdownPhoto[];
   index: number;
   signedUrl: (photo: BreakdownPhoto) => string | undefined;
+  /** Crew may only replace or delete photos they uploaded themselves. */
+  canModify?: (photo: BreakdownPhoto) => boolean;
   onIndexChange: (i: number) => void;
   onClose: () => void;
   onApprove: (photo: BreakdownPhoto) => void;
@@ -32,7 +34,7 @@ const btn = (accent?: string): React.CSSProperties => ({
 });
 
 const PhotoLightbox = ({
-  photos, index, signedUrl, onIndexChange, onClose,
+  photos, index, signedUrl, canModify, onIndexChange, onClose,
   onApprove, onRequestChanges, onReplace, onDelete,
 }: Props) => {
   const photo = photos[index];
@@ -148,20 +150,22 @@ const PhotoLightbox = ({
           </>
         )}
 
-        <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }}>
-          {!photo.is_reference && (
-            <button onClick={() => replaceRef.current?.click()} style={btn()}><RefreshCw size={16} /> Replace photo</button>
-          )}
-          {confirmDelete ? (
-            <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
-              Delete this photo?
-              <button onClick={() => onDelete(photo)} style={{ ...btn("#ff5c5c"), color: "#2a0505" }}>Yes</button>
-              <button onClick={() => setConfirmDelete(false)} style={btn()}>No</button>
-            </span>
-          ) : (
-            <button onClick={() => setConfirmDelete(true)} style={btn()}><Trash2 size={16} /> Delete photo</button>
-          )}
-        </div>
+        {(!canModify || canModify(photo)) && (
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }}>
+            {!photo.is_reference && (
+              <button onClick={() => replaceRef.current?.click()} style={btn()}><RefreshCw size={16} /> Replace photo</button>
+            )}
+            {confirmDelete ? (
+              <span style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14 }}>
+                Delete this photo?
+                <button onClick={() => onDelete(photo)} style={{ ...btn("#ff5c5c"), color: "#2a0505" }}>Yes</button>
+                <button onClick={() => setConfirmDelete(false)} style={btn()}>No</button>
+              </span>
+            ) : (
+              <button onClick={() => setConfirmDelete(true)} style={btn()}><Trash2 size={16} /> Delete photo</button>
+            )}
+          </div>
+        )}
         <input
           ref={replaceRef}
           type="file"
