@@ -305,6 +305,20 @@ const CrewBreakdown = () => {
       );
     }
     if (!adapter || !identity) return null;
+    if (tab === "notes") {
+      return (
+        <CrewNotes
+          token={token}
+          identity={identity}
+          languages={productionLanguages}
+          scenes={scenes}
+          notes={notes}
+          loading={notesLoading}
+          preferredLanguage={preferredLanguage}
+          onChanged={loadNotes}
+        />
+      );
+    }
     if (tab === "messages") {
       return (
         <CrewMessages
