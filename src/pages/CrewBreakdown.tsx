@@ -8,6 +8,9 @@ import CrewMessages from "@/components/translator/CrewMessages";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
 import { crewMessageApi } from "@/lib/translator/crew";
+import CrewNotes from "@/components/notes/CrewNotes";
+import { crewNoteApi } from "@/lib/notes/crew";
+import type { NoteScene, ProductionNote } from "@/lib/notes/types";
 import type { ProductionMessage } from "@/lib/translator/types";
 
 const panel: React.CSSProperties = {
