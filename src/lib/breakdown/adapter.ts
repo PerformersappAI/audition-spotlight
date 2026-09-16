@@ -271,6 +271,30 @@ export function createOwnerAdapter(opts: {
       if (error) fail(error.message);
     },
 
+    async updateScene(sceneId, patch) {
+      const { error } = await supabase.from("breakdown_scenes").update({
+        scene_number: patch.scene_number,
+        label: patch.label,
+        script_text: patch.script_text,
+      }).eq("id", sceneId);
+      if (error) fail(error.message);
+    },
+
+    async rerunScene(sceneId, patch) {
+      const res = await aiInvoke<{ merged?: SceneMergeResult }>("breakdown-scene", {
+        body: {
+          project_id: projectId,
+          scene_id: sceneId,
+          script_text: patch.script_text,
+          scene_number: patch.scene_number || undefined,
+          label: patch.label || undefined,
+        },
+      });
+      return res?.merged || { kept: 0, removed: 0, added: 0 };
+    },
+
+
+
     watch(sceneId, onChange) {
       const channel = supabase
         .channel(`breakdown-scene-${sceneId}`)
