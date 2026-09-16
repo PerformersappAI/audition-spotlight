@@ -402,35 +402,39 @@ const CrewBreakdown = () => {
         </div>
 
         {!checking && !dead && identity && (
-          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22 }}>
-            {([["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"]] as [CrewTab, string][]).map(([key, copy]) => (
-              <button
-                key={key}
-                onClick={() => {
-                  setTab(key);
-                  try { localStorage.setItem(tabKey(token), key); } catch { /* ignore */ }
-                  if (key === "messages") markMessagesSeen();
-                }}
-                style={{
-                  minHeight: 44, padding: "0 20px", borderRadius: 9999, cursor: "pointer",
-                  fontSize: 15, fontWeight: 700, whiteSpace: "nowrap",
-                  border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
-                  background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-                  color: tab === key ? TEAL : "#fff",
-                  fontFamily: "'Inter Tight', sans-serif",
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                }}
-              >
-                {copy}
-                {key === "messages" && unread > 0 && (
-                  <span style={{
-                    minWidth: 20, height: 20, borderRadius: 9999, padding: "0 6px",
-                    background: TEAL, color: "#04231d", fontSize: 12, fontWeight: 700,
-                    display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  }}>{unread}</span>
-                )}
-              </button>
-            ))}
+          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22, paddingBottom: 4 }}>
+            {([["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"], ["notes", "Notes"]] as [CrewTab, string][]).map(([key, copy]) => {
+              const badge = key === "messages" ? unread : key === "notes" ? unreadNotes : 0;
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setTab(key);
+                    try { localStorage.setItem(tabKey(token), key); } catch { /* ignore */ }
+                    if (key === "messages") markMessagesSeen();
+                    if (key === "notes") markNotesSeen();
+                  }}
+                  style={{
+                    minHeight: 44, padding: "0 18px", borderRadius: 9999, cursor: "pointer",
+                    fontSize: 15, fontWeight: 700, whiteSpace: "nowrap", flex: "0 0 auto",
+                    border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
+                    background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                    color: tab === key ? TEAL : "#fff",
+                    fontFamily: "'Inter Tight', sans-serif",
+                    display: "inline-flex", alignItems: "center", gap: 8,
+                  }}
+                >
+                  {copy}
+                  {badge > 0 && (
+                    <span style={{
+                      minWidth: 20, height: 20, borderRadius: 9999, padding: "0 6px",
+                      background: TEAL, color: "#04231d", fontSize: 12, fontWeight: 700,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    }}>{badge}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
 
