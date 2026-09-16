@@ -76,14 +76,16 @@ const NoteComposer = ({
 
   const save = async () => {
     if (body.trim().length < 2) return;
-    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, MAX_NOTE_CHARS), translate });
+    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, maxChars), translate });
     setBody("");
     setTranslateTouched(false);
   };
 
   return (
     <div style={{ ...panel, padding: 20, marginBottom: 20 }}>
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }}>New note</div>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }}>{heading}</div>
+      {hint && <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>{hint}</p>}
+
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
         {NOTE_TAGS.map((t) => {
