@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { clock, fetchWeather, WMO, type WeatherData } from "@/lib/translator/weather";
+import {
+  clock,
+  fetchWeather,
+  fetchWeatherForDate,
+  FORECAST_WINDOW_DAYS,
+  WeatherRangeError,
+  WMO,
+  type DatedForecast,
+  type WeatherData,
+} from "@/lib/translator/weather";
 
 const UNIT_KEY = "fg-weather-unit";
 
