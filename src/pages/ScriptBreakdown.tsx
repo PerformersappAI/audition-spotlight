@@ -41,13 +41,6 @@ interface Scene {
   created_at: string;
 }
 
-interface Item {
-  id: string;
-  scene_id: string;
-  department: string;
-  text: string;
-  sort_order: number;
-}
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
