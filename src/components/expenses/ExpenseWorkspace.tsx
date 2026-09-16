@@ -184,6 +184,44 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses]);
 
+  const exportInput = useCallback((): ExpenseExportInput => ({
+    productionTitle,
+    company,
+    expenses: filtered,
+    filters,
+    linkedItems,
+    signedUrls,
+    includeImages,
+  }), [productionTitle, company, filtered, filters, linkedItems, signedUrls, includeImages]);
+
+  const runExport = async (kind: "xlsx" | "csv" | "pdf") => {
+    if (!filtered.length) { toast.error("There is nothing to export with these filters."); return; }
+    setMenuOpen(false);
+    setExporting(kind);
+    try {
+      const input = exportInput();
+      if (kind === "xlsx") exportExpensesToXLSX(input);
+      else if (kind === "csv") exportExpensesToCSV(input);
+      else await exportExpensesToPDF(input);
+      toast.success(kind === "pdf" ? "Expense report downloaded." : "Export downloaded.");
+    } catch (err) {
+      console.error("expense export failed", err);
+      toast.error(err instanceof Error ? err.message : "Could not build that export.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menuOpen]);
+
+
   return (
     <div style={{ paddingBottom: 56 }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 18 }}>
