@@ -989,6 +989,19 @@ const CallSheet = () => {
                     <Textarea rows={2} value={formData.location_address} onChange={(e) => updateField("location_address", e.target.value)} />
                   </div>
 
+                  {weatherLocation && formData.shoot_date ? (
+                    <WeatherBar
+                      location={weatherLocation}
+                      date={formData.shoot_date}
+                      onApply={applyForecast}
+                      applyLabel="Add weather to call sheet"
+                    />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Add a shoot date and a location to see the forecast for that day.
+                    </p>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Gate / Access Code</Label>
