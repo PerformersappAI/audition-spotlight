@@ -39,6 +39,8 @@ export const NOTE_PRIORITIES: Array<{ value: NotePriority; label: string; color:
 ];
 
 export const MAX_NOTE_CHARS = 5000;
+/** Crew members writing from the private link get a shorter limit. */
+export const MAX_CREW_NOTE_CHARS = 2000;
 
 export interface NoteScene {
   id: string;
