@@ -8,6 +8,9 @@ import CrewMessages from "@/components/translator/CrewMessages";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
 import { crewMessageApi } from "@/lib/translator/crew";
+import CrewNotes from "@/components/notes/CrewNotes";
+import { crewNoteApi } from "@/lib/notes/crew";
+import type { NoteScene, ProductionNote } from "@/lib/notes/types";
 import type { ProductionMessage } from "@/lib/translator/types";
 
 const panel: React.CSSProperties = {
@@ -45,10 +48,11 @@ const primaryBtn: React.CSSProperties = {
 const storageKey = (token: string) => `fg_breakdown_crew_${token}`;
 const tabKey = (token: string) => `fg_crew_tab_${token}`;
 const seenKey = (token: string) => `fg_crew_msgseen_${token}`;
+const notesSeenKey = (token: string) => `fg_crew_noteseen_${token}`;
 
 const MESSAGE_PAGE = 30;
 
-type CrewTab = "breakdown" | "receipts" | "messages";
+type CrewTab = "breakdown" | "receipts" | "messages" | "notes";
 
 interface CrewProject {
   title: string;
@@ -62,14 +66,14 @@ interface CrewProject {
 const readTab = (token: string): CrewTab => {
   try {
     const stored = localStorage.getItem(tabKey(token));
-    if (stored === "receipts" || stored === "messages") return stored;
+    if (stored === "receipts" || stored === "messages" || stored === "notes") return stored;
   } catch { /* ignore */ }
   return "breakdown";
 };
 
-const readSeen = (token: string): string => {
+const readSeen = (token: string, key: (t: string) => string): string => {
   try {
-    return localStorage.getItem(seenKey(token)) || "";
+    return localStorage.getItem(key(token)) || "";
   } catch {
     return "";
   }
@@ -104,16 +108,22 @@ const CrewBreakdown = () => {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [messagesHasMore, setMessagesHasMore] = useState(false);
   const [preferredLanguage, setPreferredLanguage] = useState<string | null>(null);
-  const [seenAt, setSeenAt] = useState<string>(() => (token ? readSeen(token) : ""));
+  const [seenAt, setSeenAt] = useState<string>(() => (token ? readSeen(token, seenKey) : ""));
+
+  const [scenes, setScenes] = useState<NoteScene[]>([]);
+  const [notes, setNotes] = useState<ProductionNote[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [notesSeenAt, setNotesSeenAt] = useState<string>(() => (token ? readSeen(token, notesSeenKey) : ""));
 
   // Check the link once on load
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const data = await crewCall<{ project: CrewProject }>(token, "load");
+        const data = await crewCall<{ project: CrewProject; scenes?: NoteScene[] }>(token, "load");
         if (cancelled) return;
         setProject(data.project);
+        setScenes((data.scenes || []) as NoteScene[]);
       } catch (err) {
         if (!cancelled) setDead(true);
         void (err as CrewLinkError);
@@ -194,6 +204,51 @@ const CrewBreakdown = () => {
     ? 0
     : messages.filter((m) => !seenAt || m.created_at > seenAt).length;
 
+  // ---- notes ---------------------------------------------------------------
+  const noteApi = useMemo(
+    () => (identity ? crewNoteApi(token, identity) : null),
+    [token, identity],
+  );
+
+  const loadNotes = useCallback(async () => {
+    if (!noteApi) return;
+    try {
+      const res = await noteApi.list();
+      setNotes(res.notes);
+      setPreferredLanguage((prev) => prev ?? res.preferred_language);
+    } catch { /* keep whatever we already have */ } finally {
+      setNotesLoading(false);
+    }
+  }, [noteApi]);
+
+  // Poll for new notes every 20s while the page is visible.
+  useEffect(() => {
+    if (!noteApi || dead) return;
+    loadNotes();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadNotes();
+    }, 20_000);
+    return () => window.clearInterval(timer);
+  }, [noteApi, dead, loadNotes]);
+
+  const markNotesSeen = useCallback(() => {
+    const now = new Date().toISOString();
+    setNotesSeenAt(now);
+    try {
+      localStorage.setItem(notesSeenKey(token), now);
+    } catch { /* ignore */ }
+  }, [token]);
+
+  useEffect(() => {
+    if (tab === "notes" && notes.length) markNotesSeen();
+  }, [tab, notes, markNotesSeen]);
+
+  const unreadNotes = tab === "notes"
+    ? 0
+    : notes.filter((n) => !notesSeenAt || n.created_at > notesSeenAt).length;
+
+
+
   const productionLanguages = project?.languages?.length ? project.languages : ["en"];
 
   const changeIdentity = () => {
@@ -250,6 +305,20 @@ const CrewBreakdown = () => {
       );
     }
     if (!adapter || !identity) return null;
+    if (tab === "notes") {
+      return (
+        <CrewNotes
+          token={token}
+          identity={identity}
+          languages={productionLanguages}
+          scenes={scenes}
+          notes={notes}
+          loading={notesLoading}
+          preferredLanguage={preferredLanguage}
+          onChanged={loadNotes}
+        />
+      );
+    }
     if (tab === "messages") {
       return (
         <CrewMessages
@@ -333,35 +402,39 @@ const CrewBreakdown = () => {
         </div>
 
         {!checking && !dead && identity && (
-          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22 }}>
-            {([["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"]] as [CrewTab, string][]).map(([key, copy]) => (
-              <button
-                key={key}
-                onClick={() => {
-                  setTab(key);
-                  try { localStorage.setItem(tabKey(token), key); } catch { /* ignore */ }
-                  if (key === "messages") markMessagesSeen();
-                }}
-                style={{
-                  minHeight: 44, padding: "0 20px", borderRadius: 9999, cursor: "pointer",
-                  fontSize: 15, fontWeight: 700, whiteSpace: "nowrap",
-                  border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
-                  background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-                  color: tab === key ? TEAL : "#fff",
-                  fontFamily: "'Inter Tight', sans-serif",
-                  display: "inline-flex", alignItems: "center", gap: 8,
-                }}
-              >
-                {copy}
-                {key === "messages" && unread > 0 && (
-                  <span style={{
-                    minWidth: 20, height: 20, borderRadius: 9999, padding: "0 6px",
-                    background: TEAL, color: "#04231d", fontSize: 12, fontWeight: 700,
-                    display: "inline-flex", alignItems: "center", justifyContent: "center",
-                  }}>{unread}</span>
-                )}
-              </button>
-            ))}
+          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22, paddingBottom: 4 }}>
+            {([["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"], ["notes", "Notes"]] as [CrewTab, string][]).map(([key, copy]) => {
+              const badge = key === "messages" ? unread : key === "notes" ? unreadNotes : 0;
+              return (
+                <button
+                  key={key}
+                  onClick={() => {
+                    setTab(key);
+                    try { localStorage.setItem(tabKey(token), key); } catch { /* ignore */ }
+                    if (key === "messages") markMessagesSeen();
+                    if (key === "notes") markNotesSeen();
+                  }}
+                  style={{
+                    minHeight: 44, padding: "0 18px", borderRadius: 9999, cursor: "pointer",
+                    fontSize: 15, fontWeight: 700, whiteSpace: "nowrap", flex: "0 0 auto",
+                    border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
+                    background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                    color: tab === key ? TEAL : "#fff",
+                    fontFamily: "'Inter Tight', sans-serif",
+                    display: "inline-flex", alignItems: "center", gap: 8,
+                  }}
+                >
+                  {copy}
+                  {badge > 0 && (
+                    <span style={{
+                      minWidth: 20, height: 20, borderRadius: 9999, padding: "0 6px",
+                      background: TEAL, color: "#04231d", fontSize: 12, fontWeight: 700,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                    }}>{badge}</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         )}
 

@@ -6,6 +6,7 @@ import WeatherBar from "@/components/production/WeatherBar";
 import { timeAgo } from "@/components/breakdown/timeAgo";
 import { LANGUAGES } from "@/lib/languages";
 import { crewMessageApi } from "@/lib/translator/crew";
+import { readStoredLanguage, storeLanguage } from "@/lib/translator/readLanguage";
 import {
   messageSubjects,
   messageTranslations,
@@ -15,21 +16,6 @@ import {
 import type { CrewIdentity } from "@/lib/breakdown/adapter";
 
 const MAX_TEXT = 5000;
-const langKey = (token: string) => `fg_crew_lang_${token}`;
-
-const readStoredLanguage = (token: string): string | null => {
-  try {
-    return localStorage.getItem(langKey(token));
-  } catch {
-    return null;
-  }
-};
-
-const storeLanguage = (token: string, code: string) => {
-  try {
-    localStorage.setItem(langKey(token), code);
-  } catch { /* ignore */ }
-};
 
 const native = (code: string) => LANGUAGES[code]?.native || code;
 

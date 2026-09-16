@@ -26,6 +26,11 @@ interface Props {
   saving: boolean;
   error?: string;
   onSave: (draft: NoteDraft) => void | Promise<void>;
+  /** Crew members get a shorter note and automatic translation (no toggle). */
+  maxChars?: number;
+  showTranslateToggle?: boolean;
+  heading?: string;
+  hint?: string;
 }
 
 const label: React.CSSProperties = {
@@ -35,7 +40,17 @@ const label: React.CSSProperties = {
   marginBottom: 6,
 };
 
-const NoteComposer = ({ scenes, languageCount, saving, error, onSave }: Props) => {
+const NoteComposer = ({
+  scenes,
+  languageCount,
+  saving,
+  error,
+  onSave,
+  maxChars = MAX_NOTE_CHARS,
+  showTranslateToggle = true,
+  heading = "New note",
+  hint,
+}: Props) => {
   const [tag, setTag] = useState<NoteTag>("general");
   const [priority, setPriority] = useState<NotePriority>("normal");
   const [shootDay, setShootDay] = useState(todayLocal());
@@ -61,14 +76,16 @@ const NoteComposer = ({ scenes, languageCount, saving, error, onSave }: Props) =
 
   const save = async () => {
     if (body.trim().length < 2) return;
-    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, MAX_NOTE_CHARS), translate });
+    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, maxChars), translate });
     setBody("");
     setTranslateTouched(false);
   };
 
   return (
     <div style={{ ...panel, padding: 20, marginBottom: 20 }}>
-      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }}>New note</div>
+      <div style={{ fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }}>{heading}</div>
+      {hint && <p style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>{hint}</p>}
+
 
       <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
         {NOTE_TAGS.map((t) => {
@@ -123,17 +140,17 @@ const NoteComposer = ({ scenes, languageCount, saving, error, onSave }: Props) =
         <label style={label}>Note</label>
         <textarea
           value={body}
-          onChange={(e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS))}
+          onChange={(e) => setBody(e.target.value.slice(0, maxChars))}
           rows={rows}
           placeholder="Stunt rehearsal moved to 14:00 — everyone on set 15 minutes early."
           style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, maxHeight: "60vh" }}
         />
         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6, textAlign: "right" }}>
-          {body.length} / {MAX_NOTE_CHARS}
+          {body.length} / {maxChars}
         </div>
       </div>
 
-      {canTranslate && (
+      {canTranslate && showTranslateToggle && (
         <label style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8, minHeight: 44, cursor: "pointer", fontSize: 14 }}>
           <input
             type="checkbox"

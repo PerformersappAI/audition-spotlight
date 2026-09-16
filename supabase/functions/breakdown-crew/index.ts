@@ -48,6 +48,21 @@ const MAX_CREW_MESSAGE = 5000;
 const MESSAGE_FIELDS =
   "id, subject, source_language, source_text, translations, created_by_name, created_at";
 
+// Crew-written production notes are translated on the owner's credits too.
+const TRANSLATE_NOTE_LOG_NAME = "translate-note-crew";
+const NOTES_PER_CREW_24H = 40;
+const NOTES_PER_PROJECT_24H = 300;
+const MAX_CREW_NOTE = 2000;
+const NOTE_TAGS = [
+  "general", "talent", "location", "props", "wardrobe", "makeup",
+  "camera", "sound", "safety", "director", "ad", "production",
+];
+const NOTE_PRIORITIES = ["normal", "important", "urgent"];
+// created_by_user_id is deliberately never returned to the crew.
+const NOTE_CREW_FIELDS =
+  "id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_by_crew_id, created_at";
+const isDay = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+
 const PHOTO_FIELDS =
   "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
 const ITEM_FIELDS =
@@ -308,6 +323,80 @@ serve(async (req) => {
     });
     return out;
   };
+
+  /** A production note the crew member is allowed to see. */
+  const getNote = async (noteId: string) => {
+    if (!noteId) return null;
+    const { data } = await admin
+      .from("production_notes")
+      .select(`${NOTE_CREW_FIELDS}, project_id`)
+      .eq("id", noteId)
+      .eq("project_id", projectId)
+      .maybeSingle();
+    return data as any;
+  };
+
+  /**
+   * Translates a crew note on the OWNER's credits, under the same 24h caps as
+   * crew messages. Never throws — when translation isn't possible the caller
+   * simply stores the note untranslated.
+   */
+  const translateNoteBody = async (
+    value: string,
+  ): Promise<{ source: string | null; translations: Record<string, unknown>; commit: () => Promise<void> } | null> => {
+    const languages = productionLanguages(project.languages);
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const targets = languages.slice(0, MAX_TARGETS);
+    if (!apiKey || languages.length < 2 || !targets.length) return null;
+
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const [{ count: crewCount }, { count: projectCount }] = await Promise.all([
+      admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+        .eq("function_name", TRANSLATE_NOTE_LOG_NAME).gte("created_at", since)
+        .filter("metadata->>crew_id", "eq", crew!.id),
+      admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+        .eq("function_name", TRANSLATE_NOTE_LOG_NAME).gte("created_at", since)
+        .filter("metadata->>project_id", "eq", projectId),
+    ]);
+    if ((crewCount ?? 0) >= NOTES_PER_CREW_24H || (projectCount ?? 0) >= NOTES_PER_PROJECT_24H) return null;
+
+    const balance = await ensureBalance(ownerId, 1);
+    if (!balance.ok) return null;
+
+    const startedAt = Date.now();
+    const { result } = await translateWithRetry(apiKey, targets, null, value, "auto");
+    if (!result) return null;
+
+    const fallback = crew!.preferred_language && languages.includes(crew!.preferred_language)
+      ? crew!.preferred_language
+      : languages[0] || "en";
+    const storedSource = result.detected || fallback;
+    const translations = buildTranslationsColumn(result, storedSource);
+    if (!Object.keys(translations).length) return null;
+
+    return {
+      source: storedSource,
+      translations,
+      // Only bill once the row is safely written.
+      commit: async () => {
+        await charge(ownerId, 1, TRANSLATE_NOTE_LOG_NAME, { project_id: projectId, crew_id: crew!.id });
+        await logUsage({
+          userId: ownerId,
+          functionName: TRANSLATE_NOTE_LOG_NAME,
+          provider: "lovable-gateway",
+          operation: "text",
+          tokensInput: result.usage?.prompt_tokens,
+          tokensOutput: result.usage?.completion_tokens,
+          estimatedCostUsd: estimateUsd(result.usage?.prompt_tokens, result.usage?.completion_tokens),
+          status: "success",
+          latencyMs: Date.now() - startedAt,
+          metadata: { project_id: projectId, crew_id: crew!.id },
+        });
+      },
+    };
+  };
+
+
 
   try {
     switch (action) {
@@ -1005,6 +1094,148 @@ serve(async (req) => {
         });
 
         return json({ message: saved, translated: true });
+      }
+
+      // ------------------------------------------------------------ notes_list
+      case "notes_list": {
+        let query = admin
+          .from("production_notes")
+          .select(NOTE_CREW_FIELDS)
+          .eq("project_id", projectId)
+          .order("created_at", { ascending: false })
+          .limit(200);
+        if (body.include_resolved !== true) query = query.eq("resolved", false);
+        const { data, error } = await query;
+        if (error) {
+          console.error("crew notes_list failed:", error.message);
+          return json({ error: "Couldn't load the notes." }, 500);
+        }
+        return json({
+          notes: data || [],
+          languages: productionLanguages(project.languages),
+          preferred_language: crew!.preferred_language,
+        });
+      }
+
+      // ------------------------------------------------------------- note_post
+      case "note_post": {
+        const tag = text(body.tag, 20);
+        if (!NOTE_TAGS.includes(tag)) return BAD("Please pick a tag for this note.");
+        const priority = text(body.priority, 20) || "normal";
+        if (!NOTE_PRIORITIES.includes(priority)) return BAD("Unknown priority.");
+        const shootDay = text(body.shoot_day, 10);
+        if (shootDay && !isDay(shootDay)) return BAD("That shoot day isn't a valid date.");
+        const sceneId = text(body.scene_id, 64);
+        if (sceneId && !(await sceneInProject(sceneId))) return NOT_FOUND();
+        const value = text(body.body, MAX_CREW_NOTE);
+        if (value.length < 2) return BAD("Please write the note first.");
+
+        const translated = await translateNoteBody(value);
+        const { data, error } = await admin
+          .from("production_notes")
+          .insert({
+            project_id: projectId,
+            tag,
+            priority,
+            body: value,
+            shoot_day: shootDay || null,
+            scene_id: sceneId || null,
+            source_language: translated?.source ?? null,
+            translations: translated?.translations ?? {},
+            created_by_name: crew!.name,
+            created_by_department: crew!.department,
+            created_by_crew_id: crew!.id,
+          })
+          .select(NOTE_CREW_FIELDS)
+          .single();
+        if (error || !data) {
+          console.error("crew note insert failed:", error?.message);
+          return json({ error: "That note couldn't be saved." }, 500);
+        }
+        if (translated) await translated.commit();
+        return json({ note: data, translated: !!translated });
+      }
+
+      // ---------------------------------------------------------- note_resolve
+      case "note_resolve": {
+        const note = await getNote(text(body.note_id, 64));
+        if (!note) return NOT_FOUND();
+        const resolved = body.resolved === true;
+        const { data, error } = await admin
+          .from("production_notes")
+          .update({
+            resolved,
+            resolved_by_name: resolved ? crew!.name : null,
+            resolved_at: resolved ? new Date().toISOString() : null,
+          })
+          .eq("id", note.id)
+          .select(NOTE_CREW_FIELDS)
+          .single();
+        if (error || !data) return json({ error: "Couldn't save that." }, 500);
+        return json({ note: data });
+      }
+
+      // ------------------------------------------------------------- note_edit
+      case "note_edit": {
+        const note = await getNote(text(body.note_id, 64));
+        if (!note) return NOT_FOUND();
+        if (note.created_by_crew_id !== crew!.id) return FORBIDDEN("You can only change notes you wrote.");
+
+        const patch: Record<string, unknown> = {};
+        if (body.tag !== undefined) {
+          const tag = text(body.tag, 20);
+          if (!NOTE_TAGS.includes(tag)) return BAD("Please pick a tag for this note.");
+          patch.tag = tag;
+        }
+        if (body.priority !== undefined) {
+          const priority = text(body.priority, 20);
+          if (!NOTE_PRIORITIES.includes(priority)) return BAD("Unknown priority.");
+          patch.priority = priority;
+        }
+        if (body.shoot_day !== undefined) {
+          const shootDay = text(body.shoot_day, 10);
+          if (shootDay && !isDay(shootDay)) return BAD("That shoot day isn't a valid date.");
+          patch.shoot_day = shootDay || null;
+        }
+        if (body.scene_id !== undefined) {
+          const sceneId = text(body.scene_id, 64);
+          if (sceneId && !(await sceneInProject(sceneId))) return NOT_FOUND();
+          patch.scene_id = sceneId || null;
+        }
+
+        let translated: Awaited<ReturnType<typeof translateNoteBody>> = null;
+        if (body.body !== undefined) {
+          const value = text(body.body, MAX_CREW_NOTE);
+          if (value.length < 2) return BAD("Please write the note first.");
+          patch.body = value;
+          if (value !== note.body) {
+            // New wording invalidates the old translations.
+            translated = await translateNoteBody(value);
+            patch.source_language = translated?.source ?? null;
+            patch.translations = translated?.translations ?? {};
+          }
+        }
+        if (!Object.keys(patch).length) return BAD("Nothing to change.");
+
+        const { data, error } = await admin
+          .from("production_notes")
+          .update(patch)
+          .eq("id", note.id)
+          .select(NOTE_CREW_FIELDS)
+          .single();
+        if (error || !data) return json({ error: "Couldn't save that." }, 500);
+        if (translated) await translated.commit();
+        return json({ note: data, translated: !!translated });
+      }
+
+      // ----------------------------------------------------------- note_delete
+      case "note_delete": {
+        const note = await getNote(text(body.note_id, 64));
+        if (!note) return NOT_FOUND();
+        if (note.created_by_crew_id !== crew!.id) return FORBIDDEN("You can only remove notes you wrote.");
+        const { error } = await admin.from("production_notes").delete().eq("id", note.id);
+        if (error) return json({ error: "Couldn't remove that note." }, 500);
+        return json({ ok: true });
       }
 
 

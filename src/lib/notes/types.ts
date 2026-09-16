@@ -39,6 +39,8 @@ export const NOTE_PRIORITIES: Array<{ value: NotePriority; label: string; color:
 ];
 
 export const MAX_NOTE_CHARS = 5000;
+/** Crew members writing from the private link get a shorter limit. */
+export const MAX_CREW_NOTE_CHARS = 2000;
 
 export interface NoteScene {
   id: string;
@@ -54,7 +56,8 @@ export const sceneLabel = (s?: NoteScene | null) => {
 
 export interface ProductionNote {
   id: string;
-  project_id: string;
+  /** Absent on notes served to the crew — they only ever see one production. */
+  project_id?: string;
   tag: string;
   body: string;
   source_language: string | null;
@@ -68,12 +71,37 @@ export interface ProductionNote {
   resolved_at: string | null;
   created_by_name: string;
   created_by_department: string | null;
+  /** Set when the note came in through the crew's private link. */
+  created_by_crew_id?: string | null;
   created_at: string;
   updated_at?: string;
 }
 
 export const NOTE_FIELDS =
-  "id, project_id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_at, updated_at";
+  "id, project_id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_by_crew_id, created_at, updated_at";
+
+/** Groups notes by shoot day, newest day first and "No day" last, pinned on top. */
+export function groupNotesByDay(notes: ProductionNote[]): Array<{ day: string; notes: ProductionNote[] }> {
+  const byDay = new Map<string, ProductionNote[]>();
+  notes.forEach((n) => {
+    const key = n.shoot_day || "";
+    const list = byDay.get(key) || [];
+    list.push(n);
+    byDay.set(key, list);
+  });
+  const days = [...byDay.keys()].sort((a, b) => {
+    if (!a) return 1;
+    if (!b) return -1;
+    return b.localeCompare(a);
+  });
+  return days.map((day) => ({
+    day,
+    notes: [...byDay.get(day)!].sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return (b.created_at || "").localeCompare(a.created_at || "");
+    }),
+  }));
+}
 
 /** Translations as an ordered list of { code, text }. */
 export function noteTranslations(n: ProductionNote): Array<{ code: string; text: string }> {
