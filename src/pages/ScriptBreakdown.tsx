@@ -7,6 +7,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { aiInvoke } from "@/lib/aiInvoke";
 import { useOCRUpload } from "@/hooks/useOCRUpload";
 import { PDFUploadProgress } from "@/components/PDFUploadProgress";
+import { toast } from "@/hooks/use-toast";
+import DepartmentChecklist from "@/components/breakdown/DepartmentChecklist";
+import SignOffBox from "@/components/breakdown/SignOffBox";
+import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff } from "@/components/breakdown/types";
 
 const SITE = "https://filmmakergenius.com";
 const TEAL = "#00d4aa";
