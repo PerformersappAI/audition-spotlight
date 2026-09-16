@@ -38,6 +38,14 @@ const StatusBadge = ({ status }: { status: string }) => {
   );
 };
 
+const CrewTag = () => (
+  <span style={{
+    display: "inline-block", marginLeft: 8, padding: "2px 8px", borderRadius: 9999,
+    background: "rgba(0,212,170,0.12)", border: "1px solid rgba(0,212,170,0.35)",
+    color: "#00d4aa", fontSize: 11, fontWeight: 700, whiteSpace: "nowrap",
+  }}>via crew link</span>
+);
+
 const th: React.CSSProperties = {
   textAlign: "left", padding: "10px 12px", fontSize: 12, letterSpacing: "0.05em",
   textTransform: "uppercase", color: "rgba(255,255,255,0.4)", fontWeight: 600, whiteSpace: "nowrap",
@@ -235,7 +243,10 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
                     {openId === e.id ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                   </td>
                   <td style={{ ...td, whiteSpace: "nowrap" }}>{shortDate(e.expense_date)}</td>
-                  <td style={td}>{e.submitted_by_name}</td>
+                  <td style={td}>
+                    {e.submitted_by_name}
+                    {e.submitted_by_crew_id && <CrewTag />}
+                  </td>
                   <td style={td}>{e.department}</td>
                   <td style={td}>{e.kind === "invoice" ? `Invoice ${e.invoice_number || ""}`.trim() : "Receipt"}</td>
                   <td style={td}>{e.vendor || e.description || "—"}</td>
@@ -270,6 +281,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
                   </div>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 2 }}>
                     {e.submitted_by_name} · {paymentLabel(e.payment_method)}
+                    {e.submitted_by_crew_id && <CrewTag />}
                   </div>
                 </div>
                 <div style={{ textAlign: "right", flex: "0 0 auto" }}>
