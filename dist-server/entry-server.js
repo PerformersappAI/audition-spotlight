@@ -6879,17 +6879,17 @@ const Blog = () => {
   ] });
 };
 const BlogPost = () => {
-  const { slug } = useParams();
+  const { slug: slug2 } = useParams();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    if (!slug) return;
+    if (!slug2) return;
     (async () => {
-      const { data } = await supabase.from("blog_posts").select("*").eq("slug", slug).eq("published", true).maybeSingle();
+      const { data } = await supabase.from("blog_posts").select("*").eq("slug", slug2).eq("published", true).maybeSingle();
       setPost(data ?? null);
       setLoading(false);
     })();
-  }, [slug]);
+  }, [slug2]);
   if (loading) {
     return /* @__PURE__ */ jsx("div", { className: "container mx-auto px-4 py-24 text-center text-muted-foreground", children: "Loading…" });
   }
@@ -10492,11 +10492,11 @@ function Card({ card, variant, statLayout }) {
   ] });
 }
 function MonetizationSubPage({ group }) {
-  const { slug } = useParams();
+  const { slug: slug2 } = useParams();
   const location = useLocation();
   const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
   const hub = groupHub[group];
-  const entry = slug ? monetizationSub[`${group}/${slug}`] : void 0;
+  const entry = slug2 ? monetizationSub[`${group}/${slug2}`] : void 0;
   if (!entry) {
     return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', system-ui, sans-serif", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "80px 24px" }, children: [
       /* @__PURE__ */ jsx(Seo, { title: `Coming Soon — ${hub.title} | Filmmaker Genius`, description: `This ${hub.title} profile list is coming soon on Filmmaker Genius Academy.`, canonical: `https://filmmakergenius.com${hub.path}` }),
@@ -10998,10 +10998,10 @@ const gleNiche = {
   }
 };
 function GleNichePage() {
-  const { slug } = useParams();
+  const { slug: slug2 } = useParams();
   const location = useLocation();
   const canonical = `https://filmmakergenius.com${location.pathname.replace(/\/$/, "")}`;
-  const data = slug ? gleNiche[slug] : void 0;
+  const data = slug2 ? gleNiche[slug2] : void 0;
   if (!data) {
     return /* @__PURE__ */ jsxs("div", { style: { background: "#14181c", minHeight: "60vh", color: "#fff", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", fontFamily: "system-ui, -apple-system, sans-serif", padding: "80px 20px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsx("h1", { style: { fontSize: 28, marginBottom: 14 }, children: "Coming soon" }),
@@ -12328,15 +12328,15 @@ const loaders = {
   "working-with-child-actors": () => import("./assets/childActors-BEpaSmb6.js").then((m) => m.childActors)
 };
 const cache = {};
-function getCourse(slug) {
-  return cache[slug];
+function getCourse(slug2) {
+  return cache[slug2];
 }
-async function loadCourse(slug) {
-  if (cache[slug]) return cache[slug];
-  const load = loaders[slug];
+async function loadCourse(slug2) {
+  if (cache[slug2]) return cache[slug2];
+  const load = loaders[slug2];
   if (!load) return void 0;
   const c = await load();
-  cache[slug] = c;
+  cache[slug2] = c;
   return c;
 }
 const courseSlugs = Object.keys(loaders);
@@ -24186,6 +24186,237 @@ const prepareImage = async (file) => {
   if (!blob) throw new ImageError("Your browser couldn't process that image.");
   return blob;
 };
+const MARGIN = 15;
+const BODY = "NotoSans";
+const MONO = "NotoSansMono";
+const FONT_FILES = [
+  { file: "/fonts/NotoSans-Regular.ttf", family: BODY, style: "normal" },
+  { file: "/fonts/NotoSans-Bold.ttf", family: BODY, style: "bold" },
+  { file: "/fonts/NotoSansMono-Regular.ttf", family: MONO, style: "normal" }
+];
+let fontCache = null;
+const toBase64 = (buf) => {
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  const chunk = 32768;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+};
+async function loadFonts(doc) {
+  try {
+    if (!fontCache) {
+      const entries = await Promise.all(
+        FONT_FILES.map(async (f) => {
+          const res = await fetch(f.file);
+          if (!res.ok) throw new Error(`font ${f.file}`);
+          return [f.file, toBase64(await res.arrayBuffer())];
+        })
+      );
+      fontCache = Object.fromEntries(entries);
+    }
+    FONT_FILES.forEach((f) => {
+      const name = f.file.split("/").pop();
+      doc.addFileToVFS(name, fontCache[f.file]);
+      doc.addFont(name, f.family, f.style);
+    });
+    return { body: BODY, mono: MONO };
+  } catch {
+    return { body: "helvetica", mono: "courier" };
+  }
+}
+const sceneHeading = (s) => s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+const shortDate = (iso) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString(void 0, { day: "2-digit", month: "short" });
+};
+const longDate = (iso) => {
+  if (!iso) return "";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString(void 0, { day: "2-digit", month: "short", year: "numeric" });
+};
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+function breakdownFileName(input) {
+  const date = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+  const base = `breakdown-${slug(input.projectTitle)}`;
+  if (input.scope === "all" || input.scenes.length !== 1) return `${base}-all-scenes-${date}.pdf`;
+  const scene = input.scenes[0];
+  const label = scene.scene_number || scene.label || "scene";
+  return `${base}-scene-${slug(label)}-${date}.pdf`;
+}
+const photoSummary = (rows) => {
+  const refs = rows.filter((p) => p.is_reference);
+  const own = rows.filter((p) => !p.is_reference);
+  const parts = [];
+  if (own.length) {
+    const approved = own.filter((p) => p.status === "approved").length;
+    const awaiting = own.filter((p) => p.status === "awaiting").length;
+    const rejected = own.filter((p) => p.status === "rejected").length;
+    const detail = [
+      approved ? `${approved} approved` : "",
+      awaiting ? `${awaiting} awaiting` : "",
+      rejected ? `${rejected} changes needed` : ""
+    ].filter(Boolean).join(", ");
+    parts.push(detail ? `${own.length} · ${detail}` : `${own.length}`);
+  }
+  if (refs.length) parts.push(`REF ${refs.length}`);
+  return parts.length ? parts.join(" · ") : "—";
+};
+async function buildBreakdownPDF(input) {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const { body, mono } = await loadFonts(doc);
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const contentW = pageW - MARGIN * 2;
+  let y = 28;
+  const ensure = (needed) => {
+    if (y + needed > pageH - 20) {
+      doc.addPage();
+      y = 28;
+    }
+  };
+  const line = (text, size2, style, grey = false) => {
+    doc.setFont(body, style);
+    doc.setFontSize(size2);
+    doc.setTextColor(grey ? 110 : 20, grey ? 110 : 20, grey ? 110 : 20);
+    const lines = doc.splitTextToSize(text, contentW);
+    ensure(lines.length * (size2 * 0.45) + 2);
+    lines.forEach((l) => {
+      doc.text(l, MARGIN, y);
+      y += size2 * 0.45;
+    });
+  };
+  input.scenes.forEach((scene, sceneIndex) => {
+    const sceneItems = input.items.filter((i) => i.scene_id === scene.id);
+    const sceneSignoffs = input.signoffs.filter((s) => s.scene_id === scene.id);
+    const itemIds = new Set(sceneItems.map((i) => i.id));
+    const scenePhotos = input.photos.filter((p) => itemIds.has(p.item_id));
+    if (sceneIndex > 0) {
+      doc.addPage();
+      y = 28;
+    }
+    line(`${sceneHeading(scene)}${scene.label && scene.scene_number ? ` — ${scene.label}` : ""}`, 16, "bold");
+    y += 1;
+    const checked = sceneItems.filter((i) => i.checked).length;
+    const signed = DEPARTMENTS.filter((d) => sceneSignoffs.some((s) => s.department === d.key)).length;
+    const awaiting = scenePhotos.filter((p) => !p.is_reference && p.status === "awaiting").length;
+    line(
+      `${checked}/${sceneItems.length} items ready · ${signed}/5 departments signed off · ${awaiting} photo${awaiting === 1 ? "" : "s"} awaiting approval`,
+      9,
+      "normal",
+      true
+    );
+    y += 4;
+    DEPARTMENTS.forEach((dept) => {
+      var _a2;
+      const deptItems = sceneItems.filter((i) => i.department === dept.key).sort((a, b) => a.sort_order - b.sort_order);
+      ensure(24);
+      line(dept.label.toUpperCase(), 11, "bold");
+      y += 1;
+      if (!deptItems.length) {
+        line("Nothing listed.", 9, "normal", true);
+      } else {
+        autoTable(doc, {
+          startY: y,
+          head: [["", "Item", "Checked by", "Photos"]],
+          body: deptItems.map((item) => {
+            const edited = item.original_text && item.original_text !== item.text;
+            const text = (item.flagged ? "! " : "") + item.text + (edited ? ` (edited — AI: ${item.original_text})` : "");
+            const by = item.checked && item.checked_by_name ? `${item.checked_by_name}${shortDate(item.checked_at) ? ` · ${shortDate(item.checked_at)}` : ""}` : "—";
+            return [item.checked ? "[x]" : "[ ]", text, by, photoSummary(input.photos.filter((p) => p.item_id === item.id))];
+          }),
+          margin: { left: MARGIN, right: MARGIN, top: 28, bottom: 20 },
+          theme: "grid",
+          styles: {
+            font: body,
+            fontSize: 9,
+            cellPadding: 2,
+            textColor: [30, 30, 30],
+            overflow: "linebreak",
+            lineColor: [200, 200, 200],
+            lineWidth: 0.1
+          },
+          headStyles: { font: body, fontStyle: "bold", fillColor: [238, 238, 238], textColor: [20, 20, 20], fontSize: 9 },
+          columnStyles: {
+            0: { cellWidth: 9, halign: "center" },
+            1: { cellWidth: "auto" },
+            2: { cellWidth: 30 },
+            3: { cellWidth: 34 }
+          },
+          didParseCell: (data) => {
+            var _a3;
+            if (data.section === "body" && data.column.index === 1 && ((_a3 = deptItems[data.row.index]) == null ? void 0 : _a3.flagged)) {
+              data.cell.styles.fontStyle = "bold";
+            }
+          }
+        });
+        y = (((_a2 = doc.lastAutoTable) == null ? void 0 : _a2.finalY) ?? y) + 5;
+      }
+      const so = sceneSignoffs.find((s) => s.department === dept.key);
+      const status = !so ? "Status: Not signed off" : so.status === "good" ? `Status: Ready — ${so.by_name || "crew"}, ${longDate(so.updated_at)}` : `Status: Needs help — ${so.by_name || "crew"}, ${longDate(so.updated_at)}`;
+      line(status, 9, "normal");
+      if (so == null ? void 0 : so.note) line(`Note: ${so.note}`, 9, "normal", true);
+      const rejected = deptItems.flatMap(
+        (item) => input.photos.filter((p) => p.item_id === item.id && !p.is_reference && p.status === "rejected").map((p) => `Changes requested on ${item.text}: ${p.feedback || "no details given"}${p.decided_by_name ? ` (${p.decided_by_name})` : ""}`)
+      );
+      rejected.forEach((r) => line(r, 8, "normal", true));
+      y += 6;
+    });
+    if (input.includeScript && scene.script_text) {
+      ensure(20);
+      line("SCENE SCRIPT", 11, "bold");
+      y += 1;
+      doc.setFont(mono, "normal");
+      doc.setFontSize(8.5);
+      doc.setTextColor(40, 40, 40);
+      scene.script_text.split(/\r?\n/).forEach((raw2) => {
+        const wrapped = doc.splitTextToSize(raw2 || " ", contentW);
+        wrapped.forEach((l) => {
+          if (y + 4 > pageH - 20) {
+            doc.addPage();
+            y = 28;
+            doc.setFont(mono, "normal");
+            doc.setFontSize(8.5);
+          }
+          doc.text(l, MARGIN, y);
+          y += 4;
+        });
+      });
+    }
+  });
+  const generated = (/* @__PURE__ */ new Date()).toLocaleString();
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i += 1) {
+    doc.setPage(i);
+    doc.setFont(body, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(20, 20, 20);
+    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN, 14);
+    if (input.company) {
+      doc.setFont(body, "normal");
+      doc.setFontSize(9);
+      doc.setTextColor(110, 110, 110);
+      doc.text(input.company, pageW - MARGIN, 14, { align: "right" });
+    }
+    doc.setDrawColor(190, 190, 190);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, 17.5, pageW - MARGIN, 17.5);
+    doc.setFont(body, "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(130, 130, 130);
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+  }
+  return doc;
+}
+async function exportBreakdownToPDF(input) {
+  const doc = await buildBreakdownPDF(input);
+  doc.save(breakdownFileName(input));
+}
 const panel$3 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
@@ -24211,7 +24442,9 @@ const BreakdownWorkspace = ({
   reloadKey = 0,
   onRequestAddScene,
   onLoaded,
-  hideSceneStrip
+  hideSceneStrip,
+  projectTitle = "Production",
+  company = null
 }) => {
   const [scenes, setScenes] = useState([]);
   const [items, setItems] = useState([]);
@@ -24225,6 +24458,9 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [deleteScene, setDeleteScene] = useState(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [includeScript, setIncludeScript] = useState(false);
   const failed = (msg) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
   const mergeUrls = useCallback((urls) => {
     const exp = Date.now() + 3600 * 1e3;
@@ -24445,6 +24681,32 @@ const BreakdownWorkspace = ({
     setDeleteScene(null);
     await reload();
   };
+  const runExport = async (scope) => {
+    setExportOpen(false);
+    setExporting(true);
+    try {
+      const chosen = scope === "all" ? scenes : scenes.filter((s) => s.id === sceneId);
+      await exportBreakdownToPDF({
+        projectTitle,
+        company,
+        scenes: chosen,
+        items,
+        signoffs,
+        photos,
+        includeScript,
+        scope
+      });
+      toast({ title: "PDF ready", description: "Your breakdown has been downloaded." });
+    } catch (err) {
+      toast({
+        title: "Export failed",
+        description: (err == null ? void 0 : err.message) || "The PDF couldn't be generated.",
+        variant: "destructive"
+      });
+    } finally {
+      setExporting(false);
+    }
+  };
   const photosByItem = useMemo(() => {
     const map = {};
     photos.forEach((p) => {
@@ -24487,6 +24749,91 @@ const BreakdownWorkspace = ({
     [lightbox, photos]
   );
   const deptItems = sceneItems.filter((i) => i.department === activeDept);
+  const exportButton = /* @__PURE__ */ jsxs(
+    "button",
+    {
+      onClick: () => setExportOpen((v2) => !v2),
+      disabled: exporting,
+      className: "sb-tap",
+      "aria-label": "Export PDF",
+      style: {
+        ...ghostBtn$1,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 8,
+        opacity: exporting ? 0.6 : 1,
+        width: "100%"
+      },
+      children: [
+        exporting ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Download, { size: 16 }),
+        exporting ? "Building PDF…" : "Export PDF"
+      ]
+    }
+  );
+  const exportMenu = /* @__PURE__ */ jsxs(
+    "div",
+    {
+      style: {
+        ...panel$3,
+        position: "absolute",
+        right: 0,
+        bottom: "calc(100% + 8px)",
+        background: "#10101b",
+        padding: 10,
+        minWidth: 250,
+        zIndex: 40,
+        boxShadow: "0 12px 32px rgba(0,0,0,0.55)"
+      },
+      children: [
+        [["scene", "This scene"], ["all", "Whole production (all scenes)"]].map(([scope, label]) => /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => runExport(scope),
+            disabled: scope === "scene" ? !sceneId : scenes.length === 0,
+            className: "sb-tap",
+            style: {
+              display: "block",
+              width: "100%",
+              textAlign: "left",
+              background: "none",
+              border: "none",
+              color: "#fff",
+              fontSize: 14,
+              fontWeight: 600,
+              cursor: "pointer",
+              padding: "0 10px",
+              borderRadius: 8,
+              fontFamily: "'Inter Tight', sans-serif"
+            },
+            children: label
+          },
+          scope
+        )),
+        /* @__PURE__ */ jsxs(
+          "label",
+          {
+            style: {
+              display: "flex",
+              alignItems: "center",
+              gap: 8,
+              marginTop: 6,
+              paddingTop: 10,
+              borderTop: "1px solid rgba(255,255,255,0.1)",
+              fontSize: 13,
+              color: "rgba(255,255,255,0.6)",
+              cursor: "pointer",
+              minHeight: 44
+            },
+            children: [
+              /* @__PURE__ */ jsx("input", { type: "checkbox", checked: includeScript, onChange: (e) => setIncludeScript(e.target.checked) }),
+              "Include scene script"
+            ]
+          }
+        )
+      ]
+    }
+  );
   if (loading) {
     return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
@@ -24494,6 +24841,18 @@ const BreakdownWorkspace = ({
     ] });
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx("style", { children: `
+        .bw-export-mobile { display: none; }
+        @media (max-width: 700px) {
+          .bw-export-desktop { display: none !important; }
+          .bw-export-mobile {
+            display: block; position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+            padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+            background: rgba(10,10,18,0.96);
+            border-top: 1px solid rgba(255,255,255,0.1);
+          }
+        }
+      ` }),
     !hideSceneStrip && /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
       /* @__PURE__ */ jsx("div", { style: {
         fontFamily: "'Fraunces', serif",
@@ -24600,26 +24959,32 @@ const BreakdownWorkspace = ({
           /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$4, transition: "width .3s" } }) })
         ] });
       })(),
-      /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }, children: [["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]].map(([key, label]) => /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: () => setView(key),
-          className: "sb-tap",
-          style: {
-            padding: "0 18px",
-            borderRadius: 10,
-            background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-            border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-            color: view === key ? TEAL$4 : "rgba(255,255,255,0.7)",
-            fontSize: 14,
-            fontWeight: 700,
-            cursor: "pointer",
-            fontFamily: "'Inter Tight', sans-serif"
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap", alignItems: "center" }, children: [
+        [["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]].map(([key, label]) => /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setView(key),
+            className: "sb-tap",
+            style: {
+              padding: "0 18px",
+              borderRadius: 10,
+              background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+              border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+              color: view === key ? TEAL$4 : "rgba(255,255,255,0.7)",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "'Inter Tight', sans-serif"
+            },
+            children: label
           },
-          children: label
-        },
-        key
-      )) }),
+          key
+        )),
+        /* @__PURE__ */ jsxs("div", { className: "bw-export-desktop", style: { position: "relative", marginLeft: "auto" }, children: [
+          exportButton,
+          exportOpen && exportMenu
+        ] })
+      ] }),
       view === "approvals" ? /* @__PURE__ */ jsx(
         ApprovalsView,
         {
@@ -24736,6 +25101,10 @@ const BreakdownWorkspace = ({
     ] }),
     !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
     !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
+    selectedScene && /* @__PURE__ */ jsx("div", { className: "bw-export-mobile", children: /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
+      exportOpen && exportMenu,
+      exportButton
+    ] }) }),
     deleteScene && /* @__PURE__ */ jsx(
       "div",
       {
@@ -25698,7 +26067,9 @@ const ScriptBreakdown = () => {
             setShowUpload(true);
             setError("");
           },
-          onLoaded: ({ scenes }) => setSceneCount(scenes.length)
+          onLoaded: ({ scenes }) => setSceneCount(scenes.length),
+          projectTitle: selectedProject.title,
+          company: selectedProject.company
         },
         selectedProject.id
       ),
@@ -25874,7 +26245,9 @@ const CrewBreakdown = () => {
       {
         adapter,
         sceneId,
-        onSelectScene: (id) => setSceneId(id || "")
+        onSelectScene: (id) => setSceneId(id || ""),
+        projectTitle: (project == null ? void 0 : project.title) || "Production",
+        company: (project == null ? void 0 : project.company) ?? null
       }
     );
   };
@@ -33882,7 +34255,7 @@ function Field({
   ] });
 }
 function PublicCastCrewForm() {
-  const { slug } = useParams();
+  const { slug: slug2 } = useParams();
   const [productionName, setProductionName] = useState(null);
   const [formMissing, setFormMissing] = useState(false);
   const [firstName, setFirstName] = useState("");
@@ -33902,12 +34275,12 @@ function PublicCastCrewForm() {
   const isActorLike = job === "Actor" || job === "Background / Extra";
   const isOther = job === "Other";
   useEffect(() => {
-    if (!slug) return;
+    if (!slug2) return;
     let active = true;
     (async () => {
       const { data, error: fnError } = await supabase.functions.invoke(
         "submit-cast-crew-contact",
-        { body: { slug, lookup_only: true, website: "" } }
+        { body: { slug: slug2, lookup_only: true, website: "" } }
       );
       if (!active) return;
       if (fnError) return;
@@ -33917,7 +34290,7 @@ function PublicCastCrewForm() {
     return () => {
       active = false;
     };
-  }, [slug]);
+  }, [slug2]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -33936,7 +34309,7 @@ function PublicCastCrewForm() {
         "submit-cast-crew-contact",
         {
           body: {
-            slug,
+            slug: slug2,
             first_name: firstName,
             last_name: lastName,
             phone,
@@ -33972,7 +34345,7 @@ function PublicCastCrewForm() {
       {
         title: "Cast & Crew Contact Form — Filmmaker Genius",
         description: "Join the production list. Share your contact info, role, and availability for cast and crew opportunities.",
-        canonical: `https://filmmakergenius.com/f/${slug ?? ""}`
+        canonical: `https://filmmakergenius.com/f/${slug2 ?? ""}`
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -77492,9 +77865,9 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
 async function preloadForUrl(url2) {
   const m = url2.match(/^\/academy\/([^/]+)(?:\/[^/]+)?\/?$/);
   if (!m) return;
-  const slug = m[1];
-  if (courseSlugs.includes(slug)) {
-    await loadCourse(slug);
+  const slug2 = m[1];
+  if (courseSlugs.includes(slug2)) {
+    await loadCourse(slug2);
   }
 }
 async function render(url2) {
