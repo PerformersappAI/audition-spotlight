@@ -300,6 +300,7 @@ const AppContent = () => (
       <Route path="/call-sheet" element={<><ToolSeo path="/call-sheet" /><ToolGate><CallSheet /></ToolGate></>} />
       <Route path="/script-breakdown" element={<><ToolSeo path="/script-breakdown" /><ToolGate><ScriptBreakdown /></ToolGate></>} />
       <Route path="/receipts-expenses" element={<><ToolSeo path="/receipts-expenses" /><ToolGate><ReceiptsExpenses /></ToolGate></>} />
+      <Route path="/set-translator" element={<><ToolSeo path="/set-translator" /><ToolGate><SetTranslator /></ToolGate></>} />
       <Route path="/b/:token" element={<CrewBreakdown />} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
