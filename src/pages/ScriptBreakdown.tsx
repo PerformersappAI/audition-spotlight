@@ -120,7 +120,8 @@ const ScriptBreakdown = () => {
 
   const [projects, setProjects] = useState<Project[]>([]);
   const [scenes, setScenes] = useState<Scene[]>([]);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<BreakdownItem[]>([]);
+  const [signoffs, setSignoffs] = useState<BreakdownSignoff[]>([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
 
   const [showNewProject, setShowNewProject] = useState(false);
