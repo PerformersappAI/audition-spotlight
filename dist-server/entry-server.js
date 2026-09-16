@@ -21340,7 +21340,11 @@ async function geocodeLocation(location) {
   if (cached) return cached;
   const parts = raw2.split(",").map((p) => p.trim()).filter(Boolean);
   const attempts = [raw2];
-  if (parts.length > 1) attempts.push(parts.slice(-2).join(", "), parts[parts.length - 1]);
+  if (parts.length > 1) {
+    [...parts].reverse().forEach((part) => {
+      if (part.length > 3 && !/^\d[\d\s-]*$/.test(part)) attempts.push(part);
+    });
+  }
   for (const attempt of attempts) {
     const hit = await lookupOnce(attempt);
     if (hit) {
