@@ -306,8 +306,8 @@ const ProductionPicker = ({
               </select>
               {selected && (
                 <button
-                  aria-label="Rename production"
-                  onClick={() => { setRenameValue(selected.title); setRenaming(true); }}
+                  aria-label="Production settings"
+                  onClick={openSettings}
                   style={{ ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}
                 >
                   <Pencil size={16} />
@@ -374,12 +374,90 @@ const ProductionPicker = ({
         </Modal>
       )}
 
-      {renaming && selected && (
-        <Modal title="Rename production" onClose={() => setRenaming(false)}>
-          <input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} style={inputStyle} />
-          <button onClick={saveRename} style={{ ...primaryBtn, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }}>
-            <Check size={16} /> Save
-          </button>
+      {settingsOpen && selected && (
+        <Modal title="Production settings" onClose={() => { if (!savingSettings) setSettingsOpen(false); }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Title</label>
+              <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Production company (optional)</label>
+              <input value={editCompany} onChange={(e) => setEditCompany(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Status</label>
+              <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} style={inputStyle}>
+                <option value="upcoming" style={{ background: "#10101b" }}>Upcoming</option>
+                <option value="in_production" style={{ background: "#10101b" }}>In production</option>
+                <option value="wrapped" style={{ background: "#10101b" }}>Wrapped</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Start date (optional)</label>
+              <input type="date" value={editStart} onChange={(e) => setEditStart(e.target.value)} style={inputStyle} />
+            </div>
+            {settingsError && <div style={{ color: "#ff9d9d", fontSize: 14 }}>{settingsError}</div>}
+            <button
+              onClick={saveSettings}
+              disabled={savingSettings || !editTitle.trim()}
+              style={{
+                ...primaryBtn, marginTop: 4, opacity: savingSettings || !editTitle.trim() ? 0.45 : 1,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              }}
+            >
+              {savingSettings ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : <><Check size={16} /> Save changes</>}
+            </button>
+
+            <div style={{ marginTop: 8, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>
+                Danger zone
+              </div>
+              <button
+                onClick={() => { setConfirmDelete(true); setDeleteText(""); setDeleteError(""); }}
+                style={{
+                  ...ghostBtn, width: "100%", color: "#ff8f8f",
+                  border: "1px solid rgba(255,92,92,0.45)", background: "transparent",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                }}
+              >
+                <Trash2 size={16} /> Delete this production
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {confirmDelete && selected && (
+        <Modal title="Delete production" onClose={() => { if (!deleting) setConfirmDelete(false); }}>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>
+            Delete {selected.title}? This permanently removes its scenes, checklists, photos, receipts, expenses,
+            messages, notes and crew link. Your cast &amp; crew contacts are kept.
+          </p>
+          <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "18px 0 6px" }}>
+            Type the production title to confirm
+          </label>
+          <input
+            value={deleteText}
+            onChange={(e) => setDeleteText(e.target.value)}
+            placeholder={selected.title}
+            style={inputStyle}
+          />
+          {deleteError && <div style={{ color: "#ff9d9d", fontSize: 14, marginTop: 12 }}>{deleteError}</div>}
+          <div className="sb-row" style={{ display: "flex", gap: 12, marginTop: 18 }}>
+            <button
+              onClick={runDelete}
+              disabled={deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase()}
+              style={{
+                ...ghostBtn, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700,
+                opacity: deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase() ? 0.4 : 1,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              }}
+            >
+              {deleting ? <><Loader2 size={16} className="animate-spin" /> Deleting…</> : "Delete permanently"}
+            </button>
+            <button onClick={() => setConfirmDelete(false)} disabled={deleting} style={ghostBtn}>Cancel</button>
+          </div>
         </Modal>
       )}
     </div>
