@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { serviceClient } from "../_shared/credits.ts";
+import { charge, ensureBalance, estimateUsd, logUsage, serviceClient } from "../_shared/credits.ts";
+import { callReceiptAi, parseReceipt, MAX_RECEIPT_BYTES, RECEIPT_MIME_TYPES } from "../_shared/receipt.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,7 +8,10 @@ const corsHeaders = {
 };
 
 const BUCKET = "breakdown-photos";
-const MAX_BODY = 4 * 1024 * 1024; // 4 MB
+const EXPENSE_BUCKET = "expense-receipts";
+const MAX_BODY = 4 * 1024 * 1024; // 4 MB for ordinary actions
+const MAX_UPLOAD_BODY = 12 * 1024 * 1024; // 12 MB for the two file-carrying actions
+const UPLOAD_ACTIONS = ["expense_read_receipt", "expense_submit"];
 const MAX_IMAGE_BYTES = 3 * 1024 * 1024; // decoded
 const RATE_LIMIT = 120; // requests per minute per token
 const DEPARTMENTS = ["props", "locations", "makeup_sfx", "wardrobe", "vehicles"];
@@ -15,17 +19,25 @@ const CREW_DEPARTMENTS = [
   "Director", "Producer", "Assistant Director", "Props", "Locations",
   "Makeup & SFX", "Wardrobe", "Transport / Vehicles", "Camera", "Art Department", "Other",
 ];
+const PAYMENT_METHODS = ["reimburse", "per_diem", "company_card"];
 const REF_HOSTS = [
   "openverse.org", "api.openverse.org",
   "upload.wikimedia.org", "commons.wikimedia.org", "wikimedia.org",
   "flickr.com", "live.staticflickr.com", "staticflickr.com",
 ];
 
+// AI receipt reading is billed to the production owner, so cap the abuse surface.
+const AI_READS_PER_CREW_24H = 25;
+const AI_READS_PER_PROJECT_24H = 150;
+const AI_LOG_NAME = "read-receipt-crew";
+
 const PHOTO_FIELDS =
   "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
 const ITEM_FIELDS =
   "id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, added_by_crew_id, sort_order";
 const SIGNOFF_FIELDS = "id, scene_id, department, status, note, by_name, by_department, updated_at";
+const EXPENSE_SAFE_FIELDS =
+  "id, project_id, kind, department, vendor, description, expense_date, currency, amount, payment_method, status, status_note, notes, line_items, invoice_number, bill_to, receipt_path, item_photo_path, linked_item_id, submitted_by_name, submitted_by_email, created_at";
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), {
@@ -76,6 +88,41 @@ function isImage(bytes: Uint8Array): boolean {
   return riff === "RIFF" && webp === "WEBP";
 }
 
+function isPdfBytes(bytes: Uint8Array): boolean {
+  return bytes.length > 4 && String.fromCharCode(...bytes.slice(0, 4)) === "%PDF";
+}
+
+/** Validates a base64 receipt/invoice file against its declared mime type. */
+function checkReceiptFile(base64: string, mime: string): { bytes: Uint8Array } | Response {
+  if (!RECEIPT_MIME_TYPES.includes(mime)) return BAD("Please use a JPG, PNG, WEBP or PDF.");
+  let bytes: Uint8Array;
+  try {
+    bytes = decodeBase64(base64);
+  } catch {
+    return BAD("That file couldn't be read.");
+  }
+  if (bytes.byteLength > MAX_RECEIPT_BYTES) return BAD("That file is too large. Please use one under 8 MB.");
+  const okBytes = mime === "application/pdf" ? isPdfBytes(bytes) : isImage(bytes);
+  if (!okBytes) return BAD("That file doesn't look like a JPG, PNG, WEBP or PDF.");
+  return { bytes };
+}
+
+const EXT_BY_MIME: Record<string, string> = {
+  "image/jpeg": "jpg",
+  "image/png": "png",
+  "image/webp": "webp",
+  "application/pdf": "pdf",
+};
+
+function escapeHtml(value: unknown): string {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function safeReferenceUrl(url: string): boolean {
   try {
     const u = new URL(url);
@@ -86,16 +133,71 @@ function safeReferenceUrl(url: string): boolean {
   }
 }
 
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value);
+const round2 = (n: number) => Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
+const today = () => new Date().toISOString().slice(0, 10);
+
+/** Fire-and-report a Resend email. Never throws. */
+async function sendEmail(to: string, subject: string, html: string): Promise<boolean> {
+  const key = Deno.env.get("RESEND_API_KEY");
+  if (!key) {
+    console.error("RESEND_API_KEY is not configured — skipping email");
+    return false;
+  }
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        from: "Filmmaker Genius <noreply@filmmakergenius.com>",
+        to: [to],
+        subject,
+        html,
+      }),
+    });
+    if (!res.ok) {
+      console.error("Resend error:", res.status, (await res.text()).slice(0, 500));
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("Resend request failed:", (err as Error)?.message);
+    return false;
+  }
+}
+
+function expenseEmailRows(rows: [string, string][]): string {
+  return rows
+    .filter(([, value]) => !!value)
+    .map(([label, value]) => `
+      <tr>
+        <td style="padding:6px 12px 6px 0;color:#666;font-size:13px;">${escapeHtml(label)}</td>
+        <td style="padding:6px 0;color:#121220;font-size:14px;">${escapeHtml(value)}</td>
+      </tr>`)
+    .join("");
+}
+
+const emailShell = (heading: string, inner: string) => `
+  <div style="font-family:Helvetica,Arial,sans-serif;max-width:600px;margin:0 auto;padding:24px;color:#121220;">
+    <h1 style="font-size:20px;margin:0 0 8px;">${heading}</h1>
+    <p style="color:#00b08c;font-weight:700;letter-spacing:.06em;font-size:12px;margin:0 0 20px;">RECEIPTS &amp; EXPENSES</p>
+    ${inner}
+    <p style="margin-top:28px;font-size:12px;color:#999;">Filmmaker Genius · Where Genius Meets the Silver Screen</p>
+  </div>`;
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
   const length = Number(req.headers.get("content-length") || 0);
-  if (length > MAX_BODY) return json({ error: "Request too large" }, 413);
+  if (length > MAX_UPLOAD_BODY) return json({ error: "Request too large" }, 413);
 
   let body: Record<string, any>;
+  let rawLength = 0;
   try {
-    body = await req.json();
+    const raw = await req.text();
+    rawLength = raw.length;
+    body = JSON.parse(raw);
   } catch {
     return BAD("Invalid request.");
   }
@@ -103,6 +205,9 @@ serve(async (req) => {
   const token = text(body.token, 200);
   const action = text(body.action, 40);
   if (!token || !action) return BAD("Missing token or action.");
+  if (!UPLOAD_ACTIONS.includes(action) && rawLength > MAX_BODY) {
+    return json({ error: "Request too large" }, 413);
+  }
   if (rateLimited(token)) return json({ error: "Too many requests. Slow down a moment." }, 429);
 
   const admin = serviceClient();
@@ -110,11 +215,12 @@ serve(async (req) => {
   // ---- resolve project by share token -------------------------------------
   const { data: project } = await admin
     .from("breakdown_projects")
-    .select("id, title, company, status, sharing_enabled")
+    .select("id, title, company, status, sharing_enabled, default_currency, notify_expenses, owner_id")
     .eq("share_token", token)
     .maybeSingle();
   if (!project || !project.sharing_enabled) return NOT_FOUND();
   const projectId = project.id as string;
+  const ownerId = project.owner_id as string;
 
   // ---- crew identity ------------------------------------------------------
   let crew: { id: string; name: string; department: string | null } | null = null;
@@ -168,6 +274,19 @@ serve(async (req) => {
     return { path };
   };
 
+  /** Sign private expense files for the crew member's own submissions. */
+  const signExpensePaths = async (paths: string[]): Promise<Record<string, string>> => {
+    const unique = Array.from(new Set(paths.filter(Boolean)));
+    const out: Record<string, string> = {};
+    if (!unique.length) return out;
+    const { data } = await admin.storage.from(EXPENSE_BUCKET).createSignedUrls(unique, 3600);
+    (data || []).forEach((row: any, i: number) => {
+      const path = row.path || unique[i];
+      if (row.signedUrl && path) out[path] = row.signedUrl;
+    });
+    return out;
+  };
+
   try {
     switch (action) {
       // ---------------------------------------------------------------- load
@@ -190,7 +309,12 @@ serve(async (req) => {
           });
         }
         return json({
-          project: { title: project.title, company: project.company, status: project.status },
+          project: {
+            title: project.title,
+            company: project.company,
+            status: project.status,
+            default_currency: project.default_currency || "USD",
+          },
           scenes: scenes || [],
           items: items || [],
           signoffs: signoffs || [],
@@ -409,6 +533,312 @@ serve(async (req) => {
         }).select(PHOTO_FIELDS).single();
         if (error || !data) return json({ error: "The reference image couldn't be attached." }, 500);
         return json({ photo: data });
+      }
+
+      // ------------------------------------------------- expense_read_receipt
+      case "expense_read_receipt": {
+        const apiKey = Deno.env.get("LOVABLE_API_KEY");
+        if (!apiKey) return json({ ai_unavailable: true });
+
+        const fileBase64 = typeof body.file_base64 === "string" ? body.file_base64 : "";
+        const mime = text(body.mime_type, 60).toLowerCase();
+        if (!fileBase64) return BAD("No file supplied.");
+        const checked = checkReceiptFile(fileBase64, mime);
+        if (checked instanceof Response) return checked;
+
+        // Abuse caps (24h), counted from the usage log.
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const [{ count: crewCount }, { count: projectCount }] = await Promise.all([
+          admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+            .eq("function_name", AI_LOG_NAME).gte("created_at", since)
+            .filter("metadata->>crew_id", "eq", crew!.id),
+          admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+            .eq("function_name", AI_LOG_NAME).gte("created_at", since)
+            .filter("metadata->>project_id", "eq", projectId),
+        ]);
+        if ((crewCount ?? 0) >= AI_READS_PER_CREW_24H || (projectCount ?? 0) >= AI_READS_PER_PROJECT_24H) {
+          return json({ ai_unavailable: true });
+        }
+
+        // The production owner pays for the read — never reveal their balance.
+        const balance = await ensureBalance(ownerId, 1);
+        if (!balance.ok) return json({ ai_unavailable: true });
+
+        const started = Date.now();
+        const ai = await callReceiptAi(apiKey, fileBase64, mime);
+        if (!ai.ok) {
+          console.error("crew receipt AI error:", ai.status, ai.body.slice(0, 300));
+          return json({ ai_unavailable: true });
+        }
+        const parsed = parseReceipt(ai.content);
+        if (!parsed) {
+          console.error("crew receipt parse error. Head:", ai.content.slice(0, 200));
+          return json({ ai_unavailable: true });
+        }
+
+        await charge(ownerId, 1, AI_LOG_NAME, { project_id: projectId, crew_id: crew!.id });
+        await logUsage({
+          userId: ownerId,
+          functionName: AI_LOG_NAME,
+          provider: "lovable-gateway",
+          operation: "text",
+          tokensInput: ai.usage?.prompt_tokens,
+          tokensOutput: ai.usage?.completion_tokens,
+          estimatedCostUsd: estimateUsd(ai.usage?.prompt_tokens, ai.usage?.completion_tokens),
+          status: "success",
+          latencyMs: Date.now() - started,
+          metadata: { project_id: projectId, crew_id: crew!.id },
+        });
+
+        return json(parsed);
+      }
+
+      // -------------------------------------------------------- expense_submit
+      case "expense_submit": {
+        const kind = text(body.kind, 20);
+        if (kind !== "receipt" && kind !== "invoice") return BAD("Pick a receipt or an invoice.");
+        const department = text(body.department, 60);
+        if (!CREW_DEPARTMENTS.includes(department)) return BAD("Please pick your department.");
+        const paymentMethod = text(body.payment_method, 30);
+        if (!PAYMENT_METHODS.includes(paymentMethod)) return BAD("Please pick how this was paid.");
+        const currency = text(body.currency, 3).toUpperCase();
+        if (!/^[A-Z]{3}$/.test(currency)) return BAD("Please pick a currency.");
+        const amount = round2(Number(body.amount));
+        if (!Number.isFinite(amount) || amount < 0 || amount > 1_000_000) {
+          return BAD("Enter an amount between 0 and 1,000,000.");
+        }
+        const rawDate = text(body.expense_date, 10);
+        const expenseDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : today();
+        const notes = text(body.notes, 1000) || null;
+        const vendor = text(body.vendor, 200) || null;
+        const description = text(body.description, 300) || null;
+        const billTo = text(body.bill_to, 200) || null;
+        const email = text(body.email, 200);
+        if (email && !isEmail(email)) return BAD("That email address doesn't look right.");
+
+        const lineItems = Array.isArray(body.line_items)
+          ? body.line_items
+              .map((entry: unknown) => {
+                if (!entry || typeof entry !== "object") return null;
+                const e = entry as Record<string, unknown>;
+                const lineText = text(e.text, 200);
+                const lineAmount = round2(Number(e.amount));
+                const line: Record<string, unknown> = {
+                  text: lineText,
+                  amount: Number.isFinite(lineAmount) ? lineAmount : 0,
+                };
+                const qty = Number(e.qty);
+                const rate = Number(e.rate);
+                if (Number.isFinite(qty)) line.qty = round2(qty);
+                if (Number.isFinite(rate)) line.rate = round2(rate);
+                if (!lineText && !line.amount) return null;
+                return line;
+              })
+              .filter(Boolean)
+              .slice(0, 50)
+          : [];
+
+        const linkedItemId = text(body.linked_item_id, 64);
+        if (linkedItemId && !(await getItem(linkedItemId))) return BAD("That checklist item isn't in this production.");
+
+        // Invoice numbering per production.
+        let invoiceNumber = text(body.invoice_number, 60) || null;
+        if (kind === "invoice" && !invoiceNumber) {
+          const { data: existing } = await admin
+            .from("production_expenses")
+            .select("invoice_number")
+            .eq("project_id", projectId)
+            .not("invoice_number", "is", null);
+          let max = 0;
+          (existing || []).forEach((row: any) => {
+            const match = /(\d+)\s*$/.exec(row.invoice_number || "");
+            if (match) max = Math.max(max, Number(match[1]));
+          });
+          invoiceNumber = `INV-${String(max + 1).padStart(3, "0")}`;
+        }
+
+        // Validate files up front so nothing is written on a bad upload.
+        const receiptBase64 = typeof body.receipt_base64 === "string" ? body.receipt_base64 : "";
+        const receiptMime = text(body.receipt_mime, 60).toLowerCase();
+        let receiptBytes: Uint8Array | null = null;
+        if (receiptBase64) {
+          const okReceipt = checkReceiptFile(receiptBase64, receiptMime);
+          if (okReceipt instanceof Response) return okReceipt;
+          receiptBytes = okReceipt.bytes;
+        }
+
+        const itemPhotoBase64 = typeof body.item_photo_base64 === "string" ? body.item_photo_base64 : "";
+        let itemPhotoBytes: Uint8Array | null = null;
+        if (itemPhotoBase64) {
+          try {
+            itemPhotoBytes = decodeBase64(itemPhotoBase64);
+          } catch {
+            return BAD("That item photo couldn't be read.");
+          }
+          if (itemPhotoBytes.byteLength > MAX_IMAGE_BYTES) return BAD("That item photo is too large. Please use one under 3 MB.");
+          if (!isImage(itemPhotoBytes)) return BAD("Only JPEG, PNG or WebP item photos are accepted.");
+        }
+
+        const { data: inserted, error: insertError } = await admin
+          .from("production_expenses")
+          .insert({
+            project_id: projectId,
+            kind,
+            department,
+            vendor,
+            description,
+            expense_date: expenseDate,
+            currency,
+            amount,
+            payment_method: paymentMethod,
+            status: "pending",
+            notes,
+            line_items: lineItems,
+            invoice_number: invoiceNumber,
+            bill_to: billTo,
+            linked_item_id: linkedItemId || null,
+            submitted_by_name: crew!.name,
+            submitted_by_email: email || null,
+            submitted_by_crew_id: crew!.id,
+          })
+          .select(EXPENSE_SAFE_FIELDS)
+          .single();
+
+        if (insertError || !inserted) {
+          console.error("crew expense insert failed:", insertError?.message);
+          return json({ error: "That submission couldn't be saved." }, 500);
+        }
+
+        const expenseId = inserted.id as string;
+        const uploaded: string[] = [];
+        const cleanUp = async () => {
+          if (uploaded.length) await admin.storage.from(EXPENSE_BUCKET).remove(uploaded);
+          await admin.from("production_expenses").delete().eq("id", expenseId);
+        };
+
+        const patch: Record<string, string> = {};
+        try {
+          if (receiptBytes) {
+            const path = `${projectId}/${expenseId}/${crypto.randomUUID()}.${EXT_BY_MIME[receiptMime] || "bin"}`;
+            const { error } = await admin.storage.from(EXPENSE_BUCKET)
+              .upload(path, receiptBytes, { contentType: receiptMime, upsert: false });
+            if (error) throw new Error(error.message);
+            uploaded.push(path);
+            patch.receipt_path = path;
+          }
+          if (itemPhotoBytes) {
+            const path = `${projectId}/${expenseId}/${crypto.randomUUID()}.jpg`;
+            const { error } = await admin.storage.from(EXPENSE_BUCKET)
+              .upload(path, itemPhotoBytes, { contentType: "image/jpeg", upsert: false });
+            if (error) throw new Error(error.message);
+            uploaded.push(path);
+            patch.item_photo_path = path;
+          }
+        } catch (err) {
+          console.error("crew expense upload failed:", (err as Error)?.message);
+          await cleanUp();
+          return json({ error: "The attachment couldn't be stored. Please try again." }, 500);
+        }
+
+        let expense: Record<string, unknown> = inserted as Record<string, unknown>;
+        if (Object.keys(patch).length) {
+          const { data: updated, error: updateError } = await admin
+            .from("production_expenses")
+            .update(patch)
+            .eq("id", expenseId)
+            .select(EXPENSE_SAFE_FIELDS)
+            .single();
+          if (updateError || !updated) {
+            console.error("crew expense patch failed:", updateError?.message);
+            await cleanUp();
+            return json({ error: "That submission couldn't be saved." }, 500);
+          }
+          expense = updated as Record<string, unknown>;
+        }
+
+        // ---- emails (never fail the submission) ----------------------------
+        const productionTitle = String(project.title || "Production");
+        const typeLabel = kind === "invoice" ? "invoice" : "receipt";
+        const money = `${currency} ${amount.toFixed(2)}`;
+        const rows = expenseEmailRows([
+          ["Submitted by", crew!.name],
+          ["Department", department],
+          ["Date", expenseDate],
+          ["Type", kind === "invoice" ? `Invoice ${invoiceNumber || ""}`.trim() : "Receipt"],
+          ["Amount", money],
+          ["Payment", paymentMethod.replace(/_/g, " ")],
+          ["Vendor", vendor || ""],
+          ["Notes", notes || ""],
+        ]);
+
+        const emailSent = { crew: false, owner: false };
+
+        if (email) {
+          emailSent.crew = await sendEmail(
+            email,
+            `Receipt received — ${productionTitle}`,
+            emailShell(escapeHtml(productionTitle), `
+              <table style="border-collapse:collapse;">${rows}</table>
+              <p style="line-height:1.7;color:#333;margin-top:20px;">Thanks — your ${escapeHtml(typeLabel)} is with the production office. You'll see the status on your link.</p>
+            `),
+          );
+        }
+
+        if (project.notify_expenses) {
+          const { data: ownerData } = await admin.auth.admin.getUserById(ownerId);
+          const ownerEmail = ownerData?.user?.email;
+          if (ownerEmail) {
+            emailSent.owner = await sendEmail(
+              ownerEmail,
+              `New ${typeLabel} from ${crew!.name} — ${money}`,
+              emailShell(escapeHtml(productionTitle), `
+                <table style="border-collapse:collapse;">${rows}</table>
+                <p style="line-height:1.7;color:#333;margin-top:20px;">
+                  <a href="https://filmmakergenius.com/receipts-expenses?project=${escapeHtml(projectId)}" style="color:#00b08c;font-weight:700;">Review it in Receipts &amp; Expenses</a>
+                </p>
+              `),
+            );
+          }
+        }
+
+        return json({ expense, email_sent: emailSent });
+      }
+
+      // ----------------------------------------------------- expense_list_mine
+      case "expense_list_mine": {
+        const { data, error } = await admin
+          .from("production_expenses")
+          .select(EXPENSE_SAFE_FIELDS)
+          .eq("project_id", projectId)
+          .eq("submitted_by_crew_id", crew!.id)
+          .order("created_at", { ascending: false })
+          .limit(200);
+        if (error) return json({ error: "Couldn't load your submissions." }, 500);
+        const rows = data || [];
+        const urls = await signExpensePaths(
+          rows.flatMap((r: any) => [r.receipt_path, r.item_photo_path]).filter((p: string | null): p is string => !!p),
+        );
+        return json({ expenses: rows, urls });
+      }
+
+      // --------------------------------------------------- expense_delete_mine
+      case "expense_delete_mine": {
+        const expenseId = text(body.expense_id, 64);
+        if (!expenseId) return BAD("Which submission?");
+        const { data: row } = await admin
+          .from("production_expenses")
+          .select("id, status, submitted_by_crew_id, receipt_path, item_photo_path")
+          .eq("id", expenseId)
+          .eq("project_id", projectId)
+          .maybeSingle();
+        if (!row) return NOT_FOUND();
+        if (row.submitted_by_crew_id !== crew!.id) return FORBIDDEN("You can only remove your own submissions.");
+        if (row.status !== "pending") return FORBIDDEN("This has already been reviewed — ask the production office.");
+        const paths = [row.receipt_path, row.item_photo_path].filter((p): p is string => !!p);
+        if (paths.length) await admin.storage.from(EXPENSE_BUCKET).remove(paths);
+        const { error } = await admin.from("production_expenses").delete().eq("id", row.id);
+        if (error) return json({ error: "Couldn't remove that submission." }, 500);
+        return json({ ok: true });
       }
 
       default:
