@@ -45,7 +45,12 @@ const iconBtn: React.CSSProperties = {
   flex: "0 0 auto",
 };
 
-const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete, onAdd }: Props) => {
+const DepartmentChecklist = ({
+  items, department, onToggle, onEditText, onDelete, onAdd,
+  photosByItem, signedUrl, onAddPhotos, onOpenPhoto, uploadingItemId,
+}: Props) => {
+  const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const pendingItemRef = useRef<BreakdownItem | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [confirmId, setConfirmId] = useState<string | null>(null);
