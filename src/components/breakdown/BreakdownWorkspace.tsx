@@ -682,7 +682,18 @@ const BreakdownWorkspace = ({
         </div>
       )}
 
+      {/* MOBILE EXPORT BAR */}
+      {selectedScene && (
+        <div className="bw-export-mobile">
+          <div style={{ position: "relative" }}>
+            {exportOpen && exportMenu}
+            {exportButton}
+          </div>
+        </div>
+      )}
+
       {/* DELETE SCENE CONFIRM */}
+
       {deleteScene && (
         <div
           onClick={() => setDeleteScene(null)}
