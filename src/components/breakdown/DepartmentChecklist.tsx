@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Check, MapPin, Pencil, Plus, Trash2, X, AlertTriangle } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, Check, Loader2, MapPin, Pencil, Plus, Trash2, X, AlertTriangle } from "lucide-react";
 import { timeAgo } from "./timeAgo";
-import { BreakdownItem, TEAL } from "./types";
+import ItemPhotos from "./ItemPhotos";
+import { BreakdownItem, BreakdownPhoto, TEAL } from "./types";
 
 interface Props {
   items: BreakdownItem[];
@@ -10,6 +11,11 @@ interface Props {
   onEditText: (item: BreakdownItem, text: string) => void;
   onDelete: (item: BreakdownItem) => void;
   onAdd: (text: string) => void;
+  photosByItem?: Record<string, BreakdownPhoto[]>;
+  signedUrl?: (photo: BreakdownPhoto) => string | undefined;
+  onAddPhotos?: (item: BreakdownItem, files: File[]) => void;
+  onOpenPhoto?: (photo: BreakdownPhoto) => void;
+  uploadingItemId?: string | null;
 }
 
 const inputStyle: React.CSSProperties = {
@@ -39,7 +45,12 @@ const iconBtn: React.CSSProperties = {
   flex: "0 0 auto",
 };
 
-const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete, onAdd }: Props) => {
+const DepartmentChecklist = ({
+  items, department, onToggle, onEditText, onDelete, onAdd,
+  photosByItem, signedUrl, onAddPhotos, onOpenPhoto, uploadingItemId,
+}: Props) => {
+  const photoInputRef = useRef<HTMLInputElement | null>(null);
+  const pendingItemRef = useRef<BreakdownItem | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [confirmId, setConfirmId] = useState<string | null>(null);
@@ -167,12 +178,41 @@ const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete
                         {item.checked_at ? ` · ${timeAgo(item.checked_at)}` : ""}
                       </div>
                     )}
+                    {(() => {
+                      const rejected = (photosByItem?.[item.id] || []).find((p) => !p.is_reference && p.status === "rejected" && p.feedback);
+                      return rejected ? (
+                        <div style={{ fontSize: 12, color: "#ff9d9d", marginTop: 4, lineHeight: 1.5 }}>
+                          ✕ Changes needed: {rejected.feedback}
+                        </div>
+                      ) : null;
+                    })()}
+                    {signedUrl && onOpenPhoto && (
+                      <ItemPhotos
+                        photos={photosByItem?.[item.id] || []}
+                        signedUrl={signedUrl}
+                        onOpen={onOpenPhoto}
+                      />
+                    )}
+                    {uploadingItemId === item.id && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>
+                        <Loader2 size={13} className="animate-spin" /> Uploading photo…
+                      </div>
+                    )}
                   </>
                 )}
               </div>
 
               {editingId !== item.id && (
                 <div style={{ display: "flex", alignItems: "center", flex: "0 0 auto" }}>
+                  {onAddPhotos && (
+                    <button
+                      aria-label={`Add a photo for ${item.text}`}
+                      onClick={() => { pendingItemRef.current = item; photoInputRef.current?.click(); }}
+                      style={iconBtn}
+                    >
+                      <Camera size={16} />
+                    </button>
+                  )}
                   {department === "locations" && (
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.text)}`}
@@ -255,6 +295,22 @@ const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete
           <Plus size={16} /> Add item
         </button>
       )}
+
+      <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        capture="environment"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const files = Array.from(e.target.files || []);
+          const item = pendingItemRef.current;
+          if (item && files.length && onAddPhotos) onAddPhotos(item, files);
+          pendingItemRef.current = null;
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 };

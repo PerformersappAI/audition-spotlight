@@ -10,7 +10,13 @@ import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "@/components/breakdown/DepartmentChecklist";
 import SignOffBox from "@/components/breakdown/SignOffBox";
-import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff } from "@/components/breakdown/types";
+import ApprovalsView, { ApprovalRow } from "@/components/breakdown/ApprovalsView";
+import PhotoLightbox from "@/components/breakdown/PhotoLightbox";
+import ReferenceSearch from "@/components/breakdown/ReferenceSearch";
+import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff, BreakdownPhoto, PHOTO_FIELDS } from "@/components/breakdown/types";
+import { ImageError, prepareImage } from "@/lib/breakdown/imageDownscale";
+
+const BUCKET = "breakdown-photos";
 
 const SITE = "https://filmmakergenius.com";
 const TEAL = "#00d4aa";
@@ -145,6 +151,12 @@ const ScriptBreakdown = () => {
   const [showScript, setShowScript] = useState(false);
   const [deleteScene, setDeleteScene] = useState<Scene | null>(null);
 
+  const [photos, setPhotos] = useState<BreakdownPhoto[]>([]);
+  const [urlMap, setUrlMap] = useState<Record<string, { url: string; exp: number }>>({});
+  const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
+  const [view, setView] = useState<"checklist" | "approvals">("checklist");
+  const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
+
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
 
@@ -180,7 +192,7 @@ const ScriptBreakdown = () => {
 
   // Load scenes + items + signoffs for the selected project
   const loadScenes = useCallback(async () => {
-    if (!projectId) { setScenes([]); setItems([]); setSignoffs([]); return; }
+    if (!projectId) { setScenes([]); setItems([]); setSignoffs([]); setPhotos([]); return; }
     const [{ data: sceneRows }, { data: itemRows }, { data: signoffRows }] = await Promise.all([
       supabase
         .from("breakdown_scenes")
@@ -223,16 +235,65 @@ const ScriptBreakdown = () => {
     setSignoffs((prev) => [...prev.filter((s) => s.scene_id !== sceneId), ...((signoffRows || []) as BreakdownSignoff[])]);
   }, [sceneId, projectId]);
 
-  // Live updates for the selected scene
+  // ---- photos ---------------------------------------------------------------
+  const loadPhotos = useCallback(async () => {
+    if (!projectId) { setPhotos([]); return; }
+    const { data } = await supabase
+      .from("breakdown_photos")
+      .select(PHOTO_FIELDS)
+      .eq("project_id", projectId)
+      .order("created_at", { ascending: true });
+    setPhotos((data || []) as BreakdownPhoto[]);
+  }, [projectId]);
+
+  useEffect(() => { loadPhotos(); }, [loadPhotos]);
+
+  // Sign the private storage paths in batches, refreshing when they expire
+  useEffect(() => {
+    const now = Date.now();
+    const needed = Array.from(
+      new Set(
+        photos
+          .filter((p) => !!p.storage_path)
+          .map((p) => p.storage_path as string)
+          .filter((path) => !urlMap[path] || urlMap[path].exp < now + 60_000),
+      ),
+    );
+    if (!needed.length) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error: err } = await supabase.storage.from(BUCKET).createSignedUrls(needed, 3600);
+      if (cancelled || err || !data) return;
+      const exp = Date.now() + 3600 * 1000;
+      setUrlMap((prev) => {
+        const next = { ...prev };
+        data.forEach((row: any, i: number) => {
+          const path = row.path || needed[i];
+          if (row.signedUrl && path) next[path] = { url: row.signedUrl, exp };
+        });
+        return next;
+      });
+    })();
+    return () => { cancelled = true; };
+  }, [photos, urlMap]);
+
+  const signedUrl = useCallback(
+    (photo: BreakdownPhoto) =>
+      photo.external_url || (photo.storage_path ? urlMap[photo.storage_path]?.url : undefined),
+    [urlMap],
+  );
+
+  // Live updates for the selected scene + the project's photos
   useEffect(() => {
     if (!sceneId) return;
     const channel = supabase
       .channel(`breakdown-scene-${sceneId}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
       .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, () => { refreshScene(); })
+      .on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, () => { loadPhotos(); })
       .subscribe();
     return () => { supabase.removeChannel(channel); };
-  }, [sceneId, refreshScene]);
+  }, [sceneId, projectId, refreshScene, loadPhotos]);
 
   const itemCount = useCallback((sid: string) => items.filter((i) => i.scene_id === sid).length, [items]);
 
@@ -290,13 +351,23 @@ const ScriptBreakdown = () => {
     }
   };
 
+  // Remove the stored files for a set of photo rows before their rows go away
+  const removeStorageFor = async (rows: BreakdownPhoto[]) => {
+    const paths = rows.map((p) => p.storage_path).filter((p): p is string => !!p);
+    if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  };
+
   const deleteItem = async (item: BreakdownItem) => {
+    const itemPhotos = photos.filter((p) => p.item_id === item.id);
     setItems((prev) => prev.filter((i) => i.id !== item.id));
+    await removeStorageFor(itemPhotos);
     const { error: err } = await supabase.from("breakdown_items").delete().eq("id", item.id);
     if (err) {
       setItems((prev) => [...prev, item]);
       failed(err.message);
+      return;
     }
+    setPhotos((prev) => prev.filter((p) => p.item_id !== item.id));
   };
 
   const addItem = async (department: string, text: string, opts?: { flagged?: boolean; source?: string }) => {
@@ -365,6 +436,136 @@ const ScriptBreakdown = () => {
     if (existing?.status === "need_help") {
       await setSignoff(department, "need_help", text);
     }
+  };
+
+  // ---- photo mutations ------------------------------------------------------
+  const uploadOne = async (item: BreakdownItem, file: File): Promise<string> => {
+    const blob = await prepareImage(file);
+    const path = `${projectId}/${item.id}/${crypto.randomUUID()}.jpg`;
+    const { error: upErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, blob, { contentType: "image/jpeg", upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    return path;
+  };
+
+  const addPhotos = async (item: BreakdownItem, files: File[]) => {
+    if (!projectId) return;
+    setUploadingItemId(item.id);
+    try {
+      for (const file of files) {
+        let path = "";
+        try {
+          path = await uploadOne(item, file);
+        } catch (err: any) {
+          toast({
+            title: err instanceof ImageError ? "Photo not added" : "Upload failed",
+            description: err?.message || "That photo couldn't be uploaded.",
+            variant: "destructive",
+          });
+          continue;
+        }
+        const { data, error: err } = await supabase
+          .from("breakdown_photos")
+          .insert({
+            item_id: item.id,
+            project_id: projectId,
+            storage_path: path,
+            status: "awaiting",
+            uploaded_by_name: actorName,
+          })
+          .select(PHOTO_FIELDS)
+          .single();
+        if (err || !data) {
+          await supabase.storage.from(BUCKET).remove([path]);
+          failed(err?.message || "The photo couldn't be saved.");
+          continue;
+        }
+        setPhotos((prev) => [...prev, data as BreakdownPhoto]);
+      }
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+
+  const decidePhoto = async (photo: BreakdownPhoto, status: "approved" | "rejected", feedback?: string) => {
+    const patch = {
+      status,
+      feedback: status === "rejected" ? feedback ?? null : null,
+      decided_by_name: actorName,
+      decided_at: new Date().toISOString(),
+    };
+    setPhotos((prev) => prev.map((p) => (p.id === photo.id ? { ...p, ...patch } : p)));
+    const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+    if (err) {
+      setPhotos((prev) => prev.map((p) => (p.id === photo.id ? photo : p)));
+      failed(err.message);
+    }
+  };
+
+  const replacePhoto = async (photo: BreakdownPhoto, file: File) => {
+    const item = items.find((i) => i.id === photo.item_id);
+    if (!item) return;
+    setUploadingItemId(item.id);
+    try {
+      const path = await uploadOne(item, file);
+      const patch = {
+        storage_path: path,
+        status: "awaiting",
+        feedback: null,
+        decided_by_name: null,
+        decided_at: null,
+        uploaded_by_name: actorName,
+      };
+      const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+      if (err) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        failed(err.message);
+        return;
+      }
+      setPhotos((prev) => prev.map((p) => (p.id === photo.id ? { ...p, ...patch } : p)));
+      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    } catch (err: any) {
+      toast({
+        title: err instanceof ImageError ? "Photo not replaced" : "Upload failed",
+        description: err?.message || "That photo couldn't be uploaded.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+
+  const deletePhoto = async (photo: BreakdownPhoto) => {
+    const { error: err } = await supabase.from("breakdown_photos").delete().eq("id", photo.id);
+    if (err) { failed(err.message); return; }
+    if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+    setLightbox((lb) => {
+      if (!lb) return lb;
+      const ids = lb.ids.filter((id) => id !== photo.id);
+      if (!ids.length) return null;
+      return { ids, index: Math.min(lb.index, ids.length - 1) };
+    });
+  };
+
+  const attachReference = async (itemId: string, url: string) => {
+    if (!projectId) return;
+    const { data, error: err } = await supabase
+      .from("breakdown_photos")
+      .insert({
+        item_id: itemId,
+        project_id: projectId,
+        external_url: url,
+        is_reference: true,
+        status: "approved",
+        uploaded_by_name: actorName,
+      })
+      .select(PHOTO_FIELDS)
+      .single();
+    if (err || !data) { failed(err?.message || "The reference image couldn't be attached."); return; }
+    setPhotos((prev) => [...prev, data as BreakdownPhoto]);
+    toast({ title: "Reference image attached" });
   };
 
 
@@ -442,14 +643,64 @@ const ScriptBreakdown = () => {
 
   const confirmDeleteScene = async () => {
     if (!deleteScene) return;
+    const sceneItemIds = items.filter((i) => i.scene_id === deleteScene.id).map((i) => i.id);
+    await removeStorageFor(photos.filter((p) => sceneItemIds.includes(p.item_id)));
     await supabase.from("breakdown_scenes").delete().eq("id", deleteScene.id);
     if (sceneId === deleteScene.id) setParams({ scene: null });
     setDeleteScene(null);
     await loadScenes();
+    await loadPhotos();
   };
 
   const sceneTitle = (s: Scene) =>
     s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+
+  // ---- photo derivations ----------------------------------------------------
+  const photosByItem = useMemo(() => {
+    const map: Record<string, BreakdownPhoto[]> = {};
+    photos.forEach((p) => {
+      map[p.item_id] = map[p.item_id] || [];
+      map[p.item_id].push(p);
+    });
+    return map;
+  }, [photos]);
+
+  const awaitingPhotos = useMemo(
+    () => photos.filter((p) => !p.is_reference && p.status === "awaiting"),
+    [photos],
+  );
+
+  const sceneAwaitingCount = useMemo(() => {
+    const ids = new Set(sceneItems.map((i) => i.id));
+    return awaitingPhotos.filter((p) => ids.has(p.item_id)).length;
+  }, [awaitingPhotos, sceneItems]);
+
+  const approvalRows: ApprovalRow[] = useMemo(() => {
+    const deptLabel = (key: string) => DEPARTMENTS.find((d) => d.key === key)?.label || key;
+    return awaitingPhotos
+      .map((photo) => {
+        const item = items.find((i) => i.id === photo.item_id);
+        const scene = item ? scenes.find((s) => s.id === item.scene_id) : undefined;
+        if (!item || !scene) return null;
+        return {
+          photo,
+          sceneTitle: sceneTitle(scene),
+          departmentLabel: deptLabel(item.department),
+          itemText: item.text,
+        } as ApprovalRow;
+      })
+      .filter((r): r is ApprovalRow => !!r);
+  }, [awaitingPhotos, items, scenes]);
+
+  const openPhoto = (photo: BreakdownPhoto) => {
+    const group = photosByItem[photo.item_id] || [photo];
+    setLightbox({ ids: group.map((p) => p.id), index: Math.max(0, group.findIndex((p) => p.id === photo.id)) });
+  };
+
+  const lightboxPhotos = useMemo(
+    () => (lightbox ? lightbox.ids.map((id) => photos.find((p) => p.id === id)).filter((p): p is BreakdownPhoto => !!p) : []),
+    [lightbox, photos],
+  );
 
   // ---- render --------------------------------------------------------------
   return (
@@ -737,6 +988,7 @@ const ScriptBreakdown = () => {
                 <div style={{ marginTop: 12 }}>
                   <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
                     {checked}/{total} items ready · {signed}/5 departments signed off
+                    {sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""}
                   </div>
                   <div style={{ marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
                     <div style={{ width: `${pct}%`, height: "100%", background: TEAL, transition: "width .3s" }} />
@@ -745,6 +997,36 @@ const ScriptBreakdown = () => {
               );
             })()}
 
+            <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }}>
+              {([["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]] as const).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setView(key)}
+                  className="sb-tap"
+                  style={{
+                    padding: "0 18px", borderRadius: 10,
+                    background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+                    color: view === key ? TEAL : "rgba(255,255,255,0.7)",
+                    fontSize: 14, fontWeight: 700, cursor: "pointer",
+                    fontFamily: "'Inter Tight', sans-serif",
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {view === "approvals" ? (
+              <ApprovalsView
+                rows={approvalRows}
+                signedUrl={signedUrl}
+                onApprove={(p) => decidePhoto(p, "approved")}
+                onRequestChanges={(p, fb) => decidePhoto(p, "rejected", fb)}
+                onOpen={openPhoto}
+              />
+            ) : (
+            <>
             <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }}>
               {DEPARTMENTS.map((d) => {
                 const active = d.key === activeDept;
@@ -784,6 +1066,17 @@ const ScriptBreakdown = () => {
               onEditText={editItemText}
               onDelete={deleteItem}
               onAdd={(text) => addItem(activeDept, text)}
+              photosByItem={photosByItem}
+              signedUrl={signedUrl}
+              onAddPhotos={addPhotos}
+              onOpenPhoto={openPhoto}
+              uploadingItemId={uploadingItemId}
+            />
+
+            <ReferenceSearch
+              key={`ref-${sceneId}-${activeDept}`}
+              items={sceneItems.filter((i) => i.department === activeDept)}
+              onAttach={attachReference}
             />
 
             <SignOffBox
@@ -793,6 +1086,10 @@ const ScriptBreakdown = () => {
               onClear={() => clearSignoff(activeDept)}
               onAddNoteItem={(text) => addNoteItem(activeDept, text)}
             />
+            </>
+            )}
+
+
 
 
             <button
@@ -880,6 +1177,21 @@ const ScriptBreakdown = () => {
             <button onClick={() => setDeleteScene(null)} style={ghostBtn}>Cancel</button>
           </div>
         </Modal>
+      )}
+
+      {/* PHOTO LIGHTBOX */}
+      {lightbox && lightboxPhotos.length > 0 && (
+        <PhotoLightbox
+          photos={lightboxPhotos}
+          index={Math.min(lightbox.index, lightboxPhotos.length - 1)}
+          signedUrl={signedUrl}
+          onIndexChange={(i) => setLightbox((lb) => (lb ? { ...lb, index: i } : lb))}
+          onClose={() => setLightbox(null)}
+          onApprove={(p) => decidePhoto(p, "approved")}
+          onRequestChanges={(p, fb) => decidePhoto(p, "rejected", fb)}
+          onReplace={replacePhoto}
+          onDelete={deletePhoto}
+        />
       )}
     </div>
   );

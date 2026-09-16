@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, User, FileImage, Link2, Clapperboard, FilePlus2, ChevronLeft, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, Search, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -23158,7 +23158,61 @@ const DEPARTMENTS = [
   { key: "wardrobe", label: "Wardrobe" },
   { key: "vehicles", label: "Vehicles" }
 ];
+const PHOTO_FIELDS = "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, decided_by_name, decided_at, created_at";
 const TEAL$4 = "#00d4aa";
+const statusBadge = (photo) => {
+  if (photo.is_reference) return { label: "REF", color: "#8ab4ff" };
+  if (photo.status === "approved") return { label: "✅", color: TEAL$4 };
+  if (photo.status === "rejected") return { label: "✕", color: "#ff8080" };
+  return { label: "⏳", color: "#f5a524" };
+};
+const ItemPhotos = ({ photos, signedUrl, onOpen }) => {
+  if (!photos.length) return null;
+  return /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }, children: photos.map((p) => {
+    const url2 = signedUrl(p);
+    const badge = statusBadge(p);
+    return /* @__PURE__ */ jsxs(
+      "button",
+      {
+        onClick: () => onOpen(p),
+        "aria-label": "Open photo",
+        style: {
+          position: "relative",
+          width: 64,
+          height: 64,
+          padding: 0,
+          borderRadius: 10,
+          overflow: "hidden",
+          border: "1px solid rgba(255,255,255,0.14)",
+          background: "rgba(255,255,255,0.05)",
+          cursor: "pointer",
+          flex: "0 0 auto"
+        },
+        children: [
+          url2 ? /* @__PURE__ */ jsx("img", { src: url2, alt: "Item photo", style: { width: "100%", height: "100%", objectFit: "cover" } }) : /* @__PURE__ */ jsx("span", { style: { fontSize: 10, color: "rgba(255,255,255,0.4)" }, children: "…" }),
+          /* @__PURE__ */ jsx(
+            "span",
+            {
+              style: {
+                position: "absolute",
+                bottom: 2,
+                right: 2,
+                fontSize: 9,
+                fontWeight: 700,
+                padding: "1px 4px",
+                borderRadius: 5,
+                background: "rgba(0,0,0,0.7)",
+                color: badge.color
+              },
+              children: badge.label
+            }
+          )
+        ]
+      },
+      p.id
+    );
+  }) });
+};
 const inputStyle$2 = {
   width: "100%",
   minHeight: 44,
@@ -23184,7 +23238,21 @@ const iconBtn = {
   padding: 0,
   flex: "0 0 auto"
 };
-const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete, onAdd }) => {
+const DepartmentChecklist = ({
+  items,
+  department,
+  onToggle,
+  onEditText,
+  onDelete,
+  onAdd,
+  photosByItem,
+  signedUrl,
+  onAddPhotos,
+  onOpenPhoto,
+  uploadingItemId
+}) => {
+  const photoInputRef = useRef(null);
+  const pendingItemRef = useRef(null);
   const [editingId, setEditingId] = useState(null);
   const [editValue, setEditValue] = useState("");
   const [confirmId, setConfirmId] = useState(null);
@@ -23294,9 +23362,41 @@ const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete
                 "✓ ",
                 item.checked_by_name || "Someone",
                 item.checked_at ? ` · ${timeAgo(item.checked_at)}` : ""
+              ] }),
+              (() => {
+                const rejected = ((photosByItem == null ? void 0 : photosByItem[item.id]) || []).find((p) => !p.is_reference && p.status === "rejected" && p.feedback);
+                return rejected ? /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "#ff9d9d", marginTop: 4, lineHeight: 1.5 }, children: [
+                  "✕ Changes needed: ",
+                  rejected.feedback
+                ] }) : null;
+              })(),
+              signedUrl && onOpenPhoto && /* @__PURE__ */ jsx(
+                ItemPhotos,
+                {
+                  photos: (photosByItem == null ? void 0 : photosByItem[item.id]) || [],
+                  signedUrl,
+                  onOpen: onOpenPhoto
+                }
+              ),
+              uploadingItemId === item.id && /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: [
+                /* @__PURE__ */ jsx(Loader2, { size: 13, className: "animate-spin" }),
+                " Uploading photo…"
               ] })
             ] }) }),
             editingId !== item.id && /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", flex: "0 0 auto" }, children: [
+              onAddPhotos && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  "aria-label": `Add a photo for ${item.text}`,
+                  onClick: () => {
+                    var _a2;
+                    pendingItemRef.current = item;
+                    (_a2 = photoInputRef.current) == null ? void 0 : _a2.click();
+                  },
+                  style: iconBtn,
+                  children: /* @__PURE__ */ jsx(Camera, { size: 16 })
+                }
+              ),
               department === "locations" && /* @__PURE__ */ jsx(
                 "a",
                 {
@@ -23378,12 +23478,30 @@ const DepartmentChecklist = ({ items, department, onToggle, onEditText, onDelete
           " Add item"
         ]
       }
+    ),
+    /* @__PURE__ */ jsx(
+      "input",
+      {
+        ref: photoInputRef,
+        type: "file",
+        accept: "image/*",
+        multiple: true,
+        capture: "environment",
+        style: { display: "none" },
+        onChange: (e) => {
+          const files = Array.from(e.target.files || []);
+          const item = pendingItemRef.current;
+          if (item && files.length && onAddPhotos) onAddPhotos(item, files);
+          pendingItemRef.current = null;
+          e.target.value = "";
+        }
+      }
     )
   ] });
 };
 const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
   const [note, setNote] = useState("");
-  const btn = (active, accent) => ({
+  const btn2 = (active, accent) => ({
     minHeight: 44,
     padding: "0 18px",
     borderRadius: 10,
@@ -23412,8 +23530,8 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
       children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700 }, children: "Department ready?" }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn((signoff == null ? void 0 : signoff.status) === "good", TEAL$4), children: "✅ We're good" }),
-          /* @__PURE__ */ jsx("button", { onClick: () => press("need_help"), style: btn((signoff == null ? void 0 : signoff.status) === "need_help", "#f5a524"), children: "⚠️ Need help" })
+          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn2((signoff == null ? void 0 : signoff.status) === "good", TEAL$4), children: "✅ We're good" }),
+          /* @__PURE__ */ jsx("button", { onClick: () => press("need_help"), style: btn2((signoff == null ? void 0 : signoff.status) === "need_help", "#f5a524"), children: "⚠️ Need help" })
         ] }),
         signoff && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13, color: signoff.status === "good" ? TEAL$4 : "#f5a524" }, children: [
           signoff.status === "good" ? "✅ Ready" : "⚠️ Needs help",
@@ -23475,6 +23593,582 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
     }
   );
 };
+const btn$1 = (accent) => ({
+  minHeight: 44,
+  padding: "0 14px",
+  borderRadius: 10,
+  background: accent || "rgba(255,255,255,0.06)",
+  color: accent ? "#04231d" : "#fff",
+  border: accent ? "none" : "1px solid rgba(255,255,255,0.16)",
+  fontWeight: 700,
+  fontSize: 14,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6
+});
+const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen }) => {
+  const [askId, setAskId] = useState(null);
+  const [feedback, setFeedback] = useState("");
+  if (!rows.length) {
+    return /* @__PURE__ */ jsx("div", { style: { padding: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "Nothing waiting for approval." });
+  }
+  const groups = /* @__PURE__ */ new Map();
+  rows.forEach((r) => {
+    const key = `${r.sceneTitle} › ${r.departmentLabel} › ${r.itemText}`;
+    const list = groups.get(key) || [];
+    list.push(r);
+    groups.set(key, list);
+  });
+  return /* @__PURE__ */ jsx("div", { style: { marginTop: 18, display: "flex", flexDirection: "column", gap: 18 }, children: [...groups.entries()].map(([key, group]) => /* @__PURE__ */ jsxs("div", { style: { padding: 14, borderRadius: 12, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 10, wordBreak: "break-word" }, children: key }),
+    /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 12 }, children: group.map(({ photo }) => {
+      const url2 = signedUrl(photo);
+      return /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }, children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => onOpen(photo),
+            "aria-label": "Open photo",
+            style: { width: 72, height: 72, padding: 0, borderRadius: 10, overflow: "hidden", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)", cursor: "pointer", flex: "0 0 auto" },
+            children: url2 ? /* @__PURE__ */ jsx("img", { src: url2, alt: "Awaiting photo", style: { width: "100%", height: "100%", objectFit: "cover" } }) : null
+          }
+        ),
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$4), children: [
+            /* @__PURE__ */ jsx(Check$1, { size: 15 }),
+            " Approve"
+          ] }),
+          /* @__PURE__ */ jsx("button", { onClick: () => {
+            setAskId(askId === photo.id ? null : photo.id);
+            setFeedback("");
+          }, style: btn$1(), children: "Request changes" })
+        ] }),
+        askId === photo.id && /* @__PURE__ */ jsxs("div", { style: { width: "100%" }, children: [
+          /* @__PURE__ */ jsx(
+            "textarea",
+            {
+              autoFocus: true,
+              value: feedback,
+              onChange: (e) => setFeedback(e.target.value),
+              placeholder: "What should change?",
+              style: {
+                width: "100%",
+                minHeight: 80,
+                fontSize: 16,
+                padding: "10px 12px",
+                borderRadius: 10,
+                background: "rgba(255,255,255,0.05)",
+                border: "1px solid rgba(255,255,255,0.16)",
+                color: "#fff",
+                fontFamily: "'Inter Tight', sans-serif",
+                boxSizing: "border-box",
+                resize: "vertical"
+              }
+            }
+          ),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => {
+                if (feedback.trim()) {
+                  onRequestChanges(photo, feedback.trim());
+                  setAskId(null);
+                  setFeedback("");
+                }
+              },
+              disabled: !feedback.trim(),
+              style: { ...btn$1("#f5a524"), marginTop: 8, opacity: feedback.trim() ? 1 : 0.45 },
+              children: "Save"
+            }
+          )
+        ] })
+      ] }, photo.id);
+    }) })
+  ] }, key)) });
+};
+const btn = (accent) => ({
+  minHeight: 44,
+  padding: "0 16px",
+  borderRadius: 10,
+  background: accent || "rgba(255,255,255,0.08)",
+  color: accent ? "#04231d" : "#fff",
+  border: accent ? "none" : "1px solid rgba(255,255,255,0.18)",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8
+});
+const PhotoLightbox = ({
+  photos,
+  index,
+  signedUrl,
+  onIndexChange,
+  onClose,
+  onApprove,
+  onRequestChanges,
+  onReplace,
+  onDelete
+}) => {
+  const photo = photos[index];
+  const [askChanges, setAskChanges] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const replaceRef = useRef(null);
+  const touchX = useRef(null);
+  useEffect(() => {
+    setAskChanges(false);
+    setFeedback("");
+    setConfirmDelete(false);
+  }, [index]);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight" && index < photos.length - 1) onIndexChange(index + 1);
+      if (e.key === "ArrowLeft" && index > 0) onIndexChange(index - 1);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [index, photos.length, onClose, onIndexChange]);
+  if (!photo) return null;
+  const url2 = signedUrl(photo);
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      style: {
+        position: "fixed",
+        inset: 0,
+        zIndex: 80,
+        background: "rgba(0,0,0,0.92)",
+        display: "flex",
+        flexDirection: "column",
+        padding: 16,
+        gap: 12,
+        overflowY: "auto"
+      },
+      onTouchStart: (e) => {
+        touchX.current = e.touches[0].clientX;
+      },
+      onTouchEnd: (e) => {
+        if (touchX.current == null) return;
+        const dx = e.changedTouches[0].clientX - touchX.current;
+        if (dx < -50 && index < photos.length - 1) onIndexChange(index + 1);
+        if (dx > 50 && index > 0) onIndexChange(index - 1);
+        touchX.current = null;
+      },
+      children: [
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", color: "#fff" }, children: [
+          /* @__PURE__ */ jsxs("span", { style: { fontSize: 13, color: "rgba(255,255,255,0.6)" }, children: [
+            index + 1,
+            " / ",
+            photos.length,
+            photo.is_reference ? " · Reference" : ""
+          ] }),
+          /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close photo", style: btn(), children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, justifyContent: "center", flex: 1, minHeight: 240 }, children: [
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              "aria-label": "Previous photo",
+              onClick: () => index > 0 && onIndexChange(index - 1),
+              style: { ...btn(), opacity: index > 0 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
+              children: /* @__PURE__ */ jsx(ChevronLeft, { size: 20 })
+            }
+          ),
+          url2 ? /* @__PURE__ */ jsx("img", { src: url2, alt: "Photo", style: { maxWidth: "100%", maxHeight: "62vh", borderRadius: 12, objectFit: "contain" } }) : /* @__PURE__ */ jsx("div", { style: { color: "rgba(255,255,255,0.5)" }, children: "Loading photo…" }),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              "aria-label": "Next photo",
+              onClick: () => index < photos.length - 1 && onIndexChange(index + 1),
+              style: { ...btn(), opacity: index < photos.length - 1 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
+              children: /* @__PURE__ */ jsx(ChevronRight, { size: 20 })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { maxWidth: 640, width: "100%", margin: "0 auto", color: "#fff" }, children: [
+          !photo.is_reference && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, marginBottom: 12, color: photo.status === "approved" ? TEAL$4 : photo.status === "rejected" ? "#ff9d9d" : "#f5a524" }, children: [
+              photo.status === "approved" && `✅ Approved — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
+              photo.status === "rejected" && `✕ Changes needed — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
+              photo.status === "awaiting" && "⏳ Awaiting approval",
+              photo.feedback && /* @__PURE__ */ jsx("div", { style: { color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 }, children: photo.feedback })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn(TEAL$4), children: [
+                /* @__PURE__ */ jsx(Check$1, { size: 16 }),
+                " Approve"
+              ] }),
+              /* @__PURE__ */ jsx("button", { onClick: () => setAskChanges((v2) => !v2), style: btn(), children: "Request changes" })
+            ] }),
+            askChanges && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12 }, children: [
+              /* @__PURE__ */ jsx(
+                "textarea",
+                {
+                  autoFocus: true,
+                  value: feedback,
+                  onChange: (e) => setFeedback(e.target.value),
+                  placeholder: "What should change?",
+                  style: {
+                    width: "100%",
+                    minHeight: 90,
+                    fontSize: 16,
+                    padding: "10px 12px",
+                    borderRadius: 10,
+                    background: "rgba(255,255,255,0.06)",
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    color: "#fff",
+                    fontFamily: "'Inter Tight', sans-serif",
+                    boxSizing: "border-box",
+                    resize: "vertical"
+                  }
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => {
+                    if (feedback.trim()) {
+                      onRequestChanges(photo, feedback.trim());
+                      setAskChanges(false);
+                    }
+                  },
+                  disabled: !feedback.trim(),
+                  style: { ...btn("#f5a524"), marginTop: 10, opacity: feedback.trim() ? 1 : 0.45 },
+                  children: "Save"
+                }
+              )
+            ] })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }, children: [
+            !photo.is_reference && /* @__PURE__ */ jsxs("button", { onClick: () => {
+              var _a2;
+              return (_a2 = replaceRef.current) == null ? void 0 : _a2.click();
+            }, style: btn(), children: [
+              /* @__PURE__ */ jsx(RefreshCw, { size: 16 }),
+              " Replace photo"
+            ] }),
+            confirmDelete ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
+              "Delete this photo?",
+              /* @__PURE__ */ jsx("button", { onClick: () => onDelete(photo), style: { ...btn("#ff5c5c"), color: "#2a0505" }, children: "Yes" }),
+              /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDelete(false), style: btn(), children: "No" })
+            ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDelete(true), style: btn(), children: [
+              /* @__PURE__ */ jsx(Trash2, { size: 16 }),
+              " Delete photo"
+            ] })
+          ] }),
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              ref: replaceRef,
+              type: "file",
+              accept: "image/*",
+              style: { display: "none" },
+              onChange: (e) => {
+                var _a2;
+                const f = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+                if (f) onReplace(photo, f);
+                e.target.value = "";
+              }
+            }
+          )
+        ] })
+      ]
+    }
+  );
+};
+const openverse = async (q, signal) => {
+  const res = await fetch(
+    `https://api.openverse.org/v1/images/?q=${encodeURIComponent(q)}&page_size=12`,
+    { signal }
+  );
+  if (!res.ok) throw new Error("openverse failed");
+  const json = await res.json();
+  const results = Array.isArray(json == null ? void 0 : json.results) ? json.results : [];
+  return results.map((r, i) => ({
+    id: String(r.id ?? i),
+    thumb: r.thumbnail || r.url,
+    full: r.url || r.thumbnail,
+    title: r.title
+  })).filter((r) => !!r.thumb && !!r.full);
+};
+const wikimedia = async (q, signal) => {
+  var _a2;
+  const url2 = `https://commons.wikimedia.org/w/api.php?action=query&generator=search&gsrsearch=${encodeURIComponent(q)}&gsrnamespace=6&gsrlimit=12&prop=imageinfo&iiprop=url&iiurlwidth=400&format=json&origin=*`;
+  const res = await fetch(url2, { signal });
+  if (!res.ok) throw new Error("wikimedia failed");
+  const json = await res.json();
+  const pages = ((_a2 = json == null ? void 0 : json.query) == null ? void 0 : _a2.pages) ? Object.values(json.query.pages) : [];
+  return pages.map((p) => {
+    var _a3;
+    const info = (_a3 = p == null ? void 0 : p.imageinfo) == null ? void 0 : _a3[0];
+    if (!info) return null;
+    return {
+      id: String(p.pageid),
+      thumb: info.thumburl || info.url,
+      full: info.url || info.thumburl,
+      title: p.title
+    };
+  }).filter((r) => !!r && !!r.thumb && !!r.full);
+};
+const searchReferenceImages = async (q, signal) => {
+  try {
+    const primary = await openverse(q, signal);
+    if (primary.length) return primary;
+  } catch (err) {
+    if ((err == null ? void 0 : err.name) === "AbortError") throw err;
+  }
+  return wikimedia(q, signal);
+};
+const ReferenceSearch = ({ items, onAttach }) => {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [results, setResults] = useState([]);
+  const [picking, setPicking] = useState(null);
+  const abortRef = useRef(null);
+  useEffect(() => () => {
+    var _a2;
+    return (_a2 = abortRef.current) == null ? void 0 : _a2.abort();
+  }, []);
+  const run = async () => {
+    var _a2;
+    const q = query.trim();
+    if (!q) return;
+    (_a2 = abortRef.current) == null ? void 0 : _a2.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
+    setLoading(true);
+    setError("");
+    setResults([]);
+    try {
+      const found = await searchReferenceImages(q, controller.signal);
+      if (controller.signal.aborted) return;
+      setResults(found);
+      if (!found.length) setError("No reference images found. Try different words.");
+    } catch (err) {
+      if ((err == null ? void 0 : err.name) === "AbortError") return;
+      setError("Image search isn't responding right now. Please try again.");
+    } finally {
+      if (!controller.signal.aborted) setLoading(false);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { marginTop: 18, borderRadius: 14, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.02)" }, children: [
+    /* @__PURE__ */ jsxs(
+      "button",
+      {
+        onClick: () => setOpen((v2) => !v2),
+        style: {
+          width: "100%",
+          minHeight: 48,
+          display: "flex",
+          alignItems: "center",
+          gap: 8,
+          padding: "0 16px",
+          background: "none",
+          border: "none",
+          color: TEAL$4,
+          fontFamily: "'Inter Tight', sans-serif",
+          fontSize: 14,
+          fontWeight: 700,
+          cursor: "pointer"
+        },
+        children: [
+          /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: open ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
+          "Find reference image"
+        ]
+      }
+    ),
+    open && /* @__PURE__ */ jsxs("div", { style: { padding: "0 16px 16px" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            value: query,
+            onChange: (e) => setQuery(e.target.value),
+            onKeyDown: (e) => {
+              if (e.key === "Enter") run();
+            },
+            placeholder: "e.g. 1968 Mustang, 9mm pistol, vintage lighter",
+            style: {
+              flex: "1 1 200px",
+              minHeight: 44,
+              fontSize: 16,
+              padding: "10px 12px",
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.16)",
+              color: "#fff",
+              fontFamily: "'Inter Tight', sans-serif",
+              boxSizing: "border-box"
+            }
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: run,
+            disabled: loading || !query.trim(),
+            style: {
+              minHeight: 44,
+              padding: "0 18px",
+              borderRadius: 10,
+              background: TEAL$4,
+              color: "#04231d",
+              border: "none",
+              fontWeight: 700,
+              fontSize: 15,
+              cursor: loading ? "wait" : "pointer",
+              opacity: !query.trim() ? 0.45 : 1,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              fontFamily: "'Inter Tight', sans-serif"
+            },
+            children: [
+              loading ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Search, { size: 16 }),
+              " Search"
+            ]
+          }
+        )
+      ] }),
+      error && /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 13, color: "#ff9d9d" }, children: error }),
+      results.length > 0 && /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(96px, 1fr))", gap: 8, marginTop: 14 }, children: results.map((r) => /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: () => setPicking(r),
+          style: {
+            padding: 0,
+            borderRadius: 10,
+            overflow: "hidden",
+            cursor: "pointer",
+            border: "1px solid rgba(255,255,255,0.14)",
+            background: "rgba(255,255,255,0.04)",
+            aspectRatio: "1 / 1"
+          },
+          children: /* @__PURE__ */ jsx("img", { src: r.thumb, alt: r.title || "Reference", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover" } })
+        },
+        r.id
+      )) }),
+      picking && /* @__PURE__ */ jsxs("div", { style: { marginTop: 16, padding: 14, borderRadius: 12, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(0,0,0,0.35)" }, children: [
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 14, fontWeight: 700, marginBottom: 10 }, children: "Attach to which item?" }),
+        items.length === 0 ? /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)" }, children: "Add an item to this department first." }) : /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 6 }, children: items.map((it) => /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => {
+              onAttach(it.id, picking.full);
+              setPicking(null);
+            },
+            style: {
+              textAlign: "left",
+              minHeight: 44,
+              padding: "0 12px",
+              borderRadius: 10,
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.14)",
+              color: "#fff",
+              fontSize: 15,
+              cursor: "pointer",
+              fontFamily: "'Inter Tight', sans-serif"
+            },
+            children: it.text
+          },
+          it.id
+        )) }),
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setPicking(null),
+            style: {
+              marginTop: 10,
+              minHeight: 44,
+              padding: "0 14px",
+              borderRadius: 10,
+              background: "none",
+              border: "1px solid rgba(255,255,255,0.14)",
+              color: "rgba(255,255,255,0.7)",
+              cursor: "pointer",
+              fontFamily: "'Inter Tight', sans-serif",
+              fontSize: 14
+            },
+            children: "Cancel"
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
+const MAX_EDGE = 1600;
+const QUALITY = 0.82;
+const ALLOWED = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/heic", "image/heif"];
+const extLooksHeic = (name) => /\.(heic|heif)$/i.test(name);
+class ImageError extends Error {
+}
+const prepareImage = async (file) => {
+  const type = (file.type || "").toLowerCase();
+  const isImage = ALLOWED.includes(type) || !type && extLooksHeic(file.name);
+  if (!isImage) {
+    throw new ImageError("That file isn't a supported image. Please use a JPG, PNG or WEBP.");
+  }
+  if (file.size > MAX_UPLOAD_BYTES) {
+    throw new ImageError("That image is larger than 15 MB. Please use a smaller photo.");
+  }
+  let bitmapWidth = 0;
+  let bitmapHeight = 0;
+  let source;
+  try {
+    if (typeof createImageBitmap === "function") {
+      const bmp = await createImageBitmap(file);
+      source = bmp;
+      bitmapWidth = bmp.width;
+      bitmapHeight = bmp.height;
+    } else {
+      const url2 = URL.createObjectURL(file);
+      try {
+        const img = await new Promise((resolve, reject) => {
+          const el = new Image();
+          el.onload = () => resolve(el);
+          el.onerror = () => reject(new Error("decode failed"));
+          el.src = url2;
+        });
+        source = img;
+        bitmapWidth = img.naturalWidth;
+        bitmapHeight = img.naturalHeight;
+      } finally {
+        URL.revokeObjectURL(url2);
+      }
+    }
+  } catch {
+    if (type.includes("heic") || type.includes("heif") || extLooksHeic(file.name)) {
+      throw new ImageError("This phone photo (HEIC) can't be read by your browser. Please save it as a JPG or PNG and try again.");
+    }
+    throw new ImageError("That image couldn't be opened. Please try a different file.");
+  }
+  if (!bitmapWidth || !bitmapHeight) {
+    throw new ImageError("That image couldn't be read. Please try a different file.");
+  }
+  const scale = Math.min(1, MAX_EDGE / Math.max(bitmapWidth, bitmapHeight));
+  const w = Math.max(1, Math.round(bitmapWidth * scale));
+  const h = Math.max(1, Math.round(bitmapHeight * scale));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new ImageError("Your browser couldn't process that image.");
+  ctx.drawImage(source, 0, 0, w, h);
+  if ("close" in source && typeof source.close === "function") source.close();
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", QUALITY));
+  if (!blob) throw new ImageError("Your browser couldn't process that image.");
+  return blob;
+};
+const BUCKET = "breakdown-photos";
 const SITE = "https://filmmakergenius.com";
 const TEAL$3 = "#00d4aa";
 const STEPS$3 = [
@@ -23588,6 +24282,11 @@ const ScriptBreakdown = () => {
   const [activeDept, setActiveDept] = useState("props");
   const [showScript, setShowScript] = useState(false);
   const [deleteScene, setDeleteScene] = useState(null);
+  const [photos, setPhotos] = useState([]);
+  const [urlMap, setUrlMap] = useState({});
+  const [uploadingItemId, setUploadingItemId] = useState(null);
+  const [view, setView] = useState("checklist");
+  const [lightbox, setLightbox] = useState(null);
   const fileInputRef = useRef(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
   const selectedProject = useMemo(() => projects.find((p) => p.id === projectId) || null, [projects, projectId]);
@@ -23619,6 +24318,7 @@ const ScriptBreakdown = () => {
       setScenes([]);
       setItems([]);
       setSignoffs([]);
+      setPhotos([]);
       return;
     }
     const [{ data: sceneRows }, { data: itemRows }, { data: signoffRows }] = await Promise.all([
@@ -23642,17 +24342,63 @@ const ScriptBreakdown = () => {
     setItems((prev) => [...prev.filter((i) => i.scene_id !== sceneId), ...itemRows || []]);
     setSignoffs((prev) => [...prev.filter((s) => s.scene_id !== sceneId), ...signoffRows || []]);
   }, [sceneId, projectId]);
+  const loadPhotos = useCallback(async () => {
+    if (!projectId) {
+      setPhotos([]);
+      return;
+    }
+    const { data } = await supabase.from("breakdown_photos").select(PHOTO_FIELDS).eq("project_id", projectId).order("created_at", { ascending: true });
+    setPhotos(data || []);
+  }, [projectId]);
+  useEffect(() => {
+    loadPhotos();
+  }, [loadPhotos]);
+  useEffect(() => {
+    const now = Date.now();
+    const needed = Array.from(
+      new Set(
+        photos.filter((p) => !!p.storage_path).map((p) => p.storage_path).filter((path) => !urlMap[path] || urlMap[path].exp < now + 6e4)
+      )
+    );
+    if (!needed.length) return;
+    let cancelled = false;
+    (async () => {
+      const { data, error: err } = await supabase.storage.from(BUCKET).createSignedUrls(needed, 3600);
+      if (cancelled || err || !data) return;
+      const exp = Date.now() + 3600 * 1e3;
+      setUrlMap((prev) => {
+        const next = { ...prev };
+        data.forEach((row, i) => {
+          const path = row.path || needed[i];
+          if (row.signedUrl && path) next[path] = { url: row.signedUrl, exp };
+        });
+        return next;
+      });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [photos, urlMap]);
+  const signedUrl = useCallback(
+    (photo) => {
+      var _a3;
+      return photo.external_url || (photo.storage_path ? (_a3 = urlMap[photo.storage_path]) == null ? void 0 : _a3.url : void 0);
+    },
+    [urlMap]
+  );
   useEffect(() => {
     if (!sceneId) return;
     const channel = supabase.channel(`breakdown-scene-${sceneId}`).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, () => {
       refreshScene();
     }).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, () => {
       refreshScene();
+    }).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, () => {
+      loadPhotos();
     }).subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [sceneId, refreshScene]);
+  }, [sceneId, projectId, refreshScene, loadPhotos]);
   const itemCount = useCallback((sid) => items.filter((i) => i.scene_id === sid).length, [items]);
   const sceneItems = useMemo(
     () => items.filter((i) => i.scene_id === sceneId),
@@ -23695,13 +24441,21 @@ const ScriptBreakdown = () => {
       failed(err.message);
     }
   };
+  const removeStorageFor = async (rows) => {
+    const paths = rows.map((p) => p.storage_path).filter((p) => !!p);
+    if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  };
   const deleteItem = async (item) => {
+    const itemPhotos = photos.filter((p) => p.item_id === item.id);
     setItems((prev) => prev.filter((i) => i.id !== item.id));
+    await removeStorageFor(itemPhotos);
     const { error: err } = await supabase.from("breakdown_items").delete().eq("id", item.id);
     if (err) {
       setItems((prev) => [...prev, item]);
       failed(err.message);
+      return;
     }
+    setPhotos((prev) => prev.filter((p) => p.item_id !== item.id));
   };
   const addItem = async (department, text, opts) => {
     if (!sceneId || !projectId) return;
@@ -23762,6 +24516,125 @@ const ScriptBreakdown = () => {
     if ((existing == null ? void 0 : existing.status) === "need_help") {
       await setSignoff(department, "need_help", text);
     }
+  };
+  const uploadOne = async (item, file) => {
+    const blob = await prepareImage(file);
+    const path = `${projectId}/${item.id}/${crypto.randomUUID()}.jpg`;
+    const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: "image/jpeg", upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    return path;
+  };
+  const addPhotos = async (item, files) => {
+    if (!projectId) return;
+    setUploadingItemId(item.id);
+    try {
+      for (const file of files) {
+        let path = "";
+        try {
+          path = await uploadOne(item, file);
+        } catch (err2) {
+          toast({
+            title: err2 instanceof ImageError ? "Photo not added" : "Upload failed",
+            description: (err2 == null ? void 0 : err2.message) || "That photo couldn't be uploaded.",
+            variant: "destructive"
+          });
+          continue;
+        }
+        const { data, error: err } = await supabase.from("breakdown_photos").insert({
+          item_id: item.id,
+          project_id: projectId,
+          storage_path: path,
+          status: "awaiting",
+          uploaded_by_name: actorName
+        }).select(PHOTO_FIELDS).single();
+        if (err || !data) {
+          await supabase.storage.from(BUCKET).remove([path]);
+          failed((err == null ? void 0 : err.message) || "The photo couldn't be saved.");
+          continue;
+        }
+        setPhotos((prev) => [...prev, data]);
+      }
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+  const decidePhoto = async (photo, status, feedback) => {
+    const patch = {
+      status,
+      feedback: status === "rejected" ? feedback ?? null : null,
+      decided_by_name: actorName,
+      decided_at: (/* @__PURE__ */ new Date()).toISOString()
+    };
+    setPhotos((prev) => prev.map((p) => p.id === photo.id ? { ...p, ...patch } : p));
+    const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+    if (err) {
+      setPhotos((prev) => prev.map((p) => p.id === photo.id ? photo : p));
+      failed(err.message);
+    }
+  };
+  const replacePhoto = async (photo, file) => {
+    const item = items.find((i) => i.id === photo.item_id);
+    if (!item) return;
+    setUploadingItemId(item.id);
+    try {
+      const path = await uploadOne(item, file);
+      const patch = {
+        storage_path: path,
+        status: "awaiting",
+        feedback: null,
+        decided_by_name: null,
+        decided_at: null,
+        uploaded_by_name: actorName
+      };
+      const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+      if (err) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        failed(err.message);
+        return;
+      }
+      setPhotos((prev) => prev.map((p) => p.id === photo.id ? { ...p, ...patch } : p));
+      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    } catch (err) {
+      toast({
+        title: err instanceof ImageError ? "Photo not replaced" : "Upload failed",
+        description: (err == null ? void 0 : err.message) || "That photo couldn't be uploaded.",
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+  const deletePhoto = async (photo) => {
+    const { error: err } = await supabase.from("breakdown_photos").delete().eq("id", photo.id);
+    if (err) {
+      failed(err.message);
+      return;
+    }
+    if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+    setLightbox((lb) => {
+      if (!lb) return lb;
+      const ids = lb.ids.filter((id) => id !== photo.id);
+      if (!ids.length) return null;
+      return { ids, index: Math.min(lb.index, ids.length - 1) };
+    });
+  };
+  const attachReference = async (itemId, url2) => {
+    if (!projectId) return;
+    const { data, error: err } = await supabase.from("breakdown_photos").insert({
+      item_id: itemId,
+      project_id: projectId,
+      external_url: url2,
+      is_reference: true,
+      status: "approved",
+      uploaded_by_name: actorName
+    }).select(PHOTO_FIELDS).single();
+    if (err || !data) {
+      failed((err == null ? void 0 : err.message) || "The reference image couldn't be attached.");
+      return;
+    }
+    setPhotos((prev) => [...prev, data]);
+    toast({ title: "Reference image attached" });
   };
   const createProject = async () => {
     if (!user || !newTitle.trim()) return;
@@ -23841,12 +24714,56 @@ const ScriptBreakdown = () => {
   };
   const confirmDeleteScene = async () => {
     if (!deleteScene) return;
+    const sceneItemIds = items.filter((i) => i.scene_id === deleteScene.id).map((i) => i.id);
+    await removeStorageFor(photos.filter((p) => sceneItemIds.includes(p.item_id)));
     await supabase.from("breakdown_scenes").delete().eq("id", deleteScene.id);
     if (sceneId === deleteScene.id) setParams({ scene: null });
     setDeleteScene(null);
     await loadScenes();
+    await loadPhotos();
   };
   const sceneTitle = (s) => s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+  const photosByItem = useMemo(() => {
+    const map = {};
+    photos.forEach((p) => {
+      map[p.item_id] = map[p.item_id] || [];
+      map[p.item_id].push(p);
+    });
+    return map;
+  }, [photos]);
+  const awaitingPhotos = useMemo(
+    () => photos.filter((p) => !p.is_reference && p.status === "awaiting"),
+    [photos]
+  );
+  const sceneAwaitingCount = useMemo(() => {
+    const ids = new Set(sceneItems.map((i) => i.id));
+    return awaitingPhotos.filter((p) => ids.has(p.item_id)).length;
+  }, [awaitingPhotos, sceneItems]);
+  const approvalRows = useMemo(() => {
+    const deptLabel = (key) => {
+      var _a3;
+      return ((_a3 = DEPARTMENTS.find((d) => d.key === key)) == null ? void 0 : _a3.label) || key;
+    };
+    return awaitingPhotos.map((photo) => {
+      const item = items.find((i) => i.id === photo.item_id);
+      const scene = item ? scenes.find((s) => s.id === item.scene_id) : void 0;
+      if (!item || !scene) return null;
+      return {
+        photo,
+        sceneTitle: sceneTitle(scene),
+        departmentLabel: deptLabel(item.department),
+        itemText: item.text
+      };
+    }).filter((r) => !!r);
+  }, [awaitingPhotos, items, scenes]);
+  const openPhoto = (photo) => {
+    const group = photosByItem[photo.item_id] || [photo];
+    setLightbox({ ids: group.map((p) => p.id), index: Math.max(0, group.findIndex((p) => p.id === photo.id)) });
+  };
+  const lightboxPhotos = useMemo(
+    () => lightbox ? lightbox.ids.map((id) => photos.find((p) => p.id === id)).filter((p) => !!p) : [],
+    [lightbox, photos]
+  );
   return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -24175,74 +25092,119 @@ const ScriptBreakdown = () => {
               total,
               " items ready · ",
               signed,
-              "/5 departments signed off"
+              "/5 departments signed off",
+              sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""
             ] }),
             /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$3, transition: "width .3s" } }) })
           ] });
         })(),
-        /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }, children: DEPARTMENTS.map((d) => {
-          const active = d.key === activeDept;
-          const so = sceneSignoff(d.key);
-          return /* @__PURE__ */ jsxs(
-            "button",
-            {
-              onClick: () => setActiveDept(d.key),
-              className: "sb-tap",
-              style: {
-                flex: "0 0 auto",
-                padding: "0 16px",
-                borderRadius: 9999,
-                background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-                color: active ? TEAL$3 : "rgba(255,255,255,0.7)",
-                fontSize: 14,
-                fontWeight: 600,
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                fontFamily: "'Inter Tight', sans-serif",
-                display: "inline-flex",
-                alignItems: "center",
-                gap: 8
-              },
-              children: [
-                d.label,
-                " ",
-                deptCheckedCount(d.key),
-                "/",
-                deptCount(d.key),
-                so && /* @__PURE__ */ jsx("span", { style: {
-                  width: 8,
-                  height: 8,
-                  borderRadius: 9999,
-                  background: so.status === "good" ? TEAL$3 : "#f5a524"
-                } })
-              ]
+        /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }, children: [["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]].map(([key, label2]) => /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setView(key),
+            className: "sb-tap",
+            style: {
+              padding: "0 18px",
+              borderRadius: 10,
+              background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+              border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+              color: view === key ? TEAL$3 : "rgba(255,255,255,0.7)",
+              fontSize: 14,
+              fontWeight: 700,
+              cursor: "pointer",
+              fontFamily: "'Inter Tight', sans-serif"
             },
-            d.key
-          );
-        }) }),
-        /* @__PURE__ */ jsx(
-          DepartmentChecklist,
-          {
-            department: activeDept,
-            items: sceneItems.filter((i) => i.department === activeDept),
-            onToggle: toggleItem,
-            onEditText: editItemText,
-            onDelete: deleteItem,
-            onAdd: (text) => addItem(activeDept, text)
+            children: label2
           },
-          `${sceneId}-${activeDept}`
-        ),
-        /* @__PURE__ */ jsx(
-          SignOffBox,
+          key
+        )) }),
+        view === "approvals" ? /* @__PURE__ */ jsx(
+          ApprovalsView,
           {
-            signoff: sceneSignoff(activeDept),
-            onSetStatus: (status, note) => setSignoff(activeDept, status, note),
-            onClear: () => clearSignoff(activeDept),
-            onAddNoteItem: (text) => addNoteItem(activeDept, text)
-          },
-          `signoff-${sceneId}-${activeDept}`
-        ),
+            rows: approvalRows,
+            signedUrl,
+            onApprove: (p) => decidePhoto(p, "approved"),
+            onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
+            onOpen: openPhoto
+          }
+        ) : /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }, children: DEPARTMENTS.map((d) => {
+            const active = d.key === activeDept;
+            const so = sceneSignoff(d.key);
+            return /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setActiveDept(d.key),
+                className: "sb-tap",
+                style: {
+                  flex: "0 0 auto",
+                  padding: "0 16px",
+                  borderRadius: 9999,
+                  background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+                  color: active ? TEAL$3 : "rgba(255,255,255,0.7)",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  fontFamily: "'Inter Tight', sans-serif",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 8
+                },
+                children: [
+                  d.label,
+                  " ",
+                  deptCheckedCount(d.key),
+                  "/",
+                  deptCount(d.key),
+                  so && /* @__PURE__ */ jsx("span", { style: {
+                    width: 8,
+                    height: 8,
+                    borderRadius: 9999,
+                    background: so.status === "good" ? TEAL$3 : "#f5a524"
+                  } })
+                ]
+              },
+              d.key
+            );
+          }) }),
+          /* @__PURE__ */ jsx(
+            DepartmentChecklist,
+            {
+              department: activeDept,
+              items: sceneItems.filter((i) => i.department === activeDept),
+              onToggle: toggleItem,
+              onEditText: editItemText,
+              onDelete: deleteItem,
+              onAdd: (text) => addItem(activeDept, text),
+              photosByItem,
+              signedUrl,
+              onAddPhotos: addPhotos,
+              onOpenPhoto: openPhoto,
+              uploadingItemId
+            },
+            `${sceneId}-${activeDept}`
+          ),
+          /* @__PURE__ */ jsx(
+            ReferenceSearch,
+            {
+              items: sceneItems.filter((i) => i.department === activeDept),
+              onAttach: attachReference
+            },
+            `ref-${sceneId}-${activeDept}`
+          ),
+          /* @__PURE__ */ jsx(
+            SignOffBox,
+            {
+              signoff: sceneSignoff(activeDept),
+              onSetStatus: (status, note) => setSignoff(activeDept, status, note),
+              onClear: () => clearSignoff(activeDept),
+              onAddNoteItem: (text) => addNoteItem(activeDept, text)
+            },
+            `signoff-${sceneId}-${activeDept}`
+          )
+        ] }),
         /* @__PURE__ */ jsxs(
           "button",
           {
@@ -24322,7 +25284,21 @@ const ScriptBreakdown = () => {
         /* @__PURE__ */ jsx("button", { onClick: confirmDeleteScene, style: { ...primaryBtn, background: "#ff5c5c", color: "#2a0505" }, children: "Delete" }),
         /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn, children: "Cancel" })
       ] })
-    ] })
+    ] }),
+    lightbox && lightboxPhotos.length > 0 && /* @__PURE__ */ jsx(
+      PhotoLightbox,
+      {
+        photos: lightboxPhotos,
+        index: Math.min(lightbox.index, lightboxPhotos.length - 1),
+        signedUrl,
+        onIndexChange: (i) => setLightbox((lb) => lb ? { ...lb, index: i } : lb),
+        onClose: () => setLightbox(null),
+        onApprove: (p) => decidePhoto(p, "approved"),
+        onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
+        onReplace: replacePhoto,
+        onDelete: deletePhoto
+      }
+    )
   ] });
 };
 const MAX_THEMES = 6;
