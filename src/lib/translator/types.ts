@@ -1,5 +1,12 @@
 export type SourceKind = "text" | "pdf" | "image" | "spreadsheet";
 
+export interface SentRecipient {
+  name?: string | null;
+  email: string;
+  sent_at?: string;
+  ok?: boolean;
+}
+
 export interface ProductionMessage {
   id: string;
   project_id: string;
@@ -11,6 +18,17 @@ export interface ProductionMessage {
   source_kind: string;
   created_by_name: string;
   created_at: string;
+  /** Set once the message has been emailed to the crew. */
+  sent_at?: string | null;
+  sent_to?: SentRecipient[] | null;
+  /** Set when a crew member posted it through the private link. */
+  created_by_crew_id?: string | null;
+}
+
+/** How many recipients received this message successfully. */
+export function sentCount(m: ProductionMessage): number {
+  const list = Array.isArray(m.sent_to) ? m.sent_to : [];
+  return list.filter((r) => r && r.ok !== false).length;
 }
 
 /** Translations without the internal `_subjects` bucket. */

@@ -1,6 +1,13 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { charge, ensureBalance, estimateUsd, logUsage, serviceClient } from "../_shared/credits.ts";
 import { callReceiptAi, parseReceipt, MAX_RECEIPT_BYTES, RECEIPT_MIME_TYPES } from "../_shared/receipt.ts";
+import {
+  MAX_TARGETS,
+  MAX_SUBJECT,
+  buildTranslationsColumn,
+  productionLanguages,
+  translateWithRetry,
+} from "../_shared/translate.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -30,6 +37,14 @@ const REF_HOSTS = [
 const AI_READS_PER_CREW_24H = 25;
 const AI_READS_PER_PROJECT_24H = 150;
 const AI_LOG_NAME = "read-receipt-crew";
+
+// Crew-posted messages are translated on the owner's credits, so cap them too.
+const TRANSLATE_LOG_NAME = "translate-message-crew";
+const POSTS_PER_CREW_24H = 30;
+const POSTS_PER_PROJECT_24H = 200;
+const MAX_CREW_MESSAGE = 5000;
+const MESSAGE_FIELDS =
+  "id, subject, source_language, source_text, translations, created_by_name, created_at";
 
 const PHOTO_FIELDS =
   "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
@@ -215,7 +230,7 @@ serve(async (req) => {
   // ---- resolve project by share token -------------------------------------
   const { data: project } = await admin
     .from("breakdown_projects")
-    .select("id, title, company, status, sharing_enabled, default_currency, notify_expenses, owner_id")
+    .select("id, title, company, status, sharing_enabled, default_currency, notify_expenses, owner_id, languages, shoot_location")
     .eq("share_token", token)
     .maybeSingle();
   if (!project || !project.sharing_enabled) return NOT_FOUND();
@@ -223,21 +238,26 @@ serve(async (req) => {
   const ownerId = project.owner_id as string;
 
   // ---- crew identity ------------------------------------------------------
-  let crew: { id: string; name: string; department: string | null } | null = null;
+  let crew: { id: string; name: string; department: string | null; preferred_language: string | null } | null = null;
   if (action !== "load" && action !== "join") {
     const crewId = text(body.crew_id, 64);
     const secret = text(body.crew_secret, 200);
     if (!crewId || !secret) return FORBIDDEN("Please tell us who you are first.");
     const { data: row } = await admin
       .from("breakdown_crew")
-      .select("id, name, department, crew_secret_hash, project_id")
+      .select("id, name, department, preferred_language, crew_secret_hash, project_id")
       .eq("id", crewId)
       .maybeSingle();
     if (!row || row.project_id !== projectId) return FORBIDDEN("Please tell us who you are first.");
     if (!row.crew_secret_hash || row.crew_secret_hash !== (await sha256(secret))) {
       return FORBIDDEN("Please tell us who you are first.");
     }
-    crew = { id: row.id as string, name: row.name as string, department: (row.department as string) ?? null };
+    crew = {
+      id: row.id as string,
+      name: row.name as string,
+      department: (row.department as string) ?? null,
+      preferred_language: (row.preferred_language as string) ?? null,
+    };
     await admin.from("breakdown_crew").update({ last_seen_at: new Date().toISOString() }).eq("id", crew.id);
   }
 
@@ -314,6 +334,8 @@ serve(async (req) => {
             company: project.company,
             status: project.status,
             default_currency: project.default_currency || "USD",
+            languages: productionLanguages(project.languages),
+            shoot_location: project.shoot_location || null,
           },
           scenes: scenes || [],
           items: items || [],
@@ -341,12 +363,38 @@ serve(async (req) => {
 
       // -------------------------------------------------------- update_profile
       case "update_profile": {
+        const patch: Record<string, unknown> = {};
+        const hasLanguage = Object.prototype.hasOwnProperty.call(body, "preferred_language");
         const name = text(body.name, 40);
         const department = text(body.department, 60);
-        if (!name) return BAD("Please enter your first name.");
-        if (!CREW_DEPARTMENTS.includes(department)) return BAD("Please pick your department.");
-        await admin.from("breakdown_crew").update({ name, department }).eq("id", crew!.id);
-        return json({ ok: true, name, department });
+
+        // Name + department stay required unless this is a language-only update.
+        if (!hasLanguage || name || department) {
+          if (!name) return BAD("Please enter your first name.");
+          if (!CREW_DEPARTMENTS.includes(department)) return BAD("Please pick your department.");
+          patch.name = name;
+          patch.department = department;
+        }
+
+        let preferred: string | null = null;
+        if (hasLanguage) {
+          const raw = text(body.preferred_language, 10).toLowerCase();
+          if (raw) {
+            if (!productionLanguages(project.languages).includes(raw)) {
+              return BAD("That isn't one of this production's languages.");
+            }
+            preferred = raw;
+          }
+          patch.preferred_language = preferred;
+        }
+
+        await admin.from("breakdown_crew").update(patch).eq("id", crew!.id);
+        return json({
+          ok: true,
+          name: (patch.name as string) ?? crew!.name,
+          department: (patch.department as string) ?? crew!.department,
+          preferred_language: hasLanguage ? preferred : undefined,
+        });
       }
 
       // ----------------------------------------------------------- set_checked
@@ -840,6 +888,123 @@ serve(async (req) => {
         if (error) return json({ error: "Couldn't remove that submission." }, 500);
         return json({ ok: true });
       }
+
+      // --------------------------------------------------------- messages_list
+      case "messages_list": {
+        const before = text(body.before, 40);
+        let query = admin
+          .from("production_messages")
+          .select(MESSAGE_FIELDS)
+          .eq("project_id", projectId)
+          .order("created_at", { ascending: false })
+          .limit(30);
+        if (before && !Number.isNaN(Date.parse(before))) query = query.lt("created_at", before);
+        const { data, error } = await query;
+        if (error) {
+          console.error("crew messages_list failed:", error.message);
+          return json({ error: "Couldn't load the messages." }, 500);
+        }
+        return json({
+          messages: data || [],
+          languages: productionLanguages(project.languages),
+          preferred_language: crew!.preferred_language,
+        });
+      }
+
+      // ---------------------------------------------------------- message_post
+      case "message_post": {
+        const subject = text(body.subject, MAX_SUBJECT) || null;
+        const value = text(body.text, MAX_CREW_MESSAGE);
+        if (value.length < 2) return BAD("Please write a message first.");
+
+        const languages = productionLanguages(project.languages);
+        const apiKey = Deno.env.get("LOVABLE_API_KEY");
+
+        /** Saves the message with whatever translations we managed to get. */
+        const save = async (
+          sourceLanguage: string,
+          translations: Record<string, unknown>,
+        ) => {
+          const { data, error } = await admin
+            .from("production_messages")
+            .insert({
+              project_id: projectId,
+              subject,
+              source_language: sourceLanguage,
+              source_text: value,
+              translations,
+              source_kind: "text",
+              created_by_name: crew!.name,
+              created_by_crew_id: crew!.id,
+            })
+            .select(MESSAGE_FIELDS)
+            .single();
+          if (error || !data) {
+            console.error("crew message insert failed:", error?.message);
+            return null;
+          }
+          return data;
+        };
+
+        const fallbackSource = crew!.preferred_language && languages.includes(crew!.preferred_language)
+          ? crew!.preferred_language
+          : languages[0] || "en";
+
+        const untranslated = async () => {
+          const saved = await save(fallbackSource, {});
+          if (!saved) return json({ error: "That message couldn't be posted." }, 500);
+          return json({ message: saved, translated: false });
+        };
+
+        const targets = languages.slice(0, MAX_TARGETS);
+        if (!apiKey || !targets.length) return await untranslated();
+
+        // 24h abuse caps, counted from the usage log.
+        const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+        const [{ count: crewCount }, { count: projectCount }] = await Promise.all([
+          admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+            .eq("function_name", TRANSLATE_LOG_NAME).gte("created_at", since)
+            .filter("metadata->>crew_id", "eq", crew!.id),
+          admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+            .eq("function_name", TRANSLATE_LOG_NAME).gte("created_at", since)
+            .filter("metadata->>project_id", "eq", projectId),
+        ]);
+        if ((crewCount ?? 0) >= POSTS_PER_CREW_24H || (projectCount ?? 0) >= POSTS_PER_PROJECT_24H) {
+          return await untranslated();
+        }
+
+        // The production owner pays for the translation — never reveal their balance.
+        const balance = await ensureBalance(ownerId, 1);
+        if (!balance.ok) return await untranslated();
+
+        const startedAt = Date.now();
+        const { result } = await translateWithRetry(apiKey, targets, subject, value, "auto");
+        if (!result) return await untranslated();
+
+        const detected = result.detected || fallbackSource;
+        const storedSource = languages.includes(detected) ? detected : detected || fallbackSource;
+        const translations = buildTranslationsColumn(result, storedSource);
+
+        const saved = await save(storedSource, translations);
+        if (!saved) return json({ error: "That message couldn't be posted." }, 500);
+
+        await charge(ownerId, 1, TRANSLATE_LOG_NAME, { project_id: projectId, crew_id: crew!.id });
+        await logUsage({
+          userId: ownerId,
+          functionName: TRANSLATE_LOG_NAME,
+          provider: "lovable-gateway",
+          operation: "text",
+          tokensInput: result.usage?.prompt_tokens,
+          tokensOutput: result.usage?.completion_tokens,
+          estimatedCostUsd: estimateUsd(result.usage?.prompt_tokens, result.usage?.completion_tokens),
+          status: "success",
+          latencyMs: Date.now() - startedAt,
+          metadata: { project_id: projectId, crew_id: crew!.id },
+        });
+
+        return json({ message: saved, translated: true });
+      }
+
 
       default:
         return BAD("Unknown action.");

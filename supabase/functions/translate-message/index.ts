@@ -11,6 +11,15 @@ import {
   estimateUsd,
   serviceClient,
 } from "../_shared/credits.ts";
+import {
+  LANGUAGE_NAMES,
+  MAX_SUBJECT,
+  MAX_TARGETS,
+  MAX_TEXT,
+  buildTranslationsColumn,
+  productionLanguages,
+  translateWithRetry,
+} from "../_shared/translate.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -19,18 +28,6 @@ const corsHeaders = {
 
 const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
 
-const MAX_TARGETS = 8;
-const MAX_TEXT = 20000;
-
-const LANGUAGE_NAMES: Record<string, string> = {
-  en: "English", de: "German", bs: "Bosnian", hr: "Croatian", sr: "Serbian",
-  es: "Spanish", fr: "French", it: "Italian", pt: "Portuguese", nl: "Dutch",
-  pl: "Polish", cs: "Czech", hu: "Hungarian", ro: "Romanian", tr: "Turkish",
-  el: "Greek", ru: "Russian", uk: "Ukrainian", ar: "Arabic", he: "Hebrew",
-  hi: "Hindi", zh: "Chinese", ja: "Japanese", ko: "Korean", sv: "Swedish",
-  no: "Norwegian", da: "Danish", fi: "Finnish",
-};
-
 const VALID_KINDS = new Set(["text", "pdf", "image", "spreadsheet"]);
 
 function json(body: unknown, status = 200) {
@@ -38,93 +35,6 @@ function json(body: unknown, status = 200) {
     status,
     headers: { ...corsHeaders, "Content-Type": "application/json" },
   });
-}
-
-function systemPrompt(targets: string[]): string {
-  const list = targets.map((c) => `${c} (${LANGUAGE_NAMES[c] || c})`).join(", ");
-  return `You are a professional translator for an international film production crew. Translate the user's message into each of these languages: ${list}. Rules: keep names, times, dates, addresses, phone numbers, scene numbers and location names exactly as written; keep film-set terminology accurate (call time, wrap, lunch, company move, first team, holding, etc.) using the terms crews use in each language; preserve line breaks, lists and paragraph structure; use a clear, polite, professional register (formal 'Sie' in German, formal 'Vi' in Bosnian/Croatian/Serbian); do not add notes or explanations. Also identify the source language. Return ONLY JSON: {"detected_language": "<ISO 639-1 code>", "translations": {"<code>": "<translated text>", ...}}. If the subject is provided, translate it too as {"subject_translations": {"<code>": "..."}}.`;
-}
-
-function extractJson(raw: string): Record<string, unknown> | null {
-  let content = (raw || "").trim();
-  if (content.startsWith("```json")) content = content.slice(7);
-  else if (content.startsWith("```")) content = content.slice(3);
-  if (content.endsWith("```")) content = content.slice(0, -3);
-  content = content.trim();
-  const first = content.indexOf("{");
-  const last = content.lastIndexOf("}");
-  if (first !== -1 && last > first) content = content.slice(first, last + 1);
-  try {
-    return JSON.parse(content);
-  } catch {
-    return null;
-  }
-}
-
-interface AiResult {
-  detected: string;
-  translations: Record<string, string>;
-  subjects: Record<string, string>;
-  usage: { prompt_tokens?: number; completion_tokens?: number };
-}
-
-async function callGateway(
-  targets: string[],
-  subject: string | null,
-  text: string,
-  sourceLanguage: string,
-): Promise<{ result: AiResult | null; status: number }> {
-  const userParts = [
-    sourceLanguage === "auto"
-      ? "The source language is unknown — detect it."
-      : `The source language is ${sourceLanguage} (${LANGUAGE_NAMES[sourceLanguage] || sourceLanguage}).`,
-    subject ? `SUBJECT:\n${subject}` : "",
-    `MESSAGE:\n${text}`,
-  ].filter(Boolean);
-
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${LOVABLE_API_KEY}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-3-flash-preview",
-      messages: [
-        { role: "system", content: systemPrompt(targets) },
-        { role: "user", content: userParts.join("\n\n") },
-      ],
-    }),
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Lovable AI error:", response.status, errorText);
-    return { result: null, status: response.status };
-  }
-
-  const data = await response.json();
-  const parsed = extractJson(data.choices?.[0]?.message?.content || "");
-  if (!parsed) return { result: null, status: 502 };
-
-  const rawTranslations = (parsed.translations || {}) as Record<string, unknown>;
-  const rawSubjects = (parsed.subject_translations || {}) as Record<string, unknown>;
-  const translations: Record<string, string> = {};
-  const subjects: Record<string, string> = {};
-  for (const code of targets) {
-    const value = rawTranslations[code];
-    if (typeof value === "string" && value.trim()) translations[code] = value;
-    const sub = rawSubjects[code];
-    if (subject && typeof sub === "string" && sub.trim()) subjects[code] = sub.trim();
-  }
-
-  const detectedRaw = typeof parsed.detected_language === "string" ? parsed.detected_language.trim().toLowerCase() : "";
-  const detected = LANGUAGE_NAMES[detectedRaw] ? detectedRaw : sourceLanguage === "auto" ? "" : sourceLanguage;
-
-  return {
-    result: { detected, translations, subjects, usage: data.usage || {} },
-    status: 200,
-  };
 }
 
 serve(async (req) => {
@@ -142,7 +52,9 @@ serve(async (req) => {
 
     const body = await req.json();
     const projectId = body?.project_id;
-    const subject = typeof body?.subject === "string" && body.subject.trim() ? body.subject.trim().slice(0, 300) : null;
+    const subject = typeof body?.subject === "string" && body.subject.trim()
+      ? body.subject.trim().slice(0, MAX_SUBJECT)
+      : null;
     let text = typeof body?.text === "string" ? body.text : "";
     const sourceLanguageRaw = typeof body?.source_language === "string" ? body.source_language.trim().toLowerCase() : "auto";
     const sourceLanguage = sourceLanguageRaw === "auto" || LANGUAGE_NAMES[sourceLanguageRaw] ? sourceLanguageRaw : "auto";
@@ -174,9 +86,7 @@ serve(async (req) => {
       if (!isAdmin) return json({ error: "You do not have access to this project" }, 403);
     }
 
-    const languages = (Array.isArray(project.languages) ? project.languages : [])
-      .filter((c: unknown): c is string => typeof c === "string" && !!LANGUAGE_NAMES[c]);
-    const targets = languages
+    const targets = productionLanguages(project.languages)
       .filter((c) => sourceLanguage === "auto" || c !== sourceLanguage)
       .slice(0, MAX_TARGETS);
 
@@ -184,44 +94,14 @@ serve(async (req) => {
       return json({ error: "Add at least one other production language before translating." }, 400);
     }
 
-    // One attempt, then a single retry, before giving up without charging.
-    let result: AiResult | null = null;
-    let lastStatus = 502;
-    for (let attempt = 0; attempt < 2; attempt += 1) {
-      const call = await callGateway(targets, subject, text, sourceLanguage);
-      lastStatus = call.status;
-      if (call.status === 429) return json({ error: "Rate limit exceeded. Please try again in a moment." }, 429);
-      if (call.status === 402) return json({ error: "Credits depleted. Please add credits to continue." }, 402);
-      if (call.result) {
-        const detected = call.result.detected || sourceLanguage;
-        const required = targets.filter((c) => c !== detected);
-        const complete = required.every((c) => !!call.result!.translations[c]);
-        if (complete) {
-          result = call.result;
-          break;
-        }
-        console.error("incomplete translation set", { attempt, got: Object.keys(call.result.translations) });
-      }
-    }
-
-    if (!result) {
-      return json({ error: "The translation came back incomplete. Please try again." }, lastStatus === 200 ? 502 : 502);
-    }
+    const { result, status } = await translateWithRetry(LOVABLE_API_KEY, targets, subject, text, sourceLanguage);
+    if (status === 429) return json({ error: "Rate limit exceeded. Please try again in a moment." }, 429);
+    if (status === 402) return json({ error: "Credits depleted. Please add credits to continue." }, 402);
+    if (!result) return json({ error: "The translation came back incomplete. Please try again." }, 502);
 
     const detected = result.detected || (sourceLanguage === "auto" ? "en" : sourceLanguage);
     const storedSource = sourceLanguage === "auto" ? detected : sourceLanguage;
-
-    const translations: Record<string, unknown> = {};
-    for (const [code, value] of Object.entries(result.translations)) {
-      if (code === storedSource) continue;
-      translations[code] = value;
-    }
-    const subjects: Record<string, string> = {};
-    for (const [code, value] of Object.entries(result.subjects)) {
-      if (code === storedSource) continue;
-      subjects[code] = value;
-    }
-    if (Object.keys(subjects).length) translations._subjects = subjects;
+    const translations = buildTranslationsColumn(result, storedSource);
 
     const { data: profile } = await admin
       .from("profiles")
