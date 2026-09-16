@@ -456,7 +456,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }: Pr
               </div>
               <div>
                 <label style={label} htmlFor="cx-total">Total</label>
-                <input id="cx-total" value={total} onChange={(e) => setTotal(e.target.value)} inputMode="decimal" placeholder="12,50" style={inputStyle} />
+                <input id="cx-total" value={total} onChange={(e) => setTotal(e.target.value)} inputMode="decimal" placeholder="12.50" style={inputStyle} />
               </div>
               <div style={{ gridColumn: "span 2" }}>
                 <label style={label} htmlFor="cx-desc">Description (optional)</label>

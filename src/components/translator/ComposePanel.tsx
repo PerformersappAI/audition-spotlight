@@ -142,7 +142,7 @@ const ComposePanel = ({ languages, translating, error, onTranslate }: Props) => 
           value={text}
           onChange={(e) => setText(e.target.value.slice(0, MAX_CHARS))}
           rows={8}
-          placeholder={"Call time tomorrow moves to 06:30 at the Sarajevo set.\nPlease be on time — scene 12A."}
+          placeholder={"Call time tomorrow moves to 06:30 at the main location.\nPlease be on time — scene 12A."}
           style={{
             ...inputStyle,
             minHeight: 160,

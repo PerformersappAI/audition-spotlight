@@ -361,7 +361,7 @@ const ExpenseDialog = ({
               </div>
               <div>
                 <label style={label} htmlFor="ex-total">Total</label>
-                <input id="ex-total" value={total} onChange={(e) => setTotal(e.target.value)} inputMode="decimal" placeholder="12,50" style={inputStyle} />
+                <input id="ex-total" value={total} onChange={(e) => setTotal(e.target.value)} inputMode="decimal" placeholder="12.50" style={inputStyle} />
               </div>
               <div style={{ gridColumn: "span 2" }}>
                 <label style={label} htmlFor="ex-desc">Description (optional)</label>

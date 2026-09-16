@@ -37,9 +37,14 @@ export const LANGUAGES: Record<string, LanguageInfo> = {
   fi: { name: "Finnish", native: "Suomi" },
 };
 
-export const LANGUAGE_CODES = Object.keys(LANGUAGES);
+/** English first, then every other language alphabetically by its English name. */
+export const LANGUAGE_CODES = Object.keys(LANGUAGES).sort((a, b) => {
+  if (a === "en") return -1;
+  if (b === "en") return 1;
+  return LANGUAGES[a].name.localeCompare(LANGUAGES[b].name, "en");
+});
 
-/** "German (Deutsch)" — or the raw code when unknown. */
+/** "French (Français)" — or the raw code when unknown. */
 export function languageLabel(code: string): string {
   const info = LANGUAGES[code];
   if (!info) return code;

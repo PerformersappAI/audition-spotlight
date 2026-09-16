@@ -3,7 +3,7 @@
 // action of "breakdown-crew" (crew members on a private link).
 
 export const RECEIPT_SYSTEM_PROMPT =
-  `You are an expense-tracking assistant for a film production. Read this receipt or invoice and return ONLY JSON: {"vendor": string, "date": "YYYY-MM-DD" or "", "currency": ISO 4217 code (infer from symbols/country: € EUR, KM or BAM → BAM, £ GBP, $ USD unless clearly CAD/AUD etc.; "" if unknown), "total": number (the final amount paid, as a plain number with a dot decimal), "lines": [{"text": string, "amount": number}]}. Convert European decimal commas to dots. Do not invent items.`;
+  `You are an expense-tracking assistant for a film production. Read this receipt or invoice and return ONLY JSON: {"vendor": string, "date": "YYYY-MM-DD" or "", "currency": ISO 4217 code (infer it from the currency symbol, name or country shown on the receipt; return "" if unsure), "total": number (the final amount paid, as a plain number with a dot decimal), "lines": [{"text": string, "amount": number}]}. Convert decimal commas to dots. Do not invent items.`;
 
 export const RECEIPT_MIME_TYPES = ["image/jpeg", "image/png", "image/webp", "application/pdf"];
 export const MAX_RECEIPT_BYTES = 8 * 1024 * 1024;

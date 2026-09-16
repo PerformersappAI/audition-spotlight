@@ -26266,7 +26266,7 @@ const ProductionPicker = ({
     showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
-        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$4 })
+        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "e.g. The Long Way Home", style: inputStyle$4 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
@@ -27018,28 +27018,57 @@ const fileToBase64 = (file) => new Promise((resolve, reject) => {
   reader.onerror = () => reject(new Error("Could not read that file."));
   reader.readAsDataURL(file);
 });
-const CURRENCIES = [
-  { code: "USD", label: "USD — US Dollar", short: "$" },
-  { code: "EUR", label: "EUR — Euro", short: "€" },
-  { code: "GBP", label: "GBP — British Pound", short: "£" },
-  { code: "CAD", label: "CAD — Canadian Dollar", short: "CA$" },
-  { code: "AUD", label: "AUD — Australian Dollar", short: "A$" },
-  { code: "BAM", label: "BAM — Bosnian Mark (KM)", short: "KM" },
-  { code: "CHF", label: "CHF — Swiss Franc", short: "CHF" },
-  { code: "MXN", label: "MXN — Mexican Peso", short: "MX$" },
-  { code: "NZD", label: "NZD — New Zealand Dollar", short: "NZ$" },
-  { code: "SEK", label: "SEK — Swedish Krona", short: "kr" },
-  { code: "NOK", label: "NOK — Norwegian Krone", short: "kr" },
-  { code: "DKK", label: "DKK — Danish Krone", short: "kr" },
-  { code: "PLN", label: "PLN — Polish Zloty", short: "zł" },
-  { code: "CZK", label: "CZK — Czech Koruna", short: "Kč" },
-  { code: "HUF", label: "HUF — Hungarian Forint", short: "Ft" },
-  { code: "RSD", label: "RSD — Serbian Dinar", short: "din" },
-  { code: "JPY", label: "JPY — Japanese Yen", short: "¥" },
-  { code: "INR", label: "INR — Indian Rupee", short: "₹" },
-  { code: "ZAR", label: "ZAR — South African Rand", short: "R" },
-  { code: "BRL", label: "BRL — Brazilian Real", short: "R$" }
+const CODES = [
+  "USD",
+  "EUR",
+  "GBP",
+  "CAD",
+  "AUD",
+  "JPY",
+  "INR",
+  "CNY",
+  "MXN",
+  "BRL",
+  "ZAR",
+  "NZD",
+  "CHF",
+  "SEK",
+  "NOK",
+  "DKK",
+  "PLN",
+  "CZK",
+  "HUF",
+  "KRW",
+  "SGD",
+  "HKD",
+  "AED",
+  "TRY",
+  "NGN",
+  "KES",
+  "ARS",
+  "CLP",
+  "COP",
+  "PHP",
+  "THB",
+  "IDR",
+  "MYR",
+  "ILS",
+  "RON",
+  "BAM",
+  "RSD"
 ];
+const currencyName = (code) => {
+  try {
+    const names = new Intl.DisplayNames(["en"], { type: "currency" });
+    return names.of(code) || code;
+  } catch {
+    return code;
+  }
+};
+const CURRENCIES = CODES.map((code) => {
+  const name = currencyName(code);
+  return { code, label: name === code ? code : `${code} — ${name}` };
+});
 CURRENCIES.map((c) => c.code);
 const formatters = /* @__PURE__ */ new Map();
 const formatMoney$a = (amount, currency) => {
@@ -27060,7 +27089,6 @@ const formatMoney$a = (amount, currency) => {
   } catch {
     out = `${code} ${value.toFixed(2)}`;
   }
-  if (code === "BAM") out = out.replace(/BAM/gi, "KM").trim();
   return out;
 };
 const parseAmount = (raw2) => {
@@ -28237,7 +28265,7 @@ const ExpenseDialog = ({
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
                   /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-total", children: "Total" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$4 })
+                  /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12.50", style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
                   /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-desc", children: "Description (optional)" }),
@@ -28978,7 +29006,11 @@ const LANGUAGES = {
   da: { name: "Danish", native: "Dansk" },
   fi: { name: "Finnish", native: "Suomi" }
 };
-const LANGUAGE_CODES = Object.keys(LANGUAGES);
+const LANGUAGE_CODES = Object.keys(LANGUAGES).sort((a, b) => {
+  if (a === "en") return -1;
+  if (b === "en") return 1;
+  return LANGUAGES[a].name.localeCompare(LANGUAGES[b].name, "en");
+});
 function languageLabel(code) {
   const info = LANGUAGES[code];
   if (!info) return code;
@@ -29140,7 +29172,7 @@ const ComposePanel = ({ languages, translating, error, onTranslate }) => {
           value: text,
           onChange: (e) => setText(e.target.value.slice(0, MAX_CHARS)),
           rows: 8,
-          placeholder: "Call time tomorrow moves to 06:30 at the Sarajevo set.\nPlease be on time — scene 12A.",
+          placeholder: "Call time tomorrow moves to 06:30 at the main location.\nPlease be on time — scene 12A.",
           style: {
             ...inputStyle$4,
             minHeight: 160,
@@ -29557,7 +29589,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
           value: extra,
           onChange: (e) => setExtra(e.target.value),
           rows: 2,
-          placeholder: "sam@example.com, ana@example.com",
+          placeholder: "alex@example.com, sam@example.com",
           style: { ...inputStyle$4, resize: "vertical" }
         }
       ),
@@ -30036,7 +30068,7 @@ const SetTranslator = () => {
               {
                 value: location,
                 onChange: (e) => setLocation(e.target.value),
-                placeholder: "Sarajevo",
+                placeholder: "e.g. Los Angeles, London, Mumbai",
                 style: { ...inputStyle$4, maxWidth: 320 }
               }
             ),
@@ -31636,7 +31668,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
           ] }),
           /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-total", children: "Total" }),
-            /* @__PURE__ */ jsx("input", { id: "cx-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$2 })
+            /* @__PURE__ */ jsx("input", { id: "cx-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12.50", style: inputStyle$2 })
           ] }),
           /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
             /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-desc", children: "Description (optional)" }),
@@ -40303,7 +40335,7 @@ const ReminderDialog = ({ form, onClose, onResult }) => {
           value: emails,
           onChange: (e) => setEmails(e.target.value),
           rows: 3,
-          placeholder: "maya@example.com, sam@example.com",
+          placeholder: "alex@example.com, sam@example.com",
           style: { ...inputStyle$4, resize: "vertical" }
         }
       ),
