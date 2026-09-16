@@ -4597,7 +4597,7 @@ const GROUPS$1 = [
         { title: "Table Read", to: "/table-read", theme: "teal" }
       ] },
       { cols: 2, tools: [
-        { title: "Script Breakdown", to: "#", theme: "teal" },
+        { title: "Script Breakdown", to: "/script-breakdown", theme: "teal" },
         { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" }
       ] }
     ]
@@ -4940,6 +4940,11 @@ const toolSeo = {
     description: "A call sheet lists date, crew call, shooting call, scenes, cast times, locations, weather and hospital. Build one here, or upload last one to auto-fill.",
     lead: "A call sheet is the one-page contract for a shoot day: production and date, general crew call and shooting call, the scenes and pages to be shot, per-person cast and crew times, locations with parking, meal breaks, weather, and the nearest hospital. Fill in the fields below and export a professional PDF, or upload an existing call sheet and let the parser pre-fill it for you. Send it the night before, and put the day's advance schedule at the bottom."
   },
+  "/script-breakdown": {
+    title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
+    description: "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",
+    lead: "A script breakdown turns each scene into department-by-department checklists — props, locations, wardrobe, makeup & SFX, and vehicles — so every department knows exactly what to prep before the shoot day. Upload a scene as a PDF or paste the text, and the tool extracts every item into a shareable checklist your whole crew can work from, check off, and sign off on set."
+  },
   "/pitch-deck": {
     title: "How to Make a Film Pitch Deck | Filmmaker Genius",
     description: "A film pitch deck needs logline, synopsis, tone, characters, visual style, comparables, market and team. Build all eight sections and export a PDF deck.",
@@ -4966,7 +4971,7 @@ const toolSeo = {
     lead: "A table read exists to catch what silent reading hides — unsayable lines, scenes that run long, characters who all sound the same. Upload your screenplay, assign a distinct voice to each character, and this tool performs the script scene by scene as sharable audio. Listen for the places you skip ahead; those are the cuts."
   }
 };
-const SITE = "https://filmmakergenius.com";
+const SITE$1 = "https://filmmakergenius.com";
 function ToolSeo({ path }) {
   const entry = toolSeo[path];
   if (!entry) return null;
@@ -4975,7 +4980,7 @@ function ToolSeo({ path }) {
     {
       title: entry.title,
       description: entry.description,
-      canonical: `${SITE}${path}`,
+      canonical: `${SITE$1}${path}`,
       type: "website"
     }
   );
@@ -6278,6 +6283,7 @@ function CrewHire() {
 const TOOL_COSTS = [
   { name: "Academy / Courses", cost: "Free", free: true },
   { name: "Scene Analysis", cost: "~1 credit" },
+  { name: "Script Breakdown", cost: "~1 credit per scene" },
   { name: "Storyboard Generator", cost: "2–4 credits (grows with number of frames)" },
   { name: "Table Read", cost: "2–4 credits (varies by dialogue length)" },
   { name: "Fundraising", cost: "~1 credit" },
@@ -17534,7 +17540,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
     ] })
   ] });
 };
-const STEPS$3 = [
+const STEPS$4 = [
   { num: 1, label: "Select Scenes" },
   { num: 1.5, label: "Cast References", optional: true },
   { num: 2, label: "Review Shot List" },
@@ -17542,7 +17548,7 @@ const STEPS$3 = [
 ];
 const stepDisplayNumber = (num2, idx) => idx + 1;
 const StepIndicator = ({ currentStep }) => {
-  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$3.map((step, idx) => {
+  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$4.map((step, idx) => {
     const isActive = step.num === currentStep;
     const isComplete = step.num < currentStep;
     return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 sm:gap-4", children: [
@@ -17576,7 +17582,7 @@ const StepIndicator = ({ currentStep }) => {
           ]
         }
       ),
-      idx < STEPS$3.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
+      idx < STEPS$4.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
     ] }, step.num);
   }) });
 };
@@ -23128,6 +23134,130 @@ const CallSheet = () => {
           ] })
         ] })
       ] })
+    ] })
+  ] });
+};
+const SITE = "https://filmmakergenius.com";
+const STEPS$3 = [
+  { n: 1, title: "Upload your scene", text: "PDF or paste text." },
+  { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
+  { n: 3, title: "Share a private link with your crew", text: "One link per scene — no accounts needed." },
+  { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." }
+];
+const ScriptBreakdown = () => {
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
+        description: "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",
+        canonical: `${SITE}/script-breakdown`
+      }
+    ),
+    /* @__PURE__ */ jsx("style", { children: `
+        @media (max-width: 800px) { .sb-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 560px) { .sb-steps { grid-template-columns: 1fr !important; } }
+        .sb-step-num {
+          width: 28px; height: 28px; border-radius: 9999px;
+          display: flex; align-items: center; justify-content: center;
+          background: rgba(0,212,170,0.12); color: #00d4aa;
+          border: 1px solid rgba(0,212,170,0.4);
+          font-size: 13px; font-weight: 700; flex: 0 0 auto;
+        }
+      ` }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { padding: "72px 0 40px", textAlign: "center" }, children: [
+        /* @__PURE__ */ jsx("span", { style: {
+          display: "inline-block",
+          fontSize: 11,
+          fontWeight: 700,
+          textTransform: "uppercase",
+          letterSpacing: "0.1em",
+          padding: "4px 12px",
+          borderRadius: 9999,
+          color: "#00d4aa",
+          background: "rgba(0,212,170,0.08)",
+          border: "1px solid rgba(0,212,170,0.3)"
+        }, children: "Coming Soon" }),
+        /* @__PURE__ */ jsx("h1", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontWeight: 700,
+          fontSize: 52,
+          lineHeight: 1.05,
+          margin: "20px 0 0"
+        }, children: "Script Breakdown" }),
+        /* @__PURE__ */ jsx("p", { style: {
+          marginTop: 16,
+          fontSize: 16,
+          color: "rgba(255,255,255,0.6)",
+          maxWidth: 720,
+          margin: "16px auto 0",
+          lineHeight: 1.65
+        }, children: "Upload a scene and get a department-by-department checklist — props, locations, wardrobe, makeup & SFX, and vehicles — that your whole crew can work from on set." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 56 }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.3)",
+          marginBottom: 20
+        }, children: "How it works" }),
+        /* @__PURE__ */ jsx(
+          "div",
+          {
+            style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 },
+            className: "sb-steps",
+            children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+              borderRadius: 16,
+              padding: 20,
+              background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12
+            }, children: [
+              /* @__PURE__ */ jsx("span", { className: "sb-step-num", children: s.n }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("div", { style: {
+                  fontFamily: "'Inter Tight', sans-serif",
+                  fontSize: 15,
+                  fontWeight: 700,
+                  color: "#fff",
+                  lineHeight: 1.3
+                }, children: s.title }),
+                /* @__PURE__ */ jsx("div", { style: {
+                  fontSize: 13,
+                  color: "rgba(255,255,255,0.55)",
+                  marginTop: 6,
+                  lineHeight: 1.5
+                }, children: s.text })
+              ] })
+            ] }, s.n))
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsx("div", { style: { paddingBottom: 96 }, children: /* @__PURE__ */ jsxs("div", { style: {
+        borderRadius: 16,
+        border: "2px dashed rgba(255,255,255,0.14)",
+        padding: "64px 24px",
+        textAlign: "center",
+        background: "rgba(255,255,255,0.02)"
+      }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Inter Tight', sans-serif",
+          fontSize: 16,
+          fontWeight: 600,
+          color: "rgba(255,255,255,0.45)"
+        }, children: "Scene upload coming soon" }),
+        /* @__PURE__ */ jsx("div", { style: {
+          fontSize: 13,
+          color: "rgba(255,255,255,0.3)",
+          marginTop: 8
+        }, children: "You'll be able to drop in a PDF or paste scene text here." })
+      ] }) })
     ] })
   ] });
 };
@@ -74528,6 +74658,10 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/call-sheet", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/call-sheet" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(CallSheet, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/script-breakdown", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/script-breakdown" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ScriptBreakdown, {}) })
   ] }) }),
   /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/pitch-deck" }),
