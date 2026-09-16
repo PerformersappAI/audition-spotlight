@@ -1,0 +1,1 @@
+ALTER TABLE public.breakdown_projects ADD COLUMN IF NOT EXISTS notify_expenses boolean NOT NULL DEFAULT true;
