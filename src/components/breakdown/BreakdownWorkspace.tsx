@@ -60,6 +60,7 @@ interface Props {
 
 const BreakdownWorkspace = ({
   adapter, sceneId, onSelectScene, reloadKey = 0, onRequestAddScene, onLoaded, hideSceneStrip,
+  projectTitle = "Production", company = null,
 }: Props) => {
   const [scenes, setScenes] = useState<BreakdownScene[]>([]);
   const [items, setItems] = useState<BreakdownItem[]>([]);
@@ -74,6 +75,10 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
   const [deleteScene, setDeleteScene] = useState<BreakdownScene | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const [includeScript, setIncludeScript] = useState(false);
+
 
   const failed = (msg: string) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
 
