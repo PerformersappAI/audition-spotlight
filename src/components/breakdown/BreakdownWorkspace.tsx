@@ -485,7 +485,7 @@ const BreakdownWorkspace = ({
             );
           })()}
 
-          <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap", alignItems: "center" }}>
             {([["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]] as const).map(([key, label]) => (
               <button
                 key={key}
@@ -503,7 +503,12 @@ const BreakdownWorkspace = ({
                 {label}
               </button>
             ))}
+            <div className="bw-export-desktop" style={{ position: "relative", marginLeft: "auto" }}>
+              {exportButton}
+              {exportOpen && exportMenu}
+            </div>
           </div>
+
 
           {view === "approvals" ? (
             <ApprovalsView
