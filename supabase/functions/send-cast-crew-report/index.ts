@@ -61,7 +61,15 @@ serve(async (req) => {
     if (!resendKey) return json({ error: "RESEND_API_KEY is not configured" }, 500);
     const resend = new Resend(resendKey);
 
-    const production = form.production_name?.trim() || "Your production";
+    const escapeHtml = (v: unknown) =>
+      String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+
+    const productionRaw = form.production_name?.trim() || "Your production";
+    const production = escapeHtml(productionRaw);
 
     const { error: sendError } = await resend.emails.send({
       from: "Filmmaker Genius <noreply@filmmakergenius.com>",
