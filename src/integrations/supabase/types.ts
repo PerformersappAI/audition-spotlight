@@ -511,6 +511,7 @@ export type Database = {
       breakdown_crew: {
         Row: {
           created_at: string
+          crew_secret_hash: string | null
           department: string | null
           id: string
           last_seen_at: string | null
@@ -519,6 +520,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          crew_secret_hash?: string | null
           department?: string | null
           id?: string
           last_seen_at?: string | null
@@ -527,6 +529,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          crew_secret_hash?: string | null
           department?: string | null
           id?: string
           last_seen_at?: string | null
@@ -545,6 +548,7 @@ export type Database = {
       }
       breakdown_items: {
         Row: {
+          added_by_crew_id: string | null
           added_by_name: string | null
           checked: boolean
           checked_at: string | null
@@ -562,6 +566,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          added_by_crew_id?: string | null
           added_by_name?: string | null
           checked?: boolean
           checked_at?: string | null
@@ -579,6 +584,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          added_by_crew_id?: string | null
           added_by_name?: string | null
           checked?: boolean
           checked_at?: string | null
@@ -596,6 +602,13 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "breakdown_items_added_by_crew_id_fkey"
+            columns: ["added_by_crew_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_crew"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "breakdown_items_project_id_fkey"
             columns: ["project_id"]
@@ -626,6 +639,7 @@ export type Database = {
           status: string
           storage_path: string | null
           updated_at: string
+          uploaded_by_crew_id: string | null
           uploaded_by_name: string | null
         }
         Insert: {
@@ -641,6 +655,7 @@ export type Database = {
           status?: string
           storage_path?: string | null
           updated_at?: string
+          uploaded_by_crew_id?: string | null
           uploaded_by_name?: string | null
         }
         Update: {
@@ -656,6 +671,7 @@ export type Database = {
           status?: string
           storage_path?: string | null
           updated_at?: string
+          uploaded_by_crew_id?: string | null
           uploaded_by_name?: string | null
         }
         Relationships: [
@@ -671,6 +687,13 @@ export type Database = {
             columns: ["project_id"]
             isOneToOne: false
             referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "breakdown_photos_uploaded_by_crew_id_fkey"
+            columns: ["uploaded_by_crew_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_crew"
             referencedColumns: ["id"]
           },
         ]

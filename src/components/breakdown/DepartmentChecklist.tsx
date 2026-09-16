@@ -11,6 +11,8 @@ interface Props {
   onEditText: (item: BreakdownItem, text: string) => void;
   onDelete: (item: BreakdownItem) => void;
   onAdd: (text: string) => void;
+  /** Crew may only remove items they added themselves. */
+  canDelete?: (item: BreakdownItem) => boolean;
   photosByItem?: Record<string, BreakdownPhoto[]>;
   signedUrl?: (photo: BreakdownPhoto) => string | undefined;
   onAddPhotos?: (item: BreakdownItem, files: File[]) => void;
@@ -46,7 +48,7 @@ const iconBtn: React.CSSProperties = {
 };
 
 const DepartmentChecklist = ({
-  items, department, onToggle, onEditText, onDelete, onAdd,
+  items, department, onToggle, onEditText, onDelete, onAdd, canDelete,
   photosByItem, signedUrl, onAddPhotos, onOpenPhoto, uploadingItemId,
 }: Props) => {
   const photoInputRef = useRef<HTMLInputElement | null>(null);
@@ -227,23 +229,25 @@ const DepartmentChecklist = ({
                   <button aria-label={`Edit ${item.text}`} onClick={() => startEdit(item)} style={iconBtn}>
                     <Pencil size={15} />
                   </button>
-                  {confirmId === item.id ? (
-                    <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
-                      Remove?
-                      <button
-                        onClick={() => { setConfirmId(null); onDelete(item); }}
-                        style={{ ...iconBtn, minWidth: 34, color: "#ff8080", fontWeight: 700, fontSize: 13 }}
-                      >
-                        Yes
+                  {(!canDelete || canDelete(item)) && (
+                    confirmId === item.id ? (
+                      <span style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.7)" }}>
+                        Remove?
+                        <button
+                          onClick={() => { setConfirmId(null); onDelete(item); }}
+                          style={{ ...iconBtn, minWidth: 34, color: "#ff8080", fontWeight: 700, fontSize: 13 }}
+                        >
+                          Yes
+                        </button>
+                        <button onClick={() => setConfirmId(null)} style={{ ...iconBtn, minWidth: 34, fontSize: 13 }}>
+                          No
+                        </button>
+                      </span>
+                    ) : (
+                      <button aria-label={`Remove ${item.text}`} onClick={() => setConfirmId(item.id)} style={iconBtn}>
+                        <Trash2 size={15} />
                       </button>
-                      <button onClick={() => setConfirmId(null)} style={{ ...iconBtn, minWidth: 34, fontSize: 13 }}>
-                        No
-                      </button>
-                    </span>
-                  ) : (
-                    <button aria-label={`Remove ${item.text}`} onClick={() => setConfirmId(item.id)} style={iconBtn}>
-                      <Trash2 size={15} />
-                    </button>
+                    )
                   )}
                 </div>
               )}

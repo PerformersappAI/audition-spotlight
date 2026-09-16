@@ -105,6 +105,11 @@ verify_jwt = true
 [functions.breakdown-scene]
 verify_jwt = true
 
+# Public crew access via the project's private share link (token is checked in code)
+[functions.breakdown-crew]
+verify_jwt = false
+
+
 # Non-metered / admin & system functions (still require auth)
 
 [functions.send-calendar]
