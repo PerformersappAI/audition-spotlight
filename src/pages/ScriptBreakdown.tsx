@@ -438,6 +438,136 @@ const ScriptBreakdown = () => {
     }
   };
 
+  // ---- photo mutations ------------------------------------------------------
+  const uploadOne = async (item: BreakdownItem, file: File): Promise<string> => {
+    const blob = await prepareImage(file);
+    const path = `${projectId}/${item.id}/${crypto.randomUUID()}.jpg`;
+    const { error: upErr } = await supabase.storage
+      .from(BUCKET)
+      .upload(path, blob, { contentType: "image/jpeg", upsert: false });
+    if (upErr) throw new Error(upErr.message);
+    return path;
+  };
+
+  const addPhotos = async (item: BreakdownItem, files: File[]) => {
+    if (!projectId) return;
+    setUploadingItemId(item.id);
+    try {
+      for (const file of files) {
+        let path = "";
+        try {
+          path = await uploadOne(item, file);
+        } catch (err: any) {
+          toast({
+            title: err instanceof ImageError ? "Photo not added" : "Upload failed",
+            description: err?.message || "That photo couldn't be uploaded.",
+            variant: "destructive",
+          });
+          continue;
+        }
+        const { data, error: err } = await supabase
+          .from("breakdown_photos")
+          .insert({
+            item_id: item.id,
+            project_id: projectId,
+            storage_path: path,
+            status: "awaiting",
+            uploaded_by_name: actorName,
+          })
+          .select(PHOTO_FIELDS)
+          .single();
+        if (err || !data) {
+          await supabase.storage.from(BUCKET).remove([path]);
+          failed(err?.message || "The photo couldn't be saved.");
+          continue;
+        }
+        setPhotos((prev) => [...prev, data as BreakdownPhoto]);
+      }
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+
+  const decidePhoto = async (photo: BreakdownPhoto, status: "approved" | "rejected", feedback?: string) => {
+    const patch = {
+      status,
+      feedback: status === "rejected" ? feedback ?? null : null,
+      decided_by_name: actorName,
+      decided_at: new Date().toISOString(),
+    };
+    setPhotos((prev) => prev.map((p) => (p.id === photo.id ? { ...p, ...patch } : p)));
+    const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+    if (err) {
+      setPhotos((prev) => prev.map((p) => (p.id === photo.id ? photo : p)));
+      failed(err.message);
+    }
+  };
+
+  const replacePhoto = async (photo: BreakdownPhoto, file: File) => {
+    const item = items.find((i) => i.id === photo.item_id);
+    if (!item) return;
+    setUploadingItemId(item.id);
+    try {
+      const path = await uploadOne(item, file);
+      const patch = {
+        storage_path: path,
+        status: "awaiting",
+        feedback: null,
+        decided_by_name: null,
+        decided_at: null,
+        uploaded_by_name: actorName,
+      };
+      const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
+      if (err) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        failed(err.message);
+        return;
+      }
+      setPhotos((prev) => prev.map((p) => (p.id === photo.id ? { ...p, ...patch } : p)));
+      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    } catch (err: any) {
+      toast({
+        title: err instanceof ImageError ? "Photo not replaced" : "Upload failed",
+        description: err?.message || "That photo couldn't be uploaded.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+
+  const deletePhoto = async (photo: BreakdownPhoto) => {
+    const { error: err } = await supabase.from("breakdown_photos").delete().eq("id", photo.id);
+    if (err) { failed(err.message); return; }
+    if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+    setLightbox((lb) => {
+      if (!lb) return lb;
+      const ids = lb.ids.filter((id) => id !== photo.id);
+      if (!ids.length) return null;
+      return { ids, index: Math.min(lb.index, ids.length - 1) };
+    });
+  };
+
+  const attachReference = async (itemId: string, url: string) => {
+    if (!projectId) return;
+    const { data, error: err } = await supabase
+      .from("breakdown_photos")
+      .insert({
+        item_id: itemId,
+        project_id: projectId,
+        external_url: url,
+        is_reference: true,
+        status: "approved",
+        uploaded_by_name: actorName,
+      })
+      .select(PHOTO_FIELDS)
+      .single();
+    if (err || !data) { failed(err?.message || "The reference image couldn't be attached."); return; }
+    setPhotos((prev) => [...prev, data as BreakdownPhoto]);
+    toast({ title: "Reference image attached" });
+  };
+
 
   // ---- actions -------------------------------------------------------------
   const createProject = async () => {
