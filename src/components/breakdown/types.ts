@@ -34,4 +34,22 @@ export interface BreakdownSignoff {
   updated_at: string | null;
 }
 
+export interface BreakdownPhoto {
+  id: string;
+  item_id: string;
+  project_id: string;
+  storage_path: string | null;
+  external_url: string | null;
+  is_reference: boolean;
+  status: string;
+  feedback: string | null;
+  uploaded_by_name: string | null;
+  decided_by_name: string | null;
+  decided_at: string | null;
+  created_at: string;
+}
+
+export const PHOTO_FIELDS =
+  "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, decided_by_name, decided_at, created_at";
+
 export const TEAL = "#00d4aa";
