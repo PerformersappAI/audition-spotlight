@@ -188,7 +188,7 @@ const SetTranslator = () => {
                 <input
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="Sarajevo"
+                  placeholder="e.g. Los Angeles, London, Mumbai"
                   style={{ ...inputStyle, maxWidth: 320 }}
                 />
                 <button
