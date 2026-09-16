@@ -230,7 +230,7 @@ const StoryboardTemplate = () => {
                   <Label htmlFor="sequence">Sequence / Scene</Label>
                   <Input
                     id="sequence"
-                    placeholder="Sc. 9 — The Knock"
+                    placeholder="Sc. 9 — The Arrival"
                     value={sequence}
                     onChange={(e) => setSequence(e.target.value)}
                   />

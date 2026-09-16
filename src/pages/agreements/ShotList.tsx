@@ -36,7 +36,7 @@ const INITIAL_SHOTS: Shot[] = [
     angle: "Eye Level",
     movement: "Handheld",
     lens: "50mm",
-    description: "Alex reacts to the knock at the door",
+    description: "Alex reacts to the sound at the front door",
   },
 ];
 
