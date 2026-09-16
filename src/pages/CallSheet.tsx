@@ -639,6 +639,122 @@ const CallSheet = () => {
     exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements.filter(r => r.department || r.notes), logo, scheduleRows, advanceRows);
   };
 
+  /** Load a saved call sheet for editing when /call-sheet?id=<id> is opened. */
+  useEffect(() => {
+    if (!editId) return;
+    let live = true;
+    setIsLoadingSaved(true);
+    (async () => {
+      const loaded = await loadCallSheet(editId);
+      if (!live) return;
+      setIsLoadingSaved(false);
+      if (!loaded) {
+        toast({
+          title: "Call sheet not found",
+          description: "We couldn't open that call sheet, so here's a blank one.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setFormData(prev => ({ ...prev, ...loaded.callSheet }));
+      if (loaded.scenes.length) setScenes(loaded.scenes);
+      if (loaded.cast.length) setCast(loaded.cast);
+      if (loaded.crew.length) setCrew(loaded.crew);
+      if (loaded.background.length) setBackground(loaded.background);
+      setBreaks(loaded.breaks);
+      if (loaded.requirements.length) setRequirements(loaded.requirements);
+    })();
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
+
+  /** Fill the call sheet's weather fields from the forecast for the shoot date. */
+  const applyForecast = (f: DatedForecast) => {
+    setFormData(prev => ({
+      ...prev,
+      weather_description: WMO[f.code] || prev.weather_description,
+      high_temp: `${f.max}°C`,
+      low_temp: `${f.min}°C`,
+      sunrise_time: f.sunrise ? clock(f.sunrise) : prev.sunrise_time,
+      sunset_time: f.sunset ? clock(f.sunset) : prev.sunset_time,
+      precipitation: f.rain != null ? `${f.rain}%` : prev.precipitation,
+    }));
+    toast({ title: "Weather added", description: "Conditions, temperatures and sun times are on the call sheet." });
+  };
+
+  const weatherLocation = (formData.shooting_location || formData.location_address || "").trim();
+
+  /** Add selected Cast & Crew List contacts to the cast or crew section. */
+  const handleImportContacts = (contacts: CastCrewContact[]) => {
+    const target = importTarget;
+    if (!target) return;
+    const key = (name: string, email?: string | null) =>
+      `${name.trim().toLowerCase()}|${(email || "").trim().toLowerCase()}`;
+
+    if (target === "cast") {
+      const people = contacts.filter(isCastMember);
+      const existing = new Set(cast.map(c => key(c.actor_name || "", "")));
+      const rows: CallSheetCast[] = [];
+      people.forEach(c => {
+        const name = contactName(c);
+        if (existing.has(key(name, ""))) return;
+        existing.add(key(name, ""));
+        rows.push({
+          character_name: c.character_name || "",
+          actor_name: name,
+          cast_id: "",
+          status: "",
+          pickup_time: "",
+          call_time: "",
+          set_ready_time: "",
+          special_instructions: "",
+          swf: "",
+          makeup_time: "",
+          costume_time: "",
+          travel_time: "",
+          on_set_time: "",
+          wrap_time: "",
+        });
+      });
+      const base = cast.filter(c => c.actor_name || c.character_name);
+      setCast(rows.length ? [...base, ...rows] : cast);
+      toast({
+        title: rows.length ? `${rows.length} added to cast` : "Nothing to add",
+        description: rows.length
+          ? "Fill in their call times."
+          : "Those people are already on the sheet, or none of them are cast.",
+      });
+    } else {
+      const people = contacts.filter(c => !isCastMember(c));
+      const existing = new Set(crew.map(c => key(c.name || "", "")));
+      const rows: CallSheetCrew[] = [];
+      people.forEach(c => {
+        const name = contactName(c);
+        if (existing.has(key(name, ""))) return;
+        existing.add(key(name, ""));
+        rows.push({
+          department: "",
+          title: contactRole(c) === "—" ? "" : contactRole(c).replace(/^Other — /, ""),
+          name,
+          call_time: "",
+          phone: c.phone || "",
+          off_set: "",
+        });
+      });
+      const base = crew.filter(c => c.name || c.title || c.department);
+      setCrew(rows.length ? [...base, ...rows] : crew);
+      toast({
+        title: rows.length ? `${rows.length} added to crew` : "Nothing to add",
+        description: rows.length
+          ? "Fill in their call times."
+          : "Those people are already on the sheet, or all of them are cast.",
+      });
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
       <ToolTopBar />
