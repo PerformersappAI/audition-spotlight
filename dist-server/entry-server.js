@@ -26879,7 +26879,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
     ] })
   ] });
 };
-const label$2 = {
+const label$3 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -26890,7 +26890,7 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
   const active = Object.values(value).some(Boolean);
   return /* @__PURE__ */ jsx("div", { style: { marginBottom: 20 }, children: /* @__PURE__ */ jsxs("div", { className: "ex-filters", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 3" }, children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-q", children: "Search" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-q", children: "Search" }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsx(Search, { size: 16, style: { position: "absolute", left: 12, top: 14, color: "rgba(255,255,255,0.35)" } }),
         /* @__PURE__ */ jsx(
@@ -26906,32 +26906,32 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-status", children: "Status" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-status", children: "Status" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-status", value: value.status, onChange: (e) => onChange({ status: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All statuses" }),
         STATUSES.map((s) => /* @__PURE__ */ jsx("option", { value: s.key, style: { background: "#10101b" }, children: s.label }, s.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-dept", children: "Department" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-dept", children: "Department" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-dept", value: value.department, onChange: (e) => onChange({ department: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All departments" }),
         EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-pay", children: "Payment" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-pay", children: "Payment" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-pay", value: value.payment, onChange: (e) => onChange({ payment: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any payment" }),
         PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx("option", { value: p.key, style: { background: "#10101b" }, children: p.label }, p.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-from", children: "From" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-from", children: "From" }),
       /* @__PURE__ */ jsx("input", { id: "ex-from", type: "date", value: value.from, onChange: (e) => onChange({ from: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-to", children: "To" }),
+      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-to", children: "To" }),
       /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$2, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
@@ -27223,7 +27223,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
   ] });
 };
 const TEAL$4 = "#00d4aa";
-const label$1 = {
+const label$2 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -27428,23 +27428,23 @@ const ExpenseDialog = ({
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-by", children: "Submitted by" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-by", children: "Submitted by" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-by", value: submittedBy, onChange: (e) => setSubmittedBy(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-email", children: "Email (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-email", children: "Email (optional)" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-department", children: "Department" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-department", children: "Department" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-department", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$4, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-currency", children: "Currency" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-currency", children: "Currency" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$4, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$1, children: "Payment" }),
+                /* @__PURE__ */ jsx("span", { style: label$2, children: "Payment" }),
                 /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
                   "button",
                   {
@@ -27466,11 +27466,11 @@ const ExpenseDialog = ({
                 )) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-date", children: "Date" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-date", children: "Date" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
                 /* @__PURE__ */ jsxs("select", { id: "ex-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
                   itemOptions.map((o) => /* @__PURE__ */ jsxs("option", { value: o.id, style: { background: "#10101b" }, children: [
@@ -27538,20 +27538,20 @@ const ExpenseDialog = ({
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-vendor", children: "Vendor" }),
+                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-vendor", children: "Vendor" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-total", children: "Total" }),
+                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-total", children: "Total" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-desc", children: "Description (optional)" }),
+                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-desc", children: "Description (optional)" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$1, children: "Lines" }),
+                /* @__PURE__ */ jsx("span", { style: label$2, children: "Lines" }),
                 lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
                   /* @__PURE__ */ jsx(
                     "input",
@@ -27614,16 +27614,16 @@ const ExpenseDialog = ({
             ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-invno", children: "Invoice #" }),
+                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-invno", children: "Invoice #" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-billto", children: "Bill to" }),
+                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-billto", children: "Bill to" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$1, children: "Line items" }),
+                /* @__PURE__ */ jsx("span", { style: label$2, children: "Line items" }),
                 lines.map((l, i) => {
                   const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
                   return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
@@ -27679,7 +27679,7 @@ const ExpenseDialog = ({
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-              /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-notes", children: "Notes" }),
+              /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-notes", children: "Notes" }),
               /* @__PURE__ */ jsx("textarea", { id: "ex-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$4, minHeight: 80, resize: "vertical" } })
             ] }),
             error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
@@ -28703,6 +28703,10 @@ const ComposePanel = ({ languages, translating, error, onTranslate }) => {
     )
   ] });
 };
+function sentCount(m) {
+  const list = Array.isArray(m.sent_to) ? m.sent_to : [];
+  return list.filter((r) => r && r.ok !== false).length;
+}
 function messageTranslations(m) {
   const t = m.translations || {};
   return Object.entries(t).filter(([code, value]) => code !== "_subjects" && typeof value === "string" && value.trim()).map(([code, value]) => ({ code, text: value }));
@@ -28868,7 +28872,225 @@ async function downloadMessagePDF(input) {
   const doc = await buildMessagePDF(input);
   doc.save(messageFileName(input.productionTitle, "pdf", input.message.created_at));
 }
-const copy = async (text, label2) => {
+const MAX_RECIPIENTS = 100;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const label$1 = {
+  fontSize: 12,
+  color: "rgba(255,255,255,0.45)",
+  marginBottom: 6,
+  display: "block"
+};
+const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
+  const { user } = useAuth();
+  const [contacts, setContacts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
+  const [picked, setPicked] = useState(/* @__PURE__ */ new Set());
+  const [extra, setExtra] = useState("");
+  const [sending, setSending] = useState(false);
+  const [result, setResult] = useState(null);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      const { data } = await supabase.from("cast_crew_contacts").select("id, first_name, last_name, job_position, character_name, email").eq("owner_user_id", user.id).order("created_at", { ascending: false });
+      if (cancelled) return;
+      const rows = (data || []).filter((r) => !!r.email).map((r) => ({
+        id: r.id,
+        name: [r.first_name, r.last_name].filter(Boolean).join(" ").trim() || r.email,
+        position: (r.job_position || r.character_name || "").trim(),
+        email: String(r.email).trim()
+      }));
+      setContacts(rows);
+      setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    if (!q) return contacts;
+    return contacts.filter((c) => `${c.name} ${c.position} ${c.email}`.toLowerCase().includes(q));
+  }, [contacts, search]);
+  const typed = useMemo(
+    () => extra.split(/[\s,;]+/).map((v2) => v2.trim()).filter(Boolean),
+    [extra]
+  );
+  const badTyped = typed.filter((v2) => !EMAIL_RE.test(v2));
+  const recipients = useMemo(() => {
+    const map = /* @__PURE__ */ new Map();
+    contacts.filter((c) => picked.has(c.id)).forEach((c) => {
+      map.set(c.email.toLowerCase(), { name: c.name, email: c.email });
+    });
+    typed.filter((v2) => EMAIL_RE.test(v2)).forEach((email) => {
+      const key = email.toLowerCase();
+      if (!map.has(key)) map.set(key, { name: "", email });
+    });
+    return Array.from(map.values());
+  }, [contacts, picked, typed]);
+  const toggle = (id) => {
+    setPicked((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+  const allVisibleOn = filtered.length > 0 && filtered.every((c) => picked.has(c.id));
+  const toggleAll = () => {
+    setPicked((prev) => {
+      const next = new Set(prev);
+      filtered.forEach((c) => allVisibleOn ? next.delete(c.id) : next.add(c.id));
+      return next;
+    });
+  };
+  const send = async () => {
+    if (!recipients.length) return;
+    if (recipients.length > MAX_RECIPIENTS) {
+      toast$1.error(`You can send to at most ${MAX_RECIPIENTS} people at a time.`);
+      return;
+    }
+    setSending(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-production-message", {
+        body: { message_id: messageId, recipients }
+      });
+      if (error) throw error;
+      const sent = Number((data == null ? void 0 : data.sent) ?? 0);
+      const failed = ((data == null ? void 0 : data.results) || []).filter((r) => !r.ok).map((r) => r.email);
+      setResult({ sent, failed });
+      onSent(sent);
+      if (sent) toast$1.success(`Sent to ${sent} ${sent === 1 ? "person" : "people"}`);
+      else toast$1.error("Nothing could be sent — please check the addresses.");
+    } catch (e) {
+      toast$1.error(e instanceof Error ? e.message : "The message couldn't be sent.");
+    } finally {
+      setSending(false);
+    }
+  };
+  if (result) {
+    return /* @__PURE__ */ jsxs(Modal, { title: "Sent to crew", onClose, children: [
+      /* @__PURE__ */ jsxs("p", { style: { fontSize: 15, lineHeight: 1.6, color: "rgba(255,255,255,0.8)" }, children: [
+        "Sent to ",
+        result.sent,
+        ", failed ",
+        result.failed.length,
+        "."
+      ] }),
+      result.failed.length > 0 && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13.5, color: "#ff9d9d", lineHeight: 1.6, wordBreak: "break-all" }, children: [
+        "Couldn't deliver to: ",
+        result.failed.join(", ")
+      ] }),
+      /* @__PURE__ */ jsx("button", { onClick: onClose, style: { ...primaryBtn$3, marginTop: 20 }, children: "Done" })
+    ] });
+  }
+  return /* @__PURE__ */ jsxs(Modal, { title: "Send to crew", onClose, children: [
+    /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: -6 }, children: "Everyone gets the message in every language. Recipients never see each other's addresses." }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
+      /* @__PURE__ */ jsx("span", { style: label$1, children: "From your Cast & Crew List" }),
+      loading ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", fontSize: 14 }, children: [
+        /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }),
+        " Loading contacts…"
+      ] }) : contacts.length === 0 ? /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.5)" }, children: "No contacts with an email address yet — add emails below instead." }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }, children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              value: search,
+              onChange: (e) => setSearch(e.target.value),
+              placeholder: "Search name, role or email",
+              style: { ...inputStyle$4, flex: "1 1 180px" }
+            }
+          ),
+          /* @__PURE__ */ jsx("button", { onClick: toggleAll, style: { ...ghostBtn$2, flex: "0 0 auto" }, children: allVisibleOn ? "Clear all" : "Select all" })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { maxHeight: 220, overflowY: "auto", marginTop: 10, display: "flex", flexDirection: "column", gap: 4 }, children: [
+          filtered.map((c) => /* @__PURE__ */ jsxs(
+            "label",
+            {
+              style: {
+                display: "flex",
+                gap: 10,
+                alignItems: "center",
+                minHeight: 44,
+                padding: "6px 10px",
+                borderRadius: 10,
+                cursor: "pointer",
+                background: picked.has(c.id) ? "rgba(0,212,170,0.1)" : "rgba(255,255,255,0.02)",
+                border: `1px solid ${picked.has(c.id) ? "rgba(0,212,170,0.4)" : "rgba(255,255,255,0.08)"}`
+              },
+              children: [
+                /* @__PURE__ */ jsx(
+                  "input",
+                  {
+                    type: "checkbox",
+                    checked: picked.has(c.id),
+                    onChange: () => toggle(c.id),
+                    style: { width: 18, height: 18, accentColor: "#00d4aa", flex: "0 0 auto" }
+                  }
+                ),
+                /* @__PURE__ */ jsxs("span", { style: { minWidth: 0 }, children: [
+                  /* @__PURE__ */ jsx("span", { style: { display: "block", fontSize: 14.5, fontWeight: 600 }, children: c.name }),
+                  /* @__PURE__ */ jsx("span", { style: { display: "block", fontSize: 12.5, color: "rgba(255,255,255,0.45)", overflow: "hidden", textOverflow: "ellipsis" }, children: [c.position, c.email].filter(Boolean).join(" · ") })
+                ] })
+              ]
+            },
+            c.id
+          )),
+          filtered.length === 0 && /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.45)" }, children: "No contacts match that search." })
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
+      /* @__PURE__ */ jsx("span", { style: label$1, children: "Add emails (comma or space separated)" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: extra,
+          onChange: (e) => setExtra(e.target.value),
+          rows: 2,
+          placeholder: "sam@example.com, ana@example.com",
+          style: { ...inputStyle$4, resize: "vertical" }
+        }
+      ),
+      badTyped.length > 0 && /* @__PURE__ */ jsxs("div", { style: { color: "#ff9d9d", fontSize: 13, marginTop: 6, wordBreak: "break-all" }, children: [
+        "Not a valid address: ",
+        badTyped.join(", ")
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", marginTop: 20, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: send,
+          disabled: sending || recipients.length === 0,
+          style: {
+            ...primaryBtn$3,
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            opacity: sending || recipients.length === 0 ? 0.45 : 1
+          },
+          children: [
+            sending ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Send, { size: 16 }),
+            sending ? "Sending…" : `Send to ${recipients.length}`
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs("span", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.4)", display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+        /* @__PURE__ */ jsx(Mail, { size: 13 }),
+        " Max ",
+        MAX_RECIPIENTS,
+        " recipients"
+      ] })
+    ] })
+  ] });
+};
+const copy$1 = async (text, label2) => {
   try {
     await navigator.clipboard.writeText(text);
     toast$1.success(`${label2} copied`);
@@ -28893,7 +29115,7 @@ const Card = ({
         /* @__PURE__ */ jsxs(
           "button",
           {
-            onClick: () => copy(`${subject ? `${subject}
+            onClick: () => copy$1(`${subject ? `${subject}
 
 ` : ""}${text}`, heading),
             style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
@@ -28924,9 +29146,11 @@ const Card = ({
     ] })
   ] });
 };
-const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }) => {
+const ResultView = ({ message, productionTitle, shootLocation, onNewMessage, onSent }) => {
   var _a2;
   const [busy, setBusy] = useState(null);
+  const [showSend, setShowSend] = useState(false);
+  const [sent, setSent] = useState(sentCount(message));
   const subjects = messageSubjects(message);
   const translations = messageTranslations(message);
   const run = async (kind) => {
@@ -28947,7 +29171,18 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }) =
       /* @__PURE__ */ jsxs(
         "button",
         {
-          onClick: () => copy(allLanguagesText(message), "All languages"),
+          onClick: () => setShowSend(true),
+          style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 6 },
+          children: [
+            /* @__PURE__ */ jsx(Send, { size: 16 }),
+            " Send to crew"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => copy$1(allLanguagesText(message), "All languages"),
           style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
           children: [
             /* @__PURE__ */ jsx(Copy, { size: 15 }),
@@ -28979,11 +29214,28 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }) =
           ]
         }
       ),
-      /* @__PURE__ */ jsxs("button", { onClick: onNewMessage, style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: onNewMessage, style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
         /* @__PURE__ */ jsx(Plus, { size: 16 }),
         " New message"
       ] })
     ] }),
+    sent > 0 && /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "#00d4aa", marginBottom: 14 }, children: [
+      "Sent to ",
+      sent,
+      " ",
+      sent === 1 ? "person" : "people"
+    ] }),
+    showSend && /* @__PURE__ */ jsx(
+      SendToCrewDialog,
+      {
+        messageId: message.id,
+        onClose: () => setShowSend(false),
+        onSent: (count2) => {
+          setSent((prev) => prev + count2);
+          onSent == null ? void 0 : onSent();
+        }
+      }
+    ),
     /* @__PURE__ */ jsx(
       Card,
       {
@@ -29009,7 +29261,7 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }) =
   ] });
 };
 const PAGE = 20;
-const MESSAGE_FIELDS = "id, project_id, subject, source_language, source_text, translations, source_kind, created_by_name, created_at";
+const MESSAGE_FIELDS = "id, project_id, subject, source_language, source_text, translations, source_kind, created_by_name, created_at, sent_at, sent_to, created_by_crew_id";
 const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29073,7 +29325,19 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
                     padding: 0
                   },
                   children: [
-                    /* @__PURE__ */ jsx("div", { style: { fontSize: 14.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }, children: title }),
+                    /* @__PURE__ */ jsxs("div", { style: { fontSize: 14.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }, children: [
+                      title,
+                      row.created_by_crew_id && /* @__PURE__ */ jsx("span", { style: {
+                        marginLeft: 8,
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: 9999,
+                        background: "rgba(255,255,255,0.08)",
+                        color: "rgba(255,255,255,0.6)",
+                        whiteSpace: "nowrap"
+                      }, children: "via crew link" })
+                    ] }),
                     /* @__PURE__ */ jsxs("div", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: [
                       timeAgo(row.created_at),
                       " · ",
@@ -29083,7 +29347,11 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
                       " language",
                       count2 === 1 ? "" : "s",
                       " · ",
-                      row.created_by_name
+                      row.created_by_name,
+                      sentCount(row) > 0 && /* @__PURE__ */ jsxs("span", { style: { color: "#00d4aa" }, children: [
+                        " · Sent to ",
+                        sentCount(row)
+                      ] })
                     ] })
                   ]
                 }
@@ -29286,7 +29554,8 @@ const SetTranslator = () => {
             message,
             productionTitle: selectedProject.title,
             shootLocation: savedLocation || selectedProject.shoot_location,
-            onNewMessage: () => setMessage(null)
+            onNewMessage: () => setMessage(null),
+            onSent: () => setHistoryKey((k) => k + 1)
           }
         ) : /* @__PURE__ */ jsx(
           ComposePanel,
@@ -29997,6 +30266,263 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
     viewer && /* @__PURE__ */ jsx(FileLightbox, { url: viewer.url, isPdf: viewer.isPdf, title: viewer.title, onClose: () => setViewer(null) })
   ] });
 };
+const crewMessageApi = (token, identity) => {
+  const auth = { crew_id: identity.crew_id, crew_secret: identity.crew_secret };
+  return {
+    async list(before) {
+      const res = await crewCall(token, "messages_list", {
+        ...auth,
+        ...before ? { before } : {}
+      });
+      return {
+        messages: res.messages || [],
+        languages: res.languages || [],
+        preferred_language: res.preferred_language ?? null
+      };
+    },
+    async post(subject, text) {
+      return crewCall(token, "message_post", {
+        ...auth,
+        subject: subject || void 0,
+        text
+      });
+    },
+    async setLanguage(code) {
+      await crewCall(token, "update_profile", { ...auth, preferred_language: code });
+    }
+  };
+};
+const MAX_TEXT = 5e3;
+const langKey = (token) => `fg_crew_lang_${token}`;
+const readStoredLanguage = (token) => {
+  try {
+    return localStorage.getItem(langKey(token));
+  } catch {
+    return null;
+  }
+};
+const storeLanguage = (token, code) => {
+  try {
+    localStorage.setItem(langKey(token), code);
+  } catch {
+  }
+};
+const native = (code) => {
+  var _a2;
+  return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
+};
+const copy = async (value) => {
+  try {
+    await navigator.clipboard.writeText(value);
+    toast$1.success("Copied");
+  } catch {
+    toast$1.error("Could not copy — please select the text instead.");
+  }
+};
+const MessageCard = ({
+  message,
+  readLanguage
+}) => {
+  const [showAll, setShowAll] = useState(false);
+  const subjects = messageSubjects(message);
+  const translations = messageTranslations(message);
+  const chosen = useMemo(() => {
+    if (readLanguage === message.source_language) {
+      return { code: message.source_language, subject: message.subject || "", text: message.source_text, fallback: false };
+    }
+    const hit = translations.find((t) => t.code === readLanguage);
+    if (hit) return { code: hit.code, subject: subjects[hit.code] || "", text: hit.text, fallback: false };
+    return {
+      code: message.source_language,
+      subject: message.subject || "",
+      text: message.source_text,
+      fallback: true
+    };
+  }, [message, readLanguage, subjects, translations]);
+  const all = [
+    {
+      code: message.source_language,
+      heading: `${native(message.source_language)} — Original`,
+      subject: message.subject || "",
+      text: message.source_text
+    },
+    ...translations.map((t) => {
+      var _a2;
+      return {
+        code: t.code,
+        heading: `${native(t.code)} — ${((_a2 = LANGUAGES[t.code]) == null ? void 0 : _a2.name) || t.code}`,
+        subject: subjects[t.code] || "",
+        text: t.text
+      };
+    })
+  ];
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.45)" }, children: [
+        timeAgo(message.created_at),
+        " · from ",
+        message.created_by_name,
+        chosen.fallback && /* @__PURE__ */ jsxs("span", { style: { marginLeft: 8, color: "rgba(255,255,255,0.6)" }, children: [
+          "Original (",
+          native(message.source_language),
+          ")"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => copy(`${chosen.subject ? `${chosen.subject}
+
+` : ""}${chosen.text}`),
+            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+            children: [
+              /* @__PURE__ */ jsx(Copy, { size: 15 }),
+              " Copy"
+            ]
+          }
+        ),
+        translations.length > 0 && /* @__PURE__ */ jsx("button", { onClick: () => setShowAll((v2) => !v2), style: ghostBtn$2, children: showAll ? "Hide languages" : "Show all languages" })
+      ] })
+    ] }),
+    !showAll ? /* @__PURE__ */ jsxs("div", { dir: RTL_LANGUAGES.has(chosen.code) ? "rtl" : "ltr", style: { marginTop: 12 }, children: [
+      chosen.subject && /* @__PURE__ */ jsx("div", { style: { fontSize: 15, fontWeight: 700, marginBottom: 8, color: "#fff" }, children: chosen.subject }),
+      /* @__PURE__ */ jsx("div", { style: { whiteSpace: "pre-wrap", fontSize: 15, lineHeight: 1.65, color: "rgba(255,255,255,0.85)" }, children: chosen.text })
+    ] }) : /* @__PURE__ */ jsx("div", { style: { marginTop: 12, display: "flex", flexDirection: "column", gap: 16 }, children: all.map((section) => /* @__PURE__ */ jsxs("div", { dir: RTL_LANGUAGES.has(section.code) ? "rtl" : "ltr", children: [
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 13, fontWeight: 700, color: "#00d4aa", marginBottom: 6 }, children: section.heading }),
+      section.subject && /* @__PURE__ */ jsx("div", { style: { fontSize: 14.5, fontWeight: 700, marginBottom: 6, color: "#fff" }, children: section.subject }),
+      /* @__PURE__ */ jsx("div", { style: { whiteSpace: "pre-wrap", fontSize: 14.5, lineHeight: 1.6, color: "rgba(255,255,255,0.8)" }, children: section.text })
+    ] }, section.code)) })
+  ] });
+};
+const CrewMessages = ({
+  token,
+  identity,
+  languages,
+  shootLocation,
+  messages,
+  loading,
+  hasMore,
+  preferredLanguage,
+  onLoadMore,
+  onPosted
+}) => {
+  const api = useMemo(() => crewMessageApi(token, identity), [token, identity]);
+  const initialLanguage = useMemo(() => {
+    var _a2;
+    const stored = readStoredLanguage(token);
+    if (stored && languages.includes(stored)) return stored;
+    if (preferredLanguage && languages.includes(preferredLanguage)) return preferredLanguage;
+    const browser = (navigator.language || "").slice(0, 2).toLowerCase();
+    if (browser && languages.includes(browser)) return browser;
+    return languages[0] || ((_a2 = messages[0]) == null ? void 0 : _a2.source_language) || "en";
+  }, [token, languages, preferredLanguage, messages]);
+  const [readLanguage, setReadLanguage] = useState(initialLanguage);
+  const [subject, setSubject] = useState("");
+  const [text, setText] = useState("");
+  const [posting, setPosting] = useState(false);
+  useEffect(() => {
+    setReadLanguage((current) => languages.includes(current) ? current : initialLanguage);
+  }, [initialLanguage, languages]);
+  const changeLanguage = async (code) => {
+    setReadLanguage(code);
+    storeLanguage(token, code);
+    try {
+      await api.setLanguage(code);
+    } catch {
+    }
+  };
+  const post = async () => {
+    const value = text.trim();
+    if (value.length < 2) return;
+    setPosting(true);
+    try {
+      const res = await api.post(subject.trim(), value.slice(0, MAX_TEXT));
+      setSubject("");
+      setText("");
+      onPosted();
+      toast$1.success(
+        res.translated ? "Posted and translated for the crew" : "Posted in your own language — translation wasn't available"
+      );
+    } catch (e) {
+      toast$1.error(e instanceof Error ? e.message : "The message couldn't be posted.");
+    } finally {
+      setPosting(false);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 18, marginBottom: 32 }, children: [
+    shootLocation && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 16 }, children: /* @__PURE__ */ jsx(WeatherBar, { location: shootLocation }) }),
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: "crew-read-lang", style: { fontSize: 12, color: "rgba(255,255,255,0.45)", display: "block", marginBottom: 6 }, children: "Read in" }),
+      /* @__PURE__ */ jsx(
+        "select",
+        {
+          id: "crew-read-lang",
+          value: readLanguage,
+          onChange: (e) => changeLanguage(e.target.value),
+          style: { ...inputStyle$4, maxWidth: 260 },
+          children: languages.map((code) => /* @__PURE__ */ jsx("option", { value: code, style: { background: "#10101b" }, children: native(code) }, code))
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Write a message" }),
+      /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "Everyone on this link gets it in their own language." }),
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          value: subject,
+          onChange: (e) => setSubject(e.target.value),
+          placeholder: "Subject (optional)",
+          maxLength: 300,
+          style: { ...inputStyle$4, marginTop: 12 }
+        }
+      ),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: text,
+          onChange: (e) => setText(e.target.value.slice(0, MAX_TEXT)),
+          rows: 4,
+          placeholder: "Type your message…",
+          style: { ...inputStyle$4, marginTop: 10, resize: "vertical", lineHeight: 1.6 }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", marginTop: 12 }, children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: post,
+            disabled: posting || text.trim().length < 2,
+            style: {
+              ...primaryBtn$3,
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              opacity: posting || text.trim().length < 2 ? 0.45 : 1
+            },
+            children: [
+              posting ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Send, { size: 16 }),
+              posting ? "Posting…" : "Translate & post (for everyone)"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs("span", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.35)" }, children: [
+          text.length.toLocaleString(),
+          " / ",
+          MAX_TEXT.toLocaleString()
+        ] })
+      ] })
+    ] }),
+    loading && messages.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+      " Loading messages…"
+    ] }) : messages.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, color: "rgba(255,255,255,0.55)", fontSize: 14.5 }, children: "No messages yet. Anything the production office sends will show up here." }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+      messages.map((m) => /* @__PURE__ */ jsx(MessageCard, { message: m, readLanguage }, m.id)),
+      hasMore && /* @__PURE__ */ jsx("button", { onClick: onLoadMore, style: ghostBtn$2, children: "Load older messages" })
+    ] })
+  ] });
+};
 const panel = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
@@ -30028,7 +30554,23 @@ const primaryBtn = {
 };
 const storageKey = (token) => `fg_breakdown_crew_${token}`;
 const tabKey = (token) => `fg_crew_tab_${token}`;
-const readTab = (token) => localStorage.getItem(tabKey(token)) === "receipts" ? "receipts" : "breakdown";
+const seenKey = (token) => `fg_crew_msgseen_${token}`;
+const MESSAGE_PAGE = 30;
+const readTab = (token) => {
+  try {
+    const stored = localStorage.getItem(tabKey(token));
+    if (stored === "receipts" || stored === "messages") return stored;
+  } catch {
+  }
+  return "breakdown";
+};
+const readSeen = (token) => {
+  try {
+    return localStorage.getItem(seenKey(token)) || "";
+  } catch {
+    return "";
+  }
+};
 const readIdentity = (token) => {
   try {
     const raw2 = localStorage.getItem(storageKey(token));
@@ -30040,6 +30582,7 @@ const readIdentity = (token) => {
   return null;
 };
 const CrewBreakdown = () => {
+  var _a2;
   const { token = "" } = useParams();
   const [project, setProject] = useState(null);
   const [tab, setTab] = useState(() => readTab(token));
@@ -30053,6 +30596,11 @@ const CrewBreakdown = () => {
   const [joinError, setJoinError] = useState("");
   const [sceneId, setSceneId] = useState("");
   const [crewUrls, setCrewUrls] = useState({});
+  const [messages, setMessages] = useState([]);
+  const [messagesLoading, setMessagesLoading] = useState(true);
+  const [messagesHasMore, setMessagesHasMore] = useState(false);
+  const [preferredLanguage, setPreferredLanguage] = useState(null);
+  const [seenAt, setSeenAt] = useState(() => token ? readSeen(token) : "");
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -30080,6 +30628,62 @@ const CrewBreakdown = () => {
     () => identity ? createCrewAdapter({ token, identity, onUrls }) : null,
     [token, identity, onUrls]
   );
+  const messageApi = useMemo(
+    () => identity ? crewMessageApi(token, identity) : null,
+    [token, identity]
+  );
+  const loadMessages = useCallback(async () => {
+    if (!messageApi) return;
+    try {
+      const res = await messageApi.list();
+      setMessages(res.messages);
+      setMessagesHasMore(res.messages.length >= MESSAGE_PAGE);
+      setPreferredLanguage(res.preferred_language);
+    } catch {
+    } finally {
+      setMessagesLoading(false);
+    }
+  }, [messageApi]);
+  const loadOlderMessages = useCallback(async () => {
+    if (!messageApi || messages.length === 0) return;
+    const before = messages[messages.length - 1].created_at;
+    try {
+      const res = await messageApi.list(before);
+      setMessagesHasMore(res.messages.length >= MESSAGE_PAGE);
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...prev, ...res.messages.filter((m) => !seen.has(m.id))];
+      });
+    } catch {
+    }
+  }, [messageApi, messages]);
+  useEffect(() => {
+    if (!messageApi || dead) return;
+    loadMessages();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadMessages();
+    }, 2e4);
+    return () => window.clearInterval(timer);
+  }, [messageApi, dead, loadMessages]);
+  const markMessagesSeen = useCallback(() => {
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    setSeenAt(now);
+    try {
+      localStorage.setItem(seenKey(token), now);
+    } catch {
+    }
+  }, [token]);
+  useEffect(() => {
+    if (tab === "messages" && messages.length) markMessagesSeen();
+  }, [tab, messages, markMessagesSeen]);
+  const unread = tab === "messages" ? 0 : messages.filter((m) => !seenAt || m.created_at > seenAt).length;
+  const productionLanguages = ((_a2 = project == null ? void 0 : project.languages) == null ? void 0 : _a2.length) ? project.languages : ["en"];
+  const changeIdentity = () => {
+    if (!identity) return;
+    setName(identity.name);
+    setDepartment(identity.department);
+    setShowJoin(true);
+  };
   const join = async () => {
     const trimmed = name.trim();
     if (!trimmed) {
@@ -30124,6 +30728,23 @@ const CrewBreakdown = () => {
       ] });
     }
     if (!adapter || !identity) return null;
+    if (tab === "messages") {
+      return /* @__PURE__ */ jsx(
+        CrewMessages,
+        {
+          token,
+          identity,
+          languages: productionLanguages,
+          shootLocation: (project == null ? void 0 : project.shoot_location) ?? null,
+          messages,
+          loading: messagesLoading,
+          hasMore: messagesHasMore,
+          preferredLanguage,
+          onLoadMore: loadOlderMessages,
+          onPosted: loadMessages
+        }
+      );
+    }
     if (tab === "receipts") {
       return /* @__PURE__ */ jsx(
         CrewExpenses,
@@ -30131,11 +30752,7 @@ const CrewBreakdown = () => {
           token,
           identity,
           defaultCurrency: (project == null ? void 0 : project.default_currency) || "USD",
-          onChangeIdentity: () => {
-            setName(identity.name);
-            setDepartment(identity.department);
-            setShowJoin(true);
-          }
+          onChangeIdentity: changeIdentity
         }
       );
     }
@@ -30189,23 +30806,23 @@ const CrewBreakdown = () => {
           /* @__PURE__ */ jsx(
             "button",
             {
-              onClick: () => {
-                setName(identity.name);
-                setDepartment(identity.department);
-                setShowJoin(true);
-              },
+              onClick: changeIdentity,
               style: { background: "none", border: "none", color: TEAL$8, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
               children: "(change)"
             }
           )
         ] })
       ] }),
-      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"]].map(([key, copy2]) => /* @__PURE__ */ jsx(
+      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"]].map(([key, copy2]) => /* @__PURE__ */ jsxs(
         "button",
         {
           onClick: () => {
             setTab(key);
-            localStorage.setItem(tabKey(token), key);
+            try {
+              localStorage.setItem(tabKey(token), key);
+            } catch {
+            }
+            if (key === "messages") markMessagesSeen();
           },
           style: {
             minHeight: 44,
@@ -30218,9 +30835,27 @@ const CrewBreakdown = () => {
             border: `1px solid ${tab === key ? TEAL$8 : "rgba(255,255,255,0.14)"}`,
             background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
             color: tab === key ? TEAL$8 : "#fff",
-            fontFamily: "'Inter Tight', sans-serif"
+            fontFamily: "'Inter Tight', sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8
           },
-          children: copy2
+          children: [
+            copy2,
+            key === "messages" && unread > 0 && /* @__PURE__ */ jsx("span", { style: {
+              minWidth: 20,
+              height: 20,
+              borderRadius: 9999,
+              padding: "0 6px",
+              background: TEAL$8,
+              color: "#04231d",
+              fontSize: 12,
+              fontWeight: 700,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }, children: unread })
+          ]
         },
         key
       )) }),
