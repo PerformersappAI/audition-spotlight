@@ -84,6 +84,7 @@ serve(async (req) => {
 
     const body = await req.json();
     const projectId = body?.project_id;
+    const existingSceneId = typeof body?.scene_id === 'string' && body.scene_id.trim() ? body.scene_id.trim() : null;
     let scriptText = body?.script_text;
     const userSceneNumber = typeof body?.scene_number === 'string' ? body.scene_number.trim() : '';
     const label = typeof body?.label === 'string' && body.label.trim() ? body.label.trim() : null;
