@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import BreakdownWorkspace from "@/components/breakdown/BreakdownWorkspace";
+import CrewExpenses from "@/components/expenses/CrewExpenses";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
 
@@ -39,6 +40,19 @@ const primaryBtn: React.CSSProperties = {
 };
 
 const storageKey = (token: string) => `fg_breakdown_crew_${token}`;
+const tabKey = (token: string) => `fg_crew_tab_${token}`;
+
+type CrewTab = "breakdown" | "receipts";
+
+interface CrewProject {
+  title: string;
+  company: string | null;
+  status: string;
+  default_currency?: string;
+}
+
+const readTab = (token: string): CrewTab =>
+  (localStorage.getItem(tabKey(token)) === "receipts" ? "receipts" : "breakdown");
 
 const readIdentity = (token: string): CrewIdentity | null => {
   try {
@@ -52,7 +66,8 @@ const readIdentity = (token: string): CrewIdentity | null => {
 
 const CrewBreakdown = () => {
   const { token = "" } = useParams();
-  const [project, setProject] = useState<{ title: string; company: string | null; status: string } | null>(null);
+  const [project, setProject] = useState<CrewProject | null>(null);
+  const [tab, setTab] = useState<CrewTab>(() => readTab(token));
   const [dead, setDead] = useState(false);
   const [checking, setChecking] = useState(true);
   const [identity, setIdentity] = useState<CrewIdentity | null>(() => (token ? readIdentity(token) : null));
@@ -69,7 +84,7 @@ const CrewBreakdown = () => {
     let cancelled = false;
     (async () => {
       try {
-        const data = await crewCall<{ project: { title: string; company: string | null; status: string } }>(token, "load");
+        const data = await crewCall<{ project: CrewProject }>(token, "load");
         if (cancelled) return;
         setProject(data.project);
       } catch (err) {
@@ -142,7 +157,17 @@ const CrewBreakdown = () => {
         </div>
       );
     }
-    if (!adapter) return null;
+    if (!adapter || !identity) return null;
+    if (tab === "receipts") {
+      return (
+        <CrewExpenses
+          token={token}
+          identity={identity}
+          defaultCurrency={project?.default_currency || "USD"}
+          onChangeIdentity={() => { setName(identity.name); setDepartment(identity.department); setShowJoin(true); }}
+        />
+      );
+    }
     return (
       <BreakdownWorkspace
         adapter={adapter}
@@ -198,6 +223,25 @@ const CrewBreakdown = () => {
             </div>
           )}
         </div>
+
+        {!checking && !dead && identity && (
+          <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22 }}>
+            {([["breakdown", "Breakdown"], ["receipts", "Receipts"]] as [CrewTab, string][]).map(([key, copy]) => (
+              <button
+                key={key}
+                onClick={() => { setTab(key); localStorage.setItem(tabKey(token), key); }}
+                style={{
+                  minHeight: 44, padding: "0 20px", borderRadius: 9999, cursor: "pointer",
+                  fontSize: 15, fontWeight: 700, whiteSpace: "nowrap",
+                  border: `1px solid ${tab === key ? TEAL : "rgba(255,255,255,0.14)"}`,
+                  background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                  color: tab === key ? TEAL : "#fff",
+                  fontFamily: "'Inter Tight', sans-serif",
+                }}
+              >{copy}</button>
+            ))}
+          </div>
+        )}
 
         {content()}
         <div style={{ height: 40 }} />

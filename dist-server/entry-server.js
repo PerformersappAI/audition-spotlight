@@ -2972,7 +2972,7 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$i = "#00d4aa";
+const TEAL$j = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
 const VIOLET$2 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
@@ -3052,7 +3052,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$i}, ${VIOLET$2})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$j}, ${VIOLET$2})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -3096,9 +3096,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$i },
+                    style: { backgroundColor: TEAL$j },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$i,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$j,
                     children: "Get Started"
                   }
                 )
@@ -3244,7 +3244,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$i },
+                      style: { backgroundColor: TEAL$j },
                       children: "Get Started"
                     }
                   )
@@ -3374,12 +3374,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$h = "#00d4aa";
+const TEAL$i = "#00d4aa";
 const CtaPill = ({ label: label2 }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$h, borderColor: `${TEAL$h}66` },
+    style: { color: TEAL$i, borderColor: `${TEAL$i}66` },
     children: label2
   }
 );
@@ -3395,7 +3395,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$h,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$i,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3558,7 +3558,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$g = "#00d4aa";
+const TEAL$h = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3662,7 +3662,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$g, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$h, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3678,7 +3678,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$g : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$h : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3757,7 +3757,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$g }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$h }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3765,9 +3765,9 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$f = "#00d4aa";
+const TEAL$g = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
-const inputStyle$5 = {
+const inputStyle$6 = {
   width: "100%",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid #1e1e35",
@@ -3864,7 +3864,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$f }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$g }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3897,13 +3897,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$f }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$g }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$f,
+        background: TEAL$g,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3916,7 +3916,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$f }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$g }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3948,20 +3948,20 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "First Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$6, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "Last Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$6, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$5, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$6, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$6, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
       /* @__PURE__ */ jsx(Field$4, { label: "Message", children: /* @__PURE__ */ jsx(
         "textarea",
         {
           className: "contact-input",
-          style: { ...inputStyle$5, minHeight: 130, resize: "vertical" },
+          style: { ...inputStyle$6, minHeight: 130, resize: "vertical" },
           value: message,
           onChange: (e) => setMessage(e.target.value),
           placeholder: "Tell us more about your inquiry..."
@@ -3976,7 +3976,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$f,
+            background: TEAL$g,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3992,7 +3992,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$e = "#00d4aa";
+const TEAL$f = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -4086,7 +4086,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$e,
+        color: TEAL$f,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -4125,7 +4125,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$e : "#fff",
+                color: isOpen ? TEAL$f : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -4146,7 +4146,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$e : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$f : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4175,7 +4175,7 @@ function FAQ() {
     ] })
   ] });
 }
-const TEAL$d = "#00d4aa";
+const TEAL$e = "#00d4aa";
 const SECTIONS$4 = [
   {
     h: "The short version",
@@ -4259,7 +4259,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$d,
+            color: TEAL$e,
             marginBottom: 14
           },
           children: "Legal"
@@ -4364,7 +4364,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$d, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$e, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4377,7 +4377,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$c = "#00d4aa";
+const TEAL$d = "#00d4aa";
 const SECTIONS$3 = [
   {
     h: "You own your work",
@@ -4461,7 +4461,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$c,
+            color: TEAL$d,
             marginBottom: 14
           },
           children: "Legal"
@@ -4566,7 +4566,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$c, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$d, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -5036,7 +5036,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$b = "#00d4aa";
+const TEAL$c = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -5106,7 +5106,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$b },
+        style: { color: TEAL$c },
         children: "AI Recut"
       }
     ),
@@ -5114,7 +5114,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$b,
+        stroke: TEAL$c,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -5132,8 +5132,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$b}`,
-          color: TEAL$b,
+          border: `1px solid ${TEAL$c}`,
+          color: TEAL$c,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -5172,7 +5172,7 @@ function Recut() {
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$b, color: "#0a0a12" },
+            style: { background: TEAL$c, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -5240,7 +5240,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$b}`,
+              border: `2px dashed ${TEAL$c}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -5258,7 +5258,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$b, color: "#0a0a12" },
+                  style: { background: TEAL$c, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -5273,7 +5273,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$b },
+              style: { color: TEAL$c },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -6328,7 +6328,7 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
     ] }, t.name)) })
   ] })
 ] });
-const TEAL$a = "#00d4aa";
+const TEAL$b = "#00d4aa";
 const VIOLET$1 = "#a855f7";
 function AddCreditsCard({ className = "", showMembershipLink = true }) {
   const [buying, setBuying] = useState(false);
@@ -6353,7 +6353,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       "div",
       {
         className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-        style: { background: `linear-gradient(135deg, ${TEAL$a}, ${VIOLET$1})` },
+        style: { background: `linear-gradient(135deg, ${TEAL$b}, ${VIOLET$1})` },
         children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
       }
     ),
@@ -6366,7 +6366,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         onClick: handleBuy,
         disabled: buying,
         className: "text-black font-semibold",
-        style: { backgroundColor: TEAL$a },
+        style: { backgroundColor: TEAL$b },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
           "Buy More Credits — $10 for 30 Credits"
@@ -7600,7 +7600,7 @@ function EducationModules() {
     ] })
   ] });
 }
-const TEAL$9 = "#00d4aa";
+const TEAL$a = "#00d4aa";
 const BG = "#0a0a12";
 const SURFACE = "#12121f";
 const SURFACE2 = "#16162a";
@@ -7644,7 +7644,7 @@ function ChapterCard({ ch }) {
     position: "relative",
     transition: "all 0.2s"
   }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$9, opacity: 0.8 }, children: ch.stage }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$a, opacity: 0.8 }, children: ch.stage }),
     /* @__PURE__ */ jsxs("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: [
       "Chapter ",
       ch.n
@@ -7686,7 +7686,7 @@ function RobertsFilmmaking() {
     ),
     /* @__PURE__ */ jsx("style", { children: `
         .rf-card:hover { border-color: rgba(0,212,170,0.4) !important; background: ${SURFACE2} !important; transform: translateY(-2px); }
-        .rf-card:hover .rf-arrow { color: ${TEAL$9} !important; }
+        .rf-card:hover .rf-arrow { color: ${TEAL$a} !important; }
         .rf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .rf-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 980px) { .rf-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -7707,13 +7707,13 @@ function RobertsFilmmaking() {
         filter: "blur(90px)",
         opacity: 0.16,
         pointerEvents: "none",
-        background: `radial-gradient(ellipse at center, ${TEAL$9} 0%, transparent 70%)`
+        background: `radial-gradient(ellipse at center, ${TEAL$a} 0%, transparent 70%)`
       } }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative", maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$9, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$a, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
         /* @__PURE__ */ jsxs("h1", { style: { fontFamily: "'Fraunces', serif", fontSize: "clamp(40px,7vw,64px)", lineHeight: 1.04, margin: 0, maxWidth: 760, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }, children: [
           "Filmmaking by ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Will Roberts" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
         /* @__PURE__ */ jsx(AcademyByline, {}),
@@ -7722,9 +7722,9 @@ function RobertsFilmmaking() {
             width: 38,
             height: 38,
             borderRadius: "50%",
-            border: `2px solid ${TEAL$9}`,
+            border: `2px solid ${TEAL$a}`,
             background: "rgba(0,212,170,0.12)",
-            color: TEAL$9,
+            color: TEAL$a,
             fontSize: 13,
             fontWeight: 700,
             display: "flex",
@@ -7745,19 +7745,19 @@ function RobertsFilmmaking() {
         fontSize: 21,
         color: "rgba(255,255,255,0.78)",
         lineHeight: 1.6,
-        borderLeft: `3px solid ${TEAL$9}`,
+        borderLeft: `3px solid ${TEAL$a}`,
         paddingLeft: 24,
         margin: 0
       }, children: `"I've spent thirty-five years and sixty-plus credits learning how this is really done. This is everything I'd tell you if we sat down together — from the spark of an idea to the day strangers finally watch your film."` }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 20, fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75 }, children: "This free guide walks through every stage of making an independent film: development, producing, budgeting, crew, pre-production, directing, working with actors, cinematography, the shoot, post-production, festivals, distribution, streaming, marketing, and building a lasting career. Practical, specific, no fluff. Read it in order, or jump to the chapter you need right now." })
     ] }),
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "56px 24px 80px" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$9, marginBottom: 8 }, children: "The Complete Guide" }),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$a, marginBottom: 8 }, children: "The Complete Guide" }),
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 36px", fontWeight: 700 }, children: "All 17 Chapters" }),
       /* @__PURE__ */ jsx("div", { className: "rf-grid", children: CHAPTERS.map((ch) => /* @__PURE__ */ jsx(ChapterCard, { ch }, ch.n)) })
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "32px 24px" }, children: /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 56, justifyContent: "center" }, children: STATS.map((s) => /* @__PURE__ */ jsxs("div", { style: { textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$9 }, children: s.num }),
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$a }, children: s.num }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: s.label })
     ] }, s.label)) }) }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "64px 24px" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 760, margin: "0 auto", display: "flex", gap: 48, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7775,19 +7775,19 @@ function RobertsFilmmaking() {
         textAlign: "center",
         border: `1px solid ${BORDER}`
       }, children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$9 } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$a } }),
         /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.15 }, children: [
           "The Indie Filmmaker's ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Complete Guide" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Complete Guide" })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$9, margin: "10px auto" } }),
+        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$a, margin: "10px auto" } }),
         /* @__PURE__ */ jsx("div", { style: { fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.6)" }, children: "By Will Roberts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 240 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$9, marginBottom: 12 }, children: "Free Download" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$a, marginBottom: 12 }, children: "Free Download" }),
         /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 16px", fontWeight: 700 }, children: [
           "Take the whole guide with you — ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "free PDF" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "free PDF" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 28px" }, children: "All 17 chapters in a single PDF — every stage of making an independent film, from the first idea to distribution, distilled and ready to reference. No sign-up." }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7795,7 +7795,7 @@ function RobertsFilmmaking() {
             height: 50,
             padding: "0 28px",
             borderRadius: 9999,
-            background: TEAL$9,
+            background: TEAL$a,
             color: "#000",
             fontWeight: 700,
             display: "inline-flex",
@@ -7809,7 +7809,7 @@ function RobertsFilmmaking() {
     /* @__PURE__ */ jsxs("section", { style: { padding: "64px 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 30, margin: 0, fontWeight: 700 }, children: [
         "Stop reading about it. ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$9 }, children: "Start making it." })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$a }, children: "Start making it." })
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
@@ -7817,7 +7817,7 @@ function RobertsFilmmaking() {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
-          background: TEAL$9,
+          background: TEAL$a,
           color: "#000",
           fontWeight: 700,
           display: "inline-flex",
@@ -14114,7 +14114,7 @@ function Launch() {
 const GOLD = "#d4a017";
 const VIOLET = "#a855f7";
 const ROSE = "#fb7185";
-const TEAL$8 = "#2bd1c0";
+const TEAL$9 = "#2bd1c0";
 const cards = [
   {
     key: "three-act",
@@ -14153,7 +14153,7 @@ const cards = [
     count: "8 steps",
     description: "Eight plain words — you, need, go, search, find, take, return, change. The quickest way to a complete story.",
     bestFor: "Best for character-driven stories",
-    accent: TEAL$8,
+    accent: TEAL$9,
     diagram: StoryCircleDiagram
   }
 ];
@@ -14208,7 +14208,7 @@ function MovieInABox() {
               { color: VIOLET, label: "Three-Act" },
               { color: GOLD, label: "Save the Cat" },
               { color: ROSE, label: "Hero's Journey" },
-              { color: TEAL$8, label: "Story Circle" }
+              { color: TEAL$9, label: "Story Circle" }
             ].map((dot) => /* @__PURE__ */ jsx(
               "span",
               {
@@ -23182,10 +23182,10 @@ const SCENE_FIELDS = "id, scene_number, label, script_text, sort_order, created_
 const ITEM_FIELDS = "id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, added_by_crew_id, sort_order";
 const SIGNOFF_FIELDS = "id, scene_id, department, status, note, by_name, by_department, updated_at";
 const PHOTO_FIELDS = "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const statusBadge = (photo) => {
   if (photo.is_reference) return { label: "REF", color: "#8ab4ff" };
-  if (photo.status === "approved") return { label: "✅", color: TEAL$7 };
+  if (photo.status === "approved") return { label: "✅", color: TEAL$8 };
   if (photo.status === "rejected") return { label: "✕", color: "#ff8080" };
   return { label: "⏳", color: "#f5a524" };
 };
@@ -23236,7 +23236,7 @@ const ItemPhotos = ({ photos, signedUrl, onOpen }) => {
     );
   }) });
 };
-const inputStyle$4 = {
+const inputStyle$5 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -23321,7 +23321,7 @@ const DepartmentChecklist = ({
               {
                 onClick: () => onToggle(item),
                 "aria-label": item.checked ? `Uncheck ${item.text}` : `Check off ${item.text}`,
-                style: { ...iconBtn, color: item.checked ? TEAL$7 : "rgba(255,255,255,0.45)" },
+                style: { ...iconBtn, color: item.checked ? TEAL$8 : "rgba(255,255,255,0.45)" },
                 children: /* @__PURE__ */ jsx(
                   "span",
                   {
@@ -23329,7 +23329,7 @@ const DepartmentChecklist = ({
                       width: 24,
                       height: 24,
                       borderRadius: 9999,
-                      border: `2px solid ${item.checked ? TEAL$7 : "rgba(255,255,255,0.3)"}`,
+                      border: `2px solid ${item.checked ? TEAL$8 : "rgba(255,255,255,0.3)"}`,
                       background: item.checked ? "rgba(0,212,170,0.18)" : "transparent",
                       display: "flex",
                       alignItems: "center",
@@ -23351,10 +23351,10 @@ const DepartmentChecklist = ({
                     if (e.key === "Enter") commitEdit(item);
                     if (e.key === "Escape") setEditingId(null);
                   },
-                  style: inputStyle$4
+                  style: inputStyle$5
                 }
               ),
-              /* @__PURE__ */ jsx("button", { "aria-label": "Save item", onClick: () => commitEdit(item), style: { ...iconBtn, color: TEAL$7 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
+              /* @__PURE__ */ jsx("button", { "aria-label": "Save item", onClick: () => commitEdit(item), style: { ...iconBtn, color: TEAL$8 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
               /* @__PURE__ */ jsx("button", { "aria-label": "Cancel edit", onClick: () => setEditingId(null), style: iconBtn, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
             ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsxs("div", { style: { fontSize: 15, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", wordBreak: "break-word" }, children: [
@@ -23428,7 +23428,7 @@ const DepartmentChecklist = ({
                   target: "_blank",
                   rel: "noopener noreferrer",
                   "aria-label": `Find ${item.text} on Google Maps`,
-                  style: { ...iconBtn, color: TEAL$7, textDecoration: "none" },
+                  style: { ...iconBtn, color: TEAL$8, textDecoration: "none" },
                   children: /* @__PURE__ */ jsx(MapPin, { size: 17 })
                 }
               ),
@@ -23469,10 +23469,10 @@ const DepartmentChecklist = ({
             }
           },
           placeholder: "New item…",
-          style: inputStyle$4
+          style: inputStyle$5
         }
       ),
-      /* @__PURE__ */ jsx("button", { "aria-label": "Save new item", onClick: commitAdd, style: { ...iconBtn, color: TEAL$7 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
+      /* @__PURE__ */ jsx("button", { "aria-label": "Save new item", onClick: commitAdd, style: { ...iconBtn, color: TEAL$8 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
       /* @__PURE__ */ jsx("button", { "aria-label": "Cancel new item", onClick: () => {
         setAdding(false);
         setAddValue("");
@@ -23488,7 +23488,7 @@ const DepartmentChecklist = ({
           borderRadius: 10,
           background: "rgba(0,212,170,0.08)",
           border: "1px dashed rgba(0,212,170,0.4)",
-          color: TEAL$7,
+          color: TEAL$8,
           fontSize: 14,
           fontWeight: 700,
           cursor: "pointer",
@@ -23554,10 +23554,10 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
       children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700 }, children: "Department ready?" }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn2((signoff == null ? void 0 : signoff.status) === "good", TEAL$7), children: "✅ We're good" }),
+          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn2((signoff == null ? void 0 : signoff.status) === "good", TEAL$8), children: "✅ We're good" }),
           /* @__PURE__ */ jsx("button", { onClick: () => press("need_help"), style: btn2((signoff == null ? void 0 : signoff.status) === "need_help", "#f5a524"), children: "⚠️ Need help" })
         ] }),
-        signoff && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13, color: signoff.status === "good" ? TEAL$7 : "#f5a524" }, children: [
+        signoff && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13, color: signoff.status === "good" ? TEAL$8 : "#f5a524" }, children: [
           signoff.status === "good" ? "✅ Ready" : "⚠️ Needs help",
           " — ",
           signoff.by_name || "Someone",
@@ -23603,7 +23603,7 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
               borderRadius: 10,
               background: "rgba(0,212,170,0.12)",
               border: "1px solid rgba(0,212,170,0.4)",
-              color: TEAL$7,
+              color: TEAL$8,
               fontWeight: 700,
               fontSize: 15,
               cursor: note.trim() ? "pointer" : "not-allowed",
@@ -23660,7 +23660,7 @@ const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen })
           }
         ),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$2(TEAL$7), children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$2(TEAL$8), children: [
             /* @__PURE__ */ jsx(Check$1, { size: 15 }),
             " Approve"
           ] }),
@@ -23818,14 +23818,14 @@ const PhotoLightbox = ({
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { maxWidth: 640, width: "100%", margin: "0 auto", color: "#fff" }, children: [
           !photo.is_reference && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, marginBottom: 12, color: photo.status === "approved" ? TEAL$7 : photo.status === "rejected" ? "#ff9d9d" : "#f5a524" }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, marginBottom: 12, color: photo.status === "approved" ? TEAL$8 : photo.status === "rejected" ? "#ff9d9d" : "#f5a524" }, children: [
               photo.status === "approved" && `✅ Approved — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
               photo.status === "rejected" && `✕ Changes needed — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
               photo.status === "awaiting" && "⏳ Awaiting approval",
               photo.feedback && /* @__PURE__ */ jsx("div", { style: { color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 }, children: photo.feedback })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$7), children: [
+              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$8), children: [
                 /* @__PURE__ */ jsx(Check$1, { size: 16 }),
                 " Approve"
               ] }),
@@ -23998,7 +23998,7 @@ const ReferenceSearch = ({ items, onAttach }) => {
           padding: "0 16px",
           background: "none",
           border: "none",
-          color: TEAL$7,
+          color: TEAL$8,
           fontFamily: "'Inter Tight', sans-serif",
           fontSize: 14,
           fontWeight: 700,
@@ -24044,7 +24044,7 @@ const ReferenceSearch = ({ items, onAttach }) => {
               minHeight: 44,
               padding: "0 18px",
               borderRadius: 10,
-              background: TEAL$7,
+              background: TEAL$8,
               color: "#04231d",
               border: "none",
               fontWeight: 700,
@@ -24424,12 +24424,12 @@ async function exportBreakdownToPDF(input) {
   const doc = await buildBreakdownPDF(input);
   doc.save(breakdownFileName(input));
 }
-const panel$4 = {
+const panel$5 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const ghostBtn$2 = {
+const ghostBtn$3 = {
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -24764,7 +24764,7 @@ const BreakdownWorkspace = ({
       className: "sb-tap",
       "aria-label": "Export PDF",
       style: {
-        ...ghostBtn$2,
+        ...ghostBtn$3,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -24782,7 +24782,7 @@ const BreakdownWorkspace = ({
     "div",
     {
       style: {
-        ...panel$4,
+        ...panel$5,
         position: "absolute",
         right: 0,
         bottom: "calc(100% + 8px)",
@@ -24842,7 +24842,7 @@ const BreakdownWorkspace = ({
     }
   );
   if (loading) {
-    return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    return /* @__PURE__ */ jsxs("div", { style: { ...panel$5, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading the breakdown…"
     ] });
@@ -24874,7 +24874,7 @@ const BreakdownWorkspace = ({
         scenes.map((s) => {
           const active = s.id === sceneId;
           return /* @__PURE__ */ jsxs("div", { style: {
-            ...panel$4,
+            ...panel$5,
             padding: 14,
             minWidth: 168,
             flex: "0 0 auto",
@@ -24920,13 +24920,13 @@ const BreakdownWorkspace = ({
           {
             onClick: onRequestAddScene,
             style: {
-              ...panel$4,
+              ...panel$5,
               padding: 14,
               minWidth: 168,
               flex: "0 0 auto",
               cursor: "pointer",
               border: "1px dashed rgba(0,212,170,0.4)",
-              color: TEAL$7,
+              color: TEAL$8,
               background: "rgba(0,212,170,0.05)",
               display: "flex",
               alignItems: "center",
@@ -24945,7 +24945,7 @@ const BreakdownWorkspace = ({
         )
       ] })
     ] }),
-    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 64 }, children: [
+    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$5, padding: 20, marginBottom: 64 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: sceneTitle(selectedScene) }),
       selectedScene.label && selectedScene.scene_number && /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: selectedScene.label }),
       (() => {
@@ -24963,7 +24963,7 @@ const BreakdownWorkspace = ({
             "/5 departments signed off",
             sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""
           ] }),
-          /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$7, transition: "width .3s" } }) })
+          /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$8, transition: "width .3s" } }) })
         ] });
       })(),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -24977,7 +24977,7 @@ const BreakdownWorkspace = ({
               borderRadius: 10,
               background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
               border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-              color: view === key ? TEAL$7 : "rgba(255,255,255,0.7)",
+              color: view === key ? TEAL$8 : "rgba(255,255,255,0.7)",
               fontSize: 14,
               fontWeight: 700,
               cursor: "pointer",
@@ -25016,7 +25016,7 @@ const BreakdownWorkspace = ({
                 borderRadius: 9999,
                 background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
                 border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-                color: active ? TEAL$7 : "rgba(255,255,255,0.7)",
+                color: active ? TEAL$8 : "rgba(255,255,255,0.7)",
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -25036,7 +25036,7 @@ const BreakdownWorkspace = ({
                   width: 8,
                   height: 8,
                   borderRadius: 9999,
-                  background: so.status === "good" ? TEAL$7 : "#f5a524"
+                  background: so.status === "good" ? TEAL$8 : "#f5a524"
                 } })
               ]
             },
@@ -25084,7 +25084,7 @@ const BreakdownWorkspace = ({
         "button",
         {
           onClick: () => setShowScript((v2) => !v2),
-          style: { ...ghostBtn$2, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
+          style: { ...ghostBtn$3, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
           children: [
             /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: showScript ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
             "View scene script"
@@ -25106,8 +25106,8 @@ const BreakdownWorkspace = ({
         color: "rgba(255,255,255,0.75)"
       }, children: selectedScene.script_text || "No script text saved." })
     ] }),
-    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
-    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
+    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$5, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
+    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$5, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
     selectedScene && /* @__PURE__ */ jsx("div", { className: "bw-export-mobile", children: /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
       exportOpen && exportMenu,
       exportButton
@@ -25117,10 +25117,10 @@ const BreakdownWorkspace = ({
       {
         onClick: () => setDeleteScene(null),
         style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 },
-        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$4, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$5, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }, children: [
             /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Delete scene" }),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
           ] }),
           /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
             "Delete ",
@@ -25132,11 +25132,11 @@ const BreakdownWorkspace = ({
               "button",
               {
                 onClick: confirmDeleteScene,
-                style: { ...ghostBtn$2, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
+                style: { ...ghostBtn$3, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
                 children: "Delete"
               }
             ),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$2, children: "Cancel" })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$3, children: "Cancel" })
           ] })
         ] })
       }
@@ -25158,7 +25158,7 @@ const BreakdownWorkspace = ({
     )
   ] });
 };
-const panel$3 = {
+const panel$4 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
@@ -25238,7 +25238,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
     onChange({ share_token: token });
     toast({ title: "New link created", description: "The old link stopped working straight away." });
   };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginTop: 14 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginTop: 14 }, children: [
     /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "Share with crew" }),
     /* @__PURE__ */ jsx("p", { style: { fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: 8 }, children: "Anyone with this link can work through the checklists — no account needed." }),
     /* @__PURE__ */ jsx("div", { style: {
@@ -25253,7 +25253,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
     }, children: link }),
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
-      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$7 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$8 }, children: [
         /* @__PURE__ */ jsx(Copy, { size: 15 }),
         " Copy link"
       ] }),
@@ -25325,14 +25325,14 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
     ] })
   ] });
 };
-const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, created_at";
-const TEAL$6 = "#00d4aa";
-const panel$2 = {
+const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, created_at";
+const TEAL$7 = "#00d4aa";
+const panel$3 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const inputStyle$3 = {
+const inputStyle$4 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -25344,11 +25344,11 @@ const inputStyle$3 = {
   fontFamily: "'Inter Tight', sans-serif",
   boxSizing: "border-box"
 };
-const primaryBtn$2 = {
+const primaryBtn$3 = {
   minHeight: 44,
   padding: "0 20px",
   borderRadius: 10,
-  background: TEAL$6,
+  background: TEAL$7,
   color: "#04231d",
   border: "none",
   fontWeight: 700,
@@ -25356,7 +25356,7 @@ const primaryBtn$2 = {
   cursor: "pointer",
   fontFamily: "'Inter Tight', sans-serif"
 };
-const ghostBtn$1 = {
+const ghostBtn$2 = {
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -25386,10 +25386,10 @@ const Modal = ({
       justifyContent: "center",
       padding: 16
     },
-    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$2, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
         /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
-        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
       ] }),
       children
     ] })
@@ -25496,14 +25496,14 @@ const ProductionPicker = ({
     setRenaming(false);
   };
   return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
-    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading your productions…"
-    ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 32, textAlign: "center" }, children: [
+    ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 32, textAlign: "center" }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: emptyTitle }),
       /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: emptyText }),
-      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$2, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
-    ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 16 }, children: [
+      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$3, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
+    ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 16 }, children: [
       /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
           /* @__PURE__ */ jsx(
@@ -25512,7 +25512,7 @@ const ProductionPicker = ({
               "aria-label": "Select production",
               value: projectId,
               onChange: (e) => selectProject(e.target.value),
-              style: { ...inputStyle$3, maxWidth: 320 },
+              style: { ...inputStyle$4, maxWidth: 320 },
               children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
             }
           ),
@@ -25524,18 +25524,18 @@ const ProductionPicker = ({
                 setRenameValue(selected.title);
                 setRenaming(true);
               },
-              style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
+              style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
               children: /* @__PURE__ */ jsx(Pencil, { size: 16 })
             }
           )
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto", alignItems: "center" }, children: [
           extraControls,
-          enableShare && selected && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+          enableShare && selected && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
             /* @__PURE__ */ jsx(Share2, { size: 16 }),
             " Share with crew"
           ] }),
-          /* @__PURE__ */ jsx("button", { style: primaryBtn$2, onClick: () => setShowNewProject(true), children: "+ New Project" })
+          /* @__PURE__ */ jsx("button", { style: primaryBtn$3, onClick: () => setShowNewProject(true), children: "+ New Project" })
         ] })
       ] }),
       (selected == null ? void 0 : selected.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selected.company }),
@@ -25553,15 +25553,15 @@ const ProductionPicker = ({
     showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
-        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$3 })
+        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$4 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
-        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$3 })
+        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$4 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
-        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$3, children: [
+        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$4, children: [
           /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
           /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
           /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
@@ -25569,7 +25569,7 @@ const ProductionPicker = ({
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
-        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$3 })
+        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$4 })
       ] }),
       error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
       /* @__PURE__ */ jsx(
@@ -25577,14 +25577,14 @@ const ProductionPicker = ({
         {
           onClick: createProject,
           disabled: creating || !newTitle.trim(),
-          style: { ...primaryBtn$2, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
+          style: { ...primaryBtn$3, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
           children: creating ? "Creating…" : "Create production"
         }
       )
     ] }) }),
     renaming && selected && /* @__PURE__ */ jsxs(Modal, { title: "Rename production", onClose: () => setRenaming(false), children: [
-      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$3 }),
-      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$2, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$4 }),
+      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$3, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
         /* @__PURE__ */ jsx(Check$1, { size: 16 }),
         " Save"
       ] })
@@ -25901,19 +25901,19 @@ function createCrewAdapter(opts) {
   };
 }
 const SITE$1 = "https://filmmakergenius.com";
-const TEAL$5 = "#00d4aa";
+const TEAL$6 = "#00d4aa";
 const STEPS$4 = [
   { n: 1, title: "Upload your scene", text: "PDF or paste text." },
   { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
   { n: 3, title: "Share a private link with your crew", text: "One link per production — no accounts needed." },
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." }
 ];
-const panel$1 = {
+const panel$2 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const inputStyle$2 = {
+const inputStyle$3 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -25925,11 +25925,11 @@ const inputStyle$2 = {
   fontFamily: "'Inter Tight', sans-serif",
   boxSizing: "border-box"
 };
-const primaryBtn$1 = {
+const primaryBtn$2 = {
   minHeight: 44,
   padding: "0 20px",
   borderRadius: 10,
-  background: TEAL$5,
+  background: TEAL$6,
   color: "#04231d",
   border: "none",
   fontWeight: 700,
@@ -25937,7 +25937,7 @@ const primaryBtn$1 = {
   cursor: "pointer",
   fontFamily: "'Inter Tight', sans-serif"
 };
-const ghostBtn = {
+const ghostBtn$1 = {
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -26089,10 +26089,10 @@ const ScriptBreakdown = () => {
           onSelect: setSelectedProject
         }
       ),
-      selectedProject && showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 20, marginBottom: 32 }, children: [
+      selectedProject && showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 20, marginBottom: 32 }, children: [
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }, children: [
           /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "New scene" }),
-          /* @__PURE__ */ jsx("button", { onClick: () => setShowUpload(false), "aria-label": "Close upload panel", style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+          /* @__PURE__ */ jsx("button", { onClick: () => setShowUpload(false), "aria-label": "Close upload panel", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
         ] }),
         isProcessing ? /* @__PURE__ */ jsx(
           PDFUploadProgress,
@@ -26153,17 +26153,17 @@ const ScriptBreakdown = () => {
             value: scriptText,
             onChange: (e) => setScriptText(e.target.value),
             placeholder: "INT. BAR — NIGHT\n\nPaste your scene here…",
-            style: { ...inputStyle$2, minHeight: 240, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }
+            style: { ...inputStyle$3, minHeight: 240, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }
           }
         ),
         /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 14 }, children: [
           /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
             /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Scene number (optional)" }),
-            /* @__PURE__ */ jsx("input", { value: sceneNumber, onChange: (e) => setSceneNumber(e.target.value), placeholder: "e.g. 47A", style: inputStyle$2 })
+            /* @__PURE__ */ jsx("input", { value: sceneNumber, onChange: (e) => setSceneNumber(e.target.value), placeholder: "e.g. 47A", style: inputStyle$3 })
           ] }),
           /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
             /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Label (optional)" }),
-            /* @__PURE__ */ jsx("input", { value: label2, onChange: (e) => setLabel(e.target.value), placeholder: "e.g. Bar showdown", style: inputStyle$2 })
+            /* @__PURE__ */ jsx("input", { value: label2, onChange: (e) => setLabel(e.target.value), placeholder: "e.g. Bar showdown", style: inputStyle$3 })
           ] })
         ] }),
         error && /* @__PURE__ */ jsx("div", { style: {
@@ -26182,7 +26182,7 @@ const ScriptBreakdown = () => {
               onClick: runBreakdown,
               disabled: analyzing || scriptText.trim().length < 20,
               style: {
-                ...primaryBtn$1,
+                ...primaryBtn$2,
                 opacity: analyzing || scriptText.trim().length < 20 ? 0.45 : 1,
                 cursor: analyzing || scriptText.trim().length < 20 ? "not-allowed" : "pointer",
                 display: "inline-flex",
@@ -26249,7 +26249,7 @@ const STATUSES = [
   { key: "paid", label: "Paid", color: "#00d4aa", tint: "rgba(0,212,170,0.14)" }
 ];
 const statusDef = (key) => STATUSES.find((s) => s.key === key) ?? STATUSES[0];
-const EXPENSE_FIELDS = "id, project_id, kind, department, vendor, description, expense_date, currency, amount, payment_method, status, status_note, decided_by_name, decided_at, notes, line_items, invoice_number, bill_to, receipt_path, item_photo_path, linked_item_id, submitted_by_name, submitted_by_email, created_at";
+const EXPENSE_FIELDS = "id, project_id, kind, department, vendor, description, expense_date, currency, amount, payment_method, status, status_note, decided_by_name, decided_at, notes, line_items, invoice_number, bill_to, receipt_path, item_photo_path, linked_item_id, submitted_by_name, submitted_by_email, submitted_by_crew_id, created_at";
 const EXPENSE_BUCKET = "expense-receipts";
 const normalizeLines = (raw2) => {
   if (!Array.isArray(raw2)) return [];
@@ -26389,7 +26389,7 @@ const parseAmount = (raw2) => {
   return negative ? -n : n;
 };
 const round2 = (n) => Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
-const TEAL$4 = "#00d4aa";
+const TEAL$5 = "#00d4aa";
 const byCurrency = (rows) => {
   const map = /* @__PURE__ */ new Map();
   rows.forEach((r) => map.set(r.currency, round2((map.get(r.currency) || 0) + Number(r.amount || 0))));
@@ -26401,7 +26401,7 @@ const moneyLine = (rows) => {
   return list.map(([code, total]) => formatMoney$a(total, code)).join(" · ");
 };
 const cardStyle$1 = {
-  ...panel$2,
+  ...panel$3,
   padding: 16,
   display: "flex",
   flexDirection: "column",
@@ -26429,7 +26429,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
     { title: "Total submitted", value: moneyLine(expenses), sub: `${expenses.length} entr${expenses.length === 1 ? "y" : "ies"}`, color: "#fff" },
     { title: "Approved", value: moneyLine(approved), sub: `${approved.length}`, color: STATUSES[1].color },
     { title: "Pending", value: moneyLine(pending2), sub: `${pending2.length}`, color: STATUSES[0].color },
-    { title: "Paid", value: moneyLine(paid), sub: `${paid.length}`, color: TEAL$4 },
+    { title: "Paid", value: moneyLine(paid), sub: `${paid.length}`, color: TEAL$5 },
     { title: "Rejected", value: String(rejected.length), sub: rejected.length === 1 ? "entry" : "entries", color: STATUSES[2].color }
   ];
   return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 24 }, children: [
@@ -26438,7 +26438,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 17, fontWeight: 700, color: c.color, lineHeight: 1.35, wordBreak: "break-word" }, children: c.value }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)" }, children: c.sub })
     ] }, c.title)) }),
-    /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 18, marginTop: 14 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginTop: 14 }, children: [
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 12 }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700 }, children: "Spend by department" }),
         /* @__PURE__ */ jsx(
@@ -26447,7 +26447,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
             "aria-label": "Chart currency",
             value: activeCurrency,
             onChange: (e) => setChartCurrency(e.target.value),
-            style: { ...inputStyle$3, maxWidth: 140 },
+            style: { ...inputStyle$4, maxWidth: 140 },
             children: currencies.map((c) => /* @__PURE__ */ jsx("option", { value: c, style: { background: "#10101b" }, children: c }, c))
           }
         )
@@ -26467,7 +26467,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
             formatter: (v2) => formatMoney$a(Number(v2), activeCurrency)
           }
         ),
-        /* @__PURE__ */ jsx(Bar, { dataKey: "total", radius: [0, 6, 6, 0], children: chartData.map((d) => /* @__PURE__ */ jsx(Cell, { fill: TEAL$4 }, d.department)) })
+        /* @__PURE__ */ jsx(Bar, { dataKey: "total", radius: [0, 6, 6, 0], children: chartData.map((d) => /* @__PURE__ */ jsx(Cell, { fill: TEAL$5 }, d.department)) })
       ] }) }) }),
       /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.35)", marginTop: 8 }, children: [
         "Approved, paid and pending amounts in ",
@@ -26477,7 +26477,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
     ] })
   ] });
 };
-const label$1 = {
+const label$2 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -26488,7 +26488,7 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
   const active = Object.values(value).some(Boolean);
   return /* @__PURE__ */ jsx("div", { style: { marginBottom: 20 }, children: /* @__PURE__ */ jsxs("div", { className: "ex-filters", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 3" }, children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-q", children: "Search" }),
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-q", children: "Search" }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsx(Search, { size: 16, style: { position: "absolute", left: 12, top: 14, color: "rgba(255,255,255,0.35)" } }),
         /* @__PURE__ */ jsx(
@@ -26498,41 +26498,41 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
             value: value.q,
             onChange: (e) => onChange({ q: e.target.value }),
             placeholder: "Vendor, description, notes or who submitted it",
-            style: { ...inputStyle$3, paddingLeft: 36 }
+            style: { ...inputStyle$4, paddingLeft: 36 }
           }
         )
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-status", children: "Status" }),
-      /* @__PURE__ */ jsxs("select", { id: "ex-status", value: value.status, onChange: (e) => onChange({ status: e.target.value }), style: inputStyle$3, children: [
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-status", children: "Status" }),
+      /* @__PURE__ */ jsxs("select", { id: "ex-status", value: value.status, onChange: (e) => onChange({ status: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All statuses" }),
         STATUSES.map((s) => /* @__PURE__ */ jsx("option", { value: s.key, style: { background: "#10101b" }, children: s.label }, s.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-dept", children: "Department" }),
-      /* @__PURE__ */ jsxs("select", { id: "ex-dept", value: value.department, onChange: (e) => onChange({ department: e.target.value }), style: inputStyle$3, children: [
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-dept", children: "Department" }),
+      /* @__PURE__ */ jsxs("select", { id: "ex-dept", value: value.department, onChange: (e) => onChange({ department: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All departments" }),
         EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-pay", children: "Payment" }),
-      /* @__PURE__ */ jsxs("select", { id: "ex-pay", value: value.payment, onChange: (e) => onChange({ payment: e.target.value }), style: inputStyle$3, children: [
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-pay", children: "Payment" }),
+      /* @__PURE__ */ jsxs("select", { id: "ex-pay", value: value.payment, onChange: (e) => onChange({ payment: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any payment" }),
         PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx("option", { value: p.key, style: { background: "#10101b" }, children: p.label }, p.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-from", children: "From" }),
-      /* @__PURE__ */ jsx("input", { id: "ex-from", type: "date", value: value.from, onChange: (e) => onChange({ from: e.target.value }), style: inputStyle$3 })
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-from", children: "From" }),
+      /* @__PURE__ */ jsx("input", { id: "ex-from", type: "date", value: value.from, onChange: (e) => onChange({ from: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-to", children: "To" }),
-      /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$3 })
+      /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-to", children: "To" }),
+      /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$4 })
     ] }),
-    /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$1, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$2, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
       /* @__PURE__ */ jsx(X, { size: 15 }),
       " Clear filters"
     ] }) })
@@ -26557,6 +26557,18 @@ const StatusBadge = ({ status }) => {
     whiteSpace: "nowrap"
   }, children: def.label });
 };
+const CrewTag = () => /* @__PURE__ */ jsx("span", { style: {
+  display: "inline-block",
+  marginLeft: 8,
+  padding: "2px 8px",
+  borderRadius: 9999,
+  background: "rgba(0,212,170,0.12)",
+  border: "1px solid rgba(0,212,170,0.35)",
+  color: "#00d4aa",
+  fontSize: 11,
+  fontWeight: 700,
+  whiteSpace: "nowrap"
+}, children: "via crew link" });
 const th = {
   textAlign: "left",
   padding: "10px 12px",
@@ -26578,7 +26590,7 @@ const Thumb = ({ path, url: url2, label: label2, onOpen }) => {
     ] });
   }
   if (isPdf2) {
-    return /* @__PURE__ */ jsxs("button", { onClick: () => onOpen(url2, true, label2), style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13 }, children: [
+    return /* @__PURE__ */ jsxs("button", { onClick: () => onOpen(url2, true, label2), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13 }, children: [
       /* @__PURE__ */ jsx(FileText, { size: 15 }),
       " Open PDF"
     ] });
@@ -26605,7 +26617,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       {
         onClick: () => onSetStatus(e, "approved", null),
         disabled: busyId === e.id,
-        style: { ...ghostBtn$1, borderColor: "rgba(62,207,110,0.5)", color: "#3ecf6e", fontSize: 14 },
+        style: { ...ghostBtn$2, borderColor: "rgba(62,207,110,0.5)", color: "#3ecf6e", fontSize: 14 },
         children: "Approve"
       }
     ),
@@ -26617,7 +26629,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
           setRejectNote("");
         },
         disabled: busyId === e.id,
-        style: { ...ghostBtn$1, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 },
+        style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 },
         children: "Reject"
       }
     ),
@@ -26626,12 +26638,12 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       {
         onClick: () => onSetStatus(e, "paid", e.status_note),
         disabled: busyId === e.id,
-        style: { ...ghostBtn$1, borderColor: "rgba(0,212,170,0.5)", color: "#00d4aa", fontSize: 14 },
+        style: { ...ghostBtn$2, borderColor: "rgba(0,212,170,0.5)", color: "#00d4aa", fontSize: 14 },
         children: "Mark paid"
       }
     ),
-    e.status !== "pending" && /* @__PURE__ */ jsx("button", { onClick: () => onSetStatus(e, "pending", null), disabled: busyId === e.id, style: { ...ghostBtn$1, fontSize: 14 }, children: "Back to pending" }),
-    /* @__PURE__ */ jsxs("button", { onClick: () => onEdit(e), style: { ...ghostBtn$1, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+    e.status !== "pending" && /* @__PURE__ */ jsx("button", { onClick: () => onSetStatus(e, "pending", null), disabled: busyId === e.id, style: { ...ghostBtn$2, fontSize: 14 }, children: "Back to pending" }),
+    /* @__PURE__ */ jsxs("button", { onClick: () => onEdit(e), style: { ...ghostBtn$2, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
       /* @__PURE__ */ jsx(Pencil, { size: 14 }),
       " Edit"
     ] }),
@@ -26640,9 +26652,9 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       /* @__PURE__ */ jsx("button", { onClick: () => {
         setConfirmDeleteId(null);
         onDelete(e);
-      }, style: { ...ghostBtn$1, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 }, children: "Yes" }),
-      /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDeleteId(null), style: { ...ghostBtn$1, fontSize: 14 }, children: "No" })
-    ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDeleteId(e.id), style: { ...ghostBtn$1, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+      }, style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 }, children: "Yes" }),
+      /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDeleteId(null), style: { ...ghostBtn$2, fontSize: 14 }, children: "No" })
+    ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDeleteId(e.id), style: { ...ghostBtn$2, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
       /* @__PURE__ */ jsx(Trash2, { size: 14 }),
       " Delete"
     ] }),
@@ -26712,7 +26724,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
             value: rejectNote,
             onChange: (ev) => setRejectNote(ev.target.value),
             placeholder: "Why is this rejected?",
-            style: inputStyle$3
+            style: inputStyle$4
           }
         ),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginTop: 8 }, children: [
@@ -26724,20 +26736,20 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
                 onSetStatus(e, "rejected", rejectNote.trim());
                 setRejectId(null);
               },
-              style: { ...ghostBtn$1, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", opacity: rejectNote.trim() ? 1 : 0.5 },
+              style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", opacity: rejectNote.trim() ? 1 : 0.5 },
               children: "Save rejection"
             }
           ),
-          /* @__PURE__ */ jsx("button", { onClick: () => setRejectId(null), style: ghostBtn$1, children: "Cancel" })
+          /* @__PURE__ */ jsx("button", { onClick: () => setRejectId(null), style: ghostBtn$2, children: "Cancel" })
         ] })
       ] }) : actions(e)
     ] });
   };
   if (!expenses.length) {
-    return /* @__PURE__ */ jsx("div", { style: { ...panel$2, padding: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "Nothing here yet. Add your first receipt or invoice." });
+    return /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "Nothing here yet. Add your first receipt or invoice." });
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: "ex-table", style: { ...panel$2, overflow: "hidden" }, children: /* @__PURE__ */ jsxs("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
+    /* @__PURE__ */ jsx("div", { className: "ex-table", style: { ...panel$3, overflow: "hidden" }, children: /* @__PURE__ */ jsxs("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
       /* @__PURE__ */ jsx("thead", { children: /* @__PURE__ */ jsxs("tr", { style: { background: "rgba(255,255,255,0.03)" }, children: [
         /* @__PURE__ */ jsx("th", { style: { ...th, width: 34 }, "aria-label": "Expand" }),
         /* @__PURE__ */ jsx("th", { style: th, children: "Date" }),
@@ -26758,7 +26770,10 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
             children: [
               /* @__PURE__ */ jsx("td", { style: { ...td, color: "rgba(255,255,255,0.4)" }, children: openId === e.id ? /* @__PURE__ */ jsx(ChevronDown, { size: 16 }) : /* @__PURE__ */ jsx(ChevronRight, { size: 16 }) }),
               /* @__PURE__ */ jsx("td", { style: { ...td, whiteSpace: "nowrap" }, children: shortDate(e.expense_date) }),
-              /* @__PURE__ */ jsx("td", { style: td, children: e.submitted_by_name }),
+              /* @__PURE__ */ jsxs("td", { style: td, children: [
+                e.submitted_by_name,
+                e.submitted_by_crew_id && /* @__PURE__ */ jsx(CrewTag, {})
+              ] }),
               /* @__PURE__ */ jsx("td", { style: td, children: e.department }),
               /* @__PURE__ */ jsx("td", { style: td, children: e.kind === "invoice" ? `Invoice ${e.invoice_number || ""}`.trim() : "Receipt" }),
               /* @__PURE__ */ jsx("td", { style: td, children: e.vendor || e.description || "—" }),
@@ -26771,7 +26786,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
         openId === e.id && /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx("td", { colSpan: 9, style: { padding: 0, background: "rgba(255,255,255,0.02)" }, children: details(e) }) })
       ] }, e.id)) })
     ] }) }),
-    /* @__PURE__ */ jsx("div", { className: "ex-cards-list", style: { display: "none", flexDirection: "column", gap: 12 }, children: expenses.map((e) => /* @__PURE__ */ jsxs("div", { style: { ...panel$2, overflow: "hidden" }, children: [
+    /* @__PURE__ */ jsx("div", { className: "ex-cards-list", style: { display: "none", flexDirection: "column", gap: 12 }, children: expenses.map((e) => /* @__PURE__ */ jsxs("div", { style: { ...panel$3, overflow: "hidden" }, children: [
       /* @__PURE__ */ jsx(
         "button",
         {
@@ -26790,7 +26805,8 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
               /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 2 }, children: [
                 e.submitted_by_name,
                 " · ",
-                paymentLabel(e.payment_method)
+                paymentLabel(e.payment_method),
+                e.submitted_by_crew_id && /* @__PURE__ */ jsx(CrewTag, {})
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { textAlign: "right", flex: "0 0 auto" }, children: [
@@ -26804,14 +26820,14 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
     ] }, e.id)) })
   ] });
 };
-const TEAL$3 = "#00d4aa";
-const label = {
+const TEAL$4 = "#00d4aa";
+const label$1 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
   display: "block"
 };
-const today = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+const today$1 = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 const ExpenseDialog = ({
   projectId,
   company,
@@ -26829,7 +26845,7 @@ const ExpenseDialog = ({
   const [department, setDepartment] = useState((existing == null ? void 0 : existing.department) || EXPENSE_DEPARTMENTS[3]);
   const [payment, setPayment] = useState((existing == null ? void 0 : existing.payment_method) || "");
   const [currency, setCurrency] = useState((existing == null ? void 0 : existing.currency) || defaultCurrency);
-  const [date, setDate] = useState((existing == null ? void 0 : existing.expense_date) || today());
+  const [date, setDate] = useState((existing == null ? void 0 : existing.expense_date) || today$1());
   const [notes, setNotes] = useState((existing == null ? void 0 : existing.notes) || "");
   const [linkedItemId, setLinkedItemId] = useState((existing == null ? void 0 : existing.linked_item_id) || "");
   const [vendor, setVendor] = useState((existing == null ? void 0 : existing.vendor) || "");
@@ -26915,7 +26931,7 @@ const ExpenseDialog = ({
         department,
         vendor: kind === "receipt" ? vendor.trim() || null : billTo.trim() || null,
         description: description.trim() || null,
-        expense_date: date || today(),
+        expense_date: date || today$1(),
         currency,
         amount,
         payment_method: payment,
@@ -26980,9 +26996,9 @@ const ExpenseDialog = ({
         cursor: "pointer",
         fontWeight: 700,
         fontSize: 15,
-        border: `1px solid ${kind === value ? TEAL$3 : "rgba(255,255,255,0.14)"}`,
+        border: `1px solid ${kind === value ? TEAL$4 : "rgba(255,255,255,0.14)"}`,
         background: kind === value ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-        color: kind === value ? TEAL$3 : "#fff"
+        color: kind === value ? TEAL$4 : "#fff"
       },
       children: text
     },
@@ -26998,11 +27014,11 @@ const ExpenseDialog = ({
         "div",
         {
           onClick: (e) => e.stopPropagation(),
-          style: { ...panel$2, background: "#10101b", width: "100%", maxWidth: 720, padding: 24, margin: "24px 0" },
+          style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 720, padding: 24, margin: "24px 0" },
           children: [
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }, children: [
               /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: existing ? "Edit expense" : "Add expense" }),
-              /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+              /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, marginBottom: 18 }, children: [
               tabBtn("receipt", "Receipt"),
@@ -27010,23 +27026,23 @@ const ExpenseDialog = ({
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-by", children: "Submitted by" }),
-                /* @__PURE__ */ jsx("input", { id: "ex-by", value: submittedBy, onChange: (e) => setSubmittedBy(e.target.value), style: inputStyle$3 })
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-by", children: "Submitted by" }),
+                /* @__PURE__ */ jsx("input", { id: "ex-by", value: submittedBy, onChange: (e) => setSubmittedBy(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-email", children: "Email (optional)" }),
-                /* @__PURE__ */ jsx("input", { id: "ex-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$3 })
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-email", children: "Email (optional)" }),
+                /* @__PURE__ */ jsx("input", { id: "ex-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-department", children: "Department" }),
-                /* @__PURE__ */ jsx("select", { id: "ex-department", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$3, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-department", children: "Department" }),
+                /* @__PURE__ */ jsx("select", { id: "ex-department", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$4, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-currency", children: "Currency" }),
-                /* @__PURE__ */ jsx("select", { id: "ex-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$3, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-currency", children: "Currency" }),
+                /* @__PURE__ */ jsx("select", { id: "ex-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$4, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                /* @__PURE__ */ jsx("span", { style: label, children: "Payment" }),
+                /* @__PURE__ */ jsx("span", { style: label$1, children: "Payment" }),
                 /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
                   "button",
                   {
@@ -27038,9 +27054,9 @@ const ExpenseDialog = ({
                       cursor: "pointer",
                       fontSize: 15,
                       fontWeight: 600,
-                      border: `1px solid ${payment === p.key ? TEAL$3 : "rgba(255,255,255,0.14)"}`,
+                      border: `1px solid ${payment === p.key ? TEAL$4 : "rgba(255,255,255,0.14)"}`,
                       background: payment === p.key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-                      color: payment === p.key ? TEAL$3 : "#fff"
+                      color: payment === p.key ? TEAL$4 : "#fff"
                     },
                     children: p.label
                   },
@@ -27048,12 +27064,12 @@ const ExpenseDialog = ({
                 )) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-date", children: "Date" }),
-                /* @__PURE__ */ jsx("input", { id: "ex-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$3 })
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-date", children: "Date" }),
+                /* @__PURE__ */ jsx("input", { id: "ex-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
-                /* @__PURE__ */ jsxs("select", { id: "ex-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$3, children: [
+                /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
+                /* @__PURE__ */ jsxs("select", { id: "ex-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
                   itemOptions.map((o) => /* @__PURE__ */ jsxs("option", { value: o.id, style: { background: "#10101b" }, children: [
                     o.scene,
@@ -27113,27 +27129,27 @@ const ExpenseDialog = ({
                 receipt && !isPdf(receipt.mime) && /* @__PURE__ */ jsx("img", { src: receipt.preview, alt: "Receipt preview", style: { width: 84, height: 84, objectFit: "cover", borderRadius: 10, border: "1px solid rgba(255,255,255,0.14)" } }),
                 receipt && isPdf(receipt.mime) && /* @__PURE__ */ jsx("span", { style: { fontSize: 14, color: "rgba(255,255,255,0.6)" }, children: "PDF selected" }),
                 !receipt && existingReceiptPath && /* @__PURE__ */ jsx("span", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)" }, children: pathIsPdf(existingReceiptPath) ? "A PDF is already attached." : "A receipt image is already attached." }),
-                receipt && /* @__PURE__ */ jsxs("button", { onClick: readWithAi, disabled: reading, style: { ...primaryBtn$2, display: "inline-flex", alignItems: "center", gap: 8, opacity: reading ? 0.7 : 1 }, children: [
+                receipt && /* @__PURE__ */ jsxs("button", { onClick: readWithAi, disabled: reading, style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 8, opacity: reading ? 0.7 : 1 }, children: [
                   reading ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { size: 16 }),
                   reading ? "Reading…" : "Read receipt with AI (1 credit)"
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-vendor", children: "Vendor" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$3 })
+                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-vendor", children: "Vendor" }),
+                  /* @__PURE__ */ jsx("input", { id: "ex-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-total", children: "Total" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$3 })
+                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-total", children: "Total" }),
+                  /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                  /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-desc", children: "Description (optional)" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$3 })
+                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-desc", children: "Description (optional)" }),
+                  /* @__PURE__ */ jsx("input", { id: "ex-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label, children: "Lines" }),
+                /* @__PURE__ */ jsx("span", { style: label$1, children: "Lines" }),
                 lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
                   /* @__PURE__ */ jsx(
                     "input",
@@ -27141,7 +27157,7 @@ const ExpenseDialog = ({
                       value: l.text,
                       onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, text: e.target.value } : p)),
                       placeholder: "Item",
-                      style: { ...inputStyle$3, flex: 1 }
+                      style: { ...inputStyle$4, flex: 1 }
                     }
                   ),
                   /* @__PURE__ */ jsx(
@@ -27150,7 +27166,7 @@ const ExpenseDialog = ({
                       value: String(l.amount ?? ""),
                       onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, amount: parseAmount(e.target.value) } : p)),
                       inputMode: "decimal",
-                      style: { ...inputStyle$3, maxWidth: 120 }
+                      style: { ...inputStyle$4, maxWidth: 120 }
                     }
                   ),
                   /* @__PURE__ */ jsx(
@@ -27158,12 +27174,12 @@ const ExpenseDialog = ({
                     {
                       onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
                       "aria-label": "Remove line",
-                      style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                      style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
                       children: /* @__PURE__ */ jsx(X, { size: 16 })
                     }
                   )
                 ] }, i)),
-                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0 }]), style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0 }]), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Plus, { size: 15 }),
                   " Add line"
                 ] })
@@ -27186,7 +27202,7 @@ const ExpenseDialog = ({
                 /* @__PURE__ */ jsxs("button", { onClick: () => {
                   var _a2;
                   return (_a2 = photoInput.current) == null ? void 0 : _a2.click();
-                }, style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
+                }, style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Camera, { size: 15 }),
                   " ",
                   itemPhoto ? "Change item photo" : "Attach item photo (optional)"
@@ -27196,16 +27212,16 @@ const ExpenseDialog = ({
             ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-invno", children: "Invoice #" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), style: inputStyle$3 })
+                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-invno", children: "Invoice #" }),
+                  /* @__PURE__ */ jsx("input", { id: "ex-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-billto", children: "Bill to" }),
-                  /* @__PURE__ */ jsx("input", { id: "ex-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$3 })
+                  /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-billto", children: "Bill to" }),
+                  /* @__PURE__ */ jsx("input", { id: "ex-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label, children: "Line items" }),
+                /* @__PURE__ */ jsx("span", { style: label$1, children: "Line items" }),
                 lines.map((l, i) => {
                   const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
                   return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
@@ -27215,7 +27231,7 @@ const ExpenseDialog = ({
                         value: l.text,
                         onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, text: e.target.value } : p)),
                         placeholder: "Description",
-                        style: inputStyle$3
+                        style: inputStyle$4
                       }
                     ),
                     /* @__PURE__ */ jsx(
@@ -27225,7 +27241,7 @@ const ExpenseDialog = ({
                         onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, qty: parseAmount(e.target.value) || 0, amount: round2((parseAmount(e.target.value) || 0) * Number(p.rate ?? 0)) } : p)),
                         inputMode: "decimal",
                         "aria-label": "Quantity",
-                        style: inputStyle$3
+                        style: inputStyle$4
                       }
                     ),
                     /* @__PURE__ */ jsx(
@@ -27235,7 +27251,7 @@ const ExpenseDialog = ({
                         onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, rate: parseAmount(e.target.value), amount: round2(Number(p.qty ?? 1) * parseAmount(e.target.value)) } : p)),
                         inputMode: "decimal",
                         "aria-label": "Rate",
-                        style: inputStyle$3
+                        style: inputStyle$4
                       }
                     ),
                     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.7)", textAlign: "right" }, children: formatMoney$a(lineTotal, currency) }),
@@ -27244,13 +27260,13 @@ const ExpenseDialog = ({
                       {
                         onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
                         "aria-label": "Remove line",
-                        style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                        style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
                         children: /* @__PURE__ */ jsx(X, { size: 16 })
                       }
                     )
                   ] }, i);
                 }),
-                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0, qty: 1, rate: 0 }]), style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0, qty: 1, rate: 0 }]), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Plus, { size: 15 }),
                   " Add line"
                 ] }),
@@ -27261,16 +27277,16 @@ const ExpenseDialog = ({
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-              /* @__PURE__ */ jsx("label", { style: label, htmlFor: "ex-notes", children: "Notes" }),
-              /* @__PURE__ */ jsx("textarea", { id: "ex-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$3, minHeight: 80, resize: "vertical" } })
+              /* @__PURE__ */ jsx("label", { style: label$1, htmlFor: "ex-notes", children: "Notes" }),
+              /* @__PURE__ */ jsx("textarea", { id: "ex-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$4, minHeight: 80, resize: "vertical" } })
             ] }),
             error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, marginTop: 18, alignItems: "center", flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsxs("button", { onClick: save, disabled: saving, style: { ...primaryBtn$2, display: "inline-flex", alignItems: "center", gap: 8, opacity: saving ? 0.7 : 1 }, children: [
+              /* @__PURE__ */ jsxs("button", { onClick: save, disabled: saving, style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 8, opacity: saving ? 0.7 : 1 }, children: [
                 saving && /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
                 existing ? "Save changes" : "Save expense"
               ] }),
-              /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$1, children: "Cancel" }),
+              /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Cancel" }),
               /* @__PURE__ */ jsx("span", { style: { marginLeft: "auto", fontSize: 15, fontWeight: 700 }, children: formatMoney$a(amount, currency) })
             ] })
           ]
@@ -27487,7 +27503,7 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) =>
           {
             disabled: true,
             title: "Coming in the next step",
-            style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 8, opacity: 0.45, cursor: "not-allowed" },
+            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, opacity: 0.45, cursor: "not-allowed" },
             children: [
               /* @__PURE__ */ jsx(Download, { size: 16 }),
               " Export"
@@ -27501,7 +27517,7 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) =>
               setDialogFor(null);
               setDialogOpen(true);
             },
-            style: { ...primaryBtn$2, display: "inline-flex", alignItems: "center", gap: 8 },
+            style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 8 },
             children: [
               /* @__PURE__ */ jsx(Plus, { size: 16 }),
               " Add expense"
@@ -27510,7 +27526,7 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }) =>
         )
       ] })
     ] }),
-    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading expenses…"
     ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -27564,6 +27580,7 @@ const ReceiptsExpenses = () => {
   const { user, userProfile } = useAuth();
   const [selectedProject, setSelectedProject] = useState(null);
   const [currency, setCurrency] = useState(null);
+  const [notify, setNotify] = useState(null);
   const actorName = useMemo(() => {
     const first = ((userProfile == null ? void 0 : userProfile.first_name) || (userProfile == null ? void 0 : userProfile.full_name) || "").toString().trim().split(/\s+/)[0];
     if (first) return first;
@@ -27571,10 +27588,16 @@ const ReceiptsExpenses = () => {
     return email.includes("@") ? email.split("@")[0] : "Producer";
   }, [userProfile, user]);
   const activeCurrency = currency ?? (selectedProject == null ? void 0 : selectedProject.default_currency) ?? "USD";
+  const notifyExpenses = notify ?? (selectedProject == null ? void 0 : selectedProject.notify_expenses) ?? true;
   const changeCurrency = async (next) => {
     if (!selectedProject) return;
     setCurrency(next);
     await supabase.from("breakdown_projects").update({ default_currency: next }).eq("id", selectedProject.id);
+  };
+  const changeNotify = async (next) => {
+    if (!selectedProject) return;
+    setNotify(next);
+    await supabase.from("breakdown_projects").update({ notify_expenses: next }).eq("id", selectedProject.id);
   };
   return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
     /* @__PURE__ */ jsx(
@@ -27652,17 +27675,45 @@ const ReceiptsExpenses = () => {
           onSelect: (p) => {
             setSelectedProject(p);
             setCurrency(null);
+            setNotify(null);
           },
-          extraControls: selectedProject ? /* @__PURE__ */ jsx(
-            "select",
-            {
-              "aria-label": "Default currency",
-              value: activeCurrency,
-              onChange: (e) => changeCurrency(e.target.value),
-              style: { ...inputStyle$3, maxWidth: 210 },
-              children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code))
-            }
-          ) : void 0
+          extraControls: selectedProject ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(
+              "select",
+              {
+                "aria-label": "Default currency",
+                value: activeCurrency,
+                onChange: (e) => changeCurrency(e.target.value),
+                style: { ...inputStyle$4, maxWidth: 210 },
+                children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code))
+              }
+            ),
+            /* @__PURE__ */ jsxs("label", { style: {
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+              minHeight: 44,
+              padding: "0 14px",
+              borderRadius: 10,
+              border: "1px solid rgba(255,255,255,0.14)",
+              background: "rgba(255,255,255,0.04)",
+              fontSize: 14,
+              color: "rgba(255,255,255,0.8)",
+              cursor: "pointer",
+              whiteSpace: "nowrap"
+            }, children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "checkbox",
+                  checked: notifyExpenses,
+                  onChange: (e) => changeNotify(e.target.checked),
+                  style: { width: 18, height: 18, accentColor: "#00d4aa" }
+                }
+              ),
+              "Email me when crew submit"
+            ] })
+          ] }) : void 0
         }
       ),
       selectedProject && /* @__PURE__ */ jsx(
@@ -27676,6 +27727,691 @@ const ReceiptsExpenses = () => {
         selectedProject.id
       )
     ] })
+  ] });
+};
+const toCrewExpense = (row) => ({
+  ...row,
+  amount: Number(row.amount ?? 0),
+  line_items: normalizeLines(row.line_items)
+});
+const crewExpenseApi = (token, identity) => {
+  const auth = { crew_id: identity.crew_id, crew_secret: identity.crew_secret };
+  return {
+    async readReceipt(fileBase64, mimeType) {
+      return crewCall(token, "expense_read_receipt", {
+        ...auth,
+        file_base64: fileBase64,
+        mime_type: mimeType
+      });
+    },
+    async submit(payload) {
+      const res = await crewCall(
+        token,
+        "expense_submit",
+        { ...auth, ...payload }
+      );
+      return { expense: toCrewExpense(res.expense), email_sent: res.email_sent };
+    },
+    async listMine() {
+      const res = await crewCall(
+        token,
+        "expense_list_mine",
+        auth
+      );
+      return { expenses: (res.expenses || []).map(toCrewExpense), urls: res.urls || {} };
+    },
+    async deleteMine(expenseId) {
+      await crewCall(token, "expense_delete_mine", { ...auth, expense_id: expenseId });
+    }
+  };
+};
+const TEAL$3 = "#00d4aa";
+const panel$1 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const inputStyle$2 = {
+  width: "100%",
+  minHeight: 44,
+  fontSize: 16,
+  padding: "10px 12px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  color: "#fff",
+  fontFamily: "'Inter Tight', sans-serif",
+  boxSizing: "border-box"
+};
+const primaryBtn$1 = {
+  minHeight: 44,
+  padding: "0 20px",
+  borderRadius: 10,
+  background: TEAL$3,
+  color: "#04231d",
+  border: "none",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const ghostBtn = {
+  minHeight: 44,
+  padding: "0 16px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const label = { fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 6, display: "block" };
+const today = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
+const emailKey = (token) => `fg_crew_expense_email_${token}`;
+const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) => {
+  const api = useMemo(() => crewExpenseApi(token, identity), [token, identity]);
+  const startDepartment = EXPENSE_DEPARTMENTS.includes(identity.department) ? identity.department : "Other";
+  const [kind, setKind] = useState("receipt");
+  const [email, setEmail] = useState(() => localStorage.getItem(emailKey(token)) || "");
+  const [department, setDepartment] = useState(startDepartment);
+  const [payment, setPayment] = useState("");
+  const [currency, setCurrency] = useState(defaultCurrency || "USD");
+  const [date, setDate] = useState(today());
+  const [notes, setNotes] = useState("");
+  const [linkedItemId, setLinkedItemId] = useState("");
+  const [vendor, setVendor] = useState("");
+  const [description, setDescription] = useState("");
+  const [total, setTotal] = useState("");
+  const [lines, setLines] = useState([]);
+  const [invoiceNumber, setInvoiceNumber] = useState("");
+  const [billTo, setBillTo] = useState("");
+  const [receipt, setReceipt] = useState(null);
+  const [itemPhoto, setItemPhoto] = useState(null);
+  const [reading, setReading] = useState(false);
+  const [aiNote, setAiNote] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [done, setDone] = useState(null);
+  const [items, setItems] = useState([]);
+  const [mine, setMine] = useState([]);
+  const [urls, setUrls] = useState({});
+  const [loadingMine, setLoadingMine] = useState(true);
+  const [confirmId, setConfirmId] = useState(null);
+  const [busyId, setBusyId] = useState(null);
+  const [viewer, setViewer] = useState(null);
+  const receiptInput = useRef(null);
+  const photoInput = useRef(null);
+  useEffect(() => {
+    setCurrency((c) => c || defaultCurrency || "USD");
+  }, [defaultCurrency]);
+  const loadMine = useCallback(async () => {
+    try {
+      const res = await api.listMine();
+      setMine(res.expenses);
+      setUrls(res.urls);
+    } catch {
+    } finally {
+      setLoadingMine(false);
+    }
+  }, [api]);
+  useEffect(() => {
+    loadMine();
+  }, [loadMine]);
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadMine();
+    }, 3e4);
+    return () => window.clearInterval(timer);
+  }, [loadMine]);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await crewCall(token, "load");
+        if (cancelled) return;
+        const sceneName = (id) => {
+          const s = (data.scenes || []).find((x) => x.id === id);
+          if (!s) return "Scene";
+          return s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+        };
+        const deptName = (key) => {
+          var _a2;
+          return ((_a2 = DEPARTMENTS.find((d) => d.key === key)) == null ? void 0 : _a2.label) || key;
+        };
+        setItems((data.items || []).map((i) => ({
+          id: i.id,
+          text: `${sceneName(i.scene_id)} · ${deptName(i.department)} · ${i.text}`
+        })));
+      } catch {
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+  const invoiceTotal = useMemo(
+    () => round2(lines.reduce((sum, l) => sum + (Number(l.qty ?? 1) * Number(l.rate ?? 0) || 0), 0)),
+    [lines]
+  );
+  const receiptLinesTotal = useMemo(
+    () => round2(lines.reduce((sum, l) => sum + Number(l.amount || 0), 0)),
+    [lines]
+  );
+  const amount = kind === "invoice" ? invoiceTotal : parseAmount(total) || receiptLinesTotal;
+  const pickFile = async (file, setter, allowPdf) => {
+    if (!file) return;
+    setError("");
+    try {
+      if (allowPdf && isPdf(file.type)) {
+        if (file.size > MAX_PDF_BYTES) throw new ImageError("That PDF is larger than 10 MB. Please use a smaller file.");
+        setter({ blob: file, mime: "application/pdf", preview: URL.createObjectURL(file) });
+        return;
+      }
+      const blob = await prepareImage(file);
+      setter({ blob, mime: "image/jpeg", preview: URL.createObjectURL(blob) });
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "That file couldn't be used.";
+      setError(msg);
+      toast$1.error(msg);
+    }
+  };
+  const readWithAi = async () => {
+    if (!receipt) return;
+    setReading(true);
+    setError("");
+    setAiNote("");
+    try {
+      const base64 = await fileToBase64(receipt.blob);
+      const res = await api.readReceipt(base64, receipt.mime);
+      if (res == null ? void 0 : res.ai_unavailable) {
+        setAiNote("Automatic reading isn't available right now — please type the amount.");
+        return;
+      }
+      if (res.vendor) setVendor(res.vendor);
+      if (res.date) setDate(res.date);
+      if (res.currency && CURRENCIES.some((c) => c.code === res.currency)) setCurrency(res.currency);
+      if (res.total) setTotal(String(res.total));
+      setLines(Array.isArray(res.lines) ? res.lines.map((l) => ({ text: l.text || "", amount: Number(l.amount) || 0 })) : []);
+      toast$1.success("Receipt read — check the details before you send it.");
+    } catch {
+      setAiNote("Automatic reading isn't available right now — please type the amount.");
+    } finally {
+      setReading(false);
+    }
+  };
+  const resetForm = () => {
+    setKind("receipt");
+    setPayment("");
+    setDate(today());
+    setNotes("");
+    setLinkedItemId("");
+    setVendor("");
+    setDescription("");
+    setTotal("");
+    setLines([]);
+    setInvoiceNumber("");
+    setBillTo("");
+    setReceipt(null);
+    setItemPhoto(null);
+    setAiNote("");
+    setError("");
+  };
+  const submit = async () => {
+    setError("");
+    if (!payment) return setError("Pick how this was paid.");
+    if (!(amount > 0)) return setError("Enter an amount greater than zero.");
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim())) {
+      return setError("That email address doesn't look right.");
+    }
+    setSaving(true);
+    try {
+      localStorage.setItem(emailKey(token), email.trim());
+      const payload = {
+        kind,
+        department,
+        vendor: kind === "receipt" ? vendor.trim() : billTo.trim(),
+        description: description.trim(),
+        expense_date: date || today(),
+        currency,
+        amount,
+        payment_method: payment,
+        notes: notes.trim(),
+        line_items: lines.filter((l) => l.text || l.amount || l.rate),
+        invoice_number: kind === "invoice" ? invoiceNumber.trim() : "",
+        bill_to: kind === "invoice" ? billTo.trim() : "",
+        linked_item_id: linkedItemId,
+        email: email.trim()
+      };
+      if (receipt) {
+        payload.receipt_base64 = await fileToBase64(receipt.blob);
+        payload.receipt_mime = receipt.mime;
+      }
+      if (itemPhoto) {
+        payload.item_photo_base64 = await fileToBase64(itemPhoto.blob);
+      }
+      await api.submit(payload);
+      setDone({ amount: formatMoney$a(amount, currency), department });
+      resetForm();
+      loadMine();
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "That couldn't be sent. Please try again.";
+      setError(msg);
+      toast$1.error(msg);
+    } finally {
+      setSaving(false);
+    }
+  };
+  const removeMine = async (expense) => {
+    setBusyId(expense.id);
+    try {
+      await api.deleteMine(expense.id);
+      setMine((prev) => prev.filter((e) => e.id !== expense.id));
+      toast$1.success("Submission removed.");
+    } catch (err) {
+      toast$1.error(err instanceof Error ? err.message : "Couldn't remove that.");
+    } finally {
+      setBusyId(null);
+      setConfirmId(null);
+    }
+  };
+  const tabBtn = (value, copy) => /* @__PURE__ */ jsx(
+    "button",
+    {
+      onClick: () => setKind(value),
+      style: {
+        flex: 1,
+        minHeight: 44,
+        borderRadius: 10,
+        cursor: "pointer",
+        fontWeight: 700,
+        fontSize: 15,
+        border: `1px solid ${kind === value ? TEAL$3 : "rgba(255,255,255,0.14)"}`,
+        background: kind === value ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+        color: kind === value ? TEAL$3 : "#fff"
+      },
+      children: copy
+    },
+    value
+  );
+  if (done) {
+    return /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 36, textAlign: "center" }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        width: 62,
+        height: 62,
+        borderRadius: 9999,
+        margin: "0 auto 18px",
+        background: "rgba(62,207,110,0.16)",
+        border: "1px solid rgba(62,207,110,0.5)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        color: "#3ecf6e"
+      }, children: /* @__PURE__ */ jsx(Check$1, { size: 30 }) }),
+      /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: [
+        "Submitted — ",
+        done.amount,
+        " · ",
+        done.department
+      ] }),
+      /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: "The production office will review it. You can follow the status below." }),
+      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$1, marginTop: 20 }, onClick: () => setDone(null), children: "Submit another" })
+    ] });
+  }
+  return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 48 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 20 }, children: [
+      /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Submit a receipt or invoice" }),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, margin: "18px 0" }, children: [
+        tabBtn("receipt", "Receipt"),
+        tabBtn("invoice", "Invoice")
+      ] }),
+      /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("span", { style: label, children: "Submitted by" }),
+          /* @__PURE__ */ jsxs("div", { style: { ...inputStyle$2, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }, children: [
+            /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.8)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }, children: identity.name }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: onChangeIdentity,
+                style: { background: "none", border: "none", color: TEAL$3, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "4px 0" },
+                children: "change"
+              }
+            )
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-email", children: "Email (optional)" }),
+          /* @__PURE__ */ jsx("input", { id: "cx-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$2 }),
+          /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6 }, children: "We'll email you a confirmation." })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-dept", children: "Department" }),
+          /* @__PURE__ */ jsx("select", { id: "cx-dept", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$2, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-currency", children: "Currency" }),
+          /* @__PURE__ */ jsx("select", { id: "cx-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$2, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
+          /* @__PURE__ */ jsx("span", { style: label, children: "Payment" }),
+          /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => setPayment(p.key),
+              style: {
+                minHeight: 44,
+                padding: "0 16px",
+                borderRadius: 9999,
+                cursor: "pointer",
+                fontSize: 15,
+                fontWeight: 600,
+                border: `1px solid ${payment === p.key ? TEAL$3 : "rgba(255,255,255,0.14)"}`,
+                background: payment === p.key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                color: payment === p.key ? TEAL$3 : "#fff"
+              },
+              children: p.label
+            },
+            p.key
+          )) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-date", children: "Date" }),
+          /* @__PURE__ */ jsx("input", { id: "cx-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$2 })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-link", children: "Link to a checklist item (optional)" }),
+          /* @__PURE__ */ jsxs("select", { id: "cx-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$2, children: [
+            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
+            items.map((o) => /* @__PURE__ */ jsx("option", { value: o.id, style: { background: "#10101b" }, children: o.text }, o.id))
+          ] })
+        ] })
+      ] }),
+      kind === "receipt" ? /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            ref: receiptInput,
+            type: "file",
+            accept: "image/*,application/pdf",
+            capture: "environment",
+            onChange: (e) => {
+              var _a2;
+              pickFile((_a2 = e.target.files) == null ? void 0 : _a2[0], setReceipt, true);
+              e.target.value = "";
+            },
+            style: { display: "none" }
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => {
+              var _a2;
+              return (_a2 = receiptInput.current) == null ? void 0 : _a2.click();
+            },
+            style: {
+              width: "100%",
+              minHeight: 110,
+              borderRadius: 14,
+              cursor: "pointer",
+              border: "1px dashed rgba(255,255,255,0.25)",
+              background: "rgba(255,255,255,0.02)",
+              color: "rgba(255,255,255,0.6)",
+              fontSize: 15,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 10,
+              padding: 16
+            },
+            children: [
+              /* @__PURE__ */ jsx(Upload, { size: 18 }),
+              " ",
+              receipt ? "Choose a different receipt" : "Photograph or upload the receipt (image or PDF)"
+            ]
+          }
+        ),
+        receipt && /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, alignItems: "center", marginTop: 12, flexWrap: "wrap" }, children: [
+          isPdf(receipt.mime) ? /* @__PURE__ */ jsx("span", { style: { fontSize: 14, color: "rgba(255,255,255,0.6)" }, children: "PDF selected" }) : /* @__PURE__ */ jsx("img", { src: receipt.preview, alt: "Receipt preview", style: { width: 84, height: 84, objectFit: "cover", borderRadius: 10, border: "1px solid rgba(255,255,255,0.14)" } }),
+          /* @__PURE__ */ jsxs("button", { onClick: readWithAi, disabled: reading, style: { ...primaryBtn$1, display: "inline-flex", alignItems: "center", gap: 8, opacity: reading ? 0.7 : 1 }, children: [
+            reading ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Sparkles, { size: 16 }),
+            reading ? "Reading…" : "Read receipt with AI"
+          ] })
+        ] }),
+        aiNote && /* @__PURE__ */ jsx("div", { style: { marginTop: 12, padding: "10px 12px", borderRadius: 10, background: "rgba(245,165,36,0.12)", border: "1px solid rgba(245,165,36,0.4)", color: "#ffd79a", fontSize: 14 }, children: aiNote }),
+        /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-vendor", children: "Vendor" }),
+            /* @__PURE__ */ jsx("input", { id: "cx-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$2 })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-total", children: "Total" }),
+            /* @__PURE__ */ jsx("input", { id: "cx-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$2 })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
+            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-desc", children: "Description (optional)" }),
+            /* @__PURE__ */ jsx("input", { id: "cx-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$2 })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
+          /* @__PURE__ */ jsx("span", { style: label, children: "Lines" }),
+          lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                value: l.text,
+                onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, text: e.target.value } : p)),
+                placeholder: "Item",
+                style: { ...inputStyle$2, flex: 1 }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                value: String(l.amount ?? ""),
+                onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, amount: parseAmount(e.target.value) } : p)),
+                inputMode: "decimal",
+                "aria-label": "Line amount",
+                style: { ...inputStyle$2, maxWidth: 120 }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
+                "aria-label": "Remove line",
+                style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                children: /* @__PURE__ */ jsx(X, { size: 16 })
+              }
+            )
+          ] }, i)),
+          /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0 }]), style: { ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+            /* @__PURE__ */ jsx(Plus, { size: 15 }),
+            " Add line"
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              ref: photoInput,
+              type: "file",
+              accept: "image/*",
+              capture: "environment",
+              onChange: (e) => {
+                var _a2;
+                pickFile((_a2 = e.target.files) == null ? void 0 : _a2[0], setItemPhoto, false);
+                e.target.value = "";
+              },
+              style: { display: "none" }
+            }
+          ),
+          /* @__PURE__ */ jsxs("button", { onClick: () => {
+            var _a2;
+            return (_a2 = photoInput.current) == null ? void 0 : _a2.click();
+          }, style: { ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
+            /* @__PURE__ */ jsx(Camera, { size: 15 }),
+            " ",
+            itemPhoto ? "Change item photo" : "Attach item photo (optional)"
+          ] }),
+          itemPhoto && /* @__PURE__ */ jsx("img", { src: itemPhoto.preview, alt: "Item preview", style: { width: 84, height: 84, objectFit: "cover", borderRadius: 10, marginLeft: 12, verticalAlign: "middle", border: "1px solid rgba(255,255,255,0.14)" } })
+        ] })
+      ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
+        /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-invno", children: "Invoice # (optional)" }),
+            /* @__PURE__ */ jsx("input", { id: "cx-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), placeholder: "We'll number it for you", style: inputStyle$2 })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-billto", children: "Bill to" }),
+            /* @__PURE__ */ jsx("input", { id: "cx-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$2 })
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
+          /* @__PURE__ */ jsx("span", { style: label, children: "Line items" }),
+          lines.map((l, i) => {
+            const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
+            return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  value: l.text,
+                  onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, text: e.target.value } : p)),
+                  placeholder: "Description",
+                  style: inputStyle$2
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  value: String(l.qty ?? 1),
+                  onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, qty: parseAmount(e.target.value) || 0, amount: round2((parseAmount(e.target.value) || 0) * Number(p.rate ?? 0)) } : p)),
+                  inputMode: "decimal",
+                  "aria-label": "Quantity",
+                  style: inputStyle$2
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  value: String(l.rate ?? ""),
+                  onChange: (e) => setLines((prev) => prev.map((p, idx) => idx === i ? { ...p, rate: parseAmount(e.target.value), amount: round2(Number(p.qty ?? 1) * parseAmount(e.target.value)) } : p)),
+                  inputMode: "decimal",
+                  "aria-label": "Rate",
+                  style: inputStyle$2
+                }
+              ),
+              /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.7)", textAlign: "right" }, children: formatMoney$a(lineTotal, currency) }),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
+                  "aria-label": "Remove line",
+                  style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                  children: /* @__PURE__ */ jsx(X, { size: 16 })
+                }
+              )
+            ] }, i);
+          }),
+          /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0, qty: 1, rate: 0 }]), style: { ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+            /* @__PURE__ */ jsx(Plus, { size: 15 }),
+            " Add line"
+          ] }),
+          /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, textAlign: "right", fontSize: 16, fontWeight: 700 }, children: [
+            "Total ",
+            formatMoney$a(invoiceTotal, currency)
+          ] })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
+        /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-notes", children: "Notes" }),
+        /* @__PURE__ */ jsx("textarea", { id: "cx-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$2, minHeight: 80, resize: "vertical" } })
+      ] }),
+      error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
+      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, marginTop: 18, alignItems: "center", flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsxs("button", { onClick: submit, disabled: saving, style: { ...primaryBtn$1, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, opacity: saving ? 0.7 : 1 }, children: [
+          saving && /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+          saving ? "Sending…" : "Submit"
+        ] }),
+        /* @__PURE__ */ jsx("span", { style: { marginLeft: "auto", fontSize: 15, fontWeight: 700 }, children: formatMoney$a(amount, currency) })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 28 }, children: [
+      /* @__PURE__ */ jsx("h3", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, margin: "0 0 14px" }, children: "My submissions" }),
+      loadingMine ? /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 20, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+        /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+        " Loading…"
+      ] }) : mine.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$1, padding: 24, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "You haven't submitted anything yet." }) : /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 12 }, children: mine.map((e) => {
+        const def = statusDef(e.status);
+        const path = e.receipt_path || e.item_photo_path;
+        const url2 = path ? urls[path] : void 0;
+        return /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 14, display: "flex", gap: 14, alignItems: "flex-start" }, children: [
+          path && url2 && (pathIsPdf(path) ? /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => setViewer({ url: url2, isPdf: true, title: "Receipt" }),
+              style: { ...ghostBtn, minWidth: 64, height: 64, display: "flex", alignItems: "center", justifyContent: "center", padding: 0 },
+              "aria-label": "Open PDF",
+              children: /* @__PURE__ */ jsx(FileText, { size: 18 })
+            }
+          ) : /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => setViewer({ url: url2, isPdf: false, title: "Receipt" }),
+              "aria-label": "Open photo",
+              style: { padding: 0, border: "1px solid rgba(255,255,255,0.14)", borderRadius: 10, background: "none", cursor: "pointer", lineHeight: 0, flex: "0 0 auto" },
+              children: /* @__PURE__ */ jsx("img", { src: url2, alt: "Receipt", style: { width: 64, height: 64, objectFit: "cover", borderRadius: 9 } })
+            }
+          )),
+          /* @__PURE__ */ jsxs("div", { style: { minWidth: 0, flex: 1 }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }, children: [
+              /* @__PURE__ */ jsx("span", { style: { fontSize: 16, fontWeight: 700 }, children: formatMoney$a(e.amount, e.currency) }),
+              /* @__PURE__ */ jsx("span", { style: {
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "4px 10px",
+                borderRadius: 9999,
+                background: def.tint,
+                color: def.color,
+                fontSize: 12,
+                fontWeight: 700
+              }, children: def.label })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.45)", marginTop: 5 }, children: [
+              e.expense_date,
+              " · ",
+              e.department,
+              " · ",
+              e.kind === "invoice" ? `Invoice ${e.invoice_number || ""}`.trim() : "Receipt",
+              " · ",
+              paymentLabel(e.payment_method)
+            ] }),
+            e.status === "rejected" && e.status_note && /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "#ffb3b0", marginTop: 6 }, children: [
+              "Reason: ",
+              e.status_note
+            ] }),
+            e.status === "pending" && (confirmId === e.id ? /* @__PURE__ */ jsxs("span", { style: { display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14, color: "rgba(255,255,255,0.7)", marginTop: 10 }, children: [
+              "Remove this?",
+              /* @__PURE__ */ jsx("button", { onClick: () => removeMine(e), disabled: busyId === e.id, style: { ...ghostBtn, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 }, children: "Yes" }),
+              /* @__PURE__ */ jsx("button", { onClick: () => setConfirmId(null), style: { ...ghostBtn, fontSize: 14 }, children: "No" })
+            ] }) : /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => setConfirmId(e.id),
+                style: { ...ghostBtn, fontSize: 14, marginTop: 10, display: "inline-flex", alignItems: "center", gap: 6 },
+                children: [
+                  /* @__PURE__ */ jsx(Trash2, { size: 14 }),
+                  " Delete"
+                ]
+              }
+            ))
+          ] })
+        ] }, e.id);
+      }) })
+    ] }),
+    viewer && /* @__PURE__ */ jsx(FileLightbox, { url: viewer.url, isPdf: viewer.isPdf, title: viewer.title, onClose: () => setViewer(null) })
   ] });
 };
 const panel = {
@@ -27699,7 +28435,7 @@ const primaryBtn = {
   minHeight: 44,
   padding: "0 20px",
   borderRadius: 10,
-  background: TEAL$7,
+  background: TEAL$8,
   color: "#04231d",
   border: "none",
   fontWeight: 700,
@@ -27708,6 +28444,8 @@ const primaryBtn = {
   fontFamily: "'Inter Tight', sans-serif"
 };
 const storageKey = (token) => `fg_breakdown_crew_${token}`;
+const tabKey = (token) => `fg_crew_tab_${token}`;
+const readTab = (token) => localStorage.getItem(tabKey(token)) === "receipts" ? "receipts" : "breakdown";
 const readIdentity = (token) => {
   try {
     const raw2 = localStorage.getItem(storageKey(token));
@@ -27721,6 +28459,7 @@ const readIdentity = (token) => {
 const CrewBreakdown = () => {
   const { token = "" } = useParams();
   const [project, setProject] = useState(null);
+  const [tab, setTab] = useState(() => readTab(token));
   const [dead, setDead] = useState(false);
   const [checking, setChecking] = useState(true);
   const [identity, setIdentity] = useState(() => token ? readIdentity(token) : null);
@@ -27801,7 +28540,22 @@ const CrewBreakdown = () => {
         /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 12, lineHeight: 1.6 }, children: "Ask your producer for a new one." })
       ] });
     }
-    if (!adapter) return null;
+    if (!adapter || !identity) return null;
+    if (tab === "receipts") {
+      return /* @__PURE__ */ jsx(
+        CrewExpenses,
+        {
+          token,
+          identity,
+          defaultCurrency: (project == null ? void 0 : project.default_currency) || "USD",
+          onChangeIdentity: () => {
+            setName(identity.name);
+            setDepartment(identity.department);
+            setShowJoin(true);
+          }
+        }
+      );
+    }
     return /* @__PURE__ */ jsx(
       BreakdownWorkspace,
       {
@@ -27838,7 +28592,7 @@ const CrewBreakdown = () => {
           fontWeight: 700,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: TEAL$7,
+          color: TEAL$8,
           marginBottom: 12
         }, children: "Script breakdown" }),
         /* @__PURE__ */ jsx("h1", { className: "cb-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 44, lineHeight: 1.05, margin: 0 }, children: (project == null ? void 0 : project.title) || "Crew checklist" }),
@@ -27857,12 +28611,36 @@ const CrewBreakdown = () => {
                 setDepartment(identity.department);
                 setShowJoin(true);
               },
-              style: { background: "none", border: "none", color: TEAL$7, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
+              style: { background: "none", border: "none", color: TEAL$8, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
               children: "(change)"
             }
           )
         ] })
       ] }),
+      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"]].map(([key, copy]) => /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: () => {
+            setTab(key);
+            localStorage.setItem(tabKey(token), key);
+          },
+          style: {
+            minHeight: 44,
+            padding: "0 20px",
+            borderRadius: 9999,
+            cursor: "pointer",
+            fontSize: 15,
+            fontWeight: 700,
+            whiteSpace: "nowrap",
+            border: `1px solid ${tab === key ? TEAL$8 : "rgba(255,255,255,0.14)"}`,
+            background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+            color: tab === key ? TEAL$8 : "#fff",
+            fontFamily: "'Inter Tight', sans-serif"
+          },
+          children: copy
+        },
+        key
+      )) }),
       content(),
       /* @__PURE__ */ jsx("div", { style: { height: 40 } })
     ] }),

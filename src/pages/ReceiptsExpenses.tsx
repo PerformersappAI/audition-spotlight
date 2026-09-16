@@ -19,6 +19,7 @@ const ReceiptsExpenses = () => {
   const { user, userProfile } = useAuth();
   const [selectedProject, setSelectedProject] = useState<Production | null>(null);
   const [currency, setCurrency] = useState<string | null>(null);
+  const [notify, setNotify] = useState<boolean | null>(null);
 
   const actorName = useMemo(() => {
     const first = (userProfile?.first_name || userProfile?.full_name || "").toString().trim().split(/\s+/)[0];
@@ -28,11 +29,18 @@ const ReceiptsExpenses = () => {
   }, [userProfile, user]);
 
   const activeCurrency = currency ?? selectedProject?.default_currency ?? "USD";
+  const notifyExpenses = notify ?? selectedProject?.notify_expenses ?? true;
 
   const changeCurrency = async (next: string) => {
     if (!selectedProject) return;
     setCurrency(next);
     await supabase.from("breakdown_projects").update({ default_currency: next }).eq("id", selectedProject.id);
+  };
+
+  const changeNotify = async (next: boolean) => {
+    if (!selectedProject) return;
+    setNotify(next);
+    await supabase.from("breakdown_projects").update({ notify_expenses: next }).eq("id", selectedProject.id);
   };
 
   return (
@@ -111,18 +119,33 @@ const ReceiptsExpenses = () => {
         {/* PRODUCTIONS */}
         <ProductionPicker
           emptyText="Give it a name, then log every receipt and invoice against it."
-          onSelect={(p) => { setSelectedProject(p); setCurrency(null); }}
+          onSelect={(p) => { setSelectedProject(p); setCurrency(null); setNotify(null); }}
           extraControls={selectedProject ? (
-            <select
-              aria-label="Default currency"
-              value={activeCurrency}
-              onChange={(e) => changeCurrency(e.target.value)}
-              style={{ ...inputStyle, maxWidth: 210 }}
-            >
-              {CURRENCIES.map((c) => (
-                <option key={c.code} value={c.code} style={{ background: "#10101b" }}>{c.label}</option>
-              ))}
-            </select>
+            <>
+              <select
+                aria-label="Default currency"
+                value={activeCurrency}
+                onChange={(e) => changeCurrency(e.target.value)}
+                style={{ ...inputStyle, maxWidth: 210 }}
+              >
+                {CURRENCIES.map((c) => (
+                  <option key={c.code} value={c.code} style={{ background: "#10101b" }}>{c.label}</option>
+                ))}
+              </select>
+              <label style={{
+                display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 14px",
+                borderRadius: 10, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)",
+                fontSize: 14, color: "rgba(255,255,255,0.8)", cursor: "pointer", whiteSpace: "nowrap",
+              }}>
+                <input
+                  type="checkbox"
+                  checked={notifyExpenses}
+                  onChange={(e) => changeNotify(e.target.checked)}
+                  style={{ width: 18, height: 18, accentColor: "#00d4aa" }}
+                />
+                Email me when crew submit
+              </label>
+            </>
           ) : undefined}
         />
 

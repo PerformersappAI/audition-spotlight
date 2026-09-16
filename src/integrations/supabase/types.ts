@@ -704,6 +704,7 @@ export type Database = {
           created_at: string
           default_currency: string
           id: string
+          notify_expenses: boolean
           owner_id: string
           share_token: string
           sharing_enabled: boolean
@@ -717,6 +718,7 @@ export type Database = {
           created_at?: string
           default_currency?: string
           id?: string
+          notify_expenses?: boolean
           owner_id: string
           share_token?: string
           sharing_enabled?: boolean
@@ -730,6 +732,7 @@ export type Database = {
           created_at?: string
           default_currency?: string
           id?: string
+          notify_expenses?: boolean
           owner_id?: string
           share_token?: string
           sharing_enabled?: boolean
