@@ -178,12 +178,41 @@ const DepartmentChecklist = ({
                         {item.checked_at ? ` · ${timeAgo(item.checked_at)}` : ""}
                       </div>
                     )}
+                    {(() => {
+                      const rejected = (photosByItem?.[item.id] || []).find((p) => !p.is_reference && p.status === "rejected" && p.feedback);
+                      return rejected ? (
+                        <div style={{ fontSize: 12, color: "#ff9d9d", marginTop: 4, lineHeight: 1.5 }}>
+                          ✕ Changes needed: {rejected.feedback}
+                        </div>
+                      ) : null;
+                    })()}
+                    {signedUrl && onOpenPhoto && (
+                      <ItemPhotos
+                        photos={photosByItem?.[item.id] || []}
+                        signedUrl={signedUrl}
+                        onOpen={onOpenPhoto}
+                      />
+                    )}
+                    {uploadingItemId === item.id && (
+                      <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>
+                        <Loader2 size={13} className="animate-spin" /> Uploading photo…
+                      </div>
+                    )}
                   </>
                 )}
               </div>
 
               {editingId !== item.id && (
                 <div style={{ display: "flex", alignItems: "center", flex: "0 0 auto" }}>
+                  {onAddPhotos && (
+                    <button
+                      aria-label={`Add a photo for ${item.text}`}
+                      onClick={() => { pendingItemRef.current = item; photoInputRef.current?.click(); }}
+                      style={iconBtn}
+                    >
+                      <Camera size={16} />
+                    </button>
+                  )}
                   {department === "locations" && (
                     <a
                       href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.text)}`}
