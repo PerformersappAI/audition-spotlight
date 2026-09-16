@@ -24,9 +24,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const CallSheet = () => {
   const navigate = useNavigate();
-  const { saveCallSheet } = useCallSheets();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("id");
+  const { saveCallSheet, loadCallSheet } = useCallSheets();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isParsingData, setIsParsingData] = useState(false);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(Boolean(editId));
+  const [importTarget, setImportTarget] = useState<"cast" | "crew" | null>(null);
   const [logo, setLogo] = useState<CallSheetLogo | null>(null);
   const { 
     processFile, 
