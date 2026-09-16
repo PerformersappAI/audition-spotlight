@@ -19,6 +19,7 @@ const ReceiptsExpenses = () => {
   const { user, userProfile } = useAuth();
   const [selectedProject, setSelectedProject] = useState<Production | null>(null);
   const [currency, setCurrency] = useState<string | null>(null);
+  const [notify, setNotify] = useState<boolean | null>(null);
 
   const actorName = useMemo(() => {
     const first = (userProfile?.first_name || userProfile?.full_name || "").toString().trim().split(/\s+/)[0];
