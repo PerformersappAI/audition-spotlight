@@ -1885,6 +1885,94 @@ export type Database = {
           },
         ]
       }
+      production_notes: {
+        Row: {
+          body: string
+          created_at: string
+          created_by_crew_id: string | null
+          created_by_department: string | null
+          created_by_name: string
+          created_by_user_id: string | null
+          id: string
+          pinned: boolean
+          priority: string
+          project_id: string
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by_name: string | null
+          scene_id: string | null
+          shoot_day: string | null
+          source_language: string | null
+          tag: string
+          translations: Json
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          created_by_crew_id?: string | null
+          created_by_department?: string | null
+          created_by_name: string
+          created_by_user_id?: string | null
+          id?: string
+          pinned?: boolean
+          priority?: string
+          project_id: string
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by_name?: string | null
+          scene_id?: string | null
+          shoot_day?: string | null
+          source_language?: string | null
+          tag: string
+          translations?: Json
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          created_by_crew_id?: string | null
+          created_by_department?: string | null
+          created_by_name?: string
+          created_by_user_id?: string | null
+          id?: string
+          pinned?: boolean
+          priority?: string
+          project_id?: string
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by_name?: string | null
+          scene_id?: string | null
+          shoot_day?: string | null
+          source_language?: string | null
+          tag?: string
+          translations?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_notes_created_by_crew_id_fkey"
+            columns: ["created_by_crew_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_crew"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_notes_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_notes_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           bio: string | null
