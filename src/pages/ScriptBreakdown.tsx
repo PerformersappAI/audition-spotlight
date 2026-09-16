@@ -10,7 +10,13 @@ import { PDFUploadProgress } from "@/components/PDFUploadProgress";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "@/components/breakdown/DepartmentChecklist";
 import SignOffBox from "@/components/breakdown/SignOffBox";
-import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff } from "@/components/breakdown/types";
+import ApprovalsView, { ApprovalRow } from "@/components/breakdown/ApprovalsView";
+import PhotoLightbox from "@/components/breakdown/PhotoLightbox";
+import ReferenceSearch from "@/components/breakdown/ReferenceSearch";
+import { DEPARTMENTS, DeptKey, BreakdownItem, BreakdownSignoff, BreakdownPhoto, PHOTO_FIELDS } from "@/components/breakdown/types";
+import { ImageError, prepareImage } from "@/lib/breakdown/imageDownscale";
+
+const BUCKET = "breakdown-photos";
 
 const SITE = "https://filmmakergenius.com";
 const TEAL = "#00d4aa";
