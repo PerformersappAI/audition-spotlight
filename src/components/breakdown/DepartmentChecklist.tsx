@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { Check, MapPin, Pencil, Plus, Trash2, X, AlertTriangle } from "lucide-react";
+import { useRef, useState } from "react";
+import { Camera, Check, Loader2, MapPin, Pencil, Plus, Trash2, X, AlertTriangle } from "lucide-react";
 import { timeAgo } from "./timeAgo";
-import { BreakdownItem, TEAL } from "./types";
+import ItemPhotos from "./ItemPhotos";
+import { BreakdownItem, BreakdownPhoto, TEAL } from "./types";
 
 interface Props {
   items: BreakdownItem[];
@@ -10,6 +11,11 @@ interface Props {
   onEditText: (item: BreakdownItem, text: string) => void;
   onDelete: (item: BreakdownItem) => void;
   onAdd: (text: string) => void;
+  photosByItem?: Record<string, BreakdownPhoto[]>;
+  signedUrl?: (photo: BreakdownPhoto) => string | undefined;
+  onAddPhotos?: (item: BreakdownItem, files: File[]) => void;
+  onOpenPhoto?: (photo: BreakdownPhoto) => void;
+  uploadingItemId?: string | null;
 }
 
 const inputStyle: React.CSSProperties = {
