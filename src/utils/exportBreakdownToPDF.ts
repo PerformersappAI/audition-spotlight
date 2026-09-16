@@ -121,7 +121,7 @@ const photoSummary = (rows: BreakdownPhoto[]) => {
 /** Builds the print-ready breakdown PDF. */
 export async function buildBreakdownPDF(input: BreakdownExportInput): Promise<jsPDF> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const { body, mono } = await loadFonts(doc);
+  const { body, mono } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   const contentW = pageW - MARGIN * 2;
