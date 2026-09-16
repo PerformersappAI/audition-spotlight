@@ -1178,6 +1178,21 @@ const ScriptBreakdown = () => {
           </div>
         </Modal>
       )}
+
+      {/* PHOTO LIGHTBOX */}
+      {lightbox && lightboxPhotos.length > 0 && (
+        <PhotoLightbox
+          photos={lightboxPhotos}
+          index={Math.min(lightbox.index, lightboxPhotos.length - 1)}
+          signedUrl={signedUrl}
+          onIndexChange={(i) => setLightbox((lb) => (lb ? { ...lb, index: i } : lb))}
+          onClose={() => setLightbox(null)}
+          onApprove={(p) => decidePhoto(p, "approved")}
+          onRequestChanges={(p, fb) => decidePhoto(p, "rejected", fb)}
+          onReplace={replacePhoto}
+          onDelete={deletePhoto}
+        />
+      )}
     </div>
   );
 };
