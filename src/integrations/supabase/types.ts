@@ -702,6 +702,7 @@ export type Database = {
         Row: {
           company: string | null
           created_at: string
+          default_currency: string
           id: string
           owner_id: string
           share_token: string
@@ -714,6 +715,7 @@ export type Database = {
         Insert: {
           company?: string | null
           created_at?: string
+          default_currency?: string
           id?: string
           owner_id: string
           share_token?: string
@@ -726,6 +728,7 @@ export type Database = {
         Update: {
           company?: string | null
           created_at?: string
+          default_currency?: string
           id?: string
           owner_id?: string
           share_token?: string
@@ -1688,6 +1691,121 @@ export type Database = {
           processed_at?: string
         }
         Relationships: []
+      }
+      production_expenses: {
+        Row: {
+          amount: number
+          bill_to: string | null
+          created_at: string
+          currency: string
+          decided_at: string | null
+          decided_by_name: string | null
+          department: string
+          description: string | null
+          expense_date: string
+          id: string
+          invoice_number: string | null
+          item_photo_path: string | null
+          kind: string
+          line_items: Json
+          linked_item_id: string | null
+          notes: string | null
+          ocr_raw: string | null
+          payment_method: string
+          project_id: string
+          receipt_path: string | null
+          status: string
+          status_note: string | null
+          submitted_by_crew_id: string | null
+          submitted_by_email: string | null
+          submitted_by_name: string
+          submitted_by_user_id: string | null
+          updated_at: string
+          vendor: string | null
+        }
+        Insert: {
+          amount?: number
+          bill_to?: string | null
+          created_at?: string
+          currency?: string
+          decided_at?: string | null
+          decided_by_name?: string | null
+          department: string
+          description?: string | null
+          expense_date?: string
+          id?: string
+          invoice_number?: string | null
+          item_photo_path?: string | null
+          kind: string
+          line_items?: Json
+          linked_item_id?: string | null
+          notes?: string | null
+          ocr_raw?: string | null
+          payment_method: string
+          project_id: string
+          receipt_path?: string | null
+          status?: string
+          status_note?: string | null
+          submitted_by_crew_id?: string | null
+          submitted_by_email?: string | null
+          submitted_by_name: string
+          submitted_by_user_id?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Update: {
+          amount?: number
+          bill_to?: string | null
+          created_at?: string
+          currency?: string
+          decided_at?: string | null
+          decided_by_name?: string | null
+          department?: string
+          description?: string | null
+          expense_date?: string
+          id?: string
+          invoice_number?: string | null
+          item_photo_path?: string | null
+          kind?: string
+          line_items?: Json
+          linked_item_id?: string | null
+          notes?: string | null
+          ocr_raw?: string | null
+          payment_method?: string
+          project_id?: string
+          receipt_path?: string | null
+          status?: string
+          status_note?: string | null
+          submitted_by_crew_id?: string | null
+          submitted_by_email?: string | null
+          submitted_by_name?: string
+          submitted_by_user_id?: string | null
+          updated_at?: string
+          vendor?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "production_expenses_linked_item_id_fkey"
+            columns: ["linked_item_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_expenses_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "production_expenses_submitted_by_crew_id_fkey"
+            columns: ["submitted_by_crew_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_crew"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
