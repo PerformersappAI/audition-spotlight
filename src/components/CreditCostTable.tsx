@@ -7,7 +7,7 @@ type ToolCost = { name: string; cost: string; free?: boolean };
 export const TOOL_COSTS: ToolCost[] = [
   { name: 'Academy / Courses', cost: 'Free', free: true },
   { name: 'Scene Analysis', cost: '~1 credit' },
-  { name: 'Script Breakdown', cost: '~1 credit per scene' },
+  { name: 'Script Breakdown', cost: '~1 credit per scene (+1 to read a PDF or image)' },
   { name: 'Storyboard Generator', cost: '2–4 credits (grows with number of frames)' },
   { name: 'Table Read', cost: '2–4 credits (varies by dialogue length)' },
   { name: 'Fundraising', cost: '~1 credit' },
