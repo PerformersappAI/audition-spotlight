@@ -34,7 +34,7 @@ const nextInvoiceNumber = (expenses: Expense[]) => {
   return `INV-${String(max + 1).padStart(3, "0")}`;
 };
 
-const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Props) => {
+const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency, actorName }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
