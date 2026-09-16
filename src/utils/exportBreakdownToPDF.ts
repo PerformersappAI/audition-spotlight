@@ -47,7 +47,7 @@ const toBase64 = (buf: ArrayBuffer) => {
  * (č ć đ š ž ...), so we embed a subset of Noto Sans / Noto Sans Mono.
  * Falls back to Helvetica/Courier if the files can't be fetched.
  */
-async function loadFonts(doc: jsPDF): Promise<{ body: string; mono: string }> {
+export async function loadUnicodeFonts(doc: jsPDF): Promise<{ body: string; mono: string }> {
   try {
     if (!fontCache) {
       const entries = await Promise.all(
@@ -121,7 +121,7 @@ const photoSummary = (rows: BreakdownPhoto[]) => {
 /** Builds the print-ready breakdown PDF. */
 export async function buildBreakdownPDF(input: BreakdownExportInput): Promise<jsPDF> {
   const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
-  const { body, mono } = await loadFonts(doc);
+  const { body, mono } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
   const contentW = pageW - MARGIN * 2;

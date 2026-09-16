@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Download, Loader2, Plus } from "lucide-react";
+import { Download, FileSpreadsheet, FileText, Loader2, Plus, Table } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ghostBtn, panel, primaryBtn } from "@/components/production/ProductionPicker";
 import { EXPENSE_FIELDS, toExpense, type Expense } from "@/lib/expenses/types";
 import { removeExpenseFolder, signExpensePaths } from "@/lib/expenses/files";
 import { SCENE_FIELDS, ITEM_FIELDS, DEPARTMENTS, type BreakdownScene, type BreakdownItem } from "@/components/breakdown/types";
+import { exportExpensesToCSV, exportExpensesToPDF, exportExpensesToXLSX, type ExpenseExportInput } from "@/utils/exportExpenses";
 import ExpenseSummary from "./ExpenseSummary";
 import ExpenseFilters, { EMPTY_FILTERS, type ExpenseFilterState } from "./ExpenseFilters";
 import ExpenseList, { type LinkedItemInfo } from "./ExpenseList";
@@ -15,6 +16,7 @@ import FileLightbox from "./FileLightbox";
 
 interface Props {
   projectId: string;
+  productionTitle: string;
   company: string | null;
   defaultCurrency: string;
   /** Name recorded on approvals/rejections and defaulted as the submitter. */
@@ -32,7 +34,7 @@ const nextInvoiceNumber = (expenses: Expense[]) => {
   return `INV-${String(max + 1).padStart(3, "0")}`;
 };
 
-const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Props) => {
+const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency, actorName }: Props) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +45,10 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Pr
   const [dialogFor, setDialogFor] = useState<Expense | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [viewer, setViewer] = useState<{ url: string; isPdf: boolean; title: string } | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [includeImages, setIncludeImages] = useState(false);
+  const [exporting, setExporting] = useState<"xlsx" | "csv" | "pdf" | null>(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
 
   const filters = useMemo<ExpenseFilterState>(() => ({
     q: searchParams.get("q") || "",
@@ -182,18 +188,107 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Pr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expenses]);
 
+  const exportInput = useCallback((): ExpenseExportInput => ({
+    productionTitle,
+    company,
+    expenses: filtered,
+    filters,
+    linkedItems,
+    signedUrls,
+    includeImages,
+  }), [productionTitle, company, filtered, filters, linkedItems, signedUrls, includeImages]);
+
+  const runExport = async (kind: "xlsx" | "csv" | "pdf") => {
+    if (!filtered.length) { toast.error("There is nothing to export with these filters."); return; }
+    setMenuOpen(false);
+    setExporting(kind);
+    try {
+      const input = exportInput();
+      if (kind === "xlsx") exportExpensesToXLSX(input);
+      else if (kind === "csv") exportExpensesToCSV(input);
+      else await exportExpensesToPDF(input);
+      toast.success(kind === "pdf" ? "Expense report downloaded." : "Export downloaded.");
+    } catch (err) {
+      console.error("expense export failed", err);
+      toast.error(err instanceof Error ? err.message : "Could not build that export.");
+    } finally {
+      setExporting(null);
+    }
+  };
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDown = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menuOpen]);
+
+
   return (
     <div style={{ paddingBottom: 56 }}>
       <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 18 }}>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, margin: 0 }}>Expenses</h2>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button
-            disabled
-            title="Coming in the next step"
-            style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8, opacity: 0.45, cursor: "not-allowed" }}
-          >
-            <Download size={16} /> Export
-          </button>
+          <div ref={menuRef} style={{ position: "relative" }}>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              disabled={!!exporting}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8, cursor: exporting ? "wait" : "pointer" }}
+            >
+              {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              {exporting ? "Generating…" : "Export"}
+            </button>
+            {menuOpen && (
+              <div
+                role="menu"
+                style={{
+                  position: "absolute", right: 0, top: "calc(100% + 8px)", zIndex: 40, minWidth: 250,
+                  borderRadius: 12, padding: 8, background: "#10101b",
+                  border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
+                }}
+              >
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", padding: "6px 10px" }}>
+                  Exports use your current filters
+                </div>
+                {([
+                  ["xlsx", "Excel (.xlsx)", FileSpreadsheet],
+                  ["csv", "CSV", Table],
+                  ["pdf", "PDF report", FileText],
+                ] as const).map(([kind, copy, Icon]) => (
+                  <button
+                    key={kind}
+                    role="menuitem"
+                    onClick={() => runExport(kind)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 10, width: "100%", minHeight: 44,
+                      padding: "0 10px", borderRadius: 8, border: "none", background: "transparent",
+                      color: "#fff", fontSize: 15, textAlign: "left", cursor: "pointer",
+                      fontFamily: "'Inter Tight', sans-serif",
+                    }}
+                  >
+                    <Icon size={16} /> {copy}
+                  </button>
+                ))}
+                <label style={{
+                  display: "flex", alignItems: "center", gap: 10, minHeight: 44, padding: "0 10px",
+                  marginTop: 4, borderTop: "1px solid rgba(255,255,255,0.08)",
+                  fontSize: 13, color: "rgba(255,255,255,0.7)", cursor: "pointer",
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={includeImages}
+                    onChange={(e) => setIncludeImages(e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "#00d4aa" }}
+                  />
+                  Include receipt images (PDF)
+                </label>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => { setDialogFor(null); setDialogOpen(true); }}
             style={{ ...primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }}
