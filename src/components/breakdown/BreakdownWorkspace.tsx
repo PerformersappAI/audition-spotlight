@@ -556,13 +556,24 @@ const BreakdownWorkspace = ({
                     </div>
                   </button>
                   {adapter.canManageScenes && (
-                    <button
-                      aria-label={`Delete ${sceneTitle(s)}`}
-                      onClick={() => setDeleteScene(s)}
-                      style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      {adapter.updateScene && (
+                        <button
+                          aria-label={`Scene settings for ${sceneTitle(s)}`}
+                          onClick={() => openSceneSettings(s)}
+                          style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
+                        >
+                          <Pencil size={15} />
+                        </button>
+                      )}
+                      <button
+                        aria-label={`Delete ${sceneTitle(s)}`}
+                        onClick={() => setDeleteScene(s)}
+                        style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   )}
                 </div>
               );
