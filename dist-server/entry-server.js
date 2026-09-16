@@ -2971,7 +2971,7 @@ const useCredits = () => {
   };
 };
 const fgLogo = "/assets/filmmaker-genius-logo-YIG-bxjn.png";
-const TEAL$f = "#00d4aa";
+const TEAL$g = "#00d4aa";
 const TEAL_HOVER$3 = "#00f0c0";
 const VIOLET$2 = "#a855f7";
 const VIOLET_HOVER = "#c084fc";
@@ -3051,7 +3051,7 @@ const GlobalLayout = ({ children }) => {
                           "div",
                           {
                             className: "h-8 w-8 rounded-full flex items-center justify-center",
-                            style: { background: `linear-gradient(135deg, ${TEAL$f}, ${VIOLET$2})` },
+                            style: { background: `linear-gradient(135deg, ${TEAL$g}, ${VIOLET$2})` },
                             children: /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold text-black", children: ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2[0]) || ((_c = (_b2 = user.email) == null ? void 0 : _b2[0]) == null ? void 0 : _c.toUpperCase()) || "U" })
                           }
                         ),
@@ -3095,9 +3095,9 @@ const GlobalLayout = ({ children }) => {
                   {
                     to: "/membership",
                     className: "px-4 py-2 rounded-md text-sm font-semibold text-black transition-colors",
-                    style: { backgroundColor: TEAL$f },
+                    style: { backgroundColor: TEAL$g },
                     onMouseEnter: (e) => e.currentTarget.style.backgroundColor = TEAL_HOVER$3,
-                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$f,
+                    onMouseLeave: (e) => e.currentTarget.style.backgroundColor = TEAL$g,
                     children: "Get Started"
                   }
                 )
@@ -3243,7 +3243,7 @@ const GlobalLayout = ({ children }) => {
                       to: "/membership",
                       onClick: () => setMobileMenuOpen(false),
                       className: "px-4 py-2 rounded-md text-sm font-semibold text-black text-center",
-                      style: { backgroundColor: TEAL$f },
+                      style: { backgroundColor: TEAL$g },
                       children: "Get Started"
                     }
                   )
@@ -3373,12 +3373,12 @@ const imgGreenLightEngine = {
   content_type: content_type$2,
   created_at: created_at$2
 };
-const TEAL$e = "#00d4aa";
+const TEAL$f = "#00d4aa";
 const CtaPill = ({ label }) => /* @__PURE__ */ jsx(
   "span",
   {
     className: "text-xs font-semibold px-3 py-1.5 rounded-full border transition-colors",
-    style: { color: TEAL$e, borderColor: `${TEAL$e}66` },
+    style: { color: TEAL$f, borderColor: `${TEAL$f}66` },
     children: label
   }
 );
@@ -3394,7 +3394,7 @@ const ToolCard$1 = ({
       to: card.to,
       className: `group relative flex flex-col overflow-hidden rounded-xl bg-[#111] border transition-all duration-200 hover:-translate-y-1 ${className}`,
       style: { borderColor: "rgba(255,255,255,0.08)" },
-      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$e,
+      onMouseEnter: (e) => e.currentTarget.style.borderColor = TEAL$f,
       onMouseLeave: (e) => e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)",
       children: [
         /* @__PURE__ */ jsx("div", { className: "w-full overflow-hidden flex-1", style: ratioStyle, children: /* @__PURE__ */ jsx(
@@ -3557,7 +3557,7 @@ const HomeMarketing = () => {
 };
 const willRobertsPhoto = "/assets/will-roberts-CjW-MOnm.webp";
 const salFramondiPhoto = "/assets/sal-framondi-bnwkzMLy.webp";
-const TEAL$d = "#00d4aa";
+const TEAL$e = "#00d4aa";
 const TEAL_HOVER$2 = "#00f0c0";
 const MEMBERS = [
   {
@@ -3661,7 +3661,7 @@ function PhotoCard({ photo, alt, name, title }) {
 function MemberBlock({ m }) {
   const photo = /* @__PURE__ */ jsx("div", { style: { display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx(PhotoCard, { photo: m.photo, alt: m.alt, name: m.name, title: m.title }) });
   const info = /* @__PURE__ */ jsxs("div", { children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$d, marginBottom: 10 }, children: m.role }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$e, marginBottom: 10 }, children: m.role }),
     /* @__PURE__ */ jsx("h2", { className: "about-name", style: { fontFamily: "'Fraunces', serif", fontSize: 36, lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: m.name }),
     /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.4)", marginTop: 8, fontWeight: 500 }, children: m.tagline }),
     /* @__PURE__ */ jsx("div", { style: { marginTop: 24, display: "flex", flexDirection: "column", gap: 16, fontSize: 15, color: "rgba(255,255,255,0.65)", lineHeight: 1.7 }, children: m.bio.map((p, i) => /* @__PURE__ */ jsx("p", { style: { margin: 0 }, children: p }, i)) }),
@@ -3677,7 +3677,7 @@ function MemberBlock({ m }) {
         alignItems: "center",
         textDecoration: "none",
         border: teal ? "none" : "1px solid rgba(255,255,255,0.15)",
-        background: teal ? TEAL$d : "rgba(255,255,255,0.05)",
+        background: teal ? TEAL$e : "rgba(255,255,255,0.05)",
         color: teal ? "#000" : "#fff",
         transition: "background 0.2s",
         fontFamily: "inherit"
@@ -3756,7 +3756,7 @@ function About() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "about-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Meet the ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$d }, children: "Team" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$e }, children: "Team" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 17, color: "rgba(255,255,255,0.45)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Professional actors and creators dedicated to helping you succeed in the entertainment industry." })
       ] })
@@ -3764,9 +3764,9 @@ function About() {
     /* @__PURE__ */ jsx("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "80px 24px 96px" }, children: MEMBERS.map((m) => /* @__PURE__ */ jsx(MemberBlock, { m }, m.name)) })
   ] });
 }
-const TEAL$c = "#00d4aa";
+const TEAL$d = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
-const inputStyle$4 = {
+const inputStyle$5 = {
   width: "100%",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid #1e1e35",
@@ -3863,7 +3863,7 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsxs("h1", { className: "contact-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
           "Contact ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$c }, children: "Us" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$d }, children: "Us" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 14, fontSize: 16, color: "rgba(255,255,255,0.45)", maxWidth: 500, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Have questions about our tools or membership? Need technical support? Want to discuss your project? We're here to help." })
       ] })
@@ -3896,13 +3896,13 @@ function Contact() {
       }, children: c.icon }),
       /* @__PURE__ */ jsx("h2", { style: { fontSize: 18, fontWeight: 700, margin: 0 }, children: c.h }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: c.sub }),
-      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$c }, children: c.value }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, fontWeight: 600, color: TEAL$d }, children: c.value }),
       /* @__PURE__ */ jsx("a", { href: c.href, className: "contact-btn-teal", style: {
         marginTop: 20,
         width: "100%",
         height: 44,
         borderRadius: 10,
-        background: TEAL$c,
+        background: TEAL$d,
         color: "#000",
         fontWeight: 700,
         display: "flex",
@@ -3915,7 +3915,7 @@ function Contact() {
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 560, margin: "72px auto 0", padding: "0 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: 0, fontWeight: 700 }, children: [
         "Scan to ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$c }, children: "Connect" })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$d }, children: "Connect" })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { marginTop: 28, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }, children: [
         { label: "Visit Our Website", sub: "filmmakergenius.com" },
@@ -3947,20 +3947,20 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "First Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "Last Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$4, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$5, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$5, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
       /* @__PURE__ */ jsx(Field$4, { label: "Message", children: /* @__PURE__ */ jsx(
         "textarea",
         {
           className: "contact-input",
-          style: { ...inputStyle$4, minHeight: 130, resize: "vertical" },
+          style: { ...inputStyle$5, minHeight: 130, resize: "vertical" },
           value: message,
           onChange: (e) => setMessage(e.target.value),
           placeholder: "Tell us more about your inquiry..."
@@ -3975,7 +3975,7 @@ function Contact() {
             width: "100%",
             height: 50,
             borderRadius: 12,
-            background: TEAL$c,
+            background: TEAL$d,
             color: "#000",
             fontWeight: 700,
             fontSize: 15,
@@ -3991,7 +3991,7 @@ function Contact() {
     ] }) })
   ] });
 }
-const TEAL$b = "#00d4aa";
+const TEAL$c = "#00d4aa";
 const TEAL_HOVER = "#00f0c0";
 const FAQS = [
   {
@@ -4085,7 +4085,7 @@ function FAQ() {
         fontWeight: 700,
         letterSpacing: "0.14em",
         textTransform: "uppercase",
-        color: TEAL$b,
+        color: TEAL$c,
         marginBottom: 14
       }, children: "Support" }),
       /* @__PURE__ */ jsx("h1", { style: {
@@ -4124,7 +4124,7 @@ function FAQ() {
               style: {
                 width: "100%",
                 background: isOpen ? "#111122" : "#0d0d1a",
-                color: isOpen ? TEAL$b : "#fff",
+                color: isOpen ? TEAL$c : "#fff",
                 border: "none",
                 fontSize: "0.95em",
                 fontWeight: 600,
@@ -4145,7 +4145,7 @@ function FAQ() {
                     className: "faq-chev",
                     style: {
                       fontSize: 18,
-                      color: isOpen ? TEAL$b : "rgba(255,255,255,0.3)",
+                      color: isOpen ? TEAL$c : "rgba(255,255,255,0.3)",
                       transform: isOpen ? "rotate(180deg)" : "rotate(0deg)"
                     },
                     children: "⌄"
@@ -4174,7 +4174,7 @@ function FAQ() {
     ] })
   ] });
 }
-const TEAL$a = "#00d4aa";
+const TEAL$b = "#00d4aa";
 const SECTIONS$4 = [
   {
     h: "The short version",
@@ -4258,7 +4258,7 @@ function Privacy() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$a,
+            color: TEAL$b,
             marginBottom: 14
           },
           children: "Legal"
@@ -4363,7 +4363,7 @@ function Privacy() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$a, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$b, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4376,7 +4376,7 @@ function Privacy() {
     ] })
   ] });
 }
-const TEAL$9 = "#00d4aa";
+const TEAL$a = "#00d4aa";
 const SECTIONS$3 = [
   {
     h: "You own your work",
@@ -4460,7 +4460,7 @@ function Terms() {
             fontWeight: 700,
             letterSpacing: "0.14em",
             textTransform: "uppercase",
-            color: TEAL$9,
+            color: TEAL$a,
             marginBottom: 14
           },
           children: "Legal"
@@ -4565,7 +4565,7 @@ function Terms() {
                 Link,
                 {
                   to: "/contact",
-                  style: { color: TEAL$9, textDecoration: "none", fontWeight: 600 },
+                  style: { color: TEAL$a, textDecoration: "none", fontWeight: 600 },
                   children: "Contact us"
                 }
               ),
@@ -4620,7 +4620,7 @@ const GROUPS$1 = [
       ] },
       { cols: 2, tools: [
         { title: "Set Translator", to: "#", theme: "violet" },
-        { title: "Receipts & Expenses", to: "#", theme: "violet" }
+        { title: "Receipts & Expenses", to: "/receipts-expenses", theme: "violet" }
       ] }
     ]
   },
@@ -4940,6 +4940,11 @@ const toolSeo = {
     description: "A call sheet lists date, crew call, shooting call, scenes, cast times, locations, weather and hospital. Build one here, or upload last one to auto-fill.",
     lead: "A call sheet is the one-page contract for a shoot day: production and date, general crew call and shooting call, the scenes and pages to be shot, per-person cast and crew times, locations with parking, meal breaks, weather, and the nearest hospital. Fill in the fields below and export a professional PDF, or upload an existing call sheet and let the parser pre-fill it for you. Send it the night before, and put the day's advance schedule at the bottom."
   },
+  "/receipts-expenses": {
+    title: "Film Production Expense Tracker — Receipts & Invoices | Filmmaker Genius",
+    description: "Crew snap receipts or create invoices; producers approve, track spend by department and currency, and export reports.",
+    lead: "A production expense tracker keeps every receipt, invoice and per-diem claim attached to the production it belongs to, so nothing gets settled from a shoebox at wrap. Crew photograph receipts or build an invoice from set, you approve, reject or mark them paid, and spending totals by department and currency stay current — ready to export for your accountant."
+  },
   "/script-breakdown": {
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
     description: "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",
@@ -4971,7 +4976,7 @@ const toolSeo = {
     lead: "A table read exists to catch what silent reading hides — unsayable lines, scenes that run long, characters who all sound the same. Upload your screenplay, assign a distinct voice to each character, and this tool performs the script scene by scene as sharable audio. Listen for the places you skip ahead; those are the cuts."
   }
 };
-const SITE$1 = "https://filmmakergenius.com";
+const SITE$2 = "https://filmmakergenius.com";
 function ToolSeo({ path }) {
   const entry = toolSeo[path];
   if (!entry) return null;
@@ -4980,7 +4985,7 @@ function ToolSeo({ path }) {
     {
       title: entry.title,
       description: entry.description,
-      canonical: `${SITE$1}${path}`,
+      canonical: `${SITE$2}${path}`,
       type: "website"
     }
   );
@@ -5030,7 +5035,7 @@ const verticalAsset = {
   content_type,
   created_at
 };
-const TEAL$8 = "#00d4aa";
+const TEAL$9 = "#00d4aa";
 function FilmFrame() {
   Array.from({ length: 10 });
   return /* @__PURE__ */ jsxs("div", { className: "flex flex-col items-center gap-3", children: [
@@ -5100,7 +5105,7 @@ function Arrow() {
       "span",
       {
         className: "text-[10px] font-semibold uppercase tracking-[0.2em]",
-        style: { color: TEAL$8 },
+        style: { color: TEAL$9 },
         children: "AI Recut"
       }
     ),
@@ -5108,7 +5113,7 @@ function Arrow() {
       "path",
       {
         d: "M2 10 H56 M50 4 L58 10 L50 16",
-        stroke: TEAL$8,
+        stroke: TEAL$9,
         strokeWidth: "2",
         strokeLinecap: "round",
         strokeLinejoin: "round"
@@ -5126,8 +5131,8 @@ function StepCard({ n, title, desc }) {
           width: 44,
           height: 44,
           background: "rgba(0,212,170,0.12)",
-          border: `1px solid ${TEAL$8}`,
-          color: TEAL$8,
+          border: `1px solid ${TEAL$9}`,
+          color: TEAL$9,
           fontFamily: "'Fraunces', serif"
         },
         children: n
@@ -5166,7 +5171,7 @@ function Recut() {
           "span",
           {
             className: "inline-block text-[11px] font-bold uppercase tracking-[0.2em] px-3 py-1 rounded-full",
-            style: { background: TEAL$8, color: "#0a0a12" },
+            style: { background: TEAL$9, color: "#0a0a12" },
             children: "New · AI"
           }
         ),
@@ -5234,7 +5239,7 @@ function Recut() {
             className: "w-full rounded-2xl px-6 py-12 text-center",
             style: {
               maxWidth: 560,
-              border: `2px dashed ${TEAL$8}`,
+              border: `2px dashed ${TEAL$9}`,
               background: "linear-gradient(180deg, rgba(0,212,170,0.06) 0%, rgba(0,212,170,0.02) 100%)"
             },
             children: [
@@ -5252,7 +5257,7 @@ function Recut() {
                 {
                   onClick: handleBrowse,
                   className: "mt-6 inline-flex items-center rounded-md px-5 py-2.5 text-sm font-semibold transition-opacity hover:opacity-90",
-                  style: { background: TEAL$8, color: "#0a0a12" },
+                  style: { background: TEAL$9, color: "#0a0a12" },
                   children: "Browse files"
                 }
               )
@@ -5267,7 +5272,7 @@ function Recut() {
             {
               to: "/membership",
               className: "underline underline-offset-4",
-              style: { color: TEAL$8 },
+              style: { color: TEAL$9 },
               children: "upgrade your Filmmaker Genius membership"
             }
           ),
@@ -6284,6 +6289,7 @@ const TOOL_COSTS = [
   { name: "Academy / Courses", cost: "Free", free: true },
   { name: "Scene Analysis", cost: "~1 credit" },
   { name: "Script Breakdown", cost: "~1 credit per scene (+1 to read a PDF or image)" },
+  { name: "Receipts & Expenses", cost: "Free to log; ~1 credit to read a receipt photo" },
   { name: "Storyboard Generator", cost: "2–4 credits (grows with number of frames)" },
   { name: "Table Read", cost: "2–4 credits (varies by dialogue length)" },
   { name: "Fundraising", cost: "~1 credit" },
@@ -6321,7 +6327,7 @@ const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { c
     ] }, t.name)) })
   ] })
 ] });
-const TEAL$7 = "#00d4aa";
+const TEAL$8 = "#00d4aa";
 const VIOLET$1 = "#a855f7";
 function AddCreditsCard({ className = "", showMembershipLink = true }) {
   const [buying, setBuying] = useState(false);
@@ -6346,7 +6352,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       "div",
       {
         className: "h-12 w-12 rounded-full flex items-center justify-center mx-auto mb-4",
-        style: { background: `linear-gradient(135deg, ${TEAL$7}, ${VIOLET$1})` },
+        style: { background: `linear-gradient(135deg, ${TEAL$8}, ${VIOLET$1})` },
         children: /* @__PURE__ */ jsx(Zap, { className: "h-6 w-6 text-black" })
       }
     ),
@@ -6359,7 +6365,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
         onClick: handleBuy,
         disabled: buying,
         className: "text-black font-semibold",
-        style: { backgroundColor: TEAL$7 },
+        style: { backgroundColor: TEAL$8 },
         children: [
           buying ? /* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin mr-2" }) : /* @__PURE__ */ jsx(Zap, { className: "h-4 w-4 mr-2" }),
           "Buy More Credits — $10 for 30 Credits"
@@ -7593,7 +7599,7 @@ function EducationModules() {
     ] })
   ] });
 }
-const TEAL$6 = "#00d4aa";
+const TEAL$7 = "#00d4aa";
 const BG = "#0a0a12";
 const SURFACE = "#12121f";
 const SURFACE2 = "#16162a";
@@ -7637,7 +7643,7 @@ function ChapterCard({ ch }) {
     position: "relative",
     transition: "all 0.2s"
   }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$6, opacity: 0.8 }, children: ch.stage }),
+    /* @__PURE__ */ jsx("div", { style: { fontSize: 10, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: TEAL$7, opacity: 0.8 }, children: ch.stage }),
     /* @__PURE__ */ jsxs("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: [
       "Chapter ",
       ch.n
@@ -7679,7 +7685,7 @@ function RobertsFilmmaking() {
     ),
     /* @__PURE__ */ jsx("style", { children: `
         .rf-card:hover { border-color: rgba(0,212,170,0.4) !important; background: ${SURFACE2} !important; transform: translateY(-2px); }
-        .rf-card:hover .rf-arrow { color: ${TEAL$6} !important; }
+        .rf-card:hover .rf-arrow { color: ${TEAL$7} !important; }
         .rf-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .rf-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (min-width: 980px) { .rf-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -7700,13 +7706,13 @@ function RobertsFilmmaking() {
         filter: "blur(90px)",
         opacity: 0.16,
         pointerEvents: "none",
-        background: `radial-gradient(ellipse at center, ${TEAL$6} 0%, transparent 70%)`
+        background: `radial-gradient(ellipse at center, ${TEAL$7} 0%, transparent 70%)`
       } }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative", maxWidth: 1120, margin: "0 auto", padding: "0 24px" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$6, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: TEAL$7, marginBottom: 16 }, children: "Filmmaker Genius Academy" }),
         /* @__PURE__ */ jsxs("h1", { style: { fontFamily: "'Fraunces', serif", fontSize: "clamp(40px,7vw,64px)", lineHeight: 1.04, margin: 0, maxWidth: 760, marginLeft: "auto", marginRight: "auto", fontWeight: 700 }, children: [
           "Filmmaking by ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Will Roberts" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Will Roberts" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { marginTop: 22, fontSize: 18, color: "rgba(255,255,255,0.55)", maxWidth: 600, marginLeft: "auto", marginRight: "auto", lineHeight: 1.6 }, children: "The complete indie filmmaker's guide — 17 free chapters that take you from the first idea all the way to getting your film distributed and seen." }),
         /* @__PURE__ */ jsx(AcademyByline, {}),
@@ -7715,9 +7721,9 @@ function RobertsFilmmaking() {
             width: 38,
             height: 38,
             borderRadius: "50%",
-            border: `2px solid ${TEAL$6}`,
+            border: `2px solid ${TEAL$7}`,
             background: "rgba(0,212,170,0.12)",
-            color: TEAL$6,
+            color: TEAL$7,
             fontSize: 13,
             fontWeight: 700,
             display: "flex",
@@ -7738,19 +7744,19 @@ function RobertsFilmmaking() {
         fontSize: 21,
         color: "rgba(255,255,255,0.78)",
         lineHeight: 1.6,
-        borderLeft: `3px solid ${TEAL$6}`,
+        borderLeft: `3px solid ${TEAL$7}`,
         paddingLeft: 24,
         margin: 0
       }, children: `"I've spent thirty-five years and sixty-plus credits learning how this is really done. This is everything I'd tell you if we sat down together — from the spark of an idea to the day strangers finally watch your film."` }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 20, fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75 }, children: "This free guide walks through every stage of making an independent film: development, producing, budgeting, crew, pre-production, directing, working with actors, cinematography, the shoot, post-production, festivals, distribution, streaming, marketing, and building a lasting career. Practical, specific, no fluff. Read it in order, or jump to the chapter you need right now." })
     ] }),
     /* @__PURE__ */ jsxs("section", { style: { maxWidth: 1120, margin: "0 auto", padding: "56px 24px 80px" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$6, marginBottom: 8 }, children: "The Complete Guide" }),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$7, marginBottom: 8 }, children: "The Complete Guide" }),
       /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 36px", fontWeight: 700 }, children: "All 17 Chapters" }),
       /* @__PURE__ */ jsx("div", { className: "rf-grid", children: CHAPTERS.map((ch) => /* @__PURE__ */ jsx(ChapterCard, { ch }, ch.n)) })
     ] }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "32px 24px" }, children: /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 56, justifyContent: "center" }, children: STATS.map((s) => /* @__PURE__ */ jsxs("div", { style: { textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$6 }, children: s.num }),
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 34, fontWeight: 700, color: TEAL$7 }, children: s.num }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: s.label })
     ] }, s.label)) }) }),
     /* @__PURE__ */ jsx("section", { style: { background: SURFACE, borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, padding: "64px 24px" }, children: /* @__PURE__ */ jsxs("div", { style: { maxWidth: 760, margin: "0 auto", display: "flex", gap: 48, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7768,19 +7774,19 @@ function RobertsFilmmaking() {
         textAlign: "center",
         border: `1px solid ${BORDER}`
       }, children: [
-        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$6 } }),
+        /* @__PURE__ */ jsx("div", { style: { position: "absolute", top: 0, left: 0, right: 0, height: 3, background: TEAL$7 } }),
         /* @__PURE__ */ jsxs("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700, color: "#fff", lineHeight: 1.15 }, children: [
           "The Indie Filmmaker's ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Complete Guide" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Complete Guide" })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$6, margin: "10px auto" } }),
+        /* @__PURE__ */ jsx("div", { style: { width: 32, height: 1, background: TEAL$7, margin: "10px auto" } }),
         /* @__PURE__ */ jsx("div", { style: { fontSize: 9, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.6)" }, children: "By Will Roberts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { flex: 1, minWidth: 240 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$6, marginBottom: 12 }, children: "Free Download" }),
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: TEAL$7, marginBottom: 12 }, children: "Free Download" }),
         /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 28, margin: "0 0 16px", fontWeight: 700 }, children: [
           "Take the whole guide with you — ",
-          /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "free PDF" })
+          /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "free PDF" })
         ] }),
         /* @__PURE__ */ jsx("p", { style: { fontSize: 15, color: "rgba(255,255,255,0.5)", lineHeight: 1.75, margin: "0 0 28px" }, children: "All 17 chapters in a single PDF — every stage of making an independent film, from the first idea to distribution, distilled and ready to reference. No sign-up." }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 16, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -7788,7 +7794,7 @@ function RobertsFilmmaking() {
             height: 50,
             padding: "0 28px",
             borderRadius: 9999,
-            background: TEAL$6,
+            background: TEAL$7,
             color: "#000",
             fontWeight: 700,
             display: "inline-flex",
@@ -7802,7 +7808,7 @@ function RobertsFilmmaking() {
     /* @__PURE__ */ jsxs("section", { style: { padding: "64px 24px", textAlign: "center" }, children: [
       /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 30, margin: 0, fontWeight: 700 }, children: [
         "Stop reading about it. ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$6 }, children: "Start making it." })
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$7 }, children: "Start making it." })
       ] }),
       /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 15, color: "rgba(255,255,255,0.5)", maxWidth: 520, marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }, children: "Filmmaker Genius takes your film from script to screen — storyboarding, casting, scheduling, contracts, and distribution strategy in one platform." }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, justifyContent: "center", marginTop: 26, flexWrap: "wrap" }, children: [
@@ -7810,7 +7816,7 @@ function RobertsFilmmaking() {
           height: 50,
           padding: "0 28px",
           borderRadius: 9999,
-          background: TEAL$6,
+          background: TEAL$7,
           color: "#000",
           fontWeight: 700,
           display: "inline-flex",
@@ -14107,7 +14113,7 @@ function Launch() {
 const GOLD = "#d4a017";
 const VIOLET = "#a855f7";
 const ROSE = "#fb7185";
-const TEAL$5 = "#2bd1c0";
+const TEAL$6 = "#2bd1c0";
 const cards = [
   {
     key: "three-act",
@@ -14146,7 +14152,7 @@ const cards = [
     count: "8 steps",
     description: "Eight plain words — you, need, go, search, find, take, return, change. The quickest way to a complete story.",
     bestFor: "Best for character-driven stories",
-    accent: TEAL$5,
+    accent: TEAL$6,
     diagram: StoryCircleDiagram
   }
 ];
@@ -14201,7 +14207,7 @@ function MovieInABox() {
               { color: VIOLET, label: "Three-Act" },
               { color: GOLD, label: "Save the Cat" },
               { color: ROSE, label: "Hero's Journey" },
-              { color: TEAL$5, label: "Story Circle" }
+              { color: TEAL$6, label: "Story Circle" }
             ].map((dot) => /* @__PURE__ */ jsx(
               "span",
               {
@@ -17540,7 +17546,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
     ] })
   ] });
 };
-const STEPS$4 = [
+const STEPS$5 = [
   { num: 1, label: "Select Scenes" },
   { num: 1.5, label: "Cast References", optional: true },
   { num: 2, label: "Review Shot List" },
@@ -17548,7 +17554,7 @@ const STEPS$4 = [
 ];
 const stepDisplayNumber = (num2, idx) => idx + 1;
 const StepIndicator = ({ currentStep }) => {
-  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$4.map((step, idx) => {
+  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$5.map((step, idx) => {
     const isActive = step.num === currentStep;
     const isComplete = step.num < currentStep;
     return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 sm:gap-4", children: [
@@ -17582,7 +17588,7 @@ const StepIndicator = ({ currentStep }) => {
           ]
         }
       ),
-      idx < STEPS$4.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
+      idx < STEPS$5.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
     ] }, step.num);
   }) });
 };
@@ -23175,10 +23181,10 @@ const SCENE_FIELDS = "id, scene_number, label, script_text, sort_order, created_
 const ITEM_FIELDS = "id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, added_by_crew_id, sort_order";
 const SIGNOFF_FIELDS = "id, scene_id, department, status, note, by_name, by_department, updated_at";
 const PHOTO_FIELDS = "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
-const TEAL$4 = "#00d4aa";
+const TEAL$5 = "#00d4aa";
 const statusBadge = (photo) => {
   if (photo.is_reference) return { label: "REF", color: "#8ab4ff" };
-  if (photo.status === "approved") return { label: "✅", color: TEAL$4 };
+  if (photo.status === "approved") return { label: "✅", color: TEAL$5 };
   if (photo.status === "rejected") return { label: "✕", color: "#ff8080" };
   return { label: "⏳", color: "#f5a524" };
 };
@@ -23229,7 +23235,7 @@ const ItemPhotos = ({ photos, signedUrl, onOpen }) => {
     );
   }) });
 };
-const inputStyle$3 = {
+const inputStyle$4 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -23314,7 +23320,7 @@ const DepartmentChecklist = ({
               {
                 onClick: () => onToggle(item),
                 "aria-label": item.checked ? `Uncheck ${item.text}` : `Check off ${item.text}`,
-                style: { ...iconBtn, color: item.checked ? TEAL$4 : "rgba(255,255,255,0.45)" },
+                style: { ...iconBtn, color: item.checked ? TEAL$5 : "rgba(255,255,255,0.45)" },
                 children: /* @__PURE__ */ jsx(
                   "span",
                   {
@@ -23322,7 +23328,7 @@ const DepartmentChecklist = ({
                       width: 24,
                       height: 24,
                       borderRadius: 9999,
-                      border: `2px solid ${item.checked ? TEAL$4 : "rgba(255,255,255,0.3)"}`,
+                      border: `2px solid ${item.checked ? TEAL$5 : "rgba(255,255,255,0.3)"}`,
                       background: item.checked ? "rgba(0,212,170,0.18)" : "transparent",
                       display: "flex",
                       alignItems: "center",
@@ -23344,10 +23350,10 @@ const DepartmentChecklist = ({
                     if (e.key === "Enter") commitEdit(item);
                     if (e.key === "Escape") setEditingId(null);
                   },
-                  style: inputStyle$3
+                  style: inputStyle$4
                 }
               ),
-              /* @__PURE__ */ jsx("button", { "aria-label": "Save item", onClick: () => commitEdit(item), style: { ...iconBtn, color: TEAL$4 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
+              /* @__PURE__ */ jsx("button", { "aria-label": "Save item", onClick: () => commitEdit(item), style: { ...iconBtn, color: TEAL$5 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
               /* @__PURE__ */ jsx("button", { "aria-label": "Cancel edit", onClick: () => setEditingId(null), style: iconBtn, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
             ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsxs("div", { style: { fontSize: 15, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", wordBreak: "break-word" }, children: [
@@ -23421,7 +23427,7 @@ const DepartmentChecklist = ({
                   target: "_blank",
                   rel: "noopener noreferrer",
                   "aria-label": `Find ${item.text} on Google Maps`,
-                  style: { ...iconBtn, color: TEAL$4, textDecoration: "none" },
+                  style: { ...iconBtn, color: TEAL$5, textDecoration: "none" },
                   children: /* @__PURE__ */ jsx(MapPin, { size: 17 })
                 }
               ),
@@ -23462,10 +23468,10 @@ const DepartmentChecklist = ({
             }
           },
           placeholder: "New item…",
-          style: inputStyle$3
+          style: inputStyle$4
         }
       ),
-      /* @__PURE__ */ jsx("button", { "aria-label": "Save new item", onClick: commitAdd, style: { ...iconBtn, color: TEAL$4 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
+      /* @__PURE__ */ jsx("button", { "aria-label": "Save new item", onClick: commitAdd, style: { ...iconBtn, color: TEAL$5 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
       /* @__PURE__ */ jsx("button", { "aria-label": "Cancel new item", onClick: () => {
         setAdding(false);
         setAddValue("");
@@ -23481,7 +23487,7 @@ const DepartmentChecklist = ({
           borderRadius: 10,
           background: "rgba(0,212,170,0.08)",
           border: "1px dashed rgba(0,212,170,0.4)",
-          color: TEAL$4,
+          color: TEAL$5,
           fontSize: 14,
           fontWeight: 700,
           cursor: "pointer",
@@ -23547,10 +23553,10 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
       children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700 }, children: "Department ready?" }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn2((signoff == null ? void 0 : signoff.status) === "good", TEAL$4), children: "✅ We're good" }),
+          /* @__PURE__ */ jsx("button", { onClick: () => press("good"), style: btn2((signoff == null ? void 0 : signoff.status) === "good", TEAL$5), children: "✅ We're good" }),
           /* @__PURE__ */ jsx("button", { onClick: () => press("need_help"), style: btn2((signoff == null ? void 0 : signoff.status) === "need_help", "#f5a524"), children: "⚠️ Need help" })
         ] }),
-        signoff && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13, color: signoff.status === "good" ? TEAL$4 : "#f5a524" }, children: [
+        signoff && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 13, color: signoff.status === "good" ? TEAL$5 : "#f5a524" }, children: [
           signoff.status === "good" ? "✅ Ready" : "⚠️ Needs help",
           " — ",
           signoff.by_name || "Someone",
@@ -23596,7 +23602,7 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
               borderRadius: 10,
               background: "rgba(0,212,170,0.12)",
               border: "1px solid rgba(0,212,170,0.4)",
-              color: TEAL$4,
+              color: TEAL$5,
               fontWeight: 700,
               fontSize: 15,
               cursor: note.trim() ? "pointer" : "not-allowed",
@@ -23653,7 +23659,7 @@ const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen })
           }
         ),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$2(TEAL$4), children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$2(TEAL$5), children: [
             /* @__PURE__ */ jsx(Check$1, { size: 15 }),
             " Approve"
           ] }),
@@ -23811,14 +23817,14 @@ const PhotoLightbox = ({
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { maxWidth: 640, width: "100%", margin: "0 auto", color: "#fff" }, children: [
           !photo.is_reference && /* @__PURE__ */ jsxs(Fragment, { children: [
-            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, marginBottom: 12, color: photo.status === "approved" ? TEAL$4 : photo.status === "rejected" ? "#ff9d9d" : "#f5a524" }, children: [
+            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, marginBottom: 12, color: photo.status === "approved" ? TEAL$5 : photo.status === "rejected" ? "#ff9d9d" : "#f5a524" }, children: [
               photo.status === "approved" && `✅ Approved — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
               photo.status === "rejected" && `✕ Changes needed — ${photo.decided_by_name || "Someone"}${photo.decided_at ? ` · ${timeAgo(photo.decided_at)}` : ""}`,
               photo.status === "awaiting" && "⏳ Awaiting approval",
               photo.feedback && /* @__PURE__ */ jsx("div", { style: { color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 }, children: photo.feedback })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$4), children: [
+              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$5), children: [
                 /* @__PURE__ */ jsx(Check$1, { size: 16 }),
                 " Approve"
               ] }),
@@ -23991,7 +23997,7 @@ const ReferenceSearch = ({ items, onAttach }) => {
           padding: "0 16px",
           background: "none",
           border: "none",
-          color: TEAL$4,
+          color: TEAL$5,
           fontFamily: "'Inter Tight', sans-serif",
           fontSize: 14,
           fontWeight: 700,
@@ -24037,7 +24043,7 @@ const ReferenceSearch = ({ items, onAttach }) => {
               minHeight: 44,
               padding: "0 18px",
               borderRadius: 10,
-              background: TEAL$4,
+              background: TEAL$5,
               color: "#04231d",
               border: "none",
               fontWeight: 700,
@@ -24417,12 +24423,12 @@ async function exportBreakdownToPDF(input) {
   const doc = await buildBreakdownPDF(input);
   doc.save(breakdownFileName(input));
 }
-const panel$3 = {
+const panel$4 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const ghostBtn$1 = {
+const ghostBtn$2 = {
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -24757,7 +24763,7 @@ const BreakdownWorkspace = ({
       className: "sb-tap",
       "aria-label": "Export PDF",
       style: {
-        ...ghostBtn$1,
+        ...ghostBtn$2,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -24775,7 +24781,7 @@ const BreakdownWorkspace = ({
     "div",
     {
       style: {
-        ...panel$3,
+        ...panel$4,
         position: "absolute",
         right: 0,
         bottom: "calc(100% + 8px)",
@@ -24835,7 +24841,7 @@ const BreakdownWorkspace = ({
     }
   );
   if (loading) {
-    return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading the breakdown…"
     ] });
@@ -24867,7 +24873,7 @@ const BreakdownWorkspace = ({
         scenes.map((s) => {
           const active = s.id === sceneId;
           return /* @__PURE__ */ jsxs("div", { style: {
-            ...panel$3,
+            ...panel$4,
             padding: 14,
             minWidth: 168,
             flex: "0 0 auto",
@@ -24913,13 +24919,13 @@ const BreakdownWorkspace = ({
           {
             onClick: onRequestAddScene,
             style: {
-              ...panel$3,
+              ...panel$4,
               padding: 14,
               minWidth: 168,
               flex: "0 0 auto",
               cursor: "pointer",
               border: "1px dashed rgba(0,212,170,0.4)",
-              color: TEAL$4,
+              color: TEAL$5,
               background: "rgba(0,212,170,0.05)",
               display: "flex",
               alignItems: "center",
@@ -24938,7 +24944,7 @@ const BreakdownWorkspace = ({
         )
       ] })
     ] }),
-    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 64 }, children: [
+    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 64 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: sceneTitle(selectedScene) }),
       selectedScene.label && selectedScene.scene_number && /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: selectedScene.label }),
       (() => {
@@ -24956,7 +24962,7 @@ const BreakdownWorkspace = ({
             "/5 departments signed off",
             sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""
           ] }),
-          /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$4, transition: "width .3s" } }) })
+          /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$5, transition: "width .3s" } }) })
         ] });
       })(),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap", alignItems: "center" }, children: [
@@ -24970,7 +24976,7 @@ const BreakdownWorkspace = ({
               borderRadius: 10,
               background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
               border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-              color: view === key ? TEAL$4 : "rgba(255,255,255,0.7)",
+              color: view === key ? TEAL$5 : "rgba(255,255,255,0.7)",
               fontSize: 14,
               fontWeight: 700,
               cursor: "pointer",
@@ -25009,7 +25015,7 @@ const BreakdownWorkspace = ({
                 borderRadius: 9999,
                 background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
                 border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-                color: active ? TEAL$4 : "rgba(255,255,255,0.7)",
+                color: active ? TEAL$5 : "rgba(255,255,255,0.7)",
                 fontSize: 14,
                 fontWeight: 600,
                 cursor: "pointer",
@@ -25029,7 +25035,7 @@ const BreakdownWorkspace = ({
                   width: 8,
                   height: 8,
                   borderRadius: 9999,
-                  background: so.status === "good" ? TEAL$4 : "#f5a524"
+                  background: so.status === "good" ? TEAL$5 : "#f5a524"
                 } })
               ]
             },
@@ -25077,7 +25083,7 @@ const BreakdownWorkspace = ({
         "button",
         {
           onClick: () => setShowScript((v2) => !v2),
-          style: { ...ghostBtn$1, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
+          style: { ...ghostBtn$2, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
           children: [
             /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: showScript ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
             "View scene script"
@@ -25099,8 +25105,8 @@ const BreakdownWorkspace = ({
         color: "rgba(255,255,255,0.75)"
       }, children: selectedScene.script_text || "No script text saved." })
     ] }),
-    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
-    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
+    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
+    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
     selectedScene && /* @__PURE__ */ jsx("div", { className: "bw-export-mobile", children: /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
       exportOpen && exportMenu,
       exportButton
@@ -25110,10 +25116,10 @@ const BreakdownWorkspace = ({
       {
         onClick: () => setDeleteScene(null),
         style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 },
-        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$4, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }, children: [
             /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Delete scene" }),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
           ] }),
           /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
             "Delete ",
@@ -25125,11 +25131,11 @@ const BreakdownWorkspace = ({
               "button",
               {
                 onClick: confirmDeleteScene,
-                style: { ...ghostBtn$1, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
+                style: { ...ghostBtn$2, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
                 children: "Delete"
               }
             ),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$1, children: "Cancel" })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$2, children: "Cancel" })
           ] })
         ] })
       }
@@ -25151,7 +25157,7 @@ const BreakdownWorkspace = ({
     )
   ] });
 };
-const panel$2 = {
+const panel$3 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
@@ -25231,7 +25237,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
     onChange({ share_token: token });
     toast({ title: "New link created", description: "The old link stopped working straight away." });
   };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 20, marginTop: 14 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginTop: 14 }, children: [
     /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "Share with crew" }),
     /* @__PURE__ */ jsx("p", { style: { fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: 8 }, children: "Anyone with this link can work through the checklists — no account needed." }),
     /* @__PURE__ */ jsx("div", { style: {
@@ -25246,7 +25252,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
     }, children: link }),
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
-      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$4 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$5 }, children: [
         /* @__PURE__ */ jsx(Copy, { size: 15 }),
         " Copy link"
       ] }),
@@ -25315,6 +25321,270 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
         ] }),
         /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.4)" }, children: timeAgo(c.last_seen_at) })
       ] }, c.id)) })
+    ] })
+  ] });
+};
+const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, created_at";
+const TEAL$4 = "#00d4aa";
+const panel$2 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const inputStyle$3 = {
+  width: "100%",
+  minHeight: 44,
+  fontSize: 16,
+  padding: "10px 12px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  color: "#fff",
+  fontFamily: "'Inter Tight', sans-serif",
+  boxSizing: "border-box"
+};
+const primaryBtn$2 = {
+  minHeight: 44,
+  padding: "0 20px",
+  borderRadius: 10,
+  background: TEAL$4,
+  color: "#04231d",
+  border: "none",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const ghostBtn$1 = {
+  minHeight: 44,
+  padding: "0 16px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const Modal = ({
+  title,
+  children,
+  onClose
+}) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    onClick: onClose,
+    style: {
+      position: "fixed",
+      inset: 0,
+      zIndex: 60,
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16
+    },
+    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$2, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
+        /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
+        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+      ] }),
+      children
+    ] })
+  }
+);
+const ProductionPicker = ({
+  enableShare = false,
+  clearParamsOnChange = [],
+  emptyTitle = "Create your first production",
+  emptyText = "Give it a name, then everything else hangs off it.",
+  onSelect,
+  onProjectsLoaded
+}) => {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const projectId = searchParams.get("project") || "";
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showNewProject, setShowNewProject] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newCompany, setNewCompany] = useState("");
+  const [newStatus, setNewStatus] = useState("in_production");
+  const [newStart, setNewStart] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
+  const [renaming, setRenaming] = useState(false);
+  const [renameValue, setRenameValue] = useState("");
+  const [showShare, setShowShare] = useState(false);
+  const selected = useMemo(
+    () => projects.find((p) => p.id === projectId) || null,
+    [projects, projectId]
+  );
+  const setParams = useCallback((next) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(next).forEach(([k, v2]) => {
+      if (v2) params.set(k, v2);
+      else params.delete(k);
+    });
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const selectProject = (id) => {
+    const cleared = { project: id };
+    clearParamsOnChange.forEach((k) => {
+      cleared[k] = null;
+    });
+    setParams(cleared);
+    setShowShare(false);
+  };
+  const loadProjects = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data } = await supabase.from("breakdown_projects").select(PRODUCTION_FIELDS).eq("owner_id", user.id).order("created_at", { ascending: false });
+    const list = data || [];
+    setProjects(list);
+    setLoading(false);
+    onProjectsLoaded == null ? void 0 : onProjectsLoaded(list);
+    if (list.length && !list.some((p) => p.id === projectId)) {
+      const cleared = { project: list[0].id };
+      clearParamsOnChange.forEach((k) => {
+        cleared[k] = null;
+      });
+      setParams(cleared);
+    }
+  }, [user, projectId, setParams]);
+  useEffect(() => {
+    loadProjects();
+  }, [user]);
+  useEffect(() => {
+    onSelect == null ? void 0 : onSelect(selected);
+  }, [selected]);
+  const createProject = async () => {
+    if (!user || !newTitle.trim()) return;
+    setCreating(true);
+    setError("");
+    const { data, error: err } = await supabase.from("breakdown_projects").insert({
+      owner_id: user.id,
+      title: newTitle.trim(),
+      company: newCompany.trim() || null,
+      status: newStatus,
+      start_date: newStart || null
+    }).select(PRODUCTION_FIELDS).single();
+    setCreating(false);
+    if (err || !data) {
+      setError((err == null ? void 0 : err.message) || "Could not create the production.");
+      return;
+    }
+    setProjects((prev) => [data, ...prev]);
+    setShowNewProject(false);
+    setNewTitle("");
+    setNewCompany("");
+    setNewStatus("in_production");
+    setNewStart("");
+    selectProject(data.id);
+  };
+  const saveRename = async () => {
+    if (!selected || !renameValue.trim()) {
+      setRenaming(false);
+      return;
+    }
+    const title = renameValue.trim();
+    await supabase.from("breakdown_projects").update({ title }).eq("id", selected.id);
+    setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, title } : p));
+    setRenaming(false);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+      " Loading your productions…"
+    ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 32, textAlign: "center" }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: emptyTitle }),
+      /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: emptyText }),
+      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$2, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
+    ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 16 }, children: [
+      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
+          /* @__PURE__ */ jsx(
+            "select",
+            {
+              "aria-label": "Select production",
+              value: projectId,
+              onChange: (e) => selectProject(e.target.value),
+              style: { ...inputStyle$3, maxWidth: 320 },
+              children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
+            }
+          ),
+          selected && /* @__PURE__ */ jsx(
+            "button",
+            {
+              "aria-label": "Rename production",
+              onClick: () => {
+                setRenameValue(selected.title);
+                setRenaming(true);
+              },
+              style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
+              children: /* @__PURE__ */ jsx(Pencil, { size: 16 })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto" }, children: [
+          enableShare && selected && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn$1, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+            /* @__PURE__ */ jsx(Share2, { size: 16 }),
+            " Share with crew"
+          ] }),
+          /* @__PURE__ */ jsx("button", { style: primaryBtn$2, onClick: () => setShowNewProject(true), children: "+ New Project" })
+        ] })
+      ] }),
+      (selected == null ? void 0 : selected.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selected.company }),
+      enableShare && selected && showShare && /* @__PURE__ */ jsx(
+        SharePanel,
+        {
+          projectId: selected.id,
+          projectTitle: selected.title,
+          shareToken: selected.share_token,
+          sharingEnabled: selected.sharing_enabled,
+          onChange: (patch) => setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, ...patch } : p))
+        }
+      )
+    ] }),
+    showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
+        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$3 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
+        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$3 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
+        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$3, children: [
+          /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
+          /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
+          /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
+        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$3 })
+      ] }),
+      error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: createProject,
+          disabled: creating || !newTitle.trim(),
+          style: { ...primaryBtn$2, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
+          children: creating ? "Creating…" : "Create production"
+        }
+      )
+    ] }) }),
+    renaming && selected && /* @__PURE__ */ jsxs(Modal, { title: "Rename production", onClose: () => setRenaming(false), children: [
+      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$3 }),
+      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$2, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+        /* @__PURE__ */ jsx(Check$1, { size: 16 }),
+        " Save"
+      ] })
     ] })
   ] });
 };
@@ -25627,15 +25897,14 @@ function createCrewAdapter(opts) {
     }
   };
 }
-const SITE = "https://filmmakergenius.com";
+const SITE$1 = "https://filmmakergenius.com";
 const TEAL$3 = "#00d4aa";
-const STEPS$3 = [
+const STEPS$4 = [
   { n: 1, title: "Upload your scene", text: "PDF or paste text." },
   { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
   { n: 3, title: "Share a private link with your crew", text: "One link per production — no accounts needed." },
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." }
 ];
-const PROJECT_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, created_at";
 const panel$1 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
@@ -25677,48 +25946,15 @@ const ghostBtn = {
   cursor: "pointer",
   fontFamily: "'Inter Tight', sans-serif"
 };
-const Modal = ({ title, children, onClose }) => /* @__PURE__ */ jsx(
-  "div",
-  {
-    onClick: onClose,
-    style: {
-      position: "fixed",
-      inset: 0,
-      zIndex: 60,
-      background: "rgba(0,0,0,0.7)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 16
-    },
-    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$1, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
-      /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
-        /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
-        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
-      ] }),
-      children
-    ] })
-  }
-);
 const ScriptBreakdown = () => {
   var _a2;
   const { user, userProfile } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const projectId = searchParams.get("project") || "";
   const sceneId = searchParams.get("scene") || "";
-  const [projects, setProjects] = useState([]);
-  const [loadingProjects, setLoadingProjects] = useState(true);
+  const [selectedProject, setSelectedProject] = useState(null);
   const [sceneCount, setSceneCount] = useState(0);
   const [reloadKey, setReloadKey] = useState(0);
-  const [showNewProject, setShowNewProject] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newCompany, setNewCompany] = useState("");
-  const [newStatus, setNewStatus] = useState("in_production");
-  const [newStart, setNewStart] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [renaming, setRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
-  const [showShare, setShowShare] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   const [scriptText, setScriptText] = useState("");
   const [sceneNumber, setSceneNumber] = useState("");
@@ -25727,7 +25963,6 @@ const ScriptBreakdown = () => {
   const [error, setError] = useState("");
   const fileInputRef = useRef(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
-  const selectedProject = useMemo(() => projects.find((p) => p.id === projectId) || null, [projects, projectId]);
   const setParams = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(next).forEach(([k, v2]) => {
@@ -25741,54 +25976,6 @@ const ScriptBreakdown = () => {
     () => createOwnerAdapter({ projectId, actorName }),
     [projectId, actorName]
   );
-  const loadProjects = useCallback(async () => {
-    if (!user) return;
-    setLoadingProjects(true);
-    const { data } = await supabase.from("breakdown_projects").select(PROJECT_FIELDS).eq("owner_id", user.id).order("created_at", { ascending: false });
-    const list = data || [];
-    setProjects(list);
-    setLoadingProjects(false);
-    if (list.length && !list.some((p) => p.id === projectId)) {
-      setParams({ project: list[0].id, scene: null });
-    }
-  }, [user, projectId, setParams]);
-  useEffect(() => {
-    loadProjects();
-  }, [user]);
-  const createProject = async () => {
-    if (!user || !newTitle.trim()) return;
-    setCreating(true);
-    setError("");
-    const { data, error: err } = await supabase.from("breakdown_projects").insert({
-      owner_id: user.id,
-      title: newTitle.trim(),
-      company: newCompany.trim() || null,
-      status: newStatus,
-      start_date: newStart || null
-    }).select(PROJECT_FIELDS).single();
-    setCreating(false);
-    if (err || !data) {
-      setError((err == null ? void 0 : err.message) || "Could not create the production.");
-      return;
-    }
-    setProjects((prev) => [data, ...prev]);
-    setShowNewProject(false);
-    setNewTitle("");
-    setNewCompany("");
-    setNewStatus("in_production");
-    setNewStart("");
-    setParams({ project: data.id, scene: null });
-  };
-  const saveRename = async () => {
-    if (!selectedProject || !renameValue.trim()) {
-      setRenaming(false);
-      return;
-    }
-    const title = renameValue.trim();
-    await supabase.from("breakdown_projects").update({ title }).eq("id", selectedProject.id);
-    setProjects((prev) => prev.map((p) => p.id === selectedProject.id ? { ...p, title } : p));
-    setRenaming(false);
-  };
   const handleFile = (file) => {
     setError("");
     if (file.type === "text/plain" || file.name.toLowerCase().endsWith(".txt")) {
@@ -25836,7 +26023,7 @@ const ScriptBreakdown = () => {
       {
         title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
         description: "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",
-        canonical: `${SITE}/script-breakdown`
+        canonical: `${SITE$1}/script-breakdown`
       }
     ),
     /* @__PURE__ */ jsx("style", { children: `
@@ -25874,7 +26061,7 @@ const ScriptBreakdown = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$4.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -25890,62 +26077,15 @@ const ScriptBreakdown = () => {
           ] })
         ] }, s.n)) })
       ] }),
-      /* @__PURE__ */ jsx("div", { style: { paddingBottom: 24 }, children: loadingProjects ? /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
-        /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
-        " Loading your productions…"
-      ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 32, textAlign: "center" }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: "Create your first production" }),
-        /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: "Give it a name, then add scenes and let the breakdown do the rest." }),
-        /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$1, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
-      ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 16 }, children: [
-        /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
-            /* @__PURE__ */ jsx(
-              "select",
-              {
-                "aria-label": "Select production",
-                value: projectId,
-                onChange: (e) => {
-                  setParams({ project: e.target.value, scene: null });
-                  setShowShare(false);
-                },
-                style: { ...inputStyle$2, maxWidth: 320 },
-                children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
-              }
-            ),
-            selectedProject && /* @__PURE__ */ jsx(
-              "button",
-              {
-                "aria-label": "Rename production",
-                onClick: () => {
-                  setRenameValue(selectedProject.title);
-                  setRenaming(true);
-                },
-                style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
-                children: /* @__PURE__ */ jsx(Pencil, { size: 16 })
-              }
-            )
-          ] }),
-          /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto" }, children: [
-            selectedProject && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
-              /* @__PURE__ */ jsx(Share2, { size: 16 }),
-              " Share with crew"
-            ] }),
-            /* @__PURE__ */ jsx("button", { style: primaryBtn$1, onClick: () => setShowNewProject(true), children: "+ New Project" })
-          ] })
-        ] }),
-        (selectedProject == null ? void 0 : selectedProject.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selectedProject.company }),
-        selectedProject && showShare && /* @__PURE__ */ jsx(
-          SharePanel,
-          {
-            projectId: selectedProject.id,
-            projectTitle: selectedProject.title,
-            shareToken: selectedProject.share_token,
-            sharingEnabled: selectedProject.sharing_enabled,
-            onChange: (patch) => setProjects((prev) => prev.map((p) => p.id === selectedProject.id ? { ...p, ...patch } : p))
-          }
-        )
-      ] }) }),
+      /* @__PURE__ */ jsx(
+        ProductionPicker,
+        {
+          enableShare: true,
+          clearParamsOnChange: ["scene"],
+          emptyText: "Give it a name, then add scenes and let the breakdown do the rest.",
+          onSelect: setSelectedProject
+        }
+      ),
       selectedProject && showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 20, marginBottom: 32 }, children: [
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }, children: [
           /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "New scene" }),
@@ -26074,44 +26214,88 @@ const ScriptBreakdown = () => {
         selectedProject.id
       ),
       sceneCount === 0 && /* @__PURE__ */ jsx("div", { style: { height: 24 } })
-    ] }),
-    showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
-        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$2 })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
-        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$2 })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
-        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$2, children: [
-          /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
-          /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
-          /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
-        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$2 })
-      ] }),
-      error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: createProject,
-          disabled: creating || !newTitle.trim(),
-          style: { ...primaryBtn$1, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
-          children: creating ? "Creating…" : "Create production"
+    ] })
+  ] });
+};
+const SITE = "https://filmmakergenius.com";
+const STEPS$3 = [
+  { n: 1, title: "Pick your production", text: "The same productions you use for script breakdowns." },
+  { n: 2, title: "Crew submit receipts or invoices", text: "Snap a photo on set, or build an invoice." },
+  { n: 3, title: "Approve, reject or mark paid", text: "You decide what gets reimbursed." },
+  { n: 4, title: "Export for your accountant", text: "Clean reports by department and currency." }
+];
+const ReceiptsExpenses = () => {
+  const [selectedProject, setSelectedProject] = useState(null);
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
+    /* @__PURE__ */ jsx(
+      Seo,
+      {
+        title: "Film Production Expense Tracker — Receipts & Invoices | Filmmaker Genius",
+        description: "Crew snap receipts or create invoices; producers approve, track spend by department and currency, and export reports.",
+        canonical: `${SITE}/receipts-expenses`
+      }
+    ),
+    /* @__PURE__ */ jsx("style", { children: `
+        @media (max-width: 800px) { .re-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 560px) {
+          .re-steps { grid-template-columns: 1fr !important; }
+          .re-h1 { font-size: 34px !important; }
+          .sb-row { flex-direction: column !important; align-items: stretch !important; }
+          .sb-row > * { width: 100%; }
         }
-      )
-    ] }) }),
-    renaming && selectedProject && /* @__PURE__ */ jsxs(Modal, { title: "Rename production", onClose: () => setRenaming(false), children: [
-      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$2 }),
-      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$1, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
-        /* @__PURE__ */ jsx(Check$1, { size: 16 }),
-        " Save"
+        .re-step-num {
+          width: 28px; height: 28px; border-radius: 9999px;
+          display: flex; align-items: center; justify-content: center;
+          background: rgba(0,212,170,0.12); color: #00d4aa;
+          border: 1px solid rgba(0,212,170,0.4);
+          font-size: 13px; font-weight: 700; flex: 0 0 auto;
+        }
+      ` }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px", overflowX: "hidden" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { padding: "64px 0 36px", textAlign: "center" }, children: [
+        /* @__PURE__ */ jsx("h1", { className: "re-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: 0 }, children: "Receipts & Expenses" }),
+        /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)", maxWidth: 720, margin: "16px auto 0", lineHeight: 1.65 }, children: "Crew snap receipts or build invoices from set. You approve them, track spending by department, and export clean reports." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 40 }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.3)",
+          marginBottom: 20
+        }, children: "How it works" }),
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "re-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+          borderRadius: 16,
+          padding: 20,
+          background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 12
+        }, children: [
+          /* @__PURE__ */ jsx("span", { className: "re-step-num", children: s.n }),
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.3 }, children: s.title }),
+            /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 6, lineHeight: 1.5 }, children: s.text })
+          ] })
+        ] }, s.n)) })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ProductionPicker,
+        {
+          emptyText: "Give it a name, then log every receipt and invoice against it.",
+          onSelect: setSelectedProject
+        }
+      ),
+      selectedProject && /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 32, textAlign: "center", marginBottom: 48 }, children: [
+        /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700 }, children: "Expense tracking is coming next." }),
+        /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.5)", fontSize: 14, marginTop: 10, lineHeight: 1.6 }, children: [
+          "Receipts, invoices and approvals for ",
+          selectedProject.title,
+          " will appear here."
+        ] })
       ] })
     ] })
   ] });
@@ -26137,7 +26321,7 @@ const primaryBtn = {
   minHeight: 44,
   padding: "0 20px",
   borderRadius: 10,
-  background: TEAL$4,
+  background: TEAL$5,
   color: "#04231d",
   border: "none",
   fontWeight: 700,
@@ -26276,7 +26460,7 @@ const CrewBreakdown = () => {
           fontWeight: 700,
           letterSpacing: "0.1em",
           textTransform: "uppercase",
-          color: TEAL$4,
+          color: TEAL$5,
           marginBottom: 12
         }, children: "Script breakdown" }),
         /* @__PURE__ */ jsx("h1", { className: "cb-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 44, lineHeight: 1.05, margin: 0 }, children: (project == null ? void 0 : project.title) || "Crew checklist" }),
@@ -26295,7 +26479,7 @@ const CrewBreakdown = () => {
                 setDepartment(identity.department);
                 setShowJoin(true);
               },
-              style: { background: "none", border: "none", color: TEAL$4, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
+              style: { background: "none", border: "none", color: TEAL$5, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
               children: "(change)"
             }
           )
@@ -77740,6 +77924,10 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/script-breakdown", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/script-breakdown" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ScriptBreakdown, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/receipts-expenses", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/receipts-expenses" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ReceiptsExpenses, {}) })
   ] }) }),
   /* @__PURE__ */ jsx(Route, { path: "/b/:token", element: /* @__PURE__ */ jsx(CrewBreakdown, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
