@@ -5,8 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ghostBtn, panel, primaryBtn } from "@/components/production/ProductionPicker";
 import { EXPENSE_FIELDS, toExpense, type Expense } from "@/lib/expenses/types";
-import { parseAmount } from "@/lib/expenses/currency";
-import { removeExpenseFolder, signExpensePaths, pathIsPdf } from "@/lib/expenses/files";
+import { removeExpenseFolder, signExpensePaths } from "@/lib/expenses/files";
 import { SCENE_FIELDS, ITEM_FIELDS, DEPARTMENTS, type BreakdownScene, type BreakdownItem } from "@/components/breakdown/types";
 import ExpenseSummary from "./ExpenseSummary";
 import ExpenseFilters, { EMPTY_FILTERS, type ExpenseFilterState } from "./ExpenseFilters";
@@ -165,17 +164,12 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Pr
     }
   };
 
-  const onSaved = async (saved: Expense) => {
+  const onSaved = (saved: Expense) => {
     setExpenses((prev) => {
       const exists = prev.some((e) => e.id === saved.id);
       return exists ? prev.map((e) => (e.id === saved.id ? saved : e)) : [saved, ...prev];
     });
-    const paths = [saved.receipt_path, saved.item_photo_path].filter((p): p is string => !!p);
-    if (paths.length) setSignedUrls((prev) => ({ ...prev, ...(await0(paths)) }));
   };
-
-  // signExpensePaths is async; keep onSaved sync-safe by signing in an effect instead.
-  function await0(_paths: string[]): Record<string, string> { return {}; }
 
   useEffect(() => {
     const missing = expenses
@@ -252,4 +246,3 @@ const ExpenseWorkspace = ({ projectId, company, defaultCurrency, actorName }: Pr
 };
 
 export default ExpenseWorkspace;
-export { pathIsPdf, parseAmount };

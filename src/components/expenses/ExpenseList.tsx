@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { ChevronDown, ChevronRight, FileText, Loader2, Pencil, Trash2 } from "lucide-react";
 import { panel, ghostBtn, inputStyle } from "@/components/production/ProductionPicker";
 import { formatMoney } from "@/lib/expenses/currency";
@@ -226,9 +226,8 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
           </thead>
           <tbody>
             {expenses.map((e) => (
-              <>
+              <Fragment key={e.id}>
                 <tr
-                  key={e.id}
                   onClick={() => toggle(e.id)}
                   style={{ cursor: "pointer", borderTop: "1px solid rgba(255,255,255,0.06)" }}
                 >
@@ -245,11 +244,11 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
                   <td style={td}><StatusBadge status={e.status} /></td>
                 </tr>
                 {openId === e.id && (
-                  <tr key={`${e.id}-details`}>
+                  <tr>
                     <td colSpan={9} style={{ padding: 0, background: "rgba(255,255,255,0.02)" }}>{details(e)}</td>
                   </tr>
                 )}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>
