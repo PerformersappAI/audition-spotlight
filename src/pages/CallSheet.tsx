@@ -1160,12 +1160,18 @@ const CallSheet = () => {
             <TabsContent value="cast">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <CardTitle>Cast</CardTitle>
-                    <Button type="button" onClick={addCast} size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Cast Member
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => setImportTarget("cast")}>
+                        <Users className="h-4 w-4 mr-2" />
+                        Import from Cast &amp; Crew List
+                      </Button>
+                      <Button type="button" onClick={addCast} size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Cast Member
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
