@@ -171,53 +171,162 @@ serve(async (req) => {
     const aiSceneNumber = typeof parsed.scene_number === 'string' ? parsed.scene_number.trim() : '';
     const sceneNumber = userSceneNumber || aiSceneNumber || null;
 
-    // sort_order = current max + 1
-    const { data: lastScene } = await admin
-      .from('breakdown_scenes')
-      .select('sort_order')
-      .eq('project_id', projectId)
-      .order('sort_order', { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    const sortOrder = (lastScene?.sort_order ?? -1) + 1;
+    let sceneId: string;
+    let merge = { kept: 0, removed: 0, added: 0 };
 
-    const { data: scene, error: sceneError } = await admin
-      .from('breakdown_scenes')
-      .insert({
-        project_id: projectId,
-        scene_number: sceneNumber,
-        label,
-        script_text: scriptText,
-        sort_order: sortOrder,
-        analyzed_at: new Date().toISOString(),
-      })
-      .select('id')
-      .single();
-
-    if (sceneError || !scene) {
-      console.error('scene insert failed', sceneError?.message);
-      return json({ error: 'Could not save the scene' }, 500);
-    }
-
-    const rows = Object.entries(departments).flatMap(([dept, items]) =>
-      items.map((text, index) => ({
-        scene_id: scene.id,
-        project_id: projectId,
-        department: dept,
-        text,
-        original_text: text,
-        source: 'ai',
-        sort_order: index,
-      })),
-    );
-
-    if (rows.length > 0) {
-      const { error: itemsError } = await admin.from('breakdown_items').insert(rows);
-      if (itemsError) {
-        console.error('items insert failed', itemsError.message);
-        await admin.from('breakdown_scenes').delete().eq('id', scene.id);
-        return json({ error: 'Could not save the checklist items' }, 500);
+    if (existingSceneId) {
+      // ---- RE-RUN on an existing scene: update + merge ---------------------
+      const { data: existingScene, error: findError } = await admin
+        .from('breakdown_scenes')
+        .select('id, project_id')
+        .eq('id', existingSceneId)
+        .maybeSingle();
+      if (findError) {
+        console.error('scene lookup failed', findError.message);
+        return json({ error: 'Could not load the scene' }, 500);
       }
+      if (!existingScene || existingScene.project_id !== projectId) {
+        return json({ error: 'Scene not found in this project' }, 404);
+      }
+      sceneId = existingScene.id;
+
+      const { error: updateError } = await admin
+        .from('breakdown_scenes')
+        .update({
+          scene_number: sceneNumber,
+          label,
+          script_text: scriptText,
+          analyzed_at: new Date().toISOString(),
+        })
+        .eq('id', sceneId);
+      if (updateError) {
+        console.error('scene update failed', updateError.message);
+        return json({ error: 'Could not save the scene' }, 500);
+      }
+
+      const { data: oldItems, error: oldItemsError } = await admin
+        .from('breakdown_items')
+        .select('id, department, text, original_text, source, checked, sort_order')
+        .eq('scene_id', sceneId);
+      if (oldItemsError) {
+        console.error('items load failed', oldItemsError.message);
+        return json({ error: 'Could not load the existing checklist' }, 500);
+      }
+      const previous = oldItems || [];
+
+      const { data: photoRows } = await admin
+        .from('breakdown_photos')
+        .select('item_id')
+        .in('item_id', previous.length ? previous.map((i) => i.id) : ['00000000-0000-0000-0000-000000000000']);
+      const withPhotos = new Set((photoRows || []).map((p: { item_id: string }) => p.item_id));
+
+      const keep = previous.filter((i) =>
+        i.checked ||
+        i.source !== 'ai' ||
+        (i.original_text !== null && i.text !== i.original_text) ||
+        withPhotos.has(i.id)
+      );
+      const drop = previous.filter((i) => !keep.some((k) => k.id === i.id));
+
+      if (drop.length) {
+        const { error: delError } = await admin
+          .from('breakdown_items')
+          .delete()
+          .in('id', drop.map((i) => i.id));
+        if (delError) {
+          console.error('item cleanup failed', delError.message);
+          return json({ error: 'Could not update the checklist' }, 500);
+        }
+      }
+
+      const keptByDept: Record<string, typeof keep> = {};
+      keep.forEach((i) => {
+        keptByDept[i.department] = keptByDept[i.department] || [];
+        keptByDept[i.department].push(i);
+      });
+
+      const newRows: Record<string, unknown>[] = [];
+      for (const [dept, texts] of Object.entries(departments)) {
+        const kept = keptByDept[dept] || [];
+        const seen = new Set(kept.map((i) => i.text.trim().toLowerCase()));
+        let order = kept.reduce((max, i) => Math.max(max, i.sort_order), -1) + 1;
+        for (const text of texts) {
+          const key = text.trim().toLowerCase();
+          if (seen.has(key)) continue;
+          seen.add(key);
+          newRows.push({
+            scene_id: sceneId,
+            project_id: projectId,
+            department: dept,
+            text,
+            original_text: text,
+            source: 'ai',
+            sort_order: order++,
+          });
+        }
+      }
+
+      if (newRows.length) {
+        const { error: insertError } = await admin.from('breakdown_items').insert(newRows);
+        if (insertError) {
+          console.error('items insert failed', insertError.message);
+          return json({ error: 'Could not save the new checklist items' }, 500);
+        }
+      }
+
+      merge = { kept: keep.length, removed: drop.length, added: newRows.length };
+    } else {
+      // ---- NEW scene -------------------------------------------------------
+      // sort_order = current max + 1
+      const { data: lastScene } = await admin
+        .from('breakdown_scenes')
+        .select('sort_order')
+        .eq('project_id', projectId)
+        .order('sort_order', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      const sortOrder = (lastScene?.sort_order ?? -1) + 1;
+
+      const { data: scene, error: sceneError } = await admin
+        .from('breakdown_scenes')
+        .insert({
+          project_id: projectId,
+          scene_number: sceneNumber,
+          label,
+          script_text: scriptText,
+          sort_order: sortOrder,
+          analyzed_at: new Date().toISOString(),
+        })
+        .select('id')
+        .single();
+
+      if (sceneError || !scene) {
+        console.error('scene insert failed', sceneError?.message);
+        return json({ error: 'Could not save the scene' }, 500);
+      }
+      sceneId = scene.id;
+
+      const rows = Object.entries(departments).flatMap(([dept, items]) =>
+        items.map((text, index) => ({
+          scene_id: scene.id,
+          project_id: projectId,
+          department: dept,
+          text,
+          original_text: text,
+          source: 'ai',
+          sort_order: index,
+        })),
+      );
+
+      if (rows.length > 0) {
+        const { error: itemsError } = await admin.from('breakdown_items').insert(rows);
+        if (itemsError) {
+          console.error('items insert failed', itemsError.message);
+          await admin.from('breakdown_scenes').delete().eq('id', scene.id);
+          return json({ error: 'Could not save the checklist items' }, 500);
+        }
+      }
+      merge = { kept: 0, removed: 0, added: rows.length };
     }
 
     const chargeRes = await charge(user.id, cost, "breakdown-scene", { project_id: projectId });
@@ -234,8 +343,9 @@ serve(async (req) => {
     });
 
     return json({
-      scene_id: scene.id,
+      scene_id: sceneId,
       scene_number: sceneNumber,
+      merged: merge,
       counts: {
         props: departments.props.length,
         locations: departments.locations.length,
