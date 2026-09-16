@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Check, Loader2, Pencil, Share2, X } from "lucide-react";
+import { Check, Loader2, Pencil, Share2, Trash2, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
 import SharePanel from "@/components/breakdown/SharePanel";
+import { deleteProduction } from "@/lib/production/deleteProduction";
 
 export interface Production {
   id: string;
@@ -138,8 +140,19 @@ const ProductionPicker = ({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
-  const [renaming, setRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCompany, setEditCompany] = useState("");
+  const [editStatus, setEditStatus] = useState("in_production");
+  const [editStart, setEditStart] = useState("");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsError, setSettingsError] = useState("");
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
   const [showShare, setShowShare] = useState(false);
 
   const selected = useMemo(
@@ -210,12 +223,59 @@ const ProductionPicker = ({
     selectProject((data as Production).id);
   };
 
-  const saveRename = async () => {
-    if (!selected || !renameValue.trim()) { setRenaming(false); return; }
-    const title = renameValue.trim();
-    await supabase.from("breakdown_projects").update({ title }).eq("id", selected.id);
-    setProjects((prev) => prev.map((p) => (p.id === selected.id ? { ...p, title } : p)));
-    setRenaming(false);
+  const openSettings = () => {
+    if (!selected) return;
+    setEditTitle(selected.title);
+    setEditCompany(selected.company || "");
+    setEditStatus(selected.status || "in_production");
+    setEditStart(selected.start_date || "");
+    setSettingsError("");
+    setConfirmDelete(false);
+    setDeleteText("");
+    setDeleteError("");
+    setSettingsOpen(true);
+  };
+
+  const saveSettings = async () => {
+    if (!selected || !editTitle.trim()) return;
+    setSavingSettings(true);
+    setSettingsError("");
+    const patch = {
+      title: editTitle.trim(),
+      company: editCompany.trim() || null,
+      status: editStatus,
+      start_date: editStart || null,
+    };
+    const { error: err } = await supabase.from("breakdown_projects").update(patch).eq("id", selected.id);
+    setSavingSettings(false);
+    if (err) { setSettingsError(err.message); return; }
+    setProjects((prev) => prev.map((p) => (p.id === selected.id ? { ...p, ...patch } : p)));
+    setSettingsOpen(false);
+    toast({ title: "Production updated" });
+  };
+
+  const runDelete = async () => {
+    if (!selected) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteProduction(selected.id);
+    } catch (err: any) {
+      setDeleting(false);
+      setDeleteError(err?.message || "The production couldn't be deleted.");
+      return;
+    }
+    const remaining = projects.filter((p) => p.id !== selected.id);
+    setProjects(remaining);
+    setDeleting(false);
+    setConfirmDelete(false);
+    setSettingsOpen(false);
+    setShowShare(false);
+    onProjectsLoaded?.(remaining);
+    const cleared: Record<string, string | null> = { project: remaining[0]?.id || null };
+    clearParamsOnChange.forEach((k) => { cleared[k] = null; });
+    setParams(cleared);
+    toast({ title: "Production deleted", description: `“${selected.title}” and everything in it has been removed.` });
   };
 
   return (
@@ -246,8 +306,8 @@ const ProductionPicker = ({
               </select>
               {selected && (
                 <button
-                  aria-label="Rename production"
-                  onClick={() => { setRenameValue(selected.title); setRenaming(true); }}
+                  aria-label="Production settings"
+                  onClick={openSettings}
                   style={{ ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" }}
                 >
                   <Pencil size={16} />
@@ -314,12 +374,90 @@ const ProductionPicker = ({
         </Modal>
       )}
 
-      {renaming && selected && (
-        <Modal title="Rename production" onClose={() => setRenaming(false)}>
-          <input value={renameValue} onChange={(e) => setRenameValue(e.target.value)} style={inputStyle} />
-          <button onClick={saveRename} style={{ ...primaryBtn, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }}>
-            <Check size={16} /> Save
-          </button>
+      {settingsOpen && selected && (
+        <Modal title="Production settings" onClose={() => { if (!savingSettings) setSettingsOpen(false); }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Title</label>
+              <input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Production company (optional)</label>
+              <input value={editCompany} onChange={(e) => setEditCompany(e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Status</label>
+              <select value={editStatus} onChange={(e) => setEditStatus(e.target.value)} style={inputStyle}>
+                <option value="upcoming" style={{ background: "#10101b" }}>Upcoming</option>
+                <option value="in_production" style={{ background: "#10101b" }}>In production</option>
+                <option value="wrapped" style={{ background: "#10101b" }}>Wrapped</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Start date (optional)</label>
+              <input type="date" value={editStart} onChange={(e) => setEditStart(e.target.value)} style={inputStyle} />
+            </div>
+            {settingsError && <div style={{ color: "#ff9d9d", fontSize: 14 }}>{settingsError}</div>}
+            <button
+              onClick={saveSettings}
+              disabled={savingSettings || !editTitle.trim()}
+              style={{
+                ...primaryBtn, marginTop: 4, opacity: savingSettings || !editTitle.trim() ? 0.45 : 1,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              }}
+            >
+              {savingSettings ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : <><Check size={16} /> Save changes</>}
+            </button>
+
+            <div style={{ marginTop: 8, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+              <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }}>
+                Danger zone
+              </div>
+              <button
+                onClick={() => { setConfirmDelete(true); setDeleteText(""); setDeleteError(""); }}
+                style={{
+                  ...ghostBtn, width: "100%", color: "#ff8f8f",
+                  border: "1px solid rgba(255,92,92,0.45)", background: "transparent",
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                }}
+              >
+                <Trash2 size={16} /> Delete this production
+              </button>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {confirmDelete && selected && (
+        <Modal title="Delete production" onClose={() => { if (!deleting) setConfirmDelete(false); }}>
+          <p style={{ color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }}>
+            Delete {selected.title}? This permanently removes its scenes, checklists, photos, receipts, expenses,
+            messages, notes and crew link. Your cast &amp; crew contacts are kept.
+          </p>
+          <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "18px 0 6px" }}>
+            Type the production title to confirm
+          </label>
+          <input
+            value={deleteText}
+            onChange={(e) => setDeleteText(e.target.value)}
+            placeholder={selected.title}
+            style={inputStyle}
+          />
+          {deleteError && <div style={{ color: "#ff9d9d", fontSize: 14, marginTop: 12 }}>{deleteError}</div>}
+          <div className="sb-row" style={{ display: "flex", gap: 12, marginTop: 18 }}>
+            <button
+              onClick={runDelete}
+              disabled={deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase()}
+              style={{
+                ...ghostBtn, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700,
+                opacity: deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase() ? 0.4 : 1,
+                display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+              }}
+            >
+              {deleting ? <><Loader2 size={16} className="animate-spin" /> Deleting…</> : "Delete permanently"}
+            </button>
+            <button onClick={() => setConfirmDelete(false)} disabled={deleting} style={ghostBtn}>Cancel</button>
+          </div>
         </Modal>
       )}
     </div>

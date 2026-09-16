@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Download, Loader2, Plus, Trash2, X } from "lucide-react";
+import { ChevronDown, Download, Loader2, Pencil, Plus, Sparkles, Trash2, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "./DepartmentChecklist";
 import SignOffBox from "./SignOffBox";
@@ -16,6 +16,7 @@ import {
   TEAL,
 } from "./types";
 import { BreakdownAdapter } from "@/lib/breakdown/adapter";
+import { inputStyle } from "@/components/production/ProductionPicker";
 import { ImageError } from "@/lib/breakdown/imageDownscale";
 import { exportBreakdownToPDF } from "@/utils/exportBreakdownToPDF";
 
@@ -75,6 +76,12 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
   const [deleteScene, setDeleteScene] = useState<BreakdownScene | null>(null);
+  const [settingsScene, setSettingsScene] = useState<BreakdownScene | null>(null);
+  const [formNumber, setFormNumber] = useState("");
+  const [formLabel, setFormLabel] = useState("");
+  const [formScript, setFormScript] = useState("");
+  const [savingScene, setSavingScene] = useState(false);
+  const [rerunning, setRerunning] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [includeScript, setIncludeScript] = useState(false);
@@ -316,6 +323,60 @@ const BreakdownWorkspace = ({
     await reload();
   };
 
+  const openSceneSettings = (scene: BreakdownScene) => {
+    setSettingsScene(scene);
+    setFormNumber(scene.scene_number || "");
+    setFormLabel(scene.label || "");
+    setFormScript(scene.script_text || "");
+  };
+
+  const scenePatch = () => ({
+    scene_number: formNumber.trim() || null,
+    label: formLabel.trim() || null,
+    script_text: formScript,
+  });
+
+  const saveSceneSettings = async () => {
+    if (!settingsScene || !adapter.updateScene) return;
+    setSavingScene(true);
+    try {
+      await adapter.updateScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({ title: "Scene updated" });
+    } catch (err: any) {
+      failed(err?.message || "Please try again.");
+    } finally {
+      setSavingScene(false);
+    }
+  };
+
+  const rerunSceneBreakdown = async () => {
+    if (!settingsScene || !adapter.rerunScene) return;
+    if (formScript.trim().length < 20) {
+      failed("Add at least 20 characters of scene text first.");
+      return;
+    }
+    setRerunning(true);
+    try {
+      const merged = await adapter.rerunScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({
+        title: "Breakdown re-run",
+        description: `Updated: kept ${merged.kept}, removed ${merged.removed}, added ${merged.added}`,
+      });
+    } catch (err: any) {
+      if (err?.name !== "InsufficientCreditsError") {
+        failed(err?.message || "The breakdown couldn't be re-run.");
+      }
+    } finally {
+      setRerunning(false);
+    }
+  };
+
+
+
   const runExport = async (scope: "scene" | "all") => {
     setExportOpen(false);
     setExporting(true);
@@ -495,13 +556,24 @@ const BreakdownWorkspace = ({
                     </div>
                   </button>
                   {adapter.canManageScenes && (
-                    <button
-                      aria-label={`Delete ${sceneTitle(s)}`}
-                      onClick={() => setDeleteScene(s)}
-                      style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
-                    >
-                      <Trash2 size={15} />
-                    </button>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                      {adapter.updateScene && (
+                        <button
+                          aria-label={`Scene settings for ${sceneTitle(s)}`}
+                          onClick={() => openSceneSettings(s)}
+                          style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
+                        >
+                          <Pencil size={15} />
+                        </button>
+                      )}
+                      <button
+                        aria-label={`Delete ${sceneTitle(s)}`}
+                        onClick={() => setDeleteScene(s)}
+                        style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 }}
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   )}
                 </div>
               );
@@ -688,6 +760,79 @@ const BreakdownWorkspace = ({
           <div style={{ position: "relative" }}>
             {exportOpen && exportMenu}
             {exportButton}
+          </div>
+        </div>
+      )}
+
+      {/* SCENE SETTINGS */}
+      {settingsScene && (
+        <div
+          onClick={() => { if (!savingScene && !rerunning) setSettingsScene(null); }}
+          style={{ position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, overflowY: "auto" }}
+        >
+          <div onClick={(e) => e.stopPropagation()} style={{ ...panel, background: "#10101b", width: "100%", maxWidth: 560, padding: 24, margin: "auto" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+              <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }}>Scene settings</h2>
+              <button onClick={() => setSettingsScene(null)} aria-label="Close" style={{ ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <X size={18} />
+              </button>
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              <div className="sb-row" style={{ display: "flex", gap: 12 }}>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Scene number</label>
+                  <input value={formNumber} onChange={(e) => setFormNumber(e.target.value)} placeholder="e.g. 47A" style={inputStyle} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Label</label>
+                  <input value={formLabel} onChange={(e) => setFormLabel(e.target.value)} placeholder="e.g. Bar showdown" style={inputStyle} />
+                </div>
+              </div>
+              <div>
+                <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Scene script</label>
+                <textarea
+                  value={formScript}
+                  onChange={(e) => setFormScript(e.target.value)}
+                  style={{ ...inputStyle, minHeight: 220, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }}
+                />
+              </div>
+
+              <button
+                onClick={saveSceneSettings}
+                disabled={savingScene || rerunning}
+                style={{
+                  minHeight: 44, padding: "0 20px", borderRadius: 10, background: TEAL, color: "#04231d",
+                  border: "none", fontWeight: 700, fontSize: 15, cursor: "pointer",
+                  fontFamily: "'Inter Tight', sans-serif",
+                  opacity: savingScene || rerunning ? 0.5 : 1,
+                  display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                }}
+              >
+                {savingScene ? <><Loader2 size={16} className="animate-spin" /> Saving…</> : "Save changes"}
+              </button>
+
+              {adapter.rerunScene && (
+                <div style={{ marginTop: 4, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }}>
+                  <button
+                    onClick={rerunSceneBreakdown}
+                    disabled={savingScene || rerunning}
+                    style={{
+                      ...ghostBtn, width: "100%",
+                      opacity: savingScene || rerunning ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+                    }}
+                  >
+                    {rerunning
+                      ? <><Loader2 size={16} className="animate-spin" /> Re-running the breakdown…</>
+                      : <><Sparkles size={16} /> Re-run AI breakdown (1 credit)</>}
+                  </button>
+                  <p style={{ fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginTop: 10, marginBottom: 0 }}>
+                    Saves your edits, then adds anything new. Checked items, edits, your own notes and anything with photos are kept.
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

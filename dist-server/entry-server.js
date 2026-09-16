@@ -24842,6 +24842,647 @@ const ReferenceSearch = ({ items, onAttach }) => {
     ] })
   ] });
 };
+const panel$5 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const btn = {
+  minHeight: 44,
+  padding: "0 14px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 14,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  textDecoration: "none"
+};
+const randomToken = () => {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+};
+const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onChange }) => {
+  const [crew, setCrew] = useState([]);
+  const [loadingCrew, setLoadingCrew] = useState(true);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const link = `https://filmmakergenius.com/b/${shareToken}`;
+  const message = `You've been added to the ${projectTitle} script breakdown. Open this link to see your department checklist: ${link}`;
+  const loadCrew = useCallback(async () => {
+    setLoadingCrew(true);
+    const { data } = await supabase.from("breakdown_crew").select("id, name, department, last_seen_at").eq("project_id", projectId).order("created_at", { ascending: true });
+    setCrew(data || []);
+    setLoadingCrew(false);
+  }, [projectId]);
+  useEffect(() => {
+    loadCrew();
+  }, [loadCrew]);
+  const copy2 = async () => {
+    try {
+      await navigator.clipboard.writeText(link);
+      toast({ title: "Link copied" });
+    } catch {
+      toast({ title: "Couldn't copy", description: link, variant: "destructive" });
+    }
+  };
+  const nativeShare = async () => {
+    try {
+      await navigator.share({ title: `${projectTitle} — script breakdown`, text: message, url: link });
+    } catch {
+    }
+  };
+  const toggleSharing = async () => {
+    setBusy(true);
+    const next = !sharingEnabled;
+    const { error } = await supabase.from("breakdown_projects").update({ sharing_enabled: next }).eq("id", projectId);
+    setBusy(false);
+    if (error) {
+      toast({ title: "Couldn't change sharing", description: error.message, variant: "destructive" });
+      return;
+    }
+    onChange({ sharing_enabled: next });
+  };
+  const resetLink = async () => {
+    setBusy(true);
+    const token = randomToken();
+    const { error } = await supabase.from("breakdown_projects").update({ share_token: token }).eq("id", projectId);
+    setBusy(false);
+    setConfirmReset(false);
+    if (error) {
+      toast({ title: "Couldn't reset the link", description: error.message, variant: "destructive" });
+      return;
+    }
+    onChange({ share_token: token });
+    toast({ title: "New link created", description: "The old link stopped working straight away." });
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$5, padding: 20, marginTop: 14 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "Share with crew" }),
+    /* @__PURE__ */ jsx("p", { style: { fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: 8 }, children: "Anyone with this link can work through the checklists — no account needed." }),
+    /* @__PURE__ */ jsx("div", { style: {
+      marginTop: 14,
+      padding: "12px 14px",
+      borderRadius: 10,
+      background: "rgba(0,0,0,0.35)",
+      border: "1px solid rgba(255,255,255,0.12)",
+      fontSize: 14,
+      color: sharingEnabled ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)",
+      wordBreak: "break-all",
+      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
+    }, children: link }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: copy2, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$8 }, children: [
+        /* @__PURE__ */ jsx(Copy, { size: 15 }),
+        " Copy link"
+      ] }),
+      /* @__PURE__ */ jsxs("a", { href: `https://wa.me/?text=${encodeURIComponent(message)}`, target: "_blank", rel: "noopener noreferrer", style: btn, children: [
+        /* @__PURE__ */ jsx(MessageSquare, { size: 15 }),
+        " WhatsApp"
+      ] }),
+      /* @__PURE__ */ jsxs("a", { href: `sms:?&body=${encodeURIComponent(message)}`, style: btn, children: [
+        /* @__PURE__ */ jsx(Smartphone, { size: 15 }),
+        " SMS"
+      ] }),
+      /* @__PURE__ */ jsxs(
+        "a",
+        {
+          href: `mailto:?subject=${encodeURIComponent(`${projectTitle} — script breakdown`)}&body=${encodeURIComponent(message)}`,
+          style: btn,
+          children: [
+            /* @__PURE__ */ jsx(Mail, { size: 15 }),
+            " Email"
+          ]
+        }
+      ),
+      typeof navigator !== "undefined" && "share" in navigator && /* @__PURE__ */ jsxs("button", { onClick: nativeShare, style: btn, children: [
+        /* @__PURE__ */ jsx(Share2, { size: 15 }),
+        " Share…"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginTop: 18 }, children: [
+      /* @__PURE__ */ jsx("button", { onClick: toggleSharing, disabled: busy, style: { ...btn, opacity: busy ? 0.5 : 1 }, children: sharingEnabled ? "Link sharing is ON — turn off" : "Link sharing is OFF — turn on" }),
+      confirmReset ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "rgba(255,255,255,0.7)" }, children: [
+        "Reset the link? The old one stops working.",
+        /* @__PURE__ */ jsx("button", { onClick: resetLink, disabled: busy, style: { ...btn, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 }, children: "Yes" }),
+        /* @__PURE__ */ jsx("button", { onClick: () => setConfirmReset(false), style: btn, children: "No" })
+      ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmReset(true), style: btn, children: [
+        /* @__PURE__ */ jsx(RefreshCw, { size: 15 }),
+        " Reset link"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 22 }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        fontFamily: "'Fraunces', serif",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,0.3)",
+        marginBottom: 10
+      }, children: "Crew" }),
+      loadingCrew ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 14 }, children: [
+        /* @__PURE__ */ jsx(Loader2, { size: 14, className: "animate-spin" }),
+        " Loading…"
+      ] }) : crew.length === 0 ? /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.45)" }, children: "Nobody has opened the link yet." }) : /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", margin: 0, padding: 0 }, children: crew.map((c) => /* @__PURE__ */ jsxs("li", { style: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "10px 0",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        fontSize: 14
+      }, children: [
+        /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.85)" }, children: [
+          c.name,
+          c.department ? /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.45)" }, children: [
+            " · ",
+            c.department
+          ] }) : null
+        ] }),
+        /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.4)" }, children: timeAgo(c.last_seen_at) })
+      ] }, c.id)) })
+    ] })
+  ] });
+};
+const PROJECT_BUCKETS = ["breakdown-photos", "expense-receipts"];
+const PAGE$1 = 100;
+async function listAll(bucket, prefix) {
+  const paths = [];
+  const queue = [prefix];
+  while (queue.length) {
+    const folder = queue.shift();
+    let offset = 0;
+    while (true) {
+      const { data, error } = await supabase.storage.from(bucket).list(folder, { limit: PAGE$1, offset });
+      if (error) throw new Error(`Couldn't read stored files: ${error.message}`);
+      const rows = data || [];
+      for (const row of rows) {
+        const full = `${folder}/${row.name}`;
+        if (row.id) paths.push(full);
+        else queue.push(full);
+      }
+      if (rows.length < PAGE$1) break;
+      offset += PAGE$1;
+    }
+  }
+  return paths;
+}
+async function purgeBucket(bucket, projectId) {
+  const paths = await listAll(bucket, projectId);
+  for (let i = 0; i < paths.length; i += PAGE$1) {
+    const { error } = await supabase.storage.from(bucket).remove(paths.slice(i, i + PAGE$1));
+    if (error) throw new Error(`Couldn't remove stored files: ${error.message}`);
+  }
+}
+async function deleteProduction(projectId) {
+  for (const bucket of PROJECT_BUCKETS) {
+    await purgeBucket(bucket, projectId);
+  }
+  const { error: formError } = await supabase.from("cast_crew_forms").update({ project_id: null }).eq("project_id", projectId);
+  if (formError) throw new Error(`Couldn't detach your cast & crew list: ${formError.message}`);
+  const { error } = await supabase.from("breakdown_projects").delete().eq("id", projectId);
+  if (error) throw new Error(`The production couldn't be deleted: ${error.message}`);
+}
+const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, languages, shoot_location, created_at";
+const TEAL$7 = "#00d4aa";
+const panel$4 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const inputStyle$4 = {
+  width: "100%",
+  minHeight: 44,
+  fontSize: 16,
+  padding: "10px 12px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  color: "#fff",
+  fontFamily: "'Inter Tight', sans-serif",
+  boxSizing: "border-box"
+};
+const primaryBtn$3 = {
+  minHeight: 44,
+  padding: "0 20px",
+  borderRadius: 10,
+  background: TEAL$7,
+  color: "#04231d",
+  border: "none",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const ghostBtn$3 = {
+  minHeight: 44,
+  padding: "0 16px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const Modal = ({
+  title,
+  children,
+  onClose
+}) => /* @__PURE__ */ jsx(
+  "div",
+  {
+    onClick: onClose,
+    style: {
+      position: "fixed",
+      inset: 0,
+      zIndex: 60,
+      background: "rgba(0,0,0,0.7)",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      padding: 16
+    },
+    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$4, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
+        /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
+        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+      ] }),
+      children
+    ] })
+  }
+);
+const ProductionPicker = ({
+  enableShare = false,
+  clearParamsOnChange = [],
+  emptyTitle = "Create your first production",
+  emptyText = "Give it a name, then everything else hangs off it.",
+  onSelect,
+  onProjectsLoaded,
+  extraControls
+}) => {
+  const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const projectId = searchParams.get("project") || "";
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showNewProject, setShowNewProject] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newCompany, setNewCompany] = useState("");
+  const [newStatus, setNewStatus] = useState("in_production");
+  const [newStart, setNewStart] = useState("");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCompany, setEditCompany] = useState("");
+  const [editStatus, setEditStatus] = useState("in_production");
+  const [editStart, setEditStart] = useState("");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsError, setSettingsError] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+  const [showShare, setShowShare] = useState(false);
+  const selected = useMemo(
+    () => projects.find((p) => p.id === projectId) || null,
+    [projects, projectId]
+  );
+  const setParams = useCallback((next) => {
+    const params = new URLSearchParams(searchParams);
+    Object.entries(next).forEach(([k, v2]) => {
+      if (v2) params.set(k, v2);
+      else params.delete(k);
+    });
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const selectProject = (id) => {
+    const cleared = { project: id };
+    clearParamsOnChange.forEach((k) => {
+      cleared[k] = null;
+    });
+    setParams(cleared);
+    setShowShare(false);
+  };
+  const loadProjects = useCallback(async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data } = await supabase.from("breakdown_projects").select(PRODUCTION_FIELDS).eq("owner_id", user.id).order("created_at", { ascending: false });
+    const list = data || [];
+    setProjects(list);
+    setLoading(false);
+    onProjectsLoaded == null ? void 0 : onProjectsLoaded(list);
+    if (list.length && !list.some((p) => p.id === projectId)) {
+      const cleared = { project: list[0].id };
+      clearParamsOnChange.forEach((k) => {
+        cleared[k] = null;
+      });
+      setParams(cleared);
+    }
+  }, [user, projectId, setParams]);
+  useEffect(() => {
+    loadProjects();
+  }, [user]);
+  useEffect(() => {
+    onSelect == null ? void 0 : onSelect(selected);
+  }, [selected]);
+  const createProject = async () => {
+    if (!user || !newTitle.trim()) return;
+    setCreating(true);
+    setError("");
+    const { data, error: err } = await supabase.from("breakdown_projects").insert({
+      owner_id: user.id,
+      title: newTitle.trim(),
+      company: newCompany.trim() || null,
+      status: newStatus,
+      start_date: newStart || null
+    }).select(PRODUCTION_FIELDS).single();
+    setCreating(false);
+    if (err || !data) {
+      setError((err == null ? void 0 : err.message) || "Could not create the production.");
+      return;
+    }
+    setProjects((prev) => [data, ...prev]);
+    setShowNewProject(false);
+    setNewTitle("");
+    setNewCompany("");
+    setNewStatus("in_production");
+    setNewStart("");
+    selectProject(data.id);
+  };
+  const openSettings = () => {
+    if (!selected) return;
+    setEditTitle(selected.title);
+    setEditCompany(selected.company || "");
+    setEditStatus(selected.status || "in_production");
+    setEditStart(selected.start_date || "");
+    setSettingsError("");
+    setConfirmDelete(false);
+    setDeleteText("");
+    setDeleteError("");
+    setSettingsOpen(true);
+  };
+  const saveSettings = async () => {
+    if (!selected || !editTitle.trim()) return;
+    setSavingSettings(true);
+    setSettingsError("");
+    const patch = {
+      title: editTitle.trim(),
+      company: editCompany.trim() || null,
+      status: editStatus,
+      start_date: editStart || null
+    };
+    const { error: err } = await supabase.from("breakdown_projects").update(patch).eq("id", selected.id);
+    setSavingSettings(false);
+    if (err) {
+      setSettingsError(err.message);
+      return;
+    }
+    setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, ...patch } : p));
+    setSettingsOpen(false);
+    toast({ title: "Production updated" });
+  };
+  const runDelete = async () => {
+    var _a2;
+    if (!selected) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteProduction(selected.id);
+    } catch (err) {
+      setDeleting(false);
+      setDeleteError((err == null ? void 0 : err.message) || "The production couldn't be deleted.");
+      return;
+    }
+    const remaining = projects.filter((p) => p.id !== selected.id);
+    setProjects(remaining);
+    setDeleting(false);
+    setConfirmDelete(false);
+    setSettingsOpen(false);
+    setShowShare(false);
+    onProjectsLoaded == null ? void 0 : onProjectsLoaded(remaining);
+    const cleared = { project: ((_a2 = remaining[0]) == null ? void 0 : _a2.id) || null };
+    clearParamsOnChange.forEach((k) => {
+      cleared[k] = null;
+    });
+    setParams(cleared);
+    toast({ title: "Production deleted", description: `“${selected.title}” and everything in it has been removed.` });
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+      " Loading your productions…"
+    ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 32, textAlign: "center" }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: emptyTitle }),
+      /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: emptyText }),
+      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$3, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
+    ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 16 }, children: [
+      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
+          /* @__PURE__ */ jsx(
+            "select",
+            {
+              "aria-label": "Select production",
+              value: projectId,
+              onChange: (e) => selectProject(e.target.value),
+              style: { ...inputStyle$4, maxWidth: 320 },
+              children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
+            }
+          ),
+          selected && /* @__PURE__ */ jsx(
+            "button",
+            {
+              "aria-label": "Production settings",
+              onClick: openSettings,
+              style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
+              children: /* @__PURE__ */ jsx(Pencil, { size: 16 })
+            }
+          )
+        ] }),
+        /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto", alignItems: "center" }, children: [
+          extraControls,
+          enableShare && selected && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+            /* @__PURE__ */ jsx(Share2, { size: 16 }),
+            " Share with crew"
+          ] }),
+          /* @__PURE__ */ jsx("button", { style: primaryBtn$3, onClick: () => setShowNewProject(true), children: "+ New Project" })
+        ] })
+      ] }),
+      (selected == null ? void 0 : selected.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selected.company }),
+      enableShare && selected && showShare && /* @__PURE__ */ jsx(
+        SharePanel,
+        {
+          projectId: selected.id,
+          projectTitle: selected.title,
+          shareToken: selected.share_token,
+          sharingEnabled: selected.sharing_enabled,
+          onChange: (patch) => setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, ...patch } : p))
+        }
+      )
+    ] }),
+    showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
+        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "e.g. The Long Way Home", style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
+        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
+        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$4, children: [
+          /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
+          /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
+          /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
+        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$4 })
+      ] }),
+      error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: createProject,
+          disabled: creating || !newTitle.trim(),
+          style: { ...primaryBtn$3, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
+          children: creating ? "Creating…" : "Create production"
+        }
+      )
+    ] }) }),
+    settingsOpen && selected && /* @__PURE__ */ jsx(Modal, { title: "Production settings", onClose: () => {
+      if (!savingSettings) setSettingsOpen(false);
+    }, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
+        /* @__PURE__ */ jsx("input", { value: editTitle, onChange: (e) => setEditTitle(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
+        /* @__PURE__ */ jsx("input", { value: editCompany, onChange: (e) => setEditCompany(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
+        /* @__PURE__ */ jsxs("select", { value: editStatus, onChange: (e) => setEditStatus(e.target.value), style: inputStyle$4, children: [
+          /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
+          /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
+          /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
+        ] })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
+        /* @__PURE__ */ jsx("input", { type: "date", value: editStart, onChange: (e) => setEditStart(e.target.value), style: inputStyle$4 })
+      ] }),
+      settingsError && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: settingsError }),
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: saveSettings,
+          disabled: savingSettings || !editTitle.trim(),
+          style: {
+            ...primaryBtn$3,
+            marginTop: 4,
+            opacity: savingSettings || !editTitle.trim() ? 0.45 : 1,
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 8
+          },
+          children: savingSettings ? /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+            " Saving…"
+          ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsx(Check$1, { size: 16 }),
+            " Save changes"
+          ] })
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { marginTop: 8, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }, children: [
+        /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 10 }, children: "Danger zone" }),
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => {
+              setConfirmDelete(true);
+              setDeleteText("");
+              setDeleteError("");
+            },
+            style: {
+              ...ghostBtn$3,
+              width: "100%",
+              color: "#ff8f8f",
+              border: "1px solid rgba(255,92,92,0.45)",
+              background: "transparent",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8
+            },
+            children: [
+              /* @__PURE__ */ jsx(Trash2, { size: 16 }),
+              " Delete this production"
+            ]
+          }
+        )
+      ] })
+    ] }) }),
+    confirmDelete && selected && /* @__PURE__ */ jsxs(Modal, { title: "Delete production", onClose: () => {
+      if (!deleting) setConfirmDelete(false);
+    }, children: [
+      /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
+        "Delete ",
+        selected.title,
+        "? This permanently removes its scenes, checklists, photos, receipts, expenses, messages, notes and crew link. Your cast & crew contacts are kept."
+      ] }),
+      /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "18px 0 6px" }, children: "Type the production title to confirm" }),
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          value: deleteText,
+          onChange: (e) => setDeleteText(e.target.value),
+          placeholder: selected.title,
+          style: inputStyle$4
+        }
+      ),
+      deleteError && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14, marginTop: 12 }, children: deleteError }),
+      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 18 }, children: [
+        /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: runDelete,
+            disabled: deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase(),
+            style: {
+              ...ghostBtn$3,
+              background: "#ff5c5c",
+              color: "#2a0505",
+              border: "none",
+              fontWeight: 700,
+              opacity: deleting || deleteText.trim().toLowerCase() !== selected.title.trim().toLowerCase() ? 0.4 : 1,
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8
+            },
+            children: deleting ? /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+              " Deleting…"
+            ] }) : "Delete permanently"
+          }
+        ),
+        /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDelete(false), disabled: deleting, style: ghostBtn$3, children: "Cancel" })
+      ] })
+    ] })
+  ] });
+};
 const MAX_UPLOAD_BYTES = 15 * 1024 * 1024;
 const MAX_EDGE = 1600;
 const QUALITY = 0.82;
@@ -25137,12 +25778,12 @@ async function exportBreakdownToPDF(input) {
   const doc = await buildBreakdownPDF(input);
   doc.save(breakdownFileName(input));
 }
-const panel$5 = {
+const panel$3 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const ghostBtn$3 = {
+const ghostBtn$2 = {
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -25178,6 +25819,12 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [deleteScene, setDeleteScene] = useState(null);
+  const [settingsScene, setSettingsScene] = useState(null);
+  const [formNumber, setFormNumber] = useState("");
+  const [formLabel, setFormLabel] = useState("");
+  const [formScript, setFormScript] = useState("");
+  const [savingScene, setSavingScene] = useState(false);
+  const [rerunning, setRerunning] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [includeScript, setIncludeScript] = useState(false);
@@ -25401,6 +26048,54 @@ const BreakdownWorkspace = ({
     setDeleteScene(null);
     await reload();
   };
+  const openSceneSettings = (scene) => {
+    setSettingsScene(scene);
+    setFormNumber(scene.scene_number || "");
+    setFormLabel(scene.label || "");
+    setFormScript(scene.script_text || "");
+  };
+  const scenePatch = () => ({
+    scene_number: formNumber.trim() || null,
+    label: formLabel.trim() || null,
+    script_text: formScript
+  });
+  const saveSceneSettings = async () => {
+    if (!settingsScene || !adapter.updateScene) return;
+    setSavingScene(true);
+    try {
+      await adapter.updateScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({ title: "Scene updated" });
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    } finally {
+      setSavingScene(false);
+    }
+  };
+  const rerunSceneBreakdown = async () => {
+    if (!settingsScene || !adapter.rerunScene) return;
+    if (formScript.trim().length < 20) {
+      failed("Add at least 20 characters of scene text first.");
+      return;
+    }
+    setRerunning(true);
+    try {
+      const merged = await adapter.rerunScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({
+        title: "Breakdown re-run",
+        description: `Updated: kept ${merged.kept}, removed ${merged.removed}, added ${merged.added}`
+      });
+    } catch (err) {
+      if ((err == null ? void 0 : err.name) !== "InsufficientCreditsError") {
+        failed((err == null ? void 0 : err.message) || "The breakdown couldn't be re-run.");
+      }
+    } finally {
+      setRerunning(false);
+    }
+  };
   const runExport = async (scope) => {
     setExportOpen(false);
     setExporting(true);
@@ -25477,7 +26172,7 @@ const BreakdownWorkspace = ({
       className: "sb-tap",
       "aria-label": "Export PDF",
       style: {
-        ...ghostBtn$3,
+        ...ghostBtn$2,
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
@@ -25495,7 +26190,7 @@ const BreakdownWorkspace = ({
     "div",
     {
       style: {
-        ...panel$5,
+        ...panel$3,
         position: "absolute",
         right: 0,
         bottom: "calc(100% + 8px)",
@@ -25555,7 +26250,7 @@ const BreakdownWorkspace = ({
     }
   );
   if (loading) {
-    return /* @__PURE__ */ jsxs("div", { style: { ...panel$5, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading the breakdown…"
     ] });
@@ -25587,7 +26282,7 @@ const BreakdownWorkspace = ({
         scenes.map((s) => {
           const active = s.id === sceneId;
           return /* @__PURE__ */ jsxs("div", { style: {
-            ...panel$5,
+            ...panel$3,
             padding: 14,
             minWidth: 168,
             flex: "0 0 auto",
@@ -25617,15 +26312,26 @@ const BreakdownWorkspace = ({
                 ]
               }
             ),
-            adapter.canManageScenes && /* @__PURE__ */ jsx(
-              "button",
-              {
-                "aria-label": `Delete ${sceneTitle(s)}`,
-                onClick: () => setDeleteScene(s),
-                style: { background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 },
-                children: /* @__PURE__ */ jsx(Trash2, { size: 15 })
-              }
-            )
+            adapter.canManageScenes && /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 2 }, children: [
+              adapter.updateScene && /* @__PURE__ */ jsx(
+                "button",
+                {
+                  "aria-label": `Scene settings for ${sceneTitle(s)}`,
+                  onClick: () => openSceneSettings(s),
+                  style: { background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 },
+                  children: /* @__PURE__ */ jsx(Pencil, { size: 15 })
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  "aria-label": `Delete ${sceneTitle(s)}`,
+                  onClick: () => setDeleteScene(s),
+                  style: { background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 },
+                  children: /* @__PURE__ */ jsx(Trash2, { size: 15 })
+                }
+              )
+            ] })
           ] }, s.id);
         }),
         adapter.canManageScenes && onRequestAddScene && /* @__PURE__ */ jsxs(
@@ -25633,7 +26339,7 @@ const BreakdownWorkspace = ({
           {
             onClick: onRequestAddScene,
             style: {
-              ...panel$5,
+              ...panel$3,
               padding: 14,
               minWidth: 168,
               flex: "0 0 auto",
@@ -25658,7 +26364,7 @@ const BreakdownWorkspace = ({
         )
       ] })
     ] }),
-    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$5, padding: 20, marginBottom: 64 }, children: [
+    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 64 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: sceneTitle(selectedScene) }),
       selectedScene.label && selectedScene.scene_number && /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: selectedScene.label }),
       (() => {
@@ -25797,7 +26503,7 @@ const BreakdownWorkspace = ({
         "button",
         {
           onClick: () => setShowScript((v2) => !v2),
-          style: { ...ghostBtn$3, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
+          style: { ...ghostBtn$2, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
           children: [
             /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: showScript ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
             "View scene script"
@@ -25819,21 +26525,113 @@ const BreakdownWorkspace = ({
         color: "rgba(255,255,255,0.75)"
       }, children: selectedScene.script_text || "No script text saved." })
     ] }),
-    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$5, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
-    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$5, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
+    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
+    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
     selectedScene && /* @__PURE__ */ jsx("div", { className: "bw-export-mobile", children: /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
       exportOpen && exportMenu,
       exportButton
     ] }) }),
+    settingsScene && /* @__PURE__ */ jsx(
+      "div",
+      {
+        onClick: () => {
+          if (!savingScene && !rerunning) setSettingsScene(null);
+        },
+        style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16, overflowY: "auto" },
+        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 560, padding: 24, margin: "auto" }, children: [
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }, children: [
+            /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Scene settings" }),
+            /* @__PURE__ */ jsx("button", { onClick: () => setSettingsScene(null), "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
+            /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12 }, children: [
+              /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
+                /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Scene number" }),
+                /* @__PURE__ */ jsx("input", { value: formNumber, onChange: (e) => setFormNumber(e.target.value), placeholder: "e.g. 47A", style: inputStyle$4 })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
+                /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Label" }),
+                /* @__PURE__ */ jsx("input", { value: formLabel, onChange: (e) => setFormLabel(e.target.value), placeholder: "e.g. Bar showdown", style: inputStyle$4 })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Scene script" }),
+              /* @__PURE__ */ jsx(
+                "textarea",
+                {
+                  value: formScript,
+                  onChange: (e) => setFormScript(e.target.value),
+                  style: { ...inputStyle$4, minHeight: 220, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }
+                }
+              )
+            ] }),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: saveSceneSettings,
+                disabled: savingScene || rerunning,
+                style: {
+                  minHeight: 44,
+                  padding: "0 20px",
+                  borderRadius: 10,
+                  background: TEAL$8,
+                  color: "#04231d",
+                  border: "none",
+                  fontWeight: 700,
+                  fontSize: 15,
+                  cursor: "pointer",
+                  fontFamily: "'Inter Tight', sans-serif",
+                  opacity: savingScene || rerunning ? 0.5 : 1,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: 8
+                },
+                children: savingScene ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                  /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+                  " Saving…"
+                ] }) : "Save changes"
+              }
+            ),
+            adapter.rerunScene && /* @__PURE__ */ jsxs("div", { style: { marginTop: 4, paddingTop: 16, borderTop: "1px solid rgba(255,255,255,0.1)" }, children: [
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: rerunSceneBreakdown,
+                  disabled: savingScene || rerunning,
+                  style: {
+                    ...ghostBtn$2,
+                    width: "100%",
+                    opacity: savingScene || rerunning ? 0.5 : 1,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 8
+                  },
+                  children: rerunning ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+                    " Re-running the breakdown…"
+                  ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                    /* @__PURE__ */ jsx(Sparkles, { size: 16 }),
+                    " Re-run AI breakdown (1 credit)"
+                  ] })
+                }
+              ),
+              /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginTop: 10, marginBottom: 0 }, children: "Saves your edits, then adds anything new. Checked items, edits, your own notes and anything with photos are kept." })
+            ] })
+          ] })
+        ] })
+      }
+    ),
     deleteScene && /* @__PURE__ */ jsx(
       "div",
       {
         onClick: () => setDeleteScene(null),
         style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 },
-        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$5, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }, children: [
             /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Delete scene" }),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
           ] }),
           /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
             "Delete ",
@@ -25845,11 +26643,11 @@ const BreakdownWorkspace = ({
               "button",
               {
                 onClick: confirmDeleteScene,
-                style: { ...ghostBtn$3, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
+                style: { ...ghostBtn$2, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
                 children: "Delete"
               }
             ),
-            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$3, children: "Cancel" })
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$2, children: "Cancel" })
           ] })
         ] })
       }
@@ -25869,439 +26667,6 @@ const BreakdownWorkspace = ({
         onDelete: deletePhoto
       }
     )
-  ] });
-};
-const panel$4 = {
-  borderRadius: 16,
-  border: "1px solid rgba(255,255,255,0.08)",
-  background: "rgba(255,255,255,0.03)"
-};
-const btn = {
-  minHeight: 44,
-  padding: "0 14px",
-  borderRadius: 10,
-  background: "rgba(255,255,255,0.05)",
-  color: "#fff",
-  border: "1px solid rgba(255,255,255,0.14)",
-  fontWeight: 600,
-  fontSize: 14,
-  cursor: "pointer",
-  fontFamily: "'Inter Tight', sans-serif",
-  display: "inline-flex",
-  alignItems: "center",
-  gap: 8,
-  textDecoration: "none"
-};
-const randomToken = () => {
-  const bytes = new Uint8Array(24);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
-};
-const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onChange }) => {
-  const [crew, setCrew] = useState([]);
-  const [loadingCrew, setLoadingCrew] = useState(true);
-  const [confirmReset, setConfirmReset] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const link = `https://filmmakergenius.com/b/${shareToken}`;
-  const message = `You've been added to the ${projectTitle} script breakdown. Open this link to see your department checklist: ${link}`;
-  const loadCrew = useCallback(async () => {
-    setLoadingCrew(true);
-    const { data } = await supabase.from("breakdown_crew").select("id, name, department, last_seen_at").eq("project_id", projectId).order("created_at", { ascending: true });
-    setCrew(data || []);
-    setLoadingCrew(false);
-  }, [projectId]);
-  useEffect(() => {
-    loadCrew();
-  }, [loadCrew]);
-  const copy2 = async () => {
-    try {
-      await navigator.clipboard.writeText(link);
-      toast({ title: "Link copied" });
-    } catch {
-      toast({ title: "Couldn't copy", description: link, variant: "destructive" });
-    }
-  };
-  const nativeShare = async () => {
-    try {
-      await navigator.share({ title: `${projectTitle} — script breakdown`, text: message, url: link });
-    } catch {
-    }
-  };
-  const toggleSharing = async () => {
-    setBusy(true);
-    const next = !sharingEnabled;
-    const { error } = await supabase.from("breakdown_projects").update({ sharing_enabled: next }).eq("id", projectId);
-    setBusy(false);
-    if (error) {
-      toast({ title: "Couldn't change sharing", description: error.message, variant: "destructive" });
-      return;
-    }
-    onChange({ sharing_enabled: next });
-  };
-  const resetLink = async () => {
-    setBusy(true);
-    const token = randomToken();
-    const { error } = await supabase.from("breakdown_projects").update({ share_token: token }).eq("id", projectId);
-    setBusy(false);
-    setConfirmReset(false);
-    if (error) {
-      toast({ title: "Couldn't reset the link", description: error.message, variant: "destructive" });
-      return;
-    }
-    onChange({ share_token: token });
-    toast({ title: "New link created", description: "The old link stopped working straight away." });
-  };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginTop: 14 }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "Share with crew" }),
-    /* @__PURE__ */ jsx("p", { style: { fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: 8 }, children: "Anyone with this link can work through the checklists — no account needed." }),
-    /* @__PURE__ */ jsx("div", { style: {
-      marginTop: 14,
-      padding: "12px 14px",
-      borderRadius: 10,
-      background: "rgba(0,0,0,0.35)",
-      border: "1px solid rgba(255,255,255,0.12)",
-      fontSize: 14,
-      color: sharingEnabled ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)",
-      wordBreak: "break-all",
-      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
-    }, children: link }),
-    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
-      /* @__PURE__ */ jsxs("button", { onClick: copy2, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$8 }, children: [
-        /* @__PURE__ */ jsx(Copy, { size: 15 }),
-        " Copy link"
-      ] }),
-      /* @__PURE__ */ jsxs("a", { href: `https://wa.me/?text=${encodeURIComponent(message)}`, target: "_blank", rel: "noopener noreferrer", style: btn, children: [
-        /* @__PURE__ */ jsx(MessageSquare, { size: 15 }),
-        " WhatsApp"
-      ] }),
-      /* @__PURE__ */ jsxs("a", { href: `sms:?&body=${encodeURIComponent(message)}`, style: btn, children: [
-        /* @__PURE__ */ jsx(Smartphone, { size: 15 }),
-        " SMS"
-      ] }),
-      /* @__PURE__ */ jsxs(
-        "a",
-        {
-          href: `mailto:?subject=${encodeURIComponent(`${projectTitle} — script breakdown`)}&body=${encodeURIComponent(message)}`,
-          style: btn,
-          children: [
-            /* @__PURE__ */ jsx(Mail, { size: 15 }),
-            " Email"
-          ]
-        }
-      ),
-      typeof navigator !== "undefined" && "share" in navigator && /* @__PURE__ */ jsxs("button", { onClick: nativeShare, style: btn, children: [
-        /* @__PURE__ */ jsx(Share2, { size: 15 }),
-        " Share…"
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginTop: 18 }, children: [
-      /* @__PURE__ */ jsx("button", { onClick: toggleSharing, disabled: busy, style: { ...btn, opacity: busy ? 0.5 : 1 }, children: sharingEnabled ? "Link sharing is ON — turn off" : "Link sharing is OFF — turn on" }),
-      confirmReset ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "rgba(255,255,255,0.7)" }, children: [
-        "Reset the link? The old one stops working.",
-        /* @__PURE__ */ jsx("button", { onClick: resetLink, disabled: busy, style: { ...btn, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 }, children: "Yes" }),
-        /* @__PURE__ */ jsx("button", { onClick: () => setConfirmReset(false), style: btn, children: "No" })
-      ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmReset(true), style: btn, children: [
-        /* @__PURE__ */ jsx(RefreshCw, { size: 15 }),
-        " Reset link"
-      ] })
-    ] }),
-    /* @__PURE__ */ jsxs("div", { style: { marginTop: 22 }, children: [
-      /* @__PURE__ */ jsx("div", { style: {
-        fontFamily: "'Fraunces', serif",
-        fontSize: 12,
-        fontWeight: 700,
-        letterSpacing: "0.1em",
-        textTransform: "uppercase",
-        color: "rgba(255,255,255,0.3)",
-        marginBottom: 10
-      }, children: "Crew" }),
-      loadingCrew ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 14 }, children: [
-        /* @__PURE__ */ jsx(Loader2, { size: 14, className: "animate-spin" }),
-        " Loading…"
-      ] }) : crew.length === 0 ? /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.45)" }, children: "Nobody has opened the link yet." }) : /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", margin: 0, padding: 0 }, children: crew.map((c) => /* @__PURE__ */ jsxs("li", { style: {
-        display: "flex",
-        justifyContent: "space-between",
-        gap: 12,
-        padding: "10px 0",
-        borderBottom: "1px solid rgba(255,255,255,0.06)",
-        fontSize: 14
-      }, children: [
-        /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.85)" }, children: [
-          c.name,
-          c.department ? /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.45)" }, children: [
-            " · ",
-            c.department
-          ] }) : null
-        ] }),
-        /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.4)" }, children: timeAgo(c.last_seen_at) })
-      ] }, c.id)) })
-    ] })
-  ] });
-};
-const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, languages, shoot_location, created_at";
-const TEAL$7 = "#00d4aa";
-const panel$3 = {
-  borderRadius: 16,
-  border: "1px solid rgba(255,255,255,0.08)",
-  background: "rgba(255,255,255,0.03)"
-};
-const inputStyle$4 = {
-  width: "100%",
-  minHeight: 44,
-  fontSize: 16,
-  padding: "10px 12px",
-  borderRadius: 10,
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid rgba(255,255,255,0.14)",
-  color: "#fff",
-  fontFamily: "'Inter Tight', sans-serif",
-  boxSizing: "border-box"
-};
-const primaryBtn$3 = {
-  minHeight: 44,
-  padding: "0 20px",
-  borderRadius: 10,
-  background: TEAL$7,
-  color: "#04231d",
-  border: "none",
-  fontWeight: 700,
-  fontSize: 15,
-  cursor: "pointer",
-  fontFamily: "'Inter Tight', sans-serif"
-};
-const ghostBtn$2 = {
-  minHeight: 44,
-  padding: "0 16px",
-  borderRadius: 10,
-  background: "rgba(255,255,255,0.05)",
-  color: "#fff",
-  border: "1px solid rgba(255,255,255,0.14)",
-  fontWeight: 600,
-  fontSize: 15,
-  cursor: "pointer",
-  fontFamily: "'Inter Tight', sans-serif"
-};
-const Modal = ({
-  title,
-  children,
-  onClose
-}) => /* @__PURE__ */ jsx(
-  "div",
-  {
-    onClick: onClose,
-    style: {
-      position: "fixed",
-      inset: 0,
-      zIndex: 60,
-      background: "rgba(0,0,0,0.7)",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      padding: 16
-    },
-    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
-      /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
-        /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
-        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
-      ] }),
-      children
-    ] })
-  }
-);
-const ProductionPicker = ({
-  enableShare = false,
-  clearParamsOnChange = [],
-  emptyTitle = "Create your first production",
-  emptyText = "Give it a name, then everything else hangs off it.",
-  onSelect,
-  onProjectsLoaded,
-  extraControls
-}) => {
-  const { user } = useAuth();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const projectId = searchParams.get("project") || "";
-  const [projects, setProjects] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showNewProject, setShowNewProject] = useState(false);
-  const [newTitle, setNewTitle] = useState("");
-  const [newCompany, setNewCompany] = useState("");
-  const [newStatus, setNewStatus] = useState("in_production");
-  const [newStart, setNewStart] = useState("");
-  const [creating, setCreating] = useState(false);
-  const [error, setError] = useState("");
-  const [renaming, setRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
-  const [showShare, setShowShare] = useState(false);
-  const selected = useMemo(
-    () => projects.find((p) => p.id === projectId) || null,
-    [projects, projectId]
-  );
-  const setParams = useCallback((next) => {
-    const params = new URLSearchParams(searchParams);
-    Object.entries(next).forEach(([k, v2]) => {
-      if (v2) params.set(k, v2);
-      else params.delete(k);
-    });
-    setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
-  const selectProject = (id) => {
-    const cleared = { project: id };
-    clearParamsOnChange.forEach((k) => {
-      cleared[k] = null;
-    });
-    setParams(cleared);
-    setShowShare(false);
-  };
-  const loadProjects = useCallback(async () => {
-    if (!user) return;
-    setLoading(true);
-    const { data } = await supabase.from("breakdown_projects").select(PRODUCTION_FIELDS).eq("owner_id", user.id).order("created_at", { ascending: false });
-    const list = data || [];
-    setProjects(list);
-    setLoading(false);
-    onProjectsLoaded == null ? void 0 : onProjectsLoaded(list);
-    if (list.length && !list.some((p) => p.id === projectId)) {
-      const cleared = { project: list[0].id };
-      clearParamsOnChange.forEach((k) => {
-        cleared[k] = null;
-      });
-      setParams(cleared);
-    }
-  }, [user, projectId, setParams]);
-  useEffect(() => {
-    loadProjects();
-  }, [user]);
-  useEffect(() => {
-    onSelect == null ? void 0 : onSelect(selected);
-  }, [selected]);
-  const createProject = async () => {
-    if (!user || !newTitle.trim()) return;
-    setCreating(true);
-    setError("");
-    const { data, error: err } = await supabase.from("breakdown_projects").insert({
-      owner_id: user.id,
-      title: newTitle.trim(),
-      company: newCompany.trim() || null,
-      status: newStatus,
-      start_date: newStart || null
-    }).select(PRODUCTION_FIELDS).single();
-    setCreating(false);
-    if (err || !data) {
-      setError((err == null ? void 0 : err.message) || "Could not create the production.");
-      return;
-    }
-    setProjects((prev) => [data, ...prev]);
-    setShowNewProject(false);
-    setNewTitle("");
-    setNewCompany("");
-    setNewStatus("in_production");
-    setNewStart("");
-    selectProject(data.id);
-  };
-  const saveRename = async () => {
-    if (!selected || !renameValue.trim()) {
-      setRenaming(false);
-      return;
-    }
-    const title = renameValue.trim();
-    await supabase.from("breakdown_projects").update({ title }).eq("id", selected.id);
-    setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, title } : p));
-    setRenaming(false);
-  };
-  return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
-    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
-      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
-      " Loading your productions…"
-    ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 32, textAlign: "center" }, children: [
-      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: emptyTitle }),
-      /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: emptyText }),
-      /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$3, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
-    ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 16 }, children: [
-      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
-        /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
-          /* @__PURE__ */ jsx(
-            "select",
-            {
-              "aria-label": "Select production",
-              value: projectId,
-              onChange: (e) => selectProject(e.target.value),
-              style: { ...inputStyle$4, maxWidth: 320 },
-              children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
-            }
-          ),
-          selected && /* @__PURE__ */ jsx(
-            "button",
-            {
-              "aria-label": "Rename production",
-              onClick: () => {
-                setRenameValue(selected.title);
-                setRenaming(true);
-              },
-              style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
-              children: /* @__PURE__ */ jsx(Pencil, { size: 16 })
-            }
-          )
-        ] }),
-        /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto", alignItems: "center" }, children: [
-          extraControls,
-          enableShare && selected && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
-            /* @__PURE__ */ jsx(Share2, { size: 16 }),
-            " Share with crew"
-          ] }),
-          /* @__PURE__ */ jsx("button", { style: primaryBtn$3, onClick: () => setShowNewProject(true), children: "+ New Project" })
-        ] })
-      ] }),
-      (selected == null ? void 0 : selected.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selected.company }),
-      enableShare && selected && showShare && /* @__PURE__ */ jsx(
-        SharePanel,
-        {
-          projectId: selected.id,
-          projectTitle: selected.title,
-          shareToken: selected.share_token,
-          sharingEnabled: selected.sharing_enabled,
-          onChange: (patch) => setProjects((prev) => prev.map((p) => p.id === selected.id ? { ...p, ...patch } : p))
-        }
-      )
-    ] }),
-    showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
-        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "e.g. The Long Way Home", style: inputStyle$4 })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
-        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$4 })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
-        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$4, children: [
-          /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
-          /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
-          /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
-        ] })
-      ] }),
-      /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
-        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$4 })
-      ] }),
-      error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
-      /* @__PURE__ */ jsx(
-        "button",
-        {
-          onClick: createProject,
-          disabled: creating || !newTitle.trim(),
-          style: { ...primaryBtn$3, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
-          children: creating ? "Creating…" : "Create production"
-        }
-      )
-    ] }) }),
-    renaming && selected && /* @__PURE__ */ jsxs(Modal, { title: "Rename production", onClose: () => setRenaming(false), children: [
-      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$4 }),
-      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$3, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
-        /* @__PURE__ */ jsx(Check$1, { size: 16 }),
-        " Save"
-      ] })
-    ] })
   ] });
 };
 const BUCKET = "breakdown-photos";
@@ -26474,6 +26839,26 @@ function createOwnerAdapter(opts) {
       await removeStorage(scenePhotos);
       const { error } = await supabase.from("breakdown_scenes").delete().eq("id", scene.id);
       if (error) fail(error.message);
+    },
+    async updateScene(sceneId, patch) {
+      const { error } = await supabase.from("breakdown_scenes").update({
+        scene_number: patch.scene_number,
+        label: patch.label,
+        script_text: patch.script_text
+      }).eq("id", sceneId);
+      if (error) fail(error.message);
+    },
+    async rerunScene(sceneId, patch) {
+      const res = await aiInvoke("breakdown-scene", {
+        body: {
+          project_id: projectId,
+          scene_id: sceneId,
+          script_text: patch.script_text,
+          scene_number: patch.scene_number || void 0,
+          label: patch.label || void 0
+        }
+      });
+      return (res == null ? void 0 : res.merged) || { kept: 0, removed: 0, added: 0 };
     },
     watch(sceneId, onChange) {
       const channel = supabase.channel(`breakdown-scene-${sceneId}`).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, onChange).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, onChange).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, onChange).subscribe();
@@ -27525,7 +27910,7 @@ const moneyLine = (rows) => {
   return list.map(([code, total]) => formatMoney$a(total, code)).join(" · ");
 };
 const cardStyle$1 = {
-  ...panel$3,
+  ...panel$4,
   padding: 16,
   display: "flex",
   flexDirection: "column",
@@ -27562,7 +27947,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 17, fontWeight: 700, color: c.color, lineHeight: 1.35, wordBreak: "break-word" }, children: c.value }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)" }, children: c.sub })
     ] }, c.title)) }),
-    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginTop: 14 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18, marginTop: 14 }, children: [
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 12 }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 18, fontWeight: 700 }, children: "Spend by department" }),
         /* @__PURE__ */ jsx(
@@ -27656,7 +28041,7 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
       /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-to", children: "To" }),
       /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$4 })
     ] }),
-    /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$2, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$3, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
       /* @__PURE__ */ jsx(X, { size: 15 }),
       " Clear filters"
     ] }) })
@@ -27714,7 +28099,7 @@ const Thumb = ({ path, url: url2, label: label2, onOpen }) => {
     ] });
   }
   if (isPdf2) {
-    return /* @__PURE__ */ jsxs("button", { onClick: () => onOpen(url2, true, label2), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13 }, children: [
+    return /* @__PURE__ */ jsxs("button", { onClick: () => onOpen(url2, true, label2), style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 13 }, children: [
       /* @__PURE__ */ jsx(FileText, { size: 15 }),
       " Open PDF"
     ] });
@@ -27741,7 +28126,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       {
         onClick: () => onSetStatus(e, "approved", null),
         disabled: busyId === e.id,
-        style: { ...ghostBtn$2, borderColor: "rgba(62,207,110,0.5)", color: "#3ecf6e", fontSize: 14 },
+        style: { ...ghostBtn$3, borderColor: "rgba(62,207,110,0.5)", color: "#3ecf6e", fontSize: 14 },
         children: "Approve"
       }
     ),
@@ -27753,7 +28138,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
           setRejectNote("");
         },
         disabled: busyId === e.id,
-        style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 },
+        style: { ...ghostBtn$3, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 },
         children: "Reject"
       }
     ),
@@ -27762,12 +28147,12 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       {
         onClick: () => onSetStatus(e, "paid", e.status_note),
         disabled: busyId === e.id,
-        style: { ...ghostBtn$2, borderColor: "rgba(0,212,170,0.5)", color: "#00d4aa", fontSize: 14 },
+        style: { ...ghostBtn$3, borderColor: "rgba(0,212,170,0.5)", color: "#00d4aa", fontSize: 14 },
         children: "Mark paid"
       }
     ),
-    e.status !== "pending" && /* @__PURE__ */ jsx("button", { onClick: () => onSetStatus(e, "pending", null), disabled: busyId === e.id, style: { ...ghostBtn$2, fontSize: 14 }, children: "Back to pending" }),
-    /* @__PURE__ */ jsxs("button", { onClick: () => onEdit(e), style: { ...ghostBtn$2, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+    e.status !== "pending" && /* @__PURE__ */ jsx("button", { onClick: () => onSetStatus(e, "pending", null), disabled: busyId === e.id, style: { ...ghostBtn$3, fontSize: 14 }, children: "Back to pending" }),
+    /* @__PURE__ */ jsxs("button", { onClick: () => onEdit(e), style: { ...ghostBtn$3, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
       /* @__PURE__ */ jsx(Pencil, { size: 14 }),
       " Edit"
     ] }),
@@ -27776,9 +28161,9 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
       /* @__PURE__ */ jsx("button", { onClick: () => {
         setConfirmDeleteId(null);
         onDelete(e);
-      }, style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 }, children: "Yes" }),
-      /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDeleteId(null), style: { ...ghostBtn$2, fontSize: 14 }, children: "No" })
-    ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDeleteId(e.id), style: { ...ghostBtn$2, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+      }, style: { ...ghostBtn$3, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", fontSize: 14 }, children: "Yes" }),
+      /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDeleteId(null), style: { ...ghostBtn$3, fontSize: 14 }, children: "No" })
+    ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDeleteId(e.id), style: { ...ghostBtn$3, fontSize: 14, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
       /* @__PURE__ */ jsx(Trash2, { size: 14 }),
       " Delete"
     ] }),
@@ -27860,20 +28245,20 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
                 onSetStatus(e, "rejected", rejectNote.trim());
                 setRejectId(null);
               },
-              style: { ...ghostBtn$2, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", opacity: rejectNote.trim() ? 1 : 0.5 },
+              style: { ...ghostBtn$3, borderColor: "rgba(245,84,78,0.5)", color: "#f5544e", opacity: rejectNote.trim() ? 1 : 0.5 },
               children: "Save rejection"
             }
           ),
-          /* @__PURE__ */ jsx("button", { onClick: () => setRejectId(null), style: ghostBtn$2, children: "Cancel" })
+          /* @__PURE__ */ jsx("button", { onClick: () => setRejectId(null), style: ghostBtn$3, children: "Cancel" })
         ] })
       ] }) : actions(e)
     ] });
   };
   if (!expenses.length) {
-    return /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "Nothing here yet. Add your first receipt or invoice." });
+    return /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 32, textAlign: "center", color: "rgba(255,255,255,0.5)", fontSize: 15 }, children: "Nothing here yet. Add your first receipt or invoice." });
   }
   return /* @__PURE__ */ jsxs(Fragment, { children: [
-    /* @__PURE__ */ jsx("div", { className: "ex-table", style: { ...panel$3, overflow: "hidden" }, children: /* @__PURE__ */ jsxs("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
+    /* @__PURE__ */ jsx("div", { className: "ex-table", style: { ...panel$4, overflow: "hidden" }, children: /* @__PURE__ */ jsxs("table", { style: { width: "100%", borderCollapse: "collapse" }, children: [
       /* @__PURE__ */ jsx("thead", { children: /* @__PURE__ */ jsxs("tr", { style: { background: "rgba(255,255,255,0.03)" }, children: [
         /* @__PURE__ */ jsx("th", { style: { ...th, width: 34 }, "aria-label": "Expand" }),
         /* @__PURE__ */ jsx("th", { style: th, children: "Date" }),
@@ -27910,7 +28295,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
         openId === e.id && /* @__PURE__ */ jsx("tr", { children: /* @__PURE__ */ jsx("td", { colSpan: 9, style: { padding: 0, background: "rgba(255,255,255,0.02)" }, children: details(e) }) })
       ] }, e.id)) })
     ] }) }),
-    /* @__PURE__ */ jsx("div", { className: "ex-cards-list", style: { display: "none", flexDirection: "column", gap: 12 }, children: expenses.map((e) => /* @__PURE__ */ jsxs("div", { style: { ...panel$3, overflow: "hidden" }, children: [
+    /* @__PURE__ */ jsx("div", { className: "ex-cards-list", style: { display: "none", flexDirection: "column", gap: 12 }, children: expenses.map((e) => /* @__PURE__ */ jsxs("div", { style: { ...panel$4, overflow: "hidden" }, children: [
       /* @__PURE__ */ jsx(
         "button",
         {
@@ -28138,11 +28523,11 @@ const ExpenseDialog = ({
         "div",
         {
           onClick: (e) => e.stopPropagation(),
-          style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 720, padding: 24, margin: "24px 0" },
+          style: { ...panel$4, background: "#10101b", width: "100%", maxWidth: 720, padding: 24, margin: "24px 0" },
           children: [
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16 }, children: [
               /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: existing ? "Edit expense" : "Add expense" }),
-              /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+              /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, marginBottom: 18 }, children: [
               tabBtn("receipt", "Receipt"),
@@ -28298,12 +28683,12 @@ const ExpenseDialog = ({
                     {
                       onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
                       "aria-label": "Remove line",
-                      style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                      style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
                       children: /* @__PURE__ */ jsx(X, { size: 16 })
                     }
                   )
                 ] }, i)),
-                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0 }]), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0 }]), style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Plus, { size: 15 }),
                   " Add line"
                 ] })
@@ -28326,7 +28711,7 @@ const ExpenseDialog = ({
                 /* @__PURE__ */ jsxs("button", { onClick: () => {
                   var _a2;
                   return (_a2 = photoInput.current) == null ? void 0 : _a2.click();
-                }, style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
+                }, style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Camera, { size: 15 }),
                   " ",
                   itemPhoto ? "Change item photo" : "Attach item photo (optional)"
@@ -28384,13 +28769,13 @@ const ExpenseDialog = ({
                       {
                         onClick: () => setLines((prev) => prev.filter((_, idx) => idx !== i)),
                         "aria-label": "Remove line",
-                        style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
+                        style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" },
                         children: /* @__PURE__ */ jsx(X, { size: 16 })
                       }
                     )
                   ] }, i);
                 }),
-                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0, qty: 1, rate: 0 }]), style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
+                /* @__PURE__ */ jsxs("button", { onClick: () => setLines((prev) => [...prev, { text: "", amount: 0, qty: 1, rate: 0 }]), style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6, fontSize: 14 }, children: [
                   /* @__PURE__ */ jsx(Plus, { size: 15 }),
                   " Add line"
                 ] }),
@@ -28410,7 +28795,7 @@ const ExpenseDialog = ({
                 saving && /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
                 existing ? "Save changes" : "Save expense"
               ] }),
-              /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Cancel" }),
+              /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$3, children: "Cancel" }),
               /* @__PURE__ */ jsx("span", { style: { marginLeft: "auto", fontSize: 15, fontWeight: 700 }, children: formatMoney$a(amount, currency) })
             ] })
           ]
@@ -28671,7 +29056,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
               disabled: !!exporting,
               "aria-haspopup": "menu",
               "aria-expanded": menuOpen,
-              style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8, cursor: exporting ? "wait" : "pointer" },
+              style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 8, cursor: exporting ? "wait" : "pointer" },
               children: [
                 exporting ? /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }) : /* @__PURE__ */ jsx(Download, { size: 16 }),
                 exporting ? "Generating…" : "Export"
@@ -28772,7 +29157,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
         )
       ] })
     ] }),
-    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading expenses…"
     ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -29082,7 +29467,7 @@ const ComposePanel = ({ languages, translating, error, onTranslate }) => {
       (msg) => setFileError(msg)
     );
   };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 20 }, children: [
     /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "New message" }),
     /* @__PURE__ */ jsxs("div", { className: "st-composerow", style: { display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }, children: [
       /* @__PURE__ */ jsxs("div", { style: { flex: "1 1 260px", minWidth: 0 }, children: [
@@ -29542,7 +29927,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
               style: { ...inputStyle$4, flex: "1 1 180px" }
             }
           ),
-          /* @__PURE__ */ jsx("button", { onClick: toggleAll, style: { ...ghostBtn$2, flex: "0 0 auto" }, children: allVisibleOn ? "Clear all" : "Select all" })
+          /* @__PURE__ */ jsx("button", { onClick: toggleAll, style: { ...ghostBtn$3, flex: "0 0 auto" }, children: allVisibleOn ? "Clear all" : "Select all" })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { maxHeight: 220, overflowY: "auto", marginTop: 10, display: "flex", flexDirection: "column", gap: 4 }, children: [
           filtered.map((c) => /* @__PURE__ */ jsxs(
@@ -29644,7 +30029,7 @@ const Card = ({
   const whatsapp = `https://wa.me/?text=${encodeURIComponent(`${subject ? `${subject}
 
 ` : ""}${text}`)}`;
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginBottom: 14 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18, marginBottom: 14 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#00d4aa" }, children: heading }),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
@@ -29654,7 +30039,7 @@ const Card = ({
             onClick: () => copy$1(`${subject ? `${subject}
 
 ` : ""}${text}`, heading),
-            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+            style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6 },
             children: [
               /* @__PURE__ */ jsx(Copy, { size: 15 }),
               " Copy"
@@ -29667,7 +30052,7 @@ const Card = ({
             href: whatsapp,
             target: "_blank",
             rel: "noopener noreferrer",
-            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", lineHeight: "44px" },
+            style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", lineHeight: "44px" },
             children: [
               /* @__PURE__ */ jsx(MessageCircle, { size: 15 }),
               " Share on WhatsApp"
@@ -29719,7 +30104,7 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage, onS
         "button",
         {
           onClick: () => copy$1(allLanguagesText(message), "All languages"),
-          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+          style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6 },
           children: [
             /* @__PURE__ */ jsx(Copy, { size: 15 }),
             " Copy all"
@@ -29731,7 +30116,7 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage, onS
         {
           onClick: () => run("txt"),
           disabled: busy !== null,
-          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
+          style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
           children: [
             busy === "txt" ? /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }) : /* @__PURE__ */ jsx(FileText, { size: 15 }),
             " Download .txt"
@@ -29743,14 +30128,14 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage, onS
         {
           onClick: () => run("pdf"),
           disabled: busy !== null,
-          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
+          style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
           children: [
             busy === "pdf" ? /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }) : /* @__PURE__ */ jsx(Download, { size: 15 }),
             " Download PDF"
           ]
         }
       ),
-      /* @__PURE__ */ jsxs("button", { onClick: onNewMessage, style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: onNewMessage, style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
         /* @__PURE__ */ jsx(Plus, { size: 16 }),
         " New message"
       ] })
@@ -29819,7 +30204,7 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
     await supabase.from("production_messages").delete().eq("id", id);
     setRows((prev) => prev.filter((r) => r.id !== id));
   };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 48 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 48 }, children: [
     /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Message history" }),
     loading && rows.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", marginTop: 14, fontSize: 14 }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }),
@@ -29897,7 +30282,7 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
                 {
                   onClick: () => remove(row.id),
                   "aria-label": "Delete message",
-                  style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
+                  style: { ...ghostBtn$3, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
                   children: /* @__PURE__ */ jsx(Trash2, { size: 16 })
                 }
               )
@@ -29906,7 +30291,7 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
           row.id
         );
       }),
-      hasMore && /* @__PURE__ */ jsx("button", { onClick: () => load(rows.length + PAGE), style: { ...ghostBtn$2, marginTop: 4 }, children: "Load more" })
+      hasMore && /* @__PURE__ */ jsx("button", { onClick: () => load(rows.length + PAGE), style: { ...ghostBtn$3, marginTop: 4 }, children: "Load more" })
     ] })
   ] });
 };
@@ -30030,7 +30415,7 @@ const SetTranslator = () => {
         }
       ),
       selectedProject && /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+        /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 20 }, children: [
           /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Production languages" }),
           /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "Every message gets translated into all of these at once. At least one is required." }),
           /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: LANGUAGE_CODES.map((code) => {
@@ -30059,7 +30444,7 @@ const SetTranslator = () => {
             );
           }) })
         ] }),
-        /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+        /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 20 }, children: [
           /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Shoot location" }),
           /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "The city you're shooting in — used for the weather line on messages and call sheets." }),
           /* @__PURE__ */ jsxs("div", { className: "st-locrow", style: { display: "flex", gap: 10, alignItems: "center", marginTop: 14 }, children: [
@@ -30251,7 +30636,7 @@ const NoteComposer = ({
     setBody("");
     setTranslateTouched(false);
   };
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 20 }, children: [
     /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: heading }),
     hint && /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: hint }),
     /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: NOTE_TAGS.map((t) => {
@@ -30346,12 +30731,12 @@ const NoteComposer = ({
           children: saving ? "Saving…" : "Save note"
         }
       ),
-      body && /* @__PURE__ */ jsx("button", { onClick: () => setBody(""), style: ghostBtn$2, children: "Clear" })
+      body && /* @__PURE__ */ jsx("button", { onClick: () => setBody(""), style: ghostBtn$3, children: "Clear" })
     ] })
   ] });
 };
 const smallBtn = {
-  ...ghostBtn$2,
+  ...ghostBtn$3,
   minHeight: 44,
   padding: "0 12px",
   fontSize: 13,
@@ -30436,10 +30821,10 @@ const NoteCard = ({
     "div",
     {
       style: {
-        ...panel$3,
+        ...panel$4,
         padding: 16,
         borderLeft: isSafety ? "4px solid #ff4d4f" : void 0,
-        border: urgent ? "2px solid rgba(255,77,79,0.6)" : panel$3.border,
+        border: urgent ? "2px solid rgba(255,77,79,0.6)" : panel$4.border,
         opacity: note.resolved ? 0.6 : 1
       },
       children: [
@@ -30498,7 +30883,7 @@ const NoteCard = ({
           ),
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
             /* @__PURE__ */ jsx("button", { onClick: saveEdit, disabled: busy || body.trim().length < 2, style: { ...primaryBtn$3, opacity: busy || body.trim().length < 2 ? 0.45 : 1 }, children: busy ? "Saving…" : "Save changes" }),
-            /* @__PURE__ */ jsx("button", { onClick: () => setEditing(false), style: ghostBtn$2, children: "Cancel" })
+            /* @__PURE__ */ jsx("button", { onClick: () => setEditing(false), style: ghostBtn$3, children: "Cancel" })
           ] })
         ] }) : /* @__PURE__ */ jsx(
           "div",
@@ -30724,7 +31109,7 @@ const NoteList = ({
     setSearchParams(params, { replace: true });
   };
   return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 60 }, children: [
-    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 20, marginBottom: 20 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Filters" }),
       /* @__PURE__ */ jsxs(
         "div",
@@ -30801,13 +31186,13 @@ const NoteList = ({
             t.value
           );
         }),
-        tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter ? /* @__PURE__ */ jsx("button", { onClick: clearFilters, style: { ...ghostBtn$2, minHeight: 40, fontSize: 13 }, children: "Clear filters" }) : null
+        tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter ? /* @__PURE__ */ jsx("button", { onClick: clearFilters, style: { ...ghostBtn$3, minHeight: 40, fontSize: 13 }, children: "Clear filters" }) : null
       ] })
     ] }),
-    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading notes…"
-    ] }) : groups.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 28, textAlign: "center", color: "rgba(255,255,255,0.55)" }, children: "No notes yet. Write the first one above." }) : groups.map((g) => /* @__PURE__ */ jsxs("div", { style: { marginBottom: 26 }, children: [
+    ] }) : groups.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 28, textAlign: "center", color: "rgba(255,255,255,0.55)" }, children: "No notes yet. Write the first one above." }) : groups.map((g) => /* @__PURE__ */ jsxs("div", { style: { marginBottom: 26 }, children: [
       /* @__PURE__ */ jsxs("div", { style: {
         fontFamily: "'Fraunces', serif",
         fontSize: 18,
@@ -31163,7 +31548,7 @@ const ProductionNotes = () => {
             "button",
             {
               onClick: () => setShowReport(true),
-              style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8 },
+              style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 8 },
               children: [
                 /* @__PURE__ */ jsx(FileText, { size: 16 }),
                 " Daily report"
@@ -31984,7 +32369,7 @@ const MessageCard = ({
       };
     })
   ];
-  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }, children: [
       /* @__PURE__ */ jsxs("div", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.45)" }, children: [
         timeAgo(message.created_at),
@@ -32003,14 +32388,14 @@ const MessageCard = ({
             onClick: () => copy(`${chosen.subject ? `${chosen.subject}
 
 ` : ""}${chosen.text}`),
-            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+            style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", gap: 6 },
             children: [
               /* @__PURE__ */ jsx(Copy, { size: 15 }),
               " Copy"
             ]
           }
         ),
-        translations.length > 0 && /* @__PURE__ */ jsx("button", { onClick: () => setShowAll((v2) => !v2), style: ghostBtn$2, children: showAll ? "Hide languages" : "Show all languages" })
+        translations.length > 0 && /* @__PURE__ */ jsx("button", { onClick: () => setShowAll((v2) => !v2), style: ghostBtn$3, children: showAll ? "Hide languages" : "Show all languages" })
       ] })
     ] }),
     !showAll ? /* @__PURE__ */ jsxs("div", { dir: RTL_LANGUAGES.has(chosen.code) ? "rtl" : "ltr", style: { marginTop: 12 }, children: [
@@ -32079,8 +32464,8 @@ const CrewMessages = ({
     }
   };
   return /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 18, marginBottom: 32 }, children: [
-    shootLocation && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 16 }, children: /* @__PURE__ */ jsx(WeatherBar, { location: shootLocation }) }),
-    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+    shootLocation && /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 16 }, children: /* @__PURE__ */ jsx(WeatherBar, { location: shootLocation }) }),
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18 }, children: [
       /* @__PURE__ */ jsx("label", { htmlFor: "crew-read-lang", style: { fontSize: 12, color: "rgba(255,255,255,0.45)", display: "block", marginBottom: 6 }, children: "Read in" }),
       /* @__PURE__ */ jsx(
         "select",
@@ -32093,7 +32478,7 @@ const CrewMessages = ({
         }
       )
     ] }),
-    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Write a message" }),
       /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "Everyone on this link gets it in their own language." }),
       /* @__PURE__ */ jsx(
@@ -32142,12 +32527,12 @@ const CrewMessages = ({
         ] })
       ] })
     ] }),
-    loading && messages.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+    loading && messages.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
       /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
       " Loading messages…"
-    ] }) : messages.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, color: "rgba(255,255,255,0.55)", fontSize: 14.5 }, children: "No messages yet. Anything the production office sends will show up here." }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+    ] }) : messages.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$4, padding: 24, color: "rgba(255,255,255,0.55)", fontSize: 14.5 }, children: "No messages yet. Anything the production office sends will show up here." }) : /* @__PURE__ */ jsxs(Fragment, { children: [
       messages.map((m) => /* @__PURE__ */ jsx(MessageCard, { message: m, readLanguage }, m.id)),
-      hasMore && /* @__PURE__ */ jsx("button", { onClick: onLoadMore, style: ghostBtn$2, children: "Load older messages" })
+      hasMore && /* @__PURE__ */ jsx("button", { onClick: onLoadMore, style: ghostBtn$3, children: "Load older messages" })
     ] })
   ] });
 };
@@ -32275,7 +32660,7 @@ const CrewNotes = ({
     }
   };
   return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 32 }, children: [
-    languages.length > 1 && /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginBottom: 18 }, children: [
+    languages.length > 1 && /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 18, marginBottom: 18 }, children: [
       /* @__PURE__ */ jsx("label", { htmlFor: "crew-notes-lang", style: { fontSize: 12, color: "rgba(255,255,255,0.45)", display: "block", marginBottom: 6 }, children: "Read in" }),
       /* @__PURE__ */ jsx(
         "select",
@@ -40258,7 +40643,7 @@ const ContactEditDialog = ({ contact, onClose, onSave }) => {
     error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
       /* @__PURE__ */ jsx("button", { onClick: save, disabled: saving, style: { ...primaryBtn$3, opacity: saving ? 0.5 : 1 }, children: saving ? "Saving…" : "Save changes" }),
-      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Cancel" })
+      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$3, children: "Cancel" })
     ] })
   ] }) });
 };
@@ -40372,7 +40757,7 @@ const ReminderDialog = ({ form, onClose, onResult }) => {
           children: sending ? "Sending…" : `Send to ${valid.length || 0}`
         }
       ),
-      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Close" })
+      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$3, children: "Close" })
     ] }),
     /* @__PURE__ */ jsxs("div", { style: { borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 14 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: "Reminder history" }),
@@ -40894,7 +41279,7 @@ function ContactCastCrew() {
                 href: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
                 target: "_blank",
                 rel: "noreferrer",
-                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", textDecoration: "none" },
                 children: "WhatsApp"
               }
             ),
@@ -40903,7 +41288,7 @@ function ContactCastCrew() {
               {
                 className: "ccc-btn",
                 href: `sms:?&body=${encodeURIComponent(shareText)}`,
-                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", textDecoration: "none" },
                 children: "SMS"
               }
             ),
@@ -40912,12 +41297,12 @@ function ContactCastCrew() {
               {
                 className: "ccc-btn",
                 href: `mailto:?subject=${encodeURIComponent(`${productionName || "Production"} — cast & crew list`)}&body=${encodeURIComponent(shareText)}`,
-                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                style: { ...ghostBtn$3, display: "inline-flex", alignItems: "center", textDecoration: "none" },
                 children: "Email"
               }
             ),
-            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: nativeShare, style: ghostBtn$2, children: "Share…" }),
-            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => setShowReminder(true), style: ghostBtn$2, children: "Send reminder" })
+            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: nativeShare, style: ghostBtn$3, children: "Share…" }),
+            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => setShowReminder(true), style: ghostBtn$3, children: "Send reminder" })
           ] }),
           /* @__PURE__ */ jsx("p", { style: { marginTop: 12, marginBottom: 0, fontSize: 13, color: "rgba(255,255,255,0.35)" }, children: "Anyone with this link can submit their details. No login needed on their end." })
         ] }),
@@ -40970,7 +41355,7 @@ function ContactCastCrew() {
               className: "ccc-btn",
               onClick: saveSettings,
               disabled: saving,
-              style: { ...ghostBtn$2, marginTop: 18, color: TEAL$1, borderColor: "rgba(0,212,170,0.35)", background: "rgba(0,212,170,0.12)" },
+              style: { ...ghostBtn$3, marginTop: 18, color: TEAL$1, borderColor: "rgba(0,212,170,0.35)", background: "rgba(0,212,170,0.12)" },
               children: saving ? "Saving…" : "Save settings"
             }
           )
@@ -40990,8 +41375,8 @@ function ContactCastCrew() {
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
               /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: downloadPdf, disabled: contacts.length === 0 || busy, style: { ...primaryBtn$3, opacity: contacts.length === 0 ? 0.4 : 1 }, children: "Master sheet PDF" }),
-              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: emailPdf, disabled: contacts.length === 0 || emailing, style: { ...ghostBtn$2, opacity: contacts.length === 0 ? 0.4 : 1 }, children: emailing ? "Sending…" : "Email me the list" }),
-              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => exportCsv(contacts), disabled: contacts.length === 0, style: { ...ghostBtn$2, opacity: contacts.length === 0 ? 0.4 : 1 }, children: "Export CSV" })
+              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: emailPdf, disabled: contacts.length === 0 || emailing, style: { ...ghostBtn$3, opacity: contacts.length === 0 ? 0.4 : 1 }, children: emailing ? "Sending…" : "Email me the list" }),
+              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => exportCsv(contacts), disabled: contacts.length === 0, style: { ...ghostBtn$3, opacity: contacts.length === 0 ? 0.4 : 1 }, children: "Export CSV" })
             ] })
           ] }),
           contacts.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
@@ -41047,7 +41432,7 @@ function ContactCastCrew() {
           contacts.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }, children: "No submissions yet. Share your link above and they'll show up here." }) : visible.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)" }, children: "No contacts match those filters." }) : /* @__PURE__ */ jsx("div", { style: { display: "grid", gap: 12 }, children: visible.map((c) => {
             const dupe = c.email && duplicateEmails.has(c.email.toLowerCase().trim());
             const cast = isCastMember(c);
-            return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 16 }, children: [
+            return /* @__PURE__ */ jsxs("div", { style: { ...panel$4, padding: 16 }, children: [
               /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }, children: [
                 /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer", minWidth: 0 }, children: [
                   /* @__PURE__ */ jsx(

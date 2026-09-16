@@ -10,8 +10,21 @@ import {
   SIGNOFF_FIELDS,
 } from "@/components/breakdown/types";
 import { prepareImage } from "./imageDownscale";
+import { aiInvoke } from "@/lib/aiInvoke";
 
 export const BUCKET = "breakdown-photos";
+
+export interface SceneEdit {
+  scene_number: string | null;
+  label: string | null;
+  script_text: string;
+}
+
+export interface SceneMergeResult {
+  kept: number;
+  removed: number;
+  added: number;
+}
 
 export interface BreakdownData {
   scenes: BreakdownScene[];
@@ -53,6 +66,10 @@ export interface BreakdownAdapter {
   attachReference(itemId: string, url: string): Promise<BreakdownPhoto>;
 
   deleteScene?(scene: BreakdownScene, scenePhotos: BreakdownPhoto[]): Promise<void>;
+  /** Owner only — save the scene's number, label and script text. */
+  updateScene?(sceneId: string, patch: SceneEdit): Promise<void>;
+  /** Owner only — re-run the AI breakdown on an existing scene (1 credit). */
+  rerunScene?(sceneId: string, patch: SceneEdit): Promise<SceneMergeResult>;
   /** Live updates: realtime for the owner, polling for crew. Returns an unsubscribe. */
   watch(sceneId: string, onChange: () => void): () => void;
 }
@@ -254,6 +271,30 @@ export function createOwnerAdapter(opts: {
       const { error } = await supabase.from("breakdown_scenes").delete().eq("id", scene.id);
       if (error) fail(error.message);
     },
+
+    async updateScene(sceneId, patch) {
+      const { error } = await supabase.from("breakdown_scenes").update({
+        scene_number: patch.scene_number,
+        label: patch.label,
+        script_text: patch.script_text,
+      }).eq("id", sceneId);
+      if (error) fail(error.message);
+    },
+
+    async rerunScene(sceneId, patch) {
+      const res = await aiInvoke<{ merged?: SceneMergeResult }>("breakdown-scene", {
+        body: {
+          project_id: projectId,
+          scene_id: sceneId,
+          script_text: patch.script_text,
+          scene_number: patch.scene_number || undefined,
+          label: patch.label || undefined,
+        },
+      });
+      return res?.merged || { kept: 0, removed: 0, added: 0 };
+    },
+
+
 
     watch(sceneId, onChange) {
       const channel = supabase
