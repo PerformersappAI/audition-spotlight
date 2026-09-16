@@ -18,6 +18,8 @@ const ScriptBreakdown = () => {
         canonical={`${SITE}/script-breakdown`}
       />
       <style>{`
+        @media (max-width: 800px) { .sb-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 560px) { .sb-steps { grid-template-columns: 1fr !important; } }
         .sb-step-num {
           width: 28px; height: 28px; border-radius: 9999px;
           display: flex; align-items: center; justify-content: center;

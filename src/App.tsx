@@ -26,6 +26,7 @@ import SceneAnalysis from "./pages/SceneAnalysis";
 import ScriptAnalysis from "./pages/ScriptAnalysis";
 import StoryboardingRoute from "./pages/StoryboardingRoute";
 import CallSheet from "./pages/CallSheet";
+import ScriptBreakdown from "./pages/ScriptBreakdown";
 import CreateProject from "./pages/CreateProject";
 import CreateFestival from "./pages/CreateFestival";
 import Applications from "./pages/Applications";
@@ -294,6 +295,7 @@ const AppContent = () => (
       <Route path="/storyboarding" element={<><ToolSeo path="/storyboarding" /><ToolGate><StoryboardingRoute /></ToolGate></>} />
       <Route path="/storyboarding/pricing" element={<Navigate to="/membership" replace />} />
       <Route path="/call-sheet" element={<><ToolSeo path="/call-sheet" /><ToolGate><CallSheet /></ToolGate></>} />
+      <Route path="/script-breakdown" element={<><ToolSeo path="/script-breakdown" /><ToolGate><ScriptBreakdown /></ToolGate></>} />
       <Route path="/create-project" element={<CreateProject />} />
       <Route path="/create-festival" element={<CreateFestival />} />
       <Route path="/applications" element={<Applications />} />

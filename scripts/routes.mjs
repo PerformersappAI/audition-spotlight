@@ -25,6 +25,7 @@ const staticRoutes = [
   "/scene-analysis",
   "/storyboarding",
   "/call-sheet",
+  "/script-breakdown",
   "/pitch-deck",
   "/contract-assistant",
   "/funding-strategy",
