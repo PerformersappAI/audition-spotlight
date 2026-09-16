@@ -204,6 +204,51 @@ const CrewBreakdown = () => {
     ? 0
     : messages.filter((m) => !seenAt || m.created_at > seenAt).length;
 
+  // ---- notes ---------------------------------------------------------------
+  const noteApi = useMemo(
+    () => (identity ? crewNoteApi(token, identity) : null),
+    [token, identity],
+  );
+
+  const loadNotes = useCallback(async () => {
+    if (!noteApi) return;
+    try {
+      const res = await noteApi.list();
+      setNotes(res.notes);
+      setPreferredLanguage((prev) => prev ?? res.preferred_language);
+    } catch { /* keep whatever we already have */ } finally {
+      setNotesLoading(false);
+    }
+  }, [noteApi]);
+
+  // Poll for new notes every 20s while the page is visible.
+  useEffect(() => {
+    if (!noteApi || dead) return;
+    loadNotes();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadNotes();
+    }, 20_000);
+    return () => window.clearInterval(timer);
+  }, [noteApi, dead, loadNotes]);
+
+  const markNotesSeen = useCallback(() => {
+    const now = new Date().toISOString();
+    setNotesSeenAt(now);
+    try {
+      localStorage.setItem(notesSeenKey(token), now);
+    } catch { /* ignore */ }
+  }, [token]);
+
+  useEffect(() => {
+    if (tab === "notes" && notes.length) markNotesSeen();
+  }, [tab, notes, markNotesSeen]);
+
+  const unreadNotes = tab === "notes"
+    ? 0
+    : notes.filter((n) => !notesSeenAt || n.created_at > notesSeenAt).length;
+
+
+
   const productionLanguages = project?.languages?.length ? project.languages : ["en"];
 
   const changeIdentity = () => {
