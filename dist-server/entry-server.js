@@ -4606,14 +4606,21 @@ const GROUPS$1 = [
     key: "Production Office",
     label: "Production Office",
     rows: [
-      { cols: 3, tools: [
+      { cols: 2, tools: [
         { title: "Project Intake Form", to: "/submit", theme: "violet" },
-        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
+        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" }
+      ] },
+      { cols: 2, tools: [
+        { title: "Document Library", to: "/library", theme: "violet" },
         { title: "Calendar", to: "/calendar", theme: "violet" }
       ] },
       { cols: 2, tools: [
-        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
-        { title: "Document Library", to: "/library", theme: "violet" }
+        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
+        { title: "Production Notes", to: "#", theme: "violet" }
+      ] },
+      { cols: 2, tools: [
+        { title: "Set Translator", to: "#", theme: "violet" },
+        { title: "Receipts & Expenses", to: "#", theme: "violet" }
       ] }
     ]
   },
