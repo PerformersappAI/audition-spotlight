@@ -4,12 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { ghostBtn, panel } from "@/components/production/ProductionPicker";
 import { timeAgo } from "@/components/breakdown/timeAgo";
 import { LANGUAGES } from "@/lib/languages";
-import { messageTranslations, type ProductionMessage } from "@/lib/translator/types";
+import { messageTranslations, sentCount, type ProductionMessage } from "@/lib/translator/types";
 
 const PAGE = 20;
 
 const MESSAGE_FIELDS =
-  "id, project_id, subject, source_language, source_text, translations, source_kind, created_by_name, created_at";
+  "id, project_id, subject, source_language, source_text, translations, source_kind, created_by_name, created_at, sent_at, sent_to, created_by_crew_id";
 
 interface Props {
   projectId: string;
@@ -83,9 +83,21 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }: Props) => {
                     fontFamily: "'Inter Tight', sans-serif", padding: 0,
                   }}
                 >
-                  <div style={{ fontSize: 14.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }}>{title}</div>
+                  <div style={{ fontSize: 14.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }}>
+                    {title}
+                    {row.created_by_crew_id && (
+                      <span style={{
+                        marginLeft: 8, fontSize: 11, fontWeight: 700, padding: "2px 8px",
+                        borderRadius: 9999, background: "rgba(255,255,255,0.08)",
+                        color: "rgba(255,255,255,0.6)", whiteSpace: "nowrap",
+                      }}>via crew link</span>
+                    )}
+                  </div>
                   <div style={{ fontSize: 12.5, color: "rgba(255,255,255,0.45)", marginTop: 4 }}>
                     {timeAgo(row.created_at)} · {LANGUAGES[row.source_language]?.native || row.source_language} → {count} language{count === 1 ? "" : "s"} · {row.created_by_name}
+                    {sentCount(row) > 0 && (
+                      <span style={{ color: "#00d4aa" }}> · Sent to {sentCount(row)}</span>
+                    )}
                   </div>
                 </button>
                 <button

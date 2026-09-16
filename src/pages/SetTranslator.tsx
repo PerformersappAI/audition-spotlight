@@ -208,6 +208,7 @@ const SetTranslator = () => {
                 productionTitle={selectedProject.title}
                 shootLocation={savedLocation || selectedProject.shoot_location}
                 onNewMessage={() => setMessage(null)}
+                onSent={() => setHistoryKey((k) => k + 1)}
               />
             ) : (
               <ComposePanel

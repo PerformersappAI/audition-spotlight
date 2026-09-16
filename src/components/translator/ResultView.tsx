@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { Copy, Download, FileText, Loader2, MessageCircle, Plus } from "lucide-react";
+import { Copy, Download, FileText, Loader2, MessageCircle, Plus, Send } from "lucide-react";
 import { toast } from "sonner";
 import { ghostBtn, panel, primaryBtn } from "@/components/production/ProductionPicker";
 import { LANGUAGES, languageLabel } from "@/lib/languages";
 import {
   messageSubjects,
   messageTranslations,
+  sentCount,
   RTL_LANGUAGES,
   type ProductionMessage,
 } from "@/lib/translator/types";
@@ -14,12 +15,15 @@ import {
   downloadMessagePDF,
   downloadMessageText,
 } from "@/lib/translator/exportMessage";
+import SendToCrewDialog from "./SendToCrewDialog";
 
 interface Props {
   message: ProductionMessage;
   productionTitle: string;
   shootLocation?: string | null;
   onNewMessage: () => void;
+  /** Lets the page refresh the history once the message has been emailed. */
+  onSent?: () => void;
 }
 
 const copy = async (text: string, label: string) => {
@@ -79,8 +83,10 @@ const Card = ({
   );
 };
 
-const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }: Props) => {
+const ResultView = ({ message, productionTitle, shootLocation, onNewMessage, onSent }: Props) => {
   const [busy, setBusy] = useState<"txt" | "pdf" | null>(null);
+  const [showSend, setShowSend] = useState(false);
+  const [sent, setSent] = useState(sentCount(message));
   const subjects = messageSubjects(message);
   const translations = messageTranslations(message);
 
@@ -102,6 +108,12 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }: P
     <div style={{ marginBottom: 32 }}>
       <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }}>
         <button
+          onClick={() => setShowSend(true)}
+          style={{ ...primaryBtn, display: "inline-flex", alignItems: "center", gap: 6 }}
+        >
+          <Send size={16} /> Send to crew
+        </button>
+        <button
           onClick={() => copy(allLanguagesText(message), "All languages")}
           style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 6 }}
         >
@@ -121,10 +133,28 @@ const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }: P
         >
           {busy === "pdf" ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />} Download PDF
         </button>
-        <button onClick={onNewMessage} style={{ ...primaryBtn, display: "inline-flex", alignItems: "center", gap: 6 }}>
+        <button onClick={onNewMessage} style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 6 }}>
           <Plus size={16} /> New message
         </button>
       </div>
+
+      {sent > 0 && (
+        <div style={{ fontSize: 13, color: "#00d4aa", marginBottom: 14 }}>
+          Sent to {sent} {sent === 1 ? "person" : "people"}
+        </div>
+      )}
+
+      {showSend && (
+        <SendToCrewDialog
+          messageId={message.id}
+          onClose={() => setShowSend(false)}
+          onSent={(count) => {
+            setSent((prev) => prev + count);
+            onSent?.();
+          }}
+        />
+      )}
+
 
       <Card
         code={message.source_language}
