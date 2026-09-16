@@ -4591,11 +4591,16 @@ const GROUPS$1 = [
   {
     key: "Script & Story",
     label: "Script & Story",
-    rows: [{ cols: 3, tools: [
-      { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
-      { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
-      { title: "Table Read", to: "/table-read", theme: "teal" }
-    ] }]
+    rows: [
+      { cols: 2, tools: [
+        { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
+        { title: "Table Read", to: "/table-read", theme: "teal" }
+      ] },
+      { cols: 2, tools: [
+        { title: "Script Breakdown", to: "#", theme: "teal" },
+        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" }
+      ] }
+    ]
   },
   {
     key: "Funding & Pitch",
@@ -4701,7 +4706,16 @@ function ToolCard({ tool }) {
     onMouseLeave: () => setHover(false)
   };
   if (tool.to === "#") {
-    return /* @__PURE__ */ jsx("a", { href: "#", style, ...handlers, children: inner });
+    return /* @__PURE__ */ jsx(
+      "a",
+      {
+        href: "#",
+        style,
+        ...handlers,
+        onClick: (e) => e.preventDefault(),
+        children: inner
+      }
+    );
   }
   if (/^https?:\/\//.test(tool.to)) {
     return /* @__PURE__ */ jsx("a", { href: tool.to, target: "_blank", rel: "noopener noreferrer", style, ...handlers, children: inner });
