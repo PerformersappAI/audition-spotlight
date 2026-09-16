@@ -36,6 +36,7 @@ import CallSheet from "./pages/CallSheet";
 import ScriptBreakdown from "./pages/ScriptBreakdown";
 import ReceiptsExpenses from "./pages/ReceiptsExpenses";
 import SetTranslator from "./pages/SetTranslator";
+import ProductionNotes from "./pages/ProductionNotes";
 import CrewBreakdown from "./pages/CrewBreakdown";
 import PitchDeckMaker from "./pages/PitchDeckMaker";
 import ContractAssistant from "./pages/ContractAssistant";

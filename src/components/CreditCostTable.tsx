@@ -10,6 +10,7 @@ export const TOOL_COSTS: ToolCost[] = [
   { name: 'Script Breakdown', cost: '~1 credit per scene (+1 to read a PDF or image)' },
   { name: 'Receipts & Expenses', cost: 'Free to log; ~1 credit to read a receipt photo' },
   { name: 'Set Translator', cost: '~1 credit per message (all languages at once; +1 to read a PDF or image)' },
+  { name: 'Production Notes', cost: 'Free; ~1 credit to translate a note' },
   { name: 'Storyboard Generator', cost: '2–4 credits (grows with number of frames)' },
   { name: 'Table Read', cost: '2–4 credits (varies by dialogue length)' },
   { name: 'Fundraising', cost: '~1 credit' },

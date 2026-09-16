@@ -28,6 +28,7 @@ const staticRoutes = [
   "/script-breakdown",
   "/receipts-expenses",
   "/set-translator",
+  "/production-notes",
   "/pitch-deck",
   "/contract-assistant",
   "/funding-strategy",

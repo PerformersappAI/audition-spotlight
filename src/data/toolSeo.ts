@@ -103,6 +103,13 @@ export const toolSeo: Record<string, ToolSeoEntry> = {
     lead:
       "On a multilingual set, the fastest way to stop a misunderstanding is to send one message in every language your crew speaks. Pick your production and the languages it works in, then type, paste or upload a call-time change, a safety note or a document — the Set Translator produces every version at once. Copy it, download it, or send it straight to your team.",
   },
+  "/production-notes": {
+    title: "Production Notes for Film Sets | Filmmaker Genius",
+    description:
+      "Keep every on-set note — safety, talent, props, locations — tagged by shoot day and scene, translated for your crew, and ready as a daily report.",
+    lead:
+      "Production notes are the running record of everything that changes on set: a safety brief, a wardrobe swap, a location restriction, a line the director wants revisited. Tag each note by department, shoot day and scene, mark it important or urgent, and translate it into every language your crew speaks. At the end of the day, print one PDF report for the whole team.",
+  },
   "/script-breakdown": {
 
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
