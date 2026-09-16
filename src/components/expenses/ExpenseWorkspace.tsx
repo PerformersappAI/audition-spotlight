@@ -231,13 +231,64 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
       <div style={{ display: "flex", gap: 10, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", marginBottom: 18 }}>
         <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, margin: 0 }}>Expenses</h2>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button
-            disabled
-            title="Coming in the next step"
-            style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8, opacity: 0.45, cursor: "not-allowed" }}
-          >
-            <Download size={16} /> Export
-          </button>
+          <div ref={menuRef} style={{ position: "relative" }}>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              disabled={!!exporting}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8, cursor: exporting ? "wait" : "pointer" }}
+            >
+              {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+              {exporting ? "Generating…" : "Export"}
+            </button>
+            {menuOpen && (
+              <div
+                role="menu"
+                style={{
+                  position: "absolute", right: 0, top: "calc(100% + 8px)", zIndex: 40, minWidth: 250,
+                  borderRadius: 12, padding: 8, background: "#10101b",
+                  border: "1px solid rgba(255,255,255,0.14)", boxShadow: "0 18px 40px rgba(0,0,0,0.5)",
+                }}
+              >
+                <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", padding: "6px 10px" }}>
+                  Exports use your current filters
+                </div>
+                {([
+                  ["xlsx", "Excel (.xlsx)", FileSpreadsheet],
+                  ["csv", "CSV", Table],
+                  ["pdf", "PDF report", FileText],
+                ] as const).map(([kind, copy, Icon]) => (
+                  <button
+                    key={kind}
+                    role="menuitem"
+                    onClick={() => runExport(kind)}
+                    style={{
+                      display: "flex", alignItems: "center", gap: 10, width: "100%", minHeight: 44,
+                      padding: "0 10px", borderRadius: 8, border: "none", background: "transparent",
+                      color: "#fff", fontSize: 15, textAlign: "left", cursor: "pointer",
+                      fontFamily: "'Inter Tight', sans-serif",
+                    }}
+                  >
+                    <Icon size={16} /> {copy}
+                  </button>
+                ))}
+                <label style={{
+                  display: "flex", alignItems: "center", gap: 10, minHeight: 44, padding: "0 10px",
+                  marginTop: 4, borderTop: "1px solid rgba(255,255,255,0.08)",
+                  fontSize: 13, color: "rgba(255,255,255,0.7)", cursor: "pointer",
+                }}>
+                  <input
+                    type="checkbox"
+                    checked={includeImages}
+                    onChange={(e) => setIncludeImages(e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "#00d4aa" }}
+                  />
+                  Include receipt images (PDF)
+                </label>
+              </div>
+            )}
+          </div>
           <button
             onClick={() => { setDialogFor(null); setDialogOpen(true); }}
             style={{ ...primaryBtn, display: "inline-flex", alignItems: "center", gap: 8 }}
