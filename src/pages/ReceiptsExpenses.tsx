@@ -153,6 +153,7 @@ const ReceiptsExpenses = () => {
           <ExpenseWorkspace
             key={selectedProject.id}
             projectId={selectedProject.id}
+            productionTitle={selectedProject.title}
             company={selectedProject.company}
             defaultCurrency={activeCurrency}
             actorName={actorName}
