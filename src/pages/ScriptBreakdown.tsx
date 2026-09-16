@@ -728,9 +728,27 @@ const ScriptBreakdown = () => {
               <div style={{ fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>{selectedScene.label}</div>
             )}
 
+            {(() => {
+              const total = sceneItems.length;
+              const checked = sceneItems.filter((i) => i.checked).length;
+              const signed = DEPARTMENTS.filter((d) => !!sceneSignoff(d.key)).length;
+              const pct = total ? Math.round((checked / total) * 100) : 0;
+              return (
+                <div style={{ marginTop: 12 }}>
+                  <div style={{ fontSize: 13, color: "rgba(255,255,255,0.55)" }}>
+                    {checked}/{total} items ready · {signed}/5 departments signed off
+                  </div>
+                  <div style={{ marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: TEAL, transition: "width .3s" }} />
+                  </div>
+                </div>
+              );
+            })()}
+
             <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }}>
               {DEPARTMENTS.map((d) => {
                 const active = d.key === activeDept;
+                const so = sceneSignoff(d.key);
                 return (
                   <button
                     key={d.key}
@@ -743,28 +761,39 @@ const ScriptBreakdown = () => {
                       color: active ? TEAL : "rgba(255,255,255,0.7)",
                       fontSize: 14, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap",
                       fontFamily: "'Inter Tight', sans-serif",
+                      display: "inline-flex", alignItems: "center", gap: 8,
                     }}
                   >
-                    {d.label} · {deptCount(d.key)}
+                    {d.label} {deptCheckedCount(d.key)}/{deptCount(d.key)}
+                    {so && (
+                      <span style={{
+                        width: 8, height: 8, borderRadius: 9999,
+                        background: so.status === "good" ? TEAL : "#f5a524",
+                      }} />
+                    )}
                   </button>
                 );
               })}
             </div>
 
-            <ul style={{ listStyle: "none", padding: 0, margin: "20px 0 0" }}>
-              {sceneItems.filter((i) => i.department === activeDept).length === 0 ? (
-                <li style={{ color: "rgba(255,255,255,0.4)", fontSize: 14 }}>Nothing found for this department.</li>
-              ) : (
-                sceneItems
-                  .filter((i) => i.department === activeDept)
-                  .map((i) => (
-                    <li key={i.id} style={{
-                      padding: "13px 4px", borderBottom: "1px solid rgba(255,255,255,0.06)",
-                      fontSize: 15, color: "rgba(255,255,255,0.88)", lineHeight: 1.5,
-                    }}>{i.text}</li>
-                  ))
-              )}
-            </ul>
+            <DepartmentChecklist
+              key={`${sceneId}-${activeDept}`}
+              department={activeDept}
+              items={sceneItems.filter((i) => i.department === activeDept)}
+              onToggle={toggleItem}
+              onEditText={editItemText}
+              onDelete={deleteItem}
+              onAdd={(text) => addItem(activeDept, text)}
+            />
+
+            <SignOffBox
+              key={`signoff-${sceneId}-${activeDept}`}
+              signoff={sceneSignoff(activeDept)}
+              onSetStatus={(status, note) => setSignoff(activeDept, status, note)}
+              onClear={() => clearSignoff(activeDept)}
+              onAddNoteItem={(text) => addNoteItem(activeDept, text)}
+            />
+
 
             <button
               onClick={() => setShowScript((v) => !v)}
