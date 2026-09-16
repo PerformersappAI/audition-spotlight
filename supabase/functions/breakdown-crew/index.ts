@@ -23,8 +23,10 @@ const MAX_IMAGE_BYTES = 3 * 1024 * 1024; // decoded
 const RATE_LIMIT = 120; // requests per minute per token
 const DEPARTMENTS = ["props", "locations", "makeup_sfx", "wardrobe", "vehicles"];
 const CREW_DEPARTMENTS = [
-  "Director", "Producer", "Assistant Director", "Props", "Locations",
-  "Makeup & SFX", "Wardrobe", "Transport / Vehicles", "Camera", "Art Department", "Other",
+  "Director", "Producer", "Assistant Director", "Camera", "Lighting / Grip",
+  "Sound", "Art Department", "Props", "Locations", "Wardrobe", "Makeup & SFX",
+  "Special Effects", "Stunts", "Catering", "Transport / Vehicles",
+  "Post Production", "Music", "Cast", "Vendor", "Other",
 ];
 const PAYMENT_METHODS = ["reimburse", "per_diem", "company_card"];
 const REF_HOSTS = [

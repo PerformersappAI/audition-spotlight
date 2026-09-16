@@ -1,16 +1,6 @@
-export const EXPENSE_DEPARTMENTS = [
-  "Director",
-  "Producer",
-  "Assistant Director",
-  "Props",
-  "Locations",
-  "Makeup & SFX",
-  "Wardrobe",
-  "Transport / Vehicles",
-  "Camera",
-  "Art Department",
-  "Other",
-] as const;
+import { PRODUCTION_DEPARTMENTS } from "@/lib/production/departments";
+
+export const EXPENSE_DEPARTMENTS = PRODUCTION_DEPARTMENTS;
 
 export const PAYMENT_METHODS = [
   { key: "reimburse", label: "Reimburse me" },

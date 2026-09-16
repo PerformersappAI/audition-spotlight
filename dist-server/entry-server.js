@@ -23165,6 +23165,28 @@ const timeAgo = (iso) => {
   if (days < 30) return `${days} day${days === 1 ? "" : "s"} ago`;
   return new Date(iso).toLocaleDateString();
 };
+const PRODUCTION_DEPARTMENTS = [
+  "Director",
+  "Producer",
+  "Assistant Director",
+  "Camera",
+  "Lighting / Grip",
+  "Sound",
+  "Art Department",
+  "Props",
+  "Locations",
+  "Wardrobe",
+  "Makeup & SFX",
+  "Special Effects",
+  "Stunts",
+  "Catering",
+  "Transport / Vehicles",
+  "Post Production",
+  "Music",
+  "Cast",
+  "Vendor",
+  "Other"
+];
 const DEPARTMENTS = [
   { key: "props", label: "Props" },
   { key: "locations", label: "Locations" },
@@ -23172,19 +23194,7 @@ const DEPARTMENTS = [
   { key: "wardrobe", label: "Wardrobe" },
   { key: "vehicles", label: "Vehicles" }
 ];
-const CREW_DEPARTMENTS = [
-  "Director",
-  "Producer",
-  "Assistant Director",
-  "Props",
-  "Locations",
-  "Makeup & SFX",
-  "Wardrobe",
-  "Transport / Vehicles",
-  "Camera",
-  "Art Department",
-  "Other"
-];
+const CREW_DEPARTMENTS = PRODUCTION_DEPARTMENTS;
 const SCENE_FIELDS = "id, scene_number, label, script_text, sort_order, created_at";
 const ITEM_FIELDS = "id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, added_by_crew_id, sort_order";
 const SIGNOFF_FIELDS = "id, scene_id, department, status, note, by_name, by_department, updated_at";
@@ -26227,19 +26237,7 @@ const ScriptBreakdown = () => {
     ] })
   ] });
 };
-const EXPENSE_DEPARTMENTS = [
-  "Director",
-  "Producer",
-  "Assistant Director",
-  "Props",
-  "Locations",
-  "Makeup & SFX",
-  "Wardrobe",
-  "Transport / Vehicles",
-  "Camera",
-  "Art Department",
-  "Other"
-];
+const EXPENSE_DEPARTMENTS = PRODUCTION_DEPARTMENTS;
 const PAYMENT_METHODS = [
   { key: "reimburse", label: "Reimburse me" },
   { key: "per_diem", label: "Per diem" },
@@ -27244,7 +27242,7 @@ const ExpenseDialog = ({
   const [kind, setKind] = useState((existing == null ? void 0 : existing.kind) || "receipt");
   const [submittedBy, setSubmittedBy] = useState((existing == null ? void 0 : existing.submitted_by_name) || actorName);
   const [email, setEmail] = useState((existing == null ? void 0 : existing.submitted_by_email) || "");
-  const [department, setDepartment] = useState((existing == null ? void 0 : existing.department) || EXPENSE_DEPARTMENTS[3]);
+  const [department, setDepartment] = useState((existing == null ? void 0 : existing.department) || "Props");
   const [payment, setPayment] = useState((existing == null ? void 0 : existing.payment_method) || "");
   const [currency, setCurrency] = useState((existing == null ? void 0 : existing.currency) || defaultCurrency);
   const [date, setDate] = useState((existing == null ? void 0 : existing.expense_date) || today$1());
