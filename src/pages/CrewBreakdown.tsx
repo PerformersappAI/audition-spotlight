@@ -4,8 +4,11 @@ import { Loader2 } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 import BreakdownWorkspace from "@/components/breakdown/BreakdownWorkspace";
 import CrewExpenses from "@/components/expenses/CrewExpenses";
+import CrewMessages from "@/components/translator/CrewMessages";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
+import { crewMessageApi } from "@/lib/translator/crew";
+import type { ProductionMessage } from "@/lib/translator/types";
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
@@ -41,18 +44,36 @@ const primaryBtn: React.CSSProperties = {
 
 const storageKey = (token: string) => `fg_breakdown_crew_${token}`;
 const tabKey = (token: string) => `fg_crew_tab_${token}`;
+const seenKey = (token: string) => `fg_crew_msgseen_${token}`;
 
-type CrewTab = "breakdown" | "receipts";
+const MESSAGE_PAGE = 30;
+
+type CrewTab = "breakdown" | "receipts" | "messages";
 
 interface CrewProject {
   title: string;
   company: string | null;
   status: string;
   default_currency?: string;
+  languages?: string[];
+  shoot_location?: string | null;
 }
 
-const readTab = (token: string): CrewTab =>
-  (localStorage.getItem(tabKey(token)) === "receipts" ? "receipts" : "breakdown");
+const readTab = (token: string): CrewTab => {
+  try {
+    const stored = localStorage.getItem(tabKey(token));
+    if (stored === "receipts" || stored === "messages") return stored;
+  } catch { /* ignore */ }
+  return "breakdown";
+};
+
+const readSeen = (token: string): string => {
+  try {
+    return localStorage.getItem(seenKey(token)) || "";
+  } catch {
+    return "";
+  }
+};
 
 const readIdentity = (token: string): CrewIdentity | null => {
   try {
@@ -78,6 +99,12 @@ const CrewBreakdown = () => {
   const [joinError, setJoinError] = useState("");
   const [sceneId, setSceneId] = useState<string>("");
   const [crewUrls, setCrewUrls] = useState<Record<string, string>>({});
+
+  const [messages, setMessages] = useState<ProductionMessage[]>([]);
+  const [messagesLoading, setMessagesLoading] = useState(true);
+  const [messagesHasMore, setMessagesHasMore] = useState(false);
+  const [preferredLanguage, setPreferredLanguage] = useState<string | null>(null);
+  const [seenAt, setSeenAt] = useState<string>(() => (token ? readSeen(token) : ""));
 
   // Check the link once on load
   useEffect(() => {
@@ -110,6 +137,71 @@ const CrewBreakdown = () => {
     [token, identity, onUrls],
   );
   void crewUrls;
+
+  const messageApi = useMemo(
+    () => (identity ? crewMessageApi(token, identity) : null),
+    [token, identity],
+  );
+
+  const loadMessages = useCallback(async () => {
+    if (!messageApi) return;
+    try {
+      const res = await messageApi.list();
+      setMessages(res.messages);
+      setMessagesHasMore(res.messages.length >= MESSAGE_PAGE);
+      setPreferredLanguage(res.preferred_language);
+    } catch { /* keep whatever we already have */ } finally {
+      setMessagesLoading(false);
+    }
+  }, [messageApi]);
+
+  const loadOlderMessages = useCallback(async () => {
+    if (!messageApi || messages.length === 0) return;
+    const before = messages[messages.length - 1].created_at;
+    try {
+      const res = await messageApi.list(before);
+      setMessagesHasMore(res.messages.length >= MESSAGE_PAGE);
+      setMessages((prev) => {
+        const seen = new Set(prev.map((m) => m.id));
+        return [...prev, ...res.messages.filter((m) => !seen.has(m.id))];
+      });
+    } catch { /* ignore */ }
+  }, [messageApi, messages]);
+
+  // Poll for new messages every 20s while the page is visible.
+  useEffect(() => {
+    if (!messageApi || dead) return;
+    loadMessages();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadMessages();
+    }, 20_000);
+    return () => window.clearInterval(timer);
+  }, [messageApi, dead, loadMessages]);
+
+  const markMessagesSeen = useCallback(() => {
+    const now = new Date().toISOString();
+    setSeenAt(now);
+    try {
+      localStorage.setItem(seenKey(token), now);
+    } catch { /* ignore */ }
+  }, [token]);
+
+  useEffect(() => {
+    if (tab === "messages" && messages.length) markMessagesSeen();
+  }, [tab, messages, markMessagesSeen]);
+
+  const unread = tab === "messages"
+    ? 0
+    : messages.filter((m) => !seenAt || m.created_at > seenAt).length;
+
+  const productionLanguages = project?.languages?.length ? project.languages : ["en"];
+
+  const changeIdentity = () => {
+    if (!identity) return;
+    setName(identity.name);
+    setDepartment(identity.department);
+    setShowJoin(true);
+  };
 
   const join = async () => {
     const trimmed = name.trim();
@@ -158,13 +250,29 @@ const CrewBreakdown = () => {
       );
     }
     if (!adapter || !identity) return null;
+    if (tab === "messages") {
+      return (
+        <CrewMessages
+          token={token}
+          identity={identity}
+          languages={productionLanguages}
+          shootLocation={project?.shoot_location ?? null}
+          messages={messages}
+          loading={messagesLoading}
+          hasMore={messagesHasMore}
+          preferredLanguage={preferredLanguage}
+          onLoadMore={loadOlderMessages}
+          onPosted={loadMessages}
+        />
+      );
+    }
     if (tab === "receipts") {
       return (
         <CrewExpenses
           token={token}
           identity={identity}
           defaultCurrency={project?.default_currency || "USD"}
-          onChangeIdentity={() => { setName(identity.name); setDepartment(identity.department); setShowJoin(true); }}
+          onChangeIdentity={changeIdentity}
         />
       );
     }
@@ -215,7 +323,7 @@ const CrewBreakdown = () => {
             <div style={{ marginTop: 16, fontSize: 14, color: "rgba(255,255,255,0.6)" }}>
               You're {identity.name} · {identity.department}{" "}
               <button
-                onClick={() => { setName(identity.name); setDepartment(identity.department); setShowJoin(true); }}
+                onClick={changeIdentity}
                 style={{ background: "none", border: "none", color: TEAL, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" }}
               >
                 (change)
@@ -226,10 +334,14 @@ const CrewBreakdown = () => {
 
         {!checking && !dead && identity && (
           <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginBottom: 22 }}>
-            {([["breakdown", "Breakdown"], ["receipts", "Receipts"]] as [CrewTab, string][]).map(([key, copy]) => (
+            {([["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"]] as [CrewTab, string][]).map(([key, copy]) => (
               <button
                 key={key}
-                onClick={() => { setTab(key); localStorage.setItem(tabKey(token), key); }}
+                onClick={() => {
+                  setTab(key);
+                  try { localStorage.setItem(tabKey(token), key); } catch { /* ignore */ }
+                  if (key === "messages") markMessagesSeen();
+                }}
                 style={{
                   minHeight: 44, padding: "0 20px", borderRadius: 9999, cursor: "pointer",
                   fontSize: 15, fontWeight: 700, whiteSpace: "nowrap",
@@ -237,8 +349,18 @@ const CrewBreakdown = () => {
                   background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
                   color: tab === key ? TEAL : "#fff",
                   fontFamily: "'Inter Tight', sans-serif",
+                  display: "inline-flex", alignItems: "center", gap: 8,
                 }}
-              >{copy}</button>
+              >
+                {copy}
+                {key === "messages" && unread > 0 && (
+                  <span style={{
+                    minWidth: 20, height: 20, borderRadius: 9999, padding: "0 6px",
+                    background: TEAL, color: "#04231d", fontSize: 12, fontWeight: 700,
+                    display: "inline-flex", alignItems: "center", justifyContent: "center",
+                  }}>{unread}</span>
+                )}
+              </button>
             ))}
           </div>
         )}
