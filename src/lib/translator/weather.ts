@@ -86,8 +86,10 @@ const lookupOnce = async (query: string): Promise<GeoHit | null> => {
 };
 
 /**
- * Geocode a location. Full street addresses often fail, so retry with just the
- * trailing comma-separated parts (city, country) before giving up.
+ * Geocode a location. Full street addresses fail with this geocoder, so retry
+ * with the trailing comma-separated parts (city, then country) before giving up.
+ * Very short parts ("UK", "CA") and postcodes are skipped — they match the wrong
+ * place far too often.
  */
 export async function geocodeLocation(location: string): Promise<GeoHit> {
   const raw = location.trim();
@@ -100,7 +102,12 @@ export async function geocodeLocation(location: string): Promise<GeoHit> {
     .map((p) => p.trim())
     .filter(Boolean);
   const attempts = [raw];
-  if (parts.length > 1) attempts.push(parts.slice(-2).join(", "), parts[parts.length - 1]);
+  if (parts.length > 1) {
+    [...parts].reverse().forEach((part) => {
+      if (part.length > 3 && !/^\d[\d\s-]*$/.test(part)) attempts.push(part);
+    });
+  }
+
 
   for (const attempt of attempts) {
     const hit = await lookupOnce(attempt);
