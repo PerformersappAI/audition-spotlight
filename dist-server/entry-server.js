@@ -4603,14 +4603,6 @@ const GROUPS$1 = [
     ]
   },
   {
-    key: "Funding & Pitch",
-    label: "Funding & Pitch",
-    rows: [{ cols: 2, tools: [
-      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
-      { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" }
-    ] }]
-  },
-  {
     key: "Production Office",
     label: "Production Office",
     rows: [
@@ -4635,6 +4627,14 @@ const GROUPS$1 = [
     ] }]
   },
   {
+    key: "Funding & Pitch",
+    label: "Funding & Pitch",
+    rows: [{ cols: 2, tools: [
+      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
+      { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" }
+    ] }]
+  },
+  {
     key: "Distribution",
     label: "Distribution",
     rows: [{ cols: 2, tools: [
@@ -4643,7 +4643,7 @@ const GROUPS$1 = [
     ] }]
   }
 ];
-const TABS$1 = ["All Tools", "Script & Story", "Production Office", "Cast & Crew", "Distribution", "Funding & Pitch"];
+const TABS$1 = ["All Tools", "Script & Story", "Production Office", "Cast & Crew", "Funding & Pitch", "Distribution"];
 function ToolCard({ tool }) {
   const [hover, setHover] = useState(false);
   const t = THEMES$1[tool.theme];
