@@ -102,6 +102,9 @@ verify_jwt = true
 [functions.extract-scenes]
 verify_jwt = true
 
+[functions.breakdown-scene]
+verify_jwt = true
+
 # Non-metered / admin & system functions (still require auth)
 
 [functions.send-calendar]
