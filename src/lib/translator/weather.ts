@@ -54,18 +54,113 @@ const cache = new Map<string, { at: number; data: WeatherData }>();
 /** ISO timestamp from Open-Meteo is already in the location's local time. */
 export const clock = (iso: string) => (iso || "").slice(11, 16);
 
+/** Forecast for a specific calendar day (used by the call sheet). */
+export interface DatedForecast extends DayForecast {
+  place: string;
+  code: number;
+  date: string;
+}
+
+/** Thrown when the requested day is in the past or beyond the forecast window. */
+export class WeatherRangeError extends Error {}
+
+/** How many days ahead Open-Meteo reliably forecasts for our purposes. */
+export const FORECAST_WINDOW_DAYS = 14;
+
+interface GeoHit {
+  latitude: number;
+  longitude: number;
+  name: string;
+  country?: string;
+}
+
+const geoCache = new Map<string, GeoHit>();
+
+const lookupOnce = async (query: string): Promise<GeoHit | null> => {
+  const res = await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`,
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json?.results?.[0] ?? null;
+};
+
+/**
+ * Geocode a location. Full street addresses often fail, so retry with just the
+ * trailing comma-separated parts (city, country) before giving up.
+ */
+export async function geocodeLocation(location: string): Promise<GeoHit> {
+  const raw = location.trim();
+  const key = raw.toLowerCase();
+  const cached = geoCache.get(key);
+  if (cached) return cached;
+
+  const parts = raw
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  const attempts = [raw];
+  if (parts.length > 1) attempts.push(parts.slice(-2).join(", "), parts[parts.length - 1]);
+
+  for (const attempt of attempts) {
+    const hit = await lookupOnce(attempt);
+    if (hit) {
+      geoCache.set(key, hit);
+      return hit;
+    }
+  }
+  throw new Error("location not found");
+}
+
+const placeName = (hit: GeoHit) => [hit.name, hit.country].filter(Boolean).join(", ");
+
+/** Whole days between today (local) and an ISO YYYY-MM-DD date. */
+export const daysFromToday = (isoDate: string): number | null => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec((isoDate || "").trim());
+  if (!m) return null;
+  const target = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return Math.round((target.getTime() - today.getTime()) / 86400000);
+};
+
+/** Forecast for one specific shoot day, within the next 14 days. */
+export async function fetchWeatherForDate(location: string, isoDate: string): Promise<DatedForecast> {
+  const offset = daysFromToday(isoDate);
+  if (offset === null || offset < 0 || offset > FORECAST_WINDOW_DAYS) {
+    throw new WeatherRangeError("out of forecast range");
+  }
+
+  const hit = await geocodeLocation(location);
+  const res = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}` +
+      `&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max` +
+      `&timezone=auto&start_date=${isoDate}&end_date=${isoDate}`,
+  );
+  if (!res.ok) throw new Error("forecast failed");
+  const json = await res.json();
+  const d = json?.daily;
+  if (!d || d.temperature_2m_max?.[0] == null) throw new Error("no forecast");
+
+  return {
+    place: placeName(hit),
+    code: d.weather_code?.[0] ?? 0,
+    date: isoDate,
+    max: Math.round(d.temperature_2m_max[0]),
+    min: Math.round(d.temperature_2m_min[0]),
+    rain: d.precipitation_probability_max?.[0] ?? null,
+    sunrise: d.sunrise?.[0] || "",
+    sunset: d.sunset?.[0] || "",
+  };
+}
+
 export async function fetchWeather(location: string): Promise<WeatherData> {
   const key = location.trim().toLowerCase();
   const cached = cache.get(key);
   if (cached && Date.now() - cached.at < CACHE_MS) return cached.data;
 
-  const geoRes = await fetch(
-    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`,
-  );
-  if (!geoRes.ok) throw new Error("geocode failed");
-  const geo = await geoRes.json();
-  const hit = geo?.results?.[0];
-  if (!hit) throw new Error("location not found");
+  const hit = await geocodeLocation(location);
+
 
   const res = await fetch(
     `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}` +
