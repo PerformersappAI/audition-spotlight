@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, FileSpreadsheet, Table, MessageCircle, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, FileSpreadsheet, Table, MessageCircle, Pin, RotateCcw, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -4618,7 +4618,7 @@ const GROUPS$1 = [
       ] },
       { cols: 2, tools: [
         { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
-        { title: "Production Notes", to: "#", theme: "violet" }
+        { title: "Production Notes", to: "/production-notes", theme: "violet" }
       ] },
       { cols: 2, tools: [
         { title: "Set Translator", to: "/set-translator", theme: "violet" },
@@ -4951,6 +4951,11 @@ const toolSeo = {
     title: "On-Set Translator for Film Crews | Filmmaker Genius",
     description: "Translate call-time messages, safety notes and documents into every language your crew speaks — at once — and send them to the team.",
     lead: "On a multilingual set, the fastest way to stop a misunderstanding is to send one message in every language your crew speaks. Pick your production and the languages it works in, then type, paste or upload a call-time change, a safety note or a document — the Set Translator produces every version at once. Copy it, download it, or send it straight to your team."
+  },
+  "/production-notes": {
+    title: "Production Notes for Film Sets | Filmmaker Genius",
+    description: "Keep every on-set note — safety, talent, props, locations — tagged by shoot day and scene, translated for your crew, and ready as a daily report.",
+    lead: "Production notes are the running record of everything that changes on set: a safety brief, a wardrobe swap, a location restriction, a line the director wants revisited. Tag each note by department, shoot day and scene, mark it important or urgent, and translate it into every language your crew speaks. At the end of the day, print one PDF report for the whole team."
   },
   "/script-breakdown": {
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
@@ -6298,6 +6303,7 @@ const TOOL_COSTS = [
   { name: "Script Breakdown", cost: "~1 credit per scene (+1 to read a PDF or image)" },
   { name: "Receipts & Expenses", cost: "Free to log; ~1 credit to read a receipt photo" },
   { name: "Set Translator", cost: "~1 credit per message (all languages at once; +1 to read a PDF or image)" },
+  { name: "Production Notes", cost: "Free; ~1 credit to translate a note" },
   { name: "Storyboard Generator", cost: "2–4 credits (grows with number of frames)" },
   { name: "Table Read", cost: "2–4 credits (varies by dialogue length)" },
   { name: "Fundraising", cost: "~1 credit" },
@@ -17554,7 +17560,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
     ] })
   ] });
 };
-const STEPS$6 = [
+const STEPS$7 = [
   { num: 1, label: "Select Scenes" },
   { num: 1.5, label: "Cast References", optional: true },
   { num: 2, label: "Review Shot List" },
@@ -17562,7 +17568,7 @@ const STEPS$6 = [
 ];
 const stepDisplayNumber = (num2, idx) => idx + 1;
 const StepIndicator = ({ currentStep }) => {
-  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$6.map((step, idx) => {
+  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$7.map((step, idx) => {
     const isActive = step.num === currentStep;
     const isComplete = step.num < currentStep;
     return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 sm:gap-4", children: [
@@ -17596,7 +17602,7 @@ const StepIndicator = ({ currentStep }) => {
           ]
         }
       ),
-      idx < STEPS$6.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
+      idx < STEPS$7.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
     ] }, step.num);
   }) });
 };
@@ -24210,7 +24216,7 @@ const prepareImage = async (file) => {
   if (!blob) throw new ImageError("Your browser couldn't process that image.");
   return blob;
 };
-const MARGIN$2 = 15;
+const MARGIN$3 = 15;
 const BODY = "NotoSans";
 const MONO = "NotoSansMono";
 const FONT_FILES = [
@@ -24263,14 +24269,14 @@ const longDate = (iso) => {
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString(void 0, { day: "2-digit", month: "short", year: "numeric" });
 };
-const slug$2 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const slug$3 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 function breakdownFileName(input) {
   const date = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-  const base = `breakdown-${slug$2(input.projectTitle)}`;
+  const base = `breakdown-${slug$3(input.projectTitle)}`;
   if (input.scope === "all" || input.scenes.length !== 1) return `${base}-all-scenes-${date}.pdf`;
   const scene = input.scenes[0];
   const label2 = scene.scene_number || scene.label || "scene";
-  return `${base}-scene-${slug$2(label2)}-${date}.pdf`;
+  return `${base}-scene-${slug$3(label2)}-${date}.pdf`;
 }
 const photoSummary = (rows) => {
   const refs = rows.filter((p) => p.is_reference);
@@ -24295,7 +24301,7 @@ async function buildBreakdownPDF(input) {
   const { body, mono } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN$2 * 2;
+  const contentW = pageW - MARGIN$3 * 2;
   let y = 28;
   const ensure = (needed) => {
     if (y + needed > pageH - 20) {
@@ -24310,7 +24316,7 @@ async function buildBreakdownPDF(input) {
     const lines = doc.splitTextToSize(text, contentW);
     ensure(lines.length * (size2 * 0.45) + 2);
     lines.forEach((l) => {
-      doc.text(l, MARGIN$2, y);
+      doc.text(l, MARGIN$3, y);
       y += size2 * 0.45;
     });
   };
@@ -24353,7 +24359,7 @@ async function buildBreakdownPDF(input) {
             const by = item.checked && item.checked_by_name ? `${item.checked_by_name}${shortDate$1(item.checked_at) ? ` · ${shortDate$1(item.checked_at)}` : ""}` : "—";
             return [item.checked ? "[x]" : "[ ]", text, by, photoSummary(input.photos.filter((p) => p.item_id === item.id))];
           }),
-          margin: { left: MARGIN$2, right: MARGIN$2, top: 28, bottom: 20 },
+          margin: { left: MARGIN$3, right: MARGIN$3, top: 28, bottom: 20 },
           theme: "grid",
           styles: {
             font: body,
@@ -24406,7 +24412,7 @@ async function buildBreakdownPDF(input) {
             doc.setFont(mono, "normal");
             doc.setFontSize(8.5);
           }
-          doc.text(l, MARGIN$2, y);
+          doc.text(l, MARGIN$3, y);
           y += 4;
         });
       });
@@ -24419,21 +24425,21 @@ async function buildBreakdownPDF(input) {
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN$2, 14);
+    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN$3, 14);
     if (input.company) {
       doc.setFont(body, "normal");
       doc.setFontSize(9);
       doc.setTextColor(110, 110, 110);
-      doc.text(input.company, pageW - MARGIN$2, 14, { align: "right" });
+      doc.text(input.company, pageW - MARGIN$3, 14, { align: "right" });
     }
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN$2, 17.5, pageW - MARGIN$2, 17.5);
+    doc.line(MARGIN$3, 17.5, pageW - MARGIN$3, 17.5);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$2, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$2, pageH - 10, { align: "right" });
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$3, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$3, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -25919,7 +25925,7 @@ function createCrewAdapter(opts) {
 }
 const SITE$1 = "https://filmmakergenius.com";
 const TEAL$6 = "#00d4aa";
-const STEPS$5 = [
+const STEPS$6 = [
   { n: 1, title: "Upload your scene", text: "PDF or paste text." },
   { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
   { n: 3, title: "Share a private link with your crew", text: "One link per production — no accounts needed." },
@@ -26081,7 +26087,7 @@ const ScriptBreakdown = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$5.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$6.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -26394,11 +26400,11 @@ const parseAmount = (raw2) => {
   return negative ? -n : n;
 };
 const round2 = (n) => Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
-const MARGIN$1 = 15;
-const slug$1 = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const MARGIN$2 = 15;
+const slug$2 = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 const today$2 = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-const expensesFileName = (title, ext) => `expenses-${slug$1(title)}-${today$2()}.${ext}`;
-const expenseReportFileName = (title) => `expense-report-${slug$1(title)}-${today$2()}.pdf`;
+const expensesFileName = (title, ext) => `expenses-${slug$2(title)}-${today$2()}.${ext}`;
+const expenseReportFileName = (title) => `expense-report-${slug$2(title)}-${today$2()}.pdf`;
 const dayLabel = (iso) => {
   if (!iso) return "";
   const d = /* @__PURE__ */ new Date(`${iso}T00:00:00`);
@@ -26626,7 +26632,7 @@ async function buildExpensesPDF(input) {
   const { body } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN$1 * 2;
+  const contentW = pageW - MARGIN$2 * 2;
   let y = 30;
   const ensure = (needed) => {
     if (y + needed > pageH - 20) {
@@ -26641,7 +26647,7 @@ async function buildExpensesPDF(input) {
     const lines = doc.splitTextToSize(text, contentW);
     ensure(lines.length * (size2 * 0.45) + 2);
     lines.forEach((l) => {
-      doc.text(l, MARGIN$1, y);
+      doc.text(l, MARGIN$2, y);
       y += size2 * 0.45;
     });
   };
@@ -26682,7 +26688,7 @@ async function buildExpensesPDF(input) {
         formatMoney$a(t.paid, t.currency),
         formatMoney$a(t.rejected, t.currency)
       ]],
-      margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
+      margin: { left: MARGIN$2, right: MARGIN$2, top: 30, bottom: 20 },
       theme: "grid",
       styles: tableStyles,
       headStyles,
@@ -26696,7 +26702,7 @@ async function buildExpensesPDF(input) {
         startY: y,
         head: [["Department", "Approved + paid", "Pending"]],
         body: t.departments.map((d) => [d.department, formatMoney$a(d.settled, t.currency), formatMoney$a(d.pending, t.currency)]),
-        margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
+        margin: { left: MARGIN$2, right: MARGIN$2, top: 30, bottom: 20 },
         theme: "grid",
         styles: tableStyles,
         headStyles,
@@ -26722,7 +26728,7 @@ ${e.invoice_number}` : ""}`,
         statusDef(e.status).label,
         formatMoney$a(e.amount, e.currency)
       ]),
-      margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
+      margin: { left: MARGIN$2, right: MARGIN$2, top: 30, bottom: 20 },
       theme: "grid",
       styles: { ...tableStyles, fontSize: 8 },
       headStyles: { ...headStyles, fontSize: 8 },
@@ -26753,11 +26759,11 @@ ${e.invoice_number}` : ""}`,
       doc.setFont(body, "normal");
       doc.setFontSize(9);
       doc.setTextColor(60, 60, 60);
-      doc.text(doc.splitTextToSize(img.caption, contentW), MARGIN$1, y);
+      doc.text(doc.splitTextToSize(img.caption, contentW), MARGIN$2, y);
       y += 6;
       const availH = pageH - y - 20;
       const scale = Math.min(contentW / img.width, availH / img.height);
-      doc.addImage(img.dataUrl, "JPEG", MARGIN$1, y, img.width * scale, img.height * scale);
+      doc.addImage(img.dataUrl, "JPEG", MARGIN$2, y, img.width * scale, img.height * scale);
     });
   }
   const generated = (/* @__PURE__ */ new Date()).toLocaleString();
@@ -26768,20 +26774,20 @@ ${e.invoice_number}` : ""}`,
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`EXPENSE REPORT — ${input.productionTitle}`, MARGIN$1, 13);
+    doc.text(`EXPENSE REPORT — ${input.productionTitle}`, MARGIN$2, 13);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(110, 110, 110);
-    if (input.company) doc.text(input.company, pageW - MARGIN$1, 13, { align: "right" });
-    doc.text(filterText, MARGIN$1, 18);
-    doc.text(`Generated ${generated}`, pageW - MARGIN$1, 18, { align: "right" });
+    if (input.company) doc.text(input.company, pageW - MARGIN$2, 13, { align: "right" });
+    doc.text(filterText, MARGIN$2, 18);
+    doc.text(`Generated ${generated}`, pageW - MARGIN$2, 18, { align: "right" });
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN$1, 21, pageW - MARGIN$1, 21);
+    doc.line(MARGIN$2, 21, pageW - MARGIN$2, 21);
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text("filmmakergenius.com", MARGIN$1, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$1, pageH - 10, { align: "right" });
+    doc.text("filmmakergenius.com", MARGIN$2, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$2, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -26877,7 +26883,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
     ] })
   ] });
 };
-const label$3 = {
+const label$5 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -26888,7 +26894,7 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
   const active = Object.values(value).some(Boolean);
   return /* @__PURE__ */ jsx("div", { style: { marginBottom: 20 }, children: /* @__PURE__ */ jsxs("div", { className: "ex-filters", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 3" }, children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-q", children: "Search" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-q", children: "Search" }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsx(Search, { size: 16, style: { position: "absolute", left: 12, top: 14, color: "rgba(255,255,255,0.35)" } }),
         /* @__PURE__ */ jsx(
@@ -26904,32 +26910,32 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-status", children: "Status" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-status", children: "Status" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-status", value: value.status, onChange: (e) => onChange({ status: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All statuses" }),
         STATUSES.map((s) => /* @__PURE__ */ jsx("option", { value: s.key, style: { background: "#10101b" }, children: s.label }, s.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-dept", children: "Department" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-dept", children: "Department" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-dept", value: value.department, onChange: (e) => onChange({ department: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All departments" }),
         EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-pay", children: "Payment" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-pay", children: "Payment" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-pay", value: value.payment, onChange: (e) => onChange({ payment: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any payment" }),
         PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx("option", { value: p.key, style: { background: "#10101b" }, children: p.label }, p.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-from", children: "From" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-from", children: "From" }),
       /* @__PURE__ */ jsx("input", { id: "ex-from", type: "date", value: value.from, onChange: (e) => onChange({ from: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$3, htmlFor: "ex-to", children: "To" }),
+      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-to", children: "To" }),
       /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$2, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
@@ -27221,7 +27227,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
   ] });
 };
 const TEAL$4 = "#00d4aa";
-const label$2 = {
+const label$4 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -27426,23 +27432,23 @@ const ExpenseDialog = ({
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-by", children: "Submitted by" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-by", children: "Submitted by" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-by", value: submittedBy, onChange: (e) => setSubmittedBy(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-email", children: "Email (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-email", children: "Email (optional)" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-department", children: "Department" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-department", children: "Department" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-department", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$4, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-currency", children: "Currency" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-currency", children: "Currency" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$4, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$2, children: "Payment" }),
+                /* @__PURE__ */ jsx("span", { style: label$4, children: "Payment" }),
                 /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
                   "button",
                   {
@@ -27464,11 +27470,11 @@ const ExpenseDialog = ({
                 )) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-date", children: "Date" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-date", children: "Date" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
                 /* @__PURE__ */ jsxs("select", { id: "ex-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
                   itemOptions.map((o) => /* @__PURE__ */ jsxs("option", { value: o.id, style: { background: "#10101b" }, children: [
@@ -27536,20 +27542,20 @@ const ExpenseDialog = ({
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-vendor", children: "Vendor" }),
+                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-vendor", children: "Vendor" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-total", children: "Total" }),
+                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-total", children: "Total" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-desc", children: "Description (optional)" }),
+                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-desc", children: "Description (optional)" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$2, children: "Lines" }),
+                /* @__PURE__ */ jsx("span", { style: label$4, children: "Lines" }),
                 lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
                   /* @__PURE__ */ jsx(
                     "input",
@@ -27612,16 +27618,16 @@ const ExpenseDialog = ({
             ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-invno", children: "Invoice #" }),
+                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-invno", children: "Invoice #" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-billto", children: "Bill to" }),
+                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-billto", children: "Bill to" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$2, children: "Line items" }),
+                /* @__PURE__ */ jsx("span", { style: label$4, children: "Line items" }),
                 lines.map((l, i) => {
                   const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
                   return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
@@ -27677,7 +27683,7 @@ const ExpenseDialog = ({
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-              /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "ex-notes", children: "Notes" }),
+              /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-notes", children: "Notes" }),
               /* @__PURE__ */ jsx("textarea", { id: "ex-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$4, minHeight: 80, resize: "vertical" } })
             ] }),
             error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
@@ -28092,7 +28098,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
   ] });
 };
 const SITE = "https://filmmakergenius.com";
-const STEPS$4 = [
+const STEPS$5 = [
   { n: 1, title: "Pick your production", text: "The same productions you use for script breakdowns." },
   { n: 2, title: "Crew submit receipts or invoices", text: "Snap a photo on set, or build an invoice." },
   { n: 3, title: "Approve, reject or mark paid", text: "You decide what gets reimbursed." },
@@ -28174,7 +28180,7 @@ const ReceiptsExpenses = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "re-steps", children: STEPS$4.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "re-steps", children: STEPS$5.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -28721,19 +28727,19 @@ function messageSubjects(m) {
 }
 const RTL_LANGUAGES = /* @__PURE__ */ new Set(["ar", "he"]);
 const PDF_UNSUPPORTED_LANGUAGES = /* @__PURE__ */ new Set(["ar", "he", "hi", "zh", "ja", "ko"]);
-const MARGIN = 15;
+const MARGIN$1 = 15;
 const nativeName = (code) => {
   var _a2;
   return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
 };
-const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const slug$1 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 const stamp = (iso) => {
   const d = iso ? new Date(iso) : /* @__PURE__ */ new Date();
   const pad = (n) => String(n).padStart(2, "0");
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
 };
 function messageFileName(productionTitle, ext, createdAt) {
-  return `message-${slug(productionTitle)}-${stamp(createdAt)}.${ext}`;
+  return `message-${slug$1(productionTitle)}-${stamp(createdAt)}.${ext}`;
 }
 async function buildHeader(input) {
   const { message, productionTitle } = input;
@@ -28800,7 +28806,7 @@ async function buildMessagePDF(input) {
   const { body } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN * 2;
+  const contentW = pageW - MARGIN$1 * 2;
   const header = await buildHeader(input);
   const subjects = messageSubjects(message);
   let y = 28;
@@ -28816,7 +28822,7 @@ async function buildMessagePDF(input) {
         doc.setFont(body, style);
         doc.setFontSize(size2);
       }
-      doc.text(l, MARGIN, y);
+      doc.text(l, MARGIN$1, y);
       y += size2 * 0.5;
     });
   };
@@ -28854,15 +28860,15 @@ async function buildMessagePDF(input) {
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`CREW MESSAGE — ${input.productionTitle}`, MARGIN, 14);
+    doc.text(`CREW MESSAGE — ${input.productionTitle}`, MARGIN$1, 14);
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN, 17.5, pageW - MARGIN, 17.5);
+    doc.line(MARGIN$1, 17.5, pageW - MARGIN$1, 17.5);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$1, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$1, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -28872,7 +28878,7 @@ async function downloadMessagePDF(input) {
 }
 const MAX_RECIPIENTS = 100;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const label$1 = {
+const label$3 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -28989,7 +28995,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
   return /* @__PURE__ */ jsxs(Modal, { title: "Send to crew", onClose, children: [
     /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: -6 }, children: "Everyone gets the message in every language. Recipients never see each other's addresses." }),
     /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
-      /* @__PURE__ */ jsx("span", { style: label$1, children: "From your Cast & Crew List" }),
+      /* @__PURE__ */ jsx("span", { style: label$3, children: "From your Cast & Crew List" }),
       loading ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", fontSize: 14 }, children: [
         /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }),
         " Loading contacts…"
@@ -29044,7 +29050,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
-      /* @__PURE__ */ jsx("span", { style: label$1, children: "Add emails (comma or space separated)" }),
+      /* @__PURE__ */ jsx("span", { style: label$3, children: "Add emails (comma or space separated)" }),
       /* @__PURE__ */ jsx(
         "textarea",
         {
@@ -29372,7 +29378,7 @@ const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
     ] })
   ] });
 };
-const STEPS$3 = [
+const STEPS$4 = [
   { n: 1, title: "Pick your production", text: "And the languages your crew speaks." },
   { n: 2, title: "Type, paste or upload", text: "A message, a safety note or a document." },
   { n: 3, title: "Translate into every language", text: "All languages at once, in one go." },
@@ -29468,7 +29474,7 @@ const SetTranslator = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "st-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "st-steps", children: STEPS$4.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -29573,6 +29579,979 @@ const SetTranslator = () => {
               setMessage(m);
               window.scrollTo({ top: 0, behavior: "smooth" });
             }
+          }
+        )
+      ] })
+    ] })
+  ] });
+};
+const NOTE_TAGS = [
+  { value: "general", label: "General", color: "#9aa4b2" },
+  { value: "talent", label: "Talent", color: "#f0a6ca" },
+  { value: "location", label: "Location", color: "#4cc9f0" },
+  { value: "props", label: "Props", color: "#00d4aa" },
+  { value: "wardrobe", label: "Wardrobe", color: "#b892ff" },
+  { value: "makeup", label: "Makeup", color: "#ff9f1c" },
+  { value: "camera", label: "Camera", color: "#8ecae6" },
+  { value: "sound", label: "Sound", color: "#c2e812" },
+  { value: "safety", label: "Safety", color: "#ff4d4f" },
+  { value: "director", label: "Director", color: "#ffd166" },
+  { value: "ad", label: "AD", color: "#06d6a0" },
+  { value: "production", label: "Production", color: "#a0c4ff" }
+];
+const NOTE_TAG_MAP = Object.fromEntries(
+  NOTE_TAGS.map((t) => [t.value, t])
+);
+const tagLabel = (tag) => {
+  var _a2;
+  return ((_a2 = NOTE_TAG_MAP[tag]) == null ? void 0 : _a2.label) || tag;
+};
+const tagColor = (tag) => {
+  var _a2;
+  return ((_a2 = NOTE_TAG_MAP[tag]) == null ? void 0 : _a2.color) || "#9aa4b2";
+};
+const NOTE_PRIORITIES = [
+  { value: "normal", label: "Normal", color: "#9aa4b2" },
+  { value: "important", label: "Important", color: "#ffb020" },
+  { value: "urgent", label: "Urgent", color: "#ff4d4f" }
+];
+const MAX_NOTE_CHARS = 5e3;
+const sceneLabel = (s) => {
+  if (!s) return "";
+  const num2 = s.scene_number ? `Scene ${s.scene_number}` : "Scene";
+  return s.label ? `${num2} — ${s.label}` : num2;
+};
+const NOTE_FIELDS = "id, project_id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_at, updated_at";
+function noteTranslations(n) {
+  const t = n.translations || {};
+  return Object.entries(t).filter(([, v2]) => typeof v2 === "string" && v2.trim()).map(([code, v2]) => ({ code, text: v2 }));
+}
+function todayLocal() {
+  const d = /* @__PURE__ */ new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+}
+function prettyDay(day) {
+  if (!day) return "No day";
+  const d = /* @__PURE__ */ new Date(`${day}T12:00:00`);
+  if (Number.isNaN(d.getTime())) return day;
+  return d.toLocaleDateString(void 0, { weekday: "short", day: "numeric", month: "short", year: "numeric" });
+}
+const PRIORITY_RANK = { urgent: 0, important: 1, normal: 2 };
+function sortForReport(notes) {
+  return [...notes].sort((a, b) => {
+    const p = (PRIORITY_RANK[a.priority] ?? 2) - (PRIORITY_RANK[b.priority] ?? 2);
+    if (p !== 0) return p;
+    return (a.created_at || "").localeCompare(b.created_at || "");
+  });
+}
+function groupByTag(notes) {
+  const order = ["safety", ...NOTE_TAGS.map((t) => t.value).filter((t) => t !== "safety")];
+  const seen = /* @__PURE__ */ new Map();
+  notes.forEach((n) => {
+    const list = seen.get(n.tag) || [];
+    list.push(n);
+    seen.set(n.tag, list);
+  });
+  const known = order.filter((t) => seen.has(t)).map((tag) => ({ tag, notes: sortForReport(seen.get(tag)) }));
+  const extra = [...seen.keys()].filter((t) => !order.includes(t)).map((tag) => ({ tag, notes: sortForReport(seen.get(tag)) }));
+  return [...known, ...extra];
+}
+const label$2 = {
+  display: "block",
+  fontSize: 13,
+  color: "rgba(255,255,255,0.5)",
+  marginBottom: 6
+};
+const NoteComposer = ({ scenes, languageCount, saving, error, onSave }) => {
+  const [tag, setTag] = useState("general");
+  const [priority, setPriority] = useState("normal");
+  const [shootDay, setShootDay] = useState(todayLocal());
+  const [sceneId, setSceneId] = useState("");
+  const [body, setBody] = useState("");
+  const [translate, setTranslate] = useState(false);
+  const [translateTouched, setTranslateTouched] = useState(false);
+  const canTranslate = languageCount >= 2;
+  const shouldDefaultOn = tag === "safety" || priority === "urgent";
+  useEffect(() => {
+    if (!canTranslate) {
+      setTranslate(false);
+      return;
+    }
+    if (!translateTouched) setTranslate(shouldDefaultOn);
+  }, [tag, priority, canTranslate]);
+  const rows = useMemo(() => Math.min(24, Math.max(4, body.split("\n").length + 1)), [body]);
+  const save = async () => {
+    if (body.trim().length < 2) return;
+    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, MAX_NOTE_CHARS), translate });
+    setBody("");
+    setTranslateTouched(false);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "New note" }),
+    /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: NOTE_TAGS.map((t) => {
+      const on = tag === t.value;
+      return /* @__PURE__ */ jsxs(
+        "button",
+        {
+          type: "button",
+          onClick: () => setTag(t.value),
+          "aria-pressed": on,
+          style: {
+            minHeight: 44,
+            padding: "0 14px",
+            borderRadius: 9999,
+            cursor: "pointer",
+            border: `1px solid ${on ? t.color : "rgba(255,255,255,0.14)"}`,
+            background: on ? `${t.color}22` : "rgba(255,255,255,0.04)",
+            color: on ? t.color : "rgba(255,255,255,0.75)",
+            fontSize: 14,
+            fontWeight: 600,
+            fontFamily: "'Inter Tight', sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8
+          },
+          children: [
+            /* @__PURE__ */ jsx("span", { style: { width: 8, height: 8, borderRadius: 9999, background: t.color, display: "inline-block" } }),
+            t.label
+          ]
+        },
+        t.value
+      );
+    }) }),
+    /* @__PURE__ */ jsxs("div", { className: "pn-grid", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 16 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$2, children: "Priority" }),
+        /* @__PURE__ */ jsx("select", { value: priority, onChange: (e) => setPriority(e.target.value), style: inputStyle$4, children: NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value)) })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$2, children: "Shoot day" }),
+        /* @__PURE__ */ jsx("input", { type: "date", value: shootDay, onChange: (e) => setShootDay(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$2, children: "Scene (optional)" }),
+        /* @__PURE__ */ jsxs("select", { value: sceneId, onChange: (e) => setSceneId(e.target.value), style: inputStyle$4, children: [
+          /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "None" }),
+          scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
+      /* @__PURE__ */ jsx("label", { style: label$2, children: "Note" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: body,
+          onChange: (e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS)),
+          rows,
+          placeholder: "Stunt rehearsal moved to 14:00 — everyone on set 15 minutes early.",
+          style: { ...inputStyle$4, resize: "vertical", lineHeight: 1.6, maxHeight: "60vh" }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6, textAlign: "right" }, children: [
+        body.length,
+        " / ",
+        MAX_NOTE_CHARS
+      ] })
+    ] }),
+    canTranslate && /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 8, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "checkbox",
+          checked: translate,
+          onChange: (e) => {
+            setTranslate(e.target.checked);
+            setTranslateTouched(true);
+          },
+          style: { width: 18, height: 18 }
+        }
+      ),
+      "Translate for the crew (1 credit)"
+    ] }),
+    error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14, marginTop: 10 }, children: error }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, marginTop: 16, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: save,
+          disabled: saving || body.trim().length < 2,
+          style: { ...primaryBtn$3, opacity: saving || body.trim().length < 2 ? 0.45 : 1 },
+          children: saving ? "Saving…" : "Save note"
+        }
+      ),
+      body && /* @__PURE__ */ jsx("button", { onClick: () => setBody(""), style: ghostBtn$2, children: "Clear" })
+    ] })
+  ] });
+};
+const smallBtn = {
+  ...ghostBtn$2,
+  minHeight: 44,
+  padding: "0 12px",
+  fontSize: 13,
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 6
+};
+const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRetranslate, busy }) => {
+  const [editing, setEditing] = useState(false);
+  const [showTranslations, setShowTranslations] = useState(false);
+  const [tag, setTag] = useState(note.tag);
+  const [priority, setPriority] = useState(note.priority);
+  const [shootDay, setShootDay] = useState(note.shoot_day || "");
+  const [sceneId, setSceneId] = useState(note.scene_id || "");
+  const [body, setBody] = useState(note.body);
+  const [copied, setCopied] = useState(false);
+  const scene = scenes.find((s) => s.id === note.scene_id) || null;
+  const translations = noteTranslations(note);
+  const isSafety = note.tag === "safety";
+  const urgent = note.priority === "urgent";
+  const staleTranslations = !!note.source_language && translations.length === 0;
+  const startEdit = () => {
+    setTag(note.tag);
+    setPriority(note.priority);
+    setShootDay(note.shoot_day || "");
+    setSceneId(note.scene_id || "");
+    setBody(note.body);
+    setEditing(true);
+  };
+  const saveEdit = async () => {
+    await onEdit({
+      tag,
+      priority,
+      shoot_day: shootDay || null,
+      scene_id: sceneId || null,
+      body: body.slice(0, MAX_NOTE_CHARS),
+      textChanged: body.trim() !== note.body.trim()
+    });
+    setEditing(false);
+  };
+  const copy2 = async () => {
+    try {
+      await navigator.clipboard.writeText(note.body);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+    }
+  };
+  return /* @__PURE__ */ jsxs(
+    "div",
+    {
+      style: {
+        ...panel$3,
+        padding: 16,
+        borderLeft: isSafety ? "4px solid #ff4d4f" : void 0,
+        border: urgent ? "2px solid rgba(255,77,79,0.6)" : panel$3.border,
+        opacity: note.resolved ? 0.6 : 1
+      },
+      children: [
+        /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" }, children: [
+          note.pinned && /* @__PURE__ */ jsx(Pin, { size: 14, color: "#00d4aa" }),
+          /* @__PURE__ */ jsxs("span", { style: {
+            fontSize: 12,
+            fontWeight: 700,
+            padding: "4px 10px",
+            borderRadius: 9999,
+            background: `${tagColor(note.tag)}22`,
+            color: tagColor(note.tag),
+            border: `1px solid ${tagColor(note.tag)}55`
+          }, children: [
+            isSafety ? "⚠ " : "",
+            tagLabel(note.tag)
+          ] }),
+          note.priority === "important" && /* @__PURE__ */ jsx("span", { style: { fontSize: 12, fontWeight: 700, color: "#ffb020" }, children: "Important" }),
+          urgent && /* @__PURE__ */ jsx("span", { style: { fontSize: 12, fontWeight: 800, color: "#ff4d4f" }, children: "URGENT" }),
+          scene && /* @__PURE__ */ jsx("span", { style: {
+            fontSize: 12,
+            padding: "4px 10px",
+            borderRadius: 9999,
+            background: "rgba(255,255,255,0.06)",
+            color: "rgba(255,255,255,0.7)"
+          }, children: sceneLabel(scene) }),
+          note.resolved && /* @__PURE__ */ jsxs("span", { style: { fontSize: 12, color: "#06d6a0" }, children: [
+            "Resolved",
+            note.resolved_by_name ? ` by ${note.resolved_by_name}` : ""
+          ] })
+        ] }),
+        editing ? /* @__PURE__ */ jsxs("div", { style: { marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }, children: [
+          /* @__PURE__ */ jsx("select", { value: tag, onChange: (e) => setTag(e.target.value), style: inputStyle$4, children: NOTE_TAGS.map((t) => /* @__PURE__ */ jsx("option", { value: t.value, style: { background: "#10101b" }, children: t.label }, t.value)) }),
+          /* @__PURE__ */ jsx("select", { value: priority, onChange: (e) => setPriority(e.target.value), style: inputStyle$4, children: NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value)) }),
+          /* @__PURE__ */ jsx("input", { type: "date", value: shootDay, onChange: (e) => setShootDay(e.target.value), style: inputStyle$4 }),
+          /* @__PURE__ */ jsxs("select", { value: sceneId, onChange: (e) => setSceneId(e.target.value), style: inputStyle$4, children: [
+            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "None" }),
+            scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
+          ] }),
+          /* @__PURE__ */ jsx(
+            "textarea",
+            {
+              value: body,
+              onChange: (e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS)),
+              rows: Math.min(20, Math.max(3, body.split("\n").length + 1)),
+              style: { ...inputStyle$4, resize: "vertical", lineHeight: 1.6 }
+            }
+          ),
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+            /* @__PURE__ */ jsx("button", { onClick: saveEdit, disabled: busy || body.trim().length < 2, style: { ...primaryBtn$3, opacity: busy || body.trim().length < 2 ? 0.45 : 1 }, children: busy ? "Saving…" : "Save changes" }),
+            /* @__PURE__ */ jsx("button", { onClick: () => setEditing(false), style: ghostBtn$2, children: "Cancel" })
+          ] })
+        ] }) : /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, lineHeight: 1.65, whiteSpace: "pre-wrap" }, children: note.body }),
+        /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 12, color: "rgba(255,255,255,0.45)" }, children: [
+          note.created_by_name,
+          note.created_by_department ? ` · ${note.created_by_department}` : "",
+          " · ",
+          timeAgo(note.created_at)
+        ] }),
+        translations.length > 0 && /* @__PURE__ */ jsxs("div", { style: { marginTop: 10 }, children: [
+          /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => setShowTranslations((v2) => !v2),
+              style: { ...smallBtn, minHeight: 36 },
+              children: [
+                "Translated: ",
+                translations.map((t) => t.code.toUpperCase()).join(" · ")
+              ]
+            }
+          ),
+          showTranslations && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }, children: translations.map(({ code, text }) => {
+            var _a2;
+            return /* @__PURE__ */ jsxs("div", { style: { borderLeft: "2px solid rgba(0,212,170,0.4)", paddingLeft: 12 }, children: [
+              /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, color: "#00d4aa" }, children: ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code }),
+              /* @__PURE__ */ jsx(
+                "div",
+                {
+                  dir: RTL_LANGUAGES.has(code) ? "rtl" : "ltr",
+                  style: { fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)", marginTop: 4 },
+                  children: text
+                }
+              )
+            ] }, code);
+          }) })
+        ] }),
+        staleTranslations && canTranslate && /* @__PURE__ */ jsx("button", { onClick: onRetranslate, disabled: busy, style: { ...smallBtn, marginTop: 10, opacity: busy ? 0.5 : 1 }, children: "Re-translate (1 credit)" }),
+        !editing && /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => onPatch({ pinned: !note.pinned }), style: smallBtn, children: [
+            /* @__PURE__ */ jsx(Pin, { size: 14 }),
+            " ",
+            note.pinned ? "Unpin" : "Pin"
+          ] }),
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => onPatch({ resolved: !note.resolved }),
+              style: smallBtn,
+              children: note.resolved ? /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(RotateCcw, { size: 14 }),
+                " Reopen"
+              ] }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsx(Check$1, { size: 14 }),
+                " Resolve"
+              ] })
+            }
+          ),
+          /* @__PURE__ */ jsxs("button", { onClick: startEdit, style: smallBtn, children: [
+            /* @__PURE__ */ jsx(Pencil, { size: 14 }),
+            " Edit"
+          ] }),
+          /* @__PURE__ */ jsxs("button", { onClick: copy2, style: smallBtn, children: [
+            /* @__PURE__ */ jsx(Copy, { size: 14 }),
+            " ",
+            copied ? "Copied" : "Copy"
+          ] }),
+          /* @__PURE__ */ jsxs("button", { onClick: onDelete, style: { ...smallBtn, color: "#ff9d9d" }, children: [
+            /* @__PURE__ */ jsx(Trash2, { size: 14 }),
+            " Delete"
+          ] }),
+          isSafety && /* @__PURE__ */ jsx(AlertTriangle, { size: 14, color: "#ff4d4f", style: { alignSelf: "center" } })
+        ] })
+      ]
+    }
+  );
+};
+const label$1 = {
+  display: "block",
+  fontSize: 13,
+  color: "rgba(255,255,255,0.5)",
+  marginBottom: 6
+};
+const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onRetranslate, busyNoteId }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const search = searchParams.get("q") || "";
+  const tagFilter = (searchParams.get("tags") || "").split(",").filter(Boolean);
+  const priorityFilter = searchParams.get("priority") || "";
+  const fromDay = searchParams.get("from") || "";
+  const toDay = searchParams.get("to") || "";
+  const sceneFilter = searchParams.get("scene") || "";
+  const showResolved = searchParams.get("resolved") === "1";
+  const setParam = useCallback((key, value) => {
+    const params = new URLSearchParams(searchParams);
+    if (value) params.set(key, value);
+    else params.delete(key);
+    setSearchParams(params, { replace: true });
+  }, [searchParams, setSearchParams]);
+  const load = useCallback(async () => {
+    if (!projectId) return;
+    setLoading(true);
+    const { data } = await supabase.from("production_notes").select(NOTE_FIELDS).eq("project_id", projectId).order("created_at", { ascending: false });
+    setNotes(data || []);
+    setLoading(false);
+  }, [projectId]);
+  useEffect(() => {
+    load();
+  }, [load, refreshKey]);
+  useEffect(() => {
+    if (!projectId) return;
+    const channel = supabase.channel(`production_notes:${projectId}`).on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "production_notes", filter: `project_id=eq.${projectId}` },
+      () => {
+        load();
+      }
+    ).subscribe();
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [projectId, load]);
+  const patch = async (note, changes) => {
+    const next = { ...changes };
+    if (changes.resolved !== void 0) {
+      next.resolved_by_name = changes.resolved ? actingName : null;
+      next.resolved_at = changes.resolved ? (/* @__PURE__ */ new Date()).toISOString() : null;
+    }
+    setNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
+    await supabase.from("production_notes").update(next).eq("id", note.id);
+  };
+  const edit = async (note, e) => {
+    const next = {
+      tag: e.tag,
+      priority: e.priority,
+      shoot_day: e.shoot_day,
+      scene_id: e.scene_id,
+      body: e.body
+    };
+    if (e.textChanged) next.translations = {};
+    setNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
+    await supabase.from("production_notes").update(next).eq("id", note.id);
+  };
+  const remove = async (note) => {
+    if (!window.confirm("Delete this note?")) return;
+    setNotes((prev) => prev.filter((n) => n.id !== note.id));
+    await supabase.from("production_notes").delete().eq("id", note.id);
+  };
+  const filtered = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    return notes.filter((n) => {
+      if (!showResolved && n.resolved) return false;
+      if (tagFilter.length && !tagFilter.includes(n.tag)) return false;
+      if (priorityFilter && n.priority !== priorityFilter) return false;
+      if (sceneFilter && n.scene_id !== sceneFilter) return false;
+      if (fromDay && (!n.shoot_day || n.shoot_day < fromDay)) return false;
+      if (toDay && (!n.shoot_day || n.shoot_day > toDay)) return false;
+      if (q && !n.body.toLowerCase().includes(q) && !n.created_by_name.toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }, [notes, search, tagFilter, priorityFilter, sceneFilter, fromDay, toDay, showResolved]);
+  const groups = useMemo(() => {
+    const byDay = /* @__PURE__ */ new Map();
+    filtered.forEach((n) => {
+      const key = n.shoot_day || "";
+      const list = byDay.get(key) || [];
+      list.push(n);
+      byDay.set(key, list);
+    });
+    const days = [...byDay.keys()].sort((a, b) => {
+      if (!a) return 1;
+      if (!b) return -1;
+      return b.localeCompare(a);
+    });
+    return days.map((day) => ({
+      day,
+      notes: [...byDay.get(day)].sort((a, b) => {
+        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+        return (b.created_at || "").localeCompare(a.created_at || "");
+      })
+    }));
+  }, [filtered]);
+  const toggleTag = (value) => {
+    const next = tagFilter.includes(value) ? tagFilter.filter((t) => t !== value) : [...tagFilter, value];
+    setParam("tags", next.length ? next.join(",") : null);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 60 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Filters" }),
+      /* @__PURE__ */ jsxs("div", { className: "pn-grid", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 14 }, children: [
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label$1, children: "Search" }),
+          /* @__PURE__ */ jsx("input", { value: search, onChange: (e) => setParam("q", e.target.value || null), placeholder: "Search notes", style: inputStyle$4 })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label$1, children: "Priority" }),
+          /* @__PURE__ */ jsxs("select", { value: priorityFilter, onChange: (e) => setParam("priority", e.target.value || null), style: inputStyle$4, children: [
+            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any priority" }),
+            NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value))
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label$1, children: "Scene" }),
+          /* @__PURE__ */ jsxs("select", { value: sceneFilter, onChange: (e) => setParam("scene", e.target.value || null), style: inputStyle$4, children: [
+            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All scenes" }),
+            scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
+          ] })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label$1, children: "From day" }),
+          /* @__PURE__ */ jsx("input", { type: "date", value: fromDay, onChange: (e) => setParam("from", e.target.value || null), style: inputStyle$4 })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { children: [
+          /* @__PURE__ */ jsx("label", { style: label$1, children: "To day" }),
+          /* @__PURE__ */ jsx("input", { type: "date", value: toDay, onChange: (e) => setParam("to", e.target.value || null), style: inputStyle$4 })
+        ] }),
+        /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
+          /* @__PURE__ */ jsx(
+            "input",
+            {
+              type: "checkbox",
+              checked: showResolved,
+              onChange: (e) => setParam("resolved", e.target.checked ? "1" : null),
+              style: { width: 18, height: 18 }
+            }
+          ),
+          "Show resolved"
+        ] }) })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: [
+        NOTE_TAGS.map((t) => {
+          const on = tagFilter.includes(t.value);
+          return /* @__PURE__ */ jsx(
+            "button",
+            {
+              type: "button",
+              onClick: () => toggleTag(t.value),
+              "aria-pressed": on,
+              style: {
+                minHeight: 40,
+                padding: "0 12px",
+                borderRadius: 9999,
+                cursor: "pointer",
+                border: `1px solid ${on ? t.color : "rgba(255,255,255,0.14)"}`,
+                background: on ? `${t.color}22` : "rgba(255,255,255,0.04)",
+                color: on ? t.color : "rgba(255,255,255,0.7)",
+                fontSize: 13,
+                fontWeight: 600,
+                fontFamily: "'Inter Tight', sans-serif"
+              },
+              children: t.label
+            },
+            t.value
+          );
+        }),
+        tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter ? /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => {
+              const params = new URLSearchParams(searchParams);
+              ["q", "tags", "priority", "from", "to", "scene"].forEach((k) => params.delete(k));
+              setSearchParams(params, { replace: true });
+            },
+            style: { ...ghostBtn$2, minHeight: 40, fontSize: 13 },
+            children: "Clear filters"
+          }
+        ) : null
+      ] })
+    ] }),
+    loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+      " Loading notes…"
+    ] }) : groups.length === 0 ? /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 28, textAlign: "center", color: "rgba(255,255,255,0.55)" }, children: "No notes yet. Write the first one above." }) : groups.map((g) => /* @__PURE__ */ jsxs("div", { style: { marginBottom: 26 }, children: [
+      /* @__PURE__ */ jsxs("div", { style: {
+        fontFamily: "'Fraunces', serif",
+        fontSize: 18,
+        fontWeight: 700,
+        marginBottom: 12,
+        color: "rgba(255,255,255,0.9)"
+      }, children: [
+        prettyDay(g.day),
+        /* @__PURE__ */ jsxs("span", { style: { fontSize: 13, fontWeight: 400, color: "rgba(255,255,255,0.4)", marginLeft: 10 }, children: [
+          g.notes.length,
+          " note",
+          g.notes.length === 1 ? "" : "s"
+        ] })
+      ] }),
+      /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 12 }, children: g.notes.map((n) => /* @__PURE__ */ jsx(
+        NoteCard,
+        {
+          note: n,
+          scenes,
+          canTranslate,
+          busy: busyNoteId === n.id,
+          onPatch: (p) => patch(n, p),
+          onEdit: (e) => edit(n, e),
+          onDelete: () => remove(n),
+          onRetranslate: () => onRetranslate(n)
+        },
+        n.id
+      )) })
+    ] }, g.day || "none"))
+  ] });
+};
+const MARGIN = 15;
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+function notesFileName(productionTitle, day) {
+  return `notes-${slug(productionTitle)}-${day}.pdf`;
+}
+async function buildNotesPDF(input) {
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const { body } = await loadUnicodeFonts(doc);
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const contentW = pageW - MARGIN * 2;
+  const sceneById = new Map((input.scenes || []).map((s) => [s.id, s]));
+  let y = 28;
+  const line = (text, size2, style = "normal", opts = {}) => {
+    const indent = opts.indent || 0;
+    doc.setFont(body, style);
+    doc.setFontSize(size2);
+    const tone = opts.grey ? 110 : 20;
+    doc.setTextColor(tone, tone, tone);
+    const lines = doc.splitTextToSize(text || " ", contentW - indent);
+    lines.forEach((l) => {
+      if (y + size2 * 0.5 > pageH - 20) {
+        doc.addPage();
+        y = 28;
+        doc.setFont(body, style);
+        doc.setFontSize(size2);
+        doc.setTextColor(tone, tone, tone);
+      }
+      doc.text(l, MARGIN + indent, y);
+      y += size2 * 0.5;
+    });
+  };
+  const paragraphs = (text, size2, indent = 0) => {
+    text.split(/\r?\n/).forEach((raw2) => line(raw2, size2, "normal", { indent }));
+  };
+  const weather = await weatherLine(input.shootLocation);
+  if (weather) {
+    line(weather, 9.5, "normal", { grey: true });
+    y += 3;
+  }
+  if (!input.notes.length) {
+    line("No notes for this shoot day.", 11, "normal", { grey: true });
+  }
+  const skippedLanguages = /* @__PURE__ */ new Set();
+  groupByTag(input.notes).forEach((group) => {
+    y += 3;
+    line(tagLabel(group.tag).toUpperCase(), 12, "bold");
+    doc.setDrawColor(200, 200, 200);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, y - 3, pageW - MARGIN, y - 3);
+    y += 2;
+    group.notes.forEach((n) => {
+      const meta = [
+        n.priority !== "normal" ? n.priority.toUpperCase() : "",
+        n.scene_id ? sceneLabel(sceneById.get(n.scene_id)) : "",
+        n.created_by_name + (n.created_by_department ? ` (${n.created_by_department})` : ""),
+        new Date(n.created_at).toLocaleTimeString(void 0, { hour: "2-digit", minute: "2-digit" }),
+        n.resolved ? "Resolved" : ""
+      ].filter(Boolean).join(" · ");
+      if (meta) line(meta, 8.5, "bold", { grey: true });
+      paragraphs(n.body, 10);
+      noteTranslations(n).forEach(({ code, text }) => {
+        var _a2;
+        if (PDF_UNSUPPORTED_LANGUAGES.has(code)) {
+          skippedLanguages.add(code);
+          return;
+        }
+        line(`${((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code}:`, 9, "bold", { grey: true, indent: 6 });
+        paragraphs(text, 9.5, 6);
+      });
+      y += 4;
+    });
+  });
+  if (skippedLanguages.size) {
+    y += 3;
+    line("Not printable in this PDF", 11, "bold");
+    [...skippedLanguages].forEach(
+      (code) => line(`${languageLabel(code)}: see the app`, 9.5, "normal", { grey: true })
+    );
+  }
+  const generated = (/* @__PURE__ */ new Date()).toLocaleString();
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i += 1) {
+    doc.setPage(i);
+    doc.setFont(body, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(20, 20, 20);
+    doc.text(
+      `PRODUCTION NOTES — ${input.productionTitle} — ${prettyDay(input.day)}`,
+      MARGIN,
+      14
+    );
+    doc.setDrawColor(190, 190, 190);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, 17.5, pageW - MARGIN, 17.5);
+    doc.setFont(body, "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(130, 130, 130);
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+  }
+  return doc;
+}
+async function downloadNotesPDF(input) {
+  const doc = await buildNotesPDF(input);
+  doc.save(notesFileName(input.productionTitle, input.day));
+}
+const DailyReportDialog = ({ projectId, productionTitle, shootLocation, scenes, onClose }) => {
+  const [day, setDay] = useState(todayLocal());
+  const [includeResolved, setIncludeResolved] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+  const generate = async () => {
+    setBusy(true);
+    setError("");
+    try {
+      let query = supabase.from("production_notes").select(NOTE_FIELDS).eq("project_id", projectId).eq("shoot_day", day);
+      if (!includeResolved) query = query.eq("resolved", false);
+      const { data, error: err } = await query.order("created_at", { ascending: true });
+      if (err) throw err;
+      await downloadNotesPDF({
+        notes: data || [],
+        productionTitle,
+        day,
+        shootLocation,
+        scenes
+      });
+      onClose();
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Could not build the report.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  return /* @__PURE__ */ jsx(Modal, { title: "Daily report", onClose, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Shoot day" }),
+      /* @__PURE__ */ jsx("input", { type: "date", value: day, onChange: (e) => setDay(e.target.value), style: inputStyle$4 })
+    ] }),
+    /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          type: "checkbox",
+          checked: includeResolved,
+          onChange: (e) => setIncludeResolved(e.target.checked),
+          style: { width: 18, height: 18 }
+        }
+      ),
+      "Include resolved notes"
+    ] }),
+    error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
+    /* @__PURE__ */ jsx("button", { onClick: generate, disabled: busy || !day, style: { ...primaryBtn$3, opacity: busy || !day ? 0.45 : 1 }, children: busy ? "Building PDF…" : "Download PDF" })
+  ] }) });
+};
+const STEPS$3 = [
+  { n: 1, title: "Pick your production", text: "Every note hangs off it." },
+  { n: 2, title: "Tag it and date it", text: "Safety, talent, props, camera…" },
+  { n: 3, title: "Translate for the crew", text: "So nobody misses it." },
+  { n: 4, title: "Print the daily report", text: "One PDF per shoot day." }
+];
+const ProductionNotes = () => {
+  var _a2;
+  const { user } = useAuth();
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [scenes, setScenes] = useState([]);
+  const [actingName, setActingName] = useState("");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [busyNoteId, setBusyNoteId] = useState(null);
+  const [showReport, setShowReport] = useState(false);
+  const languages = ((_a2 = selectedProject == null ? void 0 : selectedProject.languages) == null ? void 0 : _a2.length) ? selectedProject.languages : ["en"];
+  const canTranslate = languages.length >= 2;
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase.from("profiles").select("first_name").eq("user_id", user.id).maybeSingle();
+      setActingName(((data == null ? void 0 : data.first_name) || "").trim() || (user.email ? user.email.split("@")[0] : "Someone"));
+    })();
+  }, [user]);
+  useEffect(() => {
+    if (!selectedProject) {
+      setScenes([]);
+      return;
+    }
+    (async () => {
+      const { data } = await supabase.from("breakdown_scenes").select("id, scene_number, label").eq("project_id", selectedProject.id).order("sort_order", { ascending: true });
+      setScenes(data || []);
+    })();
+    setError("");
+  }, [selectedProject]);
+  const saveNote = async (draft) => {
+    if (!selectedProject) return;
+    setSaving(true);
+    setError("");
+    try {
+      if (draft.translate && canTranslate) {
+        const data = await aiInvoke("translate-note", {
+          body: {
+            project_id: selectedProject.id,
+            tag: draft.tag,
+            priority: draft.priority,
+            shoot_day: draft.shootDay || null,
+            scene_id: draft.sceneId || null,
+            body: draft.body
+          }
+        });
+        if (!(data == null ? void 0 : data.note)) throw new Error("The note could not be saved.");
+      } else {
+        const { error: err } = await supabase.from("production_notes").insert({
+          project_id: selectedProject.id,
+          tag: draft.tag,
+          priority: draft.priority,
+          shoot_day: draft.shootDay || null,
+          scene_id: draft.sceneId || null,
+          body: draft.body,
+          source_language: null,
+          translations: {},
+          created_by_name: actingName || "Someone",
+          created_by_department: "Production",
+          created_by_user_id: (user == null ? void 0 : user.id) || null
+        });
+        if (err) throw err;
+      }
+      setRefreshKey((k) => k + 1);
+    } catch (e) {
+      if (!(e instanceof InsufficientCreditsError)) {
+        setError(e instanceof Error ? e.message : "Could not save the note.");
+      }
+    } finally {
+      setSaving(false);
+    }
+  };
+  const retranslate = async (note) => {
+    if (!selectedProject) return;
+    setBusyNoteId(note.id);
+    setError("");
+    try {
+      await aiInvoke("translate-note", {
+        body: {
+          project_id: selectedProject.id,
+          note_id: note.id,
+          tag: note.tag,
+          priority: note.priority,
+          shoot_day: note.shoot_day,
+          scene_id: note.scene_id,
+          body: note.body
+        }
+      });
+      setRefreshKey((k) => k + 1);
+    } catch (e) {
+      if (!(e instanceof InsufficientCreditsError)) {
+        setError(e instanceof Error ? e.message : "Could not translate the note.");
+      }
+    } finally {
+      setBusyNoteId(null);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
+    /* @__PURE__ */ jsx("style", { children: `
+        @media (max-width: 800px) { .pn-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 700px) { .pn-grid { grid-template-columns: 1fr !important; } }
+        @media (max-width: 560px) {
+          .pn-steps { grid-template-columns: 1fr !important; }
+          .pn-h1 { font-size: 34px !important; }
+        }
+        .pn-step-num {
+          width: 28px; height: 28px; border-radius: 9999px;
+          display: flex; align-items: center; justify-content: center;
+          background: rgba(0,212,170,0.12); color: #00d4aa;
+          border: 1px solid rgba(0,212,170,0.4);
+          font-size: 13px; font-weight: 700; flex: 0 0 auto;
+        }
+      ` }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px", overflowX: "hidden" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { padding: "64px 0 36px", textAlign: "center" }, children: [
+        /* @__PURE__ */ jsx("h1", { className: "pn-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: 0 }, children: "Production Notes" }),
+        /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)", maxWidth: 720, margin: "16px auto 0", lineHeight: 1.65 }, children: "One place for every note from set — tagged, dated, and translated for the whole crew." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 40 }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.3)",
+          marginBottom: 20
+        }, children: "How it works" }),
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "pn-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+          borderRadius: 16,
+          padding: 20,
+          background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 12
+        }, children: [
+          /* @__PURE__ */ jsx("span", { className: "pn-step-num", children: s.n }),
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.3 }, children: s.title }),
+            /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 6, lineHeight: 1.5 }, children: s.text })
+          ] })
+        ] }, s.n)) })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ProductionPicker,
+        {
+          emptyText: "Give it a name, then every note from set lands here.",
+          onSelect: (p) => setSelectedProject(p),
+          extraControls: /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => setShowReport(true),
+              style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 8 },
+              children: [
+                /* @__PURE__ */ jsx(FileText, { size: 16 }),
+                " Daily report"
+              ]
+            }
+          )
+        }
+      ),
+      selectedProject && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx(
+          NoteComposer,
+          {
+            scenes,
+            languageCount: languages.length,
+            saving,
+            error,
+            onSave: saveNote
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          NoteList,
+          {
+            projectId: selectedProject.id,
+            scenes,
+            canTranslate,
+            actingName: actingName || "Someone",
+            refreshKey,
+            onRetranslate: retranslate,
+            busyNoteId
+          }
+        ),
+        showReport && /* @__PURE__ */ jsx(
+          DailyReportDialog,
+          {
+            projectId: selectedProject.id,
+            productionTitle: selectedProject.title,
+            shootLocation: selectedProject.shoot_location,
+            scenes,
+            onClose: () => setShowReport(false)
           }
         )
       ] })
@@ -82304,6 +83283,10 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/set-translator", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/set-translator" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(SetTranslator, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/production-notes", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/production-notes" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ProductionNotes, {}) })
   ] }) }),
   /* @__PURE__ */ jsx(Route, { path: "/b/:token", element: /* @__PURE__ */ jsx(CrewBreakdown, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
