@@ -154,7 +154,7 @@ serve(async (req) => {
 
     const departments: Record<string, string[]> = {};
     for (const [key, dept] of Object.entries(DEPT_MAP)) {
-      departments[dept] = cleanList(parsed[key]);
+      departments[dept] = cleanList(pickKey(parsed, key));
     }
 
     const aiSceneNumber = typeof parsed.scene_number === 'string' ? parsed.scene_number.trim() : '';
