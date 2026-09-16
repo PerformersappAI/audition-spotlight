@@ -51,7 +51,6 @@ export const formatMoney = (amount: number, currency: string): string => {
   } catch {
     out = `${code} ${value.toFixed(2)}`;
   }
-  if (code === "BAM") out = out.replace(/BAM/gi, "KM").trim();
   return out;
 };
 
