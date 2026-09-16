@@ -47,7 +47,7 @@ const toBase64 = (buf: ArrayBuffer) => {
  * (č ć đ š ž ...), so we embed a subset of Noto Sans / Noto Sans Mono.
  * Falls back to Helvetica/Courier if the files can't be fetched.
  */
-async function loadFonts(doc: jsPDF): Promise<{ body: string; mono: string }> {
+export async function loadUnicodeFonts(doc: jsPDF): Promise<{ body: string; mono: string }> {
   try {
     if (!fontCache) {
       const entries = await Promise.all(
