@@ -4621,7 +4621,7 @@ const GROUPS$1 = [
         { title: "Production Notes", to: "#", theme: "violet" }
       ] },
       { cols: 2, tools: [
-        { title: "Set Translator", to: "#", theme: "violet" },
+        { title: "Set Translator", to: "/set-translator", theme: "violet" },
         { title: "Receipts & Expenses", to: "/receipts-expenses", theme: "violet" }
       ] }
     ]
@@ -4946,6 +4946,11 @@ const toolSeo = {
     title: "Film Production Expense Tracker — Receipts & Invoices | Filmmaker Genius",
     description: "Crew snap receipts or create invoices; producers approve, track spend by department and currency, and export reports.",
     lead: "A production expense tracker keeps every receipt, invoice and per-diem claim attached to the production it belongs to, so nothing gets settled from a shoebox at wrap. Crew photograph receipts or build an invoice from set, you approve, reject or mark them paid, and spending totals by department and currency stay current — ready to export for your accountant."
+  },
+  "/set-translator": {
+    title: "On-Set Translator for Film Crews | Filmmaker Genius",
+    description: "Translate call-time messages, safety notes and documents into every language your crew speaks — at once — and send them to the team.",
+    lead: "On a multilingual set, the fastest way to stop a misunderstanding is to send one message in every language your crew speaks. Pick your production and the languages it works in, then type, paste or upload a call-time change, a safety note or a document — the Set Translator produces every version at once. Copy it, download it, or send it straight to your team."
   },
   "/script-breakdown": {
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
@@ -6292,6 +6297,7 @@ const TOOL_COSTS = [
   { name: "Scene Analysis", cost: "~1 credit" },
   { name: "Script Breakdown", cost: "~1 credit per scene (+1 to read a PDF or image)" },
   { name: "Receipts & Expenses", cost: "Free to log; ~1 credit to read a receipt photo" },
+  { name: "Set Translator", cost: "~1 credit per message (all languages at once; +1 to read a PDF or image)" },
   { name: "Storyboard Generator", cost: "2–4 credits (grows with number of frames)" },
   { name: "Table Read", cost: "2–4 credits (varies by dialogue length)" },
   { name: "Fundraising", cost: "~1 credit" },
@@ -12335,16 +12341,16 @@ const loaders = {
   "working-with-a-film-composer": () => import("./assets/composer-vecuDW8J.js").then((m) => m.composer),
   "working-with-child-actors": () => import("./assets/childActors-BEpaSmb6.js").then((m) => m.childActors)
 };
-const cache = {};
+const cache$1 = {};
 function getCourse(slug2) {
-  return cache[slug2];
+  return cache$1[slug2];
 }
 async function loadCourse(slug2) {
-  if (cache[slug2]) return cache[slug2];
+  if (cache$1[slug2]) return cache$1[slug2];
   const load = loaders[slug2];
   if (!load) return void 0;
   const c = await load();
-  cache[slug2] = c;
+  cache$1[slug2] = c;
   return c;
 }
 const courseSlugs = Object.keys(loaders);
@@ -17548,7 +17554,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
     ] })
   ] });
 };
-const STEPS$5 = [
+const STEPS$6 = [
   { num: 1, label: "Select Scenes" },
   { num: 1.5, label: "Cast References", optional: true },
   { num: 2, label: "Review Shot List" },
@@ -17556,7 +17562,7 @@ const STEPS$5 = [
 ];
 const stepDisplayNumber = (num2, idx) => idx + 1;
 const StepIndicator = ({ currentStep }) => {
-  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$5.map((step, idx) => {
+  return /* @__PURE__ */ jsx("div", { className: "flex items-center justify-center gap-2 sm:gap-4 mb-6 flex-wrap", children: STEPS$6.map((step, idx) => {
     const isActive = step.num === currentStep;
     const isComplete = step.num < currentStep;
     return /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 sm:gap-4", children: [
@@ -17590,7 +17596,7 @@ const StepIndicator = ({ currentStep }) => {
           ]
         }
       ),
-      idx < STEPS$5.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
+      idx < STEPS$6.length - 1 && /* @__PURE__ */ jsx("div", { className: "hidden sm:block h-px w-6 bg-border" })
     ] }, step.num);
   }) });
 };
@@ -25326,7 +25332,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
     ] })
   ] });
 };
-const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, created_at";
+const PRODUCTION_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, notify_expenses, languages, shoot_location, created_at";
 const TEAL$7 = "#00d4aa";
 const panel$3 = {
   borderRadius: 16,
@@ -25903,7 +25909,7 @@ function createCrewAdapter(opts) {
 }
 const SITE$1 = "https://filmmakergenius.com";
 const TEAL$6 = "#00d4aa";
-const STEPS$4 = [
+const STEPS$5 = [
   { n: 1, title: "Upload your scene", text: "PDF or paste text." },
   { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
   { n: 3, title: "Share a private link with your crew", text: "One link per production — no accounts needed." },
@@ -26065,7 +26071,7 @@ const ScriptBreakdown = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$4.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "sb-steps", children: STEPS$5.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -28088,7 +28094,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
   ] });
 };
 const SITE = "https://filmmakergenius.com";
-const STEPS$3 = [
+const STEPS$4 = [
   { n: 1, title: "Pick your production", text: "The same productions you use for script breakdowns." },
   { n: 2, title: "Crew submit receipts or invoices", text: "Snap a photo on set, or build an invoice." },
   { n: 3, title: "Approve, reject or mark paid", text: "You decide what gets reimbursed." },
@@ -28170,7 +28176,7 @@ const ReceiptsExpenses = () => {
           color: "rgba(255,255,255,0.3)",
           marginBottom: 20
         }, children: "How it works" }),
-        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "re-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "re-steps", children: STEPS$4.map((s) => /* @__PURE__ */ jsxs("div", { style: {
           borderRadius: 16,
           padding: 20,
           background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
@@ -28245,6 +28251,361 @@ const ReceiptsExpenses = () => {
         },
         selectedProject.id
       )
+    ] })
+  ] });
+};
+const WMO = {
+  0: "Clear sky",
+  1: "Mainly clear",
+  2: "Partly cloudy",
+  3: "Overcast",
+  45: "Fog",
+  48: "Freezing fog",
+  51: "Light drizzle",
+  53: "Drizzle",
+  55: "Heavy drizzle",
+  56: "Freezing drizzle",
+  57: "Freezing drizzle",
+  61: "Light rain",
+  63: "Rain",
+  65: "Heavy rain",
+  66: "Freezing rain",
+  67: "Freezing rain",
+  71: "Light snow",
+  73: "Snow",
+  75: "Heavy snow",
+  77: "Snow grains",
+  80: "Rain showers",
+  81: "Rain showers",
+  82: "Heavy showers",
+  85: "Snow showers",
+  86: "Heavy snow showers",
+  95: "Thunderstorm",
+  96: "Thunderstorm, hail",
+  99: "Thunderstorm, hail"
+};
+const CACHE_MS = 30 * 60 * 1e3;
+const cache = /* @__PURE__ */ new Map();
+const UNIT_KEY = "fg-weather-unit";
+const readUnit = () => {
+  try {
+    return localStorage.getItem(UNIT_KEY) === "f" ? "f" : "c";
+  } catch {
+    return "c";
+  }
+};
+const writeUnit = (u) => {
+  try {
+    localStorage.setItem(UNIT_KEY, u);
+  } catch {
+  }
+};
+const clock = (iso) => (iso || "").slice(11, 16);
+async function fetchWeather(location) {
+  var _a2, _b2;
+  const geoRes = await fetch(
+    `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
+  );
+  if (!geoRes.ok) throw new Error("geocode failed");
+  const geo = await geoRes.json();
+  const hit = (_a2 = geo == null ? void 0 : geo.results) == null ? void 0 : _a2[0];
+  if (!hit) throw new Error("location not found");
+  const res = await fetch(
+    `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}&current=temperature_2m,weather_code,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&forecast_days=2`
+  );
+  if (!res.ok) throw new Error("forecast failed");
+  const json = await res.json();
+  const d = json == null ? void 0 : json.daily;
+  if (!(json == null ? void 0 : json.current) || !d) throw new Error("no forecast");
+  const day = (i) => {
+    var _a3, _b3, _c;
+    return {
+      max: Math.round(d.temperature_2m_max[i]),
+      min: Math.round(d.temperature_2m_min[i]),
+      rain: ((_a3 = d.precipitation_probability_max) == null ? void 0 : _a3[i]) ?? null,
+      sunrise: ((_b3 = d.sunrise) == null ? void 0 : _b3[i]) || "",
+      sunset: ((_c = d.sunset) == null ? void 0 : _c[i]) || ""
+    };
+  };
+  return {
+    place: [hit.name, hit.country].filter(Boolean).join(", "),
+    temp: Math.round(json.current.temperature_2m),
+    code: json.current.weather_code,
+    today: day(0),
+    tomorrow: ((_b2 = d.time) == null ? void 0 : _b2.length) > 1 ? day(1) : null
+  };
+}
+const WeatherBar = ({ location }) => {
+  const [data, setData] = useState(null);
+  const [failed, setFailed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [unit, setUnit] = useState(readUnit);
+  const [showTomorrow, setShowTomorrow] = useState(false);
+  useEffect(() => {
+    const key = location.trim().toLowerCase();
+    if (!key) return;
+    let live = true;
+    const cached = cache.get(key);
+    if (cached && Date.now() - cached.at < CACHE_MS) {
+      setData(cached.data);
+      setFailed(false);
+      return;
+    }
+    setLoading(true);
+    setFailed(false);
+    fetchWeather(location.trim()).then((d) => {
+      cache.set(key, { at: Date.now(), data: d });
+      if (live) setData(d);
+    }).catch(() => {
+      if (live) {
+        setData(null);
+        setFailed(true);
+      }
+    }).finally(() => {
+      if (live) setLoading(false);
+    });
+    return () => {
+      live = false;
+    };
+  }, [location]);
+  const deg = (c) => unit === "c" ? `${c}°C` : `${Math.round(c * 9 / 5 + 32)}°F`;
+  const degShort = (c) => unit === "c" ? `${c}°` : `${Math.round(c * 9 / 5 + 32)}°`;
+  const wrap = {
+    display: "flex",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 10,
+    marginTop: 12,
+    padding: "10px 14px",
+    borderRadius: 12,
+    border: "1px solid rgba(255,255,255,0.08)",
+    background: "rgba(255,255,255,0.03)",
+    fontSize: 13.5,
+    color: "rgba(255,255,255,0.75)",
+    lineHeight: 1.6
+  };
+  if (!location.trim()) return null;
+  if (loading && !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Loading weather…" });
+  if (failed || !data) return /* @__PURE__ */ jsx("div", { style: wrap, children: "Weather unavailable" });
+  const shown = showTomorrow && data.tomorrow ? data.tomorrow : data.today;
+  const parts = [
+    data.place,
+    !showTomorrow ? deg(data.temp) : null,
+    WMO[data.code] ?? "—",
+    `↑${degShort(shown.max)} ↓${degShort(shown.min)}`,
+    shown.rain != null ? `Rain ${shown.rain}%` : null,
+    shown.sunrise ? `Sunrise ${clock(shown.sunrise)}` : null,
+    shown.sunset ? `Sunset ${clock(shown.sunset)}` : null
+  ].filter(Boolean);
+  const chip = {
+    minHeight: 32,
+    padding: "0 10px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.14)",
+    background: "rgba(255,255,255,0.04)",
+    color: "rgba(255,255,255,0.8)",
+    fontSize: 12.5,
+    fontWeight: 600,
+    cursor: "pointer"
+  };
+  return /* @__PURE__ */ jsxs("div", { style: wrap, children: [
+    /* @__PURE__ */ jsxs("span", { style: { flex: "1 1 240px", minWidth: 0 }, children: [
+      showTomorrow ? "Tomorrow · " : "",
+      parts.join(" · ")
+    ] }),
+    data.tomorrow && /* @__PURE__ */ jsx("button", { type: "button", style: chip, onClick: () => setShowTomorrow((v2) => !v2), children: showTomorrow ? "Today" : "Tomorrow" }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        type: "button",
+        style: chip,
+        onClick: () => {
+          const next = unit === "c" ? "f" : "c";
+          setUnit(next);
+          writeUnit(next);
+        },
+        "aria-label": "Toggle temperature unit",
+        children: unit === "c" ? "°F" : "°C"
+      }
+    )
+  ] });
+};
+const LANGUAGES = {
+  en: { name: "English", native: "English" },
+  de: { name: "German", native: "Deutsch" },
+  bs: { name: "Bosnian", native: "Bosanski" },
+  hr: { name: "Croatian", native: "Hrvatski" },
+  sr: { name: "Serbian", native: "Srpski" },
+  es: { name: "Spanish", native: "Español" },
+  fr: { name: "French", native: "Français" },
+  it: { name: "Italian", native: "Italiano" },
+  pt: { name: "Portuguese", native: "Português" },
+  nl: { name: "Dutch", native: "Nederlands" },
+  pl: { name: "Polish", native: "Polski" },
+  cs: { name: "Czech", native: "Čeština" },
+  hu: { name: "Hungarian", native: "Magyar" },
+  ro: { name: "Romanian", native: "Română" },
+  tr: { name: "Turkish", native: "Türkçe" },
+  el: { name: "Greek", native: "Ελληνικά" },
+  ru: { name: "Russian", native: "Русский" },
+  uk: { name: "Ukrainian", native: "Українська" },
+  ar: { name: "Arabic", native: "العربية" },
+  he: { name: "Hebrew", native: "עברית" },
+  hi: { name: "Hindi", native: "हिन्दी" },
+  zh: { name: "Chinese", native: "中文" },
+  ja: { name: "Japanese", native: "日本語" },
+  ko: { name: "Korean", native: "한국어" },
+  sv: { name: "Swedish", native: "Svenska" },
+  no: { name: "Norwegian", native: "Norsk" },
+  da: { name: "Danish", native: "Dansk" },
+  fi: { name: "Finnish", native: "Suomi" }
+};
+const LANGUAGE_CODES = Object.keys(LANGUAGES);
+const STEPS$3 = [
+  { n: 1, title: "Pick your production", text: "And the languages your crew speaks." },
+  { n: 2, title: "Type, paste or upload", text: "A message, a safety note or a document." },
+  { n: 3, title: "Translate into every language", text: "All languages at once, in one go." },
+  { n: 4, title: "Copy, download or send", text: "Straight to your crew." }
+];
+const SetTranslator = () => {
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [languages, setLanguages] = useState(["en"]);
+  const [location, setLocation] = useState("");
+  const [savedLocation, setSavedLocation] = useState("");
+  const [savingLocation, setSavingLocation] = useState(false);
+  useEffect(() => {
+    var _a2;
+    if (!selectedProject) return;
+    setLanguages(((_a2 = selectedProject.languages) == null ? void 0 : _a2.length) ? selectedProject.languages : ["en"]);
+    setLocation(selectedProject.shoot_location || "");
+    setSavedLocation(selectedProject.shoot_location || "");
+  }, [selectedProject]);
+  const toggleLanguage = async (code) => {
+    if (!selectedProject) return;
+    const next = languages.includes(code) ? languages.filter((c) => c !== code) : [...languages, code];
+    if (next.length === 0) return;
+    setLanguages(next);
+    await supabase.from("breakdown_projects").update({ languages: next }).eq("id", selectedProject.id);
+  };
+  const saveLocation = async () => {
+    if (!selectedProject) return;
+    setSavingLocation(true);
+    const value = location.trim();
+    await supabase.from("breakdown_projects").update({ shoot_location: value || null }).eq("id", selectedProject.id);
+    setSavedLocation(value);
+    setSavingLocation(false);
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
+    /* @__PURE__ */ jsx("style", { children: `
+        @media (max-width: 800px) { .st-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 560px) {
+          .st-steps { grid-template-columns: 1fr !important; }
+          .st-h1 { font-size: 34px !important; }
+          .st-locrow { flex-direction: column !important; align-items: stretch !important; }
+        }
+        .st-step-num {
+          width: 28px; height: 28px; border-radius: 9999px;
+          display: flex; align-items: center; justify-content: center;
+          background: rgba(0,212,170,0.12); color: #00d4aa;
+          border: 1px solid rgba(0,212,170,0.4);
+          font-size: 13px; font-weight: 700; flex: 0 0 auto;
+        }
+      ` }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px", overflowX: "hidden" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { padding: "64px 0 36px", textAlign: "center" }, children: [
+        /* @__PURE__ */ jsx("h1", { className: "st-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: 0 }, children: "Set Translator" }),
+        /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)", maxWidth: 720, margin: "16px auto 0", lineHeight: 1.65 }, children: "Write a message or upload a document once. Your whole crew gets it in their own language." })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 40 }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: "rgba(255,255,255,0.3)",
+          marginBottom: 20
+        }, children: "How it works" }),
+        /* @__PURE__ */ jsx("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16 }, className: "st-steps", children: STEPS$3.map((s) => /* @__PURE__ */ jsxs("div", { style: {
+          borderRadius: 16,
+          padding: 20,
+          background: "linear-gradient(135deg, #071820 0%, #0a2a30 100%)",
+          border: "1px solid rgba(255,255,255,0.08)",
+          display: "flex",
+          flexDirection: "column",
+          gap: 12
+        }, children: [
+          /* @__PURE__ */ jsx("span", { className: "st-step-num", children: s.n }),
+          /* @__PURE__ */ jsxs("div", { children: [
+            /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.3 }, children: s.title }),
+            /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 6, lineHeight: 1.5 }, children: s.text })
+          ] })
+        ] }, s.n)) })
+      ] }),
+      /* @__PURE__ */ jsx(
+        ProductionPicker,
+        {
+          emptyText: "Give it a name, then set the languages your crew speaks.",
+          onSelect: (p) => setSelectedProject(p)
+        }
+      ),
+      selectedProject && /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+          /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Production languages" }),
+          /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "Every message gets translated into all of these at once. At least one is required." }),
+          /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: LANGUAGE_CODES.map((code) => {
+            const on = languages.includes(code);
+            return /* @__PURE__ */ jsx(
+              "button",
+              {
+                type: "button",
+                onClick: () => toggleLanguage(code),
+                "aria-pressed": on,
+                style: {
+                  minHeight: 44,
+                  padding: "0 14px",
+                  borderRadius: 9999,
+                  border: `1px solid ${on ? "rgba(0,212,170,0.55)" : "rgba(255,255,255,0.14)"}`,
+                  background: on ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                  color: on ? "#00d4aa" : "rgba(255,255,255,0.75)",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: "'Inter Tight', sans-serif"
+                },
+                children: LANGUAGES[code].native
+              },
+              code
+            );
+          }) })
+        ] }),
+        /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+          /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Shoot location" }),
+          /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: "The city you're shooting in — used for the weather line on messages and call sheets." }),
+          /* @__PURE__ */ jsxs("div", { className: "st-locrow", style: { display: "flex", gap: 10, alignItems: "center", marginTop: 14 }, children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                value: location,
+                onChange: (e) => setLocation(e.target.value),
+                placeholder: "Sarajevo",
+                style: { ...inputStyle$4, maxWidth: 320 }
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: saveLocation,
+                disabled: savingLocation,
+                style: { ...primaryBtn$3, opacity: savingLocation ? 0.5 : 1 },
+                children: savingLocation ? "Saving…" : "Save"
+              }
+            )
+          ] }),
+          savedLocation && /* @__PURE__ */ jsx(WeatherBar, { location: savedLocation })
+        ] }),
+        /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, marginBottom: 48, textAlign: "center", color: "rgba(255,255,255,0.55)" }, children: "Translation is coming next." })
+      ] })
     ] })
   ] });
 };
@@ -80603,6 +80964,10 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
   /* @__PURE__ */ jsx(Route, { path: "/receipts-expenses", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/receipts-expenses" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ReceiptsExpenses, {}) })
+  ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/set-translator", element: /* @__PURE__ */ jsxs(Fragment, { children: [
+    /* @__PURE__ */ jsx(ToolSeo, { path: "/set-translator" }),
+    /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(SetTranslator, {}) })
   ] }) }),
   /* @__PURE__ */ jsx(Route, { path: "/b/:token", element: /* @__PURE__ */ jsx(CrewBreakdown, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
