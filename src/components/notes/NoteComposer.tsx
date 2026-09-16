@@ -140,17 +140,17 @@ const NoteComposer = ({
         <label style={label}>Note</label>
         <textarea
           value={body}
-          onChange={(e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS))}
+          onChange={(e) => setBody(e.target.value.slice(0, maxChars))}
           rows={rows}
           placeholder="Stunt rehearsal moved to 14:00 — everyone on set 15 minutes early."
           style={{ ...inputStyle, resize: "vertical", lineHeight: 1.6, maxHeight: "60vh" }}
         />
         <div style={{ fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6, textAlign: "right" }}>
-          {body.length} / {MAX_NOTE_CHARS}
+          {body.length} / {maxChars}
         </div>
       </div>
 
-      {canTranslate && (
+      {canTranslate && showTranslateToggle && (
         <label style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 8, minHeight: 44, cursor: "pointer", fontSize: 14 }}>
           <input
             type="checkbox"
