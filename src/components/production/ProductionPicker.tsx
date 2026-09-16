@@ -284,7 +284,7 @@ const ProductionPicker = ({
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <div>
               <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Title</label>
-              <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Knock at 8" style={inputStyle} />
+              <input value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="e.g. The Long Way Home" style={inputStyle} />time
             </div>
             <div>
               <label style={{ display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }}>Production company (optional)</label>
