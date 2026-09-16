@@ -324,6 +324,82 @@ serve(async (req) => {
     return out;
   };
 
+  /** A production note the crew member is allowed to see. */
+  const getNote = async (noteId: string) => {
+    if (!noteId) return null;
+    const { data } = await admin
+      .from("production_notes")
+      .select(`${NOTE_CREW_FIELDS}, project_id`)
+      .eq("id", noteId)
+      .eq("project_id", projectId)
+      .maybeSingle();
+    return data as any;
+  };
+
+  /**
+   * Translates a crew note on the OWNER's credits, under the same 24h caps as
+   * crew messages. Never throws — when translation isn't possible the caller
+   * simply stores the note untranslated.
+   */
+  const translateNoteBody = async (
+    value: string,
+  ): Promise<{ source: string | null; translations: Record<string, unknown>; commit: () => Promise<void> } | null> => {
+    const noop = async () => {};
+    const languages = productionLanguages(project.languages);
+    const apiKey = Deno.env.get("LOVABLE_API_KEY");
+    const targets = languages.slice(0, MAX_TARGETS);
+    if (!apiKey || languages.length < 2 || !targets.length) return null;
+
+    const since = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    const [{ count: crewCount }, { count: projectCount }] = await Promise.all([
+      admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+        .eq("function_name", TRANSLATE_NOTE_LOG_NAME).gte("created_at", since)
+        .filter("metadata->>crew_id", "eq", crew!.id),
+      admin.from("api_usage_logs").select("id", { count: "exact", head: true })
+        .eq("function_name", TRANSLATE_NOTE_LOG_NAME).gte("created_at", since)
+        .filter("metadata->>project_id", "eq", projectId),
+    ]);
+    if ((crewCount ?? 0) >= NOTES_PER_CREW_24H || (projectCount ?? 0) >= NOTES_PER_PROJECT_24H) return null;
+
+    const balance = await ensureBalance(ownerId, 1);
+    if (!balance.ok) return null;
+
+    const startedAt = Date.now();
+    const { result } = await translateWithRetry(apiKey, targets, null, value, "auto");
+    if (!result) return null;
+
+    const fallback = crew!.preferred_language && languages.includes(crew!.preferred_language)
+      ? crew!.preferred_language
+      : languages[0] || "en";
+    const storedSource = result.detected || fallback;
+    const translations = buildTranslationsColumn(result, storedSource);
+    if (!Object.keys(translations).length) return null;
+
+    void noop;
+    return {
+      source: storedSource,
+      translations,
+      // Only bill once the row is safely written.
+      commit: async () => {
+        await charge(ownerId, 1, TRANSLATE_NOTE_LOG_NAME, { project_id: projectId, crew_id: crew!.id });
+        await logUsage({
+          userId: ownerId,
+          functionName: TRANSLATE_NOTE_LOG_NAME,
+          provider: "lovable-gateway",
+          operation: "text",
+          tokensInput: result.usage?.prompt_tokens,
+          tokensOutput: result.usage?.completion_tokens,
+          estimatedCostUsd: estimateUsd(result.usage?.prompt_tokens, result.usage?.completion_tokens),
+          status: "success",
+          latencyMs: Date.now() - startedAt,
+          metadata: { project_id: projectId, crew_id: crew!.id },
+        });
+      },
+    };
+  };
+
+
+
   try {
     switch (action) {
       // ---------------------------------------------------------------- load
