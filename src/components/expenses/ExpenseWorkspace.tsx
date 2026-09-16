@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import { Download, Loader2, Plus } from "lucide-react";
+import { Download, FileSpreadsheet, FileText, Loader2, Plus, Table } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { ghostBtn, panel, primaryBtn } from "@/components/production/ProductionPicker";
 import { EXPENSE_FIELDS, toExpense, type Expense } from "@/lib/expenses/types";
 import { removeExpenseFolder, signExpensePaths } from "@/lib/expenses/files";
 import { SCENE_FIELDS, ITEM_FIELDS, DEPARTMENTS, type BreakdownScene, type BreakdownItem } from "@/components/breakdown/types";
+import { exportExpensesToCSV, exportExpensesToPDF, exportExpensesToXLSX, type ExpenseExportInput } from "@/utils/exportExpenses";
 import ExpenseSummary from "./ExpenseSummary";
 import ExpenseFilters, { EMPTY_FILTERS, type ExpenseFilterState } from "./ExpenseFilters";
 import ExpenseList, { type LinkedItemInfo } from "./ExpenseList";
@@ -15,6 +16,7 @@ import FileLightbox from "./FileLightbox";
 
 interface Props {
   projectId: string;
+  productionTitle: string;
   company: string | null;
   defaultCurrency: string;
   /** Name recorded on approvals/rejections and defaulted as the submitter. */
