@@ -16,6 +16,7 @@ import {
   TEAL,
 } from "./types";
 import { BreakdownAdapter } from "@/lib/breakdown/adapter";
+import { inputStyle } from "@/components/production/ProductionPicker";
 import { ImageError } from "@/lib/breakdown/imageDownscale";
 import { exportBreakdownToPDF } from "@/utils/exportBreakdownToPDF";
 
@@ -75,6 +76,12 @@ const BreakdownWorkspace = ({
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
   const [lightbox, setLightbox] = useState<{ ids: string[]; index: number } | null>(null);
   const [deleteScene, setDeleteScene] = useState<BreakdownScene | null>(null);
+  const [settingsScene, setSettingsScene] = useState<BreakdownScene | null>(null);
+  const [formNumber, setFormNumber] = useState("");
+  const [formLabel, setFormLabel] = useState("");
+  const [formScript, setFormScript] = useState("");
+  const [savingScene, setSavingScene] = useState(false);
+  const [rerunning, setRerunning] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [includeScript, setIncludeScript] = useState(false);
