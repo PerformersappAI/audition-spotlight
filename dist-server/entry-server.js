@@ -51038,9 +51038,9 @@ const ShootingSchedule = () => {
 };
 const INITIAL_DAYS = ["1", "2", "3"];
 const INITIAL_CAST = [
-  { name: "Lorenz", codes: ["SW", "W", "W"] },
-  { name: "Christa", codes: ["H", "SW", "WF"] },
-  { name: "Michi", codes: ["", "SW", "W"] }
+  { name: "Alex", codes: ["SW", "W", "W"] },
+  { name: "Sam", codes: ["H", "SW", "WF"] },
+  { name: "Riley", codes: ["", "SW", "W"] }
 ];
 const LEGEND = "SW = Start Work · W = Work · H = Hold · F = Finish · WF = Work Finish · SWF = Start-Work-Finish · T = Travel · R = Rehearse";
 const LEGEND_PDF = "SW = Start Work | W = Work | H = Hold | F = Finish | WF = Work Finish | SWF = Start-Work-Finish | T = Travel | R = Rehearse";
@@ -51319,7 +51319,7 @@ const INITIAL_SHOTS = [
     angle: "Eye Level",
     movement: "Handheld",
     lens: "50mm",
-    description: "Lorenz reacts to the knock at the door"
+    description: "Alex reacts to the sound at the front door"
   }
 ];
 const v$C = (value, placeholder) => value.trim() ? value.trim() : `[${placeholder}]`;
@@ -51686,7 +51686,7 @@ const INITIAL_PANELS = [
   {
     image: "",
     shot: "CU — Handheld",
-    action: "Lorenz turns toward the front door at the sound.",
+    action: "Alex turns toward the front door at the sound.",
     dialogue: '"Did you hear that?"',
     camera: "50mm, slight push-in"
   }
@@ -51858,7 +51858,7 @@ const StoryboardTemplate = () => {
                   Input,
                   {
                     id: "sequence",
-                    placeholder: "Sc. 9 — The Knock",
+                    placeholder: "Sc. 9 — The Arrival",
                     value: sequence,
                     onChange: (e) => setSequence(e.target.value)
                   }
@@ -56147,7 +56147,7 @@ const IndependentContractorAgreement = () => {
                   Input,
                   {
                     id: "project",
-                    placeholder: "e.g., Knock at 8 — post-production",
+                    placeholder: "e.g., The Long Way Home — post-production",
                     value: form.project,
                     onChange: (e) => set("project", e.target.value)
                   }

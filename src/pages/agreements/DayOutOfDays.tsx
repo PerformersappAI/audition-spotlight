@@ -14,9 +14,9 @@ interface CastRow {
 
 const INITIAL_DAYS = ["1", "2", "3"];
 const INITIAL_CAST: CastRow[] = [
-  { name: "Lorenz", codes: ["SW", "W", "W"] },
-  { name: "Christa", codes: ["H", "SW", "WF"] },
-  { name: "Michi", codes: ["", "SW", "W"] },
+  { name: "Alex", codes: ["SW", "W", "W"] },
+  { name: "Sam", codes: ["H", "SW", "WF"] },
+  { name: "Riley", codes: ["", "SW", "W"] },
 ];
 
 const LEGEND =

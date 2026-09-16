@@ -27,7 +27,7 @@ const INITIAL_PANELS: Panel[] = [
   {
     image: "",
     shot: "CU — Handheld",
-    action: "Lorenz turns toward the front door at the sound.",
+    action: "Alex turns toward the front door at the sound.",
     dialogue: '"Did you hear that?"',
     camera: "50mm, slight push-in",
   },
@@ -230,7 +230,7 @@ const StoryboardTemplate = () => {
                   <Label htmlFor="sequence">Sequence / Scene</Label>
                   <Input
                     id="sequence"
-                    placeholder="Sc. 9 — The Knock"
+                    placeholder="Sc. 9 — The Arrival"
                     value={sequence}
                     onChange={(e) => setSequence(e.target.value)}
                   />
