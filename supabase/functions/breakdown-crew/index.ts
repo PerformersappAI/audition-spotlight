@@ -48,6 +48,21 @@ const MAX_CREW_MESSAGE = 5000;
 const MESSAGE_FIELDS =
   "id, subject, source_language, source_text, translations, created_by_name, created_at";
 
+// Crew-written production notes are translated on the owner's credits too.
+const TRANSLATE_NOTE_LOG_NAME = "translate-note-crew";
+const NOTES_PER_CREW_24H = 40;
+const NOTES_PER_PROJECT_24H = 300;
+const MAX_CREW_NOTE = 2000;
+const NOTE_TAGS = [
+  "general", "talent", "location", "props", "wardrobe", "makeup",
+  "camera", "sound", "safety", "director", "ad", "production",
+];
+const NOTE_PRIORITIES = ["normal", "important", "urgent"];
+// created_by_user_id is deliberately never returned to the crew.
+const NOTE_CREW_FIELDS =
+  "id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_by_crew_id, created_at";
+const isDay = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(value));
+
 const PHOTO_FIELDS =
   "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
 const ITEM_FIELDS =
