@@ -32,7 +32,7 @@ export const isSupportedCurrency = (code: string) => CURRENCY_CODES.includes(cod
 
 const formatters = new Map<string, Intl.NumberFormat>();
 
-/** Money formatter. BAM is displayed with the local "KM" mark. */
+/** Money formatter, using the runtime's own symbol for each currency. */
 export const formatMoney = (amount: number, currency: string): string => {
   const code = (currency || "USD").toUpperCase();
   const value = Number.isFinite(amount) ? amount : 0;
