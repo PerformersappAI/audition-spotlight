@@ -1,6 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Seo from "@/components/Seo";
-import ProductionPicker, { panel, type Production } from "@/components/production/ProductionPicker";
+import ProductionPicker, { inputStyle, type Production } from "@/components/production/ProductionPicker";
+import ExpenseWorkspace from "@/components/expenses/ExpenseWorkspace";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { CURRENCIES } from "@/lib/expenses/currency";
 
 const SITE = "https://filmmakergenius.com";
 
@@ -12,7 +16,24 @@ const STEPS = [
 ];
 
 const ReceiptsExpenses = () => {
+  const { user, userProfile } = useAuth();
   const [selectedProject, setSelectedProject] = useState<Production | null>(null);
+  const [currency, setCurrency] = useState<string | null>(null);
+
+  const actorName = useMemo(() => {
+    const first = (userProfile?.first_name || userProfile?.full_name || "").toString().trim().split(/\s+/)[0];
+    if (first) return first;
+    const email = user?.email || "";
+    return email.includes("@") ? email.split("@")[0] : "Producer";
+  }, [userProfile, user]);
+
+  const activeCurrency = currency ?? selectedProject?.default_currency ?? "USD";
+
+  const changeCurrency = async (next: string) => {
+    if (!selectedProject) return;
+    setCurrency(next);
+    await supabase.from("breakdown_projects").update({ default_currency: next }).eq("id", selectedProject.id);
+  };
 
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "60vh" }}>
@@ -22,10 +43,23 @@ const ReceiptsExpenses = () => {
         canonical={`${SITE}/receipts-expenses`}
       />
       <style>{`
+        @media (max-width: 900px) { .ex-cards { grid-template-columns: repeat(2, 1fr) !important; } }
         @media (max-width: 800px) { .re-steps { grid-template-columns: repeat(2, 1fr) !important; } }
+        @media (max-width: 860px) {
+          .ex-table { display: none !important; }
+          .ex-cards-list { display: flex !important; }
+          .ex-filters { grid-template-columns: 1fr 1fr !important; }
+          .ex-filters > div:first-child { grid-column: span 2 !important; }
+        }
         @media (max-width: 560px) {
           .re-steps { grid-template-columns: 1fr !important; }
           .re-h1 { font-size: 34px !important; }
+          .ex-cards { grid-template-columns: 1fr !important; }
+          .ex-filters { grid-template-columns: 1fr !important; }
+          .ex-filters > div:first-child { grid-column: span 1 !important; }
+          .ex-form { grid-template-columns: 1fr !important; }
+          .ex-form > div { grid-column: span 1 !important; }
+          .ex-invline { grid-template-columns: 1fr 1fr !important; }
           .sb-row { flex-direction: column !important; align-items: stretch !important; }
           .sb-row > * { width: 100%; }
         }
@@ -77,17 +111,29 @@ const ReceiptsExpenses = () => {
         {/* PRODUCTIONS */}
         <ProductionPicker
           emptyText="Give it a name, then log every receipt and invoice against it."
-          onSelect={setSelectedProject}
+          onSelect={(p) => { setSelectedProject(p); setCurrency(null); }}
+          extraControls={selectedProject ? (
+            <select
+              aria-label="Default currency"
+              value={activeCurrency}
+              onChange={(e) => changeCurrency(e.target.value)}
+              style={{ ...inputStyle, maxWidth: 210 }}
+            >
+              {CURRENCIES.map((c) => (
+                <option key={c.code} value={c.code} style={{ background: "#10101b" }}>{c.label}</option>
+              ))}
+            </select>
+          ) : undefined}
         />
 
-        {/* PLACEHOLDER */}
         {selectedProject && (
-          <div style={{ ...panel, padding: 32, textAlign: "center", marginBottom: 48 }}>
-            <div style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700 }}>Expense tracking is coming next.</div>
-            <p style={{ color: "rgba(255,255,255,0.5)", fontSize: 14, marginTop: 10, lineHeight: 1.6 }}>
-              Receipts, invoices and approvals for {selectedProject.title} will appear here.
-            </p>
-          </div>
+          <ExpenseWorkspace
+            key={selectedProject.id}
+            projectId={selectedProject.id}
+            company={selectedProject.company}
+            defaultCurrency={activeCurrency}
+            actorName={actorName}
+          />
         )}
       </div>
     </div>
