@@ -29616,12 +29616,34 @@ const NOTE_PRIORITIES = [
   { value: "urgent", label: "Urgent", color: "#ff4d4f" }
 ];
 const MAX_NOTE_CHARS = 5e3;
+const MAX_CREW_NOTE_CHARS = 2e3;
 const sceneLabel = (s) => {
   if (!s) return "";
   const num2 = s.scene_number ? `Scene ${s.scene_number}` : "Scene";
   return s.label ? `${num2} — ${s.label}` : num2;
 };
-const NOTE_FIELDS = "id, project_id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_at, updated_at";
+const NOTE_FIELDS = "id, project_id, tag, body, source_language, translations, shoot_day, scene_id, priority, pinned, resolved, resolved_by_name, resolved_at, created_by_name, created_by_department, created_by_crew_id, created_at, updated_at";
+function groupNotesByDay(notes) {
+  const byDay = /* @__PURE__ */ new Map();
+  notes.forEach((n) => {
+    const key = n.shoot_day || "";
+    const list = byDay.get(key) || [];
+    list.push(n);
+    byDay.set(key, list);
+  });
+  const days = [...byDay.keys()].sort((a, b) => {
+    if (!a) return 1;
+    if (!b) return -1;
+    return b.localeCompare(a);
+  });
+  return days.map((day) => ({
+    day,
+    notes: [...byDay.get(day)].sort((a, b) => {
+      if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+      return (b.created_at || "").localeCompare(a.created_at || "");
+    })
+  }));
+}
 function noteTranslations(n) {
   const t = n.translations || {};
   return Object.entries(t).filter(([, v2]) => typeof v2 === "string" && v2.trim()).map(([code, v2]) => ({ code, text: v2 }));
@@ -29663,7 +29685,17 @@ const label$2 = {
   color: "rgba(255,255,255,0.5)",
   marginBottom: 6
 };
-const NoteComposer = ({ scenes, languageCount, saving, error, onSave }) => {
+const NoteComposer = ({
+  scenes,
+  languageCount,
+  saving,
+  error,
+  onSave,
+  maxChars = MAX_NOTE_CHARS,
+  showTranslateToggle = true,
+  heading = "New note",
+  hint
+}) => {
   const [tag, setTag] = useState("general");
   const [priority, setPriority] = useState("normal");
   const [shootDay, setShootDay] = useState(todayLocal());
@@ -29683,12 +29715,13 @@ const NoteComposer = ({ scenes, languageCount, saving, error, onSave }) => {
   const rows = useMemo(() => Math.min(24, Math.max(4, body.split("\n").length + 1)), [body]);
   const save = async () => {
     if (body.trim().length < 2) return;
-    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, MAX_NOTE_CHARS), translate });
+    await onSave({ tag, priority, shootDay, sceneId, body: body.slice(0, maxChars), translate });
     setBody("");
     setTranslateTouched(false);
   };
   return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
-    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "New note" }),
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: heading }),
+    hint && /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: hint }),
     /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: NOTE_TAGS.map((t) => {
       const on = tag === t.value;
       return /* @__PURE__ */ jsxs(
@@ -29743,7 +29776,7 @@ const NoteComposer = ({ scenes, languageCount, saving, error, onSave }) => {
         "textarea",
         {
           value: body,
-          onChange: (e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS)),
+          onChange: (e) => setBody(e.target.value.slice(0, maxChars)),
           rows,
           placeholder: "Stunt rehearsal moved to 14:00 — everyone on set 15 minutes early.",
           style: { ...inputStyle$4, resize: "vertical", lineHeight: 1.6, maxHeight: "60vh" }
@@ -29752,10 +29785,10 @@ const NoteComposer = ({ scenes, languageCount, saving, error, onSave }) => {
       /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6, textAlign: "right" }, children: [
         body.length,
         " / ",
-        MAX_NOTE_CHARS
+        maxChars
       ] })
     ] }),
-    canTranslate && /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 8, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
+    canTranslate && showTranslateToggle && /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 8, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
       /* @__PURE__ */ jsx(
         "input",
         {
@@ -29794,9 +29827,29 @@ const smallBtn = {
   alignItems: "center",
   gap: 6
 };
-const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRetranslate, busy }) => {
+const native$2 = (code) => {
+  var _a2;
+  return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
+};
+const NoteCard = ({
+  note,
+  scenes,
+  canTranslate,
+  onPatch,
+  onEdit,
+  onDelete,
+  onRetranslate,
+  busy,
+  mode = "owner",
+  readLanguage,
+  maxChars = MAX_NOTE_CHARS,
+  canEdit = true,
+  canDelete = true,
+  allowPin = true
+}) => {
   const [editing, setEditing] = useState(false);
   const [showTranslations, setShowTranslations] = useState(false);
+  const [showOriginal, setShowOriginal] = useState(false);
   const [tag, setTag] = useState(note.tag);
   const [priority, setPriority] = useState(note.priority);
   const [shootDay, setShootDay] = useState(note.shoot_day || "");
@@ -29808,6 +29861,18 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
   const isSafety = note.tag === "safety";
   const urgent = note.priority === "urgent";
   const staleTranslations = !!note.source_language && translations.length === 0;
+  const viaCrew = mode === "owner" && !!note.created_by_crew_id;
+  const shown = useMemo(() => {
+    if (mode !== "crew" || !readLanguage || showOriginal) {
+      return { text: note.body, code: note.source_language || "", fallback: false };
+    }
+    if (readLanguage === note.source_language) {
+      return { text: note.body, code: readLanguage, fallback: false };
+    }
+    const hit = translations.find((t) => t.code === readLanguage);
+    if (hit) return { text: hit.text, code: hit.code, fallback: false };
+    return { text: note.body, code: note.source_language || "", fallback: true };
+  }, [mode, readLanguage, showOriginal, note.body, note.source_language, translations]);
   const startEdit = () => {
     setTag(note.tag);
     setPriority(note.priority);
@@ -29822,14 +29887,14 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
       priority,
       shoot_day: shootDay || null,
       scene_id: sceneId || null,
-      body: body.slice(0, MAX_NOTE_CHARS),
+      body: body.slice(0, maxChars),
       textChanged: body.trim() !== note.body.trim()
     });
     setEditing(false);
   };
   const copy2 = async () => {
     try {
-      await navigator.clipboard.writeText(note.body);
+      await navigator.clipboard.writeText(shown.text);
       setCopied(true);
       setTimeout(() => setCopied(false), 1500);
     } catch {
@@ -29869,6 +29934,14 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
             background: "rgba(255,255,255,0.06)",
             color: "rgba(255,255,255,0.7)"
           }, children: sceneLabel(scene) }),
+          viaCrew && /* @__PURE__ */ jsx("span", { style: {
+            fontSize: 11.5,
+            padding: "4px 10px",
+            borderRadius: 9999,
+            background: "rgba(0,212,170,0.12)",
+            color: "#00d4aa",
+            border: "1px solid rgba(0,212,170,0.35)"
+          }, children: "via crew link" }),
           note.resolved && /* @__PURE__ */ jsxs("span", { style: { fontSize: 12, color: "#06d6a0" }, children: [
             "Resolved",
             note.resolved_by_name ? ` by ${note.resolved_by_name}` : ""
@@ -29886,7 +29959,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
             "textarea",
             {
               value: body,
-              onChange: (e) => setBody(e.target.value.slice(0, MAX_NOTE_CHARS)),
+              onChange: (e) => setBody(e.target.value.slice(0, maxChars)),
               rows: Math.min(20, Math.max(3, body.split("\n").length + 1)),
               style: { ...inputStyle$4, resize: "vertical", lineHeight: 1.6 }
             }
@@ -29895,43 +29968,50 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
             /* @__PURE__ */ jsx("button", { onClick: saveEdit, disabled: busy || body.trim().length < 2, style: { ...primaryBtn$3, opacity: busy || body.trim().length < 2 ? 0.45 : 1 }, children: busy ? "Saving…" : "Save changes" }),
             /* @__PURE__ */ jsx("button", { onClick: () => setEditing(false), style: ghostBtn$2, children: "Cancel" })
           ] })
-        ] }) : /* @__PURE__ */ jsx("div", { style: { marginTop: 12, fontSize: 15, lineHeight: 1.65, whiteSpace: "pre-wrap" }, children: note.body }),
+        ] }) : /* @__PURE__ */ jsx(
+          "div",
+          {
+            dir: shown.code && RTL_LANGUAGES.has(shown.code) ? "rtl" : "ltr",
+            style: { marginTop: 12, fontSize: 15, lineHeight: 1.65, whiteSpace: "pre-wrap" },
+            children: shown.text
+          }
+        ),
+        mode === "crew" && shown.fallback && /* @__PURE__ */ jsxs("div", { style: { marginTop: 8, fontSize: 12, color: "rgba(255,255,255,0.5)" }, children: [
+          "Original",
+          note.source_language ? ` (${native$2(note.source_language)})` : "",
+          " — no translation yet"
+        ] }),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, fontSize: 12, color: "rgba(255,255,255,0.45)" }, children: [
           note.created_by_name,
           note.created_by_department ? ` · ${note.created_by_department}` : "",
           " · ",
           timeAgo(note.created_at)
         ] }),
-        translations.length > 0 && /* @__PURE__ */ jsxs("div", { style: { marginTop: 10 }, children: [
-          /* @__PURE__ */ jsxs(
+        translations.length > 0 && /* @__PURE__ */ jsxs("div", { style: { marginTop: 10, display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+          mode === "crew" && !shown.fallback && /* @__PURE__ */ jsx("button", { onClick: () => setShowOriginal((v2) => !v2), style: { ...smallBtn, minHeight: 36 }, children: showOriginal ? "Show my language" : "Show original" }),
+          /* @__PURE__ */ jsx(
             "button",
             {
               onClick: () => setShowTranslations((v2) => !v2),
               style: { ...smallBtn, minHeight: 36 },
-              children: [
-                "Translated: ",
-                translations.map((t) => t.code.toUpperCase()).join(" · ")
-              ]
+              children: mode === "crew" ? showTranslations ? "Hide languages" : "All languages" : `Translated: ${translations.map((t) => t.code.toUpperCase()).join(" · ")}`
             }
-          ),
-          showTranslations && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }, children: translations.map(({ code, text }) => {
-            var _a2;
-            return /* @__PURE__ */ jsxs("div", { style: { borderLeft: "2px solid rgba(0,212,170,0.4)", paddingLeft: 12 }, children: [
-              /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, color: "#00d4aa" }, children: ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code }),
-              /* @__PURE__ */ jsx(
-                "div",
-                {
-                  dir: RTL_LANGUAGES.has(code) ? "rtl" : "ltr",
-                  style: { fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)", marginTop: 4 },
-                  children: text
-                }
-              )
-            ] }, code);
-          }) })
+          )
         ] }),
-        staleTranslations && canTranslate && /* @__PURE__ */ jsx("button", { onClick: onRetranslate, disabled: busy, style: { ...smallBtn, marginTop: 10, opacity: busy ? 0.5 : 1 }, children: "Re-translate (1 credit)" }),
+        translations.length > 0 && showTranslations && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 10 }, children: translations.map(({ code, text }) => /* @__PURE__ */ jsxs("div", { style: { borderLeft: "2px solid rgba(0,212,170,0.4)", paddingLeft: 12 }, children: [
+          /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, color: "#00d4aa" }, children: native$2(code) }),
+          /* @__PURE__ */ jsx(
+            "div",
+            {
+              dir: RTL_LANGUAGES.has(code) ? "rtl" : "ltr",
+              style: { fontSize: 14, lineHeight: 1.6, whiteSpace: "pre-wrap", color: "rgba(255,255,255,0.8)", marginTop: 4 },
+              children: text
+            }
+          )
+        ] }, code)) }),
+        staleTranslations && canTranslate && mode === "owner" && /* @__PURE__ */ jsx("button", { onClick: onRetranslate, disabled: busy, style: { ...smallBtn, marginTop: 10, opacity: busy ? 0.5 : 1 }, children: "Re-translate (1 credit)" }),
         !editing && /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: [
-          /* @__PURE__ */ jsxs("button", { onClick: () => onPatch({ pinned: !note.pinned }), style: smallBtn, children: [
+          allowPin && /* @__PURE__ */ jsxs("button", { onClick: () => onPatch({ pinned: !note.pinned }), style: smallBtn, children: [
             /* @__PURE__ */ jsx(Pin, { size: 14 }),
             " ",
             note.pinned ? "Unpin" : "Pin"
@@ -29950,7 +30030,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
               ] })
             }
           ),
-          /* @__PURE__ */ jsxs("button", { onClick: startEdit, style: smallBtn, children: [
+          canEdit && /* @__PURE__ */ jsxs("button", { onClick: startEdit, style: smallBtn, children: [
             /* @__PURE__ */ jsx(Pencil, { size: 14 }),
             " Edit"
           ] }),
@@ -29959,7 +30039,7 @@ const NoteCard = ({ note, scenes, canTranslate, onPatch, onEdit, onDelete, onRet
             " ",
             copied ? "Copied" : "Copy"
           ] }),
-          /* @__PURE__ */ jsxs("button", { onClick: onDelete, style: { ...smallBtn, color: "#ff9d9d" }, children: [
+          canDelete && /* @__PURE__ */ jsxs("button", { onClick: onDelete, style: { ...smallBtn, color: "#ff9d9d" }, children: [
             /* @__PURE__ */ jsx(Trash2, { size: 14 }),
             " Delete"
           ] }),
@@ -29975,35 +30055,64 @@ const label$1 = {
   color: "rgba(255,255,255,0.5)",
   marginBottom: 6
 };
-const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onRetranslate, busyNoteId }) => {
+const NoteList = ({
+  projectId,
+  scenes,
+  canTranslate,
+  actingName = "",
+  refreshKey = 0,
+  onRetranslate,
+  busyNoteId,
+  mode = "owner",
+  notes: externalNotes,
+  loading: externalLoading,
+  readLanguage,
+  crewId,
+  maxChars = MAX_NOTE_CHARS,
+  onPatchNote,
+  onEditNote,
+  onDeleteNote
+}) => {
+  const isCrew = mode === "crew";
   const [searchParams, setSearchParams] = useSearchParams();
-  const [notes, setNotes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const search = searchParams.get("q") || "";
-  const tagFilter = (searchParams.get("tags") || "").split(",").filter(Boolean);
-  const priorityFilter = searchParams.get("priority") || "";
-  const fromDay = searchParams.get("from") || "";
-  const toDay = searchParams.get("to") || "";
-  const sceneFilter = searchParams.get("scene") || "";
-  const showResolved = searchParams.get("resolved") === "1";
+  const [ownerNotes, setOwnerNotes] = useState([]);
+  const [ownerLoading, setOwnerLoading] = useState(true);
+  const [localFilters, setLocalFilters] = useState({});
+  const getParam = (key) => isCrew ? localFilters[key] || "" : searchParams.get(key) || "";
   const setParam = useCallback((key, value) => {
+    if (isCrew) {
+      setLocalFilters((prev) => {
+        const next = { ...prev };
+        if (value) next[key] = value;
+        else delete next[key];
+        return next;
+      });
+      return;
+    }
     const params = new URLSearchParams(searchParams);
     if (value) params.set(key, value);
     else params.delete(key);
     setSearchParams(params, { replace: true });
-  }, [searchParams, setSearchParams]);
+  }, [isCrew, searchParams, setSearchParams]);
+  const search = getParam("q");
+  const tagFilter = getParam("tags").split(",").filter(Boolean);
+  const priorityFilter = isCrew ? "" : getParam("priority");
+  const fromDay = isCrew ? "" : getParam("from");
+  const toDay = isCrew ? "" : getParam("to");
+  const sceneFilter = isCrew ? "" : getParam("scene");
+  const showResolved = getParam("resolved") === "1";
   const load = useCallback(async () => {
     if (!projectId) return;
-    setLoading(true);
+    setOwnerLoading(true);
     const { data } = await supabase.from("production_notes").select(NOTE_FIELDS).eq("project_id", projectId).order("created_at", { ascending: false });
-    setNotes(data || []);
-    setLoading(false);
+    setOwnerNotes(data || []);
+    setOwnerLoading(false);
   }, [projectId]);
   useEffect(() => {
-    load();
-  }, [load, refreshKey]);
+    if (!isCrew) load();
+  }, [isCrew, load, refreshKey]);
   useEffect(() => {
-    if (!projectId) return;
+    if (isCrew || !projectId) return;
     const channel = supabase.channel(`production_notes:${projectId}`).on(
       "postgres_changes",
       { event: "*", schema: "public", table: "production_notes", filter: `project_id=eq.${projectId}` },
@@ -30014,17 +30123,27 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [projectId, load]);
+  }, [isCrew, projectId, load]);
+  const notes = isCrew ? externalNotes || [] : ownerNotes;
+  const loading = isCrew ? !!externalLoading : ownerLoading;
   const patch = async (note, changes) => {
+    if (onPatchNote) {
+      await onPatchNote(note, changes);
+      return;
+    }
     const next = { ...changes };
     if (changes.resolved !== void 0) {
       next.resolved_by_name = changes.resolved ? actingName : null;
       next.resolved_at = changes.resolved ? (/* @__PURE__ */ new Date()).toISOString() : null;
     }
-    setNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
+    setOwnerNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
     await supabase.from("production_notes").update(next).eq("id", note.id);
   };
   const edit = async (note, e) => {
+    if (onEditNote) {
+      await onEditNote(note, e);
+      return;
+    }
     const next = {
       tag: e.tag,
       priority: e.priority,
@@ -30033,12 +30152,16 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
       body: e.body
     };
     if (e.textChanged) next.translations = {};
-    setNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
+    setOwnerNotes((prev) => prev.map((n) => n.id === note.id ? { ...n, ...next } : n));
     await supabase.from("production_notes").update(next).eq("id", note.id);
   };
   const remove = async (note) => {
     if (!window.confirm("Delete this note?")) return;
-    setNotes((prev) => prev.filter((n) => n.id !== note.id));
+    if (onDeleteNote) {
+      await onDeleteNote(note);
+      return;
+    }
+    setOwnerNotes((prev) => prev.filter((n) => n.id !== note.id));
     await supabase.from("production_notes").delete().eq("id", note.id);
   };
   const filtered = useMemo(() => {
@@ -30054,74 +30177,72 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
       return true;
     });
   }, [notes, search, tagFilter, priorityFilter, sceneFilter, fromDay, toDay, showResolved]);
-  const groups = useMemo(() => {
-    const byDay = /* @__PURE__ */ new Map();
-    filtered.forEach((n) => {
-      const key = n.shoot_day || "";
-      const list = byDay.get(key) || [];
-      list.push(n);
-      byDay.set(key, list);
-    });
-    const days = [...byDay.keys()].sort((a, b) => {
-      if (!a) return 1;
-      if (!b) return -1;
-      return b.localeCompare(a);
-    });
-    return days.map((day) => ({
-      day,
-      notes: [...byDay.get(day)].sort((a, b) => {
-        if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
-        return (b.created_at || "").localeCompare(a.created_at || "");
-      })
-    }));
-  }, [filtered]);
+  const groups = useMemo(() => groupNotesByDay(filtered), [filtered]);
   const toggleTag = (value) => {
     const next = tagFilter.includes(value) ? tagFilter.filter((t) => t !== value) : [...tagFilter, value];
     setParam("tags", next.length ? next.join(",") : null);
   };
+  const clearFilters = () => {
+    if (isCrew) {
+      setLocalFilters((prev) => prev.resolved ? { resolved: prev.resolved } : {});
+      return;
+    }
+    const params = new URLSearchParams(searchParams);
+    ["q", "tags", "priority", "from", "to", "scene"].forEach((k) => params.delete(k));
+    setSearchParams(params, { replace: true });
+  };
   return /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 60 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
       /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Filters" }),
-      /* @__PURE__ */ jsxs("div", { className: "pn-grid", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 14 }, children: [
-        /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label$1, children: "Search" }),
-          /* @__PURE__ */ jsx("input", { value: search, onChange: (e) => setParam("q", e.target.value || null), placeholder: "Search notes", style: inputStyle$4 })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label$1, children: "Priority" }),
-          /* @__PURE__ */ jsxs("select", { value: priorityFilter, onChange: (e) => setParam("priority", e.target.value || null), style: inputStyle$4, children: [
-            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any priority" }),
-            NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value))
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label$1, children: "Scene" }),
-          /* @__PURE__ */ jsxs("select", { value: sceneFilter, onChange: (e) => setParam("scene", e.target.value || null), style: inputStyle$4, children: [
-            /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All scenes" }),
-            scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
-          ] })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label$1, children: "From day" }),
-          /* @__PURE__ */ jsx("input", { type: "date", value: fromDay, onChange: (e) => setParam("from", e.target.value || null), style: inputStyle$4 })
-        ] }),
-        /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label$1, children: "To day" }),
-          /* @__PURE__ */ jsx("input", { type: "date", value: toDay, onChange: (e) => setParam("to", e.target.value || null), style: inputStyle$4 })
-        ] }),
-        /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
-          /* @__PURE__ */ jsx(
-            "input",
-            {
-              type: "checkbox",
-              checked: showResolved,
-              onChange: (e) => setParam("resolved", e.target.checked ? "1" : null),
-              style: { width: 18, height: 18 }
-            }
-          ),
-          "Show resolved"
-        ] }) })
-      ] }),
+      /* @__PURE__ */ jsxs(
+        "div",
+        {
+          className: "pn-grid",
+          style: { display: "grid", gridTemplateColumns: `repeat(${isCrew ? 2 : 3}, 1fr)`, gap: 12, marginTop: 14 },
+          children: [
+            /* @__PURE__ */ jsxs("div", { children: [
+              /* @__PURE__ */ jsx("label", { style: label$1, children: "Search" }),
+              /* @__PURE__ */ jsx("input", { value: search, onChange: (e) => setParam("q", e.target.value || null), placeholder: "Search notes", style: inputStyle$4 })
+            ] }),
+            !isCrew && /* @__PURE__ */ jsxs(Fragment, { children: [
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("label", { style: label$1, children: "Priority" }),
+                /* @__PURE__ */ jsxs("select", { value: priorityFilter, onChange: (e) => setParam("priority", e.target.value || null), style: inputStyle$4, children: [
+                  /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any priority" }),
+                  NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value))
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("label", { style: label$1, children: "Scene" }),
+                /* @__PURE__ */ jsxs("select", { value: sceneFilter, onChange: (e) => setParam("scene", e.target.value || null), style: inputStyle$4, children: [
+                  /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All scenes" }),
+                  scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("label", { style: label$1, children: "From day" }),
+                /* @__PURE__ */ jsx("input", { type: "date", value: fromDay, onChange: (e) => setParam("from", e.target.value || null), style: inputStyle$4 })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { children: [
+                /* @__PURE__ */ jsx("label", { style: label$1, children: "To day" }),
+                /* @__PURE__ */ jsx("input", { type: "date", value: toDay, onChange: (e) => setParam("to", e.target.value || null), style: inputStyle$4 })
+              ] })
+            ] }),
+            /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "center", gap: 10, minHeight: 44, cursor: "pointer", fontSize: 14 }, children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  type: "checkbox",
+                  checked: showResolved,
+                  onChange: (e) => setParam("resolved", e.target.checked ? "1" : null),
+                  style: { width: 18, height: 18 }
+                }
+              ),
+              "Show resolved"
+            ] }) })
+          ]
+        }
+      ),
       /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }, children: [
         NOTE_TAGS.map((t) => {
           const on = tagFilter.includes(t.value);
@@ -30148,18 +30269,7 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
             t.value
           );
         }),
-        tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter ? /* @__PURE__ */ jsx(
-          "button",
-          {
-            onClick: () => {
-              const params = new URLSearchParams(searchParams);
-              ["q", "tags", "priority", "from", "to", "scene"].forEach((k) => params.delete(k));
-              setSearchParams(params, { replace: true });
-            },
-            style: { ...ghostBtn$2, minHeight: 40, fontSize: 13 },
-            children: "Clear filters"
-          }
-        ) : null
+        tagFilter.length || search || priorityFilter || fromDay || toDay || sceneFilter ? /* @__PURE__ */ jsx("button", { onClick: clearFilters, style: { ...ghostBtn$2, minHeight: 40, fontSize: 13 }, children: "Clear filters" }) : null
       ] })
     ] }),
     loading ? /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
@@ -30180,20 +30290,29 @@ const NoteList = ({ projectId, scenes, canTranslate, actingName, refreshKey, onR
           g.notes.length === 1 ? "" : "s"
         ] })
       ] }),
-      /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 12 }, children: g.notes.map((n) => /* @__PURE__ */ jsx(
-        NoteCard,
-        {
-          note: n,
-          scenes,
-          canTranslate,
-          busy: busyNoteId === n.id,
-          onPatch: (p) => patch(n, p),
-          onEdit: (e) => edit(n, e),
-          onDelete: () => remove(n),
-          onRetranslate: () => onRetranslate(n)
-        },
-        n.id
-      )) })
+      /* @__PURE__ */ jsx("div", { style: { display: "flex", flexDirection: "column", gap: 12 }, children: g.notes.map((n) => {
+        const mine = !isCrew || !!crewId && n.created_by_crew_id === crewId;
+        return /* @__PURE__ */ jsx(
+          NoteCard,
+          {
+            note: n,
+            scenes,
+            canTranslate,
+            busy: busyNoteId === n.id,
+            mode,
+            readLanguage,
+            maxChars,
+            canEdit: mine,
+            canDelete: mine,
+            allowPin: !isCrew,
+            onPatch: (p) => patch(n, p),
+            onEdit: (e) => edit(n, e),
+            onDelete: () => remove(n),
+            onRetranslate: () => onRetranslate == null ? void 0 : onRetranslate(n)
+          },
+          n.id
+        );
+      }) })
     ] }, g.day || "none"))
   ] });
 };
@@ -31269,7 +31388,6 @@ const crewMessageApi = (token, identity) => {
     }
   };
 };
-const MAX_TEXT = 5e3;
 const langKey = (token) => `fg_crew_lang_${token}`;
 const readStoredLanguage = (token) => {
   try {
@@ -31284,7 +31402,8 @@ const storeLanguage = (token, code) => {
   } catch {
   }
 };
-const native = (code) => {
+const MAX_TEXT = 5e3;
+const native$1 = (code) => {
   var _a2;
   return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
 };
@@ -31319,7 +31438,7 @@ const MessageCard = ({
   const all = [
     {
       code: message.source_language,
-      heading: `${native(message.source_language)} — Original`,
+      heading: `${native$1(message.source_language)} — Original`,
       subject: message.subject || "",
       text: message.source_text
     },
@@ -31327,7 +31446,7 @@ const MessageCard = ({
       var _a2;
       return {
         code: t.code,
-        heading: `${native(t.code)} — ${((_a2 = LANGUAGES[t.code]) == null ? void 0 : _a2.name) || t.code}`,
+        heading: `${native$1(t.code)} — ${((_a2 = LANGUAGES[t.code]) == null ? void 0 : _a2.name) || t.code}`,
         subject: subjects[t.code] || "",
         text: t.text
       };
@@ -31341,7 +31460,7 @@ const MessageCard = ({
         message.created_by_name,
         chosen.fallback && /* @__PURE__ */ jsxs("span", { style: { marginLeft: 8, color: "rgba(255,255,255,0.6)" }, children: [
           "Original (",
-          native(message.source_language),
+          native$1(message.source_language),
           ")"
         ] })
       ] }),
@@ -31438,7 +31557,7 @@ const CrewMessages = ({
           value: readLanguage,
           onChange: (e) => changeLanguage(e.target.value),
           style: { ...inputStyle$4, maxWidth: 260 },
-          children: languages.map((code) => /* @__PURE__ */ jsx("option", { value: code, style: { background: "#10101b" }, children: native(code) }, code))
+          children: languages.map((code) => /* @__PURE__ */ jsx("option", { value: code, style: { background: "#10101b" }, children: native$1(code) }, code))
         }
       )
     ] }),
@@ -31500,6 +31619,175 @@ const CrewMessages = ({
     ] })
   ] });
 };
+const crewNoteApi = (token, identity) => {
+  const auth = { crew_id: identity.crew_id, crew_secret: identity.crew_secret };
+  return {
+    async list() {
+      const res = await crewCall(token, "notes_list", {
+        ...auth,
+        include_resolved: true
+      });
+      return {
+        notes: res.notes || [],
+        languages: res.languages || [],
+        preferred_language: res.preferred_language ?? null
+      };
+    },
+    async post(draft) {
+      return crewCall(token, "note_post", {
+        ...auth,
+        ...draft
+      });
+    },
+    async resolve(noteId, resolved) {
+      await crewCall(token, "note_resolve", { ...auth, note_id: noteId, resolved });
+    },
+    async edit(noteId, patch) {
+      await crewCall(token, "note_edit", { ...auth, note_id: noteId, ...patch });
+    },
+    async remove(noteId) {
+      await crewCall(token, "note_delete", { ...auth, note_id: noteId });
+    }
+  };
+};
+const native = (code) => {
+  var _a2;
+  return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
+};
+const CrewNotes = ({
+  token,
+  identity,
+  languages,
+  scenes,
+  notes,
+  loading,
+  preferredLanguage,
+  onChanged
+}) => {
+  const api = useMemo(() => crewNoteApi(token, identity), [token, identity]);
+  const messageApi = useMemo(() => crewMessageApi(token, identity), [token, identity]);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const initialLanguage = useMemo(() => {
+    const stored = readStoredLanguage(token);
+    if (stored && languages.includes(stored)) return stored;
+    if (preferredLanguage && languages.includes(preferredLanguage)) return preferredLanguage;
+    const browser = (navigator.language || "").slice(0, 2).toLowerCase();
+    if (browser && languages.includes(browser)) return browser;
+    return languages[0] || "en";
+  }, [token, languages, preferredLanguage]);
+  const [readLanguage, setReadLanguage] = useState(initialLanguage);
+  useEffect(() => {
+    setReadLanguage((current) => languages.includes(current) ? current : initialLanguage);
+  }, [initialLanguage, languages]);
+  const changeLanguage = async (code) => {
+    setReadLanguage(code);
+    storeLanguage(token, code);
+    try {
+      await messageApi.setLanguage(code);
+    } catch {
+    }
+  };
+  const save = async (draft) => {
+    setSaving(true);
+    setError("");
+    try {
+      const res = await api.post({
+        tag: draft.tag,
+        priority: draft.priority,
+        shoot_day: draft.shootDay || null,
+        scene_id: draft.sceneId || null,
+        body: draft.body
+      });
+      onChanged();
+      toast$1.success(
+        res.translated ? "Note added and translated for the crew" : "Note added"
+      );
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "The note couldn't be saved.";
+      setError(message);
+      toast$1.error(message);
+    } finally {
+      setSaving(false);
+    }
+  };
+  const patch = async (note, changes) => {
+    if (changes.resolved === void 0) return;
+    try {
+      await api.resolve(note.id, changes.resolved);
+      onChanged();
+    } catch (e) {
+      toast$1.error(e instanceof Error ? e.message : "Couldn't save that.");
+    }
+  };
+  const edit = async (note, e) => {
+    try {
+      await api.edit(note.id, {
+        tag: e.tag,
+        priority: e.priority,
+        shoot_day: e.shoot_day,
+        scene_id: e.scene_id,
+        body: e.body
+      });
+      onChanged();
+    } catch (err) {
+      toast$1.error(err instanceof Error ? err.message : "Couldn't save that.");
+    }
+  };
+  const remove = async (note) => {
+    try {
+      await api.remove(note.id);
+      onChanged();
+    } catch (err) {
+      toast$1.error(err instanceof Error ? err.message : "Couldn't remove that note.");
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 32 }, children: [
+    languages.length > 1 && /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginBottom: 18 }, children: [
+      /* @__PURE__ */ jsx("label", { htmlFor: "crew-notes-lang", style: { fontSize: 12, color: "rgba(255,255,255,0.45)", display: "block", marginBottom: 6 }, children: "Read in" }),
+      /* @__PURE__ */ jsx(
+        "select",
+        {
+          id: "crew-notes-lang",
+          value: readLanguage,
+          onChange: (e) => changeLanguage(e.target.value),
+          style: { ...inputStyle$4, maxWidth: 260 },
+          children: languages.map((code) => /* @__PURE__ */ jsx("option", { value: code, style: { background: "#10101b" }, children: native(code) }, code))
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsx(
+      NoteComposer,
+      {
+        scenes,
+        languageCount: languages.length,
+        saving,
+        error,
+        onSave: save,
+        maxChars: MAX_CREW_NOTE_CHARS,
+        showTranslateToggle: false,
+        heading: "Add a note",
+        hint: languages.length > 1 ? "Everyone on this link sees it in their own language." : "Everyone on this link sees it."
+      }
+    ),
+    /* @__PURE__ */ jsx(
+      NoteList,
+      {
+        mode: "crew",
+        scenes,
+        canTranslate: false,
+        notes,
+        loading,
+        readLanguage,
+        crewId: identity.crew_id,
+        maxChars: MAX_CREW_NOTE_CHARS,
+        onPatchNote: patch,
+        onEditNote: edit,
+        onDeleteNote: remove
+      }
+    )
+  ] });
+};
 const panel = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
@@ -31532,18 +31820,19 @@ const primaryBtn = {
 const storageKey = (token) => `fg_breakdown_crew_${token}`;
 const tabKey = (token) => `fg_crew_tab_${token}`;
 const seenKey = (token) => `fg_crew_msgseen_${token}`;
+const notesSeenKey = (token) => `fg_crew_noteseen_${token}`;
 const MESSAGE_PAGE = 30;
 const readTab = (token) => {
   try {
     const stored = localStorage.getItem(tabKey(token));
-    if (stored === "receipts" || stored === "messages") return stored;
+    if (stored === "receipts" || stored === "messages" || stored === "notes") return stored;
   } catch {
   }
   return "breakdown";
 };
-const readSeen = (token) => {
+const readSeen = (token, key) => {
   try {
-    return localStorage.getItem(seenKey(token)) || "";
+    return localStorage.getItem(key(token)) || "";
   } catch {
     return "";
   }
@@ -31577,7 +31866,11 @@ const CrewBreakdown = () => {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [messagesHasMore, setMessagesHasMore] = useState(false);
   const [preferredLanguage, setPreferredLanguage] = useState(null);
-  const [seenAt, setSeenAt] = useState(() => token ? readSeen(token) : "");
+  const [seenAt, setSeenAt] = useState(() => token ? readSeen(token, seenKey) : "");
+  const [scenes, setScenes] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [notesSeenAt, setNotesSeenAt] = useState(() => token ? readSeen(token, notesSeenKey) : "");
   useEffect(() => {
     let cancelled = false;
     (async () => {
@@ -31585,6 +31878,7 @@ const CrewBreakdown = () => {
         const data = await crewCall(token, "load");
         if (cancelled) return;
         setProject(data.project);
+        setScenes(data.scenes || []);
       } catch (err) {
         if (!cancelled) setDead(true);
       } finally {
@@ -31654,6 +31948,41 @@ const CrewBreakdown = () => {
     if (tab === "messages" && messages.length) markMessagesSeen();
   }, [tab, messages, markMessagesSeen]);
   const unread = tab === "messages" ? 0 : messages.filter((m) => !seenAt || m.created_at > seenAt).length;
+  const noteApi = useMemo(
+    () => identity ? crewNoteApi(token, identity) : null,
+    [token, identity]
+  );
+  const loadNotes = useCallback(async () => {
+    if (!noteApi) return;
+    try {
+      const res = await noteApi.list();
+      setNotes(res.notes);
+      setPreferredLanguage((prev) => prev ?? res.preferred_language);
+    } catch {
+    } finally {
+      setNotesLoading(false);
+    }
+  }, [noteApi]);
+  useEffect(() => {
+    if (!noteApi || dead) return;
+    loadNotes();
+    const timer = window.setInterval(() => {
+      if (document.visibilityState === "visible") loadNotes();
+    }, 2e4);
+    return () => window.clearInterval(timer);
+  }, [noteApi, dead, loadNotes]);
+  const markNotesSeen = useCallback(() => {
+    const now = (/* @__PURE__ */ new Date()).toISOString();
+    setNotesSeenAt(now);
+    try {
+      localStorage.setItem(notesSeenKey(token), now);
+    } catch {
+    }
+  }, [token]);
+  useEffect(() => {
+    if (tab === "notes" && notes.length) markNotesSeen();
+  }, [tab, notes, markNotesSeen]);
+  const unreadNotes = tab === "notes" ? 0 : notes.filter((n) => !notesSeenAt || n.created_at > notesSeenAt).length;
   const productionLanguages = ((_a2 = project == null ? void 0 : project.languages) == null ? void 0 : _a2.length) ? project.languages : ["en"];
   const changeIdentity = () => {
     if (!identity) return;
@@ -31705,6 +32034,21 @@ const CrewBreakdown = () => {
       ] });
     }
     if (!adapter || !identity) return null;
+    if (tab === "notes") {
+      return /* @__PURE__ */ jsx(
+        CrewNotes,
+        {
+          token,
+          identity,
+          languages: productionLanguages,
+          scenes,
+          notes,
+          loading: notesLoading,
+          preferredLanguage,
+          onChanged: loadNotes
+        }
+      );
+    }
     if (tab === "messages") {
       return /* @__PURE__ */ jsx(
         CrewMessages,
@@ -31790,52 +32134,57 @@ const CrewBreakdown = () => {
           )
         ] })
       ] }),
-      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"]].map(([key, copy2]) => /* @__PURE__ */ jsxs(
-        "button",
-        {
-          onClick: () => {
-            setTab(key);
-            try {
-              localStorage.setItem(tabKey(token), key);
-            } catch {
-            }
-            if (key === "messages") markMessagesSeen();
-          },
-          style: {
-            minHeight: 44,
-            padding: "0 20px",
-            borderRadius: 9999,
-            cursor: "pointer",
-            fontSize: 15,
-            fontWeight: 700,
-            whiteSpace: "nowrap",
-            border: `1px solid ${tab === key ? TEAL$8 : "rgba(255,255,255,0.14)"}`,
-            background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-            color: tab === key ? TEAL$8 : "#fff",
-            fontFamily: "'Inter Tight', sans-serif",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: 8
-          },
-          children: [
-            copy2,
-            key === "messages" && unread > 0 && /* @__PURE__ */ jsx("span", { style: {
-              minWidth: 20,
-              height: 20,
+      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22, paddingBottom: 4 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"], ["messages", "Messages"], ["notes", "Notes"]].map(([key, copy2]) => {
+        const badge = key === "messages" ? unread : key === "notes" ? unreadNotes : 0;
+        return /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => {
+              setTab(key);
+              try {
+                localStorage.setItem(tabKey(token), key);
+              } catch {
+              }
+              if (key === "messages") markMessagesSeen();
+              if (key === "notes") markNotesSeen();
+            },
+            style: {
+              minHeight: 44,
+              padding: "0 18px",
               borderRadius: 9999,
-              padding: "0 6px",
-              background: TEAL$8,
-              color: "#04231d",
-              fontSize: 12,
+              cursor: "pointer",
+              fontSize: 15,
               fontWeight: 700,
+              whiteSpace: "nowrap",
+              flex: "0 0 auto",
+              border: `1px solid ${tab === key ? TEAL$8 : "rgba(255,255,255,0.14)"}`,
+              background: tab === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+              color: tab === key ? TEAL$8 : "#fff",
+              fontFamily: "'Inter Tight', sans-serif",
               display: "inline-flex",
               alignItems: "center",
-              justifyContent: "center"
-            }, children: unread })
-          ]
-        },
-        key
-      )) }),
+              gap: 8
+            },
+            children: [
+              copy2,
+              badge > 0 && /* @__PURE__ */ jsx("span", { style: {
+                minWidth: 20,
+                height: 20,
+                borderRadius: 9999,
+                padding: "0 6px",
+                background: TEAL$8,
+                color: "#04231d",
+                fontSize: 12,
+                fontWeight: 700,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center"
+              }, children: badge })
+            ]
+          },
+          key
+        );
+      }) }),
       content(),
       /* @__PURE__ */ jsx("div", { style: { height: 40 } })
     ] }),
