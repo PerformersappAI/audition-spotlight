@@ -1288,6 +1288,7 @@ export type Database = {
         Row: {
           actor_type: string | null
           character_name: string | null
+          confirmation_sent_at: string | null
           created_at: string
           email: string | null
           first_name: string | null
@@ -1297,13 +1298,16 @@ export type Database = {
           job_position: string | null
           last_name: string | null
           notes: string | null
+          notes_internal: string | null
           other_role: string | null
           owner_user_id: string
           phone: string | null
+          updated_at: string
         }
         Insert: {
           actor_type?: string | null
           character_name?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string
           email?: string | null
           first_name?: string | null
@@ -1313,13 +1317,16 @@ export type Database = {
           job_position?: string | null
           last_name?: string | null
           notes?: string | null
+          notes_internal?: string | null
           other_role?: string | null
           owner_user_id: string
           phone?: string | null
+          updated_at?: string
         }
         Update: {
           actor_type?: string | null
           character_name?: string | null
+          confirmation_sent_at?: string | null
           created_at?: string
           email?: string | null
           first_name?: string | null
@@ -1329,9 +1336,11 @@ export type Database = {
           job_position?: string | null
           last_name?: string | null
           notes?: string | null
+          notes_internal?: string | null
           other_role?: string | null
           owner_user_id?: string
           phone?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
@@ -1345,33 +1354,82 @@ export type Database = {
       }
       cast_crew_forms: {
         Row: {
+          auto_confirm: boolean
           created_at: string
           id: string
           notify_email: string
           owner_user_id: string
           production_name: string | null
+          project_id: string | null
           slug: string
           updated_at: string
         }
         Insert: {
+          auto_confirm?: boolean
           created_at?: string
           id?: string
           notify_email: string
           owner_user_id: string
           production_name?: string | null
+          project_id?: string | null
           slug: string
           updated_at?: string
         }
         Update: {
+          auto_confirm?: boolean
           created_at?: string
           id?: string
           notify_email?: string
           owner_user_id?: string
           production_name?: string | null
+          project_id?: string | null
           slug?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cast_crew_forms_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "breakdown_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cast_crew_reminders: {
+        Row: {
+          email: string
+          form_id: string
+          id: string
+          name: string | null
+          sent_at: string
+          sent_by_user_id: string | null
+        }
+        Insert: {
+          email: string
+          form_id: string
+          id?: string
+          name?: string | null
+          sent_at?: string
+          sent_by_user_id?: string | null
+        }
+        Update: {
+          email?: string
+          form_id?: string
+          id?: string
+          name?: string | null
+          sent_at?: string
+          sent_by_user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cast_crew_reminders_form_id_fkey"
+            columns: ["form_id"]
+            isOneToOne: false
+            referencedRelation: "cast_crew_forms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       course_discussions: {
         Row: {

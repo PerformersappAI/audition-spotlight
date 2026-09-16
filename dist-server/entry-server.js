@@ -6304,6 +6304,7 @@ const TOOL_COSTS = [
   { name: "Receipts & Expenses", cost: "Free to log; ~1 credit to read a receipt photo" },
   { name: "Set Translator", cost: "~1 credit per message (all languages at once; +1 to read a PDF or image)" },
   { name: "Production Notes", cost: "Free; ~1 credit to translate a note" },
+  { name: "Cast & Crew List", cost: "Free", free: true },
   { name: "Storyboard Generator", cost: "2–4 credits (grows with number of frames)" },
   { name: "Table Read", cost: "2–4 credits (varies by dialogue length)" },
   { name: "Fundraising", cost: "~1 credit" },
@@ -26883,7 +26884,7 @@ const ExpenseSummary = ({ expenses, defaultCurrency }) => {
     ] })
   ] });
 };
-const label$5 = {
+const label$7 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -26894,7 +26895,7 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
   const active = Object.values(value).some(Boolean);
   return /* @__PURE__ */ jsx("div", { style: { marginBottom: 20 }, children: /* @__PURE__ */ jsxs("div", { className: "ex-filters", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }, children: [
     /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 3" }, children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-q", children: "Search" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-q", children: "Search" }),
       /* @__PURE__ */ jsxs("div", { style: { position: "relative" }, children: [
         /* @__PURE__ */ jsx(Search, { size: 16, style: { position: "absolute", left: 12, top: 14, color: "rgba(255,255,255,0.35)" } }),
         /* @__PURE__ */ jsx(
@@ -26910,32 +26911,32 @@ const ExpenseFilters = ({ value, onChange, onReset }) => {
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-status", children: "Status" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-status", children: "Status" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-status", value: value.status, onChange: (e) => onChange({ status: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All statuses" }),
         STATUSES.map((s) => /* @__PURE__ */ jsx("option", { value: s.key, style: { background: "#10101b" }, children: s.label }, s.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-dept", children: "Department" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-dept", children: "Department" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-dept", value: value.department, onChange: (e) => onChange({ department: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All departments" }),
         EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-pay", children: "Payment" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-pay", children: "Payment" }),
       /* @__PURE__ */ jsxs("select", { id: "ex-pay", value: value.payment, onChange: (e) => onChange({ payment: e.target.value }), style: inputStyle$4, children: [
         /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any payment" }),
         PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx("option", { value: p.key, style: { background: "#10101b" }, children: p.label }, p.key))
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-from", children: "From" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-from", children: "From" }),
       /* @__PURE__ */ jsx("input", { id: "ex-from", type: "date", value: value.from, onChange: (e) => onChange({ from: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsxs("div", { children: [
-      /* @__PURE__ */ jsx("label", { style: label$5, htmlFor: "ex-to", children: "To" }),
+      /* @__PURE__ */ jsx("label", { style: label$7, htmlFor: "ex-to", children: "To" }),
       /* @__PURE__ */ jsx("input", { id: "ex-to", type: "date", value: value.to, onChange: (e) => onChange({ to: e.target.value }), style: inputStyle$4 })
     ] }),
     /* @__PURE__ */ jsx("div", { style: { display: "flex", alignItems: "flex-end" }, children: active && /* @__PURE__ */ jsxs("button", { onClick: onReset, style: { ...ghostBtn$2, width: "100%", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 }, children: [
@@ -27227,7 +27228,7 @@ const ExpenseList = ({ expenses, signedUrls, linkedItems, busyId, onSetStatus, o
   ] });
 };
 const TEAL$4 = "#00d4aa";
-const label$4 = {
+const label$6 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -27432,23 +27433,23 @@ const ExpenseDialog = ({
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-by", children: "Submitted by" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-by", children: "Submitted by" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-by", value: submittedBy, onChange: (e) => setSubmittedBy(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-email", children: "Email (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-email", children: "Email (optional)" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-department", children: "Department" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-department", children: "Department" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-department", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$4, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-currency", children: "Currency" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-currency", children: "Currency" }),
                 /* @__PURE__ */ jsx("select", { id: "ex-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$4, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$4, children: "Payment" }),
+                /* @__PURE__ */ jsx("span", { style: label$6, children: "Payment" }),
                 /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
                   "button",
                   {
@@ -27470,11 +27471,11 @@ const ExpenseDialog = ({
                 )) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-date", children: "Date" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-date", children: "Date" }),
                 /* @__PURE__ */ jsx("input", { id: "ex-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
+                /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-link", children: "Link to a breakdown item (optional)" }),
                 /* @__PURE__ */ jsxs("select", { id: "ex-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
                   itemOptions.map((o) => /* @__PURE__ */ jsxs("option", { value: o.id, style: { background: "#10101b" }, children: [
@@ -27542,20 +27543,20 @@ const ExpenseDialog = ({
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-vendor", children: "Vendor" }),
+                  /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-vendor", children: "Vendor" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-total", children: "Total" }),
+                  /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-total", children: "Total" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-desc", children: "Description (optional)" }),
+                  /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-desc", children: "Description (optional)" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$4, children: "Lines" }),
+                /* @__PURE__ */ jsx("span", { style: label$6, children: "Lines" }),
                 lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
                   /* @__PURE__ */ jsx(
                     "input",
@@ -27618,16 +27619,16 @@ const ExpenseDialog = ({
             ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
               /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-invno", children: "Invoice #" }),
+                  /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-invno", children: "Invoice #" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), style: inputStyle$4 })
                 ] }),
                 /* @__PURE__ */ jsxs("div", { children: [
-                  /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-billto", children: "Bill to" }),
+                  /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-billto", children: "Bill to" }),
                   /* @__PURE__ */ jsx("input", { id: "ex-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$4 })
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-                /* @__PURE__ */ jsx("span", { style: label$4, children: "Line items" }),
+                /* @__PURE__ */ jsx("span", { style: label$6, children: "Line items" }),
                 lines.map((l, i) => {
                   const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
                   return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
@@ -27683,7 +27684,7 @@ const ExpenseDialog = ({
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-              /* @__PURE__ */ jsx("label", { style: label$4, htmlFor: "ex-notes", children: "Notes" }),
+              /* @__PURE__ */ jsx("label", { style: label$6, htmlFor: "ex-notes", children: "Notes" }),
               /* @__PURE__ */ jsx("textarea", { id: "ex-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$4, minHeight: 80, resize: "vertical" } })
             ] }),
             error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
@@ -28415,7 +28416,7 @@ const WeatherBar = ({ location }) => {
     shown.sunrise ? `Sunrise ${clock(shown.sunrise)}` : null,
     shown.sunset ? `Sunset ${clock(shown.sunset)}` : null
   ].filter(Boolean);
-  const chip = {
+  const chip2 = {
     minHeight: 32,
     padding: "0 10px",
     borderRadius: 8,
@@ -28431,12 +28432,12 @@ const WeatherBar = ({ location }) => {
       showTomorrow ? "Tomorrow · " : "",
       parts.join(" · ")
     ] }),
-    data.tomorrow && /* @__PURE__ */ jsx("button", { type: "button", style: chip, onClick: () => setShowTomorrow((v2) => !v2), children: showTomorrow ? "Today" : "Tomorrow" }),
+    data.tomorrow && /* @__PURE__ */ jsx("button", { type: "button", style: chip2, onClick: () => setShowTomorrow((v2) => !v2), children: showTomorrow ? "Today" : "Tomorrow" }),
     /* @__PURE__ */ jsx(
       "button",
       {
         type: "button",
-        style: chip,
+        style: chip2,
         onClick: () => {
           const next = unit === "c" ? "f" : "c";
           setUnit(next);
@@ -28878,7 +28879,7 @@ async function downloadMessagePDF(input) {
 }
 const MAX_RECIPIENTS = 100;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-const label$3 = {
+const label$5 = {
   fontSize: 12,
   color: "rgba(255,255,255,0.45)",
   marginBottom: 6,
@@ -28995,7 +28996,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
   return /* @__PURE__ */ jsxs(Modal, { title: "Send to crew", onClose, children: [
     /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: -6 }, children: "Everyone gets the message in every language. Recipients never see each other's addresses." }),
     /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
-      /* @__PURE__ */ jsx("span", { style: label$3, children: "From your Cast & Crew List" }),
+      /* @__PURE__ */ jsx("span", { style: label$5, children: "From your Cast & Crew List" }),
       loading ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", fontSize: 14 }, children: [
         /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }),
         " Loading contacts…"
@@ -29050,7 +29051,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }) => {
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
-      /* @__PURE__ */ jsx("span", { style: label$3, children: "Add emails (comma or space separated)" }),
+      /* @__PURE__ */ jsx("span", { style: label$5, children: "Add emails (comma or space separated)" }),
       /* @__PURE__ */ jsx(
         "textarea",
         {
@@ -29679,7 +29680,7 @@ function groupByTag(notes) {
   const extra = [...seen.keys()].filter((t) => !order.includes(t)).map((tag) => ({ tag, notes: sortForReport(seen.get(tag)) }));
   return [...known, ...extra];
 }
-const label$2 = {
+const label$4 = {
   display: "block",
   fontSize: 13,
   color: "rgba(255,255,255,0.5)",
@@ -29755,15 +29756,15 @@ const NoteComposer = ({
     }) }),
     /* @__PURE__ */ jsxs("div", { className: "pn-grid", style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginTop: 16 }, children: [
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: label$2, children: "Priority" }),
+        /* @__PURE__ */ jsx("label", { style: label$4, children: "Priority" }),
         /* @__PURE__ */ jsx("select", { value: priority, onChange: (e) => setPriority(e.target.value), style: inputStyle$4, children: NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value)) })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: label$2, children: "Shoot day" }),
+        /* @__PURE__ */ jsx("label", { style: label$4, children: "Shoot day" }),
         /* @__PURE__ */ jsx("input", { type: "date", value: shootDay, onChange: (e) => setShootDay(e.target.value), style: inputStyle$4 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
-        /* @__PURE__ */ jsx("label", { style: label$2, children: "Scene (optional)" }),
+        /* @__PURE__ */ jsx("label", { style: label$4, children: "Scene (optional)" }),
         /* @__PURE__ */ jsxs("select", { value: sceneId, onChange: (e) => setSceneId(e.target.value), style: inputStyle$4, children: [
           /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "None" }),
           scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
@@ -29771,7 +29772,7 @@ const NoteComposer = ({
       ] })
     ] }),
     /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-      /* @__PURE__ */ jsx("label", { style: label$2, children: "Note" }),
+      /* @__PURE__ */ jsx("label", { style: label$4, children: "Note" }),
       /* @__PURE__ */ jsx(
         "textarea",
         {
@@ -30049,7 +30050,7 @@ const NoteCard = ({
     }
   );
 };
-const label$1 = {
+const label$3 = {
   display: "block",
   fontSize: 13,
   color: "rgba(255,255,255,0.5)",
@@ -30201,30 +30202,30 @@ const NoteList = ({
           style: { display: "grid", gridTemplateColumns: `repeat(${isCrew ? 2 : 3}, 1fr)`, gap: 12, marginTop: 14 },
           children: [
             /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsx("label", { style: label$1, children: "Search" }),
+              /* @__PURE__ */ jsx("label", { style: label$3, children: "Search" }),
               /* @__PURE__ */ jsx("input", { value: search, onChange: (e) => setParam("q", e.target.value || null), placeholder: "Search notes", style: inputStyle$4 })
             ] }),
             !isCrew && /* @__PURE__ */ jsxs(Fragment, { children: [
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, children: "Priority" }),
+                /* @__PURE__ */ jsx("label", { style: label$3, children: "Priority" }),
                 /* @__PURE__ */ jsxs("select", { value: priorityFilter, onChange: (e) => setParam("priority", e.target.value || null), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Any priority" }),
                   NOTE_PRIORITIES.map((p) => /* @__PURE__ */ jsx("option", { value: p.value, style: { background: "#10101b" }, children: p.label }, p.value))
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, children: "Scene" }),
+                /* @__PURE__ */ jsx("label", { style: label$3, children: "Scene" }),
                 /* @__PURE__ */ jsxs("select", { value: sceneFilter, onChange: (e) => setParam("scene", e.target.value || null), style: inputStyle$4, children: [
                   /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "All scenes" }),
                   scenes.map((s) => /* @__PURE__ */ jsx("option", { value: s.id, style: { background: "#10101b" }, children: sceneLabel(s) }, s.id))
                 ] })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, children: "From day" }),
+                /* @__PURE__ */ jsx("label", { style: label$3, children: "From day" }),
                 /* @__PURE__ */ jsx("input", { type: "date", value: fromDay, onChange: (e) => setParam("from", e.target.value || null), style: inputStyle$4 })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
-                /* @__PURE__ */ jsx("label", { style: label$1, children: "To day" }),
+                /* @__PURE__ */ jsx("label", { style: label$3, children: "To day" }),
                 /* @__PURE__ */ jsx("input", { type: "date", value: toDay, onChange: (e) => setParam("to", e.target.value || null), style: inputStyle$4 })
               ] })
             ] }),
@@ -30755,7 +30756,7 @@ const ghostBtn = {
   cursor: "pointer",
   fontFamily: "'Inter Tight', sans-serif"
 };
-const label = { fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 6, display: "block" };
+const label$2 = { fontSize: 12, color: "rgba(255,255,255,0.45)", marginBottom: 6, display: "block" };
 const today = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
 const emailKey = (token) => `fg_crew_expense_email_${token}`;
 const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) => {
@@ -31016,7 +31017,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("span", { style: label, children: "Submitted by" }),
+          /* @__PURE__ */ jsx("span", { style: label$2, children: "Submitted by" }),
           /* @__PURE__ */ jsxs("div", { style: { ...inputStyle$2, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }, children: [
             /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.8)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }, children: identity.name }),
             /* @__PURE__ */ jsx(
@@ -31030,20 +31031,20 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
           ] })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-email", children: "Email (optional)" }),
+          /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-email", children: "Email (optional)" }),
           /* @__PURE__ */ jsx("input", { id: "cx-email", type: "email", value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$2 }),
           /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.4)", marginTop: 6 }, children: "We'll email you a confirmation." })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-dept", children: "Department" }),
+          /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-dept", children: "Department" }),
           /* @__PURE__ */ jsx("select", { id: "cx-dept", value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$2, children: EXPENSE_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-currency", children: "Currency" }),
+          /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-currency", children: "Currency" }),
           /* @__PURE__ */ jsx("select", { id: "cx-currency", value: currency, onChange: (e) => setCurrency(e.target.value), style: inputStyle$2, children: CURRENCIES.map((c) => /* @__PURE__ */ jsx("option", { value: c.code, style: { background: "#10101b" }, children: c.label }, c.code)) })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-          /* @__PURE__ */ jsx("span", { style: label, children: "Payment" }),
+          /* @__PURE__ */ jsx("span", { style: label$2, children: "Payment" }),
           /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: PAYMENT_METHODS.map((p) => /* @__PURE__ */ jsx(
             "button",
             {
@@ -31065,11 +31066,11 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
           )) })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-date", children: "Date" }),
+          /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-date", children: "Date" }),
           /* @__PURE__ */ jsx("input", { id: "cx-date", type: "date", value: date, onChange: (e) => setDate(e.target.value), style: inputStyle$2 })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-link", children: "Link to a checklist item (optional)" }),
+          /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-link", children: "Link to a checklist item (optional)" }),
           /* @__PURE__ */ jsxs("select", { id: "cx-link", value: linkedItemId, onChange: (e) => setLinkedItemId(e.target.value), style: inputStyle$2, children: [
             /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Not linked" }),
             items.map((o) => /* @__PURE__ */ jsx("option", { value: o.id, style: { background: "#10101b" }, children: o.text }, o.id))
@@ -31131,20 +31132,20 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
         aiNote && /* @__PURE__ */ jsx("div", { style: { marginTop: 12, padding: "10px 12px", borderRadius: 10, background: "rgba(245,165,36,0.12)", border: "1px solid rgba(245,165,36,0.4)", color: "#ffd79a", fontSize: 14 }, children: aiNote }),
         /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 16 }, children: [
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-vendor", children: "Vendor" }),
+            /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-vendor", children: "Vendor" }),
             /* @__PURE__ */ jsx("input", { id: "cx-vendor", value: vendor, onChange: (e) => setVendor(e.target.value), style: inputStyle$2 })
           ] }),
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-total", children: "Total" }),
+            /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-total", children: "Total" }),
             /* @__PURE__ */ jsx("input", { id: "cx-total", value: total, onChange: (e) => setTotal(e.target.value), inputMode: "decimal", placeholder: "12,50", style: inputStyle$2 })
           ] }),
           /* @__PURE__ */ jsxs("div", { style: { gridColumn: "span 2" }, children: [
-            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-desc", children: "Description (optional)" }),
+            /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-desc", children: "Description (optional)" }),
             /* @__PURE__ */ jsx("input", { id: "cx-desc", value: description, onChange: (e) => setDescription(e.target.value), style: inputStyle$2 })
           ] })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-          /* @__PURE__ */ jsx("span", { style: label, children: "Lines" }),
+          /* @__PURE__ */ jsx("span", { style: label$2, children: "Lines" }),
           lines.map((l, i) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, marginBottom: 8 }, children: [
             /* @__PURE__ */ jsx(
               "input",
@@ -31209,16 +31210,16 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
       ] }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { className: "ex-form", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-invno", children: "Invoice # (optional)" }),
+            /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-invno", children: "Invoice # (optional)" }),
             /* @__PURE__ */ jsx("input", { id: "cx-invno", value: invoiceNumber, onChange: (e) => setInvoiceNumber(e.target.value), placeholder: "We'll number it for you", style: inputStyle$2 })
           ] }),
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-billto", children: "Bill to" }),
+            /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-billto", children: "Bill to" }),
             /* @__PURE__ */ jsx("input", { id: "cx-billto", value: billTo, onChange: (e) => setBillTo(e.target.value), style: inputStyle$2 })
           ] })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
-          /* @__PURE__ */ jsx("span", { style: label, children: "Line items" }),
+          /* @__PURE__ */ jsx("span", { style: label$2, children: "Line items" }),
           lines.map((l, i) => {
             const lineTotal = round2(Number(l.qty ?? 1) * Number(l.rate ?? 0));
             return /* @__PURE__ */ jsxs("div", { className: "ex-invline", style: { display: "grid", gridTemplateColumns: "1fr 70px 100px 90px 44px", gap: 8, marginBottom: 8, alignItems: "center" }, children: [
@@ -31274,7 +31275,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
         ] })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
-        /* @__PURE__ */ jsx("label", { style: label, htmlFor: "cx-notes", children: "Notes" }),
+        /* @__PURE__ */ jsx("label", { style: label$2, htmlFor: "cx-notes", children: "Notes" }),
         /* @__PURE__ */ jsx("textarea", { id: "cx-notes", value: notes, onChange: (e) => setNotes(e.target.value), rows: 3, style: { ...inputStyle$2, minHeight: 80, resize: "vertical" } })
       ] }),
       error && /* @__PURE__ */ jsx("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 10, background: "rgba(245,84,78,0.12)", border: "1px solid rgba(245,84,78,0.4)", color: "#ffb3b0", fontSize: 14 }, children: error }),
@@ -39593,28 +39594,328 @@ function Marketing() {
     }
   );
 }
+const JOB_OPTIONS$1 = [
+  "Director",
+  "Producer",
+  "Executive Producer",
+  "1st Assistant Director",
+  "2nd Assistant Director",
+  "Director of Photography",
+  "Camera Operator",
+  "1st AC",
+  "Gaffer",
+  "Key Grip",
+  "Sound Mixer",
+  "Boom Operator",
+  "Production Designer",
+  "Art Director",
+  "Makeup Artist",
+  "Hair Stylist",
+  "Costume / Wardrobe",
+  "Actor",
+  "Background / Extra",
+  "Production Assistant",
+  "Other"
+];
+const ACTOR_TYPES = ["Principal", "Background / Extra"];
+const CONTACT_FIELDS = "id, first_name, last_name, phone, email, instagram_handle, job_position, other_role, character_name, actor_type, notes, notes_internal, confirmation_sent_at, created_at";
+const FORM_FIELDS = "id, slug, production_name, notify_email, project_id, auto_confirm";
+const contactName = (c) => [c.first_name, c.last_name].filter(Boolean).join(" ").trim() || "Unnamed";
+const contactRole = (c) => c.job_position === "Other" && c.other_role ? `Other — ${c.other_role}` : c.job_position || "—";
+const isCastMember = (c) => {
+  const role = (c.job_position || "").toLowerCase();
+  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast") || role.includes("background") || role.includes("extra");
+};
+const isValidEmail = (v2) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v2.trim());
+const shareLinkFor = (slug2) => `https://filmmakergenius.com/f/${slug2}`;
+const label$1 = {
+  display: "block",
+  fontSize: 13,
+  color: "rgba(255,255,255,0.5)",
+  marginBottom: 6
+};
+const ContactEditDialog = ({ contact, onClose, onSave }) => {
+  const [first, setFirst] = useState(contact.first_name ?? "");
+  const [last, setLast] = useState(contact.last_name ?? "");
+  const [phone, setPhone] = useState(contact.phone ?? "");
+  const [email, setEmail] = useState(contact.email ?? "");
+  const [instagram, setInstagram] = useState(contact.instagram_handle ?? "");
+  const [job, setJob] = useState(contact.job_position ?? "");
+  const [otherRole, setOtherRole] = useState(contact.other_role ?? "");
+  const [character, setCharacter] = useState(contact.character_name ?? "");
+  const [actorType, setActorType] = useState(contact.actor_type ?? "");
+  const [notes, setNotes] = useState(contact.notes ?? "");
+  const [internal, setInternal] = useState(contact.notes_internal ?? "");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const isOther = job === "Other";
+  const isCastRole = job === "Actor" || job === "Background / Extra";
+  const save = async () => {
+    if (!first.trim() || !last.trim() || !phone.trim() || !email.trim() || !job) {
+      setError("Name, phone, email and position are required.");
+      return;
+    }
+    if (!isValidEmail(email)) {
+      setError("That email address doesn't look right.");
+      return;
+    }
+    if (isOther && !otherRole.trim()) {
+      setError("Please specify the role.");
+      return;
+    }
+    setSaving(true);
+    setError("");
+    try {
+      await onSave({
+        first_name: first.trim(),
+        last_name: last.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        instagram_handle: instagram.trim() || null,
+        job_position: job,
+        other_role: isOther ? otherRole.trim() : null,
+        character_name: isCastRole ? character.trim() || null : character.trim() || null,
+        actor_type: isCastRole ? actorType || null : actorType || null,
+        notes: notes.trim() || null,
+        notes_internal: internal.trim() || null
+      });
+      onClose();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not save the changes.");
+    } finally {
+      setSaving(false);
+    }
+  };
+  return /* @__PURE__ */ jsx(Modal, { title: "Contact details", onClose, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14, maxHeight: "62vh", overflowY: "auto" }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$1, children: "First name" }),
+        /* @__PURE__ */ jsx("input", { value: first, onChange: (e) => setFirst(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$1, children: "Last name" }),
+        /* @__PURE__ */ jsx("input", { value: last, onChange: (e) => setLast(e.target.value), style: inputStyle$4 })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Phone" }),
+      /* @__PURE__ */ jsx("input", { value: phone, onChange: (e) => setPhone(e.target.value), style: inputStyle$4 })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Email" }),
+      /* @__PURE__ */ jsx("input", { value: email, onChange: (e) => setEmail(e.target.value), style: inputStyle$4 })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Instagram (optional)" }),
+      /* @__PURE__ */ jsx("input", { value: instagram, onChange: (e) => setInstagram(e.target.value), style: inputStyle$4 })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Job / Position" }),
+      /* @__PURE__ */ jsxs("select", { value: job, onChange: (e) => setJob(e.target.value), style: inputStyle$4, children: [
+        /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "Choose…" }),
+        JOB_OPTIONS$1.map((o) => /* @__PURE__ */ jsx("option", { value: o, style: { background: "#10101b" }, children: o }, o))
+      ] })
+    ] }),
+    isOther && /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Specified role" }),
+      /* @__PURE__ */ jsx("input", { value: otherRole, onChange: (e) => setOtherRole(e.target.value), style: inputStyle$4 })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }, children: [
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$1, children: "Character name" }),
+        /* @__PURE__ */ jsx("input", { value: character, onChange: (e) => setCharacter(e.target.value), style: inputStyle$4 })
+      ] }),
+      /* @__PURE__ */ jsxs("div", { children: [
+        /* @__PURE__ */ jsx("label", { style: label$1, children: "Type" }),
+        /* @__PURE__ */ jsxs("select", { value: actorType, onChange: (e) => setActorType(e.target.value), style: inputStyle$4, children: [
+          /* @__PURE__ */ jsx("option", { value: "", style: { background: "#10101b" }, children: "—" }),
+          ACTOR_TYPES.map((t) => /* @__PURE__ */ jsx("option", { value: t, style: { background: "#10101b" }, children: t }, t))
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Notes (they wrote these)" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: notes,
+          onChange: (e) => setNotes(e.target.value),
+          rows: 3,
+          style: { ...inputStyle$4, resize: "vertical" }
+        }
+      )
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label$1, children: "Internal note (only you see this)" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: internal,
+          onChange: (e) => setInternal(e.target.value),
+          rows: 3,
+          placeholder: "e.g. confirmed for day 3, needs travel",
+          style: { ...inputStyle$4, resize: "vertical" }
+        }
+      )
+    ] }),
+    error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ jsx("button", { onClick: save, disabled: saving, style: { ...primaryBtn$3, opacity: saving ? 0.5 : 1 }, children: saving ? "Saving…" : "Save changes" }),
+      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Cancel" })
+    ] })
+  ] }) });
+};
+const label = {
+  display: "block",
+  fontSize: 13,
+  color: "rgba(255,255,255,0.5)",
+  marginBottom: 6
+};
+const defaultMessage = (production) => `We're putting together the cast & crew list for ${production}. Please add your details using the link below — it takes about a minute.`;
+const ReminderDialog = ({ form, onClose, onResult }) => {
+  var _a2;
+  const production = ((_a2 = form.production_name) == null ? void 0 : _a2.trim()) || "our production";
+  const [name, setName] = useState("");
+  const [emails, setEmails] = useState("");
+  const [message, setMessage] = useState(defaultMessage(production));
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState("");
+  const [history, setHistory] = useState([]);
+  const loadHistory = useCallback(async () => {
+    const { data } = await supabase.from("cast_crew_reminders").select("id, email, name, sent_at").eq("form_id", form.id).order("sent_at", { ascending: false }).limit(50);
+    setHistory(data ?? []);
+  }, [form.id]);
+  useEffect(() => {
+    loadHistory();
+  }, [loadHistory]);
+  const parsed = emails.split(/[,;\s]+/).map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const valid = [...new Set(parsed.filter(isValidEmail))].slice(0, 50);
+  const invalidCount = parsed.length - valid.length;
+  const send = async () => {
+    if (valid.length === 0) {
+      setError("Add at least one valid email address.");
+      return;
+    }
+    setSending(true);
+    setError("");
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke("cast-crew-email", {
+        body: {
+          action: "remind",
+          form_id: form.id,
+          message: message.trim(),
+          recipients: valid.map((email) => ({
+            email,
+            name: valid.length === 1 ? name.trim() || null : null
+          }))
+        }
+      });
+      if (fnError) throw fnError;
+      const result = data;
+      const skipped = ((result == null ? void 0 : result.results) ?? []).filter((r) => !r.sent);
+      onResult(
+        `Reminder sent to ${(result == null ? void 0 : result.sent) ?? 0} ${(result == null ? void 0 : result.sent) === 1 ? "person" : "people"}` + (skipped.length ? `; ${skipped.length} skipped (${skipped[0].reason}).` : "."),
+        true
+      );
+      setEmails("");
+      await loadHistory();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not send the reminders.");
+    } finally {
+      setSending(false);
+    }
+  };
+  return /* @__PURE__ */ jsx(Modal, { title: "Send reminder", onClose, children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14, maxHeight: "64vh", overflowY: "auto" }, children: [
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label, children: "Name (optional, for a single person)" }),
+      /* @__PURE__ */ jsx("input", { value: name, onChange: (e) => setName(e.target.value), style: inputStyle$4, placeholder: "Maya" })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label, children: "Email addresses (comma or space separated, max 50)" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: emails,
+          onChange: (e) => setEmails(e.target.value),
+          rows: 3,
+          placeholder: "maya@example.com, sam@example.com",
+          style: { ...inputStyle$4, resize: "vertical" }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { marginTop: 6, fontSize: 12, color: "rgba(255,255,255,0.4)" }, children: [
+        valid.length,
+        " ready",
+        invalidCount > 0 ? ` · ${invalidCount} not a valid email` : ""
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { children: [
+      /* @__PURE__ */ jsx("label", { style: label, children: "Message" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: message,
+          onChange: (e) => setMessage(e.target.value),
+          rows: 4,
+          style: { ...inputStyle$4, resize: "vertical" }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { marginTop: 6, fontSize: 12, color: "rgba(255,255,255,0.35)" }, children: [
+        "Each person gets their own email with a button to ",
+        shareLinkFor(form.slug)
+      ] })
+    ] }),
+    error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: send,
+          disabled: sending || valid.length === 0,
+          style: { ...primaryBtn$3, opacity: sending || valid.length === 0 ? 0.45 : 1 },
+          children: sending ? "Sending…" : `Send to ${valid.length || 0}`
+        }
+      ),
+      /* @__PURE__ */ jsx("button", { onClick: onClose, style: ghostBtn$2, children: "Close" })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: 14 }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(255,255,255,0.35)" }, children: "Reminder history" }),
+      history.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: "10px 0 0", fontSize: 14, color: "rgba(255,255,255,0.4)" }, children: "No reminders sent for this list yet." }) : /* @__PURE__ */ jsx("div", { style: { marginTop: 10, display: "grid", gap: 8 }, children: history.map((r) => /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, fontSize: 13, color: "rgba(255,255,255,0.6)" }, children: [
+        /* @__PURE__ */ jsxs("span", { style: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }, children: [
+          r.name ? `${r.name} · ` : "",
+          r.email
+        ] }),
+        /* @__PURE__ */ jsx("span", { style: { flex: "0 0 auto", color: "rgba(255,255,255,0.3)" }, children: new Date(r.sent_at).toLocaleDateString() })
+      ] }, r.id)) })
+    ] })
+  ] }) });
+};
 const TEAL$2 = [0, 176, 140];
 const DARK = [18, 18, 32];
 const fullName = (c) => [c.first_name, c.last_name].filter(Boolean).join(" ").trim() || "—";
 const roleOf = (c) => (c.job_position === "Other" && c.other_role ? c.other_role : c.job_position) || "—";
-const isCast = (c) => {
+const isCastContact = (c) => {
   const role = (c.job_position || "").toLowerCase();
-  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast");
+  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast") || role.includes("background") || role.includes("extra");
 };
-function buildCastCrewReportPDF({ productionName, contacts }) {
+const isCast = isCastContact;
+async function buildCastCrewReportPDF({
+  productionName,
+  contacts
+}) {
   const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "letter" });
+  const { body: FONT } = await loadUnicodeFonts(doc);
   const pageWidth = doc.internal.pageSize.getWidth();
   const generated = (/* @__PURE__ */ new Date()).toLocaleString();
   doc.setFillColor(...DARK);
   doc.rect(0, 0, pageWidth, 74, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(FONT, "bold");
   doc.setFontSize(18);
   doc.text((productionName == null ? void 0 : productionName.trim()) || "Production", 40, 34);
-  doc.setFont("helvetica", "normal");
+  doc.setFont(FONT, "normal");
   doc.setFontSize(10);
   doc.setTextColor(...TEAL$2);
-  doc.text("CAST & CREW CONTACT SHEET", 40, 54);
+  doc.text("CAST & CREW LIST", 40, 54);
   doc.setTextColor(190, 190, 205);
   doc.text(`Generated ${generated}`, pageWidth - 40, 54, { align: "right" });
   doc.text(`${contacts.length} contact${contacts.length === 1 ? "" : "s"}`, pageWidth - 40, 34, {
@@ -39626,7 +39927,7 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
   const renderSection = (title, rows, castMode) => {
     var _a2;
     if (rows.length === 0) return;
-    doc.setFont("helvetica", "bold");
+    doc.setFont(FONT, "bold");
     doc.setFontSize(12);
     doc.setTextColor(...DARK);
     doc.text(`${title} (${rows.length})`, 40, cursorY);
@@ -39636,7 +39937,7 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
       (c) => castMode ? [
         fullName(c),
         c.character_name || "—",
-        c.actor_type || "—",
+        c.actor_type || roleOf(c),
         c.phone || "—",
         c.email || "—",
         c.instagram_handle || "—",
@@ -39648,7 +39949,7 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
       body,
       startY: cursorY,
       margin: { left: 40, right: 40 },
-      styles: { font: "helvetica", fontSize: 9, cellPadding: 6, textColor: [40, 40, 55], overflow: "linebreak" },
+      styles: { font: FONT, fontSize: 9, cellPadding: 6, textColor: [40, 40, 55], overflow: "linebreak" },
       headStyles: { fillColor: TEAL$2, textColor: [255, 255, 255], fontStyle: "bold", fontSize: 9 },
       alternateRowStyles: { fillColor: [244, 246, 248] },
       theme: "grid"
@@ -39656,7 +39957,7 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
     cursorY = (((_a2 = doc.lastAutoTable) == null ? void 0 : _a2.finalY) ?? cursorY) + 34;
   };
   if (contacts.length === 0) {
-    doc.setFont("helvetica", "normal");
+    doc.setFont(FONT, "normal");
     doc.setFontSize(11);
     doc.setTextColor(90, 90, 110);
     doc.text("No contacts submitted yet.", 40, cursorY);
@@ -39668,7 +39969,7 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
     const h = doc.internal.pageSize.getHeight();
-    doc.setFont("helvetica", "normal");
+    doc.setFont(FONT, "normal");
     doc.setFontSize(8);
     doc.setTextColor(140, 140, 155);
     doc.text("Confidential — production contact information. Handle per your production's privacy policy.", 40, h - 22);
@@ -39678,27 +39979,17 @@ function buildCastCrewReportPDF({ productionName, contacts }) {
 }
 function reportFileName(productionName) {
   const base = (productionName || "cast-crew").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "cast-crew";
-  return `${base}-contact-sheet-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.pdf`;
+  return `${base}-cast-crew-list-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.pdf`;
 }
-function exportCastCrewReportToPDF(options) {
-  buildCastCrewReportPDF(options).save(reportFileName(options.productionName));
+async function exportCastCrewReportToPDF(options) {
+  const doc = await buildCastCrewReportPDF(options);
+  doc.save(reportFileName(options.productionName));
 }
-function castCrewReportBase64(options) {
-  return buildCastCrewReportPDF(options).output("datauristring").split(",")[1] ?? "";
+async function castCrewReportBase64(options) {
+  const doc = await buildCastCrewReportPDF(options);
+  return doc.output("datauristring").split(",")[1] ?? "";
 }
 const TEAL$1 = "#00d4aa";
-const inputBase$1 = {
-  width: "100%",
-  background: "rgba(255,255,255,0.04)",
-  border: "1px solid #1e1e35",
-  borderRadius: 10,
-  padding: "12px 14px",
-  fontSize: 14,
-  color: "#fff",
-  fontFamily: "inherit",
-  outline: "none",
-  boxSizing: "border-box"
-};
 const labelStyle$1 = {
   display: "block",
   fontSize: 11,
@@ -39712,9 +40003,21 @@ const cardStyle = {
   background: "#0d0d1a",
   border: "1px solid #1e1e35",
   borderRadius: 20,
-  padding: 28,
-  marginBottom: 24
+  padding: 24,
+  marginBottom: 20
 };
+const chip = (active) => ({
+  minHeight: 40,
+  padding: "0 14px",
+  borderRadius: 999,
+  border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.14)"}`,
+  background: active ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+  color: active ? TEAL$1 : "rgba(255,255,255,0.7)",
+  fontWeight: 700,
+  fontSize: 13,
+  cursor: "pointer",
+  fontFamily: "inherit"
+});
 const makeSlug = () => {
   const alphabet = "abcdefghijkmnopqrstuvwxyz23456789";
   const bytes = new Uint8Array(8);
@@ -39725,33 +40028,92 @@ const csvCell = (v2) => `"${(v2 ?? "").replace(/"/g, '""')}"`;
 function ContactCastCrew() {
   const { user } = useAuth();
   const { toast: toast2 } = useToast();
+  const [production, setProduction] = useState(null);
+  const [useGeneral, setUseGeneral] = useState(false);
+  const [generalForm, setGeneralForm] = useState(null);
   const [form, setForm] = useState(null);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [notifyEmail, setNotifyEmail] = useState("");
   const [productionName, setProductionName] = useState("");
+  const [autoConfirm, setAutoConfirm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
   const [emailing, setEmailing] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [search, setSearch] = useState("");
+  const [positionFilter, setPositionFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [sort, setSort] = useState("newest");
+  const [selected, setSelected] = useState([]);
+  const [editing, setEditing] = useState(null);
+  const [showReminder, setShowReminder] = useState(false);
   const loadContacts = useCallback(async (formId) => {
-    const { data } = await supabase.from("cast_crew_contacts").select("*").eq("form_id", formId).order("created_at", { ascending: false });
+    const { data } = await supabase.from("cast_crew_contacts").select(CONTACT_FIELDS).eq("form_id", formId).order("created_at", { ascending: false });
     setContacts(data ?? []);
+    setSelected([]);
   }, []);
   useEffect(() => {
     if (!user) return;
     let active = true;
     (async () => {
+      const { data } = await supabase.from("cast_crew_forms").select(FORM_FIELDS).eq("owner_user_id", user.id).is("project_id", null).order("created_at", { ascending: true }).limit(1).maybeSingle();
+      if (active) setGeneralForm(data ?? null);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [user]);
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    (async () => {
       setLoading(true);
-      const { data: existing } = await supabase.from("cast_crew_forms").select("id, slug, production_name, notify_email").eq("owner_user_id", user.id).order("created_at", { ascending: true }).limit(1).maybeSingle();
+      if (useGeneral || !production) {
+        if (!useGeneral && !production) {
+          if (active) {
+            setForm(null);
+            setContacts([]);
+            setLoading(false);
+          }
+          return;
+        }
+        let row2 = generalForm;
+        if (!row2) {
+          const { data: created, error } = await supabase.from("cast_crew_forms").insert({
+            owner_user_id: user.id,
+            slug: makeSlug(),
+            notify_email: user.email ?? ""
+          }).select(FORM_FIELDS).single();
+          if (error) {
+            toast2({ title: "Could not create your list", description: error.message, variant: "destructive" });
+            if (active) setLoading(false);
+            return;
+          }
+          row2 = created;
+          if (active) setGeneralForm(row2);
+        }
+        if (!active) return;
+        setForm(row2);
+        setNotifyEmail(row2.notify_email ?? "");
+        setProductionName(row2.production_name ?? "");
+        setAutoConfirm(row2.auto_confirm ?? false);
+        await loadContacts(row2.id);
+        if (active) setLoading(false);
+        return;
+      }
+      const { data: existing } = await supabase.from("cast_crew_forms").select(FORM_FIELDS).eq("owner_user_id", user.id).eq("project_id", production.id).maybeSingle();
       let row = existing;
       if (!row) {
         const { data: created, error } = await supabase.from("cast_crew_forms").insert({
           owner_user_id: user.id,
           slug: makeSlug(),
-          notify_email: user.email ?? ""
-        }).select("id, slug, production_name, notify_email").single();
+          notify_email: user.email ?? "",
+          production_name: production.title,
+          project_id: production.id
+        }).select(FORM_FIELDS).single();
         if (error) {
-          toast2({ title: "Could not create your form", description: error.message, variant: "destructive" });
+          toast2({ title: "Could not create this production's list", description: error.message, variant: "destructive" });
           if (active) setLoading(false);
           return;
         }
@@ -39760,15 +40122,17 @@ function ContactCastCrew() {
       if (!active) return;
       setForm(row);
       setNotifyEmail(row.notify_email ?? "");
-      setProductionName(row.production_name ?? "");
+      setProductionName(row.production_name ?? production.title);
+      setAutoConfirm(row.auto_confirm ?? false);
       await loadContacts(row.id);
       if (active) setLoading(false);
     })();
     return () => {
       active = false;
     };
-  }, [user, loadContacts, toast2]);
-  const shareUrl = form ? `https://filmmakergenius.com/f/${form.slug}` : "";
+  }, [user, production == null ? void 0 : production.id, useGeneral, generalForm == null ? void 0 : generalForm.id]);
+  const shareUrl = form ? shareLinkFor(form.slug) : "";
+  const shareText = `Please add your details to the ${productionName || "production"} cast & crew list: ${shareUrl}`;
   const copyLink = async () => {
     if (!shareUrl) return;
     try {
@@ -39777,6 +40141,17 @@ function ContactCastCrew() {
       setTimeout(() => setCopied(false), 2e3);
     } catch {
       toast2({ title: "Copy failed", description: "Select the link and copy it manually." });
+    }
+  };
+  const nativeShare = async () => {
+    if (!shareUrl) return;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: "Cast & Crew List", text: shareText, url: shareUrl });
+      } catch {
+      }
+    } else {
+      copyLink();
     }
   };
   const saveSettings = async () => {
@@ -39788,16 +40163,107 @@ function ContactCastCrew() {
     setSaving(true);
     const { error } = await supabase.from("cast_crew_forms").update({
       notify_email: notifyEmail.trim(),
-      production_name: productionName.trim() || null
+      production_name: productionName.trim() || null,
+      auto_confirm: autoConfirm
     }).eq("id", form.id);
     setSaving(false);
     if (error) {
       toast2({ title: "Save failed", description: error.message, variant: "destructive" });
       return;
     }
-    toast2({ title: "Saved", description: "Your form settings are updated." });
+    setForm({ ...form, notify_email: notifyEmail.trim(), production_name: productionName.trim() || null, auto_confirm: autoConfirm });
+    toast2({ title: "Saved", description: "Your list settings are updated." });
   };
-  const exportCsv = () => {
+  const positions = useMemo(
+    () => [...new Set(contacts.map((c) => c.job_position).filter(Boolean))].sort(),
+    [contacts]
+  );
+  const duplicateEmails = useMemo(() => {
+    const counts = /* @__PURE__ */ new Map();
+    contacts.forEach((c) => {
+      const e = (c.email || "").toLowerCase().trim();
+      if (e) counts.set(e, (counts.get(e) ?? 0) + 1);
+    });
+    return new Set([...counts.entries()].filter(([, n]) => n > 1).map(([e]) => e));
+  }, [contacts]);
+  const visible = useMemo(() => {
+    const q = search.trim().toLowerCase();
+    let list = contacts.filter((c) => {
+      if (positionFilter !== "all" && c.job_position !== positionFilter) return false;
+      if (typeFilter === "cast" && !isCastMember(c)) return false;
+      if (typeFilter === "crew" && isCastMember(c)) return false;
+      if (!q) return true;
+      return [
+        contactName(c),
+        c.email,
+        c.phone,
+        c.job_position,
+        c.other_role,
+        c.character_name
+      ].filter(Boolean).some((v2) => String(v2).toLowerCase().includes(q));
+    });
+    list = [...list].sort((a, b) => {
+      if (sort === "name") return contactName(a).localeCompare(contactName(b));
+      if (sort === "position") return contactRole(a).localeCompare(contactRole(b));
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+    return list;
+  }, [contacts, search, positionFilter, typeFilter, sort]);
+  const castCount = contacts.filter(isCastMember).length;
+  const crewCount = contacts.length - castCount;
+  const toggleSelect = (id) => setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
+  const allVisibleSelected = visible.length > 0 && visible.every((c) => selected.includes(c.id));
+  const saveContact = async (id, patch) => {
+    const { error } = await supabase.from("cast_crew_contacts").update(patch).eq("id", id);
+    if (error) throw new Error(error.message);
+    setContacts((prev) => prev.map((c) => c.id === id ? { ...c, ...patch } : c));
+    toast2({ title: "Contact updated" });
+  };
+  const deleteContacts = async (ids) => {
+    if (ids.length === 0) return;
+    const question = ids.length === 1 ? "Delete this contact? This can't be undone." : `Delete ${ids.length} contacts? This can't be undone.`;
+    if (!window.confirm(question)) return;
+    setBusy(true);
+    const { error } = await supabase.from("cast_crew_contacts").delete().in("id", ids);
+    setBusy(false);
+    if (error) {
+      toast2({ title: "Delete failed", description: error.message, variant: "destructive" });
+      return;
+    }
+    setContacts((prev) => prev.filter((c) => !ids.includes(c.id)));
+    setSelected((prev) => prev.filter((x) => !ids.includes(x)));
+    toast2({ title: ids.length === 1 ? "Contact deleted" : `${ids.length} contacts deleted` });
+  };
+  const sendConfirmations = async (ids) => {
+    if (ids.length === 0) return;
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("cast-crew-email", {
+        body: { action: "confirm", contact_ids: ids.slice(0, 100) }
+      });
+      if (error) throw error;
+      const result = data;
+      const sentIds = ((result == null ? void 0 : result.results) ?? []).filter((r) => r.sent).map((r) => r.id);
+      const now = (/* @__PURE__ */ new Date()).toISOString();
+      setContacts(
+        (prev) => prev.map((c) => sentIds.includes(c.id) ? { ...c, confirmation_sent_at: now } : c)
+      );
+      const failed = ((result == null ? void 0 : result.results) ?? []).filter((r) => !r.sent);
+      toast2({
+        title: `"Got it" sent to ${(result == null ? void 0 : result.sent) ?? 0}`,
+        description: failed.length ? `${failed.length} skipped (${failed[0].reason}).` : void 0
+      });
+    } catch (err) {
+      toast2({
+        title: "Could not send the emails",
+        description: err instanceof Error ? err.message : "Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
+  const buildCsv = (rows) => {
     const headers = [
       "First Name",
       "Last Name",
@@ -39808,10 +40274,13 @@ function ContactCastCrew() {
       "Specified Role",
       "Character Name",
       "Type",
+      "Cast or Crew",
       "Notes",
+      "Internal Note",
+      "Confirmation Sent",
       "Submitted"
     ];
-    const rows = contacts.map(
+    const body = rows.map(
       (c) => [
         c.first_name,
         c.last_name,
@@ -39822,27 +40291,38 @@ function ContactCastCrew() {
         c.other_role,
         c.character_name,
         c.actor_type,
+        isCastMember(c) ? "Cast" : "Crew",
         c.notes,
+        c.notes_internal,
+        c.confirmation_sent_at ? new Date(c.confirmation_sent_at).toLocaleString() : "",
         new Date(c.created_at).toLocaleString()
       ].map(csvCell).join(",")
     );
-    const csv = [headers.map(csvCell).join(","), ...rows].join("\n");
-    const url2 = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    return [headers.map(csvCell).join(","), ...body].join("\n");
+  };
+  const exportCsv = (rows) => {
+    if (rows.length === 0) return;
+    const url2 = URL.createObjectURL(new Blob([buildCsv(rows)], { type: "text/csv;charset=utf-8;" }));
     const a = document.createElement("a");
     a.href = url2;
-    a.download = `cast-crew-contacts-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`;
+    a.download = `cast-crew-list-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.csv`;
     a.click();
     URL.revokeObjectURL(url2);
   };
-  const downloadPdf = () => {
-    exportCastCrewReportToPDF({ productionName, contacts });
-    toast2({ title: "Report downloaded", description: "Your cast & crew contact sheet PDF is ready." });
+  const downloadPdf = async () => {
+    setBusy(true);
+    try {
+      await exportCastCrewReportToPDF({ productionName, contacts });
+      toast2({ title: "Master sheet downloaded", description: "Your Cast & Crew List PDF is ready." });
+    } finally {
+      setBusy(false);
+    }
   };
   const emailPdf = async () => {
     if (!form) return;
     setEmailing(true);
     try {
-      const pdfBase64 = castCrewReportBase64({ productionName, contacts });
+      const pdfBase64 = await castCrewReportBase64({ productionName, contacts });
       const { data, error } = await supabase.functions.invoke("send-cast-crew-report", {
         body: {
           formId: form.id,
@@ -39853,12 +40333,12 @@ function ContactCastCrew() {
       });
       if (error) throw error;
       toast2({
-        title: "Report emailed",
+        title: "List emailed",
         description: `Sent to ${(data == null ? void 0 : data.sentTo) ?? notifyEmail}.`
       });
     } catch (err) {
       toast2({
-        title: "Could not email the report",
+        title: "Could not email the list",
         description: err instanceof Error ? err.message : "Please try again.",
         variant: "destructive"
       });
@@ -39870,8 +40350,8 @@ function ContactCastCrew() {
     /* @__PURE__ */ jsx(
       Seo,
       {
-        title: "Contact Cast & Crew — Filmmaker Genius",
-        description: "Collect cast and crew contact details with your own shareable production form and email notifications.",
+        title: "Cast & Crew Contact List for Film Productions | Filmmaker Genius",
+        description: "Collect and manage every cast and crew contact for your production with one shareable link, confirmation emails, reminders and a printable master sheet.",
         canonical: "https://filmmakergenius.com/contact-cast-crew"
       }
     ),
@@ -39881,54 +40361,79 @@ function ContactCastCrew() {
         .ccc-btn:hover { filter: brightness(1.08); }
         .ccc-two { display: grid; grid-template-columns: 1fr; gap: 14px; }
         @media (min-width: 640px) { .ccc-two { grid-template-columns: 1fr 1fr; } }
-        .ccc-h1 { font-size: 34px; }
+        .ccc-h1 { font-size: 32px; }
         @media (min-width: 640px) { .ccc-h1 { font-size: 44px; } }
       ` }),
-    /* @__PURE__ */ jsxs("section", { style: { maxWidth: 900, margin: "0 auto", padding: "48px 24px 96px" }, children: [
+    /* @__PURE__ */ jsxs("section", { style: { maxWidth: 980, margin: "0 auto", padding: "40px 16px 96px" }, children: [
       /* @__PURE__ */ jsxs("h1", { className: "ccc-h1", style: { fontFamily: "'Fraunces', serif", lineHeight: 1.1, margin: 0, fontWeight: 700 }, children: [
-        "Contact ",
-        /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Cast & Crew" })
+        "Cast & ",
+        /* @__PURE__ */ jsx("span", { style: { color: TEAL$1 }, children: "Crew List" })
       ] }),
-      /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 620 }, children: "Share one link with your cast and crew. Every submission lands in your private list and gets emailed to you." }),
-      loading ? /* @__PURE__ */ jsx("div", { style: { marginTop: 40, display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx("div", { className: "h-8 w-8 animate-spin rounded-full border-2 border-t-transparent", style: { borderColor: TEAL$1, borderTopColor: "transparent" } }) }) : !form ? /* @__PURE__ */ jsx("div", { style: { ...cardStyle, marginTop: 32 }, children: /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.6)" }, children: "We couldn't load your form. Please refresh the page." }) }) : /* @__PURE__ */ jsxs(Fragment, { children: [
-        /* @__PURE__ */ jsxs("div", { style: { ...cardStyle, marginTop: 32 }, children: [
+      /* @__PURE__ */ jsx("p", { style: { marginTop: 12, fontSize: 16, color: "rgba(255,255,255,0.45)", lineHeight: 1.7, maxWidth: 640 }, children: "One shareable link per production. Every submission lands in your private list, emailed to you, ready to confirm, remind and print." }),
+      /* @__PURE__ */ jsx("div", { style: { marginTop: 28 }, children: /* @__PURE__ */ jsx(
+        ProductionPicker,
+        {
+          emptyTitle: "Create your first production",
+          emptyText: "Each production gets its own cast & crew list and link.",
+          onSelect: setProduction,
+          extraControls: generalForm ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8 }, children: [
+            /* @__PURE__ */ jsx("button", { type: "button", style: chip(!useGeneral), onClick: () => setUseGeneral(false), children: "Production list" }),
+            /* @__PURE__ */ jsx("button", { type: "button", style: chip(useGeneral), onClick: () => setUseGeneral(true), children: "General list" })
+          ] }) : void 0
+        }
+      ) }),
+      loading ? /* @__PURE__ */ jsx("div", { style: { marginTop: 40, display: "flex", justifyContent: "center" }, children: /* @__PURE__ */ jsx("div", { className: "h-8 w-8 animate-spin rounded-full border-2 border-t-transparent", style: { borderColor: TEAL$1, borderTopColor: "transparent" } }) }) : !form ? /* @__PURE__ */ jsx("div", { style: { ...cardStyle, marginTop: 8 }, children: /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.6)" }, children: "Pick a production above (or create one) to start its cast & crew list." }) }) : /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsxs("div", { style: cardStyle, children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Your shareable form link" }),
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-            /* @__PURE__ */ jsx("input", { readOnly: true, className: "ccc-input", style: { ...inputBase$1, flex: "1 1 260px" }, value: shareUrl, onFocus: (e) => e.currentTarget.select() }),
+            /* @__PURE__ */ jsx("input", { readOnly: true, className: "ccc-input", style: { ...inputStyle$4, flex: "1 1 240px" }, value: shareUrl, onFocus: (e) => e.currentTarget.select() }),
+            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: copyLink, style: primaryBtn$3, children: copied ? "Copied" : "Copy link" })
+          ] }),
+          /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, display: "flex", gap: 10, flexWrap: "wrap" }, children: [
             /* @__PURE__ */ jsx(
-              "button",
+              "a",
               {
-                type: "button",
                 className: "ccc-btn",
-                onClick: copyLink,
-                style: {
-                  height: 46,
-                  padding: "0 22px",
-                  borderRadius: 10,
-                  background: TEAL$1,
-                  color: "#000",
-                  fontWeight: 700,
-                  fontSize: 14,
-                  border: "none",
-                  cursor: "pointer",
-                  fontFamily: "inherit"
-                },
-                children: copied ? "Copied" : "Copy link"
+                href: `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+                target: "_blank",
+                rel: "noreferrer",
+                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                children: "WhatsApp"
               }
-            )
+            ),
+            /* @__PURE__ */ jsx(
+              "a",
+              {
+                className: "ccc-btn",
+                href: `sms:?&body=${encodeURIComponent(shareText)}`,
+                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                children: "SMS"
+              }
+            ),
+            /* @__PURE__ */ jsx(
+              "a",
+              {
+                className: "ccc-btn",
+                href: `mailto:?subject=${encodeURIComponent(`${productionName || "Production"} — cast & crew list`)}&body=${encodeURIComponent(shareText)}`,
+                style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", textDecoration: "none" },
+                children: "Email"
+              }
+            ),
+            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: nativeShare, style: ghostBtn$2, children: "Share…" }),
+            /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => setShowReminder(true), style: ghostBtn$2, children: "Send reminder" })
           ] }),
           /* @__PURE__ */ jsx("p", { style: { marginTop: 12, marginBottom: 0, fontSize: 13, color: "rgba(255,255,255,0.35)" }, children: "Anyone with this link can submit their details. No login needed on their end." })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: cardStyle, children: [
           /* @__PURE__ */ jsxs("div", { className: "ccc-two", children: [
             /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Send notifications to" }),
+              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Notify me at" }),
               /* @__PURE__ */ jsx(
                 "input",
                 {
                   type: "email",
                   className: "ccc-input",
-                  style: inputBase$1,
+                  style: inputStyle$4,
                   value: notifyEmail,
                   onChange: (e) => setNotifyEmail(e.target.value),
                   placeholder: "you@example.com"
@@ -39936,18 +40441,30 @@ function ContactCastCrew() {
               )
             ] }),
             /* @__PURE__ */ jsxs("div", { children: [
-              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Production name (optional)" }),
+              /* @__PURE__ */ jsx("label", { style: labelStyle$1, children: "Production name" }),
               /* @__PURE__ */ jsx(
                 "input",
                 {
                   className: "ccc-input",
-                  style: inputBase$1,
+                  style: inputStyle$4,
                   value: productionName,
                   onChange: (e) => setProductionName(e.target.value),
                   placeholder: "e.g. Midnight Reel"
                 }
               )
             ] })
+          ] }),
+          /* @__PURE__ */ jsxs("label", { style: { marginTop: 16, display: "flex", alignItems: "center", gap: 10, fontSize: 15, color: "rgba(255,255,255,0.7)", cursor: "pointer" }, children: [
+            /* @__PURE__ */ jsx(
+              "input",
+              {
+                type: "checkbox",
+                checked: autoConfirm,
+                onChange: (e) => setAutoConfirm(e.target.checked),
+                style: { width: 18, height: 18, accentColor: TEAL$1 }
+              }
+            ),
+            'Automatically email a "got it" confirmation to people who submit'
           ] }),
           /* @__PURE__ */ jsx(
             "button",
@@ -39956,128 +40473,168 @@ function ContactCastCrew() {
               className: "ccc-btn",
               onClick: saveSettings,
               disabled: saving,
-              style: {
-                marginTop: 18,
-                height: 46,
-                padding: "0 24px",
-                borderRadius: 10,
-                background: "rgba(0,212,170,0.12)",
-                border: "1px solid rgba(0,212,170,0.35)",
-                color: TEAL$1,
-                fontWeight: 700,
-                fontSize: 14,
-                cursor: saving ? "wait" : "pointer",
-                fontFamily: "inherit"
-              },
+              style: { ...ghostBtn$2, marginTop: 18, color: TEAL$1, borderColor: "rgba(0,212,170,0.35)", background: "rgba(0,212,170,0.12)" },
               children: saving ? "Saving…" : "Save settings"
             }
           )
         ] }),
         /* @__PURE__ */ jsxs("div", { style: cardStyle, children: [
-          /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 18 }, children: [
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap", marginBottom: 16 }, children: [
             /* @__PURE__ */ jsxs("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, margin: 0, fontWeight: 700 }, children: [
-              "Collected contacts",
+              "Contacts",
               " ",
-              /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.3)", fontSize: 16, fontFamily: "inherit" }, children: [
+              /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.3)", fontSize: 15, fontFamily: "inherit" }, children: [
                 "(",
-                contacts.length,
-                ")"
+                castCount,
+                " cast · ",
+                crewCount,
+                " crew)"
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  className: "ccc-btn",
-                  onClick: downloadPdf,
-                  disabled: contacts.length === 0,
-                  style: {
-                    height: 42,
-                    padding: "0 20px",
-                    borderRadius: 10,
-                    background: TEAL$1,
-                    border: "none",
-                    color: "#000",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    opacity: contacts.length === 0 ? 0.4 : 1,
-                    cursor: contacts.length === 0 ? "not-allowed" : "pointer",
-                    fontFamily: "inherit"
-                  },
-                  children: "Download PDF report"
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  className: "ccc-btn",
-                  onClick: emailPdf,
-                  disabled: contacts.length === 0 || emailing,
-                  style: {
-                    height: 42,
-                    padding: "0 20px",
-                    borderRadius: 10,
-                    background: "rgba(0,212,170,0.12)",
-                    border: "1px solid rgba(0,212,170,0.35)",
-                    color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : TEAL$1,
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: contacts.length === 0 ? "not-allowed" : emailing ? "wait" : "pointer",
-                    fontFamily: "inherit"
-                  },
-                  children: emailing ? "Sending…" : "Email me the report"
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                "button",
-                {
-                  type: "button",
-                  className: "ccc-btn",
-                  onClick: exportCsv,
-                  disabled: contacts.length === 0,
-                  style: {
-                    height: 42,
-                    padding: "0 20px",
-                    borderRadius: 10,
-                    background: "rgba(255,255,255,0.06)",
-                    border: "1px solid #1e1e35",
-                    color: contacts.length === 0 ? "rgba(255,255,255,0.25)" : "#fff",
-                    fontWeight: 700,
-                    fontSize: 13,
-                    cursor: contacts.length === 0 ? "not-allowed" : "pointer",
-                    fontFamily: "inherit"
-                  },
-                  children: "Export CSV"
-                }
-              )
+              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: downloadPdf, disabled: contacts.length === 0 || busy, style: { ...primaryBtn$3, opacity: contacts.length === 0 ? 0.4 : 1 }, children: "Master sheet PDF" }),
+              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: emailPdf, disabled: contacts.length === 0 || emailing, style: { ...ghostBtn$2, opacity: contacts.length === 0 ? 0.4 : 1 }, children: emailing ? "Sending…" : "Email me the list" }),
+              /* @__PURE__ */ jsx("button", { type: "button", className: "ccc-btn", onClick: () => exportCsv(contacts), disabled: contacts.length === 0, style: { ...ghostBtn$2, opacity: contacts.length === 0 ? 0.4 : 1 }, children: "Export CSV" })
             ] })
           ] }),
-          contacts.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }, children: "No submissions yet. Share your link above and they'll show up here." }) : /* @__PURE__ */ jsx("div", { style: { display: "grid", gap: 12 }, children: contacts.map((c) => /* @__PURE__ */ jsxs("div", { style: { background: "rgba(255,255,255,0.03)", border: "1px solid #1e1e35", borderRadius: 14, padding: 18 }, children: [
-            /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsxs("div", { style: { fontSize: 16, fontWeight: 700 }, children: [
-                c.first_name,
-                " ",
-                c.last_name
-              ] }),
-              /* @__PURE__ */ jsx("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.3)" }, children: new Date(c.created_at).toLocaleDateString() })
+          contacts.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
+            /* @__PURE__ */ jsxs("div", { style: { display: "grid", gap: 10, marginBottom: 14 }, children: [
+              /* @__PURE__ */ jsx(
+                "input",
+                {
+                  className: "ccc-input",
+                  style: inputStyle$4,
+                  value: search,
+                  onChange: (e) => setSearch(e.target.value),
+                  placeholder: "Search name, email, phone, position, character"
+                }
+              ),
+              /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
+                /* @__PURE__ */ jsxs("select", { value: positionFilter, onChange: (e) => setPositionFilter(e.target.value), style: { ...inputStyle$4, maxWidth: 240 }, children: [
+                  /* @__PURE__ */ jsx("option", { value: "all", style: { background: "#10101b" }, children: "All positions" }),
+                  positions.map((p) => /* @__PURE__ */ jsx("option", { value: p, style: { background: "#10101b" }, children: p }, p))
+                ] }),
+                /* @__PURE__ */ jsxs("select", { value: typeFilter, onChange: (e) => setTypeFilter(e.target.value), style: { ...inputStyle$4, maxWidth: 180 }, children: [
+                  /* @__PURE__ */ jsx("option", { value: "all", style: { background: "#10101b" }, children: "Cast & crew" }),
+                  /* @__PURE__ */ jsx("option", { value: "cast", style: { background: "#10101b" }, children: "Cast only" }),
+                  /* @__PURE__ */ jsx("option", { value: "crew", style: { background: "#10101b" }, children: "Crew only" })
+                ] }),
+                /* @__PURE__ */ jsxs("select", { value: sort, onChange: (e) => setSort(e.target.value), style: { ...inputStyle$4, maxWidth: 180 }, children: [
+                  /* @__PURE__ */ jsx("option", { value: "newest", style: { background: "#10101b" }, children: "Newest first" }),
+                  /* @__PURE__ */ jsx("option", { value: "name", style: { background: "#10101b" }, children: "By name" }),
+                  /* @__PURE__ */ jsx("option", { value: "position", style: { background: "#10101b" }, children: "By position" })
+                ] })
+              ] })
             ] }),
-            /* @__PURE__ */ jsxs("div", { style: { marginTop: 6, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TEAL$1 }, children: [
-              c.job_position === "Other" && c.other_role ? c.other_role : c.job_position,
-              c.character_name ? ` · ${c.character_name}` : "",
-              c.actor_type ? ` · ${c.actor_type}` : ""
-            ] }),
-            /* @__PURE__ */ jsxs("div", { style: { marginTop: 10, fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.7 }, children: [
-              c.email && /* @__PURE__ */ jsx("div", { children: c.email }),
-              c.phone && /* @__PURE__ */ jsx("div", { children: c.phone }),
-              c.instagram_handle && /* @__PURE__ */ jsx("div", { children: c.instagram_handle }),
-              c.notes && /* @__PURE__ */ jsx("div", { style: { marginTop: 8, color: "rgba(255,255,255,0.45)" }, children: c.notes })
+            /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", marginBottom: 14 }, children: [
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  type: "button",
+                  style: chip(allVisibleSelected),
+                  onClick: () => setSelected(allVisibleSelected ? [] : visible.map((c) => c.id)),
+                  children: allVisibleSelected ? "Clear selection" : `Select all (${visible.length})`
+                }
+              ),
+              selected.length > 0 && /* @__PURE__ */ jsxs(Fragment, { children: [
+                /* @__PURE__ */ jsxs("span", { style: { fontSize: 13, color: "rgba(255,255,255,0.4)" }, children: [
+                  selected.length,
+                  " selected"
+                ] }),
+                /* @__PURE__ */ jsx("button", { type: "button", style: chip(false), disabled: busy, onClick: () => sendConfirmations(selected), children: 'Send "got it"' }),
+                /* @__PURE__ */ jsx("button", { type: "button", style: chip(false), onClick: () => exportCsv(contacts.filter((c) => selected.includes(c.id))), children: "Export selection" }),
+                /* @__PURE__ */ jsx("button", { type: "button", style: { ...chip(false), color: "#ff9d9d", borderColor: "rgba(255,120,120,0.35)" }, disabled: busy, onClick: () => deleteContacts(selected), children: "Delete" })
+              ] })
             ] })
-          ] }, c.id)) })
+          ] }),
+          contacts.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)", lineHeight: 1.7 }, children: "No submissions yet. Share your link above and they'll show up here." }) : visible.length === 0 ? /* @__PURE__ */ jsx("p", { style: { margin: 0, color: "rgba(255,255,255,0.4)" }, children: "No contacts match those filters." }) : /* @__PURE__ */ jsx("div", { style: { display: "grid", gap: 12 }, children: visible.map((c) => {
+            const dupe = c.email && duplicateEmails.has(c.email.toLowerCase().trim());
+            const cast = isCastMember(c);
+            return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 16 }, children: [
+              /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }, children: [
+                /* @__PURE__ */ jsxs("label", { style: { display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer", minWidth: 0 }, children: [
+                  /* @__PURE__ */ jsx(
+                    "input",
+                    {
+                      type: "checkbox",
+                      checked: selected.includes(c.id),
+                      onChange: () => toggleSelect(c.id),
+                      style: { width: 18, height: 18, marginTop: 3, accentColor: TEAL$1 }
+                    }
+                  ),
+                  /* @__PURE__ */ jsxs("span", { style: { minWidth: 0 }, children: [
+                    /* @__PURE__ */ jsx("span", { style: { fontSize: 16, fontWeight: 700 }, children: contactName(c) }),
+                    /* @__PURE__ */ jsxs("span", { style: { display: "block", marginTop: 4, fontSize: 12, fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: TEAL$1 }, children: [
+                      contactRole(c),
+                      c.character_name ? ` · ${c.character_name}` : "",
+                      c.actor_type ? ` · ${c.actor_type}` : ""
+                    ] })
+                  ] })
+                ] }),
+                /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap", fontSize: 11 }, children: [
+                  /* @__PURE__ */ jsx("span", { style: { padding: "4px 10px", borderRadius: 999, background: cast ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.06)", color: cast ? TEAL$1 : "rgba(255,255,255,0.5)", fontWeight: 700 }, children: cast ? "Cast" : "Crew" }),
+                  dupe && /* @__PURE__ */ jsx("span", { style: { padding: "4px 10px", borderRadius: 999, background: "rgba(255,190,80,0.14)", color: "#ffbe50", fontWeight: 700 }, children: "Duplicate" }),
+                  c.confirmation_sent_at && /* @__PURE__ */ jsxs("span", { style: { padding: "4px 10px", borderRadius: 999, background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.5)", fontWeight: 700 }, children: [
+                    "Got it sent ",
+                    new Date(c.confirmation_sent_at).toLocaleDateString()
+                  ] }),
+                  /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.3)" }, children: new Date(c.created_at).toLocaleDateString() })
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { style: { marginTop: 10, fontSize: 14, color: "rgba(255,255,255,0.6)", lineHeight: 1.8 }, children: [
+                c.email && /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("a", { href: `mailto:${c.email}`, style: { color: "rgba(255,255,255,0.75)" }, children: c.email }) }),
+                c.phone && /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx("a", { href: `tel:${c.phone.replace(/[^\d+]/g, "")}`, style: { color: "rgba(255,255,255,0.75)" }, children: c.phone }) }),
+                c.instagram_handle && /* @__PURE__ */ jsx("div", { children: /* @__PURE__ */ jsx(
+                  "a",
+                  {
+                    href: `https://instagram.com/${c.instagram_handle.replace(/^@/, "")}`,
+                    target: "_blank",
+                    rel: "noreferrer",
+                    style: { color: "rgba(255,255,255,0.75)" },
+                    children: c.instagram_handle
+                  }
+                ) }),
+                c.notes && /* @__PURE__ */ jsx("div", { style: { marginTop: 8, color: "rgba(255,255,255,0.45)", whiteSpace: "pre-wrap" }, children: c.notes }),
+                c.notes_internal && /* @__PURE__ */ jsxs("div", { style: { marginTop: 8, padding: "8px 10px", borderRadius: 10, background: "rgba(255,190,80,0.08)", color: "#ffd28a", whiteSpace: "pre-wrap", fontSize: 13 }, children: [
+                  "Internal: ",
+                  c.notes_internal
+                ] })
+              ] }),
+              /* @__PURE__ */ jsxs("div", { style: { marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+                /* @__PURE__ */ jsx("button", { type: "button", style: chip(false), onClick: () => setEditing(c), children: "View / Edit" }),
+                /* @__PURE__ */ jsx("button", { type: "button", style: chip(false), disabled: busy, onClick: () => sendConfirmations([c.id]), children: 'Send "got it"' }),
+                /* @__PURE__ */ jsx(
+                  "button",
+                  {
+                    type: "button",
+                    style: { ...chip(false), color: "#ff9d9d", borderColor: "rgba(255,120,120,0.35)" },
+                    disabled: busy,
+                    onClick: () => deleteContacts([c.id]),
+                    children: "Delete"
+                  }
+                )
+              ] })
+            ] }, c.id);
+          }) })
         ] })
       ] })
-    ] })
+    ] }),
+    editing && /* @__PURE__ */ jsx(
+      ContactEditDialog,
+      {
+        contact: editing,
+        onClose: () => setEditing(null),
+        onSave: (patch) => saveContact(editing.id, patch)
+      }
+    ),
+    showReminder && form && /* @__PURE__ */ jsx(
+      ReminderDialog,
+      {
+        form,
+        onClose: () => setShowReminder(false),
+        onResult: (message, ok) => toast2({ title: ok ? "Reminders sent" : "Reminder problem", description: message, variant: ok ? void 0 : "destructive" })
+      }
+    )
   ] });
 }
 const TEAL = "#00d4aa";

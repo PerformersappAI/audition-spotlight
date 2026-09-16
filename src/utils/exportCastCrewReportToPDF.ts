@@ -1,5 +1,6 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { loadUnicodeFonts } from "@/utils/exportBreakdownToPDF";
 
 export interface CastCrewReportContact {
   first_name: string | null;
@@ -29,14 +30,27 @@ const fullName = (c: CastCrewReportContact) =>
 const roleOf = (c: CastCrewReportContact) =>
   (c.job_position === "Other" && c.other_role ? c.other_role : c.job_position) || "—";
 
-const isCast = (c: CastCrewReportContact) => {
+export const isCastContact = (c: CastCrewReportContact) => {
   const role = (c.job_position || "").toLowerCase();
-  return Boolean(c.character_name) || Boolean(c.actor_type) || role.includes("actor") || role.includes("cast");
+  return (
+    Boolean(c.character_name) ||
+    Boolean(c.actor_type) ||
+    role.includes("actor") ||
+    role.includes("cast") ||
+    role.includes("background") ||
+    role.includes("extra")
+  );
 };
 
-/** Builds the multi-page Cast & Crew contact sheet PDF. */
-export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewReportOptions): jsPDF {
+const isCast = isCastContact;
+
+/** Builds the multi-page Cast & Crew List PDF (Cast first, then Crew). */
+export async function buildCastCrewReportPDF({
+  productionName,
+  contacts,
+}: CastCrewReportOptions): Promise<jsPDF> {
   const doc = new jsPDF({ orientation: "landscape", unit: "pt", format: "letter" });
+  const { body: FONT } = await loadUnicodeFonts(doc);
   const pageWidth = doc.internal.pageSize.getWidth();
   const generated = new Date().toLocaleString();
 
@@ -44,13 +58,13 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
   doc.setFillColor(...DARK);
   doc.rect(0, 0, pageWidth, 74, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFont("helvetica", "bold");
+  doc.setFont(FONT, "bold");
   doc.setFontSize(18);
   doc.text(productionName?.trim() || "Production", 40, 34);
-  doc.setFont("helvetica", "normal");
+  doc.setFont(FONT, "normal");
   doc.setFontSize(10);
   doc.setTextColor(...TEAL);
-  doc.text("CAST & CREW CONTACT SHEET", 40, 54);
+  doc.text("CAST & CREW LIST", 40, 54);
   doc.setTextColor(190, 190, 205);
   doc.text(`Generated ${generated}`, pageWidth - 40, 54, { align: "right" });
   doc.text(`${contacts.length} contact${contacts.length === 1 ? "" : "s"}`, pageWidth - 40, 34, {
@@ -65,7 +79,7 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
   const renderSection = (title: string, rows: CastCrewReportContact[], castMode: boolean) => {
     if (rows.length === 0) return;
 
-    doc.setFont("helvetica", "bold");
+    doc.setFont(FONT, "bold");
     doc.setFontSize(12);
     doc.setTextColor(...DARK);
     doc.text(`${title} (${rows.length})`, 40, cursorY);
@@ -80,7 +94,7 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
         ? [
             fullName(c),
             c.character_name || "—",
-            c.actor_type || "—",
+            c.actor_type || roleOf(c),
             c.phone || "—",
             c.email || "—",
             c.instagram_handle || "—",
@@ -94,7 +108,7 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
       body,
       startY: cursorY,
       margin: { left: 40, right: 40 },
-      styles: { font: "helvetica", fontSize: 9, cellPadding: 6, textColor: [40, 40, 55], overflow: "linebreak" },
+      styles: { font: FONT, fontSize: 9, cellPadding: 6, textColor: [40, 40, 55], overflow: "linebreak" },
       headStyles: { fillColor: TEAL, textColor: [255, 255, 255], fontStyle: "bold", fontSize: 9 },
       alternateRowStyles: { fillColor: [244, 246, 248] },
       theme: "grid",
@@ -105,7 +119,7 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
   };
 
   if (contacts.length === 0) {
-    doc.setFont("helvetica", "normal");
+    doc.setFont(FONT, "normal");
     doc.setFontSize(11);
     doc.setTextColor(90, 90, 110);
     doc.text("No contacts submitted yet.", 40, cursorY);
@@ -119,7 +133,7 @@ export function buildCastCrewReportPDF({ productionName, contacts }: CastCrewRep
   for (let i = 1; i <= pageCount; i += 1) {
     doc.setPage(i);
     const h = doc.internal.pageSize.getHeight();
-    doc.setFont("helvetica", "normal");
+    doc.setFont(FONT, "normal");
     doc.setFontSize(8);
     doc.setTextColor(140, 140, 155);
     doc.text("Confidential — production contact information. Handle per your production's privacy policy.", 40, h - 22);
@@ -134,14 +148,16 @@ export function reportFileName(productionName?: string | null): string {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-|-$/g, "") || "cast-crew";
-  return `${base}-contact-sheet-${new Date().toISOString().slice(0, 10)}.pdf`;
+  return `${base}-cast-crew-list-${new Date().toISOString().slice(0, 10)}.pdf`;
 }
 
-export function exportCastCrewReportToPDF(options: CastCrewReportOptions): void {
-  buildCastCrewReportPDF(options).save(reportFileName(options.productionName));
+export async function exportCastCrewReportToPDF(options: CastCrewReportOptions): Promise<void> {
+  const doc = await buildCastCrewReportPDF(options);
+  doc.save(reportFileName(options.productionName));
 }
 
 /** Returns the PDF as a base64 string (no data-URI prefix) for emailing as an attachment. */
-export function castCrewReportBase64(options: CastCrewReportOptions): string {
-  return buildCastCrewReportPDF(options).output("datauristring").split(",")[1] ?? "";
+export async function castCrewReportBase64(options: CastCrewReportOptions): Promise<string> {
+  const doc = await buildCastCrewReportPDF(options);
+  return doc.output("datauristring").split(",")[1] ?? "";
 }
