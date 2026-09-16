@@ -223,12 +223,59 @@ const ProductionPicker = ({
     selectProject((data as Production).id);
   };
 
-  const saveRename = async () => {
-    if (!selected || !renameValue.trim()) { setRenaming(false); return; }
-    const title = renameValue.trim();
-    await supabase.from("breakdown_projects").update({ title }).eq("id", selected.id);
-    setProjects((prev) => prev.map((p) => (p.id === selected.id ? { ...p, title } : p)));
-    setRenaming(false);
+  const openSettings = () => {
+    if (!selected) return;
+    setEditTitle(selected.title);
+    setEditCompany(selected.company || "");
+    setEditStatus(selected.status || "in_production");
+    setEditStart(selected.start_date || "");
+    setSettingsError("");
+    setConfirmDelete(false);
+    setDeleteText("");
+    setDeleteError("");
+    setSettingsOpen(true);
+  };
+
+  const saveSettings = async () => {
+    if (!selected || !editTitle.trim()) return;
+    setSavingSettings(true);
+    setSettingsError("");
+    const patch = {
+      title: editTitle.trim(),
+      company: editCompany.trim() || null,
+      status: editStatus,
+      start_date: editStart || null,
+    };
+    const { error: err } = await supabase.from("breakdown_projects").update(patch).eq("id", selected.id);
+    setSavingSettings(false);
+    if (err) { setSettingsError(err.message); return; }
+    setProjects((prev) => prev.map((p) => (p.id === selected.id ? { ...p, ...patch } : p)));
+    setSettingsOpen(false);
+    toast({ title: "Production updated" });
+  };
+
+  const runDelete = async () => {
+    if (!selected) return;
+    setDeleting(true);
+    setDeleteError("");
+    try {
+      await deleteProduction(selected.id);
+    } catch (err: any) {
+      setDeleting(false);
+      setDeleteError(err?.message || "The production couldn't be deleted.");
+      return;
+    }
+    const remaining = projects.filter((p) => p.id !== selected.id);
+    setProjects(remaining);
+    setDeleting(false);
+    setConfirmDelete(false);
+    setSettingsOpen(false);
+    setShowShare(false);
+    onProjectsLoaded?.(remaining);
+    const cleared: Record<string, string | null> = { project: remaining[0]?.id || null };
+    clearParamsOnChange.forEach((k) => { cleared[k] = null; });
+    setParams(cleared);
+    toast({ title: "Production deleted", description: `“${selected.title}” and everything in it has been removed.` });
   };
 
   return (
