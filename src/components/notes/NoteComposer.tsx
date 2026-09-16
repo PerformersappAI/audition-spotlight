@@ -26,6 +26,11 @@ interface Props {
   saving: boolean;
   error?: string;
   onSave: (draft: NoteDraft) => void | Promise<void>;
+  /** Crew members get a shorter note and automatic translation (no toggle). */
+  maxChars?: number;
+  showTranslateToggle?: boolean;
+  heading?: string;
+  hint?: string;
 }
 
 const label: React.CSSProperties = {
@@ -35,7 +40,17 @@ const label: React.CSSProperties = {
   marginBottom: 6,
 };
 
-const NoteComposer = ({ scenes, languageCount, saving, error, onSave }: Props) => {
+const NoteComposer = ({
+  scenes,
+  languageCount,
+  saving,
+  error,
+  onSave,
+  maxChars = MAX_NOTE_CHARS,
+  showTranslateToggle = true,
+  heading = "New note",
+  hint,
+}: Props) => {
   const [tag, setTag] = useState<NoteTag>("general");
   const [priority, setPriority] = useState<NotePriority>("normal");
   const [shootDay, setShootDay] = useState(todayLocal());
