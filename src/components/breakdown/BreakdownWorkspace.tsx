@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChevronDown, Loader2, Plus, Trash2, X } from "lucide-react";
+import { ChevronDown, Download, Loader2, Plus, Trash2, X } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import DepartmentChecklist from "./DepartmentChecklist";
 import SignOffBox from "./SignOffBox";
@@ -17,6 +17,8 @@ import {
 } from "./types";
 import { BreakdownAdapter } from "@/lib/breakdown/adapter";
 import { ImageError } from "@/lib/breakdown/imageDownscale";
+import { exportBreakdownToPDF } from "@/utils/exportBreakdownToPDF";
+
 
 const panel: React.CSSProperties = {
   borderRadius: 16,
