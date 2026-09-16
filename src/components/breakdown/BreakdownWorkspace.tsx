@@ -52,7 +52,11 @@ interface Props {
   onRequestAddScene?: () => void;
   onLoaded?: (data: { scenes: BreakdownScene[]; items: BreakdownItem[] }) => void;
   hideSceneStrip?: boolean;
+  /** Used in the PDF header. */
+  projectTitle?: string;
+  company?: string | null;
 }
+
 
 const BreakdownWorkspace = ({
   adapter, sceneId, onSelectScene, reloadKey = 0, onRequestAddScene, onLoaded, hideSceneStrip,
