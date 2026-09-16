@@ -301,7 +301,6 @@ const DepartmentChecklist = ({
         type="file"
         accept="image/*"
         multiple
-        // @ts-expect-error capture is valid on mobile browsers
         capture="environment"
         style={{ display: "none" }}
         onChange={(e) => {
