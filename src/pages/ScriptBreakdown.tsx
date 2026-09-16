@@ -351,13 +351,23 @@ const ScriptBreakdown = () => {
     }
   };
 
+  // Remove the stored files for a set of photo rows before their rows go away
+  const removeStorageFor = async (rows: BreakdownPhoto[]) => {
+    const paths = rows.map((p) => p.storage_path).filter((p): p is string => !!p);
+    if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  };
+
   const deleteItem = async (item: BreakdownItem) => {
+    const itemPhotos = photos.filter((p) => p.item_id === item.id);
     setItems((prev) => prev.filter((i) => i.id !== item.id));
+    await removeStorageFor(itemPhotos);
     const { error: err } = await supabase.from("breakdown_items").delete().eq("id", item.id);
     if (err) {
       setItems((prev) => [...prev, item]);
       failed(err.message);
+      return;
     }
+    setPhotos((prev) => prev.filter((p) => p.item_id !== item.id));
   };
 
   const addItem = async (department: string, text: string, opts?: { flagged?: boolean; source?: string }) => {
