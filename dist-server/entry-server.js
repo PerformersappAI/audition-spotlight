@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, FileSpreadsheet, Table, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, FileSpreadsheet, Table, MessageCircle, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -5289,8 +5289,8 @@ function Recut() {
     ] })
   ] });
 }
-const Card$1 = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("rounded-lg border bg-card text-card-foreground shadow-sm", className), ...props }));
-Card$1.displayName = "Card";
+const Card$2 = React.forwardRef(({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("rounded-lg border bg-card text-card-foreground shadow-sm", className), ...props }));
+Card$2.displayName = "Card";
 const CardHeader = React.forwardRef(
   ({ className, ...props }, ref) => /* @__PURE__ */ jsx("div", { ref, className: cn("flex flex-col space-y-1.5 p-6", className), ...props })
 );
@@ -5750,7 +5750,7 @@ function CrewHire() {
         /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Post a crew call to find talented crew members for your production" })
       ] }),
       /* @__PURE__ */ jsxs("form", { onSubmit: handleSubmit, children: [
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(Building2, { className: "h-5 w-5" }),
@@ -5842,7 +5842,7 @@ function CrewHire() {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(DollarSign, { className: "h-5 w-5" }),
@@ -5908,7 +5908,7 @@ function CrewHire() {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(MapPin, { className: "h-5 w-5" }),
@@ -5999,7 +5999,7 @@ function CrewHire() {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(Briefcase, { className: "h-5 w-5" }),
@@ -6166,7 +6166,7 @@ function CrewHire() {
             )
           ] })
         ] }),
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(Send, { className: "h-5 w-5" }),
@@ -6247,7 +6247,7 @@ function CrewHire() {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+        /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
           /* @__PURE__ */ jsxs(CardHeader, { children: [
             /* @__PURE__ */ jsx(CardTitle, { children: "Publishing Options" }),
             /* @__PURE__ */ jsx(CardDescription, { children: "Control visibility and contact preferences" })
@@ -6314,7 +6314,7 @@ const TOOL_COSTS = [
   { name: "Marketing in a Box", cost: "—" },
   { name: "Green Light Engine", cost: "—" }
 ];
-const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$1, { className: `p-6 bg-white/[0.03] border-white/10 ${className}`, children: [
+const CreditCostTable = ({ className = "" }) => /* @__PURE__ */ jsxs(Card$2, { className: `p-6 bg-white/[0.03] border-white/10 ${className}`, children: [
   /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-2", children: "How Your Credits Work" }),
   /* @__PURE__ */ jsx("p", { className: "text-sm text-white/60 mb-5", children: "Every AI tool runs on credits. Here's exactly what each one costs — so you always know where you stand." }),
   /* @__PURE__ */ jsxs("div", { className: "border border-white/5 rounded-md overflow-hidden", children: [
@@ -6355,7 +6355,7 @@ function AddCreditsCard({ className = "", showMembershipLink = true }) {
       setBuying(false);
     }
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: `p-8 bg-white/[0.03] border-white/10 text-center ${className}`, children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: `p-8 bg-white/[0.03] border-white/10 text-center ${className}`, children: [
     /* @__PURE__ */ jsx(
       "div",
       {
@@ -10487,7 +10487,7 @@ const groupHub = {
   distributors: { title: "Distributors", path: "/academy/distributors" },
   vod: { title: "VOD Platforms", path: "/academy/vod" }
 };
-function Card({ card, variant, statLayout }) {
+function Card$1({ card, variant, statLayout }) {
   return /* @__PURE__ */ jsxs("div", { className: variant === "platform" ? "msub-card platform" : "msub-card", children: [
     card.badge && /* @__PURE__ */ jsx("div", { className: "msub-badge", children: card.badge }),
     /* @__PURE__ */ jsx("h2", { className: "msub-name", children: card.name }),
@@ -10605,7 +10605,7 @@ function MonetizationSubPage({ group }) {
         /* @__PURE__ */ jsx("p", { style: { fontSize: 13, color: "rgba(255,255,255,0.6)", lineHeight: 1.55 }, dangerouslySetInnerHTML: { __html: entry.warning } })
       ] }),
       /* @__PURE__ */ jsx("div", { style: { fontSize: 11, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", color: "rgba(255,255,255,0.3)", marginBottom: 24 }, children: entry.itemsLabel }),
-      /* @__PURE__ */ jsx("div", { className: "msub-grid", "data-cols": entry.gridCols, children: entry.cards.map((card, i) => /* @__PURE__ */ jsx(Card, { card, variant: entry.variant, statLayout: entry.statLayout }, i)) })
+      /* @__PURE__ */ jsx("div", { className: "msub-grid", "data-cols": entry.gridCols, children: entry.cards.map((card, i) => /* @__PURE__ */ jsx(Card$1, { card, variant: entry.variant, statLayout: entry.statLayout }, i)) })
     ] })
   ] });
 }
@@ -15151,7 +15151,7 @@ function ToolPageRecommendations({
   if (displayCourses.length === 0) {
     return null;
   }
-  return /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/20 bg-gradient-to-br from-background to-primary/5", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "border-primary/20 bg-gradient-to-br from-background to-primary/5", children: [
     /* @__PURE__ */ jsxs(CardHeader, { children: [
       /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
         /* @__PURE__ */ jsx(GraduationCap, { className: "h-5 w-5 text-primary" }),
@@ -15238,7 +15238,7 @@ const PDFUploadProgress = ({
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
-  return /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+  return /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
     /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 min-w-0 flex-1", children: [
         /* @__PURE__ */ jsx("div", { className: cn(
@@ -15658,7 +15658,7 @@ const ScriptAnalysis = () => {
         /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground mt-2", children: "We only allow scene by scene analyzing and not full scripts." })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
-        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" }),
             "Script Input"
@@ -15741,7 +15741,7 @@ const ScriptAnalysis = () => {
                 )) })
               ] })
             ] }),
-            isAnalyzing && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+            isAnalyzing && /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
                   /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-purple-500/10", children: /* @__PURE__ */ jsx(Brain, { className: "h-6 w-6 text-purple-500 animate-pulse" }) }),
@@ -15782,7 +15782,7 @@ const ScriptAnalysis = () => {
           ] })
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recent Analyses" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: analyses.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center py-8", children: "No analyses yet. Upload a script to get started!" }) : /* @__PURE__ */ jsx("div", { className: "space-y-4", children: analyses.slice(0, 5).map((analysis) => {
               var _a3, _b2;
@@ -15841,7 +15841,7 @@ const ScriptAnalysis = () => {
           )
         ] })
       ] }),
-      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) && /* @__PURE__ */ jsx("div", { className: "mt-8", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) && /* @__PURE__ */ jsx("div", { className: "mt-8", children: /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
         /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(Brain, { className: "h-5 w-5" }),
@@ -15894,7 +15894,7 @@ const ScriptAnalysis = () => {
               index
             )) })
           ] }),
-          selectedAnalysis.analysisResult.sceneSynopsis && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("please paste") && /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-accent/30 border-accent", children: [
+          selectedAnalysis.analysisResult.sceneSynopsis && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("don't have") && !selectedAnalysis.analysisResult.sceneSynopsis.toLowerCase().includes("please paste") && /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "bg-accent/30 border-accent", children: [
             /* @__PURE__ */ jsxs(CardHeader, { children: [
               /* @__PURE__ */ jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx(Lightbulb, { className: "h-4 w-4" }),
@@ -15920,7 +15920,7 @@ const ScriptAnalysis = () => {
               idx
             )) })
           ] }) }),
-          /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-card border-2 border-primary shadow-lg shadow-primary/10", children: [
+          /* @__PURE__ */ jsx("div", { className: "mb-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "bg-card border-2 border-primary shadow-lg shadow-primary/10", children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "bg-primary/20 border-b-2 border-primary/50", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx(MessageSquare, { className: "h-6 w-6 text-primary" }),
@@ -15985,7 +15985,7 @@ const ScriptAnalysis = () => {
               /* @__PURE__ */ jsx(Pencil, { className: "inline h-3 w-3" }),
               " pencil icon to add notes."
             ] }),
-            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => /* @__PURE__ */ jsx(Card$1, { className: "border border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4", children: [
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: selectedAnalysis.analysisResult.castOfCharacters.map((character, index) => /* @__PURE__ */ jsx(Card$2, { className: "border border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between mb-2", children: [
                 /* @__PURE__ */ jsx("h4", { className: "font-medium text-sm", children: character.name }),
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
@@ -16136,15 +16136,15 @@ const ScriptAnalysis = () => {
             ] })
           ] }) }),
           /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+            /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
               /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.characterCount }),
               /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Characters" })
             ] }) }),
-            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+            /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
               /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.analysisResult.estimatedDuration }),
               /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Est. Duration" })
             ] }) }),
-            /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+            /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
               /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(selectedAnalysis.analysisResult.difficultyLevel), children: selectedAnalysis.analysisResult.difficultyLevel }),
               /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mt-1", children: "Difficulty" })
             ] }) }),
@@ -16526,7 +16526,7 @@ const SceneAnalysis = () => {
         /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Analyze scripts for casting, direction, and production insights" })
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6", children: [
-        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Scene Input" }) }),
           /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -16571,7 +16571,7 @@ const SceneAnalysis = () => {
           ] })
         ] }) }),
         /* @__PURE__ */ jsxs("div", { children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recent Analyses" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: analyses.length === 0 ? /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-center py-8", children: "No analyses yet. Start by analyzing a scene!" }) : /* @__PURE__ */ jsx("div", { className: "space-y-3", children: analyses.slice(0, 5).map((analysis) => {
               var _a2, _b2;
@@ -16611,7 +16611,7 @@ const SceneAnalysis = () => {
           )
         ] })
       ] }),
-      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) ? /* @__PURE__ */ jsxs(Card$1, { children: [
+      (selectedAnalysis == null ? void 0 : selectedAnalysis.analysisResult) ? /* @__PURE__ */ jsxs(Card$2, { children: [
         /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
           /* @__PURE__ */ jsx(CardTitle, { children: "Analysis Results" }),
           /* @__PURE__ */ jsxs(Button, { onClick: exportSceneAnalysisToPDF, size: "sm", variant: "outline", children: [
@@ -16651,15 +16651,15 @@ const SceneAnalysis = () => {
               ] })
             ] }),
             /* @__PURE__ */ jsxs("div", { className: "mt-6 grid grid-cols-1 md:grid-cols-3 gap-4", children: [
-              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.characterCount }),
                 /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Characters" })
               ] }) }),
-              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
                 /* @__PURE__ */ jsx("div", { className: "text-2xl font-bold text-primary", children: selectedAnalysis.analysisResult.estimatedDuration }),
                 /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground", children: "Duration" })
               ] }) }),
-              /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
+              /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 text-center", children: [
                 /* @__PURE__ */ jsx(Badge, { className: getDifficultyColor(selectedAnalysis.analysisResult.difficultyLevel), children: selectedAnalysis.analysisResult.difficultyLevel }),
                 /* @__PURE__ */ jsx("div", { className: "text-sm text-muted-foreground mt-1", children: "Difficulty" })
               ] }) })
@@ -16729,7 +16729,7 @@ const SceneAnalysis = () => {
                 ] })
               ] })
             ] }),
-            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: selectedAnalysis.analysisResult.shots.map((shot) => /* @__PURE__ */ jsxs(Card$1, { className: "border border-border", children: [
+            /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: selectedAnalysis.analysisResult.shots.map((shot) => /* @__PURE__ */ jsxs(Card$2, { className: "border border-border", children: [
               /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
                 /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
                   "Shot ",
@@ -16760,7 +16760,7 @@ const SceneAnalysis = () => {
                 /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" }),
                 "Visual Storyboard"
               ] }),
-              /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: selectedAnalysis.storyboard.map((frame) => /* @__PURE__ */ jsx(Card$1, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+              /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: selectedAnalysis.storyboard.map((frame) => /* @__PURE__ */ jsx(Card$2, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
                   /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
                     "Frame ",
@@ -16787,7 +16787,7 @@ const SceneAnalysis = () => {
             ] })
           ] }) })
         ] }) })
-      ] }) : /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "text-center py-12", children: [
+      ] }) : /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "text-center py-12", children: [
         /* @__PURE__ */ jsx(Brain, { className: "h-12 w-12 mx-auto mb-4 text-muted-foreground" }),
         /* @__PURE__ */ jsx("h3", { className: "text-lg font-semibold mb-2", children: "No Analysis Selected" }),
         /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: "Analyze a scene or select from your recent analyses to see detailed results" })
@@ -17118,7 +17118,7 @@ function ArtStyleSelector({
       /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Select a visual style for your storyboard frames" })
     ] }),
     /* @__PURE__ */ jsx("div", { className: "flex gap-3 overflow-x-auto pb-3 scroll-smooth snap-x snap-mandatory scrollbar-thin", children: artStyles.map((style) => /* @__PURE__ */ jsx(
-      Card$1,
+      Card$2,
       {
         className: `flex-shrink-0 w-[140px] cursor-pointer transition-all hover:scale-105 relative ${selectedStyle === style.id ? "ring-2 ring-primary" : "hover:ring-1 hover:ring-border"}`,
         onClick: () => onStyleChange(style.id),
@@ -17192,7 +17192,7 @@ const AlertDescription = React.forwardRef(
 );
 AlertDescription.displayName = "AlertDescription";
 const StyleReferenceInput = ({ value, onChange }) => {
-  return /* @__PURE__ */ jsxs(Card$1, { className: "border-border/50", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "border-border/50", children: [
     /* @__PURE__ */ jsxs(CardHeader, { children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
         /* @__PURE__ */ jsx(Palette, { className: "h-5 w-5 text-primary" }),
@@ -17294,7 +17294,7 @@ const StyleReferenceUpload = ({
     onStyleImageChange(void 0);
     onStyleDescriptionGenerated == null ? void 0 : onStyleDescriptionGenerated("");
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: "border-border/50", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "border-border/50", children: [
     /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
         /* @__PURE__ */ jsx(ImageIcon, { className: "h-5 w-5 text-primary" }),
@@ -17428,7 +17428,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
     }));
     onConfirm(enriched);
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
     /* @__PURE__ */ jsxs(CardHeader, { children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-3", children: [
         /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
@@ -17451,7 +17451,7 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
         const isSelected = selectedNumbers.has(scene.sceneNumber);
         const shotCount = shotOverrides.get(scene.sceneNumber) ?? scene.estimatedShots;
         return /* @__PURE__ */ jsx(
-          Card$1,
+          Card$2,
           {
             className: `border transition-colors cursor-pointer ${isSelected ? "border-primary bg-primary/5" : "border-border hover:border-primary/40"}`,
             onClick: () => !isProcessing && toggle(scene.sceneNumber),
@@ -17754,7 +17754,7 @@ const RecentProjectsGrid = ({
   const [draftTitle, setDraftTitle] = useState("");
   const gridClass = compact ? "grid grid-cols-1 sm:grid-cols-2 gap-3" : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4";
   if (loading) {
-    return /* @__PURE__ */ jsx("div", { className: gridClass, children: Array.from({ length: compact ? 2 : 3 }).map((_, i) => /* @__PURE__ */ jsxs(Card$1, { className: "overflow-hidden", children: [
+    return /* @__PURE__ */ jsx("div", { className: gridClass, children: Array.from({ length: compact ? 2 : 3 }).map((_, i) => /* @__PURE__ */ jsxs(Card$2, { className: "overflow-hidden", children: [
       /* @__PURE__ */ jsx(Skeleton, { className: "aspect-video w-full" }),
       /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-2", children: [
         /* @__PURE__ */ jsx(Skeleton, { className: "h-4 w-3/4" }),
@@ -17801,7 +17801,7 @@ const RecentProjectsGrid = ({
       const styleLabel = p.art_style ? ART_STYLE_LABELS[p.art_style] || p.art_style : null;
       const isEditing = editingId === p.id;
       return /* @__PURE__ */ jsxs(
-        Card$1,
+        Card$2,
         {
           className: `overflow-hidden border transition-colors ${isActive ? "border-primary ring-1 ring-primary/30" : "border-border hover:border-primary/50"}`,
           children: [
@@ -18049,7 +18049,7 @@ const CastTab = ({
       const busy = isGenerating(member.name);
       const hasRef = !!member.reference_image_url;
       const usedInFrames = (framesUsageByName == null ? void 0 : framesUsageByName[member.name]) ?? 0;
-      return /* @__PURE__ */ jsx(Card$1, { className: "border-border overflow-hidden", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex gap-4", children: [
+      return /* @__PURE__ */ jsx(Card$2, { className: "border-border overflow-hidden", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex gap-4", children: [
         /* @__PURE__ */ jsxs("div", { className: "shrink-0", children: [
           /* @__PURE__ */ jsx(
             "button",
@@ -18477,7 +18477,7 @@ const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAni
     }
   };
   if (usableFrames.length === 0) {
-    return /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-8 text-center space-y-3", children: [
+    return /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-8 text-center space-y-3", children: [
       /* @__PURE__ */ jsx(Film, { className: "h-10 w-10 mx-auto text-muted-foreground" }),
       /* @__PURE__ */ jsx("h3", { className: "font-semibold", children: "No frames available" }),
       /* @__PURE__ */ jsx("p", { className: "text-sm text-muted-foreground", children: "Generate storyboard frames first, then come back here to assemble an animatic." })
@@ -18485,7 +18485,7 @@ const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAni
   }
   const activeFrame = timeline[activeIndex];
   return /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+    /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsxs("h3", { className: "font-semibold flex items-center gap-2", children: [
@@ -18526,7 +18526,7 @@ const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAni
         }
       )
     ] }) }),
-    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+    /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
       /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
           /* @__PURE__ */ jsx(Label, { children: "Transition" }),
@@ -18568,7 +18568,7 @@ const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAni
         )
       ] })
     ] }) }),
-    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+    /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
         /* @__PURE__ */ jsx("h3", { className: "font-semibold text-sm", children: "Timeline" }),
         /* @__PURE__ */ jsxs(Badge, { variant: "outline", className: "text-xs", children: [
@@ -18618,7 +18618,7 @@ const AnimaticTab = ({ frames, aspectRatio, projectTitle, projectId, existingAni
         f.id
       )) }) })
     ] }) }),
-    /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
+    /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
       /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center justify-between gap-3", children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsxs("h3", { className: "font-semibold flex items-center gap-2", children: [
@@ -19984,7 +19984,7 @@ ${s.text}`).join("\n\n---\n\n");
         /* @__PURE__ */ jsx("p", { className: "text-lg text-muted-foreground max-w-2xl mx-auto", children: "Transform your script into visual storyboards with AI-generated shot breakdowns and visual frame references." })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-8", children: [
-        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2 space-y-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
             "Script Upload"
@@ -20113,7 +20113,7 @@ ${s.text}`).join("\n\n---\n\n");
                 ] })
               ] })
             ] }),
-            isProcessingScript && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+            isProcessingScript && /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
                   /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-blue-500/10", children: /* @__PURE__ */ jsx(Camera, { className: "h-6 w-6 text-blue-500 animate-pulse" }) }),
@@ -20135,7 +20135,7 @@ ${s.text}`).join("\n\n---\n\n");
                 /* @__PURE__ */ jsx("span", { className: "text-sm text-muted-foreground", children: "Creating shot breakdown..." })
               ] })
             ] }) }),
-            generatingStoryboard && /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
+            generatingStoryboard && /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 bg-gradient-to-br from-background to-muted/20 shadow-lg animate-in fade-in slide-in-from-top-4 duration-500", children: /* @__PURE__ */ jsxs("div", { className: "p-6 space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-start justify-between gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3 flex-1", children: [
                   /* @__PURE__ */ jsx("div", { className: "flex-shrink-0 p-2 rounded-lg bg-green-500/10", children: /* @__PURE__ */ jsx(Video, { className: "h-6 w-6 text-green-500 animate-pulse" }) }),
@@ -20207,7 +20207,7 @@ ${s.text}`).join("\n\n---\n\n");
           ] })
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx(BookOpen, { className: "h-4 w-4" }),
@@ -20231,7 +20231,7 @@ ${s.text}`).join("\n\n---\n\n");
               ] }, index)) })
             ] }, category)) }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: "Recent Projects" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               RecentProjectsGrid,
@@ -20295,7 +20295,7 @@ ${s.text}`).join("\n\n---\n\n");
           isProcessing: isProcessingScript || isExtractingScenes
         }
       ) }),
-      castReviewActive && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/30 bg-primary/5", children: [
+      castReviewActive && /* @__PURE__ */ jsx("div", { className: "mt-4", children: /* @__PURE__ */ jsxs(Card$2, { className: "border-primary/30 bg-primary/5", children: [
         /* @__PURE__ */ jsxs(CardHeader, { children: [
           /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
             /* @__PURE__ */ jsx(UserCircle2, { className: "h-5 w-5 text-primary" }),
@@ -20347,7 +20347,7 @@ ${s.text}`).join("\n\n---\n\n");
         ] })
       ] }) }),
       selectedProject && !extractedScenes && /* @__PURE__ */ jsxs("div", { className: "mt-4 space-y-6", children: [
-        /* @__PURE__ */ jsx(Card$1, { className: "border-primary/20", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex items-center gap-3 flex-wrap", children: [
+        /* @__PURE__ */ jsx(Card$2, { className: "border-primary/20", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 flex items-center gap-3 flex-wrap", children: [
           /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5 text-primary shrink-0" }),
           isEditingTitle ? /* @__PURE__ */ jsx(
             Input,
@@ -20445,7 +20445,7 @@ ${s.text}`).join("\n\n---\n\n");
           ) }),
           /* @__PURE__ */ jsxs(TabsContent, { value: "shots", className: "mt-4 space-y-6", children: [
             (!selectedProject.storyboard || selectedProject.storyboard.every((f) => !f.imageData)) && /* @__PURE__ */ jsx(
-              Card$1,
+              Card$2,
               {
                 className: `border ${insufficientCredits ? "border-destructive/50 bg-destructive/5" : lowBalanceWarning ? "border-yellow-500/40 bg-yellow-500/5" : "border-primary/30 bg-primary/5"}`,
                 children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-3", children: [
@@ -20530,7 +20530,7 @@ ${s.text}`).join("\n\n---\n\n");
                 ] })
               }
             ),
-            /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+            /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
               /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-2", children: [
                 /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ jsx(Camera, { className: "h-5 w-5" }),
@@ -20575,7 +20575,7 @@ ${s.text}`).join("\n\n---\n\n");
               /* @__PURE__ */ jsxs(CardContent, { children: [
                 /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4", children: selectedProject.shots.map((shot) => {
                   var _a3, _b3;
-                  return /* @__PURE__ */ jsxs(Card$1, { className: "border border-border", children: [
+                  return /* @__PURE__ */ jsxs(Card$2, { className: "border border-border", children: [
                     /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
                       /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
                         "Shot ",
@@ -20861,7 +20861,7 @@ ${s.text}`).join("\n\n---\n\n");
                 ) })
               ] })
             ] }),
-            selectedProject.shots && selectedProject.shots.length > 0 && /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+            selectedProject.shots && selectedProject.shots.length > 0 && /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
               /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
                 /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
@@ -20877,7 +20877,7 @@ ${s.text}`).join("\n\n---\n\n");
                 const frame = (_a3 = selectedProject.storyboard) == null ? void 0 : _a3.find((f) => f.shotNumber === shot.shotNumber);
                 const isGenerating2 = generatingFrames.has(shot.shotNumber);
                 const error = frameErrors.get(shot.shotNumber);
-                return /* @__PURE__ */ jsx(Card$1, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
+                return /* @__PURE__ */ jsx(Card$2, { className: "border border-border", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 space-y-4", children: [
                   /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
                     /* @__PURE__ */ jsxs(Badge, { variant: "secondary", children: [
                       "Frame ",
@@ -21134,7 +21134,7 @@ ${s.text}`).join("\n\n---\n\n");
                 ] }) }, shot.shotNumber);
               }) }) })
             ] }),
-            selectedProject.storyboard && selectedProject.storyboard.some((f) => f.imageData) && /* @__PURE__ */ jsxs(Card$1, { className: "border-2 border-primary/20 shadow-lg", children: [
+            selectedProject.storyboard && selectedProject.storyboard.some((f) => f.imageData) && /* @__PURE__ */ jsxs(Card$2, { className: "border-2 border-primary/20 shadow-lg", children: [
               /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between flex-wrap gap-2", children: [
                 /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
                   /* @__PURE__ */ jsx(Video, { className: "h-5 w-5" }),
@@ -22574,7 +22574,7 @@ const CallSheet = () => {
         ] }),
         /* @__PURE__ */ jsx(Film, { className: "h-12 w-12 text-primary" })
       ] }),
-      (isProcessingFile || isParsingData) && /* @__PURE__ */ jsx(Card$1, { className: "mb-6", children: /* @__PURE__ */ jsxs(CardContent, { className: "py-6", children: [
+      (isProcessingFile || isParsingData) && /* @__PURE__ */ jsx(Card$2, { className: "mb-6", children: /* @__PURE__ */ jsxs(CardContent, { className: "py-6", children: [
         isProcessingFile && /* @__PURE__ */ jsx(
           PDFUploadProgress,
           {
@@ -22590,7 +22590,7 @@ const CallSheet = () => {
           /* @__PURE__ */ jsx("p", { className: "text-lg", children: "Extracting structured data..." })
         ] })
       ] }) }),
-      /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
         /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
           /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
           "Upload Existing Call Sheet"
@@ -22614,7 +22614,7 @@ const CallSheet = () => {
           ] })
         ] }) })
       ] }),
-      /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+      /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
         /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
           /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5" }),
           "Production Logo"
@@ -22657,7 +22657,7 @@ const CallSheet = () => {
             /* @__PURE__ */ jsx(TabsTrigger, { value: "advance", children: "Advance" }),
             /* @__PURE__ */ jsx(TabsTrigger, { value: "contacts", children: "Contacts" })
           ] }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "general", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "general", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "General Information" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -22838,7 +22838,7 @@ const CallSheet = () => {
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "scenes", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "scenes", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Scenes" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addScene, size: "sm", children: [
@@ -22848,7 +22848,7 @@ const CallSheet = () => {
             ] }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: scenes.map((scene, index) => {
               var _a2;
-              return /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+              return /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-4", children: [
                   /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
                     /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
@@ -22885,7 +22885,7 @@ const CallSheet = () => {
               ] }) }) }, index);
             }) })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "cast", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "cast", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Cast" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCast, size: "sm", children: [
@@ -22893,7 +22893,7 @@ const CallSheet = () => {
                 "Add Cast Member"
               ] })
             ] }) }),
-            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: cast.map((member, index) => /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: cast.map((member, index) => /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex-1 space-y-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-4 gap-4", children: [
                   /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
@@ -22939,7 +22939,7 @@ const CallSheet = () => {
               cast.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeCast(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
             ] }) }) }, index)) })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "crew", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "crew", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Crew" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addCrew, size: "sm", children: [
@@ -22947,7 +22947,7 @@ const CallSheet = () => {
                 "Add Crew Member"
               ] })
             ] }) }),
-            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: crew.map((member, index) => /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
+            /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: crew.map((member, index) => /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "pt-6", children: /* @__PURE__ */ jsxs("div", { className: "flex items-start gap-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex-1 grid grid-cols-4 gap-4", children: [
                 /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
                   /* @__PURE__ */ jsx(Label, { children: "Department" }),
@@ -22969,7 +22969,7 @@ const CallSheet = () => {
               crew.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeCrew(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
             ] }) }) }, index)) })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "background", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "background", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Background Actors" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addBackground, size: "sm", children: [
@@ -23020,7 +23020,7 @@ const CallSheet = () => {
               ] })
             ] }, index)) })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "schedule", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "schedule", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Schedule / Running Order" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addScheduleRow, size: "sm", children: [
@@ -23044,7 +23044,7 @@ const CallSheet = () => {
               scheduleRows.length > 1 && /* @__PURE__ */ jsx(Button, { type: "button", variant: "destructive", size: "icon", onClick: () => removeScheduleRow(index), children: /* @__PURE__ */ jsx(Trash2, { className: "h-4 w-4" }) })
             ] }, index)) })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "requirements", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "requirements", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Department Requirements" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addRequirement, size: "sm", children: [
@@ -23067,7 +23067,7 @@ const CallSheet = () => {
               ] }, index))
             ] })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "notes", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "notes", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Notes & Safety" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
@@ -23084,7 +23084,7 @@ const CallSheet = () => {
               ] })
             ] })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "advance", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "advance", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs("div", { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Advance Schedule" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", onClick: addAdvanceRow, size: "sm", children: [
@@ -23118,7 +23118,7 @@ const CallSheet = () => {
               ] }, index))
             ] })
           ] }) }),
-          /* @__PURE__ */ jsx(TabsContent, { value: "contacts", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsx(TabsContent, { value: "contacts", children: /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Key Contacts" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
               /* @__PURE__ */ jsx(Label, { children: "Key Contacts" }),
@@ -24200,7 +24200,7 @@ const prepareImage = async (file) => {
   if (!blob) throw new ImageError("Your browser couldn't process that image.");
   return blob;
 };
-const MARGIN$1 = 15;
+const MARGIN$2 = 15;
 const BODY = "NotoSans";
 const MONO = "NotoSansMono";
 const FONT_FILES = [
@@ -24253,14 +24253,14 @@ const longDate = (iso) => {
   if (Number.isNaN(d.getTime())) return "";
   return d.toLocaleDateString(void 0, { day: "2-digit", month: "short", year: "numeric" });
 };
-const slug$1 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const slug$2 = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 function breakdownFileName(input) {
   const date = (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-  const base = `breakdown-${slug$1(input.projectTitle)}`;
+  const base = `breakdown-${slug$2(input.projectTitle)}`;
   if (input.scope === "all" || input.scenes.length !== 1) return `${base}-all-scenes-${date}.pdf`;
   const scene = input.scenes[0];
   const label2 = scene.scene_number || scene.label || "scene";
-  return `${base}-scene-${slug$1(label2)}-${date}.pdf`;
+  return `${base}-scene-${slug$2(label2)}-${date}.pdf`;
 }
 const photoSummary = (rows) => {
   const refs = rows.filter((p) => p.is_reference);
@@ -24285,7 +24285,7 @@ async function buildBreakdownPDF(input) {
   const { body, mono } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN$1 * 2;
+  const contentW = pageW - MARGIN$2 * 2;
   let y = 28;
   const ensure = (needed) => {
     if (y + needed > pageH - 20) {
@@ -24300,7 +24300,7 @@ async function buildBreakdownPDF(input) {
     const lines = doc.splitTextToSize(text, contentW);
     ensure(lines.length * (size2 * 0.45) + 2);
     lines.forEach((l) => {
-      doc.text(l, MARGIN$1, y);
+      doc.text(l, MARGIN$2, y);
       y += size2 * 0.45;
     });
   };
@@ -24343,7 +24343,7 @@ async function buildBreakdownPDF(input) {
             const by = item.checked && item.checked_by_name ? `${item.checked_by_name}${shortDate$1(item.checked_at) ? ` · ${shortDate$1(item.checked_at)}` : ""}` : "—";
             return [item.checked ? "[x]" : "[ ]", text, by, photoSummary(input.photos.filter((p) => p.item_id === item.id))];
           }),
-          margin: { left: MARGIN$1, right: MARGIN$1, top: 28, bottom: 20 },
+          margin: { left: MARGIN$2, right: MARGIN$2, top: 28, bottom: 20 },
           theme: "grid",
           styles: {
             font: body,
@@ -24396,7 +24396,7 @@ async function buildBreakdownPDF(input) {
             doc.setFont(mono, "normal");
             doc.setFontSize(8.5);
           }
-          doc.text(l, MARGIN$1, y);
+          doc.text(l, MARGIN$2, y);
           y += 4;
         });
       });
@@ -24409,21 +24409,21 @@ async function buildBreakdownPDF(input) {
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN$1, 14);
+    doc.text(`SCRIPT BREAKDOWN — ${input.projectTitle}`, MARGIN$2, 14);
     if (input.company) {
       doc.setFont(body, "normal");
       doc.setFontSize(9);
       doc.setTextColor(110, 110, 110);
-      doc.text(input.company, pageW - MARGIN$1, 14, { align: "right" });
+      doc.text(input.company, pageW - MARGIN$2, 14, { align: "right" });
     }
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN$1, 17.5, pageW - MARGIN$1, 17.5);
+    doc.line(MARGIN$2, 17.5, pageW - MARGIN$2, 17.5);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$1, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$1, pageH - 10, { align: "right" });
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN$2, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$2, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -25207,7 +25207,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
   useEffect(() => {
     loadCrew();
   }, [loadCrew]);
-  const copy = async () => {
+  const copy2 = async () => {
     try {
       await navigator.clipboard.writeText(link);
       toast({ title: "Link copied" });
@@ -25260,7 +25260,7 @@ const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onCha
       fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
     }, children: link }),
     /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
-      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$8 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: copy2, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$8 }, children: [
         /* @__PURE__ */ jsx(Copy, { size: 15 }),
         " Copy link"
       ] }),
@@ -26396,11 +26396,11 @@ const parseAmount = (raw2) => {
   return negative ? -n : n;
 };
 const round2 = (n) => Math.round((Number.isFinite(n) ? n : 0) * 100) / 100;
-const MARGIN = 15;
-const slug = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const MARGIN$1 = 15;
+const slug$1 = (s) => (s || "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
 const today$2 = () => (/* @__PURE__ */ new Date()).toISOString().slice(0, 10);
-const expensesFileName = (title, ext) => `expenses-${slug(title)}-${today$2()}.${ext}`;
-const expenseReportFileName = (title) => `expense-report-${slug(title)}-${today$2()}.pdf`;
+const expensesFileName = (title, ext) => `expenses-${slug$1(title)}-${today$2()}.${ext}`;
+const expenseReportFileName = (title) => `expense-report-${slug$1(title)}-${today$2()}.pdf`;
 const dayLabel = (iso) => {
   if (!iso) return "";
   const d = /* @__PURE__ */ new Date(`${iso}T00:00:00`);
@@ -26628,7 +26628,7 @@ async function buildExpensesPDF(input) {
   const { body } = await loadUnicodeFonts(doc);
   const pageW = doc.internal.pageSize.getWidth();
   const pageH = doc.internal.pageSize.getHeight();
-  const contentW = pageW - MARGIN * 2;
+  const contentW = pageW - MARGIN$1 * 2;
   let y = 30;
   const ensure = (needed) => {
     if (y + needed > pageH - 20) {
@@ -26643,7 +26643,7 @@ async function buildExpensesPDF(input) {
     const lines = doc.splitTextToSize(text, contentW);
     ensure(lines.length * (size2 * 0.45) + 2);
     lines.forEach((l) => {
-      doc.text(l, MARGIN, y);
+      doc.text(l, MARGIN$1, y);
       y += size2 * 0.45;
     });
   };
@@ -26684,7 +26684,7 @@ async function buildExpensesPDF(input) {
         formatMoney$a(t.paid, t.currency),
         formatMoney$a(t.rejected, t.currency)
       ]],
-      margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+      margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
       theme: "grid",
       styles: tableStyles,
       headStyles,
@@ -26698,7 +26698,7 @@ async function buildExpensesPDF(input) {
         startY: y,
         head: [["Department", "Approved + paid", "Pending"]],
         body: t.departments.map((d) => [d.department, formatMoney$a(d.settled, t.currency), formatMoney$a(d.pending, t.currency)]),
-        margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+        margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
         theme: "grid",
         styles: tableStyles,
         headStyles,
@@ -26724,7 +26724,7 @@ ${e.invoice_number}` : ""}`,
         statusDef(e.status).label,
         formatMoney$a(e.amount, e.currency)
       ]),
-      margin: { left: MARGIN, right: MARGIN, top: 30, bottom: 20 },
+      margin: { left: MARGIN$1, right: MARGIN$1, top: 30, bottom: 20 },
       theme: "grid",
       styles: { ...tableStyles, fontSize: 8 },
       headStyles: { ...headStyles, fontSize: 8 },
@@ -26755,11 +26755,11 @@ ${e.invoice_number}` : ""}`,
       doc.setFont(body, "normal");
       doc.setFontSize(9);
       doc.setTextColor(60, 60, 60);
-      doc.text(doc.splitTextToSize(img.caption, contentW), MARGIN, y);
+      doc.text(doc.splitTextToSize(img.caption, contentW), MARGIN$1, y);
       y += 6;
       const availH = pageH - y - 20;
       const scale = Math.min(contentW / img.width, availH / img.height);
-      doc.addImage(img.dataUrl, "JPEG", MARGIN, y, img.width * scale, img.height * scale);
+      doc.addImage(img.dataUrl, "JPEG", MARGIN$1, y, img.width * scale, img.height * scale);
     });
   }
   const generated = (/* @__PURE__ */ new Date()).toLocaleString();
@@ -26770,20 +26770,20 @@ ${e.invoice_number}` : ""}`,
     doc.setFont(body, "bold");
     doc.setFontSize(10);
     doc.setTextColor(20, 20, 20);
-    doc.text(`EXPENSE REPORT — ${input.productionTitle}`, MARGIN, 13);
+    doc.text(`EXPENSE REPORT — ${input.productionTitle}`, MARGIN$1, 13);
     doc.setFont(body, "normal");
     doc.setFontSize(8);
     doc.setTextColor(110, 110, 110);
-    if (input.company) doc.text(input.company, pageW - MARGIN, 13, { align: "right" });
-    doc.text(filterText, MARGIN, 18);
-    doc.text(`Generated ${generated}`, pageW - MARGIN, 18, { align: "right" });
+    if (input.company) doc.text(input.company, pageW - MARGIN$1, 13, { align: "right" });
+    doc.text(filterText, MARGIN$1, 18);
+    doc.text(`Generated ${generated}`, pageW - MARGIN$1, 18, { align: "right" });
     doc.setDrawColor(190, 190, 190);
     doc.setLineWidth(0.2);
-    doc.line(MARGIN, 21, pageW - MARGIN, 21);
+    doc.line(MARGIN$1, 21, pageW - MARGIN$1, 21);
     doc.setFontSize(8);
     doc.setTextColor(130, 130, 130);
-    doc.text("filmmakergenius.com", MARGIN, pageH - 10);
-    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+    doc.text("filmmakergenius.com", MARGIN$1, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN$1, pageH - 10, { align: "right" });
   }
   return doc;
 }
@@ -27978,7 +27978,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
                   ["xlsx", "Excel (.xlsx)", FileSpreadsheet],
                   ["csv", "CSV", Table],
                   ["pdf", "PDF report", FileText]
-                ].map(([kind, copy, Icon]) => /* @__PURE__ */ jsxs(
+                ].map(([kind, copy2, Icon]) => /* @__PURE__ */ jsxs(
                   "button",
                   {
                     role: "menuitem",
@@ -28002,7 +28002,7 @@ const ExpenseWorkspace = ({ projectId, productionTitle, company, defaultCurrency
                     children: [
                       /* @__PURE__ */ jsx(Icon, { size: 16 }),
                       " ",
-                      copy
+                      copy2
                     ]
                   },
                   kind
@@ -28286,23 +28286,12 @@ const WMO = {
 };
 const CACHE_MS = 30 * 60 * 1e3;
 const cache = /* @__PURE__ */ new Map();
-const UNIT_KEY = "fg-weather-unit";
-const readUnit = () => {
-  try {
-    return localStorage.getItem(UNIT_KEY) === "f" ? "f" : "c";
-  } catch {
-    return "c";
-  }
-};
-const writeUnit = (u) => {
-  try {
-    localStorage.setItem(UNIT_KEY, u);
-  } catch {
-  }
-};
 const clock = (iso) => (iso || "").slice(11, 16);
 async function fetchWeather(location) {
   var _a2, _b2;
+  const key = location.trim().toLowerCase();
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.at < CACHE_MS) return cached.data;
   const geoRes = await fetch(
     `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=en&format=json`
   );
@@ -28327,14 +28316,47 @@ async function fetchWeather(location) {
       sunset: ((_c = d.sunset) == null ? void 0 : _c[i]) || ""
     };
   };
-  return {
+  const data = {
     place: [hit.name, hit.country].filter(Boolean).join(", "),
     temp: Math.round(json.current.temperature_2m),
     code: json.current.weather_code,
     today: day(0),
     tomorrow: ((_b2 = d.time) == null ? void 0 : _b2.length) > 1 ? day(1) : null
   };
+  cache.set(key, { at: Date.now(), data });
+  return data;
 }
+async function weatherLine(location) {
+  if (!location || !location.trim()) return "";
+  try {
+    const d = await fetchWeather(location.trim());
+    return [
+      d.place,
+      `${d.temp}°C`,
+      WMO[d.code] ?? "",
+      `High ${d.today.max}° / Low ${d.today.min}°`,
+      d.today.rain != null ? `Rain ${d.today.rain}%` : "",
+      d.today.sunrise ? `Sunrise ${clock(d.today.sunrise)}` : "",
+      d.today.sunset ? `Sunset ${clock(d.today.sunset)}` : ""
+    ].filter(Boolean).join(" · ");
+  } catch {
+    return "";
+  }
+}
+const UNIT_KEY = "fg-weather-unit";
+const readUnit = () => {
+  try {
+    return localStorage.getItem(UNIT_KEY) === "f" ? "f" : "c";
+  } catch {
+    return "c";
+  }
+};
+const writeUnit = (u) => {
+  try {
+    localStorage.setItem(UNIT_KEY, u);
+  } catch {
+  }
+};
 const WeatherBar = ({ location }) => {
   const [data, setData] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -28342,19 +28364,11 @@ const WeatherBar = ({ location }) => {
   const [unit, setUnit] = useState(readUnit);
   const [showTomorrow, setShowTomorrow] = useState(false);
   useEffect(() => {
-    const key = location.trim().toLowerCase();
-    if (!key) return;
+    if (!location.trim()) return;
     let live = true;
-    const cached = cache.get(key);
-    if (cached && Date.now() - cached.at < CACHE_MS) {
-      setData(cached.data);
-      setFailed(false);
-      return;
-    }
     setLoading(true);
     setFailed(false);
     fetchWeather(location.trim()).then((d) => {
-      cache.set(key, { at: Date.now(), data: d });
       if (live) setData(d);
     }).catch(() => {
       if (live) {
@@ -28461,6 +28475,637 @@ const LANGUAGES = {
   fi: { name: "Finnish", native: "Suomi" }
 };
 const LANGUAGE_CODES = Object.keys(LANGUAGES);
+function languageLabel(code) {
+  const info = LANGUAGES[code];
+  if (!info) return code;
+  return info.name === info.native ? info.name : `${info.name} (${info.native})`;
+}
+const SPREADSHEET_MAX_BYTES = 5 * 1024 * 1024;
+const isSpreadsheetName = (name) => /\.(csv|xlsx|xls)$/i.test(name);
+function isSpreadsheetFile(file) {
+  return isSpreadsheetName(file.name);
+}
+async function spreadsheetToText(file) {
+  if (file.size > SPREADSHEET_MAX_BYTES) {
+    throw new Error("That spreadsheet is larger than 5 MB. Please trim it and try again.");
+  }
+  const buffer = await file.arrayBuffer();
+  const book = XLSX.read(buffer, { type: "array" });
+  const blocks = [];
+  book.SheetNames.forEach((name) => {
+    const sheet = book.Sheets[name];
+    if (!sheet) return;
+    const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, blankrows: false, defval: "" });
+    const lines = rows.map(
+      (row) => (Array.isArray(row) ? row : []).map((cell2) => cell2 == null ? "" : String(cell2).trim()).join(" | ").replace(/(\s\|\s)+$/, "").trim()
+    ).filter((line) => line.length > 0);
+    if (!lines.length) return;
+    blocks.push(book.SheetNames.length > 1 ? `${name}
+${lines.join("\n")}` : lines.join("\n"));
+  });
+  const text = blocks.join("\n\n").trim();
+  if (!text) throw new Error("That spreadsheet looks empty.");
+  return text;
+}
+const MAX_CHARS = 2e4;
+const ComposePanel = ({ languages, translating, error, onTranslate }) => {
+  const [subject, setSubject] = useState("");
+  const [sourceLanguage, setSourceLanguage] = useState("auto");
+  const [text, setText] = useState("");
+  const [sourceKind, setSourceKind] = useState("text");
+  const [fileError, setFileError] = useState("");
+  const fileRef = useRef(null);
+  const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
+  const targets = languages.filter((c) => sourceLanguage === "auto" || c !== sourceLanguage);
+  const canTranslate = text.trim().length >= 2 && targets.length > 0 && !translating && !isProcessing;
+  const applyText = (value, kind) => {
+    setText(value.slice(0, MAX_CHARS));
+    setSourceKind(kind);
+  };
+  const handleFile = async (file) => {
+    setFileError("");
+    const name = file.name.toLowerCase();
+    if (name.endsWith(".txt") || file.type === "text/plain") {
+      applyText(await file.text(), "text");
+      return;
+    }
+    if (isSpreadsheetFile(file)) {
+      try {
+        applyText(await spreadsheetToText(file), "spreadsheet");
+      } catch (e) {
+        setFileError(e instanceof Error ? e.message : "Could not read that spreadsheet.");
+      }
+      return;
+    }
+    const kind = file.type === "application/pdf" || name.endsWith(".pdf") ? "pdf" : "image";
+    processFile(
+      file,
+      (result) => {
+        if (result == null ? void 0 : result.text) applyText(result.text, kind);
+      },
+      (msg) => setFileError(msg)
+    );
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 20 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "New message" }),
+    /* @__PURE__ */ jsxs("div", { className: "st-composerow", style: { display: "flex", gap: 12, marginTop: 14, flexWrap: "wrap" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { flex: "1 1 260px", minWidth: 0 }, children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Subject (optional)" }),
+        /* @__PURE__ */ jsx(
+          "input",
+          {
+            value: subject,
+            onChange: (e) => setSubject(e.target.value),
+            placeholder: "Call time change",
+            style: inputStyle$4
+          }
+        )
+      ] }),
+      /* @__PURE__ */ jsxs("div", { style: { flex: "0 1 240px", minWidth: 0 }, children: [
+        /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "From" }),
+        /* @__PURE__ */ jsxs("select", { value: sourceLanguage, onChange: (e) => setSourceLanguage(e.target.value), style: inputStyle$4, children: [
+          /* @__PURE__ */ jsx("option", { value: "auto", style: { background: "#10101b" }, children: "Detect automatically" }),
+          LANGUAGE_CODES.map((code) => /* @__PURE__ */ jsx("option", { value: code, style: { background: "#10101b" }, children: languageLabel(code) }, code))
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 14 }, children: [
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          ref: fileRef,
+          type: "file",
+          accept: ".pdf,.png,.jpg,.jpeg,.txt,.csv,.xlsx,.xls,image/*,application/pdf",
+          style: { display: "none" },
+          onChange: (e) => {
+            var _a2;
+            const file = (_a2 = e.target.files) == null ? void 0 : _a2[0];
+            e.target.value = "";
+            if (file) handleFile(file);
+          }
+        }
+      ),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          type: "button",
+          onClick: () => {
+            var _a2;
+            return (_a2 = fileRef.current) == null ? void 0 : _a2.click();
+          },
+          disabled: isProcessing,
+          style: {
+            minHeight: 44,
+            padding: "0 16px",
+            borderRadius: 10,
+            background: "rgba(255,255,255,0.05)",
+            color: "#fff",
+            border: "1px dashed rgba(255,255,255,0.22)",
+            fontWeight: 600,
+            fontSize: 15,
+            cursor: "pointer",
+            fontFamily: "'Inter Tight', sans-serif",
+            display: "inline-flex",
+            alignItems: "center",
+            gap: 8,
+            opacity: isProcessing ? 0.5 : 1
+          },
+          children: [
+            /* @__PURE__ */ jsx(Upload, { size: 16 }),
+            " Upload a document — PDF, photo, or spreadsheet"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.4)", marginTop: 8 }, children: "PDFs and photos are read with AI (1 extra credit). Spreadsheets and text files are read on your device." })
+    ] }),
+    isProcessing && /* @__PURE__ */ jsx("div", { style: { marginTop: 14 }, children: /* @__PURE__ */ jsx(
+      PDFUploadProgress,
+      {
+        fileName: currentFileName,
+        fileSize: currentFileSize,
+        stage: currentStage === "idle" ? "reading" : currentStage,
+        elapsedTime,
+        progress
+      }
+    ) }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
+      /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Type or paste your message" }),
+      /* @__PURE__ */ jsx(
+        "textarea",
+        {
+          value: text,
+          onChange: (e) => setText(e.target.value.slice(0, MAX_CHARS)),
+          rows: 8,
+          placeholder: "Call time tomorrow moves to 06:30 at the Sarajevo set.\nPlease be on time — scene 12A.",
+          style: {
+            ...inputStyle$4,
+            minHeight: 160,
+            maxHeight: "60vh",
+            resize: "vertical",
+            lineHeight: 1.6,
+            whiteSpace: "pre-wrap"
+          }
+        }
+      ),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", marginTop: 6 }, children: [
+        /* @__PURE__ */ jsxs("span", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.4)" }, children: [
+          "Source: ",
+          sourceKind === "text" ? "typed or pasted" : sourceKind
+        ] }),
+        /* @__PURE__ */ jsxs("span", { style: { fontSize: 12.5, color: text.length >= MAX_CHARS ? "#ff9d9d" : "rgba(255,255,255,0.4)" }, children: [
+          text.length.toLocaleString(),
+          " / ",
+          MAX_CHARS.toLocaleString()
+        ] })
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 16 }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 8 }, children: "It will produce:" }),
+      /* @__PURE__ */ jsx("div", { style: { display: "flex", flexWrap: "wrap", gap: 8 }, children: targets.length === 0 ? /* @__PURE__ */ jsx("span", { style: { fontSize: 13.5, color: "#ff9d9d" }, children: "Add another production language above to translate into." }) : targets.map((code) => {
+        var _a2;
+        return /* @__PURE__ */ jsx(
+          "span",
+          {
+            style: {
+              padding: "6px 12px",
+              borderRadius: 9999,
+              fontSize: 13.5,
+              fontWeight: 600,
+              border: "1px solid rgba(0,212,170,0.4)",
+              background: "rgba(0,212,170,0.12)",
+              color: "#00d4aa"
+            },
+            children: ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code
+          },
+          code
+        );
+      }) })
+    ] }),
+    (error || fileError) && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14, marginTop: 14 }, children: error || fileError }),
+    /* @__PURE__ */ jsx(
+      "button",
+      {
+        onClick: () => onTranslate({ subject: subject.trim(), sourceLanguage, text, sourceKind }),
+        disabled: !canTranslate,
+        style: {
+          ...primaryBtn$3,
+          marginTop: 18,
+          opacity: canTranslate ? 1 : 0.45,
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 8
+        },
+        children: translating ? /* @__PURE__ */ jsxs(Fragment, { children: [
+          /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+          " Translating…"
+        ] }) : `Translate into ${targets.length} language${targets.length === 1 ? "" : "s"} (1 credit)`
+      }
+    )
+  ] });
+};
+function messageTranslations(m) {
+  const t = m.translations || {};
+  return Object.entries(t).filter(([code, value]) => code !== "_subjects" && typeof value === "string" && value.trim()).map(([code, value]) => ({ code, text: value }));
+}
+function messageSubjects(m) {
+  var _a2;
+  const subs = (_a2 = m.translations) == null ? void 0 : _a2._subjects;
+  if (!subs || typeof subs !== "object") return {};
+  const out = {};
+  Object.entries(subs).forEach(([code, value]) => {
+    if (typeof value === "string" && value.trim()) out[code] = value;
+  });
+  return out;
+}
+const RTL_LANGUAGES = /* @__PURE__ */ new Set(["ar", "he"]);
+const PDF_UNSUPPORTED_LANGUAGES = /* @__PURE__ */ new Set(["ar", "he", "hi", "zh", "ja", "ko"]);
+const MARGIN = 15;
+const nativeName = (code) => {
+  var _a2;
+  return ((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.native) || code;
+};
+const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "production";
+const stamp = (iso) => {
+  const d = iso ? new Date(iso) : /* @__PURE__ */ new Date();
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+};
+function messageFileName(productionTitle, ext, createdAt) {
+  return `message-${slug(productionTitle)}-${stamp(createdAt)}.${ext}`;
+}
+async function buildHeader(input) {
+  const { message, productionTitle } = input;
+  const targets = messageTranslations(message).map((t) => t.code);
+  const lines = [
+    productionTitle,
+    message.subject ? `Subject: ${message.subject}` : "",
+    new Date(message.created_at || Date.now()).toLocaleString(),
+    `${languageLabel(message.source_language)} → ${targets.map((c) => nativeName(c)).join(", ") || "—"}`
+  ].filter(Boolean);
+  const weather = await weatherLine(input.shootLocation);
+  if (weather) lines.push(weather);
+  return { lines };
+}
+async function buildMessageText(input) {
+  const { message } = input;
+  const header = await buildHeader(input);
+  const subjects = messageSubjects(message);
+  const blocks = [header.lines.join("\n")];
+  blocks.push(
+    `— ${nativeName(message.source_language)} (Original) —
+${message.subject ? `${message.subject}
+
+` : ""}${message.source_text}`
+  );
+  messageTranslations(message).forEach(({ code, text }) => {
+    blocks.push(`— ${nativeName(code)} —
+${subjects[code] ? `${subjects[code]}
+
+` : ""}${text}`);
+  });
+  return `${blocks.join("\n\n\n")}
+`;
+}
+function allLanguagesText(message) {
+  const subjects = messageSubjects(message);
+  const blocks = [
+    `— ${nativeName(message.source_language)} (Original) —
+${message.subject ? `${message.subject}
+
+` : ""}${message.source_text}`,
+    ...messageTranslations(message).map(
+      ({ code, text }) => `— ${nativeName(code)} —
+${subjects[code] ? `${subjects[code]}
+
+` : ""}${text}`
+    )
+  ];
+  return blocks.join("\n\n\n");
+}
+async function downloadMessageText(input) {
+  const text = await buildMessageText(input);
+  const blob = new Blob([`\uFEFF${text}`], { type: "text/plain;charset=utf-8" });
+  const url2 = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url2;
+  a.download = messageFileName(input.productionTitle, "txt", input.message.created_at);
+  a.click();
+  URL.revokeObjectURL(url2);
+}
+async function buildMessagePDF(input) {
+  const { message } = input;
+  const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "a4" });
+  const { body } = await loadUnicodeFonts(doc);
+  const pageW = doc.internal.pageSize.getWidth();
+  const pageH = doc.internal.pageSize.getHeight();
+  const contentW = pageW - MARGIN * 2;
+  const header = await buildHeader(input);
+  const subjects = messageSubjects(message);
+  let y = 28;
+  const line = (text, size2, style, grey = false) => {
+    doc.setFont(body, style);
+    doc.setFontSize(size2);
+    doc.setTextColor(grey ? 110 : 20, grey ? 110 : 20, grey ? 110 : 20);
+    const lines = doc.splitTextToSize(text || " ", contentW);
+    lines.forEach((l) => {
+      if (y + size2 * 0.5 > pageH - 20) {
+        doc.addPage();
+        y = 28;
+        doc.setFont(body, style);
+        doc.setFontSize(size2);
+      }
+      doc.text(l, MARGIN, y);
+      y += size2 * 0.5;
+    });
+  };
+  const paragraphs = (text, size2) => {
+    text.split(/\r?\n/).forEach((raw2) => line(raw2, size2, "normal"));
+  };
+  header.lines.slice(1).forEach((l) => line(l, 9.5, "normal", true));
+  y += 4;
+  line(`${nativeName(message.source_language)} — Original`, 13, "bold");
+  y += 1;
+  if (message.subject) line(message.subject, 10.5, "bold");
+  paragraphs(message.source_text, 10);
+  y += 6;
+  const skipped = [];
+  messageTranslations(message).forEach(({ code, text }) => {
+    var _a2;
+    if (PDF_UNSUPPORTED_LANGUAGES.has(code)) {
+      skipped.push(`${languageLabel(code)}: see the app or the .txt download`);
+      return;
+    }
+    line(`${nativeName(code)} — ${((_a2 = LANGUAGES[code]) == null ? void 0 : _a2.name) || code}`, 13, "bold");
+    y += 1;
+    if (subjects[code]) line(subjects[code], 10.5, "bold");
+    paragraphs(text, 10);
+    y += 6;
+  });
+  if (skipped.length) {
+    line("Not printable in this PDF", 11, "bold");
+    skipped.forEach((s) => line(s, 9.5, "normal", true));
+  }
+  const generated = (/* @__PURE__ */ new Date()).toLocaleString();
+  const pages = doc.getNumberOfPages();
+  for (let i = 1; i <= pages; i += 1) {
+    doc.setPage(i);
+    doc.setFont(body, "bold");
+    doc.setFontSize(10);
+    doc.setTextColor(20, 20, 20);
+    doc.text(`CREW MESSAGE — ${input.productionTitle}`, MARGIN, 14);
+    doc.setDrawColor(190, 190, 190);
+    doc.setLineWidth(0.2);
+    doc.line(MARGIN, 17.5, pageW - MARGIN, 17.5);
+    doc.setFont(body, "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(130, 130, 130);
+    doc.text(`Generated ${generated} · filmmakergenius.com`, MARGIN, pageH - 10);
+    doc.text(`Page ${i} of ${pages}`, pageW - MARGIN, pageH - 10, { align: "right" });
+  }
+  return doc;
+}
+async function downloadMessagePDF(input) {
+  const doc = await buildMessagePDF(input);
+  doc.save(messageFileName(input.productionTitle, "pdf", input.message.created_at));
+}
+const copy = async (text, label2) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast$1.success(`${label2} copied`);
+  } catch {
+    toast$1.error("Could not copy — please select the text instead.");
+  }
+};
+const Card = ({
+  code,
+  heading,
+  subject,
+  text
+}) => {
+  const rtl = RTL_LANGUAGES.has(code);
+  const whatsapp = `https://wa.me/?text=${encodeURIComponent(`${subject ? `${subject}
+
+` : ""}${text}`)}`;
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 18, marginBottom: 14 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", gap: 10, flexWrap: "wrap", alignItems: "center" }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#00d4aa" }, children: heading }),
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
+        /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: () => copy(`${subject ? `${subject}
+
+` : ""}${text}`, heading),
+            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+            children: [
+              /* @__PURE__ */ jsx(Copy, { size: 15 }),
+              " Copy"
+            ]
+          }
+        ),
+        /* @__PURE__ */ jsxs(
+          "a",
+          {
+            href: whatsapp,
+            target: "_blank",
+            rel: "noopener noreferrer",
+            style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, textDecoration: "none", lineHeight: "44px" },
+            children: [
+              /* @__PURE__ */ jsx(MessageCircle, { size: 15 }),
+              " Share on WhatsApp"
+            ]
+          }
+        )
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { dir: rtl ? "rtl" : "ltr", style: { marginTop: 12 }, children: [
+      subject && /* @__PURE__ */ jsx("div", { style: { fontSize: 15, fontWeight: 700, marginBottom: 8, color: "#fff" }, children: subject }),
+      /* @__PURE__ */ jsx("div", { style: { whiteSpace: "pre-wrap", fontSize: 15, lineHeight: 1.65, color: "rgba(255,255,255,0.85)" }, children: text })
+    ] })
+  ] });
+};
+const ResultView = ({ message, productionTitle, shootLocation, onNewMessage }) => {
+  var _a2;
+  const [busy, setBusy] = useState(null);
+  const subjects = messageSubjects(message);
+  const translations = messageTranslations(message);
+  const run = async (kind) => {
+    setBusy(kind);
+    try {
+      const input = { message, productionTitle, shootLocation };
+      if (kind === "txt") await downloadMessageText(input);
+      else await downloadMessagePDF(input);
+      toast$1.success(kind === "txt" ? "Text file downloaded" : "PDF downloaded");
+    } catch (e) {
+      toast$1.error(e instanceof Error ? e.message : "Download failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { marginBottom: 32 }, children: [
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 16 }, children: [
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => copy(allLanguagesText(message), "All languages"),
+          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6 },
+          children: [
+            /* @__PURE__ */ jsx(Copy, { size: 15 }),
+            " Copy all"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => run("txt"),
+          disabled: busy !== null,
+          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
+          children: [
+            busy === "txt" ? /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }) : /* @__PURE__ */ jsx(FileText, { size: 15 }),
+            " Download .txt"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => run("pdf"),
+          disabled: busy !== null,
+          style: { ...ghostBtn$2, display: "inline-flex", alignItems: "center", gap: 6, opacity: busy ? 0.5 : 1 },
+          children: [
+            busy === "pdf" ? /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }) : /* @__PURE__ */ jsx(Download, { size: 15 }),
+            " Download PDF"
+          ]
+        }
+      ),
+      /* @__PURE__ */ jsxs("button", { onClick: onNewMessage, style: { ...primaryBtn$3, display: "inline-flex", alignItems: "center", gap: 6 }, children: [
+        /* @__PURE__ */ jsx(Plus, { size: 16 }),
+        " New message"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsx(
+      Card,
+      {
+        code: message.source_language,
+        heading: `${((_a2 = LANGUAGES[message.source_language]) == null ? void 0 : _a2.native) || message.source_language} — Original`,
+        subject: message.subject || void 0,
+        text: message.source_text
+      }
+    ),
+    translations.map(({ code, text }) => {
+      var _a3, _b2;
+      return /* @__PURE__ */ jsx(
+        Card,
+        {
+          code,
+          heading: `${((_a3 = LANGUAGES[code]) == null ? void 0 : _a3.native) || code} — ${((_b2 = LANGUAGES[code]) == null ? void 0 : _b2.name) || languageLabel(code)}`,
+          subject: subjects[code],
+          text
+        },
+        code
+      );
+    })
+  ] });
+};
+const PAGE = 20;
+const MESSAGE_FIELDS = "id, project_id, subject, source_language, source_text, translations, source_kind, created_by_name, created_at";
+const MessageHistory = ({ projectId, refreshKey, onOpen }) => {
+  const [rows, setRows] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState(false);
+  const load = useCallback(async (limit) => {
+    setLoading(true);
+    const { data } = await supabase.from("production_messages").select(MESSAGE_FIELDS).eq("project_id", projectId).order("created_at", { ascending: false }).limit(limit + 1);
+    const list = data || [];
+    setHasMore(list.length > limit);
+    setRows(list.slice(0, limit));
+    setLoading(false);
+  }, [projectId]);
+  useEffect(() => {
+    if (!projectId) return;
+    load(PAGE);
+  }, [projectId, refreshKey, load]);
+  const remove = async (id) => {
+    if (!window.confirm("Delete this message? This cannot be undone.")) return;
+    await supabase.from("production_messages").delete().eq("id", id);
+    setRows((prev) => prev.filter((r) => r.id !== id));
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 48 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700 }, children: "Message history" }),
+    loading && rows.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.55)", marginTop: 14, fontSize: 14 }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 15, className: "animate-spin" }),
+      " Loading…"
+    ] }) : rows.length === 0 ? /* @__PURE__ */ jsx("p", { style: { fontSize: 13.5, color: "rgba(255,255,255,0.5)", marginTop: 10 }, children: "Nothing yet. Your translated messages will be listed here." }) : /* @__PURE__ */ jsxs("div", { style: { marginTop: 14, display: "flex", flexDirection: "column", gap: 10 }, children: [
+      rows.map((row) => {
+        var _a2, _b2;
+        const count2 = messageTranslations(row).length;
+        const title = ((_a2 = row.subject) == null ? void 0 : _a2.trim()) || `${row.source_text.slice(0, 60)}${row.source_text.length > 60 ? "…" : ""}`;
+        return /* @__PURE__ */ jsxs(
+          "div",
+          {
+            style: {
+              display: "flex",
+              gap: 12,
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "12px 14px",
+              borderRadius: 12,
+              border: "1px solid rgba(255,255,255,0.08)",
+              background: "rgba(255,255,255,0.02)",
+              flexWrap: "wrap"
+            },
+            children: [
+              /* @__PURE__ */ jsxs(
+                "button",
+                {
+                  onClick: () => onOpen(row),
+                  style: {
+                    flex: "1 1 220px",
+                    minWidth: 0,
+                    textAlign: "left",
+                    minHeight: 44,
+                    background: "none",
+                    border: "none",
+                    color: "#fff",
+                    cursor: "pointer",
+                    fontFamily: "'Inter Tight', sans-serif",
+                    padding: 0
+                  },
+                  children: [
+                    /* @__PURE__ */ jsx("div", { style: { fontSize: 14.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis" }, children: title }),
+                    /* @__PURE__ */ jsxs("div", { style: { fontSize: 12.5, color: "rgba(255,255,255,0.45)", marginTop: 4 }, children: [
+                      timeAgo(row.created_at),
+                      " · ",
+                      ((_b2 = LANGUAGES[row.source_language]) == null ? void 0 : _b2.native) || row.source_language,
+                      " → ",
+                      count2,
+                      " language",
+                      count2 === 1 ? "" : "s",
+                      " · ",
+                      row.created_by_name
+                    ] })
+                  ]
+                }
+              ),
+              /* @__PURE__ */ jsx(
+                "button",
+                {
+                  onClick: () => remove(row.id),
+                  "aria-label": "Delete message",
+                  style: { ...ghostBtn$2, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" },
+                  children: /* @__PURE__ */ jsx(Trash2, { size: 16 })
+                }
+              )
+            ]
+          },
+          row.id
+        );
+      }),
+      hasMore && /* @__PURE__ */ jsx("button", { onClick: () => load(rows.length + PAGE), style: { ...ghostBtn$2, marginTop: 4 }, children: "Load more" })
+    ] })
+  ] });
+};
 const STEPS$3 = [
   { n: 1, title: "Pick your production", text: "And the languages your crew speaks." },
   { n: 2, title: "Type, paste or upload", text: "A message, a safety note or a document." },
@@ -28473,13 +29118,44 @@ const SetTranslator = () => {
   const [location, setLocation] = useState("");
   const [savedLocation, setSavedLocation] = useState("");
   const [savingLocation, setSavingLocation] = useState(false);
+  const [message, setMessage] = useState(null);
+  const [translating, setTranslating] = useState(false);
+  const [translateError, setTranslateError] = useState("");
+  const [historyKey, setHistoryKey] = useState(0);
   useEffect(() => {
     var _a2;
     if (!selectedProject) return;
     setLanguages(((_a2 = selectedProject.languages) == null ? void 0 : _a2.length) ? selectedProject.languages : ["en"]);
     setLocation(selectedProject.shoot_location || "");
     setSavedLocation(selectedProject.shoot_location || "");
+    setMessage(null);
+    setTranslateError("");
   }, [selectedProject]);
+  const translate = async (payload) => {
+    if (!selectedProject) return;
+    setTranslating(true);
+    setTranslateError("");
+    try {
+      const data = await aiInvoke("translate-message", {
+        body: {
+          project_id: selectedProject.id,
+          subject: payload.subject || void 0,
+          text: payload.text,
+          source_language: payload.sourceLanguage,
+          source_kind: payload.sourceKind
+        }
+      });
+      if (!(data == null ? void 0 : data.message)) throw new Error("The translation could not be saved.");
+      setMessage(data.message);
+      setHistoryKey((k) => k + 1);
+    } catch (e) {
+      if (!(e instanceof InsufficientCreditsError)) {
+        setTranslateError(e instanceof Error ? e.message : "Translation failed. Please try again.");
+      }
+    } finally {
+      setTranslating(false);
+    }
+  };
   const toggleLanguage = async (code) => {
     if (!selectedProject) return;
     const next = languages.includes(code) ? languages.filter((c) => c !== code) : [...languages, code];
@@ -28604,7 +29280,34 @@ const SetTranslator = () => {
           ] }),
           savedLocation && /* @__PURE__ */ jsx(WeatherBar, { location: savedLocation })
         ] }),
-        /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, marginBottom: 48, textAlign: "center", color: "rgba(255,255,255,0.55)" }, children: "Translation is coming next." })
+        message ? /* @__PURE__ */ jsx(
+          ResultView,
+          {
+            message,
+            productionTitle: selectedProject.title,
+            shootLocation: savedLocation || selectedProject.shoot_location,
+            onNewMessage: () => setMessage(null)
+          }
+        ) : /* @__PURE__ */ jsx(
+          ComposePanel,
+          {
+            languages,
+            translating,
+            error: translateError,
+            onTranslate: translate
+          }
+        ),
+        /* @__PURE__ */ jsx(
+          MessageHistory,
+          {
+            projectId: selectedProject.id,
+            refreshKey: historyKey,
+            onOpen: (m) => {
+              setMessage(m);
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+          }
+        )
       ] })
     ] })
   ] });
@@ -28896,7 +29599,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
       setConfirmId(null);
     }
   };
-  const tabBtn = (value, copy) => /* @__PURE__ */ jsx(
+  const tabBtn = (value, copy2) => /* @__PURE__ */ jsx(
     "button",
     {
       onClick: () => setKind(value),
@@ -28911,7 +29614,7 @@ const CrewExpenses = ({ token, identity, defaultCurrency, onChangeIdentity }) =>
         background: kind === value ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
         color: kind === value ? TEAL$3 : "#fff"
       },
-      children: copy
+      children: copy2
     },
     value
   );
@@ -29497,7 +30200,7 @@ const CrewBreakdown = () => {
           )
         ] })
       ] }),
-      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"]].map(([key, copy]) => /* @__PURE__ */ jsx(
+      !checking && !dead && identity && /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginBottom: 22 }, children: [["breakdown", "Breakdown"], ["receipts", "Receipts"]].map(([key, copy2]) => /* @__PURE__ */ jsx(
         "button",
         {
           onClick: () => {
@@ -29517,7 +30220,7 @@ const CrewBreakdown = () => {
             color: tab === key ? TEAL$8 : "#fff",
             fontFamily: "'Inter Tight', sans-serif"
           },
-          children: copy
+          children: copy2
         },
         key
       )) }),
@@ -32286,7 +32989,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
         /* @__PURE__ */ jsx("p", { className: "text-muted-foreground text-lg max-w-2xl mx-auto", children: "Educational AI guidance for understanding SAG-AFTRA and other union contracts" })
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-1 lg:grid-cols-3 gap-6", children: [
-        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$1, { className: "h-[calc(100vh-280px)] flex flex-col", children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:col-span-2", children: /* @__PURE__ */ jsxs(Card$2, { className: "h-[calc(100vh-280px)] flex flex-col", children: [
           /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
             /* @__PURE__ */ jsx(MessageCircle, { className: "h-5 w-5 text-primary" }),
             /* @__PURE__ */ jsx(CardTitle, { children: "Chat with Contract Assistant" })
@@ -32354,7 +33057,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
           ] })
         ] }) }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-          /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/30", children: [
+          /* @__PURE__ */ jsxs(Card$2, { className: "border-primary/30", children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx(Building2, { className: "h-5 w-5 text-primary" }),
@@ -32395,7 +33098,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "pb-3", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
                 /* @__PURE__ */ jsx(Upload, { className: "h-5 w-5 text-primary" }),
@@ -32436,7 +33139,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
               /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground mt-2 text-center", children: "Supports: Budget summaries, production bibles, project briefs" })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(Film, { className: "h-5 w-5 text-primary" }),
               /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Or Enter Details Manually" })
@@ -32564,7 +33267,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
               )
             ] })
           ] }),
-          suggestedAgreement && /* @__PURE__ */ jsxs(Card$1, { className: "border-primary/50 bg-primary/5", children: [
+          suggestedAgreement && /* @__PURE__ */ jsxs(Card$2, { className: "border-primary/50 bg-primary/5", children: [
             /* @__PURE__ */ jsx(CardHeader, { className: "pb-2", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(CheckCircle2, { className: "h-5 w-5 text-primary" }),
               /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: "Suggested Agreement" })
@@ -32578,7 +33281,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
               /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: suggestedAgreement.requirements })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { className: "pb-2", children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-base flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(ExternalLink, { className: "h-4 w-4" }),
               "Official SAG-AFTRA Resources"
@@ -32616,7 +33319,7 @@ What SAG-AFTRA agreement would you recommend? Please explain the requirements, c
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { className: "bg-muted/50 border-amber-500/30", children: /* @__PURE__ */ jsx(CardContent, { className: "pt-4", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2 text-xs text-muted-foreground", children: [
+          /* @__PURE__ */ jsx(Card$2, { className: "bg-muted/50 border-amber-500/30", children: /* @__PURE__ */ jsx(CardContent, { className: "pt-4", children: /* @__PURE__ */ jsxs("div", { className: "flex gap-2 text-xs text-muted-foreground", children: [
             /* @__PURE__ */ jsx(AlertTriangle, { className: "h-4 w-4 flex-shrink-0 mt-0.5 text-amber-500" }),
             /* @__PURE__ */ jsxs("div", { className: "space-y-2", children: [
               /* @__PURE__ */ jsx("p", { className: "font-semibold text-foreground", children: "Legal Notice" }),
@@ -33338,7 +34041,7 @@ function FundingStrategy() {
           }
         }
       ) }),
-      /* @__PURE__ */ jsxs(Card$1, { className: "mb-8", children: [
+      /* @__PURE__ */ jsxs(Card$2, { className: "mb-8", children: [
         /* @__PURE__ */ jsxs(CardHeader, { children: [
           /* @__PURE__ */ jsx(CardTitle, { children: STEPS$1[currentStep - 1].title }),
           /* @__PURE__ */ jsxs(CardDescription, { children: [
@@ -34642,7 +35345,7 @@ function DistributionReadiness() {
           "Back to Assessment"
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-8", children: [
-          /* @__PURE__ */ jsxs(Card$1, { className: "bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700", children: [
+          /* @__PURE__ */ jsxs(Card$2, { className: "bg-gradient-to-br from-gray-900 to-gray-800 border-gray-700", children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "text-center pb-4", children: [
               /* @__PURE__ */ jsx(CardTitle, { className: "text-3xl text-white", children: "Distribution Readiness Report" }),
               /* @__PURE__ */ jsx(CardDescription, { className: "text-gray-400", children: formData.projectTitle })
@@ -34672,7 +35375,7 @@ function DistributionReadiness() {
               ] })
             ] })
           ] }),
-          hardStops.length > 0 && /* @__PURE__ */ jsxs(Card$1, { className: "border-red-500/50 bg-red-500/10", children: [
+          hardStops.length > 0 && /* @__PURE__ */ jsxs(Card$2, { className: "border-red-500/50 bg-red-500/10", children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-red-400", children: [
               /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5" }),
               "Deal Killers Detected"
@@ -34682,7 +35385,7 @@ function DistributionReadiness() {
               stop
             ] }, i)) }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(Target, { className: "h-5 w-5" }),
               "Platform Readiness"
@@ -34716,7 +35419,7 @@ function DistributionReadiness() {
               ] }, platformId);
             }) }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recommended Next Steps" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("ol", { className: "space-y-3 list-decimal list-inside text-muted-foreground", children: [
               hardStops.length > 0 && /* @__PURE__ */ jsx("li", { children: "Address all deal-killers listed above before proceeding with platform outreach." }),
@@ -34727,7 +35430,7 @@ function DistributionReadiness() {
               /* @__PURE__ */ jsx("li", { children: "Research aggregators and distributors that work with your target platforms." })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { className: "mb-6", children: [
+          /* @__PURE__ */ jsxs(Card$2, { className: "mb-6", children: [
             /* @__PURE__ */ jsxs(CardHeader, { children: [
               /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center gap-2 text-lg", children: [
                 /* @__PURE__ */ jsx(Send, { className: "h-5 w-5" }),
@@ -34929,7 +35632,7 @@ function DistributionReadiness() {
               }
             }
           ),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-6", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-6", children: [
             currentStep === 1 && /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
               /* @__PURE__ */ jsxs("div", { children: [
                 /* @__PURE__ */ jsx("h2", { className: "text-xl font-semibold mb-4", children: "Project Setup" }),
@@ -35691,7 +36394,7 @@ function DistributionReadiness() {
                 /* @__PURE__ */ jsx("p", { className: "text-muted-foreground mb-6", children: "Review your information and generate your distribution readiness report." })
               ] }),
               /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-                /* @__PURE__ */ jsx(Card$1, { className: "border-dashed", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
+                /* @__PURE__ */ jsx(Card$2, { className: "border-dashed", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
                   /* @__PURE__ */ jsxs("h3", { className: "font-medium mb-3 flex items-center gap-2", children: [
                     /* @__PURE__ */ jsx(ImageIcon, { className: "h-4 w-4" }),
                     "Company Logo (Optional)"
@@ -35731,7 +36434,7 @@ function DistributionReadiness() {
                     ] })
                   ] })
                 ] }) }),
-                /* @__PURE__ */ jsx(Card$1, { className: "bg-muted/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
+                /* @__PURE__ */ jsx(Card$2, { className: "bg-muted/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "pt-4", children: [
                   /* @__PURE__ */ jsx("h3", { className: "font-medium mb-3", children: "Summary" }),
                   /* @__PURE__ */ jsxs("dl", { className: "grid grid-cols-2 gap-2 text-sm", children: [
                     /* @__PURE__ */ jsx("dt", { className: "text-muted-foreground", children: "Project:" }),
@@ -35807,7 +36510,7 @@ function DistributionReadiness() {
           ] }) })
         ] }),
         /* @__PURE__ */ jsxs("div", { className: "space-y-4", children: [
-          /* @__PURE__ */ jsxs(Card$1, { className: "sticky top-6", children: [
+          /* @__PURE__ */ jsxs(Card$2, { className: "sticky top-6", children: [
             /* @__PURE__ */ jsx(CardHeader, { className: "pb-3", children: /* @__PURE__ */ jsx(CardTitle, { className: "text-lg", children: "Live Readiness Score" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "text-center", children: [
@@ -36183,7 +36886,7 @@ function ScriptUploader({ onParsed }) {
     const f = e.dataTransfer.files[0];
     if (f) handleFile(f);
   }, []);
-  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "bg-gray-900 border-gray-800", children: [
     /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
       /* @__PURE__ */ jsx(FileText, { className: "w-5 h-5 text-pink-400" }),
       "Upload or paste your screenplay"
@@ -36429,7 +37132,7 @@ function CastVoiceAssigner({ parsed, assignments, onAssignmentsChange, onContinu
       setPreviewing(null);
     }
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "bg-gray-900 border-gray-800", children: [
     /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
       /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
         /* @__PURE__ */ jsx(Users, { className: "w-5 h-5 text-pink-400" }),
@@ -36692,7 +37395,7 @@ function GenerationProgress({ parsed, assignments, onComplete, onCancel }) {
     terminateTTS();
     onCancel();
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "bg-gray-900 border-gray-800", children: [
     /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "text-white flex items-center gap-2", children: [
       /* @__PURE__ */ jsx(Wand2, { className: "w-5 h-5 text-pink-400" }),
       "Generating your table read"
@@ -36765,7 +37468,7 @@ function AudioPlayer({ id, audioUrl, mp3Blob, initialTitle, onStartOver }) {
     await navigator.clipboard.writeText(link);
     toast2({ title: "Link copied", description: isPublic ? "Anyone with the link can listen." : "Heads up: this read is private — toggle public so others can listen." });
   };
-  return /* @__PURE__ */ jsxs(Card$1, { className: "bg-gray-900 border-gray-800", children: [
+  return /* @__PURE__ */ jsxs(Card$2, { className: "bg-gray-900 border-gray-800", children: [
     /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { className: "text-white flex items-center justify-between gap-2", children: editingTitle ? /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2 w-full", children: [
       /* @__PURE__ */ jsx(Input, { value: title, onChange: (e) => setTitle(e.target.value), className: "bg-gray-950 border-gray-700 text-white" }),
       /* @__PURE__ */ jsx(Button, { size: "sm", onClick: saveTitle, disabled: saving, className: "bg-pink-500 hover:bg-pink-600 text-white", children: /* @__PURE__ */ jsx(Check$1, { className: "w-4 h-4" }) })
@@ -37991,7 +38694,7 @@ function DocsLibrary() {
         ] }),
         /* @__PURE__ */ jsx(TabsContent, { value: "all", children: /* @__PURE__ */ jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6", children: documentBundles.map((bundle) => {
           const Icon = bundle.icon;
-          return /* @__PURE__ */ jsxs(Card$1, { className: "group hover:shadow-lg transition-all", children: [
+          return /* @__PURE__ */ jsxs(Card$2, { className: "group hover:shadow-lg transition-all", children: [
             /* @__PURE__ */ jsxs(CardHeader, { children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-3", children: [
                 /* @__PURE__ */ jsx("div", { className: "p-2 bg-primary/10 rounded-lg", children: /* @__PURE__ */ jsx(Icon, { className: "h-6 w-6 text-primary" }) }),
@@ -38024,7 +38727,7 @@ function DocsLibrary() {
               /* @__PURE__ */ jsx("p", { className: "text-muted-foreground", children: bundle.description })
             ] })
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "grid gap-4", children: bundle.documents.map((doc) => /* @__PURE__ */ jsx(Card$1, { onClick: doc.route ? () => navigate(doc.route) : void 0, className: doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : void 0, children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-center justify-between p-4", children: [
+          /* @__PURE__ */ jsx("div", { className: "grid gap-4", children: bundle.documents.map((doc) => /* @__PURE__ */ jsx(Card$2, { onClick: doc.route ? () => navigate(doc.route) : void 0, className: doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : void 0, children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-center justify-between p-4", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4", children: [
               /* @__PURE__ */ jsx(FileText, { className: "h-8 w-8 text-muted-foreground" }),
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38059,7 +38762,7 @@ function DocsLibrary() {
             filteredDocuments.length,
             ")"
           ] }),
-          /* @__PURE__ */ jsx("div", { className: "grid gap-4", children: filteredDocuments.map((doc) => /* @__PURE__ */ jsx(Card$1, { onClick: doc.route ? () => navigate(doc.route) : void 0, className: doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : void 0, children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-center justify-between p-4", children: [
+          /* @__PURE__ */ jsx("div", { className: "grid gap-4", children: filteredDocuments.map((doc) => /* @__PURE__ */ jsx(Card$2, { onClick: doc.route ? () => navigate(doc.route) : void 0, className: doc.route ? "cursor-pointer hover:border-primary/50 transition-colors" : void 0, children: /* @__PURE__ */ jsxs(CardContent, { className: "flex items-center justify-between p-4", children: [
             /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-4", children: [
               /* @__PURE__ */ jsx(FileText, { className: "h-8 w-8 text-muted-foreground" }),
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38341,7 +39044,7 @@ const OptionPurchaseAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38402,7 +39105,7 @@ const OptionPurchaseAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Property" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38456,7 +39159,7 @@ const OptionPurchaseAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Option Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
@@ -38519,7 +39222,7 @@ const OptionPurchaseAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Purchase Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38563,7 +39266,7 @@ const OptionPurchaseAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38615,7 +39318,7 @@ const OptionPurchaseAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -38673,7 +39376,7 @@ const OptionPurchaseAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "OPTION AND PURCHASE AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -38945,7 +39648,7 @@ const LiteraryRightsOption = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39006,7 +39709,7 @@ const LiteraryRightsOption = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Work" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39075,7 +39778,7 @@ const LiteraryRightsOption = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Option Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
@@ -39138,7 +39841,7 @@ const LiteraryRightsOption = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Purchase Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39182,7 +39885,7 @@ const LiteraryRightsOption = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39234,7 +39937,7 @@ const LiteraryRightsOption = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39292,7 +39995,7 @@ const LiteraryRightsOption = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "LITERARY RIGHTS OPTION AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -39541,7 +40244,7 @@ const WriterAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39602,7 +40305,7 @@ const WriterAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Services" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39671,7 +40374,7 @@ const WriterAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Delivery" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "delivery_schedule", children: "Delivery Schedule" }),
@@ -39701,7 +40404,7 @@ const WriterAgreement = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39773,7 +40476,7 @@ const WriterAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
@@ -39801,7 +40504,7 @@ const WriterAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -39859,7 +40562,7 @@ const WriterAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "WRITER AGREEMENT (WORK MADE FOR HIRE)" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -40133,7 +40836,7 @@ const LifeRightsAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40194,7 +40897,7 @@ const LifeRightsAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Life Story" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "life_story_description", children: "Life Story Description" }),
@@ -40224,7 +40927,7 @@ const LifeRightsAgreement = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Option Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
@@ -40287,7 +40990,7 @@ const LifeRightsAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Purchase Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40331,7 +41034,7 @@ const LifeRightsAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Cooperation" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(
@@ -40345,7 +41048,7 @@ const LifeRightsAgreement = () => {
               /* @__PURE__ */ jsx(Label, { htmlFor: "cooperation", className: "font-normal", children: "Subject will provide cooperation, interviews, and access to materials" })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40397,7 +41100,7 @@ const LifeRightsAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40455,7 +41158,7 @@ const LifeRightsAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "LIFE RIGHTS AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -40702,7 +41405,7 @@ const CollaborationAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40763,7 +41466,7 @@ const CollaborationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40820,7 +41523,7 @@ const CollaborationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Contributions & Roles" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40879,7 +41582,7 @@ const CollaborationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40906,7 +41609,7 @@ const CollaborationAgreement = () => {
               ] })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -40958,7 +41661,7 @@ const CollaborationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41016,7 +41719,7 @@ const CollaborationAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "COLLABORATION AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -41218,7 +41921,7 @@ const CertificateOfAuthorship = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41279,7 +41982,7 @@ const CertificateOfAuthorship = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Work" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41336,7 +42039,7 @@ const CertificateOfAuthorship = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: "flex items-center gap-2", children: [
               /* @__PURE__ */ jsx(
@@ -41350,7 +42053,7 @@ const CertificateOfAuthorship = () => {
               /* @__PURE__ */ jsx(Label, { htmlFor: "work_for_hire", className: "font-normal", children: "Work made for hire (Company owns all rights)" })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41408,7 +42111,7 @@ const CertificateOfAuthorship = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "CERTIFICATE OF AUTHORSHIP" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -41625,7 +42328,7 @@ const RightsAssignmentAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41686,7 +42389,7 @@ const RightsAssignmentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Property" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41743,7 +42446,7 @@ const RightsAssignmentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Assignment Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41771,7 +42474,7 @@ const RightsAssignmentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -41829,7 +42532,7 @@ const RightsAssignmentAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "RIGHTS ASSIGNMENT AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -42054,7 +42757,7 @@ const ShoppingAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42115,7 +42818,7 @@ const ShoppingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42165,7 +42868,7 @@ const ShoppingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Shopping Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42219,7 +42922,7 @@ const ShoppingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42277,7 +42980,7 @@ const ShoppingAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "SHOPPING AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -42495,7 +43198,7 @@ const NonDisclosureAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42556,7 +43259,7 @@ const NonDisclosureAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "flex items-start space-x-3", children: [
@@ -42614,7 +43317,7 @@ const NonDisclosureAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42672,7 +43375,7 @@ const NonDisclosureAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "NON-DISCLOSURE AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -42914,7 +43617,7 @@ const LLCOperatingAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Company" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -42980,7 +43683,7 @@ const LLCOperatingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Members & Contributions" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43052,7 +43755,7 @@ const LLCOperatingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Management" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43075,7 +43778,7 @@ const LLCOperatingAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Distributions" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "distributions", children: "Distributions and Allocations" }),
@@ -43090,7 +43793,7 @@ const LLCOperatingAgreement = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43148,7 +43851,7 @@ const LLCOperatingAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "OPERATING AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -43378,7 +44081,7 @@ const InvestorAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43439,7 +44142,7 @@ const InvestorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Investment" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43494,7 +44197,7 @@ const InvestorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Return Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43533,7 +44236,7 @@ const InvestorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43591,7 +44294,7 @@ const InvestorAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "INVESTOR AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -43818,7 +44521,7 @@ const FinancingTermSheet = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43857,7 +44560,7 @@ const FinancingTermSheet = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project & Amount" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43892,7 +44595,7 @@ const FinancingTermSheet = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -43999,7 +44702,7 @@ const FinancingTermSheet = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -44057,7 +44760,7 @@ const FinancingTermSheet = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "FINANCING TERM SHEET" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -44284,7 +44987,7 @@ COMPANY: ____________________________   ${v2(
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -44323,7 +45026,7 @@ COMPANY: ____________________________   ${v2(
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Net Proceeds Definition" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "net_definition", children: "Net Proceeds Definition" }),
@@ -44353,7 +45056,7 @@ COMPANY: ____________________________   ${v2(
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Waterfall Tiers" }),
               /* @__PURE__ */ jsx(Button, { type: "button", variant: "outline", size: "sm", onClick: addTier, children: "Add Tier" })
@@ -44422,7 +45125,7 @@ COMPANY: ____________________________   ${v2(
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-muted/30 border-border", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "bg-muted/30 border-border", children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { className: "text-center", children: "RECOUPMENT / WATERFALL SCHEDULE" }) }),
           /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6 font-serif text-foreground leading-relaxed", children: [
             /* @__PURE__ */ jsx("p", { children: intro }),
@@ -44659,7 +45362,7 @@ const DeferredCompensationAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -44720,7 +45423,7 @@ const DeferredCompensationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Deferral Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -44798,7 +45501,7 @@ const DeferredCompensationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -44855,7 +45558,7 @@ const DeferredCompensationAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs(Card$1, { className: "bg-muted/30 border-border", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs(Card$2, { className: "bg-muted/30 border-border", children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { className: "text-center", children: "DEFERRED COMPENSATION AGREEMENT" }) }),
           /* @__PURE__ */ jsxs(CardContent, { className: "space-y-6 font-serif text-foreground leading-relaxed", children: [
             /* @__PURE__ */ jsx("p", { children: intro }),
@@ -45098,7 +45801,7 @@ const ExecutiveProducerAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45159,7 +45862,7 @@ const ExecutiveProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45251,7 +45954,7 @@ const ExecutiveProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45309,7 +46012,7 @@ const ExecutiveProducerAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "EXECUTIVE PRODUCER AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -45546,7 +46249,7 @@ const CoProductionAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45607,7 +46310,7 @@ const CoProductionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45650,7 +46353,7 @@ const CoProductionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Contributions" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45711,7 +46414,7 @@ const CoProductionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45738,7 +46441,7 @@ const CoProductionAgreement = () => {
               ] })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45778,7 +46481,7 @@ const CoProductionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Governing Law" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -45836,7 +46539,7 @@ const CoProductionAgreement = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "CO-PRODUCTION AGREEMENT" }),
             /* @__PURE__ */ jsx("p", { children: intro }),
             clauses.map((c) => /* @__PURE__ */ jsxs("p", { children: [
@@ -45986,7 +46689,7 @@ const ScriptBreakdownSheet = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Scene Info" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -46079,7 +46782,7 @@ const ScriptBreakdownSheet = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Elements" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: elementFields.map(({ key, label: label2 }) => /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: key, children: label2 }),
@@ -46111,7 +46814,7 @@ const ScriptBreakdownSheet = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "SCRIPT BREAKDOWN SHEET" }),
             /* @__PURE__ */ jsxs("div", { className: "space-y-1", children: [
               /* @__PURE__ */ jsxs("p", { children: [
@@ -46346,7 +47049,7 @@ const StripboardProductionBoard = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "production_name", children: "Production Name" }),
@@ -46360,7 +47063,7 @@ const StripboardProductionBoard = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Strips" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addStrip, children: [
@@ -46508,7 +47211,7 @@ const StripboardProductionBoard = () => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: productionName.trim() ? `STRIPBOARD — ${productionName}` : "STRIPBOARD" }),
             /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-6 gap-1 text-xs font-bold border-b border-border pb-1", children: [
               /* @__PURE__ */ jsx("span", { children: "Scene" }),
@@ -46688,7 +47391,7 @@ const OneLineSchedule = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "production_name", children: "Production Name" }),
@@ -46702,7 +47405,7 @@ const OneLineSchedule = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Rows" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addRow, children: [
@@ -46844,7 +47547,7 @@ const OneLineSchedule = () => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: productionName.trim() ? `ONE-LINE SCHEDULE — ${productionName}` : "ONE-LINE SCHEDULE — [Production Name]" }),
             rows.map((row, index) => {
               if (row.type === "Day Break") {
@@ -47056,7 +47759,7 @@ const ShootingSchedule = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "production_name", children: "Production Name" }),
@@ -47070,7 +47773,7 @@ const ShootingSchedule = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Rows" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addRow, children: [
@@ -47264,7 +47967,7 @@ const ShootingSchedule = () => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: productionName.trim() ? `SHOOTING SCHEDULE — ${productionName}` : "SHOOTING SCHEDULE — [Production Name]" }),
             rows.map((row, index) => {
               if (row.type === "Day Header") {
@@ -47511,7 +48214,7 @@ const DayOutOfDays = () => {
           "Add Day"
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 overflow-x-auto", children: [
+      /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsxs(CardContent, { className: "p-4 overflow-x-auto", children: [
         /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base mb-4", children: productionName.trim() ? `DAY OUT OF DAYS — ${productionName}` : "DAY OUT OF DAYS — [Production Name]" }),
         /* @__PURE__ */ jsxs("table", { className: "w-full min-w-[640px] border-collapse text-xs", children: [
           /* @__PURE__ */ jsx("thead", { children: /* @__PURE__ */ jsxs("tr", { className: "bg-muted", children: [
@@ -47750,7 +48453,7 @@ const ShotList = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -47795,7 +48498,7 @@ const ShotList = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Shots" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addShot, children: [
@@ -47918,7 +48621,7 @@ const ShotList = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "SHOT LIST" }),
             /* @__PURE__ */ jsxs("p", { className: "text-center italic text-xs text-muted-foreground", children: [
               "Production: ",
@@ -48120,7 +48823,7 @@ const StoryboardTemplate = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -48148,7 +48851,7 @@ const StoryboardTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Panels" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addPanel, children: [
@@ -48156,7 +48859,7 @@ const StoryboardTemplate = () => {
                 "Add Panel"
               ] })
             ] }),
-            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: panels.map((panel2, index) => /* @__PURE__ */ jsx(Card$1, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: panels.map((panel2, index) => /* @__PURE__ */ jsx(Card$2, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
               /* @__PURE__ */ jsxs("div", { className: "relative w-full aspect-video rounded-md overflow-hidden", children: [
                 panel2.image ? /* @__PURE__ */ jsxs(Fragment, { children: [
                   /* @__PURE__ */ jsx(
@@ -48298,7 +49001,7 @@ const StoryboardTemplate = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsxs("h2", { className: "text-center font-bold tracking-wide text-base", children: [
               "STORYBOARD — ",
               v$B(productionName, "Production Name"),
@@ -48540,7 +49243,7 @@ const BudgetTopSheet = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -48594,7 +49297,7 @@ const BudgetTopSheet = () => {
               ] })
             ] })
           ] }),
-          sections.map((section, si) => /* @__PURE__ */ jsxs(Card$1, { children: [
+          sections.map((section, si) => /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { className: "text-base", children: section.name }),
               /* @__PURE__ */ jsx("span", { className: "text-sm font-semibold tabular-nums", children: money$1(subtotals[si]) })
@@ -48657,7 +49360,7 @@ const BudgetTopSheet = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "BUDGET TOP SHEET" }),
             /* @__PURE__ */ jsxs("p", { className: "text-center italic text-xs text-muted-foreground", children: [
               "Production: ",
@@ -48908,7 +49611,7 @@ const DetailedBudget = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -48962,7 +49665,7 @@ const DetailedBudget = () => {
               ] })
             ] })
           ] }),
-          accounts.map((account, ai) => /* @__PURE__ */ jsxs(Card$1, { children: [
+          accounts.map((account, ai) => /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsx(
                 Input,
@@ -49079,7 +49782,7 @@ const DetailedBudget = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "DETAILED BUDGET" }),
             /* @__PURE__ */ jsxs("p", { className: "text-center italic text-xs text-muted-foreground", children: [
               "Production: ",
@@ -49291,7 +49994,7 @@ const CrewContactList = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -49328,7 +50031,7 @@ const CrewContactList = () => {
               ] })
             ] })
           ] }),
-          departments2.map((dept, di) => /* @__PURE__ */ jsxs(Card$1, { children: [
+          departments2.map((dept, di) => /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between gap-2", children: [
               /* @__PURE__ */ jsx(
                 Input,
@@ -49443,7 +50146,7 @@ const CrewContactList = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-3", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "CREW LIST / CONTACT SHEET" }),
             /* @__PURE__ */ jsxs("p", { className: "text-center italic text-xs text-muted-foreground", children: [
               "Production: ",
@@ -49693,7 +50396,7 @@ const CastDealMemo = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -49749,7 +50452,7 @@ const CastDealMemo = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation & Schedule" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
@@ -49841,7 +50544,7 @@ const CastDealMemo = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit & Representation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -49877,7 +50580,7 @@ const CastDealMemo = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Provisions" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -49959,7 +50662,7 @@ const CastDealMemo = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "CAST DEAL MEMO" }),
             /* @__PURE__ */ jsxs("div", { className: "text-center space-y-1", children: [
               /* @__PURE__ */ jsx("p", { className: "font-bold", children: v2(form.production_name, "production name") }),
@@ -50207,7 +50910,7 @@ const CrewDealMemo = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50276,7 +50979,7 @@ const CrewDealMemo = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation & Schedule" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid gap-4 sm:grid-cols-2", children: [
@@ -50380,7 +51083,7 @@ const CrewDealMemo = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50474,7 +51177,7 @@ const CrewDealMemo = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "CREW DEAL MEMO" }),
             /* @__PURE__ */ jsxs("div", { className: "text-center space-y-1", children: [
               /* @__PURE__ */ jsx("p", { className: "font-bold", children: v2(form.production_name, "production name") }),
@@ -50767,7 +51470,7 @@ const DirectorAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50817,7 +51520,7 @@ const DirectorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50881,7 +51584,7 @@ const DirectorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50924,7 +51627,7 @@ const DirectorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit & Creative Controls" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -50955,7 +51658,7 @@ const DirectorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51015,7 +51718,7 @@ const DirectorAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "DIRECTOR AGREEMENT" }),
@@ -51319,7 +52022,7 @@ const ProducerAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51369,7 +52072,7 @@ const ProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51433,7 +52136,7 @@ const ProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51476,7 +52179,7 @@ const ProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit & Approvals" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51507,7 +52210,7 @@ const ProducerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51567,7 +52270,7 @@ const ProducerAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "PRODUCER AGREEMENT" }),
@@ -51863,7 +52566,7 @@ const CinematographerAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51913,7 +52616,7 @@ const CinematographerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -51989,7 +52692,7 @@ const CinematographerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52032,7 +52735,7 @@ const CinematographerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Camera & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52070,7 +52773,7 @@ const CinematographerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52116,7 +52819,7 @@ const CinematographerAgreement = () => {
           ] })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs("div", { className: "lg:sticky lg:top-24 space-y-4", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }),
               /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
@@ -52398,7 +53101,7 @@ const IndependentContractorAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52449,7 +53152,7 @@ const IndependentContractorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52492,7 +53195,7 @@ const IndependentContractorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52535,7 +53238,7 @@ const IndependentContractorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52588,7 +53291,7 @@ const IndependentContractorAgreement = () => {
           ] })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs("div", { className: "lg:sticky lg:top-24 space-y-4", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }),
               /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
@@ -52910,7 +53613,7 @@ const LoanOutAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -52971,7 +53674,7 @@ const LoanOutAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53047,7 +53750,7 @@ const LoanOutAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53078,7 +53781,7 @@ const LoanOutAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53102,7 +53805,7 @@ const LoanOutAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Ownership & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53148,7 +53851,7 @@ const LoanOutAgreement = () => {
           ] })
         ] }),
         /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsxs("div", { className: "lg:sticky lg:top-24 space-y-4", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }),
               /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
@@ -53428,7 +54131,7 @@ const KitBoxRentalAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53490,7 +54193,7 @@ const KitBoxRentalAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rental" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53545,7 +54248,7 @@ const KitBoxRentalAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53605,7 +54308,7 @@ const KitBoxRentalAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "KIT / BOX RENTAL AGREEMENT" }),
@@ -53898,7 +54601,7 @@ const InternVolunteerAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -53948,7 +54651,7 @@ const InternVolunteerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54022,7 +54725,7 @@ const InternVolunteerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54051,7 +54754,7 @@ const InternVolunteerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54111,7 +54814,7 @@ const InternVolunteerAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "INTERN / VOLUNTEER AGREEMENT" }),
@@ -54404,7 +55107,7 @@ const ParentalGuardianConsentMinor = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54495,7 +55198,7 @@ const ParentalGuardianConsentMinor = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Engagement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54526,7 +55229,7 @@ const ParentalGuardianConsentMinor = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation & Trust Account" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54550,7 +55253,7 @@ const ParentalGuardianConsentMinor = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54610,7 +55313,7 @@ const ParentalGuardianConsentMinor = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "PARENTAL / GUARDIAN CONSENT (MINOR)" }),
@@ -54871,7 +55574,7 @@ const AdultTalentRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -54921,7 +55624,7 @@ const AdultTalentRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -55007,7 +55710,7 @@ const AdultTalentRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "ADULT TALENT RELEASE" }),
@@ -55264,7 +55967,7 @@ const BackgroundExtraRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -55314,7 +56017,7 @@ const BackgroundExtraRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -55400,7 +56103,7 @@ const BackgroundExtraRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "BACKGROUND / EXTRA RELEASE" }),
@@ -55668,7 +56371,7 @@ const MinorTalentRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -55748,7 +56451,7 @@ const MinorTalentRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -55834,7 +56537,7 @@ const MinorTalentRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "MINOR TALENT RELEASE (PARENTAL)" }),
@@ -56095,7 +56798,7 @@ const DepictionAppearanceRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -56145,7 +56848,7 @@ const DepictionAppearanceRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -56231,7 +56934,7 @@ const DepictionAppearanceRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "DEPICTION / APPEARANCE RELEASE" }),
@@ -56484,7 +57187,7 @@ const PersonalRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -56534,7 +57237,7 @@ const PersonalRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -56620,7 +57323,7 @@ const PersonalRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "PERSONAL RELEASE" }),
@@ -56873,7 +57576,7 @@ const InterviewSubjectRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -56923,7 +57626,7 @@ const InterviewSubjectRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -57009,7 +57712,7 @@ const InterviewSubjectRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "INTERVIEW / SUBJECT RELEASE" }),
@@ -57193,7 +57896,7 @@ const CrowdNoticeSignage = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Notice Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -57299,7 +58002,7 @@ const CrowdNoticeSignage = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Poster Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[80vh] overflow-y-auto rounded-md bg-white p-8 text-black text-center", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-4xl font-extrabold tracking-tight text-red-700 uppercase mb-4", children: "Filming in Progress" }),
@@ -57561,7 +58264,7 @@ const LocationAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -57622,7 +58325,7 @@ const LocationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Use & Fee" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -57665,7 +58368,7 @@ const LocationAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -57714,7 +58417,7 @@ const LocationAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-6 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-6 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
             /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }),
             /* @__PURE__ */ jsxs("div", { className: "flex gap-2", children: [
@@ -57979,7 +58682,7 @@ const PropertyRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58029,7 +58732,7 @@ const PropertyRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58129,7 +58832,7 @@ const PropertyRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "PROPERTY RELEASE" }),
@@ -58377,7 +59080,7 @@ const LocationScoutReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58402,7 +59105,7 @@ const LocationScoutReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Assessment" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58486,7 +59189,7 @@ const LocationScoutReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recommendation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58524,7 +59227,7 @@ const LocationScoutReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Photos" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addPhoto, children: [
@@ -58532,7 +59235,7 @@ const LocationScoutReport = () => {
                 "Add Photo"
               ] })
             ] }),
-            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: photos.map((photo, index) => /* @__PURE__ */ jsx(Card$1, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: photos.map((photo, index) => /* @__PURE__ */ jsx(Card$2, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
               /* @__PURE__ */ jsxs("div", { className: "relative w-full aspect-video rounded-md overflow-hidden", children: [
                 photo.image ? /* @__PURE__ */ jsxs(Fragment, { children: [
                   /* @__PURE__ */ jsx(
@@ -58636,7 +59339,7 @@ const LocationScoutReport = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "LOCATION SCOUT REPORT" }),
             /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[auto,1fr] gap-x-3 gap-y-1 text-xs border-t border-b border-border py-3", children: [
               /* @__PURE__ */ jsx("span", { className: "font-bold", children: "Production:" }),
@@ -58918,7 +59621,7 @@ const TechScoutSurvey = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -58951,7 +59654,7 @@ const TechScoutSurvey = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Department Survey" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -59066,7 +59769,7 @@ const TechScoutSurvey = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Action Items" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addItem, children: [
@@ -59112,7 +59815,7 @@ const TechScoutSurvey = () => {
               )
             ] }, index)) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Reference Photos" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addPhoto, children: [
@@ -59120,7 +59823,7 @@ const TechScoutSurvey = () => {
                 "Add Photo"
               ] })
             ] }),
-            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: photos.map((photo, index) => /* @__PURE__ */ jsx(Card$1, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
+            /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "grid gap-4 md:grid-cols-2", children: photos.map((photo, index) => /* @__PURE__ */ jsx(Card$2, { className: "border-border/50", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-3 space-y-3", children: [
               /* @__PURE__ */ jsxs("div", { className: "relative w-full aspect-video rounded-md overflow-hidden", children: [
                 photo.image ? /* @__PURE__ */ jsxs(Fragment, { children: [
                   /* @__PURE__ */ jsx(
@@ -59224,7 +59927,7 @@ const TechScoutSurvey = () => {
               "Reset"
             ] })
           ] }),
-          /* @__PURE__ */ jsx(Card$1, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
+          /* @__PURE__ */ jsx(Card$2, { children: /* @__PURE__ */ jsx(CardContent, { className: "p-6 max-h-[75vh] overflow-y-auto", children: /* @__PURE__ */ jsxs("article", { className: "font-serif text-sm leading-relaxed space-y-4", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold tracking-wide text-base", children: "TECH SCOUT / LOCATION SURVEY" }),
             /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-[auto,1fr] gap-x-3 gap-y-1 text-xs border-t border-b border-border py-3", children: [
               /* @__PURE__ */ jsx("span", { className: "font-bold", children: "Production:" }),
@@ -59456,7 +60159,7 @@ const PermitApplicationChecklist = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -59514,7 +60217,7 @@ const PermitApplicationChecklist = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Checklist" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addItem, children: [
@@ -59580,7 +60283,7 @@ const PermitApplicationChecklist = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-center text-2xl font-bold uppercase tracking-wide text-black mb-6", children: "Permit Application Checklist" }),
           /* @__PURE__ */ jsxs("div", { className: "text-sm space-y-1 mb-6", children: [
             /* @__PURE__ */ jsxs("p", { children: [
@@ -59828,7 +60531,7 @@ const FilmOfficeCoverLetter = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sender" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -59871,7 +60574,7 @@ const FilmOfficeCoverLetter = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Recipient" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -59909,7 +60612,7 @@ const FilmOfficeCoverLetter = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Request" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -60012,7 +60715,7 @@ const FilmOfficeCoverLetter = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px] font-serif text-sm leading-relaxed", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px] font-serif text-sm leading-relaxed", children: [
           /* @__PURE__ */ jsxs("div", { className: "space-y-0.5", children: [
             /* @__PURE__ */ jsx("p", { children: company.trim() || ph("[Production Company]") }),
             /* @__PURE__ */ jsx("p", { children: senderName.trim() || ph("[From (Name & Title)]") }),
@@ -60322,7 +61025,7 @@ const DailyProductionReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -60388,7 +61091,7 @@ const DailyProductionReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Times" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "grid grid-cols-2 gap-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -60443,7 +61146,7 @@ const DailyProductionReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Day Summary" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "grid grid-cols-3 gap-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -60531,7 +61234,7 @@ const DailyProductionReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Scenes Shot" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addScene, children: [
@@ -60593,7 +61296,7 @@ const DailyProductionReport = () => {
               )
             ] }, index)) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Notes" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -60622,7 +61325,7 @@ const DailyProductionReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Prepared By" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "prepared_by", children: "Prepared By (Name & Title)" }),
@@ -60651,7 +61354,7 @@ const DailyProductionReport = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-center text-2xl font-bold uppercase tracking-wide text-black mb-6", children: "Daily Production Report" }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm mb-6", children: headerRows.map(([label2, value, placeholder], idx) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("p", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -60949,7 +61652,7 @@ const CrewTimecard = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -61048,7 +61751,7 @@ const CrewTimecard = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Daily Time" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-12 gap-2 items-center", children: [
@@ -61109,7 +61812,7 @@ const CrewTimecard = () => {
               ] }) })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Approvals" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -61152,7 +61855,7 @@ const CrewTimecard = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Crew Timecard" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -61435,7 +62138,7 @@ const CameraReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -61534,7 +62237,7 @@ const CameraReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Takes" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               takes.map((take, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end border-b border-border/50 pb-3 last:border-0 last:pb-0", children: [
@@ -61653,7 +62356,7 @@ const CameraReport = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Camera Report" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -61922,7 +62625,7 @@ const SoundReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -62033,7 +62736,7 @@ const SoundReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Files" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               files.map((file, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end border-b border-border/50 pb-3 last:border-0 last:pb-0", children: [
@@ -62131,7 +62834,7 @@ const SoundReport = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Sound Report" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -62395,7 +63098,7 @@ const ContinuityReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -62474,7 +63177,7 @@ const ContinuityReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Takes" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               takes.map((take, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end border-b border-border/50 pb-3 last:border-0 last:pb-0", children: [
@@ -62573,7 +63276,7 @@ const ContinuityReport = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Continuity / Script Supervisor Report" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -62872,7 +63575,7 @@ const BackgroundVoucher = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -62934,7 +63637,7 @@ const BackgroundVoucher = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rate & Time" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -63017,7 +63720,7 @@ const BackgroundVoucher = () => {
               ] }) })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Adjustments" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               adjustments.map((adj, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -63063,7 +63766,7 @@ const BackgroundVoucher = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Approvals" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "approver", children: "Approved By (AD / Coordinator)" }),
@@ -63086,7 +63789,7 @@ const BackgroundVoucher = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Background Voucher" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -63380,7 +64083,7 @@ const EquipmentInventory = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -63418,7 +64121,7 @@ const EquipmentInventory = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Inventory" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               items.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end border-b border-border/50 pb-3 last:border-0 last:pb-0", children: [
@@ -63543,7 +64246,7 @@ const EquipmentInventory = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Equipment Checkout / Inventory" }) }),
           /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: [
             /* @__PURE__ */ jsxs("div", { children: [
@@ -63825,7 +64528,7 @@ const AccidentIncidentReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Incident" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -63892,7 +64595,7 @@ const AccidentIncidentReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "People" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -63930,7 +64633,7 @@ const AccidentIncidentReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Description" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -63982,7 +64685,7 @@ const AccidentIncidentReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Witnesses" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               witnesses.map((witness, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -64023,7 +64726,7 @@ const AccidentIncidentReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Follow-Up" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -64050,7 +64753,7 @@ const AccidentIncidentReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -64093,7 +64796,7 @@ const AccidentIncidentReport = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Accident / Incident Report" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -64379,7 +65082,7 @@ const SafetyMeetingAcknowledgement = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Meeting" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -64443,7 +65146,7 @@ const SafetyMeetingAcknowledgement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Topics" }) }),
             /* @__PURE__ */ jsx(CardContent, { className: "space-y-4", children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "topics_covered", children: "Topics Covered / Hazards Reviewed" }),
@@ -64458,7 +65161,7 @@ const SafetyMeetingAcknowledgement = () => {
               )
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Attendees" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               attendees.map((attendee, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -64515,7 +65218,7 @@ const SafetyMeetingAcknowledgement = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Safety Meeting Acknowledgement" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -64774,7 +65477,7 @@ const PurchaseOrder = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -64832,7 +65535,7 @@ const PurchaseOrder = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Line Items" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               lines.map((line, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -64893,7 +65596,7 @@ const PurchaseOrder = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Totals" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -64948,7 +65651,7 @@ const PurchaseOrder = () => {
               ] }) })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Approvals" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -64977,7 +65680,7 @@ const PurchaseOrder = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Purchase Order" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -65238,7 +65941,7 @@ const PurchaseOrderLog = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -65279,7 +65982,7 @@ const PurchaseOrderLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Purchase Orders" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -65385,7 +66088,7 @@ const PurchaseOrderLog = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Purchase Order Log" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -65667,7 +66370,7 @@ const CheckRequest = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -65709,7 +66412,7 @@ const CheckRequest = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Coding" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -65726,7 +66429,7 @@ const CheckRequest = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Approvals" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -65754,7 +66457,7 @@ const CheckRequest = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-base mb-4 border-b border-gray-400 pb-2", children: "CHECK REQUEST" }),
@@ -66011,7 +66714,7 @@ const PettyCashReconciliation = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -66040,7 +66743,7 @@ const PettyCashReconciliation = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Receipts" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               receipts.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-end gap-2", children: [
@@ -66099,14 +66802,14 @@ const PettyCashReconciliation = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Return" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "cash_returned", children: "Cash Returned" }),
               /* @__PURE__ */ jsx(Input, { id: "cash_returned", type: "number", value: cashReturned, onChange: (e) => setCashReturned(e.target.value) })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -66134,7 +66837,7 @@ const PettyCashReconciliation = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-base mb-4 border-b border-gray-400 pb-2", children: "PETTY CASH RECONCILIATION" }),
@@ -66431,7 +67134,7 @@ const ExpenseReport = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -66458,7 +67161,7 @@ const ExpenseReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Expenses" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               expenses.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -66523,14 +67226,14 @@ const ExpenseReport = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Reimburse" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "reimburse_to", children: "Reimburse To / Method (optional)" }),
               /* @__PURE__ */ jsx(Input, { id: "reimburse_to", value: reimburseTo, onChange: (e) => setReimburseTo(e.target.value) })
             ] }) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "approved_by", children: "Approved By" }),
@@ -66552,7 +67255,7 @@ const ExpenseReport = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-base mb-4 border-b border-gray-400 pb-2", children: "EXPENSE REPORT" }),
@@ -66827,7 +67530,7 @@ const MileageLog = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -66861,7 +67564,7 @@ const MileageLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Trips" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               trips.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -66929,7 +67632,7 @@ const MileageLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -66957,7 +67660,7 @@ const MileageLog = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-base mb-4 border-b border-gray-400 pb-2", children: "MILEAGE LOG" }),
@@ -67230,7 +67933,7 @@ const CreditCardLog = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -67253,7 +67956,7 @@ const CreditCardLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Charges" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               charges.map((row, index) => /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-center gap-2", children: [
@@ -67332,7 +68035,7 @@ const CreditCardLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -67360,7 +68063,7 @@ const CreditCardLog = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-base mb-4 border-b border-gray-400 pb-2", children: "CREDIT CARD LOG" }),
@@ -67663,7 +68366,7 @@ const InvoiceTemplate = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "From (You)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -67694,7 +68397,7 @@ const InvoiceTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Bill To" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -67711,7 +68414,7 @@ const InvoiceTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Invoice Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -67744,7 +68447,7 @@ const InvoiceTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Line Items" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               lines.map((line, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -67798,7 +68501,7 @@ const InvoiceTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Totals & Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-4", children: /* @__PURE__ */ jsxs("div", { children: [
@@ -67861,7 +68564,7 @@ const InvoiceTemplate = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Live Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black rounded-md p-6 text-sm leading-relaxed max-h-[70vh] overflow-y-auto", children: [
             /* @__PURE__ */ jsx("h2", { className: "text-center font-bold text-xl mb-4", children: "INVOICE" }),
@@ -68158,7 +68861,7 @@ const CostReportActuals = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Report Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68210,7 +68913,7 @@ const CostReportActuals = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Accounts" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               computed.rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap items-end gap-2", children: [
@@ -68309,7 +69012,7 @@ const CostReportActuals = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Cost Report / Actuals" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -68662,7 +69365,7 @@ const MusicLicenseSync = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68730,7 +69433,7 @@ const MusicLicenseSync = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Work" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68783,7 +69486,7 @@ const MusicLicenseSync = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68854,7 +69557,7 @@ const MusicLicenseSync = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Grant of Rights" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68927,7 +69630,7 @@ const MusicLicenseSync = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Fee & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -68982,7 +69685,7 @@ const MusicLicenseSync = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -69014,7 +69717,7 @@ const MusicLicenseSync = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "MUSIC LICENSE / SYNCHRONIZATION AGREEMENT" }),
@@ -69323,7 +70026,7 @@ const MusicCueSheet = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -69419,7 +70122,7 @@ const MusicCueSheet = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Cues" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -69519,7 +70222,7 @@ const MusicCueSheet = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Music Cue Sheet" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -69833,7 +70536,7 @@ const ComposerAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -69901,7 +70604,7 @@ const ComposerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -69958,7 +70661,7 @@ const ComposerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Services & Delivery" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70012,7 +70715,7 @@ const ComposerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70074,7 +70777,7 @@ const ComposerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70121,7 +70824,7 @@ const ComposerAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -70153,7 +70856,7 @@ const ComposerAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "COMPOSER AGREEMENT" }),
@@ -70443,7 +71146,7 @@ const MusicianSessionRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70511,7 +71214,7 @@ const MusicianSessionRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Session" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70593,7 +71296,7 @@ const MusicianSessionRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Grant & Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -70655,7 +71358,7 @@ const MusicianSessionRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -70687,7 +71390,7 @@ const MusicianSessionRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "MUSICIAN / SESSION RELEASE" }),
@@ -71000,7 +71703,7 @@ const MaterialsArtworkRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71068,7 +71771,7 @@ const MaterialsArtworkRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Material" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71138,7 +71841,7 @@ const MaterialsArtworkRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Use & Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71197,7 +71900,7 @@ const MaterialsArtworkRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Grant of Rights" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71254,7 +71957,7 @@ const MaterialsArtworkRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Fee & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71297,7 +72000,7 @@ const MaterialsArtworkRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -71329,7 +72032,7 @@ const MaterialsArtworkRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "MATERIALS / ARTWORK RELEASE" }),
@@ -71638,7 +72341,7 @@ const ProductPlacementRelease = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71689,7 +72392,7 @@ const ProductPlacementRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Product / Mark" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71719,7 +72422,7 @@ const ProductPlacementRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Use & Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71785,7 +72488,7 @@ const ProductPlacementRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Arrangement" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71832,7 +72535,7 @@ const ProductPlacementRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Grant of Rights" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71889,7 +72592,7 @@ const ProductPlacementRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credit & Additional" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -71936,7 +72639,7 @@ const ProductPlacementRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "PRODUCT PLACEMENT RELEASE" }),
@@ -72250,7 +72953,7 @@ const ClearanceLog = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -72291,7 +72994,7 @@ const ClearanceLog = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Clearance Items" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -72424,7 +73127,7 @@ const ClearanceLog = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Clearance Log" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-3 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -72740,7 +73443,7 @@ const PostSchedule = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -72785,7 +73488,7 @@ const PostSchedule = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Milestones" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -72907,7 +73610,7 @@ const PostSchedule = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Post Schedule" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -73192,7 +73895,7 @@ const VfxShotList = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -73237,7 +73940,7 @@ const VfxShotList = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Shots" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -73383,7 +74086,7 @@ const VfxShotList = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "VFX Shot List / Turnover" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -73629,7 +74332,7 @@ const DeliverablesChecklist = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -73682,7 +74385,7 @@ const DeliverablesChecklist = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Checklist" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addItem, children: [
@@ -73766,7 +74469,7 @@ const DeliverablesChecklist = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-center text-2xl font-bold uppercase tracking-wide text-black mb-6", children: "Deliverables Checklist" }),
           /* @__PURE__ */ jsxs("div", { className: "text-sm space-y-1 mb-6", children: [
             /* @__PURE__ */ jsxs("p", { children: [
@@ -74051,7 +74754,7 @@ const QcChecklist = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74097,7 +74800,7 @@ const QcChecklist = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Checklist" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addItem, children: [
@@ -74192,7 +74895,7 @@ const QcChecklist = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-center text-2xl font-bold uppercase tracking-wide text-black mb-6", children: "QC Checklist" }),
           /* @__PURE__ */ jsxs("div", { className: "text-sm space-y-1 mb-6", children: [
             /* @__PURE__ */ jsxs("p", { children: [
@@ -74539,7 +75242,7 @@ const EditorAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74607,7 +75310,7 @@ const EditorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74664,7 +75367,7 @@ const EditorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Services & Schedule" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74749,7 +75452,7 @@ const EditorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Compensation" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74825,7 +75528,7 @@ const EditorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Rights & Credit" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -74863,7 +75566,7 @@ const EditorAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -74895,7 +75598,7 @@ const EditorAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "EDITOR AGREEMENT" }),
@@ -75155,7 +75858,7 @@ const CcslList = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -75221,7 +75924,7 @@ const CcslList = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Continuity Entries" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -75324,7 +76027,7 @@ const CcslList = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Combined Continuity & Spotting List" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -75589,7 +76292,7 @@ const CreditsTitleList = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -75644,7 +76347,7 @@ const CreditsTitleList = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credits" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -75725,7 +76428,7 @@ const CreditsTitleList = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Credits / Title List" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -75974,7 +76677,7 @@ const DistributionPackageChecklist = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Header" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -76027,7 +76730,7 @@ const DistributionPackageChecklist = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Checklist" }),
               /* @__PURE__ */ jsxs(Button, { type: "button", size: "sm", onClick: addItem, children: [
@@ -76111,7 +76814,7 @@ const DistributionPackageChecklist = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px]", children: [
           /* @__PURE__ */ jsx("h2", { className: "text-center text-2xl font-bold uppercase tracking-wide text-black mb-6", children: "Distribution Package Checklist" }),
           /* @__PURE__ */ jsxs("div", { className: "text-sm space-y-1 mb-6", children: [
             /* @__PURE__ */ jsxs("p", { children: [
@@ -76428,7 +77131,7 @@ const DeliverySchedule = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -76480,7 +77183,7 @@ const DeliverySchedule = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Deliverables" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-3", children: [
               rows.map((row, index) => /* @__PURE__ */ jsx(Fragment$1, { children: /* @__PURE__ */ jsxs("div", { className: "flex flex-wrap gap-2 items-end", children: [
@@ -76602,7 +77305,7 @@ const DeliverySchedule = () => {
           ] }),
           /* @__PURE__ */ jsx("p", { className: "text-xs text-muted-foreground", children: "Filmmaker Genius — Document Library." })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$1, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6 lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsx(Card$2, { className: "border-2 border-primary/20 shadow-sm print:shadow-none print:border-black", children: /* @__PURE__ */ jsxs(CardContent, { className: "p-6 space-y-6 print:text-black", children: [
           /* @__PURE__ */ jsx("div", { className: "text-center border-b border-border pb-4", children: /* @__PURE__ */ jsx("h2", { className: "text-xl font-bold uppercase tracking-wide", children: "Delivery Schedule" }) }),
           /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 gap-x-6 gap-y-1 text-sm", children: headerRows.map(([label2, value, placeholder]) => /* @__PURE__ */ jsxs("div", { children: [
             /* @__PURE__ */ jsxs("span", { className: "font-semibold", children: [
@@ -76927,7 +77630,7 @@ const SalesAgentAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -76966,7 +77669,7 @@ const SalesAgentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Film" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77035,7 +77738,7 @@ const SalesAgentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Appointment & Rights" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77100,7 +77803,7 @@ const SalesAgentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Commission & Expenses" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77161,7 +77864,7 @@ const SalesAgentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Deliverables & Reversion" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77191,7 +77894,7 @@ const SalesAgentAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -77223,7 +77926,7 @@ const SalesAgentAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "SALES AGENT AGREEMENT" }),
@@ -77529,7 +78232,7 @@ const DistributionAgreement = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Parties" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77568,7 +78271,7 @@ const DistributionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "The Film" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77625,7 +78328,7 @@ const DistributionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Grant of Rights" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77703,7 +78406,7 @@ const DistributionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Money" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77770,7 +78473,7 @@ const DistributionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Delivery & Reversion" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -77800,7 +78503,7 @@ const DistributionAgreement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Additional Terms" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(Label, { htmlFor: "additional_terms", children: "Additional Terms" }),
@@ -77832,7 +78535,7 @@ const DistributionAgreement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-4 text-center text-lg font-bold", children: "DISTRIBUTION AGREEMENT" }),
@@ -78043,7 +78746,7 @@ const EpkFeature = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Film Info" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -78093,7 +78796,7 @@ const EpkFeature = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Synopsis" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -78124,7 +78827,7 @@ const EpkFeature = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credits" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -78170,7 +78873,7 @@ const EpkFeature = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Director's Statement" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78182,7 +78885,7 @@ const EpkFeature = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Production Notes" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78195,7 +78898,7 @@ const EpkFeature = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Contact & Links" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -78241,7 +78944,7 @@ const EpkFeature = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-1 text-center text-xl font-bold", children: v2(form.title, "Film Title") }),
@@ -78478,7 +79181,7 @@ const EpkShort = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Film Info" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -78528,7 +79231,7 @@ const EpkShort = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Synopsis" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78541,7 +79244,7 @@ const EpkShort = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Credits" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -78587,7 +79290,7 @@ const EpkShort = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Director's Statement" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78599,7 +79302,7 @@ const EpkShort = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Festival & Awards" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78612,7 +79315,7 @@ const EpkShort = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Contact & Links" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -78658,7 +79361,7 @@ const EpkShort = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-1 text-center text-xl font-bold", children: v2(form.title, "Film Title") }),
@@ -78878,7 +79581,7 @@ const OneSheetPoster = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Key Art" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -78917,7 +79620,7 @@ const OneSheetPoster = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Title & Tagline" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -78963,7 +79666,7 @@ const OneSheetPoster = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Laurels / Selections" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -78976,7 +79679,7 @@ const OneSheetPoster = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Billing Block" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -79004,7 +79707,7 @@ const OneSheetPoster = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx("div", { className: "mx-auto max-h-[75vh] w-full max-w-sm overflow-y-auto rounded-md bg-neutral-950 p-4 text-white", children: /* @__PURE__ */ jsxs("div", { className: "aspect-[2/3] flex flex-col", children: [
             keyArt ? /* @__PURE__ */ jsx("img", { src: keyArt, alt: "Key art", className: "h-[52%] w-full rounded object-cover" }) : /* @__PURE__ */ jsx("div", { className: "flex h-[52%] w-full items-center justify-center rounded border border-dashed border-white/25 text-[11px] uppercase tracking-widest text-white/40", children: "Key Art" }),
@@ -79180,7 +79883,7 @@ const PressRelease = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Release Basics" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79236,7 +79939,7 @@ const PressRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Dateline & Lead" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -79283,7 +79986,7 @@ const PressRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Body" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -79296,7 +79999,7 @@ const PressRelease = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Quote" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79325,7 +80028,7 @@ const PressRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Boilerplate" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79354,7 +80057,7 @@ const PressRelease = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Media Contact" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { className: "grid grid-cols-2 gap-4", children: [
@@ -79433,7 +80136,7 @@ const PressRelease = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("p", { className: "font-bold uppercase tracking-wide", children: releaseLine }),
@@ -79602,7 +80305,7 @@ const DirectorsStatement = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Film & Director" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79627,7 +80330,7 @@ const DirectorsStatement = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Statement" }) }),
             /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsx(
               Textarea,
@@ -79640,7 +80343,7 @@ const DirectorsStatement = () => {
               }
             ) })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Sign-Off" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79690,7 +80393,7 @@ const DirectorsStatement = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("h2", { className: "mb-1 text-center text-xl font-bold uppercase tracking-wide", children: "Director's Statement" }),
@@ -79830,7 +80533,7 @@ const SynopsisTemplate = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Film" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -79856,7 +80559,7 @@ const SynopsisTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Short Synopsis (~50 words)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(
@@ -79877,7 +80580,7 @@ const SynopsisTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "One-Paragraph Synopsis (~100 words)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(
@@ -79898,7 +80601,7 @@ const SynopsisTemplate = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Long / Festival Synopsis (~250 words)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { children: [
               /* @__PURE__ */ jsx(
@@ -79934,7 +80637,7 @@ const SynopsisTemplate = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("p", { className: "text-center text-[10px] uppercase tracking-widest text-gray-500", children: "Synopsis" }),
@@ -80125,7 +80828,7 @@ const CastCrewBio = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Project" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80138,7 +80841,7 @@ const CastCrewBio = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsxs(CardTitle, { className: "flex items-center justify-between", children: [
               /* @__PURE__ */ jsx("span", { children: "Bios" }),
               /* @__PURE__ */ jsxs("span", { className: "text-xs font-normal text-muted-foreground", children: [
@@ -80256,7 +80959,7 @@ const CastCrewBio = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("p", { className: "text-center text-[10px] uppercase tracking-[0.25em] text-gray-500", children: "Cast & Crew Bios" }),
@@ -80471,7 +81174,7 @@ const FestivalCoverLetter = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "From (Sender)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80500,7 +81203,7 @@ const FestivalCoverLetter = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "To (Festival)" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80529,7 +81232,7 @@ const FestivalCoverLetter = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Submission Details" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80578,7 +81281,7 @@ const FestivalCoverLetter = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Letter" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80618,7 +81321,7 @@ const FestivalCoverLetter = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$1, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px] font-serif text-sm leading-relaxed", children: [
+        /* @__PURE__ */ jsx("div", { className: "space-y-6", children: /* @__PURE__ */ jsx("div", { className: "sticky top-6 space-y-6", children: /* @__PURE__ */ jsx(Card$2, { className: "overflow-hidden", children: /* @__PURE__ */ jsx(CardContent, { className: "p-0", children: /* @__PURE__ */ jsxs("div", { className: "bg-white text-black p-8 min-h-[600px] font-serif text-sm leading-relaxed", children: [
           /* @__PURE__ */ jsxs("div", { className: "space-y-0.5", children: [
             senderName.trim() ? /* @__PURE__ */ jsx("p", { children: senderName.trim() }) : /* @__PURE__ */ jsx("p", { children: ph("[Sender Name]") }),
             senderTitle.trim() && /* @__PURE__ */ jsx("p", { children: senderTitle.trim() }),
@@ -80775,7 +81478,7 @@ const FestivalQA = () => {
       ] }) }),
       /* @__PURE__ */ jsxs("div", { className: "grid gap-6 lg:grid-cols-2", children: [
         /* @__PURE__ */ jsxs("div", { className: "space-y-6", children: [
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Film & Speaker" }) }),
             /* @__PURE__ */ jsxs(CardContent, { className: "space-y-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
@@ -80807,7 +81510,7 @@ const FestivalQA = () => {
               ] })
             ] })
           ] }),
-          /* @__PURE__ */ jsxs(Card$1, { children: [
+          /* @__PURE__ */ jsxs(Card$2, { children: [
             /* @__PURE__ */ jsxs(CardHeader, { className: "flex flex-row items-center justify-between", children: [
               /* @__PURE__ */ jsx(CardTitle, { children: "Questions & Answers" }),
               /* @__PURE__ */ jsxs("p", { className: "text-xs text-muted-foreground", children: [
@@ -80880,7 +81583,7 @@ const FestivalQA = () => {
             ] })
           ] })
         ] }),
-        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$1, { children: [
+        /* @__PURE__ */ jsx("div", { className: "lg:sticky lg:top-24 lg:self-start", children: /* @__PURE__ */ jsxs(Card$2, { children: [
           /* @__PURE__ */ jsx(CardHeader, { children: /* @__PURE__ */ jsx(CardTitle, { children: "Preview" }) }),
           /* @__PURE__ */ jsx(CardContent, { children: /* @__PURE__ */ jsxs("div", { className: "max-h-[70vh] overflow-y-auto rounded-md bg-white p-6 text-[13px] leading-relaxed text-black", children: [
             /* @__PURE__ */ jsx("p", { className: "text-center text-xs uppercase tracking-widest mb-1", children: "Festival Q&A" }),
