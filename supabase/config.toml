@@ -111,6 +111,9 @@ verify_jwt = true
 [functions.translate-message]
 verify_jwt = true
 
+[functions.translate-note]
+verify_jwt = true
+
 [functions.send-production-message]
 verify_jwt = true
 
