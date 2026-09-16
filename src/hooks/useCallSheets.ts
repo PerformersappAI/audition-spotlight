@@ -210,6 +210,160 @@ const sanitizeBackgroundData = (background: CallSheetBackground[]): CallSheetBac
   });
 };
 
+/** Parent row payload shared by insert and update. */
+const buildParentRow = (s: Partial<CallSheetData>) => ({
+  production_company: s.production_company || '',
+  project_name: s.project_name || '',
+  shoot_date: s.shoot_date || new Date().toISOString().split('T')[0],
+  day_number: s.day_number,
+  script_color: s.script_color,
+  schedule_color: s.schedule_color,
+  general_crew_call: s.general_crew_call,
+  shooting_call: s.shooting_call,
+  lunch_time: s.lunch_time,
+  courtesy_breakfast_time: s.courtesy_breakfast_time,
+  wrap_time: s.wrap_time,
+  executive_producers: s.executive_producers,
+  producers: s.producers,
+  director: s.director,
+  associate_director: s.associate_director,
+  line_producer: s.line_producer,
+  upm: s.upm,
+  production_office_address: s.production_office_address,
+  shooting_location: s.shooting_location,
+  location_address: s.location_address,
+  crew_parking: s.crew_parking,
+  basecamp: s.basecamp,
+  nearest_hospital: s.nearest_hospital,
+  hospital_address: s.hospital_address,
+  weather_description: s.weather_description,
+  high_temp: s.high_temp,
+  low_temp: s.low_temp,
+  sunrise_time: s.sunrise_time,
+  sunset_time: s.sunset_time,
+  dawn_time: s.dawn_time,
+  twilight_time: s.twilight_time,
+  lx_precall_time: s.lx_precall_time,
+  unit_call_time: s.unit_call_time,
+  current_schedule: s.current_schedule,
+  current_script: s.current_script,
+  unit_base: s.unit_base,
+  unit_base_address: s.unit_base_address,
+});
+
+/** Insert all child rows for a call sheet. */
+const insertChildren = async (
+  callSheetId: string,
+  scenes: CallSheetScene[],
+  cast: CallSheetCast[],
+  crew: CallSheetCrew[],
+  background: CallSheetBackground[],
+  breaks: CallSheetBreak[],
+  requirements: CallSheetRequirement[]
+) => {
+  if (scenes.length > 0) {
+    const { error } = await supabase.from('call_sheet_scenes').insert(
+      scenes.map((scene, index) => ({
+        scene_number: scene.scene_number || '',
+        pages: scene.pages,
+        set_description: scene.set_description || '',
+        day_night: scene.day_night,
+        cast_ids: scene.cast_ids,
+        notes: scene.notes,
+        location: scene.location,
+        start_time: scene.start_time,
+        int_ext: scene.int_ext,
+        call_sheet_id: callSheetId,
+        order_index: index,
+      }))
+    );
+    if (error) throw error;
+  }
+
+  if (cast.length > 0) {
+    const { error } = await supabase.from('call_sheet_cast').insert(
+      cast.map((member, index) => ({
+        character_name: member.character_name || '',
+        actor_name: member.actor_name || '',
+        status: member.status,
+        pickup_time: member.pickup_time,
+        call_time: member.call_time,
+        set_ready_time: member.set_ready_time,
+        special_instructions: member.special_instructions,
+        cast_id: member.cast_id,
+        swf: member.swf,
+        makeup_time: member.makeup_time,
+        costume_time: member.costume_time,
+        travel_time: member.travel_time,
+        on_set_time: member.on_set_time,
+        call_sheet_id: callSheetId,
+        order_index: index,
+      }))
+    );
+    if (error) throw error;
+  }
+
+  if (crew.length > 0) {
+    const { error } = await supabase.from('call_sheet_crew').insert(
+      crew.map((member, index) => ({
+        department: member.department || '',
+        title: member.title || '',
+        name: member.name || '',
+        call_time: member.call_time,
+        call_sheet_id: callSheetId,
+        order_index: index,
+      }))
+    );
+    if (error) throw error;
+  }
+
+  if (background.length > 0) {
+    const { error } = await supabase.from('call_sheet_background').insert(
+      background.map(item => ({
+        description: item.description || '',
+        quantity: item.quantity,
+        call_time: item.call_time,
+        notes: item.notes,
+        call_sheet_id: callSheetId,
+      }))
+    );
+    if (error) throw error;
+  }
+
+  if (breaks.length > 0) {
+    const { error } = await supabase.from('call_sheet_breaks').insert(
+      breaks.map(item => ({
+        break_type: item.break_type,
+        after_scene_index: item.after_scene_index,
+        call_sheet_id: callSheetId,
+      }))
+    );
+    if (error) throw error;
+  }
+
+  if (requirements.length > 0) {
+    const { error } = await supabase.from('call_sheet_requirements').insert(
+      requirements.map((item, index) => ({
+        department: item.department,
+        notes: item.notes,
+        order_index: index,
+        call_sheet_id: callSheetId,
+      }))
+    );
+    if (error) throw error;
+  }
+};
+
+export interface LoadedCallSheet {
+  callSheet: CallSheetData;
+  scenes: CallSheetScene[];
+  cast: CallSheetCast[];
+  crew: CallSheetCrew[];
+  background: CallSheetBackground[];
+  breaks: CallSheetBreak[];
+  requirements: CallSheetRequirement[];
+}
+
 export const useCallSheets = () => {
   const [callSheets, setCallSheets] = useState<CallSheetData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -242,6 +396,45 @@ export const useCallSheets = () => {
     }
   };
 
+  /** Load one saved call sheet (owner only) with all of its child rows. */
+  const loadCallSheet = async (id: string): Promise<LoadedCallSheet | null> => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return null;
+
+    const { data, error } = await supabase
+      .from('call_sheets')
+      .select(`*,
+        call_sheet_scenes(*),
+        call_sheet_cast(*),
+        call_sheet_crew(*),
+        call_sheet_background(*),
+        call_sheet_breaks(*),
+        call_sheet_requirements(*)`)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error) {
+      console.error('Error loading call sheet:', error);
+      return null;
+    }
+    if (!data) return null;
+
+    const row: any = data;
+    const sortBy = <T extends { order_index?: number | null }>(rows: T[]) =>
+      [...rows].sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
+
+    return {
+      callSheet: row as CallSheetData,
+      scenes: sortBy(row.call_sheet_scenes || []) as CallSheetScene[],
+      cast: sortBy(row.call_sheet_cast || []) as CallSheetCast[],
+      crew: sortBy(row.call_sheet_crew || []) as CallSheetCrew[],
+      background: (row.call_sheet_background || []) as CallSheetBackground[],
+      breaks: (row.call_sheet_breaks || []) as CallSheetBreak[],
+      requirements: sortBy(row.call_sheet_requirements || []) as CallSheetRequirement[],
+    };
+  };
+
   const saveCallSheet = async (
     callSheetData: CallSheetData,
     scenes: CallSheetScene[],
@@ -255,227 +448,57 @@ export const useCallSheets = () => {
     _advanceRows: CallSheetAdvanceRow[] = []
   ) => {
     try {
-      console.log('🚀 Starting call sheet save...', { callSheetData, scenesCount: scenes.length, castCount: cast.length });
-      
       const { data: { user } } = await supabase.auth.getUser();
-      console.log('👤 User check:', user ? `Logged in as ${user.id}` : 'Not logged in');
-      
       if (!user) throw new Error("Not authenticated");
 
-      // Sanitize data before insert
       const sanitizedCallSheet = sanitizeCallSheetData(callSheetData);
       const sanitizedCast = sanitizeCastData(cast);
       const sanitizedCrew = sanitizeCrewData(crew);
       const sanitizedBackground = sanitizeBackgroundData(background);
 
-      // Insert call sheet
-      console.log('💾 Inserting call sheet to database...');
-      const { data: callSheet, error: callSheetError } = await supabase
-        .from('call_sheets')
-        .insert({
-          production_company: sanitizedCallSheet.production_company || '',
-          project_name: sanitizedCallSheet.project_name || '',
-          shoot_date: sanitizedCallSheet.shoot_date || new Date().toISOString().split('T')[0],
-          day_number: sanitizedCallSheet.day_number,
-          total_days: sanitizedCallSheet.total_days,
-          script_color: sanitizedCallSheet.script_color,
-          schedule_color: sanitizedCallSheet.schedule_color,
-          general_crew_call: sanitizedCallSheet.general_crew_call,
-          shooting_call: sanitizedCallSheet.shooting_call,
-          lunch_time: sanitizedCallSheet.lunch_time,
-          courtesy_breakfast_time: sanitizedCallSheet.courtesy_breakfast_time,
-          wrap_time: sanitizedCallSheet.wrap_time,
-          executive_producers: sanitizedCallSheet.executive_producers,
-          producers: sanitizedCallSheet.producers,
-          director: sanitizedCallSheet.director,
-          associate_director: sanitizedCallSheet.associate_director,
-          line_producer: sanitizedCallSheet.line_producer,
-          upm: sanitizedCallSheet.upm,
-          production_office_address: sanitizedCallSheet.production_office_address,
-          shooting_location: sanitizedCallSheet.shooting_location,
-          location_address: sanitizedCallSheet.location_address,
-          crew_parking: sanitizedCallSheet.crew_parking,
-          basecamp: sanitizedCallSheet.basecamp,
-          nearest_hospital: sanitizedCallSheet.nearest_hospital,
-          hospital_address: sanitizedCallSheet.hospital_address,
-          weather_description: sanitizedCallSheet.weather_description,
-          high_temp: sanitizedCallSheet.high_temp,
-          low_temp: sanitizedCallSheet.low_temp,
-          sunrise_time: sanitizedCallSheet.sunrise_time,
-          sunset_time: sanitizedCallSheet.sunset_time,
-          dawn_time: sanitizedCallSheet.dawn_time,
-          twilight_time: sanitizedCallSheet.twilight_time,
-          lx_precall_time: sanitizedCallSheet.lx_precall_time,
-          unit_call_time: sanitizedCallSheet.unit_call_time,
-          current_schedule: sanitizedCallSheet.current_schedule,
-          current_script: sanitizedCallSheet.current_script,
-          unit_base: sanitizedCallSheet.unit_base,
-          unit_base_address: sanitizedCallSheet.unit_base_address,
-          user_id: user.id,
-        })
-        .select()
-        .single();
+      const existingId = callSheetData.id;
+      let callSheetId = existingId;
 
-      if (callSheetError) {
-        console.error('❌ Call sheet insert error:', callSheetError);
-        throw callSheetError;
-      }
-      
-      console.log('✅ Call sheet inserted:', callSheet.id);
+      if (existingId) {
+        // Editing a saved sheet: update the parent, then replace the child rows.
+        const { error: updateError } = await supabase
+          .from('call_sheets')
+          .update(buildParentRow(sanitizedCallSheet))
+          .eq('id', existingId)
+          .eq('user_id', user.id);
+        if (updateError) throw updateError;
 
-      const callSheetId = callSheet.id;
-
-      // Insert scenes
-      if (scenes.length > 0) {
-        console.log(`📋 Inserting ${scenes.length} scenes...`);
-        const scenesWithId = scenes.map((scene, index) => ({
-          scene_number: scene.scene_number || '',
-          pages: scene.pages,
-          set_description: scene.set_description || '',
-          day_night: scene.day_night,
-          cast_ids: scene.cast_ids,
-          notes: scene.notes,
-          location: scene.location,
-          start_time: scene.start_time,
-          int_ext: scene.int_ext,
-          call_sheet_id: callSheetId,
-          order_index: index,
-        }));
-
-        const { error: scenesError } = await supabase
-          .from('call_sheet_scenes')
-          .insert(scenesWithId);
-
-        if (scenesError) {
-          console.error('❌ Scenes insert error:', scenesError);
-          throw scenesError;
-        }
-        console.log('✅ Scenes inserted');
+        await Promise.all([
+          supabase.from('call_sheet_scenes').delete().eq('call_sheet_id', existingId),
+          supabase.from('call_sheet_cast').delete().eq('call_sheet_id', existingId),
+          supabase.from('call_sheet_crew').delete().eq('call_sheet_id', existingId),
+          supabase.from('call_sheet_background').delete().eq('call_sheet_id', existingId),
+          supabase.from('call_sheet_breaks').delete().eq('call_sheet_id', existingId),
+          supabase.from('call_sheet_requirements').delete().eq('call_sheet_id', existingId),
+        ]);
+      } else {
+        const { data: callSheet, error: callSheetError } = await supabase
+          .from('call_sheets')
+          .insert({ ...buildParentRow(sanitizedCallSheet), user_id: user.id })
+          .select()
+          .single();
+        if (callSheetError) throw callSheetError;
+        callSheetId = callSheet.id;
       }
 
-      // Insert cast
-      if (sanitizedCast.length > 0) {
-        console.log(`👥 Inserting ${sanitizedCast.length} cast members...`);
-        const castWithId = sanitizedCast.map((member, index) => ({
-          character_name: member.character_name || '',
-          actor_name: member.actor_name || '',
-          status: member.status,
-          pickup_time: member.pickup_time,
-          call_time: member.call_time,
-          set_ready_time: member.set_ready_time,
-          special_instructions: member.special_instructions,
-          cast_id: member.cast_id,
-          swf: member.swf,
-          makeup_time: member.makeup_time,
-          costume_time: member.costume_time,
-          travel_time: member.travel_time,
-          on_set_time: member.on_set_time,
-          call_sheet_id: callSheetId,
-          order_index: index,
-        }));
-
-        const { error: castError } = await supabase
-          .from('call_sheet_cast')
-          .insert(castWithId);
-
-        if (castError) {
-          console.error('❌ Cast insert error:', castError);
-          throw castError;
-        }
-        console.log('✅ Cast inserted');
-      }
-
-      // Insert crew
-      if (sanitizedCrew.length > 0) {
-        console.log(`🎬 Inserting ${sanitizedCrew.length} crew members...`);
-        const crewWithId = sanitizedCrew.map((member, index) => ({
-          department: member.department || '',
-          title: member.title || '',
-          name: member.name || '',
-          call_time: member.call_time,
-          call_sheet_id: callSheetId,
-          order_index: index,
-        }));
-
-        const { error: crewError } = await supabase
-          .from('call_sheet_crew')
-          .insert(crewWithId);
-
-        if (crewError) {
-          console.error('❌ Crew insert error:', crewError);
-          throw crewError;
-        }
-        console.log('✅ Crew inserted');
-      }
-
-      // Insert background
-      if (sanitizedBackground.length > 0) {
-        console.log(`🎭 Inserting ${sanitizedBackground.length} background performers...`);
-        const backgroundWithId = sanitizedBackground.map(item => ({
-          description: item.description || '',
-          quantity: item.quantity,
-          call_time: item.call_time,
-          notes: item.notes,
-          call_sheet_id: callSheetId,
-        }));
-
-        const { error: backgroundError } = await supabase
-          .from('call_sheet_background')
-          .insert(backgroundWithId);
-
-        if (backgroundError) {
-          console.error('❌ Background insert error:', backgroundError);
-          throw backgroundError;
-        }
-        console.log('✅ Background inserted');
-      }
-
-      // Insert breaks
-      if (breaks.length > 0) {
-        console.log(`⏸️ Inserting ${breaks.length} breaks...`);
-        const breaksWithId = breaks.map(item => ({
-          break_type: item.break_type,
-          after_scene_index: item.after_scene_index,
-          call_sheet_id: callSheetId,
-        }));
-
-        const { error: breaksError } = await supabase
-          .from('call_sheet_breaks')
-          .insert(breaksWithId);
-
-        if (breaksError) {
-          console.error('❌ Breaks insert error:', breaksError);
-          throw breaksError;
-        }
-        console.log('✅ Breaks inserted');
-      }
-
-      // Insert requirements
-      if (requirements.length > 0) {
-        console.log(`📋 Inserting ${requirements.length} requirements...`);
-        const reqWithId = requirements.map((item, index) => ({
-          department: item.department,
-          notes: item.notes,
-          order_index: index,
-          call_sheet_id: callSheetId,
-        }));
-
-        const { error: reqError } = await supabase
-          .from('call_sheet_requirements')
-          .insert(reqWithId);
-
-        if (reqError) {
-          console.error('❌ Requirements insert error:', reqError);
-          throw reqError;
-        }
-        console.log('✅ Requirements inserted');
-      }
-
-      console.log('🎉 Call sheet saved successfully! ID:', callSheetId);
+      await insertChildren(
+        callSheetId!,
+        scenes,
+        sanitizedCast,
+        sanitizedCrew,
+        sanitizedBackground,
+        breaks,
+        requirements
+      );
 
       toast({
         title: "Success",
-        description: "Call sheet saved successfully!",
+        description: existingId ? "Call sheet updated successfully!" : "Call sheet saved successfully!",
       });
 
       await fetchCallSheets();
@@ -499,6 +522,7 @@ export const useCallSheets = () => {
     callSheets,
     loading,
     saveCallSheet,
+    loadCallSheet,
     refetch: fetchCallSheets,
   };
 };

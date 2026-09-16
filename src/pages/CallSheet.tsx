@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import ToolTopBar from "@/components/ToolTopBar";
 import { ToolLead } from "@/components/ToolSeo";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import WeatherBar from "@/components/production/WeatherBar";
+import ImportContactsDialog from "@/components/callsheet/ImportContactsDialog";
+import { WMO, clock, type DatedForecast } from "@/lib/translator/weather";
+import { contactName, contactRole, isCastMember, type CastCrewContact } from "@/lib/castcrew/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { Loader2, Plus, Trash2, Upload, Download, Film, Save } from "lucide-react";
+import { Loader2, Plus, Trash2, Upload, Download, Film, Save, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { aiInvoke, InsufficientCreditsError } from "@/lib/aiInvoke";
 import { useCallSheets, type CallSheetData, type CallSheetScene, type CallSheetCast, type CallSheetCrew, type CallSheetBackground, type CallSheetBreak, type CallSheetRequirement, type CallSheetScheduleRow, type CallSheetAdvanceRow } from "@/hooks/useCallSheets";
@@ -20,9 +24,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const CallSheet = () => {
   const navigate = useNavigate();
-  const { saveCallSheet } = useCallSheets();
+  const [searchParams] = useSearchParams();
+  const editId = searchParams.get("id");
+  const { saveCallSheet, loadCallSheet } = useCallSheets();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isParsingData, setIsParsingData] = useState(false);
+  const [isLoadingSaved, setIsLoadingSaved] = useState(Boolean(editId));
+  const [importTarget, setImportTarget] = useState<"cast" | "crew" | null>(null);
   const [logo, setLogo] = useState<CallSheetLogo | null>(null);
   const { 
     processFile, 
@@ -631,6 +639,122 @@ const CallSheet = () => {
     exportCallSheetToPDF(formData, scenes, cast, crew, background, breaks, requirements.filter(r => r.department || r.notes), logo, scheduleRows, advanceRows);
   };
 
+  /** Load a saved call sheet for editing when /call-sheet?id=<id> is opened. */
+  useEffect(() => {
+    if (!editId) return;
+    let live = true;
+    setIsLoadingSaved(true);
+    (async () => {
+      const loaded = await loadCallSheet(editId);
+      if (!live) return;
+      setIsLoadingSaved(false);
+      if (!loaded) {
+        toast({
+          title: "Call sheet not found",
+          description: "We couldn't open that call sheet, so here's a blank one.",
+          variant: "destructive",
+        });
+        return;
+      }
+      setFormData(prev => ({ ...prev, ...loaded.callSheet }));
+      if (loaded.scenes.length) setScenes(loaded.scenes);
+      if (loaded.cast.length) setCast(loaded.cast);
+      if (loaded.crew.length) setCrew(loaded.crew);
+      if (loaded.background.length) setBackground(loaded.background);
+      setBreaks(loaded.breaks);
+      if (loaded.requirements.length) setRequirements(loaded.requirements);
+    })();
+    return () => {
+      live = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editId]);
+
+  /** Fill the call sheet's weather fields from the forecast for the shoot date. */
+  const applyForecast = (f: DatedForecast) => {
+    setFormData(prev => ({
+      ...prev,
+      weather_description: WMO[f.code] || prev.weather_description,
+      high_temp: `${f.max}`,
+      low_temp: `${f.min}`,
+      sunrise_time: f.sunrise ? clock(f.sunrise) : prev.sunrise_time,
+      sunset_time: f.sunset ? clock(f.sunset) : prev.sunset_time,
+      precipitation: f.rain != null ? `${f.rain}%` : prev.precipitation,
+    }));
+    toast({ title: "Weather added", description: "Conditions, temperatures and sun times are on the call sheet." });
+  };
+
+  const weatherLocation = (formData.shooting_location || formData.location_address || "").trim();
+
+  /** Add selected Cast & Crew List contacts to the cast or crew section. */
+  const handleImportContacts = (contacts: CastCrewContact[]) => {
+    const target = importTarget;
+    if (!target) return;
+    const key = (name: string, email?: string | null) =>
+      `${name.trim().toLowerCase()}|${(email || "").trim().toLowerCase()}`;
+
+    if (target === "cast") {
+      const people = contacts.filter(isCastMember);
+      const existing = new Set(cast.map(c => key(c.actor_name || "", "")));
+      const rows: CallSheetCast[] = [];
+      people.forEach(c => {
+        const name = contactName(c);
+        if (existing.has(key(name, ""))) return;
+        existing.add(key(name, ""));
+        rows.push({
+          character_name: c.character_name || "",
+          actor_name: name,
+          cast_id: "",
+          status: "",
+          pickup_time: "",
+          call_time: "",
+          set_ready_time: "",
+          special_instructions: "",
+          swf: "",
+          makeup_time: "",
+          costume_time: "",
+          travel_time: "",
+          on_set_time: "",
+          wrap_time: "",
+        });
+      });
+      const base = cast.filter(c => c.actor_name || c.character_name);
+      setCast(rows.length ? [...base, ...rows] : cast);
+      toast({
+        title: rows.length ? `${rows.length} added to cast` : "Nothing to add",
+        description: rows.length
+          ? "Fill in their call times."
+          : "Those people are already on the sheet, or none of them are cast.",
+      });
+    } else {
+      const people = contacts.filter(c => !isCastMember(c));
+      const existing = new Set(crew.map(c => key(c.name || "", "")));
+      const rows: CallSheetCrew[] = [];
+      people.forEach(c => {
+        const name = contactName(c);
+        if (existing.has(key(name, ""))) return;
+        existing.add(key(name, ""));
+        rows.push({
+          department: "",
+          title: contactRole(c) === "—" ? "" : contactRole(c).replace(/^Other — /, ""),
+          name,
+          call_time: "",
+          phone: c.phone || "",
+          off_set: "",
+        });
+      });
+      const base = crew.filter(c => c.name || c.title || c.department);
+      setCrew(rows.length ? [...base, ...rows] : crew);
+      toast({
+        title: rows.length ? `${rows.length} added to crew` : "Nothing to add",
+        description: rows.length
+          ? "Fill in their call times."
+          : "Those people are already on the sheet, or all of them are cast.",
+      });
+    }
+  };
+
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-background to-secondary/20">
       <ToolTopBar />
@@ -642,7 +766,13 @@ const CallSheet = () => {
               Call Sheet Generator
 
             </h1>
-            <p className="text-muted-foreground mt-2">Create professional production call sheets with smart OCR</p>
+            <p className="text-muted-foreground mt-2">
+              {isLoadingSaved
+                ? "Opening your saved call sheet..."
+                : formData.id
+                  ? "Editing a saved call sheet — saving updates it."
+                  : "Create professional production call sheets with smart OCR"}
+            </p>
           </div>
           <Film className="h-12 w-12 text-primary" />
         </div>
@@ -865,6 +995,19 @@ const CallSheet = () => {
                     <Textarea rows={2} value={formData.location_address} onChange={(e) => updateField("location_address", e.target.value)} />
                   </div>
 
+                  {weatherLocation && formData.shoot_date ? (
+                    <WeatherBar
+                      location={weatherLocation}
+                      date={formData.shoot_date}
+                      onApply={applyForecast}
+                      applyLabel="Add weather to call sheet"
+                    />
+                  ) : (
+                    <p className="text-sm text-muted-foreground">
+                      Add a shoot date and a location to see the forecast for that day.
+                    </p>
+                  )}
+
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label>Gate / Access Code</Label>
@@ -1023,12 +1166,18 @@ const CallSheet = () => {
             <TabsContent value="cast">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <CardTitle>Cast</CardTitle>
-                    <Button type="button" onClick={addCast} size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Cast Member
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => setImportTarget("cast")}>
+                        <Users className="h-4 w-4 mr-2" />
+                        Import from Cast &amp; Crew List
+                      </Button>
+                      <Button type="button" onClick={addCast} size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Cast Member
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1094,12 +1243,18 @@ const CallSheet = () => {
             <TabsContent value="crew">
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                     <CardTitle>Crew</CardTitle>
-                    <Button type="button" onClick={addCrew} size="sm">
-                      <Plus className="h-4 w-4 mr-2" />
-                      Add Crew Member
-                    </Button>
+                    <div className="flex flex-wrap gap-2">
+                      <Button type="button" variant="outline" size="sm" onClick={() => setImportTarget("crew")}>
+                        <Users className="h-4 w-4 mr-2" />
+                        Import from Cast &amp; Crew List
+                      </Button>
+                      <Button type="button" onClick={addCrew} size="sm">
+                        <Plus className="h-4 w-4 mr-2" />
+                        Add Crew Member
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1366,7 +1521,7 @@ const CallSheet = () => {
               ) : (
                 <>
                   <Save className="mr-2 h-4 w-4" />
-                  Save Call Sheet
+                  {formData.id ? "Update Call Sheet" : "Save Call Sheet"}
                 </>
               )}
             </Button>
@@ -1376,6 +1531,13 @@ const CallSheet = () => {
             </Button>
           </div>
         </form>
+
+        <ImportContactsDialog
+          open={importTarget !== null}
+          onOpenChange={(open) => !open && setImportTarget(null)}
+          mode={importTarget || "cast"}
+          onImport={handleImportContacts}
+        />
       </div>
     </div>
   );
