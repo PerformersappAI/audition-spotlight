@@ -10,6 +10,7 @@ import {
   SIGNOFF_FIELDS,
 } from "@/components/breakdown/types";
 import { prepareImage } from "./imageDownscale";
+import { aiInvoke } from "@/lib/aiInvoke";
 
 export const BUCKET = "breakdown-photos";
 
