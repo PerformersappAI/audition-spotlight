@@ -89,7 +89,15 @@ export const toolSeo: Record<string, ToolSeoEntry> = {
     lead:
       "A call sheet is the one-page contract for a shoot day: production and date, general crew call and shooting call, the scenes and pages to be shot, per-person cast and crew times, locations with parking, meal breaks, weather, and the nearest hospital. Fill in the fields below and export a professional PDF, or upload an existing call sheet and let the parser pre-fill it for you. Send it the night before, and put the day's advance schedule at the bottom.",
   },
+  "/receipts-expenses": {
+    title: "Film Production Expense Tracker — Receipts & Invoices | Filmmaker Genius",
+    description:
+      "Crew snap receipts or create invoices; producers approve, track spend by department and currency, and export reports.",
+    lead:
+      "A production expense tracker keeps every receipt, invoice and per-diem claim attached to the production it belongs to, so nothing gets settled from a shoebox at wrap. Crew photograph receipts or build an invoice from set, you approve, reject or mark them paid, and spending totals by department and currency stay current — ready to export for your accountant.",
+  },
   "/script-breakdown": {
+
     title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
     description:
       "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",

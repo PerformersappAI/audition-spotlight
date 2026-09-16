@@ -34,6 +34,7 @@ import SceneAnalysis from "./pages/SceneAnalysis";
 import StoryboardingRoute from "./pages/StoryboardingRoute";
 import CallSheet from "./pages/CallSheet";
 import ScriptBreakdown from "./pages/ScriptBreakdown";
+import ReceiptsExpenses from "./pages/ReceiptsExpenses";
 import CrewBreakdown from "./pages/CrewBreakdown";
 import PitchDeckMaker from "./pages/PitchDeckMaker";
 import ContractAssistant from "./pages/ContractAssistant";
@@ -182,6 +183,7 @@ export const AppRoutes = () => (
       <Route path="/storyboarding" element={<><ToolSeo path="/storyboarding" /><ToolGate><StoryboardingRoute /></ToolGate></>} />
       <Route path="/call-sheet" element={<><ToolSeo path="/call-sheet" /><ToolGate><CallSheet /></ToolGate></>} />
       <Route path="/script-breakdown" element={<><ToolSeo path="/script-breakdown" /><ToolGate><ScriptBreakdown /></ToolGate></>} />
+      <Route path="/receipts-expenses" element={<><ToolSeo path="/receipts-expenses" /><ToolGate><ReceiptsExpenses /></ToolGate></>} />
       <Route path="/b/:token" element={<CrewBreakdown />} />
       <Route path="/pitch-deck" element={<><ToolSeo path="/pitch-deck" /><ToolGate><PitchDeckMaker /></ToolGate></>} />
       <Route path="/contract-assistant" element={<><ToolSeo path="/contract-assistant" /><ToolGate><ContractAssistant /></ToolGate></>} />
