@@ -323,6 +323,60 @@ const BreakdownWorkspace = ({
     await reload();
   };
 
+  const openSceneSettings = (scene: BreakdownScene) => {
+    setSettingsScene(scene);
+    setFormNumber(scene.scene_number || "");
+    setFormLabel(scene.label || "");
+    setFormScript(scene.script_text || "");
+  };
+
+  const scenePatch = () => ({
+    scene_number: formNumber.trim() || null,
+    label: formLabel.trim() || null,
+    script_text: formScript,
+  });
+
+  const saveSceneSettings = async () => {
+    if (!settingsScene || !adapter.updateScene) return;
+    setSavingScene(true);
+    try {
+      await adapter.updateScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({ title: "Scene updated" });
+    } catch (err: any) {
+      failed(err?.message || "Please try again.");
+    } finally {
+      setSavingScene(false);
+    }
+  };
+
+  const rerunSceneBreakdown = async () => {
+    if (!settingsScene || !adapter.rerunScene) return;
+    if (formScript.trim().length < 20) {
+      failed("Add at least 20 characters of scene text first.");
+      return;
+    }
+    setRerunning(true);
+    try {
+      const merged = await adapter.rerunScene(settingsScene.id, scenePatch());
+      setSettingsScene(null);
+      await reload();
+      toast({
+        title: "Breakdown re-run",
+        description: `Updated: kept ${merged.kept}, removed ${merged.removed}, added ${merged.added}`,
+      });
+    } catch (err: any) {
+      if (err?.name !== "InsufficientCreditsError") {
+        failed(err?.message || "The breakdown couldn't be re-run.");
+      }
+    } finally {
+      setRerunning(false);
+    }
+  };
+
+
+
   const runExport = async (scope: "scene" | "all") => {
     setExportOpen(false);
     setExporting(true);
