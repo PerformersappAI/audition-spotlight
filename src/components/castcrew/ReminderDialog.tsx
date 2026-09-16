@@ -106,7 +106,7 @@ const ReminderDialog = ({ form, onClose, onResult }: Props) => {
             value={emails}
             onChange={(e) => setEmails(e.target.value)}
             rows={3}
-            placeholder="maya@example.com, sam@example.com"
+            placeholder="alex@example.com, sam@example.com"
             style={{ ...inputStyle, resize: "vertical" }}
           />
           <div style={{ marginTop: 6, fontSize: 12, color: "rgba(255,255,255,0.4)" }}>

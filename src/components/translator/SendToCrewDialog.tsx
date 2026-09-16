@@ -215,7 +215,7 @@ const SendToCrewDialog = ({ messageId, onClose, onSent }: Props) => {
           value={extra}
           onChange={(e) => setExtra(e.target.value)}
           rows={2}
-          placeholder="sam@example.com, ana@example.com"
+          placeholder="alex@example.com, sam@example.com"
           style={{ ...inputStyle, resize: "vertical" }}
         />
         {badTyped.length > 0 && (
