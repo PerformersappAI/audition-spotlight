@@ -66,25 +66,6 @@ const ghostBtn: React.CSSProperties = {
   fontFamily: "'Inter Tight', sans-serif",
 };
 
-const Modal = ({ title, children, onClose }: { title: string; children: React.ReactNode; onClose: () => void }) => (
-  <div
-    onClick={onClose}
-    style={{
-      position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)",
-      display: "flex", alignItems: "center", justifyContent: "center", padding: 16,
-    }}
-  >
-    <div onClick={(e) => e.stopPropagation()} style={{ ...panel, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }}>
-        <h2 style={{ fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }}>{title}</h2>
-        <button onClick={onClose} aria-label="Close" style={{ ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <X size={18} />
-        </button>
-      </div>
-      {children}
-    </div>
-  </div>
-);
 
 const ScriptBreakdown = () => {
   const { user, userProfile } = useAuth();
