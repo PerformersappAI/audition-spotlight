@@ -391,6 +391,59 @@ const BreakdownWorkspace = ({
 
   const deptItems = sceneItems.filter((i) => i.department === activeDept);
 
+  const exportButton = (
+    <button
+      onClick={() => setExportOpen((v) => !v)}
+      disabled={exporting}
+      className="sb-tap"
+      aria-label="Export PDF"
+      style={{
+        ...ghostBtn, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8,
+        opacity: exporting ? 0.6 : 1, width: "100%",
+      }}
+    >
+      {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+      {exporting ? "Building PDF…" : "Export PDF"}
+    </button>
+  );
+
+  const exportMenu = (
+    <div
+      style={{
+        ...panel, position: "absolute", right: 0, bottom: "calc(100% + 8px)",
+        background: "#10101b", padding: 10, minWidth: 250, zIndex: 40,
+        boxShadow: "0 12px 32px rgba(0,0,0,0.55)",
+      }}
+    >
+      {([["scene", "This scene"], ["all", "Whole production (all scenes)"]] as const).map(([scope, label]) => (
+        <button
+          key={scope}
+          onClick={() => runExport(scope)}
+          disabled={scope === "scene" ? !sceneId : scenes.length === 0}
+          className="sb-tap"
+          style={{
+            display: "block", width: "100%", textAlign: "left", background: "none",
+            border: "none", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer",
+            padding: "0 10px", borderRadius: 8, fontFamily: "'Inter Tight', sans-serif",
+          }}
+        >
+          {label}
+        </button>
+      ))}
+      <label
+        style={{
+          display: "flex", alignItems: "center", gap: 8, marginTop: 6, paddingTop: 10,
+          borderTop: "1px solid rgba(255,255,255,0.1)", fontSize: 13,
+          color: "rgba(255,255,255,0.6)", cursor: "pointer", minHeight: 44,
+        }}
+      >
+        <input type="checkbox" checked={includeScript} onChange={(e) => setIncludeScript(e.target.checked)} />
+        Include scene script
+      </label>
+    </div>
+  );
+
+
   if (loading) {
     return (
       <div style={{ ...panel, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }}>
