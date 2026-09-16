@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2 } from "lucide-react";
-import Seo from "@/components/Seo";
+import { Helmet } from "react-helmet-async";
 import BreakdownWorkspace from "@/components/breakdown/BreakdownWorkspace";
 import { CREW_DEPARTMENTS, TEAL } from "@/components/breakdown/types";
 import { CrewIdentity, CrewLinkError, createCrewAdapter, crewCall } from "@/lib/breakdown/adapter";
@@ -154,12 +154,11 @@ const CrewBreakdown = () => {
 
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "60vh" }}>
-      <Seo
-        title="Crew script breakdown | Filmmaker Genius"
-        description="Private department checklist for the crew working on this production."
-        noindex
-      />
-      <meta name="robots" content="noindex,nofollow" />
+      <Helmet>
+        <title>Crew script breakdown | Filmmaker Genius</title>
+        <meta name="robots" content="noindex,nofollow" />
+        <meta name="description" content="Private department checklist for the crew working on this production." />
+      </Helmet>
       <style>{`
         @media (max-width: 560px) {
           .cb-h1 { font-size: 30px !important; }
