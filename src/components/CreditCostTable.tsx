@@ -8,6 +8,7 @@ export const TOOL_COSTS: ToolCost[] = [
   { name: 'Academy / Courses', cost: 'Free', free: true },
   { name: 'Scene Analysis', cost: '~1 credit' },
   { name: 'Script Breakdown', cost: '~1 credit per scene (+1 to read a PDF or image)' },
+  { name: 'Receipts & Expenses', cost: 'Free to log; ~1 credit to read a receipt photo' },
   { name: 'Storyboard Generator', cost: '2–4 credits (grows with number of frames)' },
   { name: 'Table Read', cost: '2–4 credits (varies by dialogue length)' },
   { name: 'Fundraising', cost: '~1 credit' },
