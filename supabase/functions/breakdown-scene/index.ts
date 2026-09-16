@@ -29,6 +29,16 @@ const DEPT_MAP: Record<string, string> = {
   vehicles: 'vehicles',
 };
 
+/** Tolerant key lookup — the model occasionally mistypes a key (e.g. "wardeobe"). */
+function pickKey(obj: Record<string, unknown>, key: string): unknown {
+  if (Array.isArray(obj[key])) return obj[key];
+  const stem = key.slice(0, 4).toLowerCase();
+  for (const [k, v] of Object.entries(obj)) {
+    if (Array.isArray(v) && k.toLowerCase().startsWith(stem)) return v;
+  }
+  return undefined;
+}
+
 function cleanList(raw: unknown): string[] {
   if (!Array.isArray(raw)) return [];
   const seen = new Set<string>();
