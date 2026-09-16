@@ -13,11 +13,12 @@ export interface Production {
   start_date: string | null;
   share_token: string;
   sharing_enabled: boolean;
+  default_currency: string;
   created_at: string;
 }
 
 export const PRODUCTION_FIELDS =
-  "id, title, company, status, start_date, share_token, sharing_enabled, created_at";
+  "id, title, company, status, start_date, share_token, sharing_enabled, default_currency, created_at";
 
 const TEAL = "#00d4aa";
 
@@ -106,6 +107,8 @@ interface Props {
   onSelect?: (production: Production | null) => void;
   /** Called with the full list after each load. */
   onProjectsLoaded?: (list: Production[]) => void;
+  /** Extra controls rendered in the picker's button row (e.g. a currency select). */
+  extraControls?: React.ReactNode;
 }
 
 const ProductionPicker = ({
@@ -115,6 +118,7 @@ const ProductionPicker = ({
   emptyText = "Give it a name, then everything else hangs off it.",
   onSelect,
   onProjectsLoaded,
+  extraControls,
 }: Props) => {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -247,7 +251,8 @@ const ProductionPicker = ({
                 </button>
               )}
             </div>
-            <div className="sb-row" style={{ display: "flex", gap: 10, flex: "0 0 auto" }}>
+            <div className="sb-row" style={{ display: "flex", gap: 10, flex: "0 0 auto", alignItems: "center" }}>
+              {extraControls}
               {enableShare && selected && (
                 <button onClick={() => setShowShare((v) => !v)} style={{ ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8 }}>
                   <Share2 size={16} /> Share with crew
