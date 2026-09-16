@@ -105,16 +105,22 @@ const CrewBreakdown = () => {
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [messagesHasMore, setMessagesHasMore] = useState(false);
   const [preferredLanguage, setPreferredLanguage] = useState<string | null>(null);
-  const [seenAt, setSeenAt] = useState<string>(() => (token ? readSeen(token) : ""));
+  const [seenAt, setSeenAt] = useState<string>(() => (token ? readSeen(token, seenKey) : ""));
+
+  const [scenes, setScenes] = useState<NoteScene[]>([]);
+  const [notes, setNotes] = useState<ProductionNote[]>([]);
+  const [notesLoading, setNotesLoading] = useState(true);
+  const [notesSeenAt, setNotesSeenAt] = useState<string>(() => (token ? readSeen(token, notesSeenKey) : ""));
 
   // Check the link once on load
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const data = await crewCall<{ project: CrewProject }>(token, "load");
+        const data = await crewCall<{ project: CrewProject; scenes?: NoteScene[] }>(token, "load");
         if (cancelled) return;
         setProject(data.project);
+        setScenes((data.scenes || []) as NoteScene[]);
       } catch (err) {
         if (!cancelled) setDead(true);
         void (err as CrewLinkError);
