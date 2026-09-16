@@ -63,6 +63,14 @@ const GROUPS: Group[] = [
     ]}],
   },
   {
+    key: "Funding & Pitch",
+    label: "Funding & Pitch",
+    rows: [{ cols: 2, tools: [
+      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
+      { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" },
+    ]}],
+  },
+  {
     key: "Distribution",
     label: "Distribution",
     rows: [{ cols: 2, tools: [
@@ -72,7 +80,7 @@ const GROUPS: Group[] = [
   },
 ];
 
-const TABS = ["All Tools", "Script & Story", "Production Office", "Cast & Crew", "Distribution", "Funding & Pitch"];
+const TABS = ["All Tools", "Script & Story", "Production Office", "Cast & Crew", "Funding & Pitch", "Distribution"];
 
 function ToolCard({ tool }: { tool: Tool }) {
   const [hover, setHover] = useState(false);
