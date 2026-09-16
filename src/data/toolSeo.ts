@@ -89,6 +89,13 @@ export const toolSeo: Record<string, ToolSeoEntry> = {
     lead:
       "A call sheet is the one-page contract for a shoot day: production and date, general crew call and shooting call, the scenes and pages to be shot, per-person cast and crew times, locations with parking, meal breaks, weather, and the nearest hospital. Fill in the fields below and export a professional PDF, or upload an existing call sheet and let the parser pre-fill it for you. Send it the night before, and put the day's advance schedule at the bottom.",
   },
+  "/script-breakdown": {
+    title: "Script Breakdown Tool for Indie Films | Filmmaker Genius",
+    description:
+      "Turn any scene into department checklists for props, locations, wardrobe, makeup and vehicles, and share them with your crew.",
+    lead:
+      "A script breakdown turns each scene into department-by-department checklists — props, locations, wardrobe, makeup & SFX, and vehicles — so every department knows exactly what to prep before the shoot day. Upload a scene as a PDF or paste the text, and the tool extracts every item into a shareable checklist your whole crew can work from, check off, and sign off on set.",
+  },
   "/pitch-deck": {
     title: "How to Make a Film Pitch Deck | Filmmaker Genius",
     description:
