@@ -332,7 +332,7 @@ const IndependentContractorAgreement = () => {
                   <Label htmlFor="project">Project / Matter</Label>
                   <Input
                     id="project"
-                    placeholder="e.g., Knock at 8 — post-production"
+                    placeholder="e.g., The Long Way Home — post-production"
                     value={form.project}
                     onChange={(e) => set("project", e.target.value)}
                   />
