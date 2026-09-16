@@ -295,6 +295,23 @@ const DepartmentChecklist = ({
           <Plus size={16} /> Add item
         </button>
       )}
+
+      <input
+        ref={photoInputRef}
+        type="file"
+        accept="image/*"
+        multiple
+        // @ts-expect-error capture is valid on mobile browsers
+        capture="environment"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const files = Array.from(e.target.files || []);
+          const item = pendingItemRef.current;
+          if (item && files.length && onAddPhotos) onAddPhotos(item, files);
+          pendingItemRef.current = null;
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 };
