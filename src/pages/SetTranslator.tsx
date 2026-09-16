@@ -23,12 +23,50 @@ const SetTranslator = () => {
   const [savedLocation, setSavedLocation] = useState("");
   const [savingLocation, setSavingLocation] = useState(false);
 
+  const [message, setMessage] = useState<ProductionMessage | null>(null);
+  const [translating, setTranslating] = useState(false);
+  const [translateError, setTranslateError] = useState("");
+  const [historyKey, setHistoryKey] = useState(0);
+
   useEffect(() => {
     if (!selectedProject) return;
     setLanguages(selectedProject.languages?.length ? selectedProject.languages : ["en"]);
     setLocation(selectedProject.shoot_location || "");
     setSavedLocation(selectedProject.shoot_location || "");
+    setMessage(null);
+    setTranslateError("");
   }, [selectedProject]);
+
+  const translate = async (payload: {
+    subject: string;
+    sourceLanguage: string;
+    text: string;
+    sourceKind: SourceKind;
+  }) => {
+    if (!selectedProject) return;
+    setTranslating(true);
+    setTranslateError("");
+    try {
+      const data = await aiInvoke<{ message: ProductionMessage }>("translate-message", {
+        body: {
+          project_id: selectedProject.id,
+          subject: payload.subject || undefined,
+          text: payload.text,
+          source_language: payload.sourceLanguage,
+          source_kind: payload.sourceKind,
+        },
+      });
+      if (!data?.message) throw new Error("The translation could not be saved.");
+      setMessage(data.message);
+      setHistoryKey((k) => k + 1);
+    } catch (e) {
+      if (!(e instanceof InsufficientCreditsError)) {
+        setTranslateError(e instanceof Error ? e.message : "Translation failed. Please try again.");
+      }
+    } finally {
+      setTranslating(false);
+    }
+  };
 
   const toggleLanguage = async (code: string) => {
     if (!selectedProject) return;
