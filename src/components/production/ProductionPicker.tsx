@@ -140,8 +140,19 @@ const ProductionPicker = ({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState("");
 
-  const [renaming, setRenaming] = useState(false);
-  const [renameValue, setRenameValue] = useState("");
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [editTitle, setEditTitle] = useState("");
+  const [editCompany, setEditCompany] = useState("");
+  const [editStatus, setEditStatus] = useState("in_production");
+  const [editStart, setEditStart] = useState("");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsError, setSettingsError] = useState("");
+
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleteText, setDeleteText] = useState("");
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState("");
+
   const [showShare, setShowShare] = useState(false);
 
   const selected = useMemo(
