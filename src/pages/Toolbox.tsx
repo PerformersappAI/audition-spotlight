@@ -199,13 +199,11 @@ export default function Toolbox() {
         @media (max-width: 560px) {
           .tb-grid-3, .tb-grid-2 { grid-template-columns: 1fr; }
         }
-        .tb-grid-2 > .tb-single {
-          justify-self: center;
-          width: calc((100% - 16px) / 2);
-          display: block;
-        }
+        .tb-grid-2.tb-row-single { display: flex; justify-content: center; }
+        .tb-grid-2.tb-row-single > a { width: calc((100% - 16px) / 2); flex: 0 0 auto; }
         @media (max-width: 560px) {
-          .tb-grid-2 > .tb-single { width: 100%; justify-self: stretch; }
+          .tb-grid-2.tb-row-single { display: block; }
+          .tb-grid-2.tb-row-single > a { width: 100%; }
         }
         .tb-tab:hover { border-color: rgba(0,212,170,0.4) !important; color: #fff !important; }
       `}</style>
@@ -265,15 +263,18 @@ export default function Toolbox() {
                   <span style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
                 </div>
               )}
-              {g.rows.map((row, i) => (
-                <div key={i} className={row.cols === 3 ? "tb-grid-3" : "tb-grid-2"} style={{ marginTop: i > 0 ? 16 : 0 }}>
-                  {row.tools.length === 1 && row.cols === 2 ? (
-                    <div className="tb-single"><ToolCard tool={row.tools[0]} /></div>
-                  ) : (
-                    row.tools.map((t) => <ToolCard key={t.title} tool={t} />)
-                  )}
-                </div>
-              ))}
+              {g.rows.map((row, i) => {
+                const single = row.cols === 2 && row.tools.length === 1;
+                return (
+                  <div
+                    key={i}
+                    className={row.cols === 3 ? "tb-grid-3" : row.single ? "tb-grid-2 tb-row-single" : "tb-grid-2"}
+                    style={{ marginTop: i > 0 ? 16 : 0 }}
+                  >
+                    {row.tools.map((t) => <ToolCard key={t.title} tool={t} />)}
+                  </div>
+                );
+              })}
             </div>
           ))}
         </div>
