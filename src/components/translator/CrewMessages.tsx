@@ -6,6 +6,7 @@ import WeatherBar from "@/components/production/WeatherBar";
 import { timeAgo } from "@/components/breakdown/timeAgo";
 import { LANGUAGES } from "@/lib/languages";
 import { crewMessageApi } from "@/lib/translator/crew";
+import { readStoredLanguage, storeLanguage } from "@/lib/translator/readLanguage";
 import {
   messageSubjects,
   messageTranslations,

@@ -45,10 +45,11 @@ const primaryBtn: React.CSSProperties = {
 const storageKey = (token: string) => `fg_breakdown_crew_${token}`;
 const tabKey = (token: string) => `fg_crew_tab_${token}`;
 const seenKey = (token: string) => `fg_crew_msgseen_${token}`;
+const notesSeenKey = (token: string) => `fg_crew_noteseen_${token}`;
 
 const MESSAGE_PAGE = 30;
 
-type CrewTab = "breakdown" | "receipts" | "messages";
+type CrewTab = "breakdown" | "receipts" | "messages" | "notes";
 
 interface CrewProject {
   title: string;
@@ -62,14 +63,14 @@ interface CrewProject {
 const readTab = (token: string): CrewTab => {
   try {
     const stored = localStorage.getItem(tabKey(token));
-    if (stored === "receipts" || stored === "messages") return stored;
+    if (stored === "receipts" || stored === "messages" || stored === "notes") return stored;
   } catch { /* ignore */ }
   return "breakdown";
 };
 
-const readSeen = (token: string): string => {
+const readSeen = (token: string, key: (t: string) => string): string => {
   try {
-    return localStorage.getItem(seenKey(token)) || "";
+    return localStorage.getItem(key(token)) || "";
   } catch {
     return "";
   }
