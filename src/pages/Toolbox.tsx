@@ -39,14 +39,6 @@ const GROUPS: Group[] = [
     ],
   },
   {
-    key: "Funding & Pitch",
-    label: "Funding & Pitch",
-    rows: [{ cols: 2, tools: [
-      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
-      { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" },
-    ]}],
-  },
-  {
     key: "Production Office",
     label: "Production Office",
     rows: [
