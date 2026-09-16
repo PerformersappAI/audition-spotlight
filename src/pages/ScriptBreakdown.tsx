@@ -643,14 +643,64 @@ const ScriptBreakdown = () => {
 
   const confirmDeleteScene = async () => {
     if (!deleteScene) return;
+    const sceneItemIds = items.filter((i) => i.scene_id === deleteScene.id).map((i) => i.id);
+    await removeStorageFor(photos.filter((p) => sceneItemIds.includes(p.item_id)));
     await supabase.from("breakdown_scenes").delete().eq("id", deleteScene.id);
     if (sceneId === deleteScene.id) setParams({ scene: null });
     setDeleteScene(null);
     await loadScenes();
+    await loadPhotos();
   };
 
   const sceneTitle = (s: Scene) =>
     s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+
+  // ---- photo derivations ----------------------------------------------------
+  const photosByItem = useMemo(() => {
+    const map: Record<string, BreakdownPhoto[]> = {};
+    photos.forEach((p) => {
+      map[p.item_id] = map[p.item_id] || [];
+      map[p.item_id].push(p);
+    });
+    return map;
+  }, [photos]);
+
+  const awaitingPhotos = useMemo(
+    () => photos.filter((p) => !p.is_reference && p.status === "awaiting"),
+    [photos],
+  );
+
+  const sceneAwaitingCount = useMemo(() => {
+    const ids = new Set(sceneItems.map((i) => i.id));
+    return awaitingPhotos.filter((p) => ids.has(p.item_id)).length;
+  }, [awaitingPhotos, sceneItems]);
+
+  const approvalRows: ApprovalRow[] = useMemo(() => {
+    const deptLabel = (key: string) => DEPARTMENTS.find((d) => d.key === key)?.label || key;
+    return awaitingPhotos
+      .map((photo) => {
+        const item = items.find((i) => i.id === photo.item_id);
+        const scene = item ? scenes.find((s) => s.id === item.scene_id) : undefined;
+        if (!item || !scene) return null;
+        return {
+          photo,
+          sceneTitle: sceneTitle(scene),
+          departmentLabel: deptLabel(item.department),
+          itemText: item.text,
+        } as ApprovalRow;
+      })
+      .filter((r): r is ApprovalRow => !!r);
+  }, [awaitingPhotos, items, scenes]);
+
+  const openPhoto = (photo: BreakdownPhoto) => {
+    const group = photosByItem[photo.item_id] || [photo];
+    setLightbox({ ids: group.map((p) => p.id), index: Math.max(0, group.findIndex((p) => p.id === photo.id)) });
+  };
+
+  const lightboxPhotos = useMemo(
+    () => (lightbox ? lightbox.ids.map((id) => photos.find((p) => p.id === id)).filter((p): p is BreakdownPhoto => !!p) : []),
+    [lightbox, photos],
+  );
 
   // ---- render --------------------------------------------------------------
   return (
