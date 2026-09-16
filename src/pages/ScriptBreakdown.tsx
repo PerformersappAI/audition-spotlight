@@ -997,6 +997,36 @@ const ScriptBreakdown = () => {
               );
             })()}
 
+            <div style={{ display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }}>
+              {([["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]] as const).map(([key, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setView(key)}
+                  className="sb-tap"
+                  style={{
+                    padding: "0 18px", borderRadius: 10,
+                    background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+                    border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+                    color: view === key ? TEAL : "rgba(255,255,255,0.7)",
+                    fontSize: 14, fontWeight: 700, cursor: "pointer",
+                    fontFamily: "'Inter Tight', sans-serif",
+                  }}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {view === "approvals" ? (
+              <ApprovalsView
+                rows={approvalRows}
+                signedUrl={signedUrl}
+                onApprove={(p) => decidePhoto(p, "approved")}
+                onRequestChanges={(p, fb) => decidePhoto(p, "rejected", fb)}
+                onOpen={openPhoto}
+              />
+            ) : (
+            <>
             <div className="sb-scroll-x" style={{ display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }}>
               {DEPARTMENTS.map((d) => {
                 const active = d.key === activeDept;
