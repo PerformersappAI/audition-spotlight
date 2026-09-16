@@ -53,6 +53,10 @@ export interface BreakdownAdapter {
   attachReference(itemId: string, url: string): Promise<BreakdownPhoto>;
 
   deleteScene?(scene: BreakdownScene, scenePhotos: BreakdownPhoto[]): Promise<void>;
+  /** Owner only — save the scene's number, label and script text. */
+  updateScene?(sceneId: string, patch: SceneEdit): Promise<void>;
+  /** Owner only — re-run the AI breakdown on an existing scene (1 credit). */
+  rerunScene?(sceneId: string, patch: SceneEdit): Promise<SceneMergeResult>;
   /** Live updates: realtime for the owner, polling for crew. Returns an unsubscribe. */
   watch(sceneId: string, onChange: () => void): () => void;
 }
