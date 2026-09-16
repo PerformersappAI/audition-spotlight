@@ -18,7 +18,7 @@ import { createClient } from "@supabase/supabase-js";
 import { Slot } from "@radix-ui/react-slot";
 import { cva } from "class-variance-authority";
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
-import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
+import { ChevronRight, Check as Check$1, Circle, Shield, Zap, Wallet, LogOut, X, Menu, ChevronDown, ChevronUp, Users, Building2, DollarSign, MapPin, Briefcase, Trash2, Plus, Send, Loader2, Home, BarChart3, SlidersHorizontal, GraduationCap, ArrowRight, Clock, FileText, Upload, CheckCircle, Brain, Download, AlertTriangle, Lightbulb, MessageSquare, Pencil, Target, Video, Star, Palette, AlertCircle, ImageIcon, Film, Sparkles, Camera, ArrowUp, Image as Image$1, UserCircle2, Wand2, Coins, ZoomIn, RefreshCw, Pause, Play, GripVertical, Lock, Share2, Save, BookOpen, ArrowLeft, Edit2, ChevronLeft, Search, Copy, Smartphone, Mail, User, FileImage, Link2, Clapperboard, FilePlus2, ShieldAlert, MessageCircle, Phone, CheckCircle2, ExternalLink, XCircle, CircleCheck, Scale, Settings, Clipboard, Volume2, Edit3, Globe, Headphones, Calendar, UserCheck, ClipboardList, Calculator, Music, Truck, Megaphone, Printer, RotateCcw, ImagePlus } from "lucide-react";
 import "react-dom";
 import { toast as toast$1 } from "sonner";
 import * as LabelPrimitive from "@radix-ui/react-label";
@@ -3766,7 +3766,7 @@ function About() {
 }
 const TEAL$c = "#00d4aa";
 const TEAL_HOVER$1 = "#00f0c0";
-const inputStyle$3 = {
+const inputStyle$4 = {
   width: "100%",
   background: "rgba(255,255,255,0.04)",
   border: "1px solid #1e1e35",
@@ -3947,20 +3947,20 @@ function Contact() {
       /* @__PURE__ */ jsxs("div", { className: "contact-name-row", style: { marginBottom: 18 }, children: [
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "First Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$3, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: first, onChange: (e) => setFirst(e.target.value), placeholder: "Jane" })
         ] }),
         /* @__PURE__ */ jsxs("div", { children: [
           /* @__PURE__ */ jsx("label", { style: labelStyle$2, children: "Last Name" }),
-          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$3, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
+          /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: last, onChange: (e) => setLast(e.target.value), placeholder: "Smith" })
         ] })
       ] }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$3, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
-      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$3, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Email", children: /* @__PURE__ */ jsx("input", { type: "email", className: "contact-input", style: inputStyle$4, value: email, onChange: (e) => setEmail(e.target.value), placeholder: "jane@example.com" }) }),
+      /* @__PURE__ */ jsx(Field$4, { label: "Subject", children: /* @__PURE__ */ jsx("input", { className: "contact-input", style: inputStyle$4, value: subject, onChange: (e) => setSubject(e.target.value), placeholder: "How can we help you?" }) }),
       /* @__PURE__ */ jsx(Field$4, { label: "Message", children: /* @__PURE__ */ jsx(
         "textarea",
         {
           className: "contact-input",
-          style: { ...inputStyle$3, minHeight: 130, resize: "vertical" },
+          style: { ...inputStyle$4, minHeight: 130, resize: "vertical" },
           value: message,
           onChange: (e) => setMessage(e.target.value),
           placeholder: "Tell us more about your inquiry..."
@@ -17363,10 +17363,10 @@ const hashScenes = (scenes) => {
   return `storyboard_scene_sel_${h}`;
 };
 const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
-  const storageKey = useMemo(() => hashScenes(scenes), [scenes]);
+  const storageKey2 = useMemo(() => hashScenes(scenes), [scenes]);
   const [selectedNumbers, setSelectedNumbers] = useState(() => {
     try {
-      const saved = localStorage.getItem(storageKey);
+      const saved = localStorage.getItem(storageKey2);
       if (saved) {
         const arr = JSON.parse(saved);
         const valid = arr.filter((n) => scenes.some((s) => s.sceneNumber === n));
@@ -17379,10 +17379,10 @@ const SceneSelector = ({ scenes, onConfirm, onCancel, isProcessing }) => {
   const [shotOverrides, setShotOverrides] = useState(/* @__PURE__ */ new Map());
   useEffect(() => {
     try {
-      localStorage.setItem(storageKey, JSON.stringify(Array.from(selectedNumbers)));
+      localStorage.setItem(storageKey2, JSON.stringify(Array.from(selectedNumbers)));
     } catch {
     }
-  }, [selectedNumbers, storageKey]);
+  }, [selectedNumbers, storageKey2]);
   const toggle = (n) => {
     setSelectedNumbers((prev) => {
       const next = new Set(prev);
@@ -22319,7 +22319,7 @@ const CallSheet = () => {
             body: { text: result.text }
           });
           if (data) {
-            const crewCall = to24h(data.general_crew_call) || to24h(data.shooting_call);
+            const crewCall2 = to24h(data.general_crew_call) || to24h(data.shooting_call);
             setFormData((prev) => ({
               ...prev,
               production_company: clean(data.production_company) || prev.production_company,
@@ -22328,8 +22328,8 @@ const CallSheet = () => {
               day_number: clean(data.day_number) || prev.day_number,
               script_color: clean(data.script_color) || prev.script_color,
               schedule_color: clean(data.schedule_color) || prev.schedule_color,
-              general_crew_call: crewCall || prev.general_crew_call,
-              unit_call_time: crewCall || prev.unit_call_time,
+              general_crew_call: crewCall2 || prev.general_crew_call,
+              unit_call_time: crewCall2 || prev.unit_call_time,
               shooting_call: to24h(data.shooting_call) || prev.shooting_call,
               lunch_time: to24h(data.lunch_time) || prev.lunch_time,
               courtesy_breakfast_time: to24h(data.courtesy_breakfast_time) || prev.courtesy_breakfast_time,
@@ -23158,7 +23158,23 @@ const DEPARTMENTS = [
   { key: "wardrobe", label: "Wardrobe" },
   { key: "vehicles", label: "Vehicles" }
 ];
-const PHOTO_FIELDS = "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, decided_by_name, decided_at, created_at";
+const CREW_DEPARTMENTS = [
+  "Director",
+  "Producer",
+  "Assistant Director",
+  "Props",
+  "Locations",
+  "Makeup & SFX",
+  "Wardrobe",
+  "Transport / Vehicles",
+  "Camera",
+  "Art Department",
+  "Other"
+];
+const SCENE_FIELDS = "id, scene_number, label, script_text, sort_order, created_at";
+const ITEM_FIELDS = "id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, added_by_crew_id, sort_order";
+const SIGNOFF_FIELDS = "id, scene_id, department, status, note, by_name, by_department, updated_at";
+const PHOTO_FIELDS = "id, item_id, project_id, storage_path, external_url, is_reference, status, feedback, uploaded_by_name, uploaded_by_crew_id, decided_by_name, decided_at, created_at";
 const TEAL$4 = "#00d4aa";
 const statusBadge = (photo) => {
   if (photo.is_reference) return { label: "REF", color: "#8ab4ff" };
@@ -23213,7 +23229,7 @@ const ItemPhotos = ({ photos, signedUrl, onOpen }) => {
     );
   }) });
 };
-const inputStyle$2 = {
+const inputStyle$3 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -23245,6 +23261,7 @@ const DepartmentChecklist = ({
   onEditText,
   onDelete,
   onAdd,
+  canDelete,
   photosByItem,
   signedUrl,
   onAddPhotos,
@@ -23327,7 +23344,7 @@ const DepartmentChecklist = ({
                     if (e.key === "Enter") commitEdit(item);
                     if (e.key === "Escape") setEditingId(null);
                   },
-                  style: inputStyle$2
+                  style: inputStyle$3
                 }
               ),
               /* @__PURE__ */ jsx("button", { "aria-label": "Save item", onClick: () => commitEdit(item), style: { ...iconBtn, color: TEAL$4 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
@@ -23409,7 +23426,7 @@ const DepartmentChecklist = ({
                 }
               ),
               /* @__PURE__ */ jsx("button", { "aria-label": `Edit ${item.text}`, onClick: () => startEdit(item), style: iconBtn, children: /* @__PURE__ */ jsx(Pencil, { size: 15 }) }),
-              confirmId === item.id ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.7)" }, children: [
+              (!canDelete || canDelete(item)) && (confirmId === item.id ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: "rgba(255,255,255,0.7)" }, children: [
                 "Remove?",
                 /* @__PURE__ */ jsx(
                   "button",
@@ -23423,7 +23440,7 @@ const DepartmentChecklist = ({
                   }
                 ),
                 /* @__PURE__ */ jsx("button", { onClick: () => setConfirmId(null), style: { ...iconBtn, minWidth: 34, fontSize: 13 }, children: "No" })
-              ] }) : /* @__PURE__ */ jsx("button", { "aria-label": `Remove ${item.text}`, onClick: () => setConfirmId(item.id), style: iconBtn, children: /* @__PURE__ */ jsx(Trash2, { size: 15 }) })
+              ] }) : /* @__PURE__ */ jsx("button", { "aria-label": `Remove ${item.text}`, onClick: () => setConfirmId(item.id), style: iconBtn, children: /* @__PURE__ */ jsx(Trash2, { size: 15 }) }))
             ] })
           ]
         },
@@ -23445,7 +23462,7 @@ const DepartmentChecklist = ({
             }
           },
           placeholder: "New item…",
-          style: inputStyle$2
+          style: inputStyle$3
         }
       ),
       /* @__PURE__ */ jsx("button", { "aria-label": "Save new item", onClick: commitAdd, style: { ...iconBtn, color: TEAL$4 }, children: /* @__PURE__ */ jsx(Check$1, { size: 18 }) }),
@@ -23593,7 +23610,7 @@ const SignOffBox = ({ signoff, onSetStatus, onClear, onAddNoteItem }) => {
     }
   );
 };
-const btn$1 = (accent) => ({
+const btn$2 = (accent) => ({
   minHeight: 44,
   padding: "0 14px",
   borderRadius: 10,
@@ -23636,14 +23653,14 @@ const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen })
           }
         ),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" }, children: [
-          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$4), children: [
+          /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$2(TEAL$4), children: [
             /* @__PURE__ */ jsx(Check$1, { size: 15 }),
             " Approve"
           ] }),
           /* @__PURE__ */ jsx("button", { onClick: () => {
             setAskId(askId === photo.id ? null : photo.id);
             setFeedback("");
-          }, style: btn$1(), children: "Request changes" })
+          }, style: btn$2(), children: "Request changes" })
         ] }),
         askId === photo.id && /* @__PURE__ */ jsxs("div", { style: { width: "100%" }, children: [
           /* @__PURE__ */ jsx(
@@ -23679,7 +23696,7 @@ const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen })
                 }
               },
               disabled: !feedback.trim(),
-              style: { ...btn$1("#f5a524"), marginTop: 8, opacity: feedback.trim() ? 1 : 0.45 },
+              style: { ...btn$2("#f5a524"), marginTop: 8, opacity: feedback.trim() ? 1 : 0.45 },
               children: "Save"
             }
           )
@@ -23688,7 +23705,7 @@ const ApprovalsView = ({ rows, signedUrl, onApprove, onRequestChanges, onOpen })
     }) })
   ] }, key)) });
 };
-const btn = (accent) => ({
+const btn$1 = (accent) => ({
   minHeight: 44,
   padding: "0 16px",
   borderRadius: 10,
@@ -23707,6 +23724,7 @@ const PhotoLightbox = ({
   photos,
   index,
   signedUrl,
+  canModify,
   onIndexChange,
   onClose,
   onApprove,
@@ -23768,7 +23786,7 @@ const PhotoLightbox = ({
             photos.length,
             photo.is_reference ? " · Reference" : ""
           ] }),
-          /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close photo", style: btn(), children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+          /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close photo", style: btn$1(), children: /* @__PURE__ */ jsx(X, { size: 18 }) })
         ] }),
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, justifyContent: "center", flex: 1, minHeight: 240 }, children: [
           /* @__PURE__ */ jsx(
@@ -23776,7 +23794,7 @@ const PhotoLightbox = ({
             {
               "aria-label": "Previous photo",
               onClick: () => index > 0 && onIndexChange(index - 1),
-              style: { ...btn(), opacity: index > 0 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
+              style: { ...btn$1(), opacity: index > 0 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
               children: /* @__PURE__ */ jsx(ChevronLeft, { size: 20 })
             }
           ),
@@ -23786,7 +23804,7 @@ const PhotoLightbox = ({
             {
               "aria-label": "Next photo",
               onClick: () => index < photos.length - 1 && onIndexChange(index + 1),
-              style: { ...btn(), opacity: index < photos.length - 1 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
+              style: { ...btn$1(), opacity: index < photos.length - 1 ? 1 : 0.25, minWidth: 44, padding: 0, justifyContent: "center" },
               children: /* @__PURE__ */ jsx(ChevronRight, { size: 20 })
             }
           )
@@ -23800,11 +23818,11 @@ const PhotoLightbox = ({
               photo.feedback && /* @__PURE__ */ jsx("div", { style: { color: "rgba(255,255,255,0.7)", marginTop: 6, lineHeight: 1.5 }, children: photo.feedback })
             ] }),
             /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap" }, children: [
-              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn(TEAL$4), children: [
+              /* @__PURE__ */ jsxs("button", { onClick: () => onApprove(photo), style: btn$1(TEAL$4), children: [
                 /* @__PURE__ */ jsx(Check$1, { size: 16 }),
                 " Approve"
               ] }),
-              /* @__PURE__ */ jsx("button", { onClick: () => setAskChanges((v2) => !v2), style: btn(), children: "Request changes" })
+              /* @__PURE__ */ jsx("button", { onClick: () => setAskChanges((v2) => !v2), style: btn$1(), children: "Request changes" })
             ] }),
             askChanges && /* @__PURE__ */ jsxs("div", { style: { marginTop: 12 }, children: [
               /* @__PURE__ */ jsx(
@@ -23839,25 +23857,25 @@ const PhotoLightbox = ({
                     }
                   },
                   disabled: !feedback.trim(),
-                  style: { ...btn("#f5a524"), marginTop: 10, opacity: feedback.trim() ? 1 : 0.45 },
+                  style: { ...btn$1("#f5a524"), marginTop: 10, opacity: feedback.trim() ? 1 : 0.45 },
                   children: "Save"
                 }
               )
             ] })
           ] }),
-          /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }, children: [
+          (!canModify || canModify(photo)) && /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, flexWrap: "wrap", marginTop: 16 }, children: [
             !photo.is_reference && /* @__PURE__ */ jsxs("button", { onClick: () => {
               var _a2;
               return (_a2 = replaceRef.current) == null ? void 0 : _a2.click();
-            }, style: btn(), children: [
+            }, style: btn$1(), children: [
               /* @__PURE__ */ jsx(RefreshCw, { size: 16 }),
               " Replace photo"
             ] }),
             confirmDelete ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 8, fontSize: 14 }, children: [
               "Delete this photo?",
-              /* @__PURE__ */ jsx("button", { onClick: () => onDelete(photo), style: { ...btn("#ff5c5c"), color: "#2a0505" }, children: "Yes" }),
-              /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDelete(false), style: btn(), children: "No" })
-            ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDelete(true), style: btn(), children: [
+              /* @__PURE__ */ jsx("button", { onClick: () => onDelete(photo), style: { ...btn$1("#ff5c5c"), color: "#2a0505" }, children: "Yes" }),
+              /* @__PURE__ */ jsx("button", { onClick: () => setConfirmDelete(false), style: btn$1(), children: "No" })
+            ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmDelete(true), style: btn$1(), children: [
               /* @__PURE__ */ jsx(Trash2, { size: 16 }),
               " Delete photo"
             ] })
@@ -24168,21 +24186,1093 @@ const prepareImage = async (file) => {
   if (!blob) throw new ImageError("Your browser couldn't process that image.");
   return blob;
 };
+const panel$3 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const ghostBtn$1 = {
+  minHeight: 44,
+  padding: "0 16px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const sceneTitle = (s) => s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
+const BreakdownWorkspace = ({
+  adapter,
+  sceneId,
+  onSelectScene,
+  reloadKey = 0,
+  onRequestAddScene,
+  onLoaded,
+  hideSceneStrip
+}) => {
+  const [scenes, setScenes] = useState([]);
+  const [items, setItems] = useState([]);
+  const [signoffs, setSignoffs] = useState([]);
+  const [photos, setPhotos] = useState([]);
+  const [urlMap, setUrlMap] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [activeDept, setActiveDept] = useState("props");
+  const [view, setView] = useState("checklist");
+  const [showScript, setShowScript] = useState(false);
+  const [uploadingItemId, setUploadingItemId] = useState(null);
+  const [lightbox, setLightbox] = useState(null);
+  const [deleteScene, setDeleteScene] = useState(null);
+  const failed = (msg) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
+  const mergeUrls = useCallback((urls) => {
+    const exp = Date.now() + 3600 * 1e3;
+    setUrlMap((prev) => {
+      const next = { ...prev };
+      Object.entries(urls).forEach(([path, url2]) => {
+        next[path] = { url: url2, exp };
+      });
+      return next;
+    });
+  }, []);
+  const reload = useCallback(async () => {
+    const data = await adapter.load();
+    setScenes(data.scenes);
+    setItems(data.items);
+    setSignoffs(data.signoffs);
+    setPhotos(data.photos);
+    if (data.urls) mergeUrls(data.urls);
+    setLoading(false);
+    onLoaded == null ? void 0 : onLoaded({ scenes: data.scenes, items: data.items });
+  }, [adapter, mergeUrls]);
+  useEffect(() => {
+    setLoading(true);
+    reload();
+  }, [reload, reloadKey]);
+  useEffect(() => {
+    const now = Date.now();
+    const needed = Array.from(new Set(
+      photos.filter((p) => !!p.storage_path).map((p) => p.storage_path).filter((path) => !urlMap[path] || urlMap[path].exp < now + 6e4)
+    ));
+    if (!needed.length) return;
+    let cancelled = false;
+    (async () => {
+      const urls = await adapter.signPaths(needed);
+      if (!cancelled && Object.keys(urls).length) mergeUrls(urls);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [photos, urlMap, adapter, mergeUrls]);
+  const signedUrl = useCallback(
+    (photo) => {
+      var _a2;
+      return photo.external_url || (photo.storage_path ? (_a2 = urlMap[photo.storage_path]) == null ? void 0 : _a2.url : void 0);
+    },
+    [urlMap]
+  );
+  useEffect(() => {
+    if (!sceneId && adapter.mode === "owner") return;
+    return adapter.watch(sceneId, () => {
+      reload();
+    });
+  }, [sceneId, adapter, reload]);
+  const selectedScene = useMemo(() => scenes.find((s) => s.id === sceneId) || null, [scenes, sceneId]);
+  const sceneItems = useMemo(() => items.filter((i) => i.scene_id === sceneId), [items, sceneId]);
+  const itemCount = useCallback((sid) => items.filter((i) => i.scene_id === sid).length, [items]);
+  const deptCount = useCallback((d) => sceneItems.filter((i) => i.department === d).length, [sceneItems]);
+  const deptCheckedCount = useCallback((d) => sceneItems.filter((i) => i.department === d && i.checked).length, [sceneItems]);
+  const sceneSignoff = useCallback(
+    (d) => signoffs.find((s) => s.scene_id === sceneId && s.department === d) || null,
+    [signoffs, sceneId]
+  );
+  const toggleItem = async (item) => {
+    const next = !item.checked;
+    const patch = {
+      checked: next,
+      checked_by_name: next ? adapter.actorName : null,
+      checked_at: next ? (/* @__PURE__ */ new Date()).toISOString() : null
+    };
+    setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, ...patch } : i));
+    try {
+      await adapter.setChecked(item, next);
+    } catch (err) {
+      setItems((prev) => prev.map((i) => i.id === item.id ? item : i));
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    }
+  };
+  const editItemText = async (item, text) => {
+    setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, text } : i));
+    try {
+      await adapter.editItem(item, text);
+    } catch (err) {
+      setItems((prev) => prev.map((i) => i.id === item.id ? item : i));
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    }
+  };
+  const deleteItem = async (item) => {
+    const itemPhotos = photos.filter((p) => p.item_id === item.id);
+    setItems((prev) => prev.filter((i) => i.id !== item.id));
+    try {
+      await adapter.deleteItem(item, itemPhotos);
+      setPhotos((prev) => prev.filter((p) => p.item_id !== item.id));
+    } catch (err) {
+      setItems((prev) => [...prev, item]);
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    }
+  };
+  const addItem = async (department, text, asNote) => {
+    if (!sceneId) return;
+    try {
+      const created = await adapter.addItem(sceneId, department, text, asNote);
+      setItems((prev) => [...prev, created]);
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "The item wasn't added.");
+    }
+  };
+  const setSignoff = async (department, status, note) => {
+    if (!sceneId) return;
+    try {
+      const saved = await adapter.setSignoff(sceneId, department, status, note);
+      setSignoffs((prev) => [
+        ...prev.filter((s) => !(s.scene_id === sceneId && s.department === department)),
+        saved
+      ]);
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "The sign-off wasn't saved.");
+    }
+  };
+  const clearSignoff = async (department) => {
+    const existing = sceneSignoff(department);
+    if (!existing || !sceneId) return;
+    setSignoffs((prev) => prev.filter((s) => s.id !== existing.id));
+    try {
+      await adapter.clearSignoff(sceneId, department, existing);
+    } catch (err) {
+      setSignoffs((prev) => [...prev, existing]);
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    }
+  };
+  const addNoteItem = async (department, text) => {
+    await addItem(department, text, true);
+    const existing = sceneSignoff(department);
+    if ((existing == null ? void 0 : existing.status) === "need_help") await setSignoff(department, "need_help", text);
+  };
+  const addPhotos = async (item, files) => {
+    setUploadingItemId(item.id);
+    try {
+      for (const file of files) {
+        try {
+          const { photo } = await adapter.uploadPhoto(item, file);
+          setPhotos((prev) => [...prev, photo]);
+        } catch (err) {
+          toast({
+            title: err instanceof ImageError ? "Photo not added" : "Upload failed",
+            description: (err == null ? void 0 : err.message) || "That photo couldn't be uploaded.",
+            variant: "destructive"
+          });
+        }
+      }
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+  const decidePhoto = async (photo, status, feedback) => {
+    const patch = {
+      status,
+      feedback: status === "rejected" ? feedback ?? null : null,
+      decided_by_name: adapter.actorName,
+      decided_at: (/* @__PURE__ */ new Date()).toISOString()
+    };
+    setPhotos((prev) => prev.map((p) => p.id === photo.id ? { ...p, ...patch } : p));
+    try {
+      await adapter.decidePhoto(photo, status, feedback);
+    } catch (err) {
+      setPhotos((prev) => prev.map((p) => p.id === photo.id ? photo : p));
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+    }
+  };
+  const replacePhoto = async (photo, file) => {
+    setUploadingItemId(photo.item_id);
+    try {
+      const { photo: updated } = await adapter.replacePhoto(photo, file);
+      setPhotos((prev) => prev.map((p) => p.id === photo.id ? updated : p));
+    } catch (err) {
+      toast({
+        title: err instanceof ImageError ? "Photo not replaced" : "Upload failed",
+        description: (err == null ? void 0 : err.message) || "That photo couldn't be uploaded.",
+        variant: "destructive"
+      });
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
+  const deletePhoto = async (photo) => {
+    try {
+      await adapter.deletePhoto(photo);
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+      return;
+    }
+    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
+    setLightbox((lb) => {
+      if (!lb) return lb;
+      const ids = lb.ids.filter((id) => id !== photo.id);
+      if (!ids.length) return null;
+      return { ids, index: Math.min(lb.index, ids.length - 1) };
+    });
+  };
+  const attachReference = async (itemId, url2) => {
+    try {
+      const created = await adapter.attachReference(itemId, url2);
+      setPhotos((prev) => [...prev, created]);
+      toast({ title: "Reference image attached" });
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "The reference image couldn't be attached.");
+    }
+  };
+  const confirmDeleteScene = async () => {
+    if (!deleteScene || !adapter.deleteScene) return;
+    const sceneItemIds = items.filter((i) => i.scene_id === deleteScene.id).map((i) => i.id);
+    try {
+      await adapter.deleteScene(deleteScene, photos.filter((p) => sceneItemIds.includes(p.item_id)));
+    } catch (err) {
+      failed((err == null ? void 0 : err.message) || "Please try again.");
+      return;
+    }
+    if (sceneId === deleteScene.id) onSelectScene(null);
+    setDeleteScene(null);
+    await reload();
+  };
+  const photosByItem = useMemo(() => {
+    const map = {};
+    photos.forEach((p) => {
+      map[p.item_id] = map[p.item_id] || [];
+      map[p.item_id].push(p);
+    });
+    return map;
+  }, [photos]);
+  const awaitingPhotos = useMemo(
+    () => photos.filter((p) => !p.is_reference && p.status === "awaiting"),
+    [photos]
+  );
+  const sceneAwaitingCount = useMemo(() => {
+    const ids = new Set(sceneItems.map((i) => i.id));
+    return awaitingPhotos.filter((p) => ids.has(p.item_id)).length;
+  }, [awaitingPhotos, sceneItems]);
+  const approvalRows = useMemo(() => {
+    const deptLabel = (key) => {
+      var _a2;
+      return ((_a2 = DEPARTMENTS.find((d) => d.key === key)) == null ? void 0 : _a2.label) || key;
+    };
+    return awaitingPhotos.map((photo) => {
+      const item = items.find((i) => i.id === photo.item_id);
+      const scene = item ? scenes.find((s) => s.id === item.scene_id) : void 0;
+      if (!item || !scene) return null;
+      return {
+        photo,
+        sceneTitle: sceneTitle(scene),
+        departmentLabel: deptLabel(item.department),
+        itemText: item.text
+      };
+    }).filter((r) => !!r);
+  }, [awaitingPhotos, items, scenes]);
+  const openPhoto = (photo) => {
+    const group = photosByItem[photo.item_id] || [photo];
+    setLightbox({ ids: group.map((p) => p.id), index: Math.max(0, group.findIndex((p) => p.id === photo.id)) });
+  };
+  const lightboxPhotos = useMemo(
+    () => lightbox ? lightbox.ids.map((id) => photos.find((p) => p.id === id)).filter((p) => !!p) : [],
+    [lightbox, photos]
+  );
+  const deptItems = sceneItems.filter((i) => i.department === activeDept);
+  if (loading) {
+    return /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+      " Loading the breakdown…"
+    ] });
+  }
+  return /* @__PURE__ */ jsxs(Fragment, { children: [
+    !hideSceneStrip && /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        fontFamily: "'Fraunces', serif",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,0.3)",
+        marginBottom: 14
+      }, children: "Scenes" }),
+      /* @__PURE__ */ jsxs("div", { className: "sb-scroll-x", style: { display: "flex", gap: 12, paddingBottom: 8 }, children: [
+        scenes.map((s) => {
+          const active = s.id === sceneId;
+          return /* @__PURE__ */ jsxs("div", { style: {
+            ...panel$3,
+            padding: 14,
+            minWidth: 168,
+            flex: "0 0 auto",
+            borderColor: active ? "rgba(0,212,170,0.5)" : "rgba(255,255,255,0.08)",
+            background: active ? "rgba(0,212,170,0.08)" : "rgba(255,255,255,0.03)",
+            display: "flex",
+            alignItems: "flex-start",
+            gap: 8
+          }, children: [
+            /* @__PURE__ */ jsxs(
+              "button",
+              {
+                onClick: () => {
+                  onSelectScene(s.id);
+                  setActiveDept("props");
+                  setShowScript(false);
+                  setView("checklist");
+                },
+                style: { background: "none", border: "none", color: "#fff", textAlign: "left", cursor: "pointer", padding: 0, flex: 1, minHeight: 44, fontFamily: "'Inter Tight', sans-serif" },
+                children: [
+                  /* @__PURE__ */ jsx("div", { style: { fontSize: 15, fontWeight: 700 }, children: sceneTitle(s) }),
+                  /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }, children: [
+                    itemCount(s.id),
+                    " item",
+                    itemCount(s.id) === 1 ? "" : "s"
+                  ] })
+                ]
+              }
+            ),
+            adapter.canManageScenes && /* @__PURE__ */ jsx(
+              "button",
+              {
+                "aria-label": `Delete ${sceneTitle(s)}`,
+                onClick: () => setDeleteScene(s),
+                style: { background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 },
+                children: /* @__PURE__ */ jsx(Trash2, { size: 15 })
+              }
+            )
+          ] }, s.id);
+        }),
+        adapter.canManageScenes && onRequestAddScene && /* @__PURE__ */ jsxs(
+          "button",
+          {
+            onClick: onRequestAddScene,
+            style: {
+              ...panel$3,
+              padding: 14,
+              minWidth: 168,
+              flex: "0 0 auto",
+              cursor: "pointer",
+              border: "1px dashed rgba(0,212,170,0.4)",
+              color: TEAL$4,
+              background: "rgba(0,212,170,0.05)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 8,
+              fontFamily: "'Inter Tight', sans-serif",
+              fontSize: 15,
+              fontWeight: 700,
+              minHeight: 76
+            },
+            children: [
+              /* @__PURE__ */ jsx(Plus, { size: 16 }),
+              " Add scene"
+            ]
+          }
+        )
+      ] })
+    ] }),
+    selectedScene && /* @__PURE__ */ jsxs("div", { style: { ...panel$3, padding: 20, marginBottom: 64 }, children: [
+      /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: sceneTitle(selectedScene) }),
+      selectedScene.label && selectedScene.scene_number && /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: selectedScene.label }),
+      (() => {
+        const total = sceneItems.length;
+        const checked = sceneItems.filter((i) => i.checked).length;
+        const signed = DEPARTMENTS.filter((d) => !!sceneSignoff(d.key)).length;
+        const pct = total ? Math.round(checked / total * 100) : 0;
+        return /* @__PURE__ */ jsxs("div", { style: { marginTop: 12 }, children: [
+          /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)" }, children: [
+            checked,
+            "/",
+            total,
+            " items ready · ",
+            signed,
+            "/5 departments signed off",
+            sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""
+          ] }),
+          /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$4, transition: "width .3s" } }) })
+        ] });
+      })(),
+      /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }, children: [["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]].map(([key, label]) => /* @__PURE__ */ jsx(
+        "button",
+        {
+          onClick: () => setView(key),
+          className: "sb-tap",
+          style: {
+            padding: "0 18px",
+            borderRadius: 10,
+            background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
+            border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+            color: view === key ? TEAL$4 : "rgba(255,255,255,0.7)",
+            fontSize: 14,
+            fontWeight: 700,
+            cursor: "pointer",
+            fontFamily: "'Inter Tight', sans-serif"
+          },
+          children: label
+        },
+        key
+      )) }),
+      view === "approvals" ? /* @__PURE__ */ jsx(
+        ApprovalsView,
+        {
+          rows: approvalRows,
+          signedUrl,
+          onApprove: (p) => decidePhoto(p, "approved"),
+          onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
+          onOpen: openPhoto
+        }
+      ) : /* @__PURE__ */ jsxs(Fragment, { children: [
+        /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }, children: DEPARTMENTS.map((d) => {
+          const active = d.key === activeDept;
+          const so = sceneSignoff(d.key);
+          return /* @__PURE__ */ jsxs(
+            "button",
+            {
+              onClick: () => setActiveDept(d.key),
+              className: "sb-tap",
+              style: {
+                flex: "0 0 auto",
+                padding: "0 16px",
+                borderRadius: 9999,
+                background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
+                color: active ? TEAL$4 : "rgba(255,255,255,0.7)",
+                fontSize: 14,
+                fontWeight: 600,
+                cursor: "pointer",
+                whiteSpace: "nowrap",
+                fontFamily: "'Inter Tight', sans-serif",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8
+              },
+              children: [
+                d.label,
+                " ",
+                deptCheckedCount(d.key),
+                "/",
+                deptCount(d.key),
+                so && /* @__PURE__ */ jsx("span", { style: {
+                  width: 8,
+                  height: 8,
+                  borderRadius: 9999,
+                  background: so.status === "good" ? TEAL$4 : "#f5a524"
+                } })
+              ]
+            },
+            d.key
+          );
+        }) }),
+        /* @__PURE__ */ jsx(
+          DepartmentChecklist,
+          {
+            department: activeDept,
+            items: deptItems,
+            onToggle: toggleItem,
+            onEditText: editItemText,
+            onDelete: deleteItem,
+            onAdd: (text) => addItem(activeDept, text),
+            canDelete: (item) => adapter.canDeleteItem(item),
+            photosByItem,
+            signedUrl,
+            onAddPhotos: addPhotos,
+            onOpenPhoto: openPhoto,
+            uploadingItemId
+          },
+          `${sceneId}-${activeDept}`
+        ),
+        /* @__PURE__ */ jsx(
+          ReferenceSearch,
+          {
+            items: deptItems,
+            onAttach: attachReference
+          },
+          `ref-${sceneId}-${activeDept}`
+        ),
+        /* @__PURE__ */ jsx(
+          SignOffBox,
+          {
+            signoff: sceneSignoff(activeDept),
+            onSetStatus: (status, note) => setSignoff(activeDept, status, note),
+            onClear: () => clearSignoff(activeDept),
+            onAddNoteItem: (text) => addNoteItem(activeDept, text)
+          },
+          `signoff-${sceneId}-${activeDept}`
+        )
+      ] }),
+      /* @__PURE__ */ jsxs(
+        "button",
+        {
+          onClick: () => setShowScript((v2) => !v2),
+          style: { ...ghostBtn$1, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
+          children: [
+            /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: showScript ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
+            "View scene script"
+          ]
+        }
+      ),
+      showScript && /* @__PURE__ */ jsx("pre", { style: {
+        marginTop: 14,
+        maxHeight: 420,
+        overflow: "auto",
+        padding: 16,
+        borderRadius: 12,
+        background: "rgba(0,0,0,0.4)",
+        border: "1px solid rgba(255,255,255,0.08)",
+        fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
+        fontSize: 13,
+        lineHeight: 1.6,
+        whiteSpace: "pre-wrap",
+        color: "rgba(255,255,255,0.75)"
+      }, children: selectedScene.script_text || "No script text saved." })
+    ] }),
+    !selectedScene && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: adapter.canManageScenes ? "No scenes yet — tap “Add scene” to upload or paste your first one." : "No scenes have been added to this breakdown yet." }),
+    !selectedScene && scenes.length > 0 && /* @__PURE__ */ jsx("div", { style: { ...panel$3, padding: 24, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.55)" }, children: "Pick a scene above to see its checklists." }),
+    deleteScene && /* @__PURE__ */ jsx(
+      "div",
+      {
+        onClick: () => setDeleteScene(null),
+        style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 },
+        children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$3, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+          /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }, children: [
+            /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: "Delete scene" }),
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), "aria-label": "Close", style: { ...ghostBtn$1, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+          ] }),
+          /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
+            "Delete ",
+            sceneTitle(deleteScene),
+            " and its checklist?"
+          ] }),
+          /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 20 }, children: [
+            /* @__PURE__ */ jsx(
+              "button",
+              {
+                onClick: confirmDeleteScene,
+                style: { ...ghostBtn$1, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 },
+                children: "Delete"
+              }
+            ),
+            /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn$1, children: "Cancel" })
+          ] })
+        ] })
+      }
+    ),
+    lightbox && lightboxPhotos.length > 0 && /* @__PURE__ */ jsx(
+      PhotoLightbox,
+      {
+        photos: lightboxPhotos,
+        index: Math.min(lightbox.index, lightboxPhotos.length - 1),
+        signedUrl,
+        canModify: (p) => adapter.canModifyPhoto(p),
+        onIndexChange: (i) => setLightbox((lb) => lb ? { ...lb, index: i } : lb),
+        onClose: () => setLightbox(null),
+        onApprove: (p) => decidePhoto(p, "approved"),
+        onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
+        onReplace: replacePhoto,
+        onDelete: deletePhoto
+      }
+    )
+  ] });
+};
+const panel$2 = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const btn = {
+  minHeight: 44,
+  padding: "0 14px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.05)",
+  color: "#fff",
+  border: "1px solid rgba(255,255,255,0.14)",
+  fontWeight: 600,
+  fontSize: 14,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif",
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 8,
+  textDecoration: "none"
+};
+const randomToken = () => {
+  const bytes = new Uint8Array(24);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+};
+const SharePanel = ({ projectId, projectTitle, shareToken, sharingEnabled, onChange }) => {
+  const [crew, setCrew] = useState([]);
+  const [loadingCrew, setLoadingCrew] = useState(true);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const link = `https://filmmakergenius.com/b/${shareToken}`;
+  const message = `You've been added to the ${projectTitle} script breakdown. Open this link to see your department checklist: ${link}`;
+  const loadCrew = useCallback(async () => {
+    setLoadingCrew(true);
+    const { data } = await supabase.from("breakdown_crew").select("id, name, department, last_seen_at").eq("project_id", projectId).order("created_at", { ascending: true });
+    setCrew(data || []);
+    setLoadingCrew(false);
+  }, [projectId]);
+  useEffect(() => {
+    loadCrew();
+  }, [loadCrew]);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(link);
+      toast({ title: "Link copied" });
+    } catch {
+      toast({ title: "Couldn't copy", description: link, variant: "destructive" });
+    }
+  };
+  const nativeShare = async () => {
+    try {
+      await navigator.share({ title: `${projectTitle} — script breakdown`, text: message, url: link });
+    } catch {
+    }
+  };
+  const toggleSharing = async () => {
+    setBusy(true);
+    const next = !sharingEnabled;
+    const { error } = await supabase.from("breakdown_projects").update({ sharing_enabled: next }).eq("id", projectId);
+    setBusy(false);
+    if (error) {
+      toast({ title: "Couldn't change sharing", description: error.message, variant: "destructive" });
+      return;
+    }
+    onChange({ sharing_enabled: next });
+  };
+  const resetLink = async () => {
+    setBusy(true);
+    const token = randomToken();
+    const { error } = await supabase.from("breakdown_projects").update({ share_token: token }).eq("id", projectId);
+    setBusy(false);
+    setConfirmReset(false);
+    if (error) {
+      toast({ title: "Couldn't reset the link", description: error.message, variant: "destructive" });
+      return;
+    }
+    onChange({ share_token: token });
+    toast({ title: "New link created", description: "The old link stopped working straight away." });
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { ...panel$2, padding: 20, marginTop: 14 }, children: [
+    /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "Share with crew" }),
+    /* @__PURE__ */ jsx("p", { style: { fontSize: 14, color: "rgba(255,255,255,0.55)", lineHeight: 1.6, marginTop: 8 }, children: "Anyone with this link can work through the checklists — no account needed." }),
+    /* @__PURE__ */ jsx("div", { style: {
+      marginTop: 14,
+      padding: "12px 14px",
+      borderRadius: 10,
+      background: "rgba(0,0,0,0.35)",
+      border: "1px solid rgba(255,255,255,0.12)",
+      fontSize: 14,
+      color: sharingEnabled ? "rgba(255,255,255,0.85)" : "rgba(255,255,255,0.4)",
+      wordBreak: "break-all",
+      fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace"
+    }, children: link }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }, children: [
+      /* @__PURE__ */ jsxs("button", { onClick: copy, style: { ...btn, background: "rgba(0,212,170,0.12)", borderColor: "rgba(0,212,170,0.4)", color: TEAL$4 }, children: [
+        /* @__PURE__ */ jsx(Copy, { size: 15 }),
+        " Copy link"
+      ] }),
+      /* @__PURE__ */ jsxs("a", { href: `https://wa.me/?text=${encodeURIComponent(message)}`, target: "_blank", rel: "noopener noreferrer", style: btn, children: [
+        /* @__PURE__ */ jsx(MessageSquare, { size: 15 }),
+        " WhatsApp"
+      ] }),
+      /* @__PURE__ */ jsxs("a", { href: `sms:?&body=${encodeURIComponent(message)}`, style: btn, children: [
+        /* @__PURE__ */ jsx(Smartphone, { size: 15 }),
+        " SMS"
+      ] }),
+      /* @__PURE__ */ jsxs(
+        "a",
+        {
+          href: `mailto:?subject=${encodeURIComponent(`${projectTitle} — script breakdown`)}&body=${encodeURIComponent(message)}`,
+          style: btn,
+          children: [
+            /* @__PURE__ */ jsx(Mail, { size: 15 }),
+            " Email"
+          ]
+        }
+      ),
+      typeof navigator !== "undefined" && "share" in navigator && /* @__PURE__ */ jsxs("button", { onClick: nativeShare, style: btn, children: [
+        /* @__PURE__ */ jsx(Share2, { size: 15 }),
+        " Share…"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexWrap: "wrap", gap: 10, alignItems: "center", marginTop: 18 }, children: [
+      /* @__PURE__ */ jsx("button", { onClick: toggleSharing, disabled: busy, style: { ...btn, opacity: busy ? 0.5 : 1 }, children: sharingEnabled ? "Link sharing is ON — turn off" : "Link sharing is OFF — turn on" }),
+      confirmReset ? /* @__PURE__ */ jsxs("span", { style: { display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "rgba(255,255,255,0.7)" }, children: [
+        "Reset the link? The old one stops working.",
+        /* @__PURE__ */ jsx("button", { onClick: resetLink, disabled: busy, style: { ...btn, background: "#ff5c5c", color: "#2a0505", border: "none", fontWeight: 700 }, children: "Yes" }),
+        /* @__PURE__ */ jsx("button", { onClick: () => setConfirmReset(false), style: btn, children: "No" })
+      ] }) : /* @__PURE__ */ jsxs("button", { onClick: () => setConfirmReset(true), style: btn, children: [
+        /* @__PURE__ */ jsx(RefreshCw, { size: 15 }),
+        " Reset link"
+      ] })
+    ] }),
+    /* @__PURE__ */ jsxs("div", { style: { marginTop: 22 }, children: [
+      /* @__PURE__ */ jsx("div", { style: {
+        fontFamily: "'Fraunces', serif",
+        fontSize: 12,
+        fontWeight: 700,
+        letterSpacing: "0.1em",
+        textTransform: "uppercase",
+        color: "rgba(255,255,255,0.3)",
+        marginBottom: 10
+      }, children: "Crew" }),
+      loadingCrew ? /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", gap: 8, color: "rgba(255,255,255,0.5)", fontSize: 14 }, children: [
+        /* @__PURE__ */ jsx(Loader2, { size: 14, className: "animate-spin" }),
+        " Loading…"
+      ] }) : crew.length === 0 ? /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.45)" }, children: "Nobody has opened the link yet." }) : /* @__PURE__ */ jsx("ul", { style: { listStyle: "none", margin: 0, padding: 0 }, children: crew.map((c) => /* @__PURE__ */ jsxs("li", { style: {
+        display: "flex",
+        justifyContent: "space-between",
+        gap: 12,
+        padding: "10px 0",
+        borderBottom: "1px solid rgba(255,255,255,0.06)",
+        fontSize: 14
+      }, children: [
+        /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.85)" }, children: [
+          c.name,
+          c.department ? /* @__PURE__ */ jsxs("span", { style: { color: "rgba(255,255,255,0.45)" }, children: [
+            " · ",
+            c.department
+          ] }) : null
+        ] }),
+        /* @__PURE__ */ jsx("span", { style: { color: "rgba(255,255,255,0.4)" }, children: timeAgo(c.last_seen_at) })
+      ] }, c.id)) })
+    ] })
+  ] });
+};
 const BUCKET = "breakdown-photos";
+function createOwnerAdapter(opts) {
+  const { projectId, actorName } = opts;
+  const removeStorage = async (rows) => {
+    const paths = rows.map((p) => p.storage_path).filter((p) => !!p);
+    if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
+  };
+  const uploadFile = async (itemId, file) => {
+    const blob = await prepareImage(file);
+    const path = `${projectId}/${itemId}/${crypto.randomUUID()}.jpg`;
+    const { error } = await supabase.storage.from(BUCKET).upload(path, blob, {
+      contentType: "image/jpeg",
+      upsert: false
+    });
+    if (error) throw new Error(error.message);
+    return path;
+  };
+  const fail = (message) => {
+    throw new Error(message || "That change couldn't be saved.");
+  };
+  return {
+    mode: "owner",
+    actorName,
+    actorDepartment: opts.actorDepartment ?? null,
+    canManageScenes: true,
+    async load() {
+      const [{ data: scenes }, { data: items }, { data: signoffs }, { data: photos }] = await Promise.all([
+        supabase.from("breakdown_scenes").select(SCENE_FIELDS).eq("project_id", projectId).order("sort_order", { ascending: true }).order("created_at", { ascending: true }),
+        supabase.from("breakdown_items").select(ITEM_FIELDS).eq("project_id", projectId).order("sort_order", { ascending: true }),
+        supabase.from("breakdown_signoffs").select(SIGNOFF_FIELDS).eq("project_id", projectId),
+        supabase.from("breakdown_photos").select(PHOTO_FIELDS).eq("project_id", projectId).order("created_at", { ascending: true })
+      ]);
+      return {
+        scenes: scenes || [],
+        items: items || [],
+        signoffs: signoffs || [],
+        photos: photos || []
+      };
+    },
+    async signPaths(paths) {
+      const out = {};
+      if (!paths.length) return out;
+      const { data, error } = await supabase.storage.from(BUCKET).createSignedUrls(paths, 3600);
+      if (error || !data) return out;
+      data.forEach((row, i) => {
+        const path = row.path || paths[i];
+        if (row.signedUrl && path) out[path] = row.signedUrl;
+      });
+      return out;
+    },
+    async setChecked(item, checked) {
+      const { error } = await supabase.from("breakdown_items").update({
+        checked,
+        checked_by_name: checked ? actorName : null,
+        checked_at: checked ? (/* @__PURE__ */ new Date()).toISOString() : null
+      }).eq("id", item.id);
+      if (error) fail(error.message);
+    },
+    async editItem(item, text) {
+      const { error } = await supabase.from("breakdown_items").update({ text }).eq("id", item.id);
+      if (error) fail(error.message);
+    },
+    async addItem(sceneId, department, text, asNote) {
+      var _a2;
+      const { data: existing } = await supabase.from("breakdown_items").select("sort_order").eq("scene_id", sceneId).eq("department", department).order("sort_order", { ascending: false }).limit(1);
+      const nextOrder = (((_a2 = existing == null ? void 0 : existing[0]) == null ? void 0 : _a2.sort_order) ?? -1) + 1;
+      const { data, error } = await supabase.from("breakdown_items").insert({
+        scene_id: sceneId,
+        project_id: projectId,
+        department,
+        text,
+        source: asNote ? "note" : "manual",
+        flagged: !!asNote,
+        added_by_name: actorName,
+        sort_order: nextOrder
+      }).select(ITEM_FIELDS).single();
+      if (error || !data) fail(error == null ? void 0 : error.message);
+      return data;
+    },
+    canDeleteItem() {
+      return true;
+    },
+    async deleteItem(item, itemPhotos) {
+      await removeStorage(itemPhotos);
+      const { error } = await supabase.from("breakdown_items").delete().eq("id", item.id);
+      if (error) fail(error.message);
+    },
+    async setSignoff(sceneId, department, status, note) {
+      const { data, error } = await supabase.from("breakdown_signoffs").upsert({
+        scene_id: sceneId,
+        project_id: projectId,
+        department,
+        status,
+        note: note ?? null,
+        by_name: actorName,
+        by_department: opts.actorDepartment ?? null,
+        updated_at: (/* @__PURE__ */ new Date()).toISOString()
+      }, { onConflict: "scene_id,department" }).select(SIGNOFF_FIELDS).single();
+      if (error || !data) fail(error == null ? void 0 : error.message);
+      return data;
+    },
+    async clearSignoff(_sceneId, _department, existing) {
+      const { error } = await supabase.from("breakdown_signoffs").delete().eq("id", existing.id);
+      if (error) fail(error.message);
+    },
+    async uploadPhoto(item, file) {
+      const path = await uploadFile(item.id, file);
+      const { data, error } = await supabase.from("breakdown_photos").insert({
+        item_id: item.id,
+        project_id: projectId,
+        storage_path: path,
+        status: "awaiting",
+        uploaded_by_name: actorName
+      }).select(PHOTO_FIELDS).single();
+      if (error || !data) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        fail(error == null ? void 0 : error.message);
+      }
+      return { photo: data };
+    },
+    async replacePhoto(photo, file) {
+      const path = await uploadFile(photo.item_id, file);
+      const { data, error } = await supabase.from("breakdown_photos").update({
+        storage_path: path,
+        status: "awaiting",
+        feedback: null,
+        decided_by_name: null,
+        decided_at: null,
+        uploaded_by_name: actorName
+      }).eq("id", photo.id).select(PHOTO_FIELDS).single();
+      if (error || !data) {
+        await supabase.storage.from(BUCKET).remove([path]);
+        fail(error == null ? void 0 : error.message);
+      }
+      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+      return { photo: data };
+    },
+    canModifyPhoto() {
+      return true;
+    },
+    async deletePhoto(photo) {
+      const { error } = await supabase.from("breakdown_photos").delete().eq("id", photo.id);
+      if (error) fail(error.message);
+      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
+    },
+    async decidePhoto(photo, status, feedback) {
+      const { error } = await supabase.from("breakdown_photos").update({
+        status,
+        feedback: status === "rejected" ? feedback ?? null : null,
+        decided_by_name: actorName,
+        decided_at: (/* @__PURE__ */ new Date()).toISOString()
+      }).eq("id", photo.id);
+      if (error) fail(error.message);
+    },
+    async attachReference(itemId, url2) {
+      const { data, error } = await supabase.from("breakdown_photos").insert({
+        item_id: itemId,
+        project_id: projectId,
+        external_url: url2,
+        is_reference: true,
+        status: "approved",
+        uploaded_by_name: actorName
+      }).select(PHOTO_FIELDS).single();
+      if (error || !data) fail(error == null ? void 0 : error.message);
+      return data;
+    },
+    async deleteScene(scene, scenePhotos) {
+      await removeStorage(scenePhotos);
+      const { error } = await supabase.from("breakdown_scenes").delete().eq("id", scene.id);
+      if (error) fail(error.message);
+    },
+    watch(sceneId, onChange) {
+      const channel = supabase.channel(`breakdown-scene-${sceneId}`).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, onChange).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, onChange).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, onChange).subscribe();
+      return () => {
+        supabase.removeChannel(channel);
+      };
+    }
+  };
+}
+const FUNCTION_URL = `${"https://bwrzcaxpiyhnidwjpapt.supabase.co"}/functions/v1/breakdown-crew`;
+const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3cnpjYXhwaXlobmlkd2pwYXB0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg0NzQ0MTQsImV4cCI6MjA3NDA1MDQxNH0.eYpQzQciIpNWFoYXHyvk4FcuDXfVGx8UTLu190TevPU";
+class CrewLinkError extends Error {
+}
+async function crewCall(token, action, payload = {}) {
+  const res = await fetch(FUNCTION_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", apikey: ANON_KEY, Authorization: `Bearer ${ANON_KEY}` },
+    body: JSON.stringify({ token, action, ...payload })
+  });
+  let body = null;
+  try {
+    body = await res.json();
+  } catch {
+  }
+  if (!res.ok) {
+    const message = (body == null ? void 0 : body.error) || "Something went wrong. Please try again.";
+    if (res.status === 404) throw new CrewLinkError(message);
+    throw new Error(message);
+  }
+  return body;
+}
+async function fileToBase64(file) {
+  const blob = await prepareImage(file);
+  const buf = new Uint8Array(await blob.arrayBuffer());
+  let bin = "";
+  for (let i = 0; i < buf.length; i += 8192) {
+    bin += String.fromCharCode(...buf.subarray(i, i + 8192));
+  }
+  return btoa(bin);
+}
+function createCrewAdapter(opts) {
+  const { token, identity } = opts;
+  const auth = { crew_id: identity.crew_id, crew_secret: identity.crew_secret };
+  const call = (action, payload = {}) => crewCall(token, action, { ...auth, ...payload });
+  return {
+    mode: "crew",
+    actorName: identity.name,
+    actorDepartment: identity.department,
+    canManageScenes: false,
+    async load() {
+      const data = await crewCall(token, "load");
+      if (data.urls) opts.onUrls(data.urls);
+      return data;
+    },
+    async signPaths() {
+      return {};
+    },
+    async setChecked(item, checked) {
+      await call("set_checked", { item_id: item.id, checked });
+    },
+    async editItem(item, text) {
+      await call("edit_item", { item_id: item.id, text });
+    },
+    async addItem(sceneId, department, text, asNote) {
+      const res = await call("add_item", {
+        scene_id: sceneId,
+        department,
+        text,
+        as_note: !!asNote
+      });
+      return res.item;
+    },
+    canDeleteItem(item) {
+      return item.added_by_crew_id === identity.crew_id;
+    },
+    async deleteItem(item) {
+      await call("delete_item", { item_id: item.id });
+    },
+    async setSignoff(sceneId, department, status, note) {
+      const res = await call("set_signoff", {
+        scene_id: sceneId,
+        department,
+        status,
+        note: note ?? null
+      });
+      return res.signoff;
+    },
+    async clearSignoff(sceneId, department) {
+      await call("set_signoff", { scene_id: sceneId, department, status: null });
+    },
+    async uploadPhoto(item, file) {
+      const image_base64 = await fileToBase64(file);
+      const res = await call("upload_photo", {
+        item_id: item.id,
+        image_base64
+      });
+      if (res.url && res.photo.storage_path) opts.onUrls({ [res.photo.storage_path]: res.url });
+      return res;
+    },
+    async replacePhoto(photo, file) {
+      const image_base64 = await fileToBase64(file);
+      const res = await call("replace_photo", {
+        photo_id: photo.id,
+        image_base64
+      });
+      if (res.url && res.photo.storage_path) opts.onUrls({ [res.photo.storage_path]: res.url });
+      return res;
+    },
+    canModifyPhoto(photo) {
+      return photo.uploaded_by_crew_id === identity.crew_id;
+    },
+    async deletePhoto(photo) {
+      await call("delete_photo", { photo_id: photo.id });
+    },
+    async decidePhoto(photo, status, feedback) {
+      await call("decide_photo", { photo_id: photo.id, status, feedback: feedback ?? null });
+    },
+    async attachReference(itemId, url2) {
+      const res = await call("attach_reference", { item_id: itemId, external_url: url2 });
+      return res.photo;
+    },
+    // Poll while the tab is visible.
+    watch(_sceneId, onChange) {
+      let timer;
+      const tick = () => {
+        if (document.visibilityState === "visible") onChange();
+      };
+      timer = window.setInterval(tick, 1e4);
+      const onVisible = () => {
+        if (document.visibilityState === "visible") onChange();
+      };
+      document.addEventListener("visibilitychange", onVisible);
+      return () => {
+        if (timer) window.clearInterval(timer);
+        document.removeEventListener("visibilitychange", onVisible);
+      };
+    }
+  };
+}
 const SITE = "https://filmmakergenius.com";
 const TEAL$3 = "#00d4aa";
 const STEPS$3 = [
   { n: 1, title: "Upload your scene", text: "PDF or paste text." },
   { n: 2, title: "AI breaks it down by department", text: "Props, locations, wardrobe, makeup & SFX, vehicles." },
-  { n: 3, title: "Share a private link with your crew", text: "One link per scene — no accounts needed." },
+  { n: 3, title: "Share a private link with your crew", text: "One link per production — no accounts needed." },
   { n: 4, title: "Check items off, add photos, sign off", text: "Everyone works from the same checklist." }
 ];
-const panel = {
+const PROJECT_FIELDS = "id, title, company, status, start_date, share_token, sharing_enabled, created_at";
+const panel$1 = {
   borderRadius: 16,
   border: "1px solid rgba(255,255,255,0.08)",
   background: "rgba(255,255,255,0.03)"
 };
-const inputStyle$1 = {
+const inputStyle$2 = {
   width: "100%",
   minHeight: 44,
   fontSize: 16,
@@ -24194,7 +25284,7 @@ const inputStyle$1 = {
   fontFamily: "'Inter Tight', sans-serif",
   boxSizing: "border-box"
 };
-const primaryBtn = {
+const primaryBtn$1 = {
   minHeight: 44,
   padding: "0 20px",
   borderRadius: 10,
@@ -24232,26 +25322,13 @@ const Modal = ({ title, children, onClose }) => /* @__PURE__ */ jsx(
       justifyContent: "center",
       padding: 16
     },
-    children: /* @__PURE__ */ jsxs(
-      "div",
-      {
-        onClick: (e) => e.stopPropagation(),
-        style: {
-          ...panel,
-          background: "#10101b",
-          width: "100%",
-          maxWidth: 460,
-          padding: 24
-        },
-        children: [
-          /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
-            /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
-            /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
-          ] }),
-          children
-        ]
-      }
-    )
+    children: /* @__PURE__ */ jsxs("div", { onClick: (e) => e.stopPropagation(), style: { ...panel$1, background: "#10101b", width: "100%", maxWidth: 460, padding: 24 }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 18 }, children: [
+        /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 22, fontWeight: 700, margin: 0 }, children: title }),
+        /* @__PURE__ */ jsx("button", { onClick: onClose, "aria-label": "Close", style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
+      ] }),
+      children
+    ] })
   }
 );
 const ScriptBreakdown = () => {
@@ -24261,10 +25338,9 @@ const ScriptBreakdown = () => {
   const projectId = searchParams.get("project") || "";
   const sceneId = searchParams.get("scene") || "";
   const [projects, setProjects] = useState([]);
-  const [scenes, setScenes] = useState([]);
-  const [items, setItems] = useState([]);
-  const [signoffs, setSignoffs] = useState([]);
   const [loadingProjects, setLoadingProjects] = useState(true);
+  const [sceneCount, setSceneCount] = useState(0);
+  const [reloadKey, setReloadKey] = useState(0);
   const [showNewProject, setShowNewProject] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newCompany, setNewCompany] = useState("");
@@ -24273,24 +25349,16 @@ const ScriptBreakdown = () => {
   const [creating, setCreating] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState("");
+  const [showShare, setShowShare] = useState(false);
   const [showUpload, setShowUpload] = useState(false);
   const [scriptText, setScriptText] = useState("");
   const [sceneNumber, setSceneNumber] = useState("");
   const [label, setLabel] = useState("");
   const [analyzing, setAnalyzing] = useState(false);
   const [error, setError] = useState("");
-  const [activeDept, setActiveDept] = useState("props");
-  const [showScript, setShowScript] = useState(false);
-  const [deleteScene, setDeleteScene] = useState(null);
-  const [photos, setPhotos] = useState([]);
-  const [urlMap, setUrlMap] = useState({});
-  const [uploadingItemId, setUploadingItemId] = useState(null);
-  const [view, setView] = useState("checklist");
-  const [lightbox, setLightbox] = useState(null);
   const fileInputRef = useRef(null);
   const { processFile, isProcessing, currentStage, elapsedTime, progress, currentFileName, currentFileSize } = useOCRUpload();
   const selectedProject = useMemo(() => projects.find((p) => p.id === projectId) || null, [projects, projectId]);
-  const selectedScene = useMemo(() => scenes.find((s) => s.id === sceneId) || null, [scenes, sceneId]);
   const setParams = useCallback((next) => {
     const params = new URLSearchParams(searchParams);
     Object.entries(next).forEach(([k, v2]) => {
@@ -24299,10 +25367,15 @@ const ScriptBreakdown = () => {
     });
     setSearchParams(params, { replace: true });
   }, [searchParams, setSearchParams]);
+  const actorName = ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2.trim()) || ((user == null ? void 0 : user.email) ? user.email.split("@")[0] : "") || "Someone";
+  const adapter = useMemo(
+    () => createOwnerAdapter({ projectId, actorName }),
+    [projectId, actorName]
+  );
   const loadProjects = useCallback(async () => {
     if (!user) return;
     setLoadingProjects(true);
-    const { data } = await supabase.from("breakdown_projects").select("id, title, company, status, start_date, created_at").order("created_at", { ascending: false });
+    const { data } = await supabase.from("breakdown_projects").select(PROJECT_FIELDS).order("created_at", { ascending: false });
     const list = data || [];
     setProjects(list);
     setLoadingProjects(false);
@@ -24313,329 +25386,6 @@ const ScriptBreakdown = () => {
   useEffect(() => {
     loadProjects();
   }, [user]);
-  const loadScenes = useCallback(async () => {
-    if (!projectId) {
-      setScenes([]);
-      setItems([]);
-      setSignoffs([]);
-      setPhotos([]);
-      return;
-    }
-    const [{ data: sceneRows }, { data: itemRows }, { data: signoffRows }] = await Promise.all([
-      supabase.from("breakdown_scenes").select("id, scene_number, label, script_text, sort_order, created_at").eq("project_id", projectId).order("sort_order", { ascending: true }).order("created_at", { ascending: true }),
-      supabase.from("breakdown_items").select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order").eq("project_id", projectId).order("sort_order", { ascending: true }),
-      supabase.from("breakdown_signoffs").select("id, scene_id, department, status, note, by_name, by_department, updated_at").eq("project_id", projectId)
-    ]);
-    setScenes(sceneRows || []);
-    setItems(itemRows || []);
-    setSignoffs(signoffRows || []);
-  }, [projectId]);
-  useEffect(() => {
-    loadScenes();
-  }, [loadScenes]);
-  const refreshScene = useCallback(async () => {
-    if (!sceneId || !projectId) return;
-    const [{ data: itemRows }, { data: signoffRows }] = await Promise.all([
-      supabase.from("breakdown_items").select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order").eq("scene_id", sceneId).order("sort_order", { ascending: true }),
-      supabase.from("breakdown_signoffs").select("id, scene_id, department, status, note, by_name, by_department, updated_at").eq("scene_id", sceneId)
-    ]);
-    setItems((prev) => [...prev.filter((i) => i.scene_id !== sceneId), ...itemRows || []]);
-    setSignoffs((prev) => [...prev.filter((s) => s.scene_id !== sceneId), ...signoffRows || []]);
-  }, [sceneId, projectId]);
-  const loadPhotos = useCallback(async () => {
-    if (!projectId) {
-      setPhotos([]);
-      return;
-    }
-    const { data } = await supabase.from("breakdown_photos").select(PHOTO_FIELDS).eq("project_id", projectId).order("created_at", { ascending: true });
-    setPhotos(data || []);
-  }, [projectId]);
-  useEffect(() => {
-    loadPhotos();
-  }, [loadPhotos]);
-  useEffect(() => {
-    const now = Date.now();
-    const needed = Array.from(
-      new Set(
-        photos.filter((p) => !!p.storage_path).map((p) => p.storage_path).filter((path) => !urlMap[path] || urlMap[path].exp < now + 6e4)
-      )
-    );
-    if (!needed.length) return;
-    let cancelled = false;
-    (async () => {
-      const { data, error: err } = await supabase.storage.from(BUCKET).createSignedUrls(needed, 3600);
-      if (cancelled || err || !data) return;
-      const exp = Date.now() + 3600 * 1e3;
-      setUrlMap((prev) => {
-        const next = { ...prev };
-        data.forEach((row, i) => {
-          const path = row.path || needed[i];
-          if (row.signedUrl && path) next[path] = { url: row.signedUrl, exp };
-        });
-        return next;
-      });
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [photos, urlMap]);
-  const signedUrl = useCallback(
-    (photo) => {
-      var _a3;
-      return photo.external_url || (photo.storage_path ? (_a3 = urlMap[photo.storage_path]) == null ? void 0 : _a3.url : void 0);
-    },
-    [urlMap]
-  );
-  useEffect(() => {
-    if (!sceneId) return;
-    const channel = supabase.channel(`breakdown-scene-${sceneId}`).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_items", filter: `scene_id=eq.${sceneId}` }, () => {
-      refreshScene();
-    }).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_signoffs", filter: `scene_id=eq.${sceneId}` }, () => {
-      refreshScene();
-    }).on("postgres_changes", { event: "*", schema: "public", table: "breakdown_photos", filter: `project_id=eq.${projectId}` }, () => {
-      loadPhotos();
-    }).subscribe();
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [sceneId, projectId, refreshScene, loadPhotos]);
-  const itemCount = useCallback((sid) => items.filter((i) => i.scene_id === sid).length, [items]);
-  const sceneItems = useMemo(
-    () => items.filter((i) => i.scene_id === sceneId),
-    [items, sceneId]
-  );
-  const deptCount = useCallback(
-    (dept) => sceneItems.filter((i) => i.department === dept).length,
-    [sceneItems]
-  );
-  const deptCheckedCount = useCallback(
-    (dept) => sceneItems.filter((i) => i.department === dept && i.checked).length,
-    [sceneItems]
-  );
-  const sceneSignoff = useCallback(
-    (dept) => signoffs.find((s) => s.scene_id === sceneId && s.department === dept) || null,
-    [signoffs, sceneId]
-  );
-  const actorName = ((_a2 = userProfile == null ? void 0 : userProfile.first_name) == null ? void 0 : _a2.trim()) || ((user == null ? void 0 : user.email) ? user.email.split("@")[0] : "") || "Someone";
-  const actorDepartment = null;
-  const failed = (msg) => toast({ title: "Couldn't save", description: msg, variant: "destructive" });
-  const toggleItem = async (item) => {
-    const next = !item.checked;
-    const patch = {
-      checked: next,
-      checked_by_name: next ? actorName : null,
-      checked_at: next ? (/* @__PURE__ */ new Date()).toISOString() : null
-    };
-    setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, ...patch } : i));
-    const { error: err } = await supabase.from("breakdown_items").update(patch).eq("id", item.id);
-    if (err) {
-      setItems((prev) => prev.map((i) => i.id === item.id ? item : i));
-      failed(err.message);
-    }
-  };
-  const editItemText = async (item, text) => {
-    setItems((prev) => prev.map((i) => i.id === item.id ? { ...i, text } : i));
-    const { error: err } = await supabase.from("breakdown_items").update({ text }).eq("id", item.id);
-    if (err) {
-      setItems((prev) => prev.map((i) => i.id === item.id ? item : i));
-      failed(err.message);
-    }
-  };
-  const removeStorageFor = async (rows) => {
-    const paths = rows.map((p) => p.storage_path).filter((p) => !!p);
-    if (paths.length) await supabase.storage.from(BUCKET).remove(paths);
-  };
-  const deleteItem = async (item) => {
-    const itemPhotos = photos.filter((p) => p.item_id === item.id);
-    setItems((prev) => prev.filter((i) => i.id !== item.id));
-    await removeStorageFor(itemPhotos);
-    const { error: err } = await supabase.from("breakdown_items").delete().eq("id", item.id);
-    if (err) {
-      setItems((prev) => [...prev, item]);
-      failed(err.message);
-      return;
-    }
-    setPhotos((prev) => prev.filter((p) => p.item_id !== item.id));
-  };
-  const addItem = async (department, text, opts) => {
-    if (!sceneId || !projectId) return;
-    const maxOrder = sceneItems.filter((i) => i.department === department).reduce((m, i) => Math.max(m, i.sort_order), -1);
-    const { data, error: err } = await supabase.from("breakdown_items").insert({
-      scene_id: sceneId,
-      project_id: projectId,
-      department,
-      text,
-      source: (opts == null ? void 0 : opts.source) || "manual",
-      flagged: (opts == null ? void 0 : opts.flagged) || false,
-      added_by_name: actorName,
-      sort_order: maxOrder + 1
-    }).select("id, scene_id, department, text, original_text, source, flagged, checked, checked_by_name, checked_at, added_by_name, sort_order").single();
-    if (err || !data) {
-      failed((err == null ? void 0 : err.message) || "The item wasn't added.");
-      return;
-    }
-    setItems((prev) => [...prev, data]);
-  };
-  const setSignoff = async (department, status, note) => {
-    if (!sceneId || !projectId) return;
-    const { data, error: err } = await supabase.from("breakdown_signoffs").upsert(
-      {
-        scene_id: sceneId,
-        project_id: projectId,
-        department,
-        status,
-        note: note ?? null,
-        by_name: actorName,
-        by_department: actorDepartment,
-        updated_at: (/* @__PURE__ */ new Date()).toISOString()
-      },
-      { onConflict: "scene_id,department" }
-    ).select("id, scene_id, department, status, note, by_name, by_department, updated_at").single();
-    if (err || !data) {
-      failed((err == null ? void 0 : err.message) || "The sign-off wasn't saved.");
-      return;
-    }
-    setSignoffs((prev) => [
-      ...prev.filter((s) => !(s.scene_id === sceneId && s.department === department)),
-      data
-    ]);
-  };
-  const clearSignoff = async (department) => {
-    const existing = sceneSignoff(department);
-    if (!existing) return;
-    setSignoffs((prev) => prev.filter((s) => s.id !== existing.id));
-    const { error: err } = await supabase.from("breakdown_signoffs").delete().eq("id", existing.id);
-    if (err) {
-      setSignoffs((prev) => [...prev, existing]);
-      failed(err.message);
-    }
-  };
-  const addNoteItem = async (department, text) => {
-    await addItem(department, text, { flagged: true, source: "note" });
-    const existing = sceneSignoff(department);
-    if ((existing == null ? void 0 : existing.status) === "need_help") {
-      await setSignoff(department, "need_help", text);
-    }
-  };
-  const uploadOne = async (item, file) => {
-    const blob = await prepareImage(file);
-    const path = `${projectId}/${item.id}/${crypto.randomUUID()}.jpg`;
-    const { error: upErr } = await supabase.storage.from(BUCKET).upload(path, blob, { contentType: "image/jpeg", upsert: false });
-    if (upErr) throw new Error(upErr.message);
-    return path;
-  };
-  const addPhotos = async (item, files) => {
-    if (!projectId) return;
-    setUploadingItemId(item.id);
-    try {
-      for (const file of files) {
-        let path = "";
-        try {
-          path = await uploadOne(item, file);
-        } catch (err2) {
-          toast({
-            title: err2 instanceof ImageError ? "Photo not added" : "Upload failed",
-            description: (err2 == null ? void 0 : err2.message) || "That photo couldn't be uploaded.",
-            variant: "destructive"
-          });
-          continue;
-        }
-        const { data, error: err } = await supabase.from("breakdown_photos").insert({
-          item_id: item.id,
-          project_id: projectId,
-          storage_path: path,
-          status: "awaiting",
-          uploaded_by_name: actorName
-        }).select(PHOTO_FIELDS).single();
-        if (err || !data) {
-          await supabase.storage.from(BUCKET).remove([path]);
-          failed((err == null ? void 0 : err.message) || "The photo couldn't be saved.");
-          continue;
-        }
-        setPhotos((prev) => [...prev, data]);
-      }
-    } finally {
-      setUploadingItemId(null);
-    }
-  };
-  const decidePhoto = async (photo, status, feedback) => {
-    const patch = {
-      status,
-      feedback: status === "rejected" ? feedback ?? null : null,
-      decided_by_name: actorName,
-      decided_at: (/* @__PURE__ */ new Date()).toISOString()
-    };
-    setPhotos((prev) => prev.map((p) => p.id === photo.id ? { ...p, ...patch } : p));
-    const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
-    if (err) {
-      setPhotos((prev) => prev.map((p) => p.id === photo.id ? photo : p));
-      failed(err.message);
-    }
-  };
-  const replacePhoto = async (photo, file) => {
-    const item = items.find((i) => i.id === photo.item_id);
-    if (!item) return;
-    setUploadingItemId(item.id);
-    try {
-      const path = await uploadOne(item, file);
-      const patch = {
-        storage_path: path,
-        status: "awaiting",
-        feedback: null,
-        decided_by_name: null,
-        decided_at: null,
-        uploaded_by_name: actorName
-      };
-      const { error: err } = await supabase.from("breakdown_photos").update(patch).eq("id", photo.id);
-      if (err) {
-        await supabase.storage.from(BUCKET).remove([path]);
-        failed(err.message);
-        return;
-      }
-      setPhotos((prev) => prev.map((p) => p.id === photo.id ? { ...p, ...patch } : p));
-      if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
-    } catch (err) {
-      toast({
-        title: err instanceof ImageError ? "Photo not replaced" : "Upload failed",
-        description: (err == null ? void 0 : err.message) || "That photo couldn't be uploaded.",
-        variant: "destructive"
-      });
-    } finally {
-      setUploadingItemId(null);
-    }
-  };
-  const deletePhoto = async (photo) => {
-    const { error: err } = await supabase.from("breakdown_photos").delete().eq("id", photo.id);
-    if (err) {
-      failed(err.message);
-      return;
-    }
-    if (photo.storage_path) await supabase.storage.from(BUCKET).remove([photo.storage_path]);
-    setPhotos((prev) => prev.filter((p) => p.id !== photo.id));
-    setLightbox((lb) => {
-      if (!lb) return lb;
-      const ids = lb.ids.filter((id) => id !== photo.id);
-      if (!ids.length) return null;
-      return { ids, index: Math.min(lb.index, ids.length - 1) };
-    });
-  };
-  const attachReference = async (itemId, url2) => {
-    if (!projectId) return;
-    const { data, error: err } = await supabase.from("breakdown_photos").insert({
-      item_id: itemId,
-      project_id: projectId,
-      external_url: url2,
-      is_reference: true,
-      status: "approved",
-      uploaded_by_name: actorName
-    }).select(PHOTO_FIELDS).single();
-    if (err || !data) {
-      failed((err == null ? void 0 : err.message) || "The reference image couldn't be attached.");
-      return;
-    }
-    setPhotos((prev) => [...prev, data]);
-    toast({ title: "Reference image attached" });
-  };
   const createProject = async () => {
     if (!user || !newTitle.trim()) return;
     setCreating(true);
@@ -24646,7 +25396,7 @@ const ScriptBreakdown = () => {
       company: newCompany.trim() || null,
       status: newStatus,
       start_date: newStart || null
-    }).select("id, title, company, status, start_date, created_at").single();
+    }).select(PROJECT_FIELDS).single();
     setCreating(false);
     if (err || !data) {
       setError((err == null ? void 0 : err.message) || "Could not create the production.");
@@ -24697,13 +25447,12 @@ const ScriptBreakdown = () => {
           label: label.trim() || void 0
         }
       });
-      await loadScenes();
       setShowUpload(false);
       setScriptText("");
       setSceneNumber("");
       setLabel("");
-      setActiveDept("props");
       if (res == null ? void 0 : res.scene_id) setParams({ scene: res.scene_id });
+      setReloadKey((k) => k + 1);
     } catch (err) {
       if ((err == null ? void 0 : err.name) !== "InsufficientCreditsError") {
         setError((err == null ? void 0 : err.message) || "We couldn't break down that scene. Please try again.");
@@ -24712,58 +25461,6 @@ const ScriptBreakdown = () => {
       setAnalyzing(false);
     }
   };
-  const confirmDeleteScene = async () => {
-    if (!deleteScene) return;
-    const sceneItemIds = items.filter((i) => i.scene_id === deleteScene.id).map((i) => i.id);
-    await removeStorageFor(photos.filter((p) => sceneItemIds.includes(p.item_id)));
-    await supabase.from("breakdown_scenes").delete().eq("id", deleteScene.id);
-    if (sceneId === deleteScene.id) setParams({ scene: null });
-    setDeleteScene(null);
-    await loadScenes();
-    await loadPhotos();
-  };
-  const sceneTitle = (s) => s.scene_number ? `Scene ${s.scene_number}` : s.label || "Untitled scene";
-  const photosByItem = useMemo(() => {
-    const map = {};
-    photos.forEach((p) => {
-      map[p.item_id] = map[p.item_id] || [];
-      map[p.item_id].push(p);
-    });
-    return map;
-  }, [photos]);
-  const awaitingPhotos = useMemo(
-    () => photos.filter((p) => !p.is_reference && p.status === "awaiting"),
-    [photos]
-  );
-  const sceneAwaitingCount = useMemo(() => {
-    const ids = new Set(sceneItems.map((i) => i.id));
-    return awaitingPhotos.filter((p) => ids.has(p.item_id)).length;
-  }, [awaitingPhotos, sceneItems]);
-  const approvalRows = useMemo(() => {
-    const deptLabel = (key) => {
-      var _a3;
-      return ((_a3 = DEPARTMENTS.find((d) => d.key === key)) == null ? void 0 : _a3.label) || key;
-    };
-    return awaitingPhotos.map((photo) => {
-      const item = items.find((i) => i.id === photo.item_id);
-      const scene = item ? scenes.find((s) => s.id === item.scene_id) : void 0;
-      if (!item || !scene) return null;
-      return {
-        photo,
-        sceneTitle: sceneTitle(scene),
-        departmentLabel: deptLabel(item.department),
-        itemText: item.text
-      };
-    }).filter((r) => !!r);
-  }, [awaitingPhotos, items, scenes]);
-  const openPhoto = (photo) => {
-    const group = photosByItem[photo.item_id] || [photo];
-    setLightbox({ ids: group.map((p) => p.id), index: Math.max(0, group.findIndex((p) => p.id === photo.id)) });
-  };
-  const lightboxPhotos = useMemo(
-    () => lightbox ? lightbox.ids.map((id) => photos.find((p) => p.id === id)).filter((p) => !!p) : [],
-    [lightbox, photos]
-  );
   return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
     /* @__PURE__ */ jsx(
       Seo,
@@ -24795,21 +25492,8 @@ const ScriptBreakdown = () => {
       ` }),
     /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px", overflowX: "hidden" }, children: [
       /* @__PURE__ */ jsxs("div", { style: { padding: "64px 0 36px", textAlign: "center" }, children: [
-        /* @__PURE__ */ jsx("h1", { className: "sb-h1", style: {
-          fontFamily: "'Fraunces', serif",
-          fontWeight: 700,
-          fontSize: 52,
-          lineHeight: 1.05,
-          margin: 0
-        }, children: "Script Breakdown" }),
-        /* @__PURE__ */ jsx("p", { style: {
-          marginTop: 16,
-          fontSize: 16,
-          color: "rgba(255,255,255,0.6)",
-          maxWidth: 720,
-          margin: "16px auto 0",
-          lineHeight: 1.65
-        }, children: "Upload a scene and get a department-by-department checklist — props, locations, wardrobe, makeup & SFX, and vehicles — that your whole crew can work from on set." })
+        /* @__PURE__ */ jsx("h1", { className: "sb-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 52, lineHeight: 1.05, margin: 0 }, children: "Script Breakdown" }),
+        /* @__PURE__ */ jsx("p", { style: { marginTop: 16, fontSize: 16, color: "rgba(255,255,255,0.6)", maxWidth: 720, margin: "16px auto 0", lineHeight: 1.65 }, children: "Upload a scene and get a department-by-department checklist — props, locations, wardrobe, makeup & SFX, and vehicles — that your whole crew can work from on set." })
       ] }),
       /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 40 }, children: [
         /* @__PURE__ */ jsx("div", { style: {
@@ -24832,25 +25516,19 @@ const ScriptBreakdown = () => {
         }, children: [
           /* @__PURE__ */ jsx("span", { className: "sb-step-num", children: s.n }),
           /* @__PURE__ */ jsxs("div", { children: [
-            /* @__PURE__ */ jsx("div", { style: {
-              fontFamily: "'Inter Tight', sans-serif",
-              fontSize: 15,
-              fontWeight: 700,
-              color: "#fff",
-              lineHeight: 1.3
-            }, children: s.title }),
+            /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Inter Tight', sans-serif", fontSize: 15, fontWeight: 700, color: "#fff", lineHeight: 1.3 }, children: s.title }),
             /* @__PURE__ */ jsx("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)", marginTop: 6, lineHeight: 1.5 }, children: s.text })
           ] })
         ] }, s.n)) })
       ] }),
-      /* @__PURE__ */ jsx("div", { style: { paddingBottom: 24 }, children: loadingProjects ? /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+      /* @__PURE__ */ jsx("div", { style: { paddingBottom: 24 }, children: loadingProjects ? /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 24, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
         /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
         " Loading your productions…"
-      ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 32, textAlign: "center" }, children: [
+      ] }) : projects.length === 0 ? /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 32, textAlign: "center" }, children: [
         /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700 }, children: "Create your first production" }),
         /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 10, lineHeight: 1.6 }, children: "Give it a name, then add scenes and let the breakdown do the rest." }),
-        /* @__PURE__ */ jsx("button", { style: { ...primaryBtn, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
-      ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 16 }, children: [
+        /* @__PURE__ */ jsx("button", { style: { ...primaryBtn$1, marginTop: 18 }, onClick: () => setShowNewProject(true), children: "+ New Project" })
+      ] }) : /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 16 }, children: [
         /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }, children: [
           /* @__PURE__ */ jsxs("div", { style: { display: "flex", gap: 10, alignItems: "center", flex: "1 1 240px", minWidth: 0 }, children: [
             /* @__PURE__ */ jsx(
@@ -24858,8 +25536,11 @@ const ScriptBreakdown = () => {
               {
                 "aria-label": "Select production",
                 value: projectId,
-                onChange: (e) => setParams({ project: e.target.value, scene: null }),
-                style: { ...inputStyle$1, maxWidth: 320 },
+                onChange: (e) => {
+                  setParams({ project: e.target.value, scene: null });
+                  setShowShare(false);
+                },
+                style: { ...inputStyle$2, maxWidth: 320 },
                 children: projects.map((p) => /* @__PURE__ */ jsx("option", { value: p.id, style: { background: "#10101b" }, children: p.title }, p.id))
               }
             ),
@@ -24876,98 +25557,27 @@ const ScriptBreakdown = () => {
               }
             )
           ] }),
-          /* @__PURE__ */ jsx("button", { style: { ...primaryBtn, flex: "0 0 auto" }, onClick: () => setShowNewProject(true), children: "+ New Project" })
+          /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 10, flex: "0 0 auto" }, children: [
+            selectedProject && /* @__PURE__ */ jsxs("button", { onClick: () => setShowShare((v2) => !v2), style: { ...ghostBtn, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+              /* @__PURE__ */ jsx(Share2, { size: 16 }),
+              " Share with crew"
+            ] }),
+            /* @__PURE__ */ jsx("button", { style: primaryBtn$1, onClick: () => setShowNewProject(true), children: "+ New Project" })
+          ] })
         ] }),
-        (selectedProject == null ? void 0 : selectedProject.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selectedProject.company })
+        (selectedProject == null ? void 0 : selectedProject.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: selectedProject.company }),
+        selectedProject && showShare && /* @__PURE__ */ jsx(
+          SharePanel,
+          {
+            projectId: selectedProject.id,
+            projectTitle: selectedProject.title,
+            shareToken: selectedProject.share_token,
+            sharingEnabled: selectedProject.sharing_enabled,
+            onChange: (patch) => setProjects((prev) => prev.map((p) => p.id === selectedProject.id ? { ...p, ...patch } : p))
+          }
+        )
       ] }) }),
-      selectedProject && /* @__PURE__ */ jsxs("div", { style: { paddingBottom: 24 }, children: [
-        /* @__PURE__ */ jsx("div", { style: {
-          fontFamily: "'Fraunces', serif",
-          fontSize: 12,
-          fontWeight: 700,
-          letterSpacing: "0.1em",
-          textTransform: "uppercase",
-          color: "rgba(255,255,255,0.3)",
-          marginBottom: 14
-        }, children: "Scenes" }),
-        /* @__PURE__ */ jsxs("div", { className: "sb-scroll-x", style: { display: "flex", gap: 12, paddingBottom: 8 }, children: [
-          scenes.map((s) => {
-            const active = s.id === sceneId;
-            return /* @__PURE__ */ jsxs("div", { style: {
-              ...panel,
-              padding: 14,
-              minWidth: 168,
-              flex: "0 0 auto",
-              borderColor: active ? "rgba(0,212,170,0.5)" : "rgba(255,255,255,0.08)",
-              background: active ? "rgba(0,212,170,0.08)" : "rgba(255,255,255,0.03)",
-              display: "flex",
-              alignItems: "flex-start",
-              gap: 8
-            }, children: [
-              /* @__PURE__ */ jsxs(
-                "button",
-                {
-                  onClick: () => {
-                    setParams({ scene: s.id });
-                    setActiveDept("props");
-                    setShowScript(false);
-                  },
-                  style: { background: "none", border: "none", color: "#fff", textAlign: "left", cursor: "pointer", padding: 0, flex: 1, minHeight: 44, fontFamily: "'Inter Tight', sans-serif" },
-                  children: [
-                    /* @__PURE__ */ jsx("div", { style: { fontSize: 15, fontWeight: 700 }, children: sceneTitle(s) }),
-                    /* @__PURE__ */ jsxs("div", { style: { fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 4 }, children: [
-                      itemCount(s.id),
-                      " item",
-                      itemCount(s.id) === 1 ? "" : "s"
-                    ] })
-                  ]
-                }
-              ),
-              /* @__PURE__ */ jsx(
-                "button",
-                {
-                  "aria-label": `Delete ${sceneTitle(s)}`,
-                  onClick: () => setDeleteScene(s),
-                  style: { background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", padding: 6 },
-                  children: /* @__PURE__ */ jsx(Trash2, { size: 15 })
-                }
-              )
-            ] }, s.id);
-          }),
-          /* @__PURE__ */ jsxs(
-            "button",
-            {
-              onClick: () => {
-                setShowUpload(true);
-                setError("");
-              },
-              style: {
-                ...panel,
-                padding: 14,
-                minWidth: 168,
-                flex: "0 0 auto",
-                cursor: "pointer",
-                border: "1px dashed rgba(0,212,170,0.4)",
-                color: TEAL$3,
-                background: "rgba(0,212,170,0.05)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: 8,
-                fontFamily: "'Inter Tight', sans-serif",
-                fontSize: 15,
-                fontWeight: 700,
-                minHeight: 76
-              },
-              children: [
-                /* @__PURE__ */ jsx(Plus, { size: 16 }),
-                " Add scene"
-              ]
-            }
-          )
-        ] })
-      ] }),
-      selectedProject && showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 20, marginBottom: 32 }, children: [
+      selectedProject && showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel$1, padding: 20, marginBottom: 32 }, children: [
         /* @__PURE__ */ jsxs("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, marginBottom: 16 }, children: [
           /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700 }, children: "New scene" }),
           /* @__PURE__ */ jsx("button", { onClick: () => setShowUpload(false), "aria-label": "Close upload panel", style: { ...ghostBtn, minWidth: 44, padding: 0, display: "flex", alignItems: "center", justifyContent: "center" }, children: /* @__PURE__ */ jsx(X, { size: 18 }) })
@@ -25031,17 +25641,17 @@ const ScriptBreakdown = () => {
             value: scriptText,
             onChange: (e) => setScriptText(e.target.value),
             placeholder: "INT. BAR — NIGHT\n\nPaste your scene here…",
-            style: { ...inputStyle$1, minHeight: 240, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }
+            style: { ...inputStyle$2, minHeight: 240, lineHeight: 1.6, resize: "vertical", whiteSpace: "pre-wrap" }
           }
         ),
         /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 14 }, children: [
           /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
             /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Scene number (optional)" }),
-            /* @__PURE__ */ jsx("input", { value: sceneNumber, onChange: (e) => setSceneNumber(e.target.value), placeholder: "e.g. 47A", style: inputStyle$1 })
+            /* @__PURE__ */ jsx("input", { value: sceneNumber, onChange: (e) => setSceneNumber(e.target.value), placeholder: "e.g. 47A", style: inputStyle$2 })
           ] }),
           /* @__PURE__ */ jsxs("div", { style: { flex: 1 }, children: [
             /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Label (optional)" }),
-            /* @__PURE__ */ jsx("input", { value: label, onChange: (e) => setLabel(e.target.value), placeholder: "e.g. Bar showdown", style: inputStyle$1 })
+            /* @__PURE__ */ jsx("input", { value: label, onChange: (e) => setLabel(e.target.value), placeholder: "e.g. Bar showdown", style: inputStyle$2 })
           ] })
         ] }),
         error && /* @__PURE__ */ jsx("div", { style: {
@@ -25060,7 +25670,7 @@ const ScriptBreakdown = () => {
               onClick: runBreakdown,
               disabled: analyzing || scriptText.trim().length < 20,
               style: {
-                ...primaryBtn,
+                ...primaryBtn$1,
                 opacity: analyzing || scriptText.trim().length < 20 ? 0.45 : 1,
                 cursor: analyzing || scriptText.trim().length < 20 ? "not-allowed" : "pointer",
                 display: "inline-flex",
@@ -25077,176 +25687,35 @@ const ScriptBreakdown = () => {
           /* @__PURE__ */ jsx("span", { style: { fontSize: 13, color: "rgba(255,255,255,0.45)" }, children: "Uses 1 credit" })
         ] })
       ] }),
-      selectedScene && !showUpload && /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 20, marginBottom: 64 }, children: [
-        /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: sceneTitle(selectedScene) }),
-        selectedScene.label && selectedScene.scene_number && /* @__PURE__ */ jsx("div", { style: { fontSize: 14, color: "rgba(255,255,255,0.5)", marginTop: 6 }, children: selectedScene.label }),
-        (() => {
-          const total = sceneItems.length;
-          const checked = sceneItems.filter((i) => i.checked).length;
-          const signed = DEPARTMENTS.filter((d) => !!sceneSignoff(d.key)).length;
-          const pct = total ? Math.round(checked / total * 100) : 0;
-          return /* @__PURE__ */ jsxs("div", { style: { marginTop: 12 }, children: [
-            /* @__PURE__ */ jsxs("div", { style: { fontSize: 13, color: "rgba(255,255,255,0.55)" }, children: [
-              checked,
-              "/",
-              total,
-              " items ready · ",
-              signed,
-              "/5 departments signed off",
-              sceneAwaitingCount > 0 ? ` · ${sceneAwaitingCount} photo${sceneAwaitingCount === 1 ? "" : "s"} awaiting approval` : ""
-            ] }),
-            /* @__PURE__ */ jsx("div", { style: { marginTop: 8, height: 4, borderRadius: 9999, background: "rgba(255,255,255,0.08)", overflow: "hidden" }, children: /* @__PURE__ */ jsx("div", { style: { width: `${pct}%`, height: "100%", background: TEAL$3, transition: "width .3s" } }) })
-          ] });
-        })(),
-        /* @__PURE__ */ jsx("div", { style: { display: "flex", gap: 8, marginTop: 18, flexWrap: "wrap" }, children: [["checklist", "Checklist"], ["approvals", `Approvals (${approvalRows.length})`]].map(([key, label2]) => /* @__PURE__ */ jsx(
-          "button",
-          {
-            onClick: () => setView(key),
-            className: "sb-tap",
-            style: {
-              padding: "0 18px",
-              borderRadius: 10,
-              background: view === key ? "rgba(0,212,170,0.14)" : "rgba(255,255,255,0.04)",
-              border: `1px solid ${view === key ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-              color: view === key ? TEAL$3 : "rgba(255,255,255,0.7)",
-              fontSize: 14,
-              fontWeight: 700,
-              cursor: "pointer",
-              fontFamily: "'Inter Tight', sans-serif"
-            },
-            children: label2
+      selectedProject && /* @__PURE__ */ jsx(
+        BreakdownWorkspace,
+        {
+          adapter,
+          sceneId,
+          onSelectScene: (id) => setParams({ scene: id }),
+          reloadKey,
+          onRequestAddScene: () => {
+            setShowUpload(true);
+            setError("");
           },
-          key
-        )) }),
-        view === "approvals" ? /* @__PURE__ */ jsx(
-          ApprovalsView,
-          {
-            rows: approvalRows,
-            signedUrl,
-            onApprove: (p) => decidePhoto(p, "approved"),
-            onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
-            onOpen: openPhoto
-          }
-        ) : /* @__PURE__ */ jsxs(Fragment, { children: [
-          /* @__PURE__ */ jsx("div", { className: "sb-scroll-x", style: { display: "flex", gap: 8, marginTop: 18, paddingBottom: 6 }, children: DEPARTMENTS.map((d) => {
-            const active = d.key === activeDept;
-            const so = sceneSignoff(d.key);
-            return /* @__PURE__ */ jsxs(
-              "button",
-              {
-                onClick: () => setActiveDept(d.key),
-                className: "sb-tap",
-                style: {
-                  flex: "0 0 auto",
-                  padding: "0 16px",
-                  borderRadius: 9999,
-                  background: active ? "rgba(0,212,170,0.12)" : "rgba(255,255,255,0.04)",
-                  border: `1px solid ${active ? "rgba(0,212,170,0.45)" : "rgba(255,255,255,0.12)"}`,
-                  color: active ? TEAL$3 : "rgba(255,255,255,0.7)",
-                  fontSize: 14,
-                  fontWeight: 600,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  fontFamily: "'Inter Tight', sans-serif",
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 8
-                },
-                children: [
-                  d.label,
-                  " ",
-                  deptCheckedCount(d.key),
-                  "/",
-                  deptCount(d.key),
-                  so && /* @__PURE__ */ jsx("span", { style: {
-                    width: 8,
-                    height: 8,
-                    borderRadius: 9999,
-                    background: so.status === "good" ? TEAL$3 : "#f5a524"
-                  } })
-                ]
-              },
-              d.key
-            );
-          }) }),
-          /* @__PURE__ */ jsx(
-            DepartmentChecklist,
-            {
-              department: activeDept,
-              items: sceneItems.filter((i) => i.department === activeDept),
-              onToggle: toggleItem,
-              onEditText: editItemText,
-              onDelete: deleteItem,
-              onAdd: (text) => addItem(activeDept, text),
-              photosByItem,
-              signedUrl,
-              onAddPhotos: addPhotos,
-              onOpenPhoto: openPhoto,
-              uploadingItemId
-            },
-            `${sceneId}-${activeDept}`
-          ),
-          /* @__PURE__ */ jsx(
-            ReferenceSearch,
-            {
-              items: sceneItems.filter((i) => i.department === activeDept),
-              onAttach: attachReference
-            },
-            `ref-${sceneId}-${activeDept}`
-          ),
-          /* @__PURE__ */ jsx(
-            SignOffBox,
-            {
-              signoff: sceneSignoff(activeDept),
-              onSetStatus: (status, note) => setSignoff(activeDept, status, note),
-              onClear: () => clearSignoff(activeDept),
-              onAddNoteItem: (text) => addNoteItem(activeDept, text)
-            },
-            `signoff-${sceneId}-${activeDept}`
-          )
-        ] }),
-        /* @__PURE__ */ jsxs(
-          "button",
-          {
-            onClick: () => setShowScript((v2) => !v2),
-            style: { ...ghostBtn, marginTop: 22, display: "inline-flex", alignItems: "center", gap: 8 },
-            children: [
-              /* @__PURE__ */ jsx(ChevronDown, { size: 16, style: { transform: showScript ? "rotate(180deg)" : "none", transition: "transform .2s" } }),
-              "View scene script"
-            ]
-          }
-        ),
-        showScript && /* @__PURE__ */ jsx("pre", { style: {
-          marginTop: 14,
-          maxHeight: 420,
-          overflow: "auto",
-          padding: 16,
-          borderRadius: 12,
-          background: "rgba(0,0,0,0.4)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          fontFamily: "ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: 13,
-          lineHeight: 1.6,
-          whiteSpace: "pre-wrap",
-          color: "rgba(255,255,255,0.75)"
-        }, children: selectedScene.script_text || "No script text saved." })
-      ] }),
-      selectedProject && !selectedScene && !showUpload && scenes.length === 0 && /* @__PURE__ */ jsx("div", { style: { ...panel, padding: 32, textAlign: "center", marginBottom: 64, color: "rgba(255,255,255,0.5)" }, children: "No scenes yet — tap “Add scene” to upload or paste your first one." }),
-      !selectedProject && !loadingProjects && projects.length > 0 && /* @__PURE__ */ jsx("div", { style: { height: 48 } }),
-      selectedProject && (selectedScene || showUpload) ? null : /* @__PURE__ */ jsx("div", { style: { height: 24 } })
+          onLoaded: ({ scenes }) => setSceneCount(scenes.length)
+        },
+        selectedProject.id
+      ),
+      sceneCount === 0 && /* @__PURE__ */ jsx("div", { style: { height: 24 } })
     ] }),
     showNewProject && /* @__PURE__ */ jsx(Modal, { title: "New production", onClose: () => setShowNewProject(false), children: /* @__PURE__ */ jsxs("div", { style: { display: "flex", flexDirection: "column", gap: 14 }, children: [
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Title" }),
-        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$1 })
+        /* @__PURE__ */ jsx("input", { value: newTitle, onChange: (e) => setNewTitle(e.target.value), placeholder: "Knock at 8", style: inputStyle$2 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Production company (optional)" }),
-        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$1 })
+        /* @__PURE__ */ jsx("input", { value: newCompany, onChange: (e) => setNewCompany(e.target.value), style: inputStyle$2 })
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Status" }),
-        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$1, children: [
+        /* @__PURE__ */ jsxs("select", { value: newStatus, onChange: (e) => setNewStatus(e.target.value), style: inputStyle$2, children: [
           /* @__PURE__ */ jsx("option", { value: "upcoming", style: { background: "#10101b" }, children: "Upcoming" }),
           /* @__PURE__ */ jsx("option", { value: "in_production", style: { background: "#10101b" }, children: "In production" }),
           /* @__PURE__ */ jsx("option", { value: "wrapped", style: { background: "#10101b" }, children: "Wrapped" })
@@ -25254,7 +25723,7 @@ const ScriptBreakdown = () => {
       ] }),
       /* @__PURE__ */ jsxs("div", { children: [
         /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", marginBottom: 6 }, children: "Start date (optional)" }),
-        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$1 })
+        /* @__PURE__ */ jsx("input", { type: "date", value: newStart, onChange: (e) => setNewStart(e.target.value), style: inputStyle$2 })
       ] }),
       error && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14 }, children: error }),
       /* @__PURE__ */ jsx(
@@ -25262,43 +25731,239 @@ const ScriptBreakdown = () => {
         {
           onClick: createProject,
           disabled: creating || !newTitle.trim(),
-          style: { ...primaryBtn, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
+          style: { ...primaryBtn$1, opacity: creating || !newTitle.trim() ? 0.45 : 1, marginTop: 4 },
           children: creating ? "Creating…" : "Create production"
         }
       )
     ] }) }),
     renaming && selectedProject && /* @__PURE__ */ jsxs(Modal, { title: "Rename production", onClose: () => setRenaming(false), children: [
-      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$1 }),
-      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
+      /* @__PURE__ */ jsx("input", { value: renameValue, onChange: (e) => setRenameValue(e.target.value), style: inputStyle$2 }),
+      /* @__PURE__ */ jsxs("button", { onClick: saveRename, style: { ...primaryBtn$1, marginTop: 16, display: "inline-flex", alignItems: "center", gap: 8 }, children: [
         /* @__PURE__ */ jsx(Check$1, { size: 16 }),
         " Save"
       ] })
-    ] }),
-    deleteScene && /* @__PURE__ */ jsxs(Modal, { title: "Delete scene", onClose: () => setDeleteScene(null), children: [
-      /* @__PURE__ */ jsxs("p", { style: { color: "rgba(255,255,255,0.65)", fontSize: 15, lineHeight: 1.6, margin: 0 }, children: [
-        "Delete ",
-        sceneTitle(deleteScene),
-        " and its checklist?"
-      ] }),
-      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 20 }, children: [
-        /* @__PURE__ */ jsx("button", { onClick: confirmDeleteScene, style: { ...primaryBtn, background: "#ff5c5c", color: "#2a0505" }, children: "Delete" }),
-        /* @__PURE__ */ jsx("button", { onClick: () => setDeleteScene(null), style: ghostBtn, children: "Cancel" })
-      ] })
-    ] }),
-    lightbox && lightboxPhotos.length > 0 && /* @__PURE__ */ jsx(
-      PhotoLightbox,
-      {
-        photos: lightboxPhotos,
-        index: Math.min(lightbox.index, lightboxPhotos.length - 1),
-        signedUrl,
-        onIndexChange: (i) => setLightbox((lb) => lb ? { ...lb, index: i } : lb),
-        onClose: () => setLightbox(null),
-        onApprove: (p) => decidePhoto(p, "approved"),
-        onRequestChanges: (p, fb) => decidePhoto(p, "rejected", fb),
-        onReplace: replacePhoto,
-        onDelete: deletePhoto
+    ] })
+  ] });
+};
+const panel = {
+  borderRadius: 16,
+  border: "1px solid rgba(255,255,255,0.08)",
+  background: "rgba(255,255,255,0.03)"
+};
+const inputStyle$1 = {
+  width: "100%",
+  minHeight: 44,
+  fontSize: 16,
+  padding: "10px 12px",
+  borderRadius: 10,
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.14)",
+  color: "#fff",
+  fontFamily: "'Inter Tight', sans-serif",
+  boxSizing: "border-box"
+};
+const primaryBtn = {
+  minHeight: 44,
+  padding: "0 20px",
+  borderRadius: 10,
+  background: TEAL$4,
+  color: "#04231d",
+  border: "none",
+  fontWeight: 700,
+  fontSize: 15,
+  cursor: "pointer",
+  fontFamily: "'Inter Tight', sans-serif"
+};
+const storageKey = (token) => `fg_breakdown_crew_${token}`;
+const readIdentity = (token) => {
+  try {
+    const raw2 = localStorage.getItem(storageKey(token));
+    if (!raw2) return null;
+    const parsed = JSON.parse(raw2);
+    if ((parsed == null ? void 0 : parsed.crew_id) && (parsed == null ? void 0 : parsed.crew_secret)) return parsed;
+  } catch {
+  }
+  return null;
+};
+const CrewBreakdown = () => {
+  const { token = "" } = useParams();
+  const [project, setProject] = useState(null);
+  const [dead, setDead] = useState(false);
+  const [checking, setChecking] = useState(true);
+  const [identity, setIdentity] = useState(() => token ? readIdentity(token) : null);
+  const [showJoin, setShowJoin] = useState(false);
+  const [name, setName] = useState("");
+  const [department, setDepartment] = useState(CREW_DEPARTMENTS[0]);
+  const [joining, setJoining] = useState(false);
+  const [joinError, setJoinError] = useState("");
+  const [sceneId, setSceneId] = useState("");
+  const [crewUrls, setCrewUrls] = useState({});
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await crewCall(token, "load");
+        if (cancelled) return;
+        setProject(data.project);
+      } catch (err) {
+        if (!cancelled) setDead(true);
+      } finally {
+        if (!cancelled) setChecking(false);
       }
-    )
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+  useEffect(() => {
+    if (!checking && !dead && !identity) setShowJoin(true);
+  }, [checking, dead, identity]);
+  const onUrls = useCallback((urls) => {
+    setCrewUrls((prev) => ({ ...prev, ...urls }));
+  }, []);
+  const adapter = useMemo(
+    () => identity ? createCrewAdapter({ token, identity, onUrls }) : null,
+    [token, identity, onUrls]
+  );
+  const join = async () => {
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setJoinError("Please enter your first name.");
+      return;
+    }
+    setJoining(true);
+    setJoinError("");
+    try {
+      const res = await crewCall(token, identity ? "update_profile" : "join", {
+        name: trimmed,
+        department,
+        crew_id: identity == null ? void 0 : identity.crew_id,
+        crew_secret: identity == null ? void 0 : identity.crew_secret
+      });
+      const next = {
+        crew_id: res.crew_id || identity.crew_id,
+        crew_secret: res.crew_secret || identity.crew_secret,
+        name: trimmed,
+        department
+      };
+      localStorage.setItem(storageKey(token), JSON.stringify(next));
+      setIdentity(next);
+      setShowJoin(false);
+    } catch (err) {
+      setJoinError((err == null ? void 0 : err.message) || "Could not join. Please try again.");
+    } finally {
+      setJoining(false);
+    }
+  };
+  const content = () => {
+    if (checking) {
+      return /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 28, display: "flex", alignItems: "center", gap: 10, color: "rgba(255,255,255,0.6)" }, children: [
+        /* @__PURE__ */ jsx(Loader2, { size: 16, className: "animate-spin" }),
+        " Opening the breakdown…"
+      ] });
+    }
+    if (dead) {
+      return /* @__PURE__ */ jsxs("div", { style: { ...panel, padding: 36, textAlign: "center" }, children: [
+        /* @__PURE__ */ jsx("div", { style: { fontFamily: "'Fraunces', serif", fontSize: 26, fontWeight: 700 }, children: "This link is no longer active." }),
+        /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 15, marginTop: 12, lineHeight: 1.6 }, children: "Ask your producer for a new one." })
+      ] });
+    }
+    if (!adapter) return null;
+    return /* @__PURE__ */ jsx(
+      BreakdownWorkspace,
+      {
+        adapter,
+        sceneId,
+        onSelectScene: (id) => setSceneId(id || "")
+      }
+    );
+  };
+  return /* @__PURE__ */ jsxs("div", { style: { background: "#0a0a12", color: "#fff", minHeight: "60vh" }, children: [
+    /* @__PURE__ */ jsxs(Helmet, { children: [
+      /* @__PURE__ */ jsx("title", { children: "Crew script breakdown | Filmmaker Genius" }),
+      /* @__PURE__ */ jsx("meta", { name: "robots", content: "noindex,nofollow" }),
+      /* @__PURE__ */ jsx("meta", { name: "description", content: "Private department checklist for the crew working on this production." })
+    ] }),
+    /* @__PURE__ */ jsx("style", { children: `
+        @media (max-width: 560px) {
+          .cb-h1 { font-size: 30px !important; }
+          .sb-row { flex-direction: column !important; align-items: stretch !important; }
+          .sb-row > * { width: 100%; }
+        }
+        .sb-scroll-x { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+        .sb-scroll-x::-webkit-scrollbar { height: 6px; }
+        .sb-scroll-x::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+        .sb-tap { min-height: 44px; }
+      ` }),
+    /* @__PURE__ */ jsxs("div", { style: { maxWidth: 1120, margin: "0 auto", padding: "0 24px", overflowX: "hidden" }, children: [
+      /* @__PURE__ */ jsxs("div", { style: { padding: "48px 0 28px" }, children: [
+        /* @__PURE__ */ jsx("div", { style: {
+          fontFamily: "'Fraunces', serif",
+          fontSize: 12,
+          fontWeight: 700,
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: TEAL$4,
+          marginBottom: 12
+        }, children: "Script breakdown" }),
+        /* @__PURE__ */ jsx("h1", { className: "cb-h1", style: { fontFamily: "'Fraunces', serif", fontWeight: 700, fontSize: 44, lineHeight: 1.05, margin: 0 }, children: (project == null ? void 0 : project.title) || "Crew checklist" }),
+        (project == null ? void 0 : project.company) && /* @__PURE__ */ jsx("div", { style: { marginTop: 10, fontSize: 14, color: "rgba(255,255,255,0.45)" }, children: project.company }),
+        identity && /* @__PURE__ */ jsxs("div", { style: { marginTop: 16, fontSize: 14, color: "rgba(255,255,255,0.6)" }, children: [
+          "You're ",
+          identity.name,
+          " · ",
+          identity.department,
+          " ",
+          /* @__PURE__ */ jsx(
+            "button",
+            {
+              onClick: () => {
+                setName(identity.name);
+                setDepartment(identity.department);
+                setShowJoin(true);
+              },
+              style: { background: "none", border: "none", color: TEAL$4, cursor: "pointer", fontSize: 14, textDecoration: "underline", padding: "8px 4px" },
+              children: "(change)"
+            }
+          )
+        ] })
+      ] }),
+      content(),
+      /* @__PURE__ */ jsx("div", { style: { height: 40 } })
+    ] }),
+    showJoin && !dead && /* @__PURE__ */ jsx("div", { style: { position: "fixed", inset: 0, zIndex: 70, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }, children: /* @__PURE__ */ jsxs("div", { style: { ...panel, background: "#10101b", width: "100%", maxWidth: 420, padding: 24 }, children: [
+      /* @__PURE__ */ jsx("h2", { style: { fontFamily: "'Fraunces', serif", fontSize: 24, fontWeight: 700, margin: 0 }, children: "Who are you?" }),
+      /* @__PURE__ */ jsx("p", { style: { color: "rgba(255,255,255,0.55)", fontSize: 14, lineHeight: 1.6, marginTop: 10 }, children: "So the rest of the crew can see who ticked what." }),
+      /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "16px 0 6px" }, children: "First name" }),
+      /* @__PURE__ */ jsx(
+        "input",
+        {
+          autoFocus: true,
+          value: name,
+          maxLength: 40,
+          onChange: (e) => setName(e.target.value),
+          onKeyDown: (e) => {
+            if (e.key === "Enter") join();
+          },
+          placeholder: "Sam",
+          style: inputStyle$1
+        }
+      ),
+      /* @__PURE__ */ jsx("label", { style: { display: "block", fontSize: 13, color: "rgba(255,255,255,0.5)", margin: "14px 0 6px" }, children: "Department" }),
+      /* @__PURE__ */ jsx("select", { value: department, onChange: (e) => setDepartment(e.target.value), style: inputStyle$1, children: CREW_DEPARTMENTS.map((d) => /* @__PURE__ */ jsx("option", { value: d, style: { background: "#10101b" }, children: d }, d)) }),
+      joinError && /* @__PURE__ */ jsx("div", { style: { color: "#ff9d9d", fontSize: 14, marginTop: 12 }, children: joinError }),
+      /* @__PURE__ */ jsxs("div", { className: "sb-row", style: { display: "flex", gap: 12, marginTop: 20 }, children: [
+        /* @__PURE__ */ jsx("button", { onClick: join, disabled: joining || !name.trim(), style: { ...primaryBtn, opacity: joining || !name.trim() ? 0.45 : 1 }, children: joining ? "Saving…" : "Start" }),
+        identity && /* @__PURE__ */ jsx(
+          "button",
+          {
+            onClick: () => setShowJoin(false),
+            style: { ...inputStyle$1, minHeight: 44, width: "auto", padding: "0 18px", cursor: "pointer", fontWeight: 600 },
+            children: "Cancel"
+          }
+        )
+      ] })
+    ] }) })
   ] });
 };
 const MAX_THEMES = 6;
@@ -42732,8 +43397,8 @@ const ShootingSchedule = () => {
         const dayNum = row.day_number.trim() || "—";
         const date = row.date.trim() || "—";
         const location = row.location.trim() || "—";
-        const crewCall = row.crew_call.trim() || "—";
-        const label = `DAY ${dayNum} — ${date}   |   ${location}   |   Crew Call: ${crewCall}`;
+        const crewCall2 = row.crew_call.trim() || "—";
+        const label = `DAY ${dayNum} — ${date}   |   ${location}   |   Crew Call: ${crewCall2}`;
         const barHeight = 8;
         doc.setFillColor(230, 230, 230);
         doc.rect(margin, y, contentWidth, barHeight, "F");
@@ -43013,7 +43678,7 @@ const ShootingSchedule = () => {
                 const dayNum = row.day_number.trim() || "—";
                 const date = row.date.trim() || "—";
                 const location = row.location.trim() || "—";
-                const crewCall = row.crew_call.trim() || "—";
+                const crewCall2 = row.crew_call.trim() || "—";
                 return /* @__PURE__ */ jsxs(
                   "div",
                   {
@@ -43026,7 +43691,7 @@ const ShootingSchedule = () => {
                       "  |  ",
                       location,
                       "  |  Crew Call: ",
-                      crewCall
+                      crewCall2
                     ]
                   },
                   index
@@ -55799,7 +56464,7 @@ const DailyProductionReport = () => {
   const [upmAd, setUpmAd] = useState("");
   const [location, setLocation] = useState("");
   const [weather, setWeather] = useState("");
-  const [crewCall, setCrewCall] = useState("");
+  const [crewCall2, setCrewCall] = useState("");
   const [shootingCall, setShootingCall] = useState("");
   const [lunch, setLunch] = useState("");
   const [firstAfterLunch, setFirstAfterLunch] = useState("");
@@ -55890,7 +56555,7 @@ const DailyProductionReport = () => {
     doc.text("TIMES", margin, y);
     y += 6;
     const times = [
-      ["Crew Call", crewCall],
+      ["Crew Call", crewCall2],
       ["Shooting Call", shootingCall],
       ["Lunch", lunch],
       ["First After Lunch", firstAfterLunch],
@@ -56135,7 +56800,7 @@ const DailyProductionReport = () => {
             /* @__PURE__ */ jsxs(CardContent, { className: "grid grid-cols-2 gap-4", children: [
               /* @__PURE__ */ jsxs("div", { children: [
                 /* @__PURE__ */ jsx(Label, { htmlFor: "crew_call", children: "Crew Call" }),
-                /* @__PURE__ */ jsx(Input, { id: "crew_call", value: crewCall, onChange: (e) => setCrewCall(e.target.value) })
+                /* @__PURE__ */ jsx(Input, { id: "crew_call", value: crewCall2, onChange: (e) => setCrewCall(e.target.value) })
               ] }),
               /* @__PURE__ */ jsxs("div", { children: [
                 /* @__PURE__ */ jsx(Label, { htmlFor: "shooting_call", children: "Shooting Call / First Shot" }),
@@ -56410,7 +57075,7 @@ const DailyProductionReport = () => {
           /* @__PURE__ */ jsxs("div", { className: "mb-6", children: [
             /* @__PURE__ */ jsx("h3", { className: "text-xs font-bold uppercase tracking-wider text-gray-500 mb-2", children: "Times" }),
             /* @__PURE__ */ jsx("div", { className: "grid grid-cols-2 md:grid-cols-4 gap-2 text-sm", children: [
-              ["Crew Call", crewCall],
+              ["Crew Call", crewCall2],
               ["Shooting Call", shootingCall],
               ["Lunch", lunch],
               ["First After Lunch", firstAfterLunch],
@@ -76703,6 +77368,7 @@ const AppRoutes = () => /* @__PURE__ */ jsx(GlobalLayout, { children: /* @__PURE
     /* @__PURE__ */ jsx(ToolSeo, { path: "/script-breakdown" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(ScriptBreakdown, {}) })
   ] }) }),
+  /* @__PURE__ */ jsx(Route, { path: "/b/:token", element: /* @__PURE__ */ jsx(CrewBreakdown, {}) }),
   /* @__PURE__ */ jsx(Route, { path: "/pitch-deck", element: /* @__PURE__ */ jsxs(Fragment, { children: [
     /* @__PURE__ */ jsx(ToolSeo, { path: "/pitch-deck" }),
     /* @__PURE__ */ jsx(ToolGate, { children: /* @__PURE__ */ jsx(PitchDeckMaker, {}) })
