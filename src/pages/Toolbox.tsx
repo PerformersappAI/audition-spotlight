@@ -27,11 +27,16 @@ const GROUPS: Group[] = [
   {
     key: "Script & Story",
     label: "Script & Story",
-    rows: [{ cols: 3, tools: [
-      { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
-      { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
-      { title: "Table Read", to: "/table-read", theme: "teal" },
-    ]}],
+    rows: [
+      { cols: 2, tools: [
+        { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
+        { title: "Table Read", to: "/table-read", theme: "teal" },
+      ]},
+      { cols: 2, tools: [
+        { title: "Script Breakdown", to: "#", theme: "teal" },
+        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
+      ]},
+    ],
   },
   {
     key: "Funding & Pitch",
@@ -140,7 +145,16 @@ function ToolCard({ tool }: { tool: Tool }) {
   };
 
   if (tool.to === "#") {
-    return <a href="#" style={style} {...handlers}>{inner}</a>;
+    return (
+      <a
+        href="#"
+        style={style}
+        {...handlers}
+        onClick={(e) => e.preventDefault()}
+      >
+        {inner}
+      </a>
+    );
   }
   if (/^https?:\/\//.test(tool.to)) {
     return <a href={tool.to} target="_blank" rel="noopener noreferrer" style={style} {...handlers}>{inner}</a>;
