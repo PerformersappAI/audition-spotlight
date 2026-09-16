@@ -187,6 +187,7 @@ export const AppRoutes = () => (
       <Route path="/script-breakdown" element={<><ToolSeo path="/script-breakdown" /><ToolGate><ScriptBreakdown /></ToolGate></>} />
       <Route path="/receipts-expenses" element={<><ToolSeo path="/receipts-expenses" /><ToolGate><ReceiptsExpenses /></ToolGate></>} />
       <Route path="/set-translator" element={<><ToolSeo path="/set-translator" /><ToolGate><SetTranslator /></ToolGate></>} />
+      <Route path="/production-notes" element={<><ToolSeo path="/production-notes" /><ToolGate><ProductionNotes /></ToolGate></>} />
       <Route path="/b/:token" element={<CrewBreakdown />} />
       <Route path="/pitch-deck" element={<><ToolSeo path="/pitch-deck" /><ToolGate><PitchDeckMaker /></ToolGate></>} />
       <Route path="/contract-assistant" element={<><ToolSeo path="/contract-assistant" /><ToolGate><ContractAssistant /></ToolGate></>} />
