@@ -675,8 +675,8 @@ const CallSheet = () => {
     setFormData(prev => ({
       ...prev,
       weather_description: WMO[f.code] || prev.weather_description,
-      high_temp: `${f.max}°C`,
-      low_temp: `${f.min}°C`,
+      high_temp: `${f.max}`,
+      low_temp: `${f.min}`,
       sunrise_time: f.sunrise ? clock(f.sunrise) : prev.sunrise_time,
       sunset_time: f.sunset ? clock(f.sunset) : prev.sunset_time,
       precipitation: f.rain != null ? `${f.rain}%` : prev.precipitation,
