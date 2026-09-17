@@ -85,7 +85,7 @@ const GROUPS: Group[] = [
       ]},
 
       { cols: 2, tools: [
-        { title: "Cast & Crew List", to: "/contact-cast-crew", theme: "rose" },
+        { title: "Cast & Crew List", to: "/contact-cast-crew", theme: "rose", img: imgCastCrewList },
       ]},
     ],
   },
