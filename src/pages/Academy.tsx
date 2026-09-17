@@ -4,6 +4,7 @@ import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import imgEducationModules from "@/assets/academy/education-modules.jpg";
 import imgDistributors from "@/assets/academy/distributors.jpg";
+import imgAggregators from "@/assets/academy/aggregators.jpg";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
@@ -68,7 +69,7 @@ const GROUPS: Group[] = [
     tabs: ["All", "Monetization"],
     cols: 3,
     tiles: [
-      { title: "Aggregators", to: "/academy/aggregators", theme: "money" },
+      { title: "Aggregators", to: "/academy/aggregators", theme: "money", img: imgAggregators, imgPosition: "center" },
       { title: "Distributors", to: "/academy/distributors", theme: "money", img: imgDistributors, imgPosition: "center" },
       { title: "Video On Demand", to: "/academy/vod", theme: "money" },
     ],
