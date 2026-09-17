@@ -5,6 +5,7 @@ import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import imgEducationModules from "@/assets/academy/education-modules.jpg";
 import imgDistributors from "@/assets/academy/distributors.jpg";
 import imgAggregators from "@/assets/academy/aggregators.jpg";
+import imgVod from "@/assets/academy/vod.jpg";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
@@ -71,7 +72,7 @@ const GROUPS: Group[] = [
     tiles: [
       { title: "Aggregators", to: "/academy/aggregators", theme: "money", img: imgAggregators, imgPosition: "center" },
       { title: "Distributors", to: "/academy/distributors", theme: "money", img: imgDistributors, imgPosition: "center" },
-      { title: "Video On Demand", to: "/academy/vod", theme: "money" },
+      { title: "Video On Demand", to: "/academy/vod", theme: "money", img: imgVod, imgPosition: "center" },
     ],
   },
   {
