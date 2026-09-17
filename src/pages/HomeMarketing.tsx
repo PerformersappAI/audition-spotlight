@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 
-import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
+import imgSceneAnalysis from "@/assets/home/movie-in-a-box.jpg";
 import imgStoryboardHome from "@/assets/home/storyboard.jpg";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/home/call-sheet.jpg";
