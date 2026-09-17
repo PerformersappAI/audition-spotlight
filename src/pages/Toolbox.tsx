@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
+import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
+
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
 
@@ -15,7 +17,7 @@ const THEMES: Record<Theme, { grad: string; accent: string }> = {
 
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 
-type Tool = { title: string; to: string; theme: Theme; badge?: string; special?: boolean };
+type Tool = { title: string; to: string; theme: Theme; badge?: string; special?: boolean; img?: string };
 
 type Group = {
   key: string;
@@ -66,8 +68,9 @@ const GROUPS: Group[] = [
     rows: [
       { cols: 2, tools: [
         { title: "Auditions", to: "/upload-auditions", theme: "rose" },
-        { title: "Crew Hire", to: "/crew-hire", theme: "rose" },
+        { title: "Crew Hire", to: "/crew-hire", theme: "rose", img: imgCrewHire },
       ]},
+
       { cols: 2, tools: [
         { title: "Cast & Crew List", to: "/contact-cast-crew", theme: "rose" },
       ]},
@@ -112,7 +115,17 @@ function ToolCard({ tool }: { tool: Tool }) {
 
   const inner = (
     <>
+      {tool.img && (
+        <img
+          src={tool.img}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+        />
+      )}
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
+
       {tool.badge && (
         <span style={{
           position: "absolute", top: 18, left: 20,
