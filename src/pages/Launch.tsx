@@ -102,6 +102,20 @@ function GreenLightEngineCard() {
         textDecoration: "none",
       }}
     >
+      <img
+        src={greenLightLaunch}
+        alt=""
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "80% center",
+          pointerEvents: "none",
+        }}
+      />
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
       <span style={{
         position: "absolute", top: 18, left: 20,
