@@ -11,6 +11,7 @@ import imgContractAssistant from "@/assets/tiles/contract-assistant.jpg";
 import imgCalendar from "@/assets/tiles/calendar.jpg";
 import imgCallSheetGenerator from "@/assets/tiles/call-sheet-generator.jpg";
 import imgDocumentLibrary from "@/assets/tiles/document-library.jpg";
+import imgProductionNotes from "@/assets/tiles/production-notes.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -63,7 +64,7 @@ const GROUPS: Group[] = [
       ]},
       { cols: 2, tools: [
         { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet", img: imgCallSheetGenerator },
-        { title: "Production Notes", to: "/production-notes", theme: "violet" },
+        { title: "Production Notes", to: "/production-notes", theme: "violet", img: imgProductionNotes },
       ]},
       { cols: 2, tools: [
         { title: "Set Translator", to: "/set-translator", theme: "violet" },
