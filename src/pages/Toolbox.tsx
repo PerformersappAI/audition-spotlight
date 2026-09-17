@@ -9,6 +9,7 @@ import imgScriptBreakdown from "@/assets/tiles/script-breakdown.jpg";
 import imgProjectIntakeForm from "@/assets/tiles/project-intake-form.jpg";
 import imgContractAssistant from "@/assets/tiles/contract-assistant.jpg";
 import imgCalendar from "@/assets/tiles/calendar.jpg";
+import imgCallSheetGenerator from "@/assets/tiles/call-sheet-generator.jpg";
 import imgDocumentLibrary from "@/assets/tiles/document-library.jpg";
 
 
@@ -61,7 +62,7 @@ const GROUPS: Group[] = [
         { title: "Calendar", to: "/calendar", theme: "violet", img: imgCalendar },
       ]},
       { cols: 2, tools: [
-        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
+        { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet", img: imgCallSheetGenerator },
         { title: "Production Notes", to: "/production-notes", theme: "violet" },
       ]},
       { cols: 2, tools: [
