@@ -18,6 +18,7 @@ import imgCastCrewList from "@/assets/tiles/cast-crew-list.jpg";
 import imgAuditions from "@/assets/tiles/auditions.jpg";
 import imgPitchDeckMaker from "@/assets/tiles/pitch-deck-maker.jpg";
 import imgDistributionReadiness from "@/assets/tiles/distribution-readiness-assessment.jpg";
+import imgRecut from "@/assets/tiles/recut.jpg";
 import imgFundingStrategy from "@/assets/tiles/funding-strategy.jpg";
 
 
@@ -106,7 +107,7 @@ const GROUPS: Group[] = [
     label: "Distribution",
     rows: [{ cols: 2, tools: [
       { title: "Distribution Readiness Assessment", to: "/distribution-readiness", theme: "emerald", img: imgDistributionReadiness },
-      { title: "Recut", to: "/recut", theme: "red", badge: "New · AI", special: true },
+      { title: "Recut", to: "/recut", theme: "red", badge: "New · AI", special: true, img: imgRecut },
     ]}],
   },
 ];
