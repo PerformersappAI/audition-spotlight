@@ -17,7 +17,7 @@ const THEMES: Record<Theme, { grad: string; accent: string }> = {
 
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 
-type Tool = { title: string; to: string; theme: Theme; badge?: string; special?: boolean };
+type Tool = { title: string; to: string; theme: Theme; badge?: string; special?: boolean; img?: string };
 
 type Group = {
   key: string;
