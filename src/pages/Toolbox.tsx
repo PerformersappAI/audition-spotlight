@@ -40,8 +40,8 @@ const GROUPS: Group[] = [
         { title: "Table Read", to: "/table-read", theme: "teal", img: imgTableRead },
       ]},
       { cols: 2, tools: [
-        { title: "Script Breakdown", to: "/script-breakdown", theme: "teal" },
-        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
+        { title: "Script Breakdown", to: "/script-breakdown", theme: "teal", img: imgScriptBreakdown },
+        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal", img: imgStoryboardGenerator },
       ]},
     ],
   },
