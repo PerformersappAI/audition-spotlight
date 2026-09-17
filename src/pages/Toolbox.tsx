@@ -14,6 +14,7 @@ import imgDocumentLibrary from "@/assets/tiles/document-library.jpg";
 import imgProductionNotes from "@/assets/tiles/production-notes.jpg";
 import imgSetTranslator from "@/assets/tiles/set-translator.jpg";
 import imgReceiptsExpenses from "@/assets/tiles/receipts-expenses.jpg";
+import imgCastCrewList from "@/assets/tiles/cast-crew-list.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
