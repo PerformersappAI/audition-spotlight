@@ -108,7 +108,7 @@ const NeonCube = ({
 
 const HomeMarketing = () => {
   const sceneAnalysis: Card = { title: "Movie in a Box", to: "/movie-in-a-box", cta: "Let's Go", img: imgSceneAnalysis };
-  const storyboard: Card = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboard };
+  const storyboard: Card = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboardHome };
   const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeckHome };
   const callSheet: Card = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
