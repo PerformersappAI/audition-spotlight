@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import imgEducationModules from "@/assets/academy/education-modules.jpg";
+import imgDistributors from "@/assets/academy/distributors.jpg";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
@@ -35,7 +36,7 @@ const THEMES: Record<Theme, { grad: string; accent: string; badgeBg: string; bad
 
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 
-type Tile = { title: string; to: string; theme: Theme; badge?: string; sub?: string; featured?: boolean; img?: string };
+type Tile = { title: string; to: string; theme: Theme; badge?: string; sub?: string; featured?: boolean; img?: string; imgPosition?: string };
 
 type Group = {
   key: string;
@@ -68,7 +69,7 @@ const GROUPS: Group[] = [
     cols: 3,
     tiles: [
       { title: "Aggregators", to: "/academy/aggregators", theme: "money", badge: "Distribution" },
-      { title: "Distributors", to: "/academy/distributors", theme: "money", badge: "Distribution" },
+      { title: "Distributors", to: "/academy/distributors", theme: "money", badge: "Distribution", img: imgDistributors, imgPosition: "center" },
       { title: "Video On Demand", to: "/academy/vod", theme: "money", badge: "Distribution" },
     ],
   },
@@ -125,7 +126,7 @@ function TileCard({ tile }: { tile: Tile }) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "65% top",
+            objectPosition: tile.imgPosition ?? "65% top",
             pointerEvents: "none",
           }}
         />
