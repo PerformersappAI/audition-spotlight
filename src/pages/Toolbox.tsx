@@ -7,6 +7,7 @@ import imgSceneAnalysis from "@/assets/tiles/scene-analysis.jpg";
 import imgStoryboardGenerator from "@/assets/tiles/storyboard-generator.jpg";
 import imgScriptBreakdown from "@/assets/tiles/script-breakdown.jpg";
 import imgProjectIntakeForm from "@/assets/tiles/project-intake-form.jpg";
+import imgContractAssistant from "@/assets/tiles/contract-assistant.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -51,7 +52,7 @@ const GROUPS: Group[] = [
     rows: [
       { cols: 2, tools: [
         { title: "Project Intake Form", to: "/submit", theme: "violet", img: imgProjectIntakeForm },
-        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
+        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet", img: imgContractAssistant },
       ]},
       { cols: 2, tools: [
         { title: "Document Library", to: "/library", theme: "violet" },
