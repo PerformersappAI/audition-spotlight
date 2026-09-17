@@ -7,7 +7,7 @@ import imgStoryboard from "@/assets/tool-storyboard.webp";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/home/auditions.jpg";
-import imgCrewHire from "@/assets/tool-crew-hire.webp";
+import imgCrewHire from "@/assets/home/crew-hire.jpg";
 
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 import imgMarketingInABox from "@/assets/home/marketing-in-a-box.jpg";
