@@ -58,7 +58,7 @@ const GROUPS: Group[] = [
       ]},
       { cols: 2, tools: [
         { title: "Document Library", to: "/library", theme: "violet", img: imgDocumentLibrary },
-        { title: "Calendar", to: "/calendar", theme: "violet" },
+        { title: "Calendar", to: "/calendar", theme: "violet", img: imgCalendar },
       ]},
       { cols: 2, tools: [
         { title: "Call Sheet Generator", to: "/call-sheet", theme: "violet" },
