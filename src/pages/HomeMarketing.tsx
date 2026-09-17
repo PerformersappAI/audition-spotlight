@@ -5,7 +5,7 @@ import Seo from "@/components/Seo";
 import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
 import imgStoryboardHome from "@/assets/home/storyboard.jpg";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
-import imgCallSheet from "@/assets/tool-call-sheet.webp";
+import imgCallSheet from "@/assets/home/call-sheet.jpg";
 import imgAuditions from "@/assets/home/auditions.jpg";
 import imgCrewHire from "@/assets/home/crew-hire.jpg";
 
