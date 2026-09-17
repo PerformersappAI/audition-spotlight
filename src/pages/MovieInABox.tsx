@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { BarChart3, SlidersHorizontal } from "lucide-react";
+import heroImg from "@/assets/movie-in-a-box/hero.jpg";
 
 const GOLD = "#d4a017";
 const VIOLET = "#a855f7";
@@ -78,22 +79,37 @@ export default function MovieInABox() {
         canonical="https://filmmakergenius.com/movie-in-a-box"
         type="website"
       />
-      <section className="min-h-[calc(100vh-96px)] flex items-center justify-center bg-background px-4 py-16">
-        <div className="w-full max-w-[780px] mx-auto">
+      <section className="min-h-[calc(100vh-96px)] flex flex-col items-center justify-center bg-background px-4 py-16">
+        <style>{`
+          .mib-h1 { font-size: 52px; line-height: 1.05; }
+          @media (min-width: 768px) { .mib-h1 { font-size: 68px; } }
+        `}</style>
+        <div className="w-full max-w-[1120px] mx-auto">
           {/* Header */}
-          <div className="text-center mb-8">
-            <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground">
-              Movie in a <span className="text-gold">Box</span>
-            </h1>
-            <p className="text-base text-foreground/60 mt-4 leading-relaxed">
-              The fastest way to outline a film is to start from a structure that already
-              works, then fill in its beats with your story. Pick a template below —
-              three-act, Save the Cat, the Hero's Journey or the sequence method — and
-              Movie in a Box walks you beat by beat, explaining what each beat has to
-              accomplish before you write it.
-            </p>
+          <h1
+            className="mib-h1 font-bold tracking-tight text-foreground text-center"
+            style={{ fontFamily: "'Fraunces', serif", fontWeight: 700 }}
+          >
+            Movie in a <span className="text-gold">Box</span>
+          </h1>
 
-          </div>
+          {/* Hero image */}
+          <img
+            src={heroImg}
+            alt="Filmmakers reviewing a film project on a glowing screen wall"
+            className="w-full aspect-video object-cover rounded-2xl border border-white/20 my-10"
+            style={{ boxShadow: "0 0 30px rgba(255,255,255,0.12)" }}
+          />
+        </div>
+
+        <div className="w-full max-w-[780px] mx-auto">
+          <p className="text-base text-foreground/60 mb-8 leading-relaxed text-center">
+            The fastest way to outline a film is to start from a structure that already
+            works, then fill in its beats with your story. Pick a template below —
+            three-act, Save the Cat, the Hero's Journey or the sequence method — and
+            Movie in a Box walks you beat by beat, explaining what each beat has to
+            accomplish before you write it.
+          </p>
 
           {/* Hero compare banner */}
           <Link
