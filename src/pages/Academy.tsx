@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
+import imgEducationModules from "@/assets/academy/education-modules.jpg";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
@@ -34,7 +35,7 @@ const THEMES: Record<Theme, { grad: string; accent: string; badgeBg: string; bad
 
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 
-type Tile = { title: string; to: string; theme: Theme; badge?: string; sub?: string; featured?: boolean };
+type Tile = { title: string; to: string; theme: Theme; badge?: string; sub?: string; featured?: boolean; img?: string };
 
 type Group = {
   key: string;
@@ -57,6 +58,7 @@ const GROUPS: Group[] = [
       badge: "Modules",
       sub: "62 courses · Every stage of production",
       featured: true,
+      img: imgEducationModules,
     }],
   },
   {
@@ -112,6 +114,22 @@ function TileCard({ tile }: { tile: Tile }) {
         textDecoration: "none",
       }}
     >
+      {tile.img && (
+        <img
+          src={tile.img}
+          alt=""
+          aria-hidden="true"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            objectPosition: "65% center",
+            pointerEvents: "none",
+          }}
+        />
+      )}
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
       {tile.badge && (
         <span style={{
