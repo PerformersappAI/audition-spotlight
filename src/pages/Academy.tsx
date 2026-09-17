@@ -125,7 +125,7 @@ function TileCard({ tile }: { tile: Tile }) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "65% center",
+            objectPosition: "65% top",
             pointerEvents: "none",
           }}
         />
