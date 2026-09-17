@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
+import imgTableRead from "@/assets/tiles/table-read.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -32,7 +33,7 @@ const GROUPS: Group[] = [
     rows: [
       { cols: 2, tools: [
         { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
-        { title: "Table Read", to: "/table-read", theme: "teal" },
+        { title: "Table Read", to: "/table-read", theme: "teal", img: imgTableRead },
       ]},
       { cols: 2, tools: [
         { title: "Script Breakdown", to: "/script-breakdown", theme: "teal" },
