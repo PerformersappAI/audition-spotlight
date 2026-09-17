@@ -12,6 +12,7 @@ import imgCalendar from "@/assets/tiles/calendar.jpg";
 import imgCallSheetGenerator from "@/assets/tiles/call-sheet-generator.jpg";
 import imgDocumentLibrary from "@/assets/tiles/document-library.jpg";
 import imgProductionNotes from "@/assets/tiles/production-notes.jpg";
+import imgSetTranslator from "@/assets/tiles/set-translator.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -67,7 +68,7 @@ const GROUPS: Group[] = [
         { title: "Production Notes", to: "/production-notes", theme: "violet", img: imgProductionNotes },
       ]},
       { cols: 2, tools: [
-        { title: "Set Translator", to: "/set-translator", theme: "violet" },
+        { title: "Set Translator", to: "/set-translator", theme: "violet", img: imgSetTranslator },
         { title: "Receipts & Expenses", to: "/receipts-expenses", theme: "violet" },
       ]},
     ],
