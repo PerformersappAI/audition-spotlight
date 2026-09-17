@@ -68,9 +68,9 @@ const GROUPS: Group[] = [
     tabs: ["All", "Monetization"],
     cols: 3,
     tiles: [
-      { title: "Aggregators", to: "/academy/aggregators", theme: "money", badge: "Distribution" },
-      { title: "Distributors", to: "/academy/distributors", theme: "money", badge: "Distribution", img: imgDistributors, imgPosition: "center" },
-      { title: "Video On Demand", to: "/academy/vod", theme: "money", badge: "Distribution" },
+      { title: "Aggregators", to: "/academy/aggregators", theme: "money" },
+      { title: "Distributors", to: "/academy/distributors", theme: "money", img: imgDistributors, imgPosition: "center" },
+      { title: "Video On Demand", to: "/academy/vod", theme: "money" },
     ],
   },
   {
