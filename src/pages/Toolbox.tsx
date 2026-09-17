@@ -107,7 +107,7 @@ const GROUPS: Group[] = [
     label: "Distribution",
     rows: [{ cols: 2, tools: [
       { title: "Distribution Readiness Assessment", to: "/distribution-readiness", theme: "emerald", img: imgDistributionReadiness },
-      { title: "Recut", to: "/recut", theme: "red", badge: "New · AI", special: true },
+      { title: "Recut", to: "/recut", theme: "red", badge: "New · AI", special: true, img: imgRecut },
     ]}],
   },
 ];
