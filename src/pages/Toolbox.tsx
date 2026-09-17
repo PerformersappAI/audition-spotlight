@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
+import imgTableRead from "@/assets/tiles/table-read.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
