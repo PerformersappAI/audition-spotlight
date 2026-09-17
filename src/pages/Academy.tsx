@@ -5,6 +5,7 @@ import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
 import imgEducationModules from "@/assets/academy/education-modules.jpg";
 import imgDistributors from "@/assets/academy/distributors.jpg";
 import imgAggregators from "@/assets/academy/aggregators.jpg";
+import imgVod from "@/assets/academy/vod.jpg";
 
 type Theme = "edu" | "money" | "greenlight" | "roberts";
 
