@@ -52,7 +52,7 @@ const GROUPS: Group[] = [
     rows: [
       { cols: 2, tools: [
         { title: "Project Intake Form", to: "/submit", theme: "violet", img: imgProjectIntakeForm },
-        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
+        { title: "Contract Assistant", to: "/contract-assistant", theme: "violet", img: imgContractAssistant },
       ]},
       { cols: 2, tools: [
         { title: "Document Library", to: "/library", theme: "violet" },
