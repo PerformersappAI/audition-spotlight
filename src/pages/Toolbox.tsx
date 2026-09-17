@@ -4,6 +4,9 @@ import Seo from "@/components/Seo";
 import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
 import imgTableRead from "@/assets/tiles/table-read.jpg";
 import imgSceneAnalysis from "@/assets/tiles/scene-analysis.jpg";
+import imgStoryboardGenerator from "@/assets/tiles/storyboard-generator.jpg";
+import imgScriptBreakdown from "@/assets/tiles/script-breakdown.jpg";
+import imgProjectIntakeForm from "@/assets/tiles/project-intake-form.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
