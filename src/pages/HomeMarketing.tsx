@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 
 import imgSceneAnalysis from "@/assets/tool-script-analysis-new.webp";
-import imgStoryboard from "@/assets/tool-storyboard.webp";
+import imgStoryboardHome from "@/assets/home/storyboard.jpg";
 import imgPitchDeck from "@/assets/tool-pitch-deck-new.webp";
 import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/home/auditions.jpg";
