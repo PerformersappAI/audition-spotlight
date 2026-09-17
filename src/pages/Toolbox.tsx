@@ -4,6 +4,9 @@ import Seo from "@/components/Seo";
 import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
 import imgTableRead from "@/assets/tiles/table-read.jpg";
 import imgSceneAnalysis from "@/assets/tiles/scene-analysis.jpg";
+import imgStoryboardGenerator from "@/assets/tiles/storyboard-generator.jpg";
+import imgScriptBreakdown from "@/assets/tiles/script-breakdown.jpg";
+import imgProjectIntakeForm from "@/assets/tiles/project-intake-form.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -37,8 +40,8 @@ const GROUPS: Group[] = [
         { title: "Table Read", to: "/table-read", theme: "teal", img: imgTableRead },
       ]},
       { cols: 2, tools: [
-        { title: "Script Breakdown", to: "/script-breakdown", theme: "teal" },
-        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal" },
+        { title: "Script Breakdown", to: "/script-breakdown", theme: "teal", img: imgScriptBreakdown },
+        { title: "Storyboard Generator", to: "/storyboarding", theme: "teal", img: imgStoryboardGenerator },
       ]},
     ],
   },
@@ -47,7 +50,7 @@ const GROUPS: Group[] = [
     label: "Production Office",
     rows: [
       { cols: 2, tools: [
-        { title: "Project Intake Form", to: "/submit", theme: "violet" },
+        { title: "Project Intake Form", to: "/submit", theme: "violet", img: imgProjectIntakeForm },
         { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
       ]},
       { cols: 2, tools: [
