@@ -9,7 +9,7 @@ import imgCallSheet from "@/assets/tool-call-sheet.webp";
 import imgAuditions from "@/assets/home/auditions.jpg";
 import imgCrewHire from "@/assets/home/crew-hire.jpg";
 
-import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
+import imgContractAssistant from "@/assets/home/contract-assistant.jpg";
 import imgMarketingInABox from "@/assets/home/marketing-in-a-box.jpg";
 import imgGreenLightEngine from "@/assets/home/green-light-engine.jpg";
 import imgPitchDeckHome from "@/assets/home/pitch-deck.jpg";
@@ -114,7 +114,7 @@ const HomeMarketing = () => {
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
   
-  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant.url };
+  const contractAssistant: Card = { title: "Contract Assistant", to: "/contract-assistant", cta: "Draft", img: imgContractAssistant };
   const marketingInABox: Card = { title: "Marketing in a Box", to: "/marketing", cta: "Explore", img: imgMarketingInABox };
   const greenLightEngine: Card = { title: "Green Light Engine", to: "/green-light-engine", cta: "Explore", img: imgGreenLightEngine };
 
