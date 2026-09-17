@@ -16,6 +16,7 @@ import imgSetTranslator from "@/assets/tiles/set-translator.jpg";
 import imgReceiptsExpenses from "@/assets/tiles/receipts-expenses.jpg";
 import imgCastCrewList from "@/assets/tiles/cast-crew-list.jpg";
 import imgAuditions from "@/assets/tiles/auditions.jpg";
+import imgFundingStrategy from "@/assets/tiles/funding-strategy.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -94,7 +95,7 @@ const GROUPS: Group[] = [
     key: "Funding & Pitch",
     label: "Funding & Pitch",
     rows: [{ cols: 2, tools: [
-      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold" },
+      { title: "Funding Strategy", to: "/funding-strategy", theme: "gold", img: imgFundingStrategy },
       { title: "Pitch Deck Maker", to: "/pitch-deck", theme: "gold" },
     ]}],
   },
