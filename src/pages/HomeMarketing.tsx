@@ -12,6 +12,7 @@ import imgCrewHire from "@/assets/tool-crew-hire.webp";
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 import imgMarketingInABox from "@/assets/home/marketing-in-a-box.jpg";
 import imgGreenLightEngine from "@/assets/home/green-light-engine.jpg";
+import imgPitchDeckHome from "@/assets/home/pitch-deck.jpg";
 
 const TEAL = "#00d4aa";
 
@@ -108,7 +109,7 @@ const NeonCube = ({
 const HomeMarketing = () => {
   const sceneAnalysis: Card = { title: "Movie in a Box", to: "/movie-in-a-box", cta: "Let's Go", img: imgSceneAnalysis };
   const storyboard: Card = { title: "Storyboard Generator", to: "/storyboarding", cta: "Visualize", img: imgStoryboard };
-  const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeck };
+  const pitchDeck: Card = { title: "Pitch Deck Maker", to: "/pitch-deck", cta: "Create", img: imgPitchDeckHome };
   const callSheet: Card = { title: "Call Sheet Generator", to: "/call-sheet", cta: "Build", img: imgCallSheet };
   const auditions: Card = { title: "Auditions", to: "/upload-auditions", cta: "Post", img: imgAuditions };
   const crewHire: Card = { title: "Crew Hire", to: "/crew-hire", cta: "Hire", img: imgCrewHire };
