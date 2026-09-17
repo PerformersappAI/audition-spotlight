@@ -12,6 +12,7 @@ import imgCrewHire from "@/assets/tool-crew-hire.webp";
 import imgContractAssistant from "@/assets/contract-assistant.png.asset.json";
 import imgMarketingInABox from "@/assets/home/marketing-in-a-box.jpg";
 import imgGreenLightEngine from "@/assets/home/green-light-engine.jpg";
+import imgPitchDeckHome from "@/assets/home/pitch-deck.jpg";
 
 const TEAL = "#00d4aa";
 
