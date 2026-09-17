@@ -15,6 +15,7 @@ import imgProductionNotes from "@/assets/tiles/production-notes.jpg";
 import imgSetTranslator from "@/assets/tiles/set-translator.jpg";
 import imgReceiptsExpenses from "@/assets/tiles/receipts-expenses.jpg";
 import imgCastCrewList from "@/assets/tiles/cast-crew-list.jpg";
+import imgAuditions from "@/assets/tiles/auditions.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -80,7 +81,7 @@ const GROUPS: Group[] = [
     label: "Cast & Crew",
     rows: [
       { cols: 2, tools: [
-        { title: "Auditions", to: "/upload-auditions", theme: "rose" },
+        { title: "Auditions", to: "/upload-auditions", theme: "rose", img: imgAuditions },
         { title: "Crew Hire", to: "/crew-hire", theme: "rose", img: imgCrewHire },
       ]},
 
