@@ -89,7 +89,7 @@ const GROUPS: Group[] = [
       sub: "17 chapters · Idea to distribution",
       featured: true,
       img: imgRoberts,
-      imgPosition: "75% 15%",
+      imgPosition: "75% center",
     }],
   },
 ];
