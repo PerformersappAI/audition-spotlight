@@ -33,7 +33,7 @@ const GROUPS: Group[] = [
     rows: [
       { cols: 2, tools: [
         { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
-        { title: "Table Read", to: "/table-read", theme: "teal" },
+        { title: "Table Read", to: "/table-read", theme: "teal", img: imgTableRead },
       ]},
       { cols: 2, tools: [
         { title: "Script Breakdown", to: "/script-breakdown", theme: "teal" },
