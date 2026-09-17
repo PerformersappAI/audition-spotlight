@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import marketingLaunch from "../assets/launch/marketing-launch.jpg";
 
 const OVERLAY = "linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.1) 100%)";
 
@@ -32,6 +33,20 @@ function SuperstarDestroyerCard() {
         textDecoration: "none",
       }}
     >
+      <img
+        src={marketingLaunch}
+        alt=""
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+          objectPosition: "20% center",
+          pointerEvents: "none",
+        }}
+      />
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
       <span style={{
         position: "absolute", top: 18, left: 20,
