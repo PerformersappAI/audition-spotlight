@@ -50,7 +50,7 @@ const GROUPS: Group[] = [
     label: "Production Office",
     rows: [
       { cols: 2, tools: [
-        { title: "Project Intake Form", to: "/submit", theme: "violet" },
+        { title: "Project Intake Form", to: "/submit", theme: "violet", img: imgProjectIntakeForm },
         { title: "Contract Assistant", to: "/contract-assistant", theme: "violet" },
       ]},
       { cols: 2, tools: [
