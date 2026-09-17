@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Seo from "@/components/Seo";
 import imgCrewHire from "@/assets/tiles/crew-hire.jpg";
 import imgTableRead from "@/assets/tiles/table-read.jpg";
+import imgSceneAnalysis from "@/assets/tiles/scene-analysis.jpg";
 
 
 type Theme = "teal" | "gold" | "violet" | "rose" | "emerald" | "red";
@@ -32,7 +33,7 @@ const GROUPS: Group[] = [
     label: "Script & Story",
     rows: [
       { cols: 2, tools: [
-        { title: "Scene Analysis", to: "/scene-analysis", theme: "teal" },
+        { title: "Scene Analysis", to: "/scene-analysis", theme: "teal", img: imgSceneAnalysis },
         { title: "Table Read", to: "/table-read", theme: "teal", img: imgTableRead },
       ]},
       { cols: 2, tools: [
