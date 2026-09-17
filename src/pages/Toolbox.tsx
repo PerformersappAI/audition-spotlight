@@ -69,8 +69,8 @@ const GROUPS: Group[] = [
       { cols: 2, tools: [
         { title: "Auditions", to: "/upload-auditions", theme: "rose" },
         { title: "Crew Hire", to: "/crew-hire", theme: "rose", img: imgCrewHire },
-
       ]},
+
       { cols: 2, tools: [
         { title: "Cast & Crew List", to: "/contact-cast-crew", theme: "rose" },
       ]},
@@ -115,7 +115,17 @@ function ToolCard({ tool }: { tool: Tool }) {
 
   const inner = (
     <>
+      {tool.img && (
+        <img
+          src={tool.img}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" }}
+        />
+      )}
       <div style={{ position: "absolute", inset: 0, background: OVERLAY, pointerEvents: "none" }} />
+
       {tool.badge && (
         <span style={{
           position: "absolute", top: 18, left: 20,
