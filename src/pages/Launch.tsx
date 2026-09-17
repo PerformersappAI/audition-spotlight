@@ -120,6 +120,8 @@ export default function Launch() {
 
   return (
     <div style={{ background: "#0a0a12", color: "#fff", minHeight: "100vh", fontFamily: "'Inter Tight', sans-serif" }}>
+      <style>{`@media (max-width: 639px) { .launch-intro { text-align: left !important; } }`}</style>
+
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "72px 24px 80px" }}>
         <h1 style={{ fontSize: 34, margin: "0 0 14px", fontWeight: 700 }}>Launch your film</h1>
         <p className="launch-intro" style={{ color: "rgba(255,255,255,0.6)", fontSize: 16, lineHeight: 1.65, textAlign: "justify", margin: "0 0 32px" }}>
