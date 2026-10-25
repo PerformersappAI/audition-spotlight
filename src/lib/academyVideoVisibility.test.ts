@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { academyVideoPages, isAcademyVideoVisible } from "./academyVideoVisibility";
+import { academyVideoPages, isAcademyVideoVisible } from "../src/lib/academyVideoVisibility";
 
 describe("Academy video visibility", () => {
   test("unavailable videos are hidden by default", () => {
