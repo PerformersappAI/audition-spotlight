@@ -1,6 +1,7 @@
 import { Link, useParams, useLocation } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
+import { isAcademyVideoVisible } from "@/lib/academyVideoVisibility";
 import { robertsChapters } from "@/data/robertsChapters";
 
 const RobertsChapter = () => {
@@ -191,6 +192,7 @@ const RobertsChapter = () => {
       </header>
 
       {/* Video slot */}
+      {isAcademyVideoVisible(location.pathname) && (
       <div style={{ maxWidth: 760, margin: "0 auto", padding: "0 24px 40px" }}>
         <div
           style={{
@@ -242,6 +244,7 @@ const RobertsChapter = () => {
           </div>
         </div>
       </div>
+      )}
 
       {/* Body */}
       <article
