@@ -9,7 +9,8 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "indexnow": "tsx scripts/indexnow.mjs"
+    "indexnow": "tsx scripts/indexnow.mjs",
+    "test": "tsx --test src/**/*.test.ts"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",
