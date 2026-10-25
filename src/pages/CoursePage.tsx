@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
+import { isAcademyVideoVisible } from "@/lib/academyVideoVisibility";
 // Per-course dynamic loader — see src/pages/CourseChapter.tsx for the SSR /
 // client cache contract that keeps this synchronous on first render.
 import { getCourse, loadCourse } from "@/data/courses/loader";
@@ -170,6 +171,7 @@ export default function CoursePage() {
       </div>
 
       {/* Video slot */}
+      {isAcademyVideoVisible(`/academy/${course.slug}`) && (
       <div style={{ maxWidth: 860, margin: "0 auto 56px", padding: "0 24px" }}>
         <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "linear-gradient(135deg,#071820 0%,#0a2a30 100%)", border: "1px solid rgba(0,212,170,.2)", borderRadius: 16, overflow: "hidden" }}>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
@@ -183,6 +185,7 @@ export default function CoursePage() {
           </div>
         </div>
       </div>
+      )}
 
       {/* Info grid */}
       <div style={{ maxWidth: 1120, margin: "0 auto", padding: "0 24px" }}>

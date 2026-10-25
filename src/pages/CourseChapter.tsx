@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Seo from "@/components/Seo";
 import { AcademyByline, academyJsonLd } from "@/lib/academyAuthor";
+import { isAcademyVideoVisible } from "@/lib/academyVideoVisibility";
 // Client-side loader: dynamic per-course imports (one chunk per course).
 // The SSR entry pre-populates this loader's cache before renderToString,
 // so getCourse() returns the course synchronously during prerendering.
@@ -1344,6 +1345,7 @@ export default function CourseChapter() {
         </div>
 
         {/* Video Lesson */}
+        {isAcademyVideoVisible(`/academy/${course.slug}/${chapter.slug}`) && (
         <div style={{ position: "relative", width: "100%", paddingTop: "56.25%", background: "linear-gradient(135deg,#071820 0%,#0a2a30 100%)", border: "1px solid rgba(0,212,170,.2)", borderRadius: 16, overflow: "hidden", marginBottom: 38 }}>
           <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16 }}>
             <div style={{ width: 64, height: 64, borderRadius: "50%", background: "rgba(0,212,170,.15)", border: "1px solid rgba(0,212,170,.4)", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1354,6 +1356,7 @@ export default function CourseChapter() {
             </span>
           </div>
         </div>
+        )}
 
         {/* Article */}
         {chapter.body ? (
